@@ -24,8 +24,8 @@ describe("CartesianPoint 2d", () => {
     const testHelper = new TestHelper({ v6Api: true });
 
     let Location: UniqueType;
-    const London = { x: -14221.955504767046, y: 6711533.711877272 };
-    const Rome = { x: 1391088.9885668862, y: 5146427.7652232265 };
+    const London = { x: -14221.955504767046, y: 6711533.711877272 } as const;
+    const Rome = { x: 1391088.9885668862, y: 5146427.7652232265 } as const;
 
     beforeEach(async () => {
         Location = testHelper.createUniqueType("Location");
@@ -49,7 +49,7 @@ describe("CartesianPoint 2d", () => {
     afterEach(async () => {
         await testHelper.close();
     });
-    // srid commented as  results of https://github.com/neo4j/graphql/issues/5223
+
     test("wgs-84-2d point", async () => {
         const query = /* GraphQL */ `
             query {
@@ -63,7 +63,7 @@ describe("CartesianPoint 2d", () => {
                                     x
                                     z
                                     crs
-                                   # srid
+                                    srid
                                 }
                             }
                         }
@@ -73,10 +73,10 @@ describe("CartesianPoint 2d", () => {
             }
         `;
 
-        const equalsResult = await testHelper.executeGraphQL(query);
+        const queryResult = await testHelper.executeGraphQL(query);
 
-        expect(equalsResult.errors).toBeFalsy();
-        expect(equalsResult.data).toEqual({
+        expect(queryResult.errors).toBeFalsy();
+        expect(queryResult.data).toEqual({
             [Location.plural]: {
                 connection: {
                     edges: expect.toIncludeSameMembers([
@@ -88,7 +88,7 @@ describe("CartesianPoint 2d", () => {
                                     x: London.x,
                                     z: null,
                                     crs: "cartesian",
-                                    // srid: 7203,
+                                    srid: 7203,
                                 },
                             },
                         },
@@ -100,7 +100,7 @@ describe("CartesianPoint 2d", () => {
                                     x: Rome.x,
                                     z: null,
                                     crs: "cartesian",
-                                    //srid: 7203,
+                                    srid: 7203,
                                 },
                             },
                         },

@@ -19,8 +19,12 @@
 
 import { GraphQLBoolean, GraphQLFloat, GraphQLID, GraphQLInt, GraphQLString } from "graphql";
 import type { SchemaComposer } from "graphql-compose";
-import { ScalarTypeComposer } from "graphql-compose";
+import { InputTypeComposer, ObjectTypeComposer, ScalarTypeComposer } from "graphql-compose";
 import { Memoize } from "typescript-memoize";
+import { CartesianPointInput } from "../../graphql/input-objects/CartesianPointInput";
+import { PointInput } from "../../graphql/input-objects/PointInput";
+import { CartesianPoint } from "../../graphql/objects/CartesianPoint";
+import { Point } from "../../graphql/objects/Point";
 import {
     GraphQLBigInt,
     GraphQLDate,
@@ -85,5 +89,21 @@ export class SchemaBuilderTypes {
     @Memoize()
     public get duration(): ScalarTypeComposer {
         return new ScalarTypeComposer(GraphQLDuration, this.composer);
+    }
+    @Memoize()
+    public get point(): ObjectTypeComposer {
+        return new ObjectTypeComposer(Point, this.composer);
+    }
+    @Memoize()
+    public get pointInput(): InputTypeComposer {
+        return new InputTypeComposer(PointInput, this.composer);
+    }
+    @Memoize()
+    public get cartesianPoint(): ObjectTypeComposer {
+        return new ObjectTypeComposer(CartesianPoint, this.composer);
+    }
+    @Memoize()
+    public get cartesianPointInput(): InputTypeComposer {
+        return new InputTypeComposer(CartesianPointInput, this.composer);
     }
 }

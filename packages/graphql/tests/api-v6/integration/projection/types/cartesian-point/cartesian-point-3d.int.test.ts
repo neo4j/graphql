@@ -50,7 +50,7 @@ describe("CartesianPoint 3d", () => {
     afterEach(async () => {
         await testHelper.close();
     });
-    // srid commented as  results of https://github.com/neo4j/graphql/issues/5223
+
     test("wgs-84-3d point", async () => {
         const query = /* GraphQL */ `
             query {
@@ -64,7 +64,7 @@ describe("CartesianPoint 3d", () => {
                                     x
                                     z
                                     crs
-                                   # srid
+                                    srid
                                 }
                             }
                         }
@@ -74,10 +74,10 @@ describe("CartesianPoint 3d", () => {
             }
         `;
 
-        const equalsResult = await testHelper.executeGraphQL(query);
+        const queryResult = await testHelper.executeGraphQL(query);
 
-        expect(equalsResult.errors).toBeFalsy();
-        expect(equalsResult.data).toEqual({
+        expect(queryResult.errors).toBeFalsy();
+        expect(queryResult.data).toEqual({
             [Location.plural]: {
                 connection: {
                     edges: expect.toIncludeSameMembers([
@@ -89,7 +89,7 @@ describe("CartesianPoint 3d", () => {
                                     x: London.x,
                                     z: London.z,
                                     crs: "cartesian-3d",
-                                    // srid: 9157,
+                                    srid: 9157,
                                 },
                             },
                         },
@@ -101,7 +101,7 @@ describe("CartesianPoint 3d", () => {
                                     x: Rome.x,
                                     z: Rome.z,
                                     crs: "cartesian-3d",
-                                    // srid: 9157,
+                                    srid: 9157,
                                 },
                             },
                         },

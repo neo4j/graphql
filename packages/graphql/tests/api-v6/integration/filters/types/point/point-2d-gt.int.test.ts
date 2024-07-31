@@ -26,9 +26,9 @@ describe.skip("Point 2d GT", () => {
     const testHelper = new TestHelper({ v6Api: true });
 
     let Location: UniqueType;
-    const London = { longitude: -0.127758, latitude: 51.507351 };
-    const Rome = { longitude: 12.496365, latitude: 41.902782 };
-    const Paris = { longitude: 2.352222, latitude: 48.856613 };
+    const London = { longitude: -0.127758, latitude: 51.507351 } as const;
+    const Rome = { longitude: 12.496365, latitude: 41.902782 } as const;
+    const Paris = { longitude: 2.352222, latitude: 48.856613 } as const;
 
     beforeEach(async () => {
         Location = testHelper.createUniqueType("Location");
@@ -76,12 +76,12 @@ describe.skip("Point 2d GT", () => {
         `;
         // distance is in meters
         const distance = 1000 * 1000; // 1000 km
-        const equalsResult = await testHelper.executeGraphQL(query, {
+        const queryResult = await testHelper.executeGraphQL(query, {
             variableValues: { longitude: Paris.longitude, latitude: Paris.latitude, distance },
         });
 
-        expect(equalsResult.errors).toBeFalsy();
-        expect(equalsResult.data).toEqual({
+        expect(queryResult.errors).toBeFalsy();
+        expect(queryResult.data).toEqual({
             [Location.plural]: {
                 connection: {
                     edges: [
@@ -125,12 +125,12 @@ describe.skip("Point 2d GT", () => {
         `;
         // distance is in meters
         const distance = 1000 * 1000; // 1000 km
-        const equalsResult = await testHelper.executeGraphQL(query, {
+        const queryResult = await testHelper.executeGraphQL(query, {
             variableValues: { longitude: Paris.longitude, latitude: Paris.latitude, distance },
         });
 
-        expect(equalsResult.errors).toBeFalsy();
-        expect(equalsResult.data).toEqual({
+        expect(queryResult.errors).toBeFalsy();
+        expect(queryResult.data).toEqual({
             [Location.plural]: {
                 connection: {
                     edges: [

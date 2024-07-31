@@ -20,12 +20,13 @@
 import type { UniqueType } from "../../../../../utils/graphql-types";
 import { TestHelper } from "../../../../../utils/tests-helper";
 
-describe("CartesianPoint 2d", () => {
+describe("Create Nodes with CartesianPoint 2d", () => {
     const testHelper = new TestHelper({ v6Api: true });
 
     let Location: UniqueType;
-    const London = { x: -14221.955504767046, y: 6711533.711877272 };
-    const Rome = { x: 1391088.9885668862, y: 5146427.7652232265 };
+
+    const London = { x: -14221.955504767046, y: 6711533.711877272 } as const;
+    const Rome = { x: 1391088.9885668862, y: 5146427.7652232265 } as const;
 
     beforeEach(async () => {
         Location = testHelper.createUniqueType("Location");
@@ -36,76 +37,61 @@ describe("CartesianPoint 2d", () => {
                 value: CartesianPoint!
             }
         `;
-        await testHelper.executeCypher(
-            `
-                    CREATE (:${Location} { id: "1", value: point($London)})
-                    CREATE (:${Location} { id: "2", value: point($Rome)})
-                `,
-            { London, Rome }
-        );
+
         await testHelper.initNeo4jGraphQL({ typeDefs });
     });
 
     afterEach(async () => {
         await testHelper.close();
     });
-    // srid commented as  results of https://github.com/neo4j/graphql/issues/5223
-    test("wgs-84-2d point", async () => {
-        const query = /* GraphQL */ `
-            query {
-                ${Location.plural} {
-                    connection {
-                        edges {
-                            node {
-                                id
-                                value {
-                                    y
-                                    x
-                                    z
-                                    crs
-                                   # srid
-                                }
-                            }
+
+    test("should create nodes with wgs-84-2d point fields", async () => {
+        const mutation = /* GraphQL */ `
+        mutation {
+            ${Location.operations.create}(input: [
+                    { node: { id: "1", value: { x: ${London.x}, y: ${London.y} } }  }
+                    { node: { id: "2", value: { x: ${Rome.x}, y: ${Rome.y} } } }
+                ]) 
+                {
+                    ${Location.plural} {
+                        id
+                        value {
+                            x
+                            y
+                            crs
+                            srid
                         }
                     }
-                   
                 }
-            }
-        `;
+               
+            
+        }
+    `;
 
-        const equalsResult = await testHelper.executeGraphQL(query);
-
-        expect(equalsResult.errors).toBeFalsy();
-        expect(equalsResult.data).toEqual({
-            [Location.plural]: {
-                connection: {
-                    edges: expect.toIncludeSameMembers([
-                        {
-                            node: {
-                                id: "1",
-                                value: {
-                                    y: London.y,
-                                    x: London.x,
-                                    z: null,
-                                    crs: "cartesian",
-                                    // srid: 7203,
-                                },
-                            },
+        const mutationResult = await testHelper.executeGraphQL(mutation);
+        expect(mutationResult.errors).toBeFalsy();
+        expect(mutationResult.data).toEqual({
+            [Location.operations.create]: {
+                [Location.plural]: expect.toIncludeSameMembers([
+                    {
+                        id: "1",
+                        value: {
+                            y: London.y,
+                            x: London.x,
+                            crs: "cartesian",
+                            srid: 7203,
                         },
-                        {
-                            node: {
-                                id: "2",
-                                value: {
-                                    y: Rome.y,
-                                    x: Rome.x,
-                                    z: null,
-                                    crs: "cartesian",
-                                    //srid: 7203,
-                                },
-                            },
+                    },
+                    {
+                        id: "2",
+                        value: {
+                            y: Rome.y,
+                            x: Rome.x,
+                            crs: "cartesian",
+                            srid: 7203,
                         },
-                    ]),
-                },
+                    },
+                ]),
             },
         });
     });

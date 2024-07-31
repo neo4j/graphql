@@ -26,9 +26,9 @@ describe.skip("Point 3d GT", () => {
     const testHelper = new TestHelper({ v6Api: true });
 
     let Location: UniqueType;
-    const London = { longitude: -0.127758, latitude: 51.507351, height: 24 };
-    const Rome = { longitude: 12.496365, latitude: 41.902782, height: 35 };
-    const Paris = { longitude: 2.352222, latitude: 48.856613, height: 21 };
+    const London = { longitude: -0.127758, latitude: 51.507351, height: 24 } as const;
+    const Rome = { longitude: 12.496365, latitude: 41.902782, height: 35 } as const;
+    const Paris = { longitude: 2.352222, latitude: 48.856613, height: 21 } as const;
     beforeEach(async () => {
         Location = testHelper.createUniqueType("Location");
 
@@ -75,10 +75,10 @@ describe.skip("Point 3d GT", () => {
                 }
             }
         `;
-        const equalsResult = await testHelper.executeGraphQL(query);
+        const queryResult = await testHelper.executeGraphQL(query);
 
-        expect(equalsResult.errors).toBeFalsy();
-        expect(equalsResult.data).toEqual({
+        expect(queryResult.errors).toBeFalsy();
+        expect(queryResult.data).toEqual({
             [Location.plural]: {
                 connection: {
                     edges: [
@@ -122,10 +122,10 @@ describe.skip("Point 3d GT", () => {
                 }
             }
         `;
-        const equalsResult = await testHelper.executeGraphQL(query);
+        const queryResult = await testHelper.executeGraphQL(query);
 
-        expect(equalsResult.errors).toBeFalsy();
-        expect(equalsResult.data).toEqual({
+        expect(queryResult.errors).toBeFalsy();
+        expect(queryResult.data).toEqual({
             [Location.plural]: {
                 connection: {
                     edges: [

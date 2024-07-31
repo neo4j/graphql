@@ -25,7 +25,9 @@ import {
     GraphQLBuiltInScalarType,
     ListType,
     Neo4jGraphQLNumberType,
+    Neo4jGraphQLSpatialType,
     Neo4jGraphQLTemporalType,
+    Neo4jSpatialType,
     Neo4jTemporalType,
     ScalarType,
 } from "../../../../schema-model/attribute/AttributeType";
@@ -102,6 +104,9 @@ export class TopLevelCreateSchemaTypes {
         if (type instanceof Neo4jTemporalType) {
             return this.createTemporalFieldInput(type);
         }
+        if (type instanceof Neo4jSpatialType) {
+            return this.createSpatialFieldInput(type);
+        }
     }
 
     private createBuiltInFieldInput(type: ScalarType): ScalarTypeComposer | NonNullComposer<ScalarTypeComposer> {
@@ -168,6 +173,27 @@ export class TopLevelCreateSchemaTypes {
             }
             case Neo4jGraphQLTemporalType.Duration: {
                 builtInType = this.schemaBuilder.types.duration;
+                break;
+            }
+            default: {
+                throw new Error(`Unsupported type: ${type.name}`);
+            }
+        }
+        if (type.isRequired) {
+            return builtInType.NonNull;
+        }
+        return builtInType;
+    }
+
+    private createSpatialFieldInput(type: Neo4jSpatialType): InputTypeComposer | NonNullComposer<InputTypeComposer> {
+        let builtInType: InputTypeComposer;
+        switch (type.name) {
+            case Neo4jGraphQLSpatialType.CartesianPoint: {
+                builtInType = this.schemaBuilder.types.cartesianPointInput;
+                break;
+            }
+            case Neo4jGraphQLSpatialType.Point: {
+                builtInType = this.schemaBuilder.types.pointInput;
                 break;
             }
             default: {

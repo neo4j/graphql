@@ -71,6 +71,13 @@ describe("Spatial Types", () => {
               z: Float
             }
 
+            \\"\\"\\"Input type for a cartesian point\\"\\"\\"
+            input CartesianPointInput {
+              x: Float!
+              y: Float!
+              z: Float
+            }
+
             type Mutation {
               createNodeTypes(input: [NodeTypeCreateInput!]!): NodeTypeCreateResponse
               createRelatedNodes(input: [RelatedNodeCreateInput!]!): RelatedNodeCreateResponse
@@ -99,7 +106,10 @@ describe("Spatial Types", () => {
             }
 
             input NodeTypeCreateNode {
-              _emptyInput: Boolean
+              cartesianPoint: CartesianPointInput!
+              cartesianPointNullable: CartesianPointInput
+              point: PointInput!
+              pointNullable: PointInput
             }
 
             type NodeTypeCreateResponse {
@@ -195,6 +205,13 @@ describe("Spatial Types", () => {
               srid: Int!
             }
 
+            \\"\\"\\"Input type for a point\\"\\"\\"
+            input PointInput {
+              height: Float
+              latitude: Float!
+              longitude: Float!
+            }
+
             type Query {
               nodeTypes(where: NodeTypeOperationWhere): NodeTypeOperation
               relatedNodes(where: RelatedNodeOperationWhere): RelatedNodeOperation
@@ -222,7 +239,10 @@ describe("Spatial Types", () => {
             }
 
             input RelatedNodeCreateNode {
-              _emptyInput: Boolean
+              cartesianPoint: CartesianPointInput!
+              cartesianPointNullable: CartesianPointInput
+              point: PointInput!
+              pointNullable: PointInput
             }
 
             type RelatedNodeCreateResponse {

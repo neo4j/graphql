@@ -24,8 +24,8 @@ describe("Point 2d", () => {
     const testHelper = new TestHelper({ v6Api: true });
 
     let Location: UniqueType;
-    const London = { longitude: -0.127758, latitude: 51.507351 };
-    const Rome = { longitude: 12.496365, latitude: 41.902782 };
+    const London = { longitude: -0.127758, latitude: 51.507351 } as const;
+    const Rome = { longitude: 12.496365, latitude: 41.902782 } as const;
 
     beforeEach(async () => {
         Location = testHelper.createUniqueType("Location");
@@ -49,7 +49,7 @@ describe("Point 2d", () => {
     afterEach(async () => {
         await testHelper.close();
     });
-    // srid commented as  results of https://github.com/neo4j/graphql/issues/5223
+
     test("wgs-84-2d point", async () => {
         const query = /* GraphQL */ `
             query {
@@ -63,7 +63,7 @@ describe("Point 2d", () => {
                                     longitude
                                     height
                                     crs
-                                    # srid
+                                    srid
                                 }
                             }
                         }
@@ -73,10 +73,10 @@ describe("Point 2d", () => {
             }
         `;
 
-        const equalsResult = await testHelper.executeGraphQL(query);
+        const queryResult = await testHelper.executeGraphQL(query);
 
-        expect(equalsResult.errors).toBeFalsy();
-        expect(equalsResult.data).toEqual({
+        expect(queryResult.errors).toBeFalsy();
+        expect(queryResult.data).toEqual({
             [Location.plural]: {
                 connection: {
                     edges: expect.toIncludeSameMembers([
@@ -88,7 +88,7 @@ describe("Point 2d", () => {
                                     longitude: London.longitude,
                                     height: null,
                                     crs: "wgs-84",
-                                    // srid: 4326,
+                                    srid: 4326,
                                 },
                             },
                         },
@@ -100,7 +100,7 @@ describe("Point 2d", () => {
                                     longitude: Rome.longitude,
                                     height: null,
                                     crs: "wgs-84",
-                                    //srid: 4326,
+                                    srid: 4326,
                                 },
                             },
                         },

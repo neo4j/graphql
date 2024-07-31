@@ -51,10 +51,10 @@ describe("Create Nodes with Date fields", () => {
                         { node: { date: "${neoDate1.toString()}" } }
                         { node: { date: "${neoDate2.toString()}" } }
                     ]) {
-                    ${Movie.plural} {
-                        date
+                        ${Movie.plural} {
+                            date
+                        }
                     }
-                }
             }
         `;
 
