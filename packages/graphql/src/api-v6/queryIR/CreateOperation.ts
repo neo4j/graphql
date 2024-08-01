@@ -25,38 +25,44 @@ import type { InputField } from "../../translate/queryAST/ast/input-fields/Input
 import type { OperationTranspileResult } from "../../translate/queryAST/ast/operations/operations";
 import { MutationOperation } from "../../translate/queryAST/ast/operations/operations";
 import { getEntityLabels } from "../../translate/queryAST/utils/create-node-from-entity";
+import { filterTruthy } from "../../utils/utils";
 import type { V6ReadOperation } from "./ConnectionReadOperation";
 
 export class V6CreateOperation extends MutationOperation {
-    public readonly inputFields: Map<string, InputField>;
     public readonly target: ConcreteEntityAdapter;
-    public readonly projectionOperations: V6ReadOperation[] = [];
-    private readonly argumentToUnwind: Cypher.Param | Cypher.Property;
+    private readonly inputFields: InputField[];
+    private readonly createInputParam: Cypher.Param | Cypher.Property;
     private readonly unwindVariable: Cypher.Variable;
+    private readonly projection: V6ReadOperation | undefined;
 
     constructor({
         target,
-        argumentToUnwind,
+        createInputParam,
+        inputFields,
+        projection,
     }: {
         target: ConcreteEntityAdapter;
-        argumentToUnwind: Cypher.Param | Cypher.Property;
+        createInputParam: Cypher.Param | Cypher.Property;
+        inputFields: InputField[];
+        projection?: V6ReadOperation;
     }) {
         super();
         this.target = target;
-        this.inputFields = new Map();
-        this.argumentToUnwind = argumentToUnwind;
+        this.inputFields = inputFields;
+        this.createInputParam = createInputParam;
         this.unwindVariable = new Cypher.Variable();
+        this.projection = projection;
     }
 
     public getChildren(): QueryASTNode[] {
-        return [...this.inputFields.values(), ...this.projectionOperations];
+        return filterTruthy([...this.inputFields.values(), this.projection]);
     }
 
     /**
      * Get and set field methods are utilities to remove duplicate fields between separate inputs
      * TODO: This logic should be handled in the factory.
      */
-    public getField(key: string, attachedTo: "node" | "relationship") {
+    /*    public getField(key: string, attachedTo: "node" | "relationship") {
         return this.inputFields.get(`${attachedTo}_${key}`);
     }
 
@@ -64,28 +70,20 @@ export class V6CreateOperation extends MutationOperation {
         if (!this.inputFields.has(field.name)) {
             this.inputFields.set(`${attachedTo}_${field.name}`, field);
         }
-    }
-
-    public getUnwindVariable(): Cypher.Variable {
-        return this.unwindVariable;
-    }
-
-    public addProjectionOperations(operations: V6ReadOperation[]) {
-        this.projectionOperations.push(...operations);
-    }
+    } */
 
     public transpile(context: QueryASTContext): OperationTranspileResult {
         if (!context.hasTarget()) {
             throw new Error("No parent node found!");
         }
 
-        const unwindClause = new Cypher.Unwind([this.argumentToUnwind, this.unwindVariable]);
+        const unwindClause = new Cypher.Unwind([this.createInputParam, this.unwindVariable]);
 
         const createClause = new Cypher.Create(
             new Cypher.Pattern(context.target, { labels: getEntityLabels(this.target, context.neo4jGraphQLContext) })
         );
         const setSubqueries: Cypher.Clause[] = [];
-        for (const field of this.inputFields.values()) {
+        for (const field of this.inputFields) {
             if (field.attachedTo === "node") {
                 createClause.set(...field.getSetParams(context, this.unwindVariable));
                 setSubqueries.push(...field.getSubqueries(context));
@@ -109,8 +107,9 @@ export class V6CreateOperation extends MutationOperation {
     }
 
     private getProjectionClause(context: QueryASTContext): Cypher.Clause[] {
-        return this.projectionOperations.map((operationField) => {
-            return Cypher.concat(...operationField.transpile(context).clauses);
-        });
+        if (!this.projection) {
+            return [];
+        }
+        return this.projection.transpile(context).clauses;
     }
 }

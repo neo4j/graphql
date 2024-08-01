@@ -42,6 +42,7 @@ import { V6ReadOperation } from "../queryIR/ConnectionReadOperation";
 import { FilterFactory } from "./FilterFactory";
 
 import { WithWildCardsSelection } from "../../translate/queryAST/ast/selection/WithWildCardsSelection";
+import { QueryParseError } from "../errors/QueryParseError";
 import type { GraphQLTreePoint } from "./resolve-tree-parser/graphql-tree/attributes";
 import type {
     GraphQLTree,
@@ -70,7 +71,7 @@ export class ReadOperationFactory {
         return new QueryAST(operation);
     }
 
-    public generateMutationOperation({
+    public generateMutationProjection({
         graphQLTreeNode,
         entity,
     }: {
@@ -385,5 +386,3 @@ export class ReadOperationFactory {
         });
     }
 }
-
-export class QueryParseError extends Error {}
