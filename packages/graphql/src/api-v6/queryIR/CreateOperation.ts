@@ -58,20 +58,6 @@ export class V6CreateOperation extends MutationOperation {
         return filterTruthy([...this.inputFields.values(), this.projection]);
     }
 
-    /**
-     * Get and set field methods are utilities to remove duplicate fields between separate inputs
-     * TODO: This logic should be handled in the factory.
-     */
-    /*    public getField(key: string, attachedTo: "node" | "relationship") {
-        return this.inputFields.get(`${attachedTo}_${key}`);
-    }
-
-    public addField(field: InputField, attachedTo: "node" | "relationship") {
-        if (!this.inputFields.has(field.name)) {
-            this.inputFields.set(`${attachedTo}_${field.name}`, field);
-        }
-    } */
-
     public transpile(context: QueryASTContext): OperationTranspileResult {
         if (!context.hasTarget()) {
             throw new Error("No parent node found!");

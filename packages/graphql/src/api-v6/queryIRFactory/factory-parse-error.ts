@@ -16,5 +16,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-export class QueryParseError extends Error {}
+export class FactoryParseError extends Error {}

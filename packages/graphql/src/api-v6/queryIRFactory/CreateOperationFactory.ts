@@ -24,10 +24,10 @@ import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
 import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { QueryAST } from "../../translate/queryAST/ast/QueryAST";
 import { PropertyInputField } from "../../translate/queryAST/ast/input-fields/PropertyInputField";
-import { QueryParseError } from "../errors/QueryParseError";
 import type { V6ReadOperation } from "../queryIR/ConnectionReadOperation";
 import { V6CreateOperation } from "../queryIR/CreateOperation";
 import { ReadOperationFactory } from "./ReadOperationFactory";
+import { FactoryParseError } from "./factory-parse-error";
 import type { GraphQLTreeCreate, GraphQLTreeCreateInput } from "./resolve-tree-parser/graphql-tree/graphql-tree";
 
 export class CreateOperationFactory {
@@ -120,7 +120,7 @@ export class CreateOperationFactory {
 function getAttribute(entity: ConcreteEntityAdapter, key: string): AttributeAdapter {
     const attribute = entity.attributes.get(key);
     if (!attribute) {
-        throw new QueryParseError(`Transpile Error: Input field ${key} not found in entity ${entity.name}`);
+        throw new FactoryParseError(`Transpile Error: Input field ${key} not found in entity ${entity.name}`);
     }
     return attribute;
 }

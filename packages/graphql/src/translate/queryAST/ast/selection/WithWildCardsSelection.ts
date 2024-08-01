@@ -33,11 +33,6 @@ export class WithWildCardsSelection extends EntitySelection {
         return {
             selection: new Cypher.With("*"),
             nestedContext: context,
-
-            /* new QueryASTContext({
-                target: new Cypher.Node(), // This is a dummy node, it will be replaced by the actual node in the next step
-                neo4jGraphQLContext: context.neo4jGraphQLContext,
-            }) */
         };
     }
 }
