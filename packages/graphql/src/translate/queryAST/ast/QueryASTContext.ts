@@ -132,7 +132,7 @@ export class QueryASTContext<T extends Cypher.Node | undefined = Cypher.Node | u
             returnVariable,
         });
     }
-
+    
     public setReturn(variable: Cypher.Variable): QueryASTContext<T> {
         return new QueryASTContext({
             source: this.source,

@@ -19,30 +19,26 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import { createRelationshipValidationClauses } from "../../translate/create-relationship-validation-clauses";
-import { QueryASTContext } from "../../translate/queryAST/ast/QueryASTContext";
+import type { QueryASTContext } from "../../translate/queryAST/ast/QueryASTContext";
 import type { QueryASTNode } from "../../translate/queryAST/ast/QueryASTNode";
 import type { InputField } from "../../translate/queryAST/ast/input-fields/InputField";
 import type { OperationTranspileResult } from "../../translate/queryAST/ast/operations/operations";
 import { MutationOperation } from "../../translate/queryAST/ast/operations/operations";
 import { getEntityLabels } from "../../translate/queryAST/utils/create-node-from-entity";
-import { assertIsConcreteEntity } from "../../translate/queryAST/utils/is-concrete-entity";
 import type { V6ReadOperation } from "./ConnectionReadOperation";
 
 export class V6CreateOperation extends MutationOperation {
     public readonly inputFields: Map<string, InputField>;
-    public readonly target: ConcreteEntityAdapter | RelationshipAdapter;
+    public readonly target: ConcreteEntityAdapter;
     public readonly projectionOperations: V6ReadOperation[] = [];
     private readonly argumentToUnwind: Cypher.Param | Cypher.Property;
     private readonly unwindVariable: Cypher.Variable;
-    private isNested: boolean;
 
     constructor({
         target,
         argumentToUnwind,
     }: {
-        target: ConcreteEntityAdapter | RelationshipAdapter;
+        target: ConcreteEntityAdapter;
         argumentToUnwind: Cypher.Param | Cypher.Property;
     }) {
         super();
@@ -50,7 +46,6 @@ export class V6CreateOperation extends MutationOperation {
         this.inputFields = new Map();
         this.argumentToUnwind = argumentToUnwind;
         this.unwindVariable = new Cypher.Variable();
-        this.isNested = target instanceof RelationshipAdapter;
     }
 
     public getChildren(): QueryASTNode[] {
@@ -80,116 +75,40 @@ export class V6CreateOperation extends MutationOperation {
     }
 
     public transpile(context: QueryASTContext): OperationTranspileResult {
-        const nestedContext = this.getNestedContext(context);
-        nestedContext.env.topLevelOperationName = "CREATE";
-
-        if (!nestedContext.hasTarget()) {
+        if (!context.hasTarget()) {
             throw new Error("No parent node found!");
         }
-        const target = this.getTarget();
 
         const unwindClause = new Cypher.Unwind([this.argumentToUnwind, this.unwindVariable]);
 
         const createClause = new Cypher.Create(
-            new Cypher.Pattern(nestedContext.target, { labels: getEntityLabels(target, context.neo4jGraphQLContext) })
+            new Cypher.Pattern(context.target, { labels: getEntityLabels(this.target, context.neo4jGraphQLContext) })
         );
         const setSubqueries: Cypher.Clause[] = [];
-        const mergeClause: Cypher.Merge | undefined = this.getMergeClause(nestedContext);
         for (const field of this.inputFields.values()) {
-            if (field.attachedTo === "relationship" && mergeClause) {
-                mergeClause.set(...field.getSetParams(nestedContext, this.unwindVariable));
-            } else if (field.attachedTo === "node") {
-                createClause.set(...field.getSetParams(nestedContext, this.unwindVariable));
-                setSubqueries.push(...field.getSubqueries(nestedContext));
+            if (field.attachedTo === "node") {
+                createClause.set(...field.getSetParams(context, this.unwindVariable));
+                setSubqueries.push(...field.getSubqueries(context));
             }
         }
 
         const nestedSubqueries = setSubqueries.flatMap((clause) => [
-            new Cypher.With(nestedContext.target, this.unwindVariable),
-            new Cypher.Call(clause).importWith(nestedContext.target, this.unwindVariable),
+            new Cypher.With(context.target, this.unwindVariable),
+            new Cypher.Call(clause).importWith(context.target, this.unwindVariable),
         ]);
-        const cardinalityClauses = createRelationshipValidationClauses({
-            entity: target,
-            context: nestedContext.neo4jGraphQLContext,
-            varName: nestedContext.target,
-        });
-        const unwindCreateClauses = Cypher.concat(
-            createClause,
-            mergeClause,
-            ...nestedSubqueries,
-            ...(cardinalityClauses.length ? [new Cypher.With(nestedContext.target), ...cardinalityClauses] : [])
-        );
 
-        let subQueryClause: Cypher.Clause;
-        if (this.isNested) {
-            subQueryClause = Cypher.concat(
-                unwindCreateClauses,
-                new Cypher.Return([Cypher.collect(Cypher.Null), new Cypher.Variable()])
-            );
-        } else {
-            subQueryClause = new Cypher.Call(
-                Cypher.concat(unwindCreateClauses, new Cypher.Return(nestedContext.target))
-            ).importWith(this.unwindVariable);
-        }
-        const projectionContext = new QueryASTContext({
-            ...nestedContext,
-            target: nestedContext.target,
-            returnVariable: new Cypher.NamedVariable("data"),
-            shouldCollect: true,
-        });
+        const unwindCreateClauses = Cypher.concat(createClause, ...nestedSubqueries);
+
+        const subQueryClause: Cypher.Clause = new Cypher.Call(
+            Cypher.concat(unwindCreateClauses, new Cypher.Return(context.target))
+        ).importWith(this.unwindVariable);
+
+        const projectionContext = context.setReturn(new Cypher.NamedVariable("data"));
         const clauses = Cypher.concat(unwindClause, subQueryClause, ...this.getProjectionClause(projectionContext));
-        return { projectionExpr: nestedContext.returnVariable, clauses: [clauses] };
-    }
-
-    private getMergeClause(context: QueryASTContext): Cypher.Merge | undefined {
-        if (this.isNested) {
-            if (!context.source || !context.relationship) {
-                throw new Error("Transpile error: No source or relationship found!");
-            }
-            if (!(this.target instanceof RelationshipAdapter)) {
-                throw new Error("Transpile error: Invalid target");
-            }
-
-            return new Cypher.Merge(
-                new Cypher.Pattern(context.source)
-                    .related(context.relationship, {
-                        type: this.target.type,
-                        direction: this.target.cypherDirectionFromRelDirection(),
-                    })
-                    .to(context.target)
-            );
-        }
-    }
-
-    private getTarget(): ConcreteEntityAdapter {
-        if (this.target instanceof RelationshipAdapter) {
-            const targetAdapter = this.target.target;
-            assertIsConcreteEntity(targetAdapter);
-            return targetAdapter;
-        }
-        return this.target;
-    }
-
-    private getNestedContext(context: QueryASTContext): QueryASTContext {
-        if (this.target instanceof RelationshipAdapter) {
-            const target = new Cypher.Node();
-            const relationship = new Cypher.Relationship();
-            const nestedContext = context.push({
-                target,
-                relationship,
-            });
-
-            return nestedContext;
-        }
-
-        return context;
+        return { projectionExpr: context.returnVariable, clauses: [clauses] };
     }
 
     private getProjectionClause(context: QueryASTContext): Cypher.Clause[] {
-        if (this.projectionOperations.length === 0 && !this.isNested) {
-            const emptyProjection = new Cypher.Literal("Query cannot conclude with CALL");
-            return [new Cypher.Return(emptyProjection)];
-        }
         return this.projectionOperations.map((operationField) => {
             return Cypher.concat(...operationField.transpile(context).clauses);
         });
