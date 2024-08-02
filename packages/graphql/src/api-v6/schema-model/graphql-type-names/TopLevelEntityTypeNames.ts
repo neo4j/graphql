@@ -76,7 +76,7 @@ export class TopLevelEntityTypeNames extends EntityTypeNames {
     public get createNode(): string {
         return `${upperFirst(this.entityName)}CreateNode`;
     }
-    // TODO: do we need to memoize the upperFirst/plural calls?
+
     public get createInput(): string {
         return `${upperFirst(this.entityName)}CreateInput`;
     }

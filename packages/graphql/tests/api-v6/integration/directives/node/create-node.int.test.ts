@@ -21,7 +21,7 @@ import { Integer } from "neo4j-driver";
 import type { UniqueType } from "../../../../utils/graphql-types";
 import { TestHelper } from "../../../../utils/tests-helper";
 
-describe("Top-Level Create with labels", () => {
+describe("@node with Top-Level Create", () => {
     const testHelper = new TestHelper({ v6Api: true });
 
     let Movie: UniqueType;
