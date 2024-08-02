@@ -71,7 +71,7 @@ export class TopLevelEntitySchemaTypes {
         this.schemaBuilder = schemaBuilder;
         this.entityTypeNames = entity.typeNames;
         this.schemaTypes = schemaTypes;
-        this.createSchemaTypes = new TopLevelCreateSchemaTypes({ schemaBuilder, entity, schemaTypes });
+        this.createSchemaTypes = new TopLevelCreateSchemaTypes({ schemaBuilder, entity });
     }
 
     public addTopLevelQueryField(

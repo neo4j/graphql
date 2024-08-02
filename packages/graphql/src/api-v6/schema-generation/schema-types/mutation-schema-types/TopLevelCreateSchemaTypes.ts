@@ -35,27 +35,16 @@ import type { ConcreteEntity } from "../../../../schema-model/entity/ConcreteEnt
 import { filterTruthy } from "../../../../utils/utils";
 import type { TopLevelEntityTypeNames } from "../../../schema-model/graphql-type-names/TopLevelEntityTypeNames";
 import type { SchemaBuilder } from "../../SchemaBuilder";
-import type { SchemaTypes } from "../SchemaTypes";
 
 export class TopLevelCreateSchemaTypes {
     private entityTypeNames: TopLevelEntityTypeNames;
-    private schemaTypes: SchemaTypes;
     private schemaBuilder: SchemaBuilder;
     private entity: ConcreteEntity;
 
-    constructor({
-        entity,
-        schemaBuilder,
-        schemaTypes,
-    }: {
-        entity: ConcreteEntity;
-        schemaBuilder: SchemaBuilder;
-        schemaTypes: SchemaTypes;
-    }) {
+    constructor({ entity, schemaBuilder }: { entity: ConcreteEntity; schemaBuilder: SchemaBuilder }) {
         this.entity = entity;
         this.entityTypeNames = entity.typeNames;
         this.schemaBuilder = schemaBuilder;
-        this.schemaTypes = schemaTypes;
     }
 
     public get createInput(): InputTypeComposer {
