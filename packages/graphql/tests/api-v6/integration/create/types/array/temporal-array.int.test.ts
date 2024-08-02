@@ -78,22 +78,22 @@ describe("Create Nodes with Temporal array fields", () => {
                 ${Movie.operations.create}(input: [
                     { 
                         node: {
-                            date: ["${neoDate1.toString()}"],
-                            dateTime: ["${neoDateTime1.toString()}"]
-                            localTime: ["${neoLocalTime1.toString()}"]
-                            localDateTime: ["${neoLocalDateTime1.toString()}"]
-                            time: ["${neoTime1.toString()}"],
-                            duration: ["${duration1.toString()}"]
+                            date: ["${neoDate1.toString()}", "${neoDate1.toString()}"],
+                            dateTime: ["${neoDateTime1.toString()}", "${neoDateTime1.toString()}"]
+                            localTime: ["${neoLocalTime1.toString()}", "${neoLocalTime1.toString()}"]
+                            localDateTime: ["${neoLocalDateTime1.toString()}", "${neoLocalDateTime1.toString()}"]
+                            time: ["${neoTime1.toString()}", "${neoTime1.toString()}"],
+                            duration: ["${duration1.toString()}", "${duration1.toString()}"]
                         }
                     }
                     { 
                         node: {
-                            date: ["${neoDate2.toString()}"],
-                            dateTime: ["${neoDateTime2.toString()}"]
-                            localTime: ["${neoLocalTime2.toString()}"]
-                            localDateTime: ["${neoLocalDateTime2.toString()}"]
-                            time: ["${neoTime2.toString()}"],
-                            duration: ["${duration2.toString()}"]
+                            date: ["${neoDate2.toString()}", "${neoDate2.toString()}"],
+                            dateTime: ["${neoDateTime2.toString()}", "${neoDateTime2.toString()}"]
+                            localTime: ["${neoLocalTime2.toString()}", "${neoLocalTime2.toString()}"]
+                            localDateTime: ["${neoLocalDateTime2.toString()}", "${neoLocalDateTime2.toString()}"]
+                            time: ["${neoTime2.toString()}", "${neoTime2.toString()}"],
+                            duration: ["${duration2.toString()}", "${duration2.toString()}"]
                         }
                     }
                     ]) {
@@ -115,20 +115,20 @@ describe("Create Nodes with Temporal array fields", () => {
             [Movie.operations.create]: {
                 [Movie.plural]: expect.toIncludeSameMembers([
                     {
-                        date: [neoDate1.toString()],
-                        dateTime: [neoDateTime1.toString()],
-                        localTime: [neoLocalTime1.toString()],
-                        localDateTime: [neoLocalDateTime1.toString()],
-                        time: [neoTime1.toString()],
-                        duration: [duration1.toString()],
+                        date: [neoDate1.toString(), neoDate1.toString()],
+                        dateTime: [neoDateTime1.toString(), neoDateTime1.toString()],
+                        localTime: [neoLocalTime1.toString(), neoLocalTime1.toString()],
+                        localDateTime: [neoLocalDateTime1.toString(), neoLocalDateTime1.toString()],
+                        time: [neoTime1.toString(), neoTime1.toString()],
+                        duration: [duration1.toString(), duration1.toString()],
                     },
                     {
-                        date: [neoDate2.toString()],
-                        dateTime: [neoDateTime2.toString()],
-                        localTime: [neoLocalTime2.toString()],
-                        localDateTime: [neoLocalDateTime2.toString()],
-                        time: [neoTime2.toString()],
-                        duration: [duration2.toString()],
+                        date: [neoDate2.toString(), neoDate2.toString()],
+                        dateTime: [neoDateTime2.toString(), neoDateTime2.toString()],
+                        localTime: [neoLocalTime2.toString(), neoLocalTime2.toString()],
+                        localDateTime: [neoLocalDateTime2.toString(), neoLocalDateTime2.toString()],
+                        time: [neoTime2.toString(), neoTime2.toString()],
+                        duration: [duration2.toString(), duration2.toString()],
                     },
                 ]),
             },

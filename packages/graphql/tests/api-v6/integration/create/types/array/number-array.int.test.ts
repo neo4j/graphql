@@ -48,16 +48,16 @@ describe("Create Nodes with Numeric array fields", () => {
                 ${Movie.operations.create}(input: [
                     { 
                         node: {
-                            year: [1999],
-                            rating: [4.0],
-                            viewings: ["4294967297"], 
+                            year: [1999, 2000],
+                            rating: [4.0, 5.0],
+                            viewings: ["4294967297", "5294967297"], 
                         }
                     }
                     { 
                         node: {
-                            year: [2001],
-                            rating: [4.2],
-                            viewings: ["194967297"], 
+                            year: [2001, 2002],
+                            rating: [4.2, 5.2],
+                            viewings: ["194967297", "194967292"], 
                         }
                     }
                     ]) {
@@ -76,14 +76,14 @@ describe("Create Nodes with Numeric array fields", () => {
             [Movie.operations.create]: {
                 [Movie.plural]: expect.toIncludeSameMembers([
                     {
-                        year: [1999],
-                        rating: [4.0],
-                        viewings: ["4294967297"],
+                        year: [1999, 2000],
+                        rating: [4.0, 5.0],
+                        viewings: ["4294967297", "5294967297"],
                     },
                     {
-                        year: [2001],
-                        rating: [4.2],
-                        viewings: ["194967297"],
+                        year: [2001, 2002],
+                        rating: [4.2, 5.2],
+                        viewings: ["194967297", "194967292"],
                     },
                 ]),
             },
