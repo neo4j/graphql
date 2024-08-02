@@ -20,19 +20,22 @@
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import type { Relationship } from "../../../schema-model/relationship/Relationship";
-import type {
-    GraphQLTree,
-    GraphQLTreeConnection,
-    GraphQLTreeConnectionTopLevel,
-    GraphQLTreeReadOperation,
-} from "./graphql-tree/graphql-tree";
 import {
     parseConnectionArgs,
     parseConnectionArgsTopLevel,
     parseOperationArgs,
     parseOperationArgsTopLevel,
-} from "./parse-args";
+} from "../argument-parser/parse-args";
+import { parseCreateOperationArgsTopLevel } from "../argument-parser/parse-create-args";
+import type {
+    GraphQLTree,
+    GraphQLTreeConnection,
+    GraphQLTreeConnectionTopLevel,
+    GraphQLTreeCreate,
+    GraphQLTreeReadOperation,
+} from "./graphql-tree/graphql-tree";
 import { parseEdges } from "./parse-edges";
+import { getNodeFields } from "./parse-node";
 import { findFieldByName } from "./utils/find-field-by-name";
 
 export function parseResolveInfoTree({
@@ -43,9 +46,9 @@ export function parseResolveInfoTree({
     entity: ConcreteEntity;
 }): GraphQLTree {
     const connectionResolveTree = findFieldByName(resolveTree, entity.typeNames.connectionOperation, "connection");
-
     const connection = connectionResolveTree ? parseTopLevelConnection(connectionResolveTree, entity) : undefined;
     const connectionOperationArgs = parseOperationArgsTopLevel(resolveTree.args);
+
     return {
         alias: resolveTree.alias,
         args: connectionOperationArgs,
@@ -53,6 +56,34 @@ export function parseResolveInfoTree({
         fields: {
             connection,
         },
+    };
+}
+
+export function parseResolveInfoTreeCreate({
+    resolveTree,
+    entity,
+}: {
+    resolveTree: ResolveTree;
+    entity: ConcreteEntity;
+}): GraphQLTreeCreate {
+    const entityTypes = entity.typeNames;
+    const createResponse = findFieldByName(resolveTree, entityTypes.createResponse, entityTypes.queryField);
+    const createArgs = parseCreateOperationArgsTopLevel(resolveTree.args);
+    if (!createResponse) {
+        return {
+            alias: resolveTree.alias,
+            name: resolveTree.name,
+            args: createArgs,
+            fields: {},
+        };
+    }
+    const fieldsResolveTree = createResponse.fieldsByTypeName[entityTypes.node] ?? {};
+    const fields = getNodeFields(fieldsResolveTree, entity);
+    return {
+        alias: resolveTree.alias,
+        name: resolveTree.name,
+        args: createArgs,
+        fields,
     };
 }
 
@@ -109,5 +140,3 @@ function parseTopLevelConnection(resolveTree: ResolveTree, entity: ConcreteEntit
         },
     };
 }
-
-export class ResolveTreeParserError extends Error {}

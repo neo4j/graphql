@@ -26,9 +26,9 @@ describe.skip("CartesianPoint 3d LT", () => {
     const testHelper = new TestHelper({ v6Api: true });
 
     let Location: UniqueType;
-    const London = { x: -14221.955504767046, y: 6711533.711877272, z: 0 };
-    const Rome = { x: 1391088.9885668862, y: 5146427.7652232265, z: 0 };
-    const Paris = { x: 261848.15527273554, y: 6250566.54904563, z: 0 };
+    const London = { x: -14221.955504767046, y: 6711533.711877272, z: 0 } as const;
+    const Rome = { x: 1391088.9885668862, y: 5146427.7652232265, z: 0 } as const;
+    const Paris = { x: 261848.15527273554, y: 6250566.54904563, z: 0 } as const;
 
     beforeEach(async () => {
         Location = testHelper.createUniqueType("Location");
@@ -76,10 +76,10 @@ describe.skip("CartesianPoint 3d LT", () => {
                 }
             }
         `;
-        const equalsResult = await testHelper.executeGraphQL(query);
+        const queryResult = await testHelper.executeGraphQL(query);
 
-        expect(equalsResult.errors).toBeFalsy();
-        expect(equalsResult.data).toEqual({
+        expect(queryResult.errors).toBeFalsy();
+        expect(queryResult.data).toEqual({
             [Location.plural]: {
                 connection: {
                     edges: [
@@ -123,10 +123,10 @@ describe.skip("CartesianPoint 3d LT", () => {
                 }
             }
         `;
-        const equalsResult = await testHelper.executeGraphQL(query);
+        const queryResult = await testHelper.executeGraphQL(query);
 
-        expect(equalsResult.errors).toBeFalsy();
-        expect(equalsResult.data).toEqual({
+        expect(queryResult.errors).toBeFalsy();
+        expect(queryResult.data).toEqual({
             [Location.plural]: {
                 connection: {
                     edges: [

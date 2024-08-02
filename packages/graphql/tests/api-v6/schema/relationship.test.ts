@@ -42,6 +42,7 @@ describe("Relationships", () => {
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
               query: Query
+              mutation: Mutation
             }
 
             type Actor {
@@ -56,6 +57,24 @@ describe("Relationships", () => {
 
             input ActorConnectionSort {
               node: ActorSort
+            }
+
+            type ActorCreateInfo {
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            input ActorCreateInput {
+              node: ActorCreateNode!
+            }
+
+            input ActorCreateNode {
+              name: String
+            }
+
+            type ActorCreateResponse {
+              actors: [Actor!]!
+              info: ActorCreateInfo
             }
 
             type ActorEdge {
@@ -206,6 +225,24 @@ describe("Relationships", () => {
               node: MovieSort
             }
 
+            type MovieCreateInfo {
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            input MovieCreateInput {
+              node: MovieCreateNode!
+            }
+
+            input MovieCreateNode {
+              title: String
+            }
+
+            type MovieCreateResponse {
+              info: MovieCreateInfo
+              movies: [Movie!]!
+            }
+
             type MovieEdge {
               cursor: String
               node: Movie
@@ -232,6 +269,11 @@ describe("Relationships", () => {
               OR: [MovieWhere!]
               actors: MovieActorsNestedOperationWhere
               title: StringWhere
+            }
+
+            type Mutation {
+              createActors(input: [ActorCreateInput!]!): ActorCreateResponse
+              createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
             }
 
             type PageInfo {
@@ -287,6 +329,7 @@ describe("Relationships", () => {
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
               query: Query
+              mutation: Mutation
             }
 
             type ActedIn {
@@ -316,6 +359,24 @@ describe("Relationships", () => {
 
             input ActorConnectionSort {
               node: ActorSort
+            }
+
+            type ActorCreateInfo {
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            input ActorCreateInput {
+              node: ActorCreateNode!
+            }
+
+            input ActorCreateNode {
+              name: String
+            }
+
+            type ActorCreateResponse {
+              actors: [Actor!]!
+              info: ActorCreateInfo
             }
 
             type ActorEdge {
@@ -484,6 +545,24 @@ describe("Relationships", () => {
               node: MovieSort
             }
 
+            type MovieCreateInfo {
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            input MovieCreateInput {
+              node: MovieCreateNode!
+            }
+
+            input MovieCreateNode {
+              title: String
+            }
+
+            type MovieCreateResponse {
+              info: MovieCreateInfo
+              movies: [Movie!]!
+            }
+
             type MovieEdge {
               cursor: String
               node: Movie
@@ -510,6 +589,11 @@ describe("Relationships", () => {
               OR: [MovieWhere!]
               actors: MovieActorsNestedOperationWhere
               title: StringWhere
+            }
+
+            type Mutation {
+              createActors(input: [ActorCreateInput!]!): ActorCreateResponse
+              createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
             }
 
             type PageInfo {

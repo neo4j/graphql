@@ -116,6 +116,7 @@ describe("Scalars", () => {
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
               query: Query
+              mutation: Mutation
             }
 
             \\"\\"\\"
@@ -219,6 +220,11 @@ describe("Scalars", () => {
               equals: [LocalTime]
             }
 
+            type Mutation {
+              createNodeTypes(input: [NodeTypeCreateInput!]!): NodeTypeCreateResponse
+              createRelatedNodes(input: [RelatedNodeCreateInput!]!): RelatedNodeCreateResponse
+            }
+
             type NodeType {
               bigIntList: [BigInt!]
               bigIntListNullable: [BigInt]
@@ -250,6 +256,47 @@ describe("Scalars", () => {
             type NodeTypeConnection {
               edges: [NodeTypeEdge]
               pageInfo: PageInfo
+            }
+
+            type NodeTypeCreateInfo {
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            input NodeTypeCreateInput {
+              node: NodeTypeCreateNode!
+            }
+
+            input NodeTypeCreateNode {
+              bigIntList: [BigInt!]
+              bigIntListNullable: [BigInt]
+              booleanList: [Boolean!]
+              booleanListNullable: [Boolean]
+              dateList: [Date!]
+              dateListNullable: [Date]
+              dateTimeList: [DateTime!]
+              dateTimeListNullable: [DateTime]
+              durationList: [Duration!]
+              durationListNullable: [Duration]
+              floatList: [Float!]
+              floatListNullable: [Float]
+              idList: [ID!]
+              idListNullable: [ID]
+              intList: [Int!]
+              intListNullable: [Int]
+              localDateTimeList: [LocalDateTime!]
+              localDateTimeListNullable: [LocalDateTime]
+              localTimeList: [LocalTime!]
+              localTimeListNullable: [LocalTime]
+              stringList: [String!]
+              stringListNullable: [String]
+              timeList: [Time!]
+              timeListNullable: [Time]
+            }
+
+            type NodeTypeCreateResponse {
+              info: NodeTypeCreateInfo
+              nodeTypes: [NodeType!]!
             }
 
             type NodeTypeEdge {
@@ -388,6 +435,47 @@ describe("Scalars", () => {
             type RelatedNodeConnection {
               edges: [RelatedNodeEdge]
               pageInfo: PageInfo
+            }
+
+            type RelatedNodeCreateInfo {
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            input RelatedNodeCreateInput {
+              node: RelatedNodeCreateNode!
+            }
+
+            input RelatedNodeCreateNode {
+              bigIntList: [BigInt!]
+              bigIntListNullable: [BigInt]
+              booleanList: [Boolean!]
+              booleanListNullable: [Boolean]
+              dateList: [Date!]
+              dateListNullable: [Date]
+              dateTimeList: [DateTime!]
+              dateTimeListNullable: [DateTime]
+              durationList: [Duration!]
+              durationListNullable: [Duration]
+              floatList: [Float!]
+              floatListNullable: [Float]
+              idList: [ID!]
+              idListNullable: [ID]
+              intList: [Int!]
+              intListNullable: [Int]
+              localDateTimeList: [LocalDateTime!]
+              localDateTimeListNullable: [LocalDateTime]
+              localTimeList: [LocalTime!]
+              localTimeListNullable: [LocalTime]
+              stringList: [String!]
+              stringListNullable: [String]
+              timeList: [Time!]
+              timeListNullable: [Time]
+            }
+
+            type RelatedNodeCreateResponse {
+              info: RelatedNodeCreateInfo
+              relatedNodes: [RelatedNode!]!
             }
 
             type RelatedNodeEdge {

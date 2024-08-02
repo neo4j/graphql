@@ -18,7 +18,7 @@
  */
 
 import type { GraphQLInputType } from "graphql";
-import { GraphQLBoolean, GraphQLID } from "graphql";
+import { GraphQLBoolean } from "graphql";
 import type {
     EnumTypeComposer,
     InputTypeComposer,
@@ -31,18 +31,7 @@ import { Memoize } from "typescript-memoize";
 import { CartesianPoint } from "../../../graphql/objects/CartesianPoint";
 import { Point } from "../../../graphql/objects/Point";
 import * as Scalars from "../../../graphql/scalars";
-import {
-    GraphQLBigInt,
-    GraphQLDate,
-    GraphQLDateTime,
-    GraphQLDuration,
-    GraphQLLocalDateTime,
-    GraphQLLocalTime,
-    GraphQLTime,
-} from "../../../graphql/scalars";
 import type { SchemaBuilder } from "../SchemaBuilder";
-import { toGraphQLList } from "../utils/to-graphql-list";
-import { toGraphQLNonNull } from "../utils/to-graphql-non-null";
 
 export class StaticSchemaTypes {
     private schemaBuilder: SchemaBuilder;
@@ -148,8 +137,8 @@ class StaticFilterTypes {
             return {
                 fields: {
                     ...this.createBooleanOperators(itc),
-                    in: toGraphQLList(toGraphQLNonNull(GraphQLDate)),
-                    ...this.createNumericOperators(GraphQLDate),
+                    in: this.schemaBuilder.types.date.NonNull.List,
+                    ...this.createNumericOperators(this.schemaBuilder.types.date),
                 },
             };
         });
@@ -159,7 +148,7 @@ class StaticFilterTypes {
             return this.schemaBuilder.getOrCreateInputType("DateListWhereNullable", () => {
                 return {
                     fields: {
-                        equals: toGraphQLList(GraphQLDate),
+                        equals: this.schemaBuilder.types.date.List,
                     },
                 };
             });
@@ -168,7 +157,7 @@ class StaticFilterTypes {
         return this.schemaBuilder.getOrCreateInputType("DateListWhere", () => {
             return {
                 fields: {
-                    equals: toGraphQLList(toGraphQLNonNull(GraphQLDate)),
+                    equals: this.schemaBuilder.types.date.NonNull.List,
                 },
             };
         });
@@ -179,8 +168,8 @@ class StaticFilterTypes {
             return {
                 fields: {
                     ...this.createBooleanOperators(itc),
-                    in: toGraphQLList(toGraphQLNonNull(GraphQLDateTime)),
-                    ...this.createNumericOperators(GraphQLDateTime),
+                    in: this.schemaBuilder.types.dateTime.NonNull.List,
+                    ...this.createNumericOperators(this.schemaBuilder.types.dateTime),
                 },
             };
         });
@@ -191,7 +180,7 @@ class StaticFilterTypes {
             return this.schemaBuilder.getOrCreateInputType("DateTimeListWhereNullable", () => {
                 return {
                     fields: {
-                        equals: toGraphQLList(GraphQLDateTime),
+                        equals: this.schemaBuilder.types.dateTime.List,
                     },
                 };
             });
@@ -200,7 +189,7 @@ class StaticFilterTypes {
         return this.schemaBuilder.getOrCreateInputType("DateTimeListWhere", () => {
             return {
                 fields: {
-                    equals: toGraphQLList(toGraphQLNonNull(GraphQLDateTime)),
+                    equals: this.schemaBuilder.types.dateTime.NonNull.List,
                 },
             };
         });
@@ -211,8 +200,8 @@ class StaticFilterTypes {
             return {
                 fields: {
                     ...this.createBooleanOperators(itc),
-                    ...this.createNumericOperators(GraphQLLocalDateTime),
-                    in: toGraphQLList(toGraphQLNonNull(GraphQLLocalDateTime)),
+                    ...this.createNumericOperators(this.schemaBuilder.types.localDateTime),
+                    in: this.schemaBuilder.types.localDateTime.NonNull.List,
                 },
             };
         });
@@ -223,7 +212,7 @@ class StaticFilterTypes {
             return this.schemaBuilder.getOrCreateInputType("LocalDateTimeListWhereNullable", () => {
                 return {
                     fields: {
-                        equals: toGraphQLList(GraphQLLocalDateTime),
+                        equals: this.schemaBuilder.types.localDateTime.List,
                     },
                 };
             });
@@ -232,7 +221,7 @@ class StaticFilterTypes {
         return this.schemaBuilder.getOrCreateInputType("LocalDateTimeListWhere", () => {
             return {
                 fields: {
-                    equals: toGraphQLList(toGraphQLNonNull(GraphQLLocalDateTime)),
+                    equals: this.schemaBuilder.types.localDateTime.NonNull.List,
                 },
             };
         });
@@ -243,8 +232,8 @@ class StaticFilterTypes {
             return {
                 fields: {
                     ...this.createBooleanOperators(itc),
-                    ...this.createNumericOperators(GraphQLDuration),
-                    in: toGraphQLList(toGraphQLNonNull(GraphQLDuration)),
+                    ...this.createNumericOperators(this.schemaBuilder.types.duration),
+                    in: this.schemaBuilder.types.duration.NonNull.List,
                 },
             };
         });
@@ -255,7 +244,7 @@ class StaticFilterTypes {
             return this.schemaBuilder.getOrCreateInputType("DurationListWhereNullable", () => {
                 return {
                     fields: {
-                        equals: toGraphQLList(GraphQLDuration),
+                        equals: this.schemaBuilder.types.duration.List,
                     },
                 };
             });
@@ -264,7 +253,7 @@ class StaticFilterTypes {
         return this.schemaBuilder.getOrCreateInputType("DurationListWhere", () => {
             return {
                 fields: {
-                    equals: toGraphQLList(toGraphQLNonNull(GraphQLDuration)),
+                    equals: this.schemaBuilder.types.duration.NonNull.List,
                 },
             };
         });
@@ -275,8 +264,8 @@ class StaticFilterTypes {
             return {
                 fields: {
                     ...this.createBooleanOperators(itc),
-                    ...this.createNumericOperators(GraphQLTime),
-                    in: toGraphQLList(toGraphQLNonNull(GraphQLTime)),
+                    ...this.createNumericOperators(this.schemaBuilder.types.time),
+                    in: this.schemaBuilder.types.time.NonNull.List,
                 },
             };
         });
@@ -287,7 +276,7 @@ class StaticFilterTypes {
             return this.schemaBuilder.getOrCreateInputType("TimeListWhereNullable", () => {
                 return {
                     fields: {
-                        equals: toGraphQLList(GraphQLTime),
+                        equals: this.schemaBuilder.types.time.List,
                     },
                 };
             });
@@ -296,7 +285,7 @@ class StaticFilterTypes {
         return this.schemaBuilder.getOrCreateInputType("TimeListWhere", () => {
             return {
                 fields: {
-                    equals: toGraphQLList(toGraphQLNonNull(GraphQLTime)),
+                    equals: this.schemaBuilder.types.time.NonNull.List,
                 },
             };
         });
@@ -307,8 +296,8 @@ class StaticFilterTypes {
             return {
                 fields: {
                     ...this.createBooleanOperators(itc),
-                    ...this.createNumericOperators(GraphQLLocalTime),
-                    in: toGraphQLList(toGraphQLNonNull(GraphQLLocalTime)),
+                    ...this.createNumericOperators(this.schemaBuilder.types.localTime),
+                    in: this.schemaBuilder.types.localTime.NonNull.List,
                 },
             };
         });
@@ -319,7 +308,7 @@ class StaticFilterTypes {
             return this.schemaBuilder.getOrCreateInputType("LocalTimeListWhereNullable", () => {
                 return {
                     fields: {
-                        equals: toGraphQLList(GraphQLLocalTime),
+                        equals: this.schemaBuilder.types.localTime.List,
                     },
                 };
             });
@@ -328,7 +317,7 @@ class StaticFilterTypes {
         return this.schemaBuilder.getOrCreateInputType("LocalTimeListWhere", () => {
             return {
                 fields: {
-                    equals: toGraphQLList(toGraphQLNonNull(GraphQLLocalTime)),
+                    equals: this.schemaBuilder.types.localTime.NonNull.List,
                 },
             };
         });
@@ -352,7 +341,7 @@ class StaticFilterTypes {
             return this.schemaBuilder.getOrCreateInputType("IDListWhereNullable", () => {
                 return {
                     fields: {
-                        equals: toGraphQLList(GraphQLID),
+                        equals: this.schemaBuilder.types.id.List,
                     },
                 };
             });
@@ -361,7 +350,7 @@ class StaticFilterTypes {
         return this.schemaBuilder.getOrCreateInputType("IDListWhere", () => {
             return {
                 fields: {
-                    equals: toGraphQLList(toGraphQLNonNull(GraphQLID)),
+                    equals: this.schemaBuilder.types.id.NonNull.List,
                 },
             };
         });
@@ -415,7 +404,7 @@ class StaticFilterTypes {
             return this.schemaBuilder.getOrCreateInputType("BigIntListWhereNullable", () => {
                 return {
                     fields: {
-                        equals: toGraphQLList(GraphQLBigInt),
+                        equals: this.schemaBuilder.types.bigInt.List,
                     },
                 };
             });
@@ -424,7 +413,7 @@ class StaticFilterTypes {
         return this.schemaBuilder.getOrCreateInputType("BigIntListWhere", () => {
             return {
                 fields: {
-                    equals: toGraphQLList(toGraphQLNonNull(GraphQLBigInt)),
+                    equals: this.schemaBuilder.types.bigInt.NonNull.List,
                 },
             };
         });
@@ -435,8 +424,8 @@ class StaticFilterTypes {
             return {
                 fields: {
                     ...this.createBooleanOperators(itc),
-                    ...this.createNumericOperators(GraphQLBigInt),
-                    in: toGraphQLList(toGraphQLNonNull(GraphQLBigInt)),
+                    ...this.createNumericOperators(this.schemaBuilder.types.bigInt),
+                    in: this.schemaBuilder.types.bigInt.NonNull.List,
                 },
             };
         });

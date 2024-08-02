@@ -25,13 +25,15 @@ export enum GraphQLBuiltInScalarType {
     ID = "ID",
 }
 
+export enum Neo4jGraphQLNumberType {
+    BigInt = "BigInt",
+}
+
+export type Neo4jGraphQLScalarType = GraphQLBuiltInScalarType | Neo4jGraphQLNumberType;
+
 export enum Neo4jGraphQLSpatialType {
     CartesianPoint = "CartesianPoint",
     Point = "Point",
-}
-
-export enum Neo4jGraphQLNumberType {
-    BigInt = "BigInt",
 }
 
 export enum Neo4jGraphQLTemporalType {
@@ -43,13 +45,20 @@ export enum Neo4jGraphQLTemporalType {
     Duration = "Duration",
 }
 
-export type Neo4jGraphQLScalarType = Neo4jGraphQLTemporalType | Neo4jGraphQLNumberType;
-
 // The ScalarType class is not used to represent user defined scalar types, see UserScalarType for that.
 export class ScalarType {
-    public readonly name: GraphQLBuiltInScalarType | Neo4jGraphQLScalarType;
+    public readonly name: Neo4jGraphQLScalarType;
     public readonly isRequired: boolean;
-    constructor(name: GraphQLBuiltInScalarType | Neo4jGraphQLScalarType, isRequired: boolean) {
+    constructor(name: Neo4jGraphQLScalarType, isRequired: boolean) {
+        this.name = name;
+        this.isRequired = isRequired;
+    }
+}
+
+export class Neo4jTemporalType {
+    public readonly name: Neo4jGraphQLTemporalType;
+    public readonly isRequired: boolean;
+    constructor(name: Neo4jGraphQLTemporalType, isRequired: boolean) {
         this.name = name;
         this.isRequired = isRequired;
     }
@@ -150,6 +159,8 @@ export class UnknownType {
 
 export type AttributeType =
     | ScalarType
+    | Neo4jSpatialType
+    | Neo4jTemporalType
     | UserScalarType
     | ObjectType
     | ListType

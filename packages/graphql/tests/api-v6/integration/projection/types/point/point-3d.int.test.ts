@@ -49,7 +49,7 @@ describe("Point 3d", () => {
     afterEach(async () => {
         await testHelper.close();
     });
-    // srid commented as  results of https://github.com/neo4j/graphql/issues/5223
+
     test("wgs-84-3d point", async () => {
         const query = /* GraphQL */ `
             query {
@@ -63,7 +63,7 @@ describe("Point 3d", () => {
                                     longitude
                                     height
                                     crs
-                                    # srid
+                                    srid
                                 }
                             }
                         }
@@ -73,10 +73,10 @@ describe("Point 3d", () => {
             }
         `;
 
-        const equalsResult = await testHelper.executeGraphQL(query);
+        const queryResult = await testHelper.executeGraphQL(query);
 
-        expect(equalsResult.errors).toBeFalsy();
-        expect(equalsResult.data).toEqual({
+        expect(queryResult.errors).toBeFalsy();
+        expect(queryResult.data).toEqual({
             [Location.plural]: {
                 connection: {
                     edges: expect.toIncludeSameMembers([
@@ -88,7 +88,7 @@ describe("Point 3d", () => {
                                     longitude: London.longitude,
                                     height: London.height,
                                     crs: "wgs-84-3d",
-                                    // srid: 4326,
+                                    srid: 4979,
                                 },
                             },
                         },
@@ -100,7 +100,7 @@ describe("Point 3d", () => {
                                     longitude: Rome.longitude,
                                     height: Rome.height,
                                     crs: "wgs-84-3d",
-                                    //srid: 4326,
+                                    srid: 4979,
                                 },
                             },
                         },

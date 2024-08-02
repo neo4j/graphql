@@ -29,6 +29,7 @@ import {
     Neo4jGraphQLSpatialType,
     Neo4jGraphQLTemporalType,
     Neo4jSpatialType,
+    Neo4jTemporalType,
     ObjectType,
     ScalarType,
     UnionType,
@@ -193,7 +194,7 @@ describe("Attribute", () => {
                 new Attribute({
                     name: "test",
                     annotations: {},
-                    type: new ScalarType(Neo4jGraphQLTemporalType.Date, true),
+                    type: new Neo4jTemporalType(Neo4jGraphQLTemporalType.Date, true),
                     args: [],
                 })
             );
@@ -206,7 +207,7 @@ describe("Attribute", () => {
                 new Attribute({
                     name: "test",
                     annotations: {},
-                    type: new ScalarType(Neo4jGraphQLTemporalType.DateTime, true),
+                    type: new Neo4jTemporalType(Neo4jGraphQLTemporalType.DateTime, true),
                     args: [],
                 })
             );
@@ -219,7 +220,7 @@ describe("Attribute", () => {
                 new Attribute({
                     name: "test",
                     annotations: {},
-                    type: new ScalarType(Neo4jGraphQLTemporalType.LocalDateTime, true),
+                    type: new Neo4jTemporalType(Neo4jGraphQLTemporalType.LocalDateTime, true),
                     args: [],
                 })
             );
@@ -232,7 +233,7 @@ describe("Attribute", () => {
                 new Attribute({
                     name: "test",
                     annotations: {},
-                    type: new ScalarType(Neo4jGraphQLTemporalType.Time, true),
+                    type: new Neo4jTemporalType(Neo4jGraphQLTemporalType.Time, true),
                     args: [],
                 })
             );
@@ -245,7 +246,7 @@ describe("Attribute", () => {
                 new Attribute({
                     name: "test",
                     annotations: {},
-                    type: new ScalarType(Neo4jGraphQLTemporalType.LocalTime, true),
+                    type: new Neo4jTemporalType(Neo4jGraphQLTemporalType.LocalTime, true),
                     args: [],
                 })
             );
@@ -258,7 +259,7 @@ describe("Attribute", () => {
                 new Attribute({
                     name: "test",
                     annotations: {},
-                    type: new ScalarType(Neo4jGraphQLTemporalType.Duration, true),
+                    type: new Neo4jTemporalType(Neo4jGraphQLTemporalType.Duration, true),
                     args: [],
                 })
             );
@@ -443,7 +444,7 @@ describe("Attribute", () => {
                 new Attribute({
                     name: "test",
                     annotations: {},
-                    type: new ScalarType(Neo4jGraphQLTemporalType.Date, true),
+                    type: new Neo4jTemporalType(Neo4jGraphQLTemporalType.Date, true),
                     args: [],
                 })
             );

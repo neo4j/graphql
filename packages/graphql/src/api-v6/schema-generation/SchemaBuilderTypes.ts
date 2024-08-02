@@ -19,8 +19,21 @@
 
 import { GraphQLBoolean, GraphQLFloat, GraphQLID, GraphQLInt, GraphQLString } from "graphql";
 import type { SchemaComposer } from "graphql-compose";
-import { ScalarTypeComposer } from "graphql-compose";
+import { InputTypeComposer, ObjectTypeComposer, ScalarTypeComposer } from "graphql-compose";
 import { Memoize } from "typescript-memoize";
+import { CartesianPointInput } from "../../graphql/input-objects/CartesianPointInput";
+import { PointInput } from "../../graphql/input-objects/PointInput";
+import { CartesianPoint } from "../../graphql/objects/CartesianPoint";
+import { Point } from "../../graphql/objects/Point";
+import {
+    GraphQLBigInt,
+    GraphQLDate,
+    GraphQLDateTime,
+    GraphQLDuration,
+    GraphQLLocalDateTime,
+    GraphQLLocalTime,
+    GraphQLTime,
+} from "../../graphql/scalars";
 
 export class SchemaBuilderTypes {
     private composer: SchemaComposer;
@@ -33,7 +46,6 @@ export class SchemaBuilderTypes {
     public get id(): ScalarTypeComposer {
         return new ScalarTypeComposer(GraphQLID, this.composer);
     }
-
     @Memoize()
     public get int(): ScalarTypeComposer {
         return new ScalarTypeComposer(GraphQLInt, this.composer);
@@ -43,11 +55,55 @@ export class SchemaBuilderTypes {
         return new ScalarTypeComposer(GraphQLFloat, this.composer);
     }
     @Memoize()
+    public get bigInt(): ScalarTypeComposer {
+        return new ScalarTypeComposer(GraphQLBigInt, this.composer);
+    }
+    @Memoize()
     public get string(): ScalarTypeComposer {
         return new ScalarTypeComposer(GraphQLString, this.composer);
     }
     @Memoize()
     public get boolean(): ScalarTypeComposer {
         return new ScalarTypeComposer(GraphQLBoolean, this.composer);
+    }
+    @Memoize()
+    public get date(): ScalarTypeComposer {
+        return new ScalarTypeComposer(GraphQLDate, this.composer);
+    }
+    @Memoize()
+    public get dateTime(): ScalarTypeComposer {
+        return new ScalarTypeComposer(GraphQLDateTime, this.composer);
+    }
+    @Memoize()
+    public get localDateTime(): ScalarTypeComposer {
+        return new ScalarTypeComposer(GraphQLLocalDateTime, this.composer);
+    }
+    @Memoize()
+    public get time(): ScalarTypeComposer {
+        return new ScalarTypeComposer(GraphQLTime, this.composer);
+    }
+    @Memoize()
+    public get localTime(): ScalarTypeComposer {
+        return new ScalarTypeComposer(GraphQLLocalTime, this.composer);
+    }
+    @Memoize()
+    public get duration(): ScalarTypeComposer {
+        return new ScalarTypeComposer(GraphQLDuration, this.composer);
+    }
+    @Memoize()
+    public get point(): ObjectTypeComposer {
+        return new ObjectTypeComposer(Point, this.composer);
+    }
+    @Memoize()
+    public get pointInput(): InputTypeComposer {
+        return new InputTypeComposer(PointInput, this.composer);
+    }
+    @Memoize()
+    public get cartesianPoint(): ObjectTypeComposer {
+        return new ObjectTypeComposer(CartesianPoint, this.composer);
+    }
+    @Memoize()
+    public get cartesianPointInput(): InputTypeComposer {
+        return new InputTypeComposer(CartesianPointInput, this.composer);
     }
 }

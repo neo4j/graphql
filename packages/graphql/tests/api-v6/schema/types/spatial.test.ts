@@ -57,6 +57,7 @@ describe("Spatial Types", () => {
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
               query: Query
+              mutation: Mutation
             }
 
             \\"\\"\\"
@@ -70,6 +71,18 @@ describe("Spatial Types", () => {
               z: Float
             }
 
+            \\"\\"\\"Input type for a cartesian point\\"\\"\\"
+            input CartesianPointInput {
+              x: Float!
+              y: Float!
+              z: Float
+            }
+
+            type Mutation {
+              createNodeTypes(input: [NodeTypeCreateInput!]!): NodeTypeCreateResponse
+              createRelatedNodes(input: [RelatedNodeCreateInput!]!): RelatedNodeCreateResponse
+            }
+
             type NodeType {
               cartesianPoint: CartesianPoint!
               cartesianPointNullable: CartesianPoint
@@ -81,6 +94,27 @@ describe("Spatial Types", () => {
             type NodeTypeConnection {
               edges: [NodeTypeEdge]
               pageInfo: PageInfo
+            }
+
+            type NodeTypeCreateInfo {
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            input NodeTypeCreateInput {
+              node: NodeTypeCreateNode!
+            }
+
+            input NodeTypeCreateNode {
+              cartesianPoint: CartesianPointInput!
+              cartesianPointNullable: CartesianPointInput
+              point: PointInput!
+              pointNullable: PointInput
+            }
+
+            type NodeTypeCreateResponse {
+              info: NodeTypeCreateInfo
+              nodeTypes: [NodeType!]!
             }
 
             type NodeTypeEdge {
@@ -171,6 +205,13 @@ describe("Spatial Types", () => {
               srid: Int!
             }
 
+            \\"\\"\\"Input type for a point\\"\\"\\"
+            input PointInput {
+              height: Float
+              latitude: Float!
+              longitude: Float!
+            }
+
             type Query {
               nodeTypes(where: NodeTypeOperationWhere): NodeTypeOperation
               relatedNodes(where: RelatedNodeOperationWhere): RelatedNodeOperation
@@ -186,6 +227,27 @@ describe("Spatial Types", () => {
             type RelatedNodeConnection {
               edges: [RelatedNodeEdge]
               pageInfo: PageInfo
+            }
+
+            type RelatedNodeCreateInfo {
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            input RelatedNodeCreateInput {
+              node: RelatedNodeCreateNode!
+            }
+
+            input RelatedNodeCreateNode {
+              cartesianPoint: CartesianPointInput!
+              cartesianPointNullable: CartesianPointInput
+              point: PointInput!
+              pointNullable: PointInput
+            }
+
+            type RelatedNodeCreateResponse {
+              info: RelatedNodeCreateInfo
+              relatedNodes: [RelatedNode!]!
             }
 
             type RelatedNodeEdge {

@@ -80,6 +80,7 @@ describe("Scalars", () => {
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
               query: Query
+              mutation: Mutation
             }
 
             \\"\\"\\"
@@ -141,6 +142,11 @@ describe("Scalars", () => {
               lte: Int
             }
 
+            type Mutation {
+              createNodeTypes(input: [NodeTypeCreateInput!]!): NodeTypeCreateResponse
+              createRelatedNodes(input: [RelatedNodeCreateInput!]!): RelatedNodeCreateResponse
+            }
+
             type NodeType {
               bigInt: BigInt!
               bigIntNullable: BigInt
@@ -164,6 +170,35 @@ describe("Scalars", () => {
 
             input NodeTypeConnectionSort {
               node: NodeTypeSort
+            }
+
+            type NodeTypeCreateInfo {
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            input NodeTypeCreateInput {
+              node: NodeTypeCreateNode!
+            }
+
+            input NodeTypeCreateNode {
+              bigInt: BigInt!
+              bigIntNullable: BigInt
+              boolean: Boolean!
+              booleanNullable: Boolean
+              float: Float!
+              floatNullable: Float
+              id: ID!
+              idNullable: ID
+              int: Int!
+              intNullable: Int
+              string: String!
+              stringNullable: String
+            }
+
+            type NodeTypeCreateResponse {
+              info: NodeTypeCreateInfo
+              nodeTypes: [NodeType!]!
             }
 
             type NodeTypeEdge {
@@ -306,6 +341,35 @@ describe("Scalars", () => {
 
             input RelatedNodeConnectionSort {
               node: RelatedNodeSort
+            }
+
+            type RelatedNodeCreateInfo {
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            input RelatedNodeCreateInput {
+              node: RelatedNodeCreateNode!
+            }
+
+            input RelatedNodeCreateNode {
+              bigInt: BigInt!
+              bigIntNullable: BigInt
+              boolean: Boolean!
+              booleanNullable: Boolean
+              float: Float!
+              floatNullable: Float
+              id: ID!
+              idNullable: ID
+              int: Int!
+              intNullable: Int
+              string: String!
+              stringNullable: String
+            }
+
+            type RelatedNodeCreateResponse {
+              info: RelatedNodeCreateInfo
+              relatedNodes: [RelatedNode!]!
             }
 
             type RelatedNodeEdge {

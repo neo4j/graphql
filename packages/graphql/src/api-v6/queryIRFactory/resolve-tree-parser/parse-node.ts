@@ -22,7 +22,8 @@ import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity
 import type { GraphQLTreeLeafField } from "./graphql-tree/attributes";
 import type { GraphQLTreeNode, GraphQLTreeReadOperation } from "./graphql-tree/graphql-tree";
 import { parseAttributeField } from "./parse-attribute-fields";
-import { ResolveTreeParserError, parseRelationshipField } from "./parse-resolve-info-tree";
+import { parseRelationshipField } from "./parse-resolve-info-tree";
+import { ResolveTreeParserError } from "./resolve-tree-parser-error";
 
 export function parseNode(resolveTree: ResolveTree, targetNode: ConcreteEntity): GraphQLTreeNode {
     const entityTypes = targetNode.typeNames;
@@ -37,7 +38,7 @@ export function parseNode(resolveTree: ResolveTree, targetNode: ConcreteEntity):
     };
 }
 
-function getNodeFields(
+export function getNodeFields(
     fields: Record<string, ResolveTree>,
     targetNode: ConcreteEntity
 ): Record<string, GraphQLTreeLeafField | GraphQLTreeReadOperation> {

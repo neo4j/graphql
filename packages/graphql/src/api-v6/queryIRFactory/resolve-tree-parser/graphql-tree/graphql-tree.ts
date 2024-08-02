@@ -23,9 +23,17 @@ import type { GraphQLSort, GraphQLSortEdge } from "./sort";
 import type { GraphQLTreeElement } from "./tree-element";
 import type { GraphQLWhere, GraphQLWhereTopLevel } from "./where";
 
-export type GraphQLTree = GraphQLTreeReadOperationTopLevel;
+// TODO GraphQLTreeCreateInput should be a union of PrimitiveTypes and relationship fields
+export type GraphQLTreeCreateInput = Record<string, unknown>;
 
-interface GraphQLTreeReadOperationTopLevel extends GraphQLTreeElement {
+export interface GraphQLTreeCreate extends GraphQLTreeNode {
+    name: string;
+    args: {
+        input: GraphQLTreeCreateInput[];
+    };
+}
+
+export interface GraphQLTree extends GraphQLTreeElement {
     name: string;
     fields: {
         connection?: GraphQLTreeConnectionTopLevel;

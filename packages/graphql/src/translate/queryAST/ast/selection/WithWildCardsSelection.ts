@@ -17,9 +17,22 @@
  * limitations under the License.
  */
 
-import type { GraphQLType } from "graphql";
-import { GraphQLNonNull } from "graphql";
+import Cypher from "@neo4j/cypher-builder";
+import type { QueryASTContext } from "../QueryASTContext";
+import { EntitySelection, type SelectionClause } from "./EntitySelection";
 
-export function toGraphQLNonNull<T extends GraphQLType>(type: T): GraphQLNonNull<GraphQLType> {
-    return new GraphQLNonNull(type);
+export class WithWildCardsSelection extends EntitySelection {
+    constructor() {
+        super();
+    }
+
+    public apply(context: QueryASTContext<Cypher.Node>): {
+        nestedContext: QueryASTContext<Cypher.Node>;
+        selection: SelectionClause;
+    } {
+        return {
+            selection: new Cypher.With("*"),
+            nestedContext: context,
+        };
+    }
 }

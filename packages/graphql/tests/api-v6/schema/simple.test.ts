@@ -37,6 +37,7 @@ describe("Simple Aura-API", () => {
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
               query: Query
+              mutation: Mutation
             }
 
             type Movie {
@@ -50,6 +51,24 @@ describe("Simple Aura-API", () => {
 
             input MovieConnectionSort {
               node: MovieSort
+            }
+
+            type MovieCreateInfo {
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            input MovieCreateInput {
+              node: MovieCreateNode!
+            }
+
+            input MovieCreateNode {
+              title: String
+            }
+
+            type MovieCreateResponse {
+              info: MovieCreateInfo
+              movies: [Movie!]!
             }
 
             type MovieEdge {
@@ -77,6 +96,10 @@ describe("Simple Aura-API", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               title: StringWhere
+            }
+
+            type Mutation {
+              createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
             }
 
             type PageInfo {
@@ -125,6 +148,7 @@ describe("Simple Aura-API", () => {
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
               query: Query
+              mutation: Mutation
             }
 
             type Actor {
@@ -138,6 +162,24 @@ describe("Simple Aura-API", () => {
 
             input ActorConnectionSort {
               node: ActorSort
+            }
+
+            type ActorCreateInfo {
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            input ActorCreateInput {
+              node: ActorCreateNode!
+            }
+
+            input ActorCreateNode {
+              name: String
+            }
+
+            type ActorCreateResponse {
+              actors: [Actor!]!
+              info: ActorCreateInfo
             }
 
             type ActorEdge {
@@ -180,6 +222,24 @@ describe("Simple Aura-API", () => {
               node: MovieSort
             }
 
+            type MovieCreateInfo {
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            input MovieCreateInput {
+              node: MovieCreateNode!
+            }
+
+            input MovieCreateNode {
+              title: String
+            }
+
+            type MovieCreateResponse {
+              info: MovieCreateInfo
+              movies: [Movie!]!
+            }
+
             type MovieEdge {
               cursor: String
               node: Movie
@@ -205,6 +265,11 @@ describe("Simple Aura-API", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               title: StringWhere
+            }
+
+            type Mutation {
+              createActors(input: [ActorCreateInput!]!): ActorCreateResponse
+              createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
             }
 
             type PageInfo {
@@ -254,6 +319,7 @@ describe("Simple Aura-API", () => {
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
               query: Query
+              mutation: Mutation
             }
 
             type Movie {
@@ -267,6 +333,24 @@ describe("Simple Aura-API", () => {
 
             input MovieConnectionSort {
               node: MovieSort
+            }
+
+            type MovieCreateInfo {
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            input MovieCreateInput {
+              node: MovieCreateNode!
+            }
+
+            input MovieCreateNode {
+              title: String
+            }
+
+            type MovieCreateResponse {
+              info: MovieCreateInfo
+              movies: [Movie!]!
             }
 
             type MovieEdge {
@@ -294,6 +378,10 @@ describe("Simple Aura-API", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               title: StringWhere
+            }
+
+            type Mutation {
+              createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
             }
 
             type PageInfo {

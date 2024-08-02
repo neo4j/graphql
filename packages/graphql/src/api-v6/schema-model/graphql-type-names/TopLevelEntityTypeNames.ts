@@ -18,6 +18,7 @@
  */
 
 import { plural } from "../../../schema-model/utils/string-manipulation";
+import { upperFirst } from "../../../utils/upper-first";
 import { EntityTypeNames } from "./EntityTypeNames";
 
 /** Top level node typenames */
@@ -65,5 +66,26 @@ export class TopLevelEntityTypeNames extends EntityTypeNames {
 
     public get node(): string {
         return this.entityName;
+    }
+
+    /** Top Level Create field */
+    public get createField(): string {
+        return `create${upperFirst(plural(this.entityName))}`;
+    }
+
+    public get createNode(): string {
+        return `${upperFirst(this.entityName)}CreateNode`;
+    }
+
+    public get createInput(): string {
+        return `${upperFirst(this.entityName)}CreateInput`;
+    }
+
+    public get createResponse(): string {
+        return `${upperFirst(this.entityName)}CreateResponse`;
+    }
+
+    public get createInfo(): string {
+        return `${upperFirst(this.entityName)}CreateInfo`;
     }
 }

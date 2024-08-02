@@ -36,11 +36,12 @@ import { SpatialAttributeField } from "../../translate/queryAST/ast/fields/attri
 import { Pagination } from "../../translate/queryAST/ast/pagination/Pagination";
 import { NodeSelection } from "../../translate/queryAST/ast/selection/NodeSelection";
 import { RelationshipSelection } from "../../translate/queryAST/ast/selection/RelationshipSelection";
+import { WithWildCardsSelection } from "../../translate/queryAST/ast/selection/WithWildCardsSelection";
 import { PropertySort } from "../../translate/queryAST/ast/sort/PropertySort";
 import { filterTruthy } from "../../utils/utils";
 import { V6ReadOperation } from "../queryIR/ConnectionReadOperation";
 import { FilterFactory } from "./FilterFactory";
-
+import { FactoryParseError } from "./factory-parse-error";
 import type { GraphQLTreePoint } from "./resolve-tree-parser/graphql-tree/attributes";
 import type {
     GraphQLTree,
@@ -67,6 +68,29 @@ export class ReadOperationFactory {
             entity,
         });
         return new QueryAST(operation);
+    }
+
+    public generateMutationProjection({
+        graphQLTreeNode,
+        entity,
+    }: {
+        graphQLTreeNode: GraphQLTreeNode;
+        entity: ConcreteEntity;
+    }): V6ReadOperation {
+        const target = new ConcreteEntityAdapter(entity);
+
+        const nodeResolveTree = graphQLTreeNode;
+        const nodeFields = this.getNodeFields(entity, nodeResolveTree);
+
+        return new V6ReadOperation({
+            target,
+            fields: {
+                edge: [],
+                node: nodeFields,
+            },
+            filters: [],
+            selection: new WithWildCardsSelection(),
+        });
     }
 
     private generateOperation({
@@ -124,7 +148,7 @@ export class ReadOperationFactory {
 
         const relationshipAdapter = new RelationshipAdapter(relationship);
         if (!(relationshipAdapter.target instanceof ConcreteEntityAdapter)) {
-            throw new QueryParseError("Interfaces not supported");
+            throw new FactoryParseError("Interfaces not supported");
         }
 
         // Selection
@@ -361,5 +385,3 @@ export class ReadOperationFactory {
         });
     }
 }
-
-export class QueryParseError extends Error {}
