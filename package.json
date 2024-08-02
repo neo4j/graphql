@@ -45,7 +45,7 @@
         "neo4j-driver": "5.23.0",
         "prettier": "2.8.8",
         "set-tz": "0.2.0",
-        "ts-jest": "29.2.3",
+        "ts-jest": "29.2.4",
         "typescript": "5.1.6"
     },
     "packageManager": "yarn@4.3.1",
