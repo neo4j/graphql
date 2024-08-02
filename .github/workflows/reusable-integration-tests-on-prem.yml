@@ -72,7 +72,7 @@ jobs:
           NEO_URL: bolt://localhost:7687
       - if: ${{ !inputs.disable-coverage-archival && matrix.packages.package == 'graphql' }}
         name: Archive coverage report
-        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b # v4
+        uses: actions/upload-artifact@89ef406dd8d7e03cfd12d9e0a4a378f454709029 # v4
         with:
           name: integration-coverage-${{ matrix.packages.package }}-${{ matrix.neo4j-version }}-${{ matrix.graphql-version.coverage_path }}-${{ matrix.packages.coverage_name }}
           path: packages/${{ matrix.packages.package }}/coverage-${{ matrix.neo4j-version }}-${{ matrix.graphql-version.coverage_path }}/
@@ -83,7 +83,7 @@ jobs:
     steps:
       - if: ${{ !inputs.disable-coverage-archival }}
         name: Merge Artifacts
-        uses: actions/upload-artifact/merge@0b2256b8c012f0828dc542b3febcab082c67f72b # v4
+        uses: actions/upload-artifact/merge@89ef406dd8d7e03cfd12d9e0a4a378f454709029 # v4
         with:
           name: integration-coverage
           pattern: integration-coverage-*
