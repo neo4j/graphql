@@ -22,16 +22,16 @@ import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../../src";
 import { raiseOnInvalidSchema } from "../../../utils/raise-on-invalid-schema";
 
-describe("@default on fields", () => {
+describe("@default on array fields", () => {
     test("@default should add a default value in mutation inputs", async () => {
         const typeDefs = /* GraphQL */ `
             type Movie @node {
-                id: ID! @default(value: "id")
-                title: String @default(value: "title")
-                year: Int @default(value: 2021)
-                length: Float @default(value: 120.5)
-                flag: Boolean @default(value: true)
-                releasedDateTime: DateTime @default(value: "2021-01-01T00:00:00")
+                id: [ID!]! @default(value: ["id"])
+                title: [String!] @default(value: ["title"])
+                year: [Int!] @default(value: [2021])
+                length: [Float!] @default(value: [120.5])
+                releasedDateTime: [DateTime!] @default(value: ["2021-01-01T00:00:00"])
+                flags: [Boolean!] @default(value: [true, false])
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -54,69 +54,34 @@ describe("@default on fields", () => {
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
             scalar DateTime
 
-            input DateTimeWhere {
-              AND: [DateTimeWhere!]
-              NOT: DateTimeWhere
-              OR: [DateTimeWhere!]
-              equals: DateTime
-              gt: DateTime
-              gte: DateTime
-              in: [DateTime!]
-              lt: DateTime
-              lte: DateTime
+            input DateTimeListWhere {
+              equals: [DateTime!]
             }
 
-            input FloatWhere {
-              AND: [FloatWhere!]
-              NOT: FloatWhere
-              OR: [FloatWhere!]
-              equals: Float
-              gt: Float
-              gte: Float
-              in: [Float!]
-              lt: Float
-              lte: Float
+            input FloatListWhere {
+              equals: [Float!]
             }
 
-            input IDWhere {
-              AND: [IDWhere!]
-              NOT: IDWhere
-              OR: [IDWhere!]
-              contains: ID
-              endsWith: ID
-              equals: ID
-              in: [ID!]
-              startsWith: ID
+            input IDListWhere {
+              equals: [ID!]
             }
 
-            input IntWhere {
-              AND: [IntWhere!]
-              NOT: IntWhere
-              OR: [IntWhere!]
-              equals: Int
-              gt: Int
-              gte: Int
-              in: [Int!]
-              lt: Int
-              lte: Int
+            input IntListWhere {
+              equals: [Int!]
             }
 
             type Movie {
-              flag: Boolean
-              id: ID!
-              length: Float
-              releasedDateTime: DateTime
-              title: String
-              year: Int
+              flags: [Boolean!]
+              id: [ID!]!
+              length: [Float!]
+              releasedDateTime: [DateTime!]
+              title: [String!]
+              year: [Int!]
             }
 
             type MovieConnection {
               edges: [MovieEdge]
               pageInfo: PageInfo
-            }
-
-            input MovieConnectionSort {
-              node: MovieSort
             }
 
             type MovieCreateInfo {
@@ -129,12 +94,12 @@ describe("@default on fields", () => {
             }
 
             input MovieCreateNode {
-              flag: Boolean = true
-              id: ID! = \\"id\\"
-              length: Float = 120.5
-              releasedDateTime: DateTime = \\"2021-01-01T00:00:00.000Z\\"
-              title: String = \\"title\\"
-              year: Int = 2021
+              flags: [Boolean!] = [true, false]
+              id: [ID!]! = [\\"id\\"]
+              length: [Float!] = [120.5]
+              releasedDateTime: [DateTime!] = [\\"2021-01-01T00:00:00.000Z\\"]
+              title: [String!] = [\\"title\\"]
+              year: [Int!] = [2021]
             }
 
             type MovieCreateResponse {
@@ -148,7 +113,7 @@ describe("@default on fields", () => {
             }
 
             type MovieOperation {
-              connection(after: String, first: Int, sort: [MovieConnectionSort!]): MovieConnection
+              connection(after: String, first: Int): MovieConnection
             }
 
             input MovieOperationWhere {
@@ -158,25 +123,16 @@ describe("@default on fields", () => {
               node: MovieWhere
             }
 
-            input MovieSort {
-              flag: SortDirection
-              id: SortDirection
-              length: SortDirection
-              releasedDateTime: SortDirection
-              title: SortDirection
-              year: SortDirection
-            }
-
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              flag: BooleanWhere
-              id: IDWhere
-              length: FloatWhere
-              releasedDateTime: DateTimeWhere
-              title: StringWhere
-              year: IntWhere
+              flags: BooleanWhere
+              id: IDListWhere
+              length: FloatListWhere
+              releasedDateTime: DateTimeListWhere
+              title: StringListWhere
+              year: IntListWhere
             }
 
             type Mutation {
@@ -194,24 +150,11 @@ describe("@default on fields", () => {
               movies(where: MovieOperationWhere): MovieOperation
             }
 
-            enum SortDirection {
-              ASC
-              DESC
-            }
-
-            input StringWhere {
-              AND: [StringWhere!]
-              NOT: StringWhere
-              OR: [StringWhere!]
-              contains: String
-              endsWith: String
-              equals: String
-              in: [String!]
-              startsWith: String
+            input StringListWhere {
+              equals: [String!]
             }"
         `);
     });
-
     test.todo("@default directive with relationship properties");
     test.todo("@default directive with user defined scalars");
 });

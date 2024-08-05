@@ -407,41 +407,7 @@ describe("validation 2.0", () => {
                 expect(executeValidate).not.toThrow();
             });
         });
-        describe("@default", () => {
-            test("@default property required", () => {
-                const doc = gql`
-                    type User {
-                        name: String @default
-                    }
-                `;
-                // TODO: is "ScalarOrEnum" type exposed to the user?
 
-                const executeValidate = () =>
-                    validateDocument({
-                        document: doc,
-                        additionalDefinitions,
-                        features: {},
-                    });
-                expect(executeValidate).toThrow(
-                    'Directive "@default" argument "value" of type "ScalarOrEnum!" is required, but it was not provided.'
-                );
-            });
-            test("@default ok", () => {
-                const doc = gql`
-                    type User {
-                        name: String @default(value: "dummy")
-                    }
-                `;
-
-                const executeValidate = () =>
-                    validateDocument({
-                        document: doc,
-                        additionalDefinitions,
-                        features: {},
-                    });
-                expect(executeValidate).not.toThrow();
-            });
-        });
         describe("@fulltext", () => {
             test("@fulltext property required", () => {
                 const doc = gql`

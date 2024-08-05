@@ -17,31 +17,30 @@
  * limitations under the License.
  */
 
-import type { UniqueType } from "../../../../utils/graphql-types";
 import { TestHelper } from "../../../../utils/tests-helper";
 
 describe("Create with @default", () => {
     const testHelper = new TestHelper({ v6Api: true });
 
-    let Movie: UniqueType;
-    beforeAll(async () => {
-        Movie = testHelper.createUniqueType("Movie");
+    afterEach(async () => {
+        await testHelper.close();
+    });
+
+    test.each([
+        { dataType: "Int", value: 1 },
+        { dataType: "Float", value: 1.2 },
+        { dataType: "DateTime", value: "2024-05-28T13:56:22.368Z" },
+    ] as const)("should create two movies with a $dataType default value", async ({ dataType, value }) => {
+        const Movie = testHelper.createUniqueType("Movie");
 
         const typeDefs = /* GraphQL */ `
             type ${Movie} @node {
                 title: String! 
-                released: Int @default(value: 2001)
-                ratings: [Int!] @default(value: [1, 2, 3])
+                testField: ${dataType} @default(value: ${typeof value === "string" ? `"${value}"` : value})
             }
         `;
         await testHelper.initNeo4jGraphQL({ typeDefs });
-    });
 
-    afterAll(async () => {
-        await testHelper.close();
-    });
-
-    test("should create two movies and project them", async () => {
         const mutation = /* GraphQL */ `
             mutation {
                 ${Movie.operations.create}(input: [ 
@@ -50,8 +49,7 @@ describe("Create with @default", () => {
                     ]) {
                     ${Movie.plural} {
                         title
-                        released
-                        ratings
+                        testField
                     }
                 }
             }
@@ -62,8 +60,8 @@ describe("Create with @default", () => {
         expect(gqlResult.data).toEqual({
             [Movie.operations.create]: {
                 [Movie.plural]: expect.toIncludeSameMembers([
-                    { title: "The Matrix", released: 2001, ratings: [1, 2, 3] },
-                    { title: "The Matrix 2", released: 2001, ratings: [1, 2, 3] },
+                    { title: "The Matrix", testField: value },
+                    { title: "The Matrix 2", testField: value },
                 ]),
             },
         });

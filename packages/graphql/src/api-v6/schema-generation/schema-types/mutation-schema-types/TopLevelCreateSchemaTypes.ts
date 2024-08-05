@@ -70,7 +70,7 @@ export class TopLevelCreateSchemaTypes {
     private getInputFields(attributes: Attribute[]): Record<string, InputFieldDefinition> {
         const inputFields: Array<[string, InputFieldDefinition] | []> = filterTruthy(
             attributes.map((attribute) => {
-                const inputField = this.attributeToInputField(attribute.type, attribute);
+                const inputField = this.attributeToInputField(attribute.type);
                 const fieldDefinition: InputFieldDefinition = {
                     type: inputField,
                     defaultValue: attribute.annotations.default?.value,
@@ -83,25 +83,25 @@ export class TopLevelCreateSchemaTypes {
         return Object.fromEntries(inputFields);
     }
 
-    private attributeToInputField(type: AttributeType, attribute: Attribute): any {
+    private attributeToInputField(type: AttributeType): any {
         if (type instanceof ListType) {
             if (type.isRequired) {
-                return this.attributeToInputField(type.ofType, attribute).List.NonNull;
+                return this.attributeToInputField(type.ofType).List.NonNull;
             }
-            return this.attributeToInputField(type.ofType, attribute).List;
+            return this.attributeToInputField(type.ofType).List;
         }
         if (type instanceof ScalarType) {
-            return this.createBuiltInFieldInput(type, attribute);
+            return this.createBuiltInFieldInput(type);
         }
         if (type instanceof Neo4jTemporalType) {
-            return this.createTemporalFieldInput(type, attribute);
+            return this.createTemporalFieldInput(type);
         }
         if (type instanceof Neo4jSpatialType) {
-            return this.createSpatialFieldInput(type, attribute);
+            return this.createSpatialFieldInput(type);
         }
     }
 
-    private createBuiltInFieldInput(type: ScalarType, attribute: Attribute): WrappedComposer<ScalarTypeComposer> {
+    private createBuiltInFieldInput(type: ScalarType): WrappedComposer<ScalarTypeComposer> {
         let builtInType: ScalarTypeComposer;
         switch (type.name) {
             case GraphQLBuiltInScalarType.Boolean: {
@@ -138,10 +138,7 @@ export class TopLevelCreateSchemaTypes {
         return builtInType;
     }
 
-    private createTemporalFieldInput(
-        type: Neo4jTemporalType,
-        attribute: Attribute
-    ): WrappedComposer<ScalarTypeComposer> {
+    private createTemporalFieldInput(type: Neo4jTemporalType): WrappedComposer<ScalarTypeComposer> {
         let builtInType: ScalarTypeComposer;
         switch (type.name) {
             case Neo4jGraphQLTemporalType.Date: {
@@ -178,7 +175,7 @@ export class TopLevelCreateSchemaTypes {
         return builtInType;
     }
 
-    private createSpatialFieldInput(type: Neo4jSpatialType, attribute: Attribute): WrappedComposer<InputTypeComposer> {
+    private createSpatialFieldInput(type: Neo4jSpatialType): WrappedComposer<InputTypeComposer> {
         let builtInType: InputTypeComposer;
         switch (type.name) {
             case Neo4jGraphQLSpatialType.CartesianPoint: {
