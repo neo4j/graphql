@@ -21,12 +21,12 @@ import { GraphQLError } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { raiseOnInvalidSchema } from "../../../utils/raise-on-invalid-schema";
 
-describe("invalid @default usage", () => {
+describe("invalid @default usage on List fields", () => {
     test("@default should fail without define a value", async () => {
         const fn = async () => {
             const typeDefs = /* GraphQL */ `
                 type User @node {
-                    name: String @default
+                    name: [String] @default
                 }
             `;
             const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -42,67 +42,81 @@ describe("invalid @default usage", () => {
 
     test.each([
         {
-            dataType: "ID",
-            invalidValue: 1.2,
-            errorMsg: "@default.value on ID fields must be of type ID",
+            dataType: "[ID]",
+            value: 1.2,
+            errorMsg: "@default.value on ID list fields must be a list of ID values",
         },
         {
-            dataType: "String",
-            invalidValue: 1.2,
-            errorMsg: "@default.value on String fields must be of type String",
+            dataType: "[String]",
+            value: 1.2,
+            errorMsg: "@default.value on String list fields must be a list of String values",
         },
         {
-            dataType: "Boolean",
-            invalidValue: 1.2,
-            errorMsg: "@default.value on Boolean fields must be of type Boolean",
+            dataType: "[Boolean]",
+            value: 1.2,
+            errorMsg: "@default.value on Boolean list fields must be a list of Boolean values",
         },
-        { dataType: "Int", invalidValue: 1.2, errorMsg: "@default.value on Int fields must be of type Int" },
+        { dataType: "[Int]", value: 1.2, errorMsg: "@default.value on Int list fields must be a list of Int values" },
         {
-            dataType: "Float",
-            invalidValue: "stuff",
-            errorMsg: "@default.value on Float fields must be of type Float",
+            dataType: "[Float]",
+            value: "stuff",
+            errorMsg: "@default.value on Float list fields must be a list of Float values",
         },
-        { dataType: "DateTime", invalidValue: "dummy", errorMsg: "@default.value is not a valid DateTime" },
+        {
+            dataType: "[DateTime]",
+            value: "dummy",
+            errorMsg: "@default.value on DateTime list fields must be a list of DateTime values",
+        },
     ] as const)(
         "@default should fail with an invalid $dataType value",
-        async ({ dataType, invalidValue, errorMsg }) => {
+        async ({ dataType, value: value, errorMsg }) => {
+            const stringValue = typeof value === "string" ? `"${value}"` : value;
             const fn = async () => {
                 const typeDefs = /* GraphQL */ `
                     type User @node {
-                        name: ${dataType} @default(value: ${
-                    typeof invalidValue === "string" ? `"${invalidValue}"` : invalidValue
-                })}
+                        name: ${dataType} @default(value: ${stringValue})
+                    }
+                    extend type User {
+                        anotherField: ${dataType} @default(value: ${stringValue})
+                    }
                 `;
                 const neoSchema = new Neo4jGraphQL({ typeDefs });
                 const schema = await neoSchema.getAuraSchema();
                 raiseOnInvalidSchema(schema);
             };
-            await expect(fn()).rejects.toEqual([new GraphQLError(errorMsg)]);
+
+            await expect(fn()).rejects.toEqual([new GraphQLError(errorMsg), new GraphQLError(errorMsg)]);
         }
     );
 
     test.each([
         {
-            dataType: "ID",
-            value: "some-unique-id",
+            dataType: "[ID]",
+            value: ["some-unique-id", "another-unique-id"],
         },
         {
-            dataType: "String",
-            value: "dummyValue",
+            dataType: "[String]",
+            value: ["dummyValue", "anotherDummyValue"],
         },
         {
-            dataType: "Boolean",
-            value: false,
+            dataType: "[Boolean]",
+            value: [false, true],
         },
-        { dataType: "Int", value: 1 },
-        { dataType: "Float", value: 1.2 },
-        { dataType: "DateTime", value: "2021-01-01T00:00:00" },
+        { dataType: "[Int]", value: [1, 3] },
+        { dataType: "[Float]", value: [1.2, 1.3] },
+        { dataType: "[DateTime]", value: ["2021-01-01T00:00:00", "2022-01-01T00:00:00"] },
     ] as const)("@default should not fail with a valid $dataType value", async ({ dataType, value }) => {
         const fn = async () => {
+            const stringValue = value.map((v) => (typeof v === "string" ? `"${v}"` : v)).join(", ");
             const typeDefs = /* GraphQL */ `
                 type User @node {
-                   name: ${dataType} @default(value: ${typeof value === "string" ? `"${value}"` : value})}
+                    name: ${dataType} @default(value: [${stringValue}])
+                }
+                extend type User {
+                    anotherField: ${dataType} @default(value: [${stringValue}])
+                }
             `;
+
             const neoSchema = new Neo4jGraphQL({ typeDefs });
             const schema = await neoSchema.getAuraSchema();
             raiseOnInvalidSchema(schema);
