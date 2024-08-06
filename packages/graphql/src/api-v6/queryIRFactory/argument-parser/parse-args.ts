@@ -20,21 +20,24 @@
 import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import type { Relationship } from "../../../schema-model/relationship/Relationship";
 import type {
-    GraphQLTree,
     GraphQLTreeConnection,
     GraphQLTreeConnectionTopLevel,
+    GraphQLTreeReadOperation,
+    GraphQLTreeReadOperationTopLevel,
 } from "../resolve-tree-parser/graphql-tree/graphql-tree";
 import type { GraphQLSort, GraphQLSortEdge, GraphQLTreeSortElement } from "../resolve-tree-parser/graphql-tree/sort";
 import { ResolveTreeParserError } from "../resolve-tree-parser/resolve-tree-parser-error";
 
-export function parseOperationArgs(resolveTreeArgs: Record<string, any>): GraphQLTree["args"] {
+export function parseOperationArgs(resolveTreeArgs: Record<string, any>): GraphQLTreeReadOperation["args"] {
     // Not properly parsed, assuming the type is the same
     return {
         where: resolveTreeArgs.where,
     };
 }
 
-export function parseOperationArgsTopLevel(resolveTreeArgs: Record<string, any>): GraphQLTree["args"] {
+export function parseOperationArgsTopLevel(
+    resolveTreeArgs: Record<string, any>
+): GraphQLTreeReadOperationTopLevel["args"] {
     // Not properly parsed, assuming the type is the same
     return {
         where: resolveTreeArgs.where,

@@ -28,11 +28,11 @@ import {
 } from "../argument-parser/parse-args";
 import { parseCreateOperationArgsTopLevel } from "../argument-parser/parse-create-args";
 import type {
-    GraphQLTree,
     GraphQLTreeConnection,
     GraphQLTreeConnectionTopLevel,
     GraphQLTreeCreate,
     GraphQLTreeReadOperation,
+    GraphQLTreeReadOperationTopLevel,
 } from "./graphql-tree/graphql-tree";
 import { parseEdges } from "./parse-edges";
 import { getNodeFields } from "./parse-node";
@@ -44,7 +44,7 @@ export function parseResolveInfoTree({
 }: {
     resolveTree: ResolveTree;
     entity: ConcreteEntity;
-}): GraphQLTree {
+}): GraphQLTreeReadOperationTopLevel {
     const connectionResolveTree = findFieldByName(resolveTree, entity.typeNames.connectionOperation, "connection");
     const connection = connectionResolveTree ? parseTopLevelConnection(connectionResolveTree, entity) : undefined;
     const connectionOperationArgs = parseOperationArgsTopLevel(resolveTree.args);
