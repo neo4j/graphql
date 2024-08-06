@@ -91,6 +91,19 @@ describe("Simple Aura-API", () => {
               title: SortDirection
             }
 
+            input MovieUpdateInput {
+              node: MovieUpdateNode!
+            }
+
+            input MovieUpdateNode {
+              title: StringUpdate
+            }
+
+            type MovieUpdateResponse {
+              info: MovieCreateInfo
+              movies: [Movie!]!
+            }
+
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
@@ -100,6 +113,7 @@ describe("Simple Aura-API", () => {
 
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
+              updateMovies(input: [MovieUpdateInput!]!): MovieUpdateResponse
             }
 
             type PageInfo {
@@ -116,6 +130,10 @@ describe("Simple Aura-API", () => {
             enum SortDirection {
               ASC
               DESC
+            }
+
+            input StringUpdate {
+              set: String
             }
 
             input StringWhere {
@@ -202,6 +220,19 @@ describe("Simple Aura-API", () => {
               name: SortDirection
             }
 
+            input ActorUpdateInput {
+              node: ActorUpdateNode!
+            }
+
+            input ActorUpdateNode {
+              name: StringUpdate
+            }
+
+            type ActorUpdateResponse {
+              actors: [Actor!]!
+              info: ActorCreateInfo
+            }
+
             input ActorWhere {
               AND: [ActorWhere!]
               NOT: ActorWhere
@@ -260,6 +291,19 @@ describe("Simple Aura-API", () => {
               title: SortDirection
             }
 
+            input MovieUpdateInput {
+              node: MovieUpdateNode!
+            }
+
+            input MovieUpdateNode {
+              title: StringUpdate
+            }
+
+            type MovieUpdateResponse {
+              info: MovieCreateInfo
+              movies: [Movie!]!
+            }
+
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
@@ -270,6 +314,8 @@ describe("Simple Aura-API", () => {
             type Mutation {
               createActors(input: [ActorCreateInput!]!): ActorCreateResponse
               createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
+              updateActors(input: [ActorUpdateInput!]!): ActorUpdateResponse
+              updateMovies(input: [MovieUpdateInput!]!): MovieUpdateResponse
             }
 
             type PageInfo {
@@ -287,6 +333,10 @@ describe("Simple Aura-API", () => {
             enum SortDirection {
               ASC
               DESC
+            }
+
+            input StringUpdate {
+              set: String
             }
 
             input StringWhere {
@@ -373,6 +423,19 @@ describe("Simple Aura-API", () => {
               title: SortDirection
             }
 
+            input MovieUpdateInput {
+              node: MovieUpdateNode!
+            }
+
+            input MovieUpdateNode {
+              title: StringUpdate
+            }
+
+            type MovieUpdateResponse {
+              info: MovieCreateInfo
+              movies: [Movie!]!
+            }
+
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
@@ -382,6 +445,7 @@ describe("Simple Aura-API", () => {
 
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
+              updateMovies(input: [MovieUpdateInput!]!): MovieUpdateResponse
             }
 
             type PageInfo {
@@ -398,6 +462,10 @@ describe("Simple Aura-API", () => {
             enum SortDirection {
               ASC
               DESC
+            }
+
+            input StringUpdate {
+              set: String
             }
 
             input StringWhere {

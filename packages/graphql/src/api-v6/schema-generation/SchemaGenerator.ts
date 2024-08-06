@@ -22,11 +22,12 @@ import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSch
 import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
 import { generateGlobalNodeResolver } from "../resolvers/global-node-resolver";
 import { generateReadResolver } from "../resolvers/read-resolver";
+import { generateCreateResolver } from "../resolvers/translate-create-resolver";
+import { generateUpdateResolver } from "../resolvers/translate-update-resolver";
 import { SchemaBuilder } from "./SchemaBuilder";
 import { SchemaTypes } from "./schema-types/SchemaTypes";
 import { StaticSchemaTypes } from "./schema-types/StaticSchemaTypes";
 import { TopLevelEntitySchemaTypes } from "./schema-types/TopLevelEntitySchemaTypes";
-import { generateCreateResolver } from "../resolvers/translate-create-resolver";
 
 export class SchemaGenerator {
     private schemaBuilder: SchemaBuilder;
@@ -40,7 +41,7 @@ export class SchemaGenerator {
     public generate(schemaModel: Neo4jGraphQLSchemaModel): GraphQLSchema {
         const entityTypesMap = this.generateEntityTypes(schemaModel);
         this.generateTopLevelQueryFields(entityTypesMap);
-        this.generateTopLevelCreateFields(entityTypesMap);
+        this.generateTopLevelMutationFields(entityTypesMap);
 
         this.generateGlobalNodeQueryField(schemaModel);
 
@@ -77,12 +78,18 @@ export class SchemaGenerator {
         }
     }
 
-    private generateTopLevelCreateFields(entityTypesMap: Map<ConcreteEntity, TopLevelEntitySchemaTypes>): void {
+    private generateTopLevelMutationFields(entityTypesMap: Map<ConcreteEntity, TopLevelEntitySchemaTypes>): void {
         for (const [entity, entitySchemaTypes] of entityTypesMap.entries()) {
-            const resolver = generateCreateResolver({
-                entity,
-            });
-            entitySchemaTypes.addTopLevelCreateField(resolver);
+            entitySchemaTypes.addTopLevelCreateField(
+                generateCreateResolver({
+                    entity,
+                })
+            );
+            entitySchemaTypes.addTopLevelUpdateField(
+                generateUpdateResolver({
+                    entity,
+                })
+            );
         }
     }
 

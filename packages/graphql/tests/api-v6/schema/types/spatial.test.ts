@@ -78,9 +78,15 @@ describe("Spatial Types", () => {
               z: Float
             }
 
+            input CartesianPointInputUpdate {
+              set: CartesianPointInput
+            }
+
             type Mutation {
               createNodeTypes(input: [NodeTypeCreateInput!]!): NodeTypeCreateResponse
               createRelatedNodes(input: [RelatedNodeCreateInput!]!): RelatedNodeCreateResponse
+              updateNodeTypes(input: [NodeTypeUpdateInput!]!): NodeTypeUpdateResponse
+              updateRelatedNodes(input: [RelatedNodeUpdateInput!]!): RelatedNodeUpdateResponse
             }
 
             type NodeType {
@@ -180,6 +186,22 @@ describe("Spatial Types", () => {
               edges: NodeTypeRelatedNodeEdgeWhere
             }
 
+            input NodeTypeUpdateInput {
+              node: NodeTypeUpdateNode!
+            }
+
+            input NodeTypeUpdateNode {
+              cartesianPoint: CartesianPointInputUpdate
+              cartesianPointNullable: CartesianPointInputUpdate
+              point: PointInputUpdate
+              pointNullable: PointInputUpdate
+            }
+
+            type NodeTypeUpdateResponse {
+              info: NodeTypeCreateInfo
+              nodeTypes: [NodeType!]!
+            }
+
             input NodeTypeWhere {
               AND: [NodeTypeWhere!]
               NOT: NodeTypeWhere
@@ -210,6 +232,10 @@ describe("Spatial Types", () => {
               height: Float
               latitude: Float!
               longitude: Float!
+            }
+
+            input PointInputUpdate {
+              set: PointInput
             }
 
             type Query {
@@ -277,6 +303,22 @@ describe("Spatial Types", () => {
               AND: [RelatedNodePropertiesWhere!]
               NOT: RelatedNodePropertiesWhere
               OR: [RelatedNodePropertiesWhere!]
+            }
+
+            input RelatedNodeUpdateInput {
+              node: RelatedNodeUpdateNode!
+            }
+
+            input RelatedNodeUpdateNode {
+              cartesianPoint: CartesianPointInputUpdate
+              cartesianPointNullable: CartesianPointInputUpdate
+              point: PointInputUpdate
+              pointNullable: PointInputUpdate
+            }
+
+            type RelatedNodeUpdateResponse {
+              info: RelatedNodeCreateInfo
+              relatedNodes: [RelatedNode!]!
             }
 
             input RelatedNodeWhere {

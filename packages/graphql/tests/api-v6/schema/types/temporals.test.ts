@@ -71,6 +71,10 @@ describe("Temporals", () => {
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
             scalar DateTime
 
+            input DateTimeUpdate {
+              set: DateTime
+            }
+
             input DateTimeWhere {
               AND: [DateTimeWhere!]
               NOT: DateTimeWhere
@@ -81,6 +85,10 @@ describe("Temporals", () => {
               in: [DateTime!]
               lt: DateTime
               lte: DateTime
+            }
+
+            input DateUpdate {
+              set: Date
             }
 
             input DateWhere {
@@ -98,6 +106,10 @@ describe("Temporals", () => {
             \\"\\"\\"A duration, represented as an ISO 8601 duration string\\"\\"\\"
             scalar Duration
 
+            input DurationUpdate {
+              set: Duration
+            }
+
             input DurationWhere {
               AND: [DurationWhere!]
               NOT: DurationWhere
@@ -112,6 +124,10 @@ describe("Temporals", () => {
 
             \\"\\"\\"A local datetime, represented as 'YYYY-MM-DDTHH:MM:SS'\\"\\"\\"
             scalar LocalDateTime
+
+            input LocalDateTimeUpdate {
+              set: LocalDateTime
+            }
 
             input LocalDateTimeWhere {
               AND: [LocalDateTimeWhere!]
@@ -130,6 +146,10 @@ describe("Temporals", () => {
             \\"\\"\\"
             scalar LocalTime
 
+            input LocalTimeUpdate {
+              set: LocalTime
+            }
+
             input LocalTimeWhere {
               AND: [LocalTimeWhere!]
               NOT: LocalTimeWhere
@@ -145,6 +165,8 @@ describe("Temporals", () => {
             type Mutation {
               createNodeTypes(input: [NodeTypeCreateInput!]!): NodeTypeCreateResponse
               createRelatedNodes(input: [RelatedNodeCreateInput!]!): RelatedNodeCreateResponse
+              updateNodeTypes(input: [NodeTypeUpdateInput!]!): NodeTypeUpdateResponse
+              updateRelatedNodes(input: [RelatedNodeUpdateInput!]!): RelatedNodeUpdateResponse
             }
 
             type NodeType {
@@ -270,6 +292,24 @@ describe("Temporals", () => {
               time: SortDirection
             }
 
+            input NodeTypeUpdateInput {
+              node: NodeTypeUpdateNode!
+            }
+
+            input NodeTypeUpdateNode {
+              date: DateUpdate
+              dateTime: DateTimeUpdate
+              duration: DurationUpdate
+              localDateTime: LocalDateTimeUpdate
+              localTime: LocalTimeUpdate
+              time: TimeUpdate
+            }
+
+            type NodeTypeUpdateResponse {
+              info: NodeTypeCreateInfo
+              nodeTypes: [NodeType!]!
+            }
+
             input NodeTypeWhere {
               AND: [NodeTypeWhere!]
               NOT: NodeTypeWhere
@@ -391,6 +431,24 @@ describe("Temporals", () => {
               time: SortDirection
             }
 
+            input RelatedNodeUpdateInput {
+              node: RelatedNodeUpdateNode!
+            }
+
+            input RelatedNodeUpdateNode {
+              date: DateUpdate
+              dateTime: DateTimeUpdate
+              duration: DurationUpdate
+              localDateTime: LocalDateTimeUpdate
+              localTime: LocalTimeUpdate
+              time: TimeUpdate
+            }
+
+            type RelatedNodeUpdateResponse {
+              info: RelatedNodeCreateInfo
+              relatedNodes: [RelatedNode!]!
+            }
+
             input RelatedNodeWhere {
               AND: [RelatedNodeWhere!]
               NOT: RelatedNodeWhere
@@ -410,6 +468,10 @@ describe("Temporals", () => {
 
             \\"\\"\\"A time, represented as an RFC3339 time string\\"\\"\\"
             scalar Time
+
+            input TimeUpdate {
+              set: Time
+            }
 
             input TimeWhere {
               AND: [TimeWhere!]

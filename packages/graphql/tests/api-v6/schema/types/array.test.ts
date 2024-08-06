@@ -132,6 +132,10 @@ describe("Scalars", () => {
               equals: [BigInt]
             }
 
+            input BigIntUpdate {
+              set: BigInt
+            }
+
             input BooleanWhere {
               AND: [BooleanWhere!]
               NOT: BooleanWhere
@@ -161,6 +165,14 @@ describe("Scalars", () => {
               equals: [DateTime]
             }
 
+            input DateTimeUpdate {
+              set: DateTime
+            }
+
+            input DateUpdate {
+              set: Date
+            }
+
             \\"\\"\\"A duration, represented as an ISO 8601 duration string\\"\\"\\"
             scalar Duration
 
@@ -172,12 +184,20 @@ describe("Scalars", () => {
               equals: [Duration]
             }
 
+            input DurationUpdate {
+              set: Duration
+            }
+
             input FloatListWhere {
               equals: [Float!]
             }
 
             input FloatListWhereNullable {
               equals: [Float]
+            }
+
+            input FloatUpdate {
+              set: Float
             }
 
             input IDListWhere {
@@ -188,12 +208,20 @@ describe("Scalars", () => {
               equals: [ID]
             }
 
+            input IDUpdate {
+              set: ID
+            }
+
             input IntListWhere {
               equals: [Int!]
             }
 
             input IntListWhereNullable {
               equals: [Int]
+            }
+
+            input IntUpdate {
+              set: Int
             }
 
             \\"\\"\\"A local datetime, represented as 'YYYY-MM-DDTHH:MM:SS'\\"\\"\\"
@@ -205,6 +233,10 @@ describe("Scalars", () => {
 
             input LocalDateTimeListWhereNullable {
               equals: [LocalDateTime]
+            }
+
+            input LocalDateTimeUpdate {
+              set: LocalDateTime
             }
 
             \\"\\"\\"
@@ -220,9 +252,15 @@ describe("Scalars", () => {
               equals: [LocalTime]
             }
 
+            input LocalTimeUpdate {
+              set: LocalTime
+            }
+
             type Mutation {
               createNodeTypes(input: [NodeTypeCreateInput!]!): NodeTypeCreateResponse
               createRelatedNodes(input: [RelatedNodeCreateInput!]!): RelatedNodeCreateResponse
+              updateNodeTypes(input: [NodeTypeUpdateInput!]!): NodeTypeUpdateResponse
+              updateRelatedNodes(input: [RelatedNodeUpdateInput!]!): RelatedNodeUpdateResponse
             }
 
             type NodeType {
@@ -360,6 +398,42 @@ describe("Scalars", () => {
               NOT: NodeTypeRelatedNodeOperationWhere
               OR: [NodeTypeRelatedNodeOperationWhere!]
               edges: NodeTypeRelatedNodeEdgeWhere
+            }
+
+            input NodeTypeUpdateInput {
+              node: NodeTypeUpdateNode!
+            }
+
+            input NodeTypeUpdateNode {
+              bigIntList: BigIntUpdate
+              bigIntListNullable: BigIntUpdate
+              booleanList: IntUpdate
+              booleanListNullable: IntUpdate
+              dateList: DateUpdate
+              dateListNullable: DateUpdate
+              dateTimeList: DateTimeUpdate
+              dateTimeListNullable: DateTimeUpdate
+              durationList: DurationUpdate
+              durationListNullable: DurationUpdate
+              floatList: FloatUpdate
+              floatListNullable: FloatUpdate
+              idList: IDUpdate
+              idListNullable: IDUpdate
+              intList: IntUpdate
+              intListNullable: IntUpdate
+              localDateTimeList: LocalDateTimeUpdate
+              localDateTimeListNullable: LocalDateTimeUpdate
+              localTimeList: LocalTimeUpdate
+              localTimeListNullable: LocalTimeUpdate
+              stringList: StringUpdate
+              stringListNullable: StringUpdate
+              timeList: TimeUpdate
+              timeListNullable: TimeUpdate
+            }
+
+            type NodeTypeUpdateResponse {
+              info: NodeTypeCreateInfo
+              nodeTypes: [NodeType!]!
             }
 
             input NodeTypeWhere {
@@ -551,6 +625,42 @@ describe("Scalars", () => {
               timeListNullable: TimeListWhereNullable
             }
 
+            input RelatedNodeUpdateInput {
+              node: RelatedNodeUpdateNode!
+            }
+
+            input RelatedNodeUpdateNode {
+              bigIntList: BigIntUpdate
+              bigIntListNullable: BigIntUpdate
+              booleanList: IntUpdate
+              booleanListNullable: IntUpdate
+              dateList: DateUpdate
+              dateListNullable: DateUpdate
+              dateTimeList: DateTimeUpdate
+              dateTimeListNullable: DateTimeUpdate
+              durationList: DurationUpdate
+              durationListNullable: DurationUpdate
+              floatList: FloatUpdate
+              floatListNullable: FloatUpdate
+              idList: IDUpdate
+              idListNullable: IDUpdate
+              intList: IntUpdate
+              intListNullable: IntUpdate
+              localDateTimeList: LocalDateTimeUpdate
+              localDateTimeListNullable: LocalDateTimeUpdate
+              localTimeList: LocalTimeUpdate
+              localTimeListNullable: LocalTimeUpdate
+              stringList: StringUpdate
+              stringListNullable: StringUpdate
+              timeList: TimeUpdate
+              timeListNullable: TimeUpdate
+            }
+
+            type RelatedNodeUpdateResponse {
+              info: RelatedNodeCreateInfo
+              relatedNodes: [RelatedNode!]!
+            }
+
             input RelatedNodeWhere {
               AND: [RelatedNodeWhere!]
               NOT: RelatedNodeWhere
@@ -589,6 +699,10 @@ describe("Scalars", () => {
               equals: [String]
             }
 
+            input StringUpdate {
+              set: String
+            }
+
             \\"\\"\\"A time, represented as an RFC3339 time string\\"\\"\\"
             scalar Time
 
@@ -598,6 +712,10 @@ describe("Scalars", () => {
 
             input TimeListWhereNullable {
               equals: [Time]
+            }
+
+            input TimeUpdate {
+              set: Time
             }"
         `);
     });

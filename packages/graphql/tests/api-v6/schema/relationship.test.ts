@@ -150,6 +150,19 @@ describe("Relationships", () => {
               name: SortDirection
             }
 
+            input ActorUpdateInput {
+              node: ActorUpdateNode!
+            }
+
+            input ActorUpdateNode {
+              name: StringUpdate
+            }
+
+            type ActorUpdateResponse {
+              actors: [Actor!]!
+              info: ActorCreateInfo
+            }
+
             input ActorWhere {
               AND: [ActorWhere!]
               NOT: ActorWhere
@@ -263,6 +276,19 @@ describe("Relationships", () => {
               title: SortDirection
             }
 
+            input MovieUpdateInput {
+              node: MovieUpdateNode!
+            }
+
+            input MovieUpdateNode {
+              title: StringUpdate
+            }
+
+            type MovieUpdateResponse {
+              info: MovieCreateInfo
+              movies: [Movie!]!
+            }
+
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
@@ -274,6 +300,8 @@ describe("Relationships", () => {
             type Mutation {
               createActors(input: [ActorCreateInput!]!): ActorCreateResponse
               createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
+              updateActors(input: [ActorUpdateInput!]!): ActorUpdateResponse
+              updateMovies(input: [MovieUpdateInput!]!): MovieUpdateResponse
             }
 
             type PageInfo {
@@ -291,6 +319,10 @@ describe("Relationships", () => {
             enum SortDirection {
               ASC
               DESC
+            }
+
+            input StringUpdate {
+              set: String
             }
 
             input StringWhere {
@@ -455,6 +487,19 @@ describe("Relationships", () => {
               name: SortDirection
             }
 
+            input ActorUpdateInput {
+              node: ActorUpdateNode!
+            }
+
+            input ActorUpdateNode {
+              name: StringUpdate
+            }
+
+            type ActorUpdateResponse {
+              actors: [Actor!]!
+              info: ActorCreateInfo
+            }
+
             input ActorWhere {
               AND: [ActorWhere!]
               NOT: ActorWhere
@@ -583,6 +628,19 @@ describe("Relationships", () => {
               title: SortDirection
             }
 
+            input MovieUpdateInput {
+              node: MovieUpdateNode!
+            }
+
+            input MovieUpdateNode {
+              title: StringUpdate
+            }
+
+            type MovieUpdateResponse {
+              info: MovieCreateInfo
+              movies: [Movie!]!
+            }
+
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
@@ -594,6 +652,8 @@ describe("Relationships", () => {
             type Mutation {
               createActors(input: [ActorCreateInput!]!): ActorCreateResponse
               createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
+              updateActors(input: [ActorUpdateInput!]!): ActorUpdateResponse
+              updateMovies(input: [MovieUpdateInput!]!): MovieUpdateResponse
             }
 
             type PageInfo {
@@ -611,6 +671,10 @@ describe("Relationships", () => {
             enum SortDirection {
               ASC
               DESC
+            }
+
+            input StringUpdate {
+              set: String
             }
 
             input StringWhere {

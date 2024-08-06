@@ -88,4 +88,25 @@ export class TopLevelEntityTypeNames extends EntityTypeNames {
     public get createInfo(): string {
         return `${upperFirst(this.entityName)}CreateInfo`;
     }
+
+    /** Top Level Update field */
+    public get updateField(): string {
+        return `update${upperFirst(plural(this.entityName))}`;
+    }
+
+    public get updateNode(): string {
+        return `${upperFirst(this.entityName)}UpdateNode`;
+    }
+
+    public get updateInput(): string {
+        return `${upperFirst(this.entityName)}UpdateInput`;
+    }
+
+    public get updateResponse(): string {
+        return `${upperFirst(this.entityName)}UpdateResponse`;
+    }
+
+    public get updateInfo(): string {
+        return `${upperFirst(this.entityName)}UpdateInfo`;
+    }
 }

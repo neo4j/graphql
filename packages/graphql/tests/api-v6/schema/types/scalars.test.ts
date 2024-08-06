@@ -88,6 +88,10 @@ describe("Scalars", () => {
             \\"\\"\\"
             scalar BigInt
 
+            input BigIntUpdate {
+              set: BigInt
+            }
+
             input BigIntWhere {
               AND: [BigIntWhere!]
               NOT: BigIntWhere
@@ -107,6 +111,10 @@ describe("Scalars", () => {
               equals: Boolean
             }
 
+            input FloatUpdate {
+              set: Float
+            }
+
             input FloatWhere {
               AND: [FloatWhere!]
               NOT: FloatWhere
@@ -119,6 +127,10 @@ describe("Scalars", () => {
               lte: Float
             }
 
+            input IDUpdate {
+              set: ID
+            }
+
             input IDWhere {
               AND: [IDWhere!]
               NOT: IDWhere
@@ -128,6 +140,10 @@ describe("Scalars", () => {
               equals: ID
               in: [ID!]
               startsWith: ID
+            }
+
+            input IntUpdate {
+              set: Int
             }
 
             input IntWhere {
@@ -145,6 +161,8 @@ describe("Scalars", () => {
             type Mutation {
               createNodeTypes(input: [NodeTypeCreateInput!]!): NodeTypeCreateResponse
               createRelatedNodes(input: [RelatedNodeCreateInput!]!): RelatedNodeCreateResponse
+              updateNodeTypes(input: [NodeTypeUpdateInput!]!): NodeTypeUpdateResponse
+              updateRelatedNodes(input: [RelatedNodeUpdateInput!]!): RelatedNodeUpdateResponse
             }
 
             type NodeType {
@@ -286,6 +304,30 @@ describe("Scalars", () => {
               intNullable: SortDirection
               string: SortDirection
               stringNullable: SortDirection
+            }
+
+            input NodeTypeUpdateInput {
+              node: NodeTypeUpdateNode!
+            }
+
+            input NodeTypeUpdateNode {
+              bigInt: BigIntUpdate
+              bigIntNullable: BigIntUpdate
+              boolean: IntUpdate
+              booleanNullable: IntUpdate
+              float: FloatUpdate
+              floatNullable: FloatUpdate
+              id: IDUpdate
+              idNullable: IDUpdate
+              int: IntUpdate
+              intNullable: IntUpdate
+              string: StringUpdate
+              stringNullable: StringUpdate
+            }
+
+            type NodeTypeUpdateResponse {
+              info: NodeTypeCreateInfo
+              nodeTypes: [NodeType!]!
             }
 
             input NodeTypeWhere {
@@ -451,6 +493,30 @@ describe("Scalars", () => {
               stringNullable: SortDirection
             }
 
+            input RelatedNodeUpdateInput {
+              node: RelatedNodeUpdateNode!
+            }
+
+            input RelatedNodeUpdateNode {
+              bigInt: BigIntUpdate
+              bigIntNullable: BigIntUpdate
+              boolean: IntUpdate
+              booleanNullable: IntUpdate
+              float: FloatUpdate
+              floatNullable: FloatUpdate
+              id: IDUpdate
+              idNullable: IDUpdate
+              int: IntUpdate
+              intNullable: IntUpdate
+              string: StringUpdate
+              stringNullable: StringUpdate
+            }
+
+            type RelatedNodeUpdateResponse {
+              info: RelatedNodeCreateInfo
+              relatedNodes: [RelatedNode!]!
+            }
+
             input RelatedNodeWhere {
               AND: [RelatedNodeWhere!]
               NOT: RelatedNodeWhere
@@ -472,6 +538,10 @@ describe("Scalars", () => {
             enum SortDirection {
               ASC
               DESC
+            }
+
+            input StringUpdate {
+              set: String
             }
 
             input StringWhere {
