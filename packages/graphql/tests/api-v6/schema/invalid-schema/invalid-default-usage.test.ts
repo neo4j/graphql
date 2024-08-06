@@ -22,7 +22,7 @@ import { Neo4jGraphQL } from "../../../../src";
 import { raiseOnInvalidSchema } from "../../../utils/raise-on-invalid-schema";
 
 describe("invalid @default usage", () => {
-    test("@default should fail without define a value", async () => {
+    test("@default should fail without a defined value", async () => {
         const fn = async () => {
             const typeDefs = /* GraphQL */ `
                 type User @node {
