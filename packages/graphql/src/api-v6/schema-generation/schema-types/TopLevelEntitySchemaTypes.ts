@@ -161,6 +161,7 @@ export class TopLevelEntitySchemaTypes {
             type: this.updateType,
             args: {
                 input: this.updateSchemaTypes.updateInput.NonNull.List.NonNull,
+                where: this.filterSchemaTypes.operationWhereTopLevel,
             },
             resolver,
         });

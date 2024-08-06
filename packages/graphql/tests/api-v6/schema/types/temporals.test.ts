@@ -165,8 +165,8 @@ describe("Temporals", () => {
             type Mutation {
               createNodeTypes(input: [NodeTypeCreateInput!]!): NodeTypeCreateResponse
               createRelatedNodes(input: [RelatedNodeCreateInput!]!): RelatedNodeCreateResponse
-              updateNodeTypes(input: [NodeTypeUpdateInput!]!): NodeTypeUpdateResponse
-              updateRelatedNodes(input: [RelatedNodeUpdateInput!]!): RelatedNodeUpdateResponse
+              updateNodeTypes(input: [NodeTypeUpdateInput!]!, where: NodeTypeOperationWhere): NodeTypeUpdateResponse
+              updateRelatedNodes(input: [RelatedNodeUpdateInput!]!, where: RelatedNodeOperationWhere): RelatedNodeUpdateResponse
             }
 
             type NodeType {
