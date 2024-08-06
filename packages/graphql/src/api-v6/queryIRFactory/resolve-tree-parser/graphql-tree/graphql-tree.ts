@@ -33,7 +33,7 @@ export interface GraphQLTreeCreate extends GraphQLTreeNode {
     };
 }
 
-export interface GraphQLTree extends GraphQLTreeElement {
+export interface GraphQLTreeReadOperationTopLevel extends GraphQLTreeElement {
     name: string;
     fields: {
         connection?: GraphQLTreeConnectionTopLevel;
