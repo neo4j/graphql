@@ -43,28 +43,28 @@ describe("invalid @default usage on List fields", () => {
     test.each([
         {
             dataType: "[ID]",
-            value: 1.2,
+            value: [1.2],
             errorMsg: "@default.value on ID list fields must be a list of ID values",
         },
         {
             dataType: "[String]",
-            value: 1.2,
+            value: [1.2],
             errorMsg: "@default.value on String list fields must be a list of String values",
         },
         {
             dataType: "[Boolean]",
-            value: 1.2,
+            value: [1.2],
             errorMsg: "@default.value on Boolean list fields must be a list of Boolean values",
         },
         { dataType: "[Int]", value: 1.2, errorMsg: "@default.value on Int list fields must be a list of Int values" },
         {
             dataType: "[Float]",
-            value: "stuff",
+            value: ["stuff"],
             errorMsg: "@default.value on Float list fields must be a list of Float values",
         },
         {
             dataType: "[DateTime]",
-            value: "dummy",
+            value: ["dummy"],
             errorMsg: "@default.value on DateTime list fields must be a list of DateTime values",
         },
     ] as const)(

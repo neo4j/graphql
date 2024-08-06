@@ -65,8 +65,7 @@ export function ValidDefault(context: SDLValidationContext): ASTVisitor {
                             );
                         }
                     } else if (!isTypeABuiltInType(expectedType)) {
-                        //TODO: Add check for user defined enums that are currently not supported
-                        // !isTypeABuiltInType(expectedType) && !userEnums.some((x) => x.name.value === expectedType)
+                        //TODO: Add check for user defined enums that are currently not implemented
                         throw new DocumentValidationError(
                             `@default directive can only be used on Temporal types and types: Int | Float | String | Boolean | ID | Enum`,
                             []
