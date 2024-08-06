@@ -31,6 +31,7 @@ import { SchemaComposer } from "graphql-compose";
 import { SchemaBuilderTypes } from "./SchemaBuilderTypes";
 
 export type TypeDefinition = string | WrappedComposer<ObjectTypeComposer | ScalarTypeComposer>;
+export type InputTypeDefinition = string | WrappedComposer<InputTypeComposer | ScalarTypeComposer>;
 
 type ObjectOrInputTypeComposer = ObjectTypeComposer | InputTypeComposer;
 
@@ -41,7 +42,7 @@ type ListOrNullComposer<T extends ObjectOrInputTypeComposer | ScalarTypeComposer
     | NonNullComposer<ListComposer<T>>
     | NonNullComposer<ListComposer<NonNullComposer<T>>>;
 
-type WrappedComposer<T extends ObjectOrInputTypeComposer | ScalarTypeComposer> = T | ListOrNullComposer<T>;
+export type WrappedComposer<T extends ObjectOrInputTypeComposer | ScalarTypeComposer> = T | ListOrNullComposer<T>;
 
 export type GraphQLResolver = (...args) => any;
 
@@ -51,6 +52,14 @@ export type FieldDefinition = {
     args?: Record<string, any>;
     deprecationReason?: string | null;
     description?: string | null;
+};
+
+export type InputFieldDefinition = {
+    type: InputTypeDefinition;
+    args?: Record<string, any>;
+    deprecationReason?: string | null;
+    description?: string | null;
+    defaultValue: any;
 };
 
 export class SchemaBuilder {
@@ -108,7 +117,6 @@ export class SchemaBuilder {
             if (description) {
                 tc.setDescription(description);
             }
-
             // This is used for global node, not sure if needed for other interfaces
             tc.setResolveType((obj) => {
                 return obj.__resolveType;
@@ -125,6 +133,7 @@ export class SchemaBuilder {
                 | GraphQLInputType
                 | GraphQLNonNull<any>
                 | WrappedComposer<InputTypeComposer | ScalarTypeComposer>
+                | InputFieldDefinition
             >;
             description?: string;
         }
@@ -142,7 +151,14 @@ export class SchemaBuilder {
 
     public createInputObjectType(
         name: string,
-        fields: Record<string, EnumTypeComposer | WrappedComposer<InputTypeComposer>>,
+        fields: Record<
+            string,
+            | EnumTypeComposer
+            | GraphQLInputType
+            | GraphQLNonNull<any>
+            | WrappedComposer<InputTypeComposer | ScalarTypeComposer>
+            | InputFieldDefinition
+        >,
         description?: string
     ): InputTypeComposer {
         return this.composer.createInputTC({
