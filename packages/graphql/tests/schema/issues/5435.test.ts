@@ -23,7 +23,7 @@ import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("https://github.com/neo4j/graphql/issues/5435", () => {
-    test("Non plural value in should not be pluralized", async () => {
+    test("filters should be generated for non-list relationships with array filters disabled", async () => {
         const typeDefs = gql`
             type User {
                 id: ID! @id
