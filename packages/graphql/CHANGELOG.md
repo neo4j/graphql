@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 5.5.3
+
+### Patch Changes
+
+-   [#5432](https://github.com/neo4j/graphql/pull/5432) [`9866da6`](https://github.com/neo4j/graphql/commit/9866da62ef06d2718dbea12e8d02715c55429d3e) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Fix bug where pre-specified plural names were being pluralized again
+
 ## 5.5.2
 
 ### Patch Changes

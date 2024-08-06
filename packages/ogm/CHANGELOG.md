@@ -1,5 +1,12 @@
 # @neo4j/graphql-ogm
 
+## 5.5.3
+
+### Patch Changes
+
+-   Updated dependencies [[`9866da6`](https://github.com/neo4j/graphql/commit/9866da62ef06d2718dbea12e8d02715c55429d3e)]:
+    -   @neo4j/graphql@5.5.3
+
 ## 5.5.2
 
 ### Patch Changes
