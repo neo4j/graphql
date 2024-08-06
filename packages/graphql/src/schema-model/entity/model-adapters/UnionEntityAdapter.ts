@@ -67,7 +67,7 @@ export class UnionEntityAdapter {
     public get plural(): string {
         if (!this._plural) {
             if (this.annotations.plural) {
-                this._plural = plural(this.annotations.plural.value);
+                this._plural = singular(this.annotations.plural.value);
             } else {
                 this._plural = plural(this.name);
             }
