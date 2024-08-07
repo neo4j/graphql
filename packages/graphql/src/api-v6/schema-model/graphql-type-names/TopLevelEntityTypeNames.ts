@@ -88,4 +88,17 @@ export class TopLevelEntityTypeNames extends EntityTypeNames {
     public get createInfo(): string {
         return `${upperFirst(this.entityName)}CreateInfo`;
     }
+
+    /** Top Level Delete field */
+    public get deleteField(): string {
+        return `delete${upperFirst(plural(this.entityName))}`;
+    }
+
+    public get deleteResponse(): string {
+        return `${upperFirst(this.entityName)}DeleteResponse`;
+    }
+
+    public get deleteInfo(): string {
+        return `${upperFirst(this.entityName)}DeleteInfo`;
+    }
 }
