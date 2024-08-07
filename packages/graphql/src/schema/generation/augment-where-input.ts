@@ -49,7 +49,7 @@ function augmentWhereInputType({
         return fields;
     }
 
-    if (shouldAddDeprecatedFields(features, "arrayFilters")) {
+    if (!relationshipAdapter.isList || shouldAddDeprecatedFields(features, "arrayFilters")) {
         fields[fieldName] = {
             type: whereType,
         };
