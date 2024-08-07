@@ -107,6 +107,11 @@ describe("Scalars", () => {
               equals: Boolean
             }
 
+            type CreateInfo {
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
             input FloatWhere {
               AND: [FloatWhere!]
               NOT: FloatWhere
@@ -172,11 +177,6 @@ describe("Scalars", () => {
               node: NodeTypeSort
             }
 
-            type NodeTypeCreateInfo {
-              nodesCreated: Int!
-              relationshipsCreated: Int!
-            }
-
             input NodeTypeCreateInput {
               node: NodeTypeCreateNode!
             }
@@ -197,7 +197,7 @@ describe("Scalars", () => {
             }
 
             type NodeTypeCreateResponse {
-              info: NodeTypeCreateInfo
+              info: CreateInfo
               nodeTypes: [NodeType!]!
             }
 
@@ -343,11 +343,6 @@ describe("Scalars", () => {
               node: RelatedNodeSort
             }
 
-            type RelatedNodeCreateInfo {
-              nodesCreated: Int!
-              relationshipsCreated: Int!
-            }
-
             input RelatedNodeCreateInput {
               node: RelatedNodeCreateNode!
             }
@@ -368,7 +363,7 @@ describe("Scalars", () => {
             }
 
             type RelatedNodeCreateResponse {
-              info: RelatedNodeCreateInfo
+              info: CreateInfo
               relatedNodes: [RelatedNode!]!
             }
 

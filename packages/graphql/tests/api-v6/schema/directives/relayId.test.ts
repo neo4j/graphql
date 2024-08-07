@@ -40,6 +40,11 @@ describe("RelayId", () => {
               mutation: Mutation
             }
 
+            type CreateInfo {
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
             input GlobalIdWhere {
               equals: String
             }
@@ -70,11 +75,6 @@ describe("RelayId", () => {
               node: MovieSort
             }
 
-            type MovieCreateInfo {
-              nodesCreated: Int!
-              relationshipsCreated: Int!
-            }
-
             input MovieCreateInput {
               node: MovieCreateNode!
             }
@@ -85,7 +85,7 @@ describe("RelayId", () => {
             }
 
             type MovieCreateResponse {
-              info: MovieCreateInfo
+              info: CreateInfo
               movies: [Movie!]!
             }
 

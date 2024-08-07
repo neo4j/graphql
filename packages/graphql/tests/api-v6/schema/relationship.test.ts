@@ -59,11 +59,6 @@ describe("Relationships", () => {
               node: ActorSort
             }
 
-            type ActorCreateInfo {
-              nodesCreated: Int!
-              relationshipsCreated: Int!
-            }
-
             input ActorCreateInput {
               node: ActorCreateNode!
             }
@@ -74,7 +69,7 @@ describe("Relationships", () => {
 
             type ActorCreateResponse {
               actors: [Actor!]!
-              info: ActorCreateInfo
+              info: CreateInfo
             }
 
             type ActorEdge {
@@ -158,6 +153,11 @@ describe("Relationships", () => {
               name: StringWhere
             }
 
+            type CreateInfo {
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
             type Movie {
               actors(where: MovieActorsOperationWhere): MovieActorsOperation
               title: String
@@ -225,11 +225,6 @@ describe("Relationships", () => {
               node: MovieSort
             }
 
-            type MovieCreateInfo {
-              nodesCreated: Int!
-              relationshipsCreated: Int!
-            }
-
             input MovieCreateInput {
               node: MovieCreateNode!
             }
@@ -239,7 +234,7 @@ describe("Relationships", () => {
             }
 
             type MovieCreateResponse {
-              info: MovieCreateInfo
+              info: CreateInfo
               movies: [Movie!]!
             }
 
@@ -361,11 +356,6 @@ describe("Relationships", () => {
               node: ActorSort
             }
 
-            type ActorCreateInfo {
-              nodesCreated: Int!
-              relationshipsCreated: Int!
-            }
-
             input ActorCreateInput {
               node: ActorCreateNode!
             }
@@ -376,7 +366,7 @@ describe("Relationships", () => {
 
             type ActorCreateResponse {
               actors: [Actor!]!
-              info: ActorCreateInfo
+              info: CreateInfo
             }
 
             type ActorEdge {
@@ -463,6 +453,11 @@ describe("Relationships", () => {
               name: StringWhere
             }
 
+            type CreateInfo {
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
             input IntWhere {
               AND: [IntWhere!]
               NOT: IntWhere
@@ -545,11 +540,6 @@ describe("Relationships", () => {
               node: MovieSort
             }
 
-            type MovieCreateInfo {
-              nodesCreated: Int!
-              relationshipsCreated: Int!
-            }
-
             input MovieCreateInput {
               node: MovieCreateNode!
             }
@@ -559,7 +549,7 @@ describe("Relationships", () => {
             }
 
             type MovieCreateResponse {
-              info: MovieCreateInfo
+              info: CreateInfo
               movies: [Movie!]!
             }
 

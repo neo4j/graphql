@@ -65,6 +65,11 @@ describe("Temporals", () => {
               mutation: Mutation
             }
 
+            type CreateInfo {
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
             \\"\\"\\"A date, represented as a 'yyyy-mm-dd' string\\"\\"\\"
             scalar Date
 
@@ -166,11 +171,6 @@ describe("Temporals", () => {
               node: NodeTypeSort
             }
 
-            type NodeTypeCreateInfo {
-              nodesCreated: Int!
-              relationshipsCreated: Int!
-            }
-
             input NodeTypeCreateInput {
               node: NodeTypeCreateNode!
             }
@@ -185,7 +185,7 @@ describe("Temporals", () => {
             }
 
             type NodeTypeCreateResponse {
-              info: NodeTypeCreateInfo
+              info: CreateInfo
               nodeTypes: [NodeType!]!
             }
 
@@ -313,11 +313,6 @@ describe("Temporals", () => {
               node: RelatedNodeSort
             }
 
-            type RelatedNodeCreateInfo {
-              nodesCreated: Int!
-              relationshipsCreated: Int!
-            }
-
             input RelatedNodeCreateInput {
               node: RelatedNodeCreateNode!
             }
@@ -332,7 +327,7 @@ describe("Temporals", () => {
             }
 
             type RelatedNodeCreateResponse {
-              info: RelatedNodeCreateInfo
+              info: CreateInfo
               relatedNodes: [RelatedNode!]!
             }
 
