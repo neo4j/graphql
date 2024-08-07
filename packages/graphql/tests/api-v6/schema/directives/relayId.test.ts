@@ -45,6 +45,11 @@ describe("RelayId", () => {
               relationshipsCreated: Int!
             }
 
+            type DeleteInfo {
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
             input GlobalIdWhere {
               equals: String
             }
@@ -89,6 +94,10 @@ describe("RelayId", () => {
               movies: [Movie!]!
             }
 
+            type MovieDeleteResponse {
+              info: DeleteInfo
+            }
+
             type MovieEdge {
               cursor: String
               node: Movie
@@ -121,6 +130,7 @@ describe("RelayId", () => {
 
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
+              deleteMovies(where: MovieOperationWhere): MovieDeleteResponse
             }
 
             interface Node {

@@ -112,6 +112,11 @@ describe("Scalars", () => {
               relationshipsCreated: Int!
             }
 
+            type DeleteInfo {
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
             input FloatWhere {
               AND: [FloatWhere!]
               NOT: FloatWhere
@@ -150,6 +155,8 @@ describe("Scalars", () => {
             type Mutation {
               createNodeTypes(input: [NodeTypeCreateInput!]!): NodeTypeCreateResponse
               createRelatedNodes(input: [RelatedNodeCreateInput!]!): RelatedNodeCreateResponse
+              deleteNodeTypes(where: NodeTypeOperationWhere): NodeTypeDeleteResponse
+              deleteRelatedNodes(where: RelatedNodeOperationWhere): RelatedNodeDeleteResponse
             }
 
             type NodeType {
@@ -199,6 +206,10 @@ describe("Scalars", () => {
             type NodeTypeCreateResponse {
               info: CreateInfo
               nodeTypes: [NodeType!]!
+            }
+
+            type NodeTypeDeleteResponse {
+              info: DeleteInfo
             }
 
             type NodeTypeEdge {
@@ -365,6 +376,10 @@ describe("Scalars", () => {
             type RelatedNodeCreateResponse {
               info: CreateInfo
               relatedNodes: [RelatedNode!]!
+            }
+
+            type RelatedNodeDeleteResponse {
+              info: DeleteInfo
             }
 
             type RelatedNodeEdge {

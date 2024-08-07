@@ -72,6 +72,10 @@ describe("Relationships", () => {
               info: CreateInfo
             }
 
+            type ActorDeleteResponse {
+              info: DeleteInfo
+            }
+
             type ActorEdge {
               cursor: String
               node: Actor
@@ -158,6 +162,11 @@ describe("Relationships", () => {
               relationshipsCreated: Int!
             }
 
+            type DeleteInfo {
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
             type Movie {
               actors(where: MovieActorsOperationWhere): MovieActorsOperation
               title: String
@@ -238,6 +247,10 @@ describe("Relationships", () => {
               movies: [Movie!]!
             }
 
+            type MovieDeleteResponse {
+              info: DeleteInfo
+            }
+
             type MovieEdge {
               cursor: String
               node: Movie
@@ -269,6 +282,8 @@ describe("Relationships", () => {
             type Mutation {
               createActors(input: [ActorCreateInput!]!): ActorCreateResponse
               createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
+              deleteActors(where: ActorOperationWhere): ActorDeleteResponse
+              deleteMovies(where: MovieOperationWhere): MovieDeleteResponse
             }
 
             type PageInfo {
@@ -369,6 +384,10 @@ describe("Relationships", () => {
               info: CreateInfo
             }
 
+            type ActorDeleteResponse {
+              info: DeleteInfo
+            }
+
             type ActorEdge {
               cursor: String
               node: Actor
@@ -456,6 +475,11 @@ describe("Relationships", () => {
             type CreateInfo {
               nodesCreated: Int!
               relationshipsCreated: Int!
+            }
+
+            type DeleteInfo {
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
             }
 
             input IntWhere {
@@ -553,6 +577,10 @@ describe("Relationships", () => {
               movies: [Movie!]!
             }
 
+            type MovieDeleteResponse {
+              info: DeleteInfo
+            }
+
             type MovieEdge {
               cursor: String
               node: Movie
@@ -584,6 +612,8 @@ describe("Relationships", () => {
             type Mutation {
               createActors(input: [ActorCreateInput!]!): ActorCreateResponse
               createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
+              deleteActors(where: ActorOperationWhere): ActorDeleteResponse
+              deleteMovies(where: MovieOperationWhere): MovieDeleteResponse
             }
 
             type PageInfo {

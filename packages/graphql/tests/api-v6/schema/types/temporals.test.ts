@@ -100,6 +100,11 @@ describe("Temporals", () => {
               lte: Date
             }
 
+            type DeleteInfo {
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
             \\"\\"\\"A duration, represented as an ISO 8601 duration string\\"\\"\\"
             scalar Duration
 
@@ -150,6 +155,8 @@ describe("Temporals", () => {
             type Mutation {
               createNodeTypes(input: [NodeTypeCreateInput!]!): NodeTypeCreateResponse
               createRelatedNodes(input: [RelatedNodeCreateInput!]!): RelatedNodeCreateResponse
+              deleteNodeTypes(where: NodeTypeOperationWhere): NodeTypeDeleteResponse
+              deleteRelatedNodes(where: RelatedNodeOperationWhere): RelatedNodeDeleteResponse
             }
 
             type NodeType {
@@ -187,6 +194,10 @@ describe("Temporals", () => {
             type NodeTypeCreateResponse {
               info: CreateInfo
               nodeTypes: [NodeType!]!
+            }
+
+            type NodeTypeDeleteResponse {
+              info: DeleteInfo
             }
 
             type NodeTypeEdge {
@@ -329,6 +340,10 @@ describe("Temporals", () => {
             type RelatedNodeCreateResponse {
               info: CreateInfo
               relatedNodes: [RelatedNode!]!
+            }
+
+            type RelatedNodeDeleteResponse {
+              info: DeleteInfo
             }
 
             type RelatedNodeEdge {

@@ -71,6 +71,11 @@ describe("@default on fields", () => {
               lte: DateTime
             }
 
+            type DeleteInfo {
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
             input FloatWhere {
               AND: [FloatWhere!]
               NOT: FloatWhere
@@ -142,6 +147,10 @@ describe("@default on fields", () => {
               movies: [Movie!]!
             }
 
+            type MovieDeleteResponse {
+              info: DeleteInfo
+            }
+
             type MovieEdge {
               cursor: String
               node: Movie
@@ -181,6 +190,7 @@ describe("@default on fields", () => {
 
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
+              deleteMovies(where: MovieOperationWhere): MovieDeleteResponse
             }
 
             type PageInfo {
