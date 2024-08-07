@@ -139,6 +139,11 @@ describe("Scalars", () => {
               equals: Boolean
             }
 
+            type CreateInfo {
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
             \\"\\"\\"A date, represented as a 'yyyy-mm-dd' string\\"\\"\\"
             scalar Date
 
@@ -258,11 +263,6 @@ describe("Scalars", () => {
               pageInfo: PageInfo
             }
 
-            type NodeTypeCreateInfo {
-              nodesCreated: Int!
-              relationshipsCreated: Int!
-            }
-
             input NodeTypeCreateInput {
               node: NodeTypeCreateNode!
             }
@@ -295,7 +295,7 @@ describe("Scalars", () => {
             }
 
             type NodeTypeCreateResponse {
-              info: NodeTypeCreateInfo
+              info: CreateInfo
               nodeTypes: [NodeType!]!
             }
 
@@ -437,11 +437,6 @@ describe("Scalars", () => {
               pageInfo: PageInfo
             }
 
-            type RelatedNodeCreateInfo {
-              nodesCreated: Int!
-              relationshipsCreated: Int!
-            }
-
             input RelatedNodeCreateInput {
               node: RelatedNodeCreateNode!
             }
@@ -474,7 +469,7 @@ describe("Scalars", () => {
             }
 
             type RelatedNodeCreateResponse {
-              info: RelatedNodeCreateInfo
+              info: CreateInfo
               relatedNodes: [RelatedNode!]!
             }
 

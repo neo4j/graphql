@@ -51,6 +51,11 @@ describe("@default on array fields", () => {
               equals: Boolean
             }
 
+            type CreateInfo {
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
             scalar DateTime
 
@@ -84,11 +89,6 @@ describe("@default on array fields", () => {
               pageInfo: PageInfo
             }
 
-            type MovieCreateInfo {
-              nodesCreated: Int!
-              relationshipsCreated: Int!
-            }
-
             input MovieCreateInput {
               node: MovieCreateNode!
             }
@@ -103,7 +103,7 @@ describe("@default on array fields", () => {
             }
 
             type MovieCreateResponse {
-              info: MovieCreateInfo
+              info: CreateInfo
               movies: [Movie!]!
             }
 

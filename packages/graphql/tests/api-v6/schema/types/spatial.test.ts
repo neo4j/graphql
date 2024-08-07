@@ -78,6 +78,11 @@ describe("Spatial Types", () => {
               z: Float
             }
 
+            type CreateInfo {
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
             type Mutation {
               createNodeTypes(input: [NodeTypeCreateInput!]!): NodeTypeCreateResponse
               createRelatedNodes(input: [RelatedNodeCreateInput!]!): RelatedNodeCreateResponse
@@ -96,11 +101,6 @@ describe("Spatial Types", () => {
               pageInfo: PageInfo
             }
 
-            type NodeTypeCreateInfo {
-              nodesCreated: Int!
-              relationshipsCreated: Int!
-            }
-
             input NodeTypeCreateInput {
               node: NodeTypeCreateNode!
             }
@@ -113,7 +113,7 @@ describe("Spatial Types", () => {
             }
 
             type NodeTypeCreateResponse {
-              info: NodeTypeCreateInfo
+              info: CreateInfo
               nodeTypes: [NodeType!]!
             }
 
@@ -229,11 +229,6 @@ describe("Spatial Types", () => {
               pageInfo: PageInfo
             }
 
-            type RelatedNodeCreateInfo {
-              nodesCreated: Int!
-              relationshipsCreated: Int!
-            }
-
             input RelatedNodeCreateInput {
               node: RelatedNodeCreateNode!
             }
@@ -246,7 +241,7 @@ describe("Spatial Types", () => {
             }
 
             type RelatedNodeCreateResponse {
-              info: RelatedNodeCreateInfo
+              info: CreateInfo
               relatedNodes: [RelatedNode!]!
             }
 
