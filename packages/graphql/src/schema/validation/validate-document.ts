@@ -65,6 +65,7 @@ import { WarnIfAuthorizationFeatureDisabled } from "./custom-rules/warnings/auth
 import { WarnIfAMaxLimitCanBeBypassedThroughInterface } from "./custom-rules/warnings/limit-max-can-be-bypassed";
 import { WarnIfListOfListsFieldDefinition } from "./custom-rules/warnings/list-of-lists";
 import { WarnObjectFieldsWithoutResolver } from "./custom-rules/warnings/object-fields-without-resolver";
+import { WarnIfSubscriptionsAuthorizationMissing } from "./custom-rules/warnings/subscriptions-authorization-missing";
 import { validateSchemaCustomizations } from "./validate-schema-customizations";
 import { validateSDL } from "./validate-sdl";
 
@@ -218,6 +219,7 @@ function runValidationRulesOnFilteredDocument({
             WarnObjectFieldsWithoutResolver({
                 customResolvers: asArray(userCustomResolvers ?? []),
             }),
+            WarnIfSubscriptionsAuthorizationMissing(Boolean(features?.subscriptions)),
         ],
         schema
     );

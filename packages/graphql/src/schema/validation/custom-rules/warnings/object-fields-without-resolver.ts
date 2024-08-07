@@ -28,7 +28,8 @@ import {
 } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 import { DEBUG_GRAPHQL } from "../../../../constants";
-import { filterTruthy, haveSharedElement } from "../../../../utils/utils";
+import { haveSharedElement } from "../../../../utils/utils";
+import { getDirectiveNames } from "../utils/get-directive-names";
 import { getInnerTypeName } from "../utils/utils";
 
 const debug = Debug(DEBUG_GRAPHQL);
@@ -113,9 +114,4 @@ function typeNeedsResolver(type: string, document: DocumentNode): boolean {
     } else {
         return true;
     }
-}
-
-function getDirectiveNames(field: FieldDefinitionNode | ObjectTypeDefinitionNode): string[] {
-    const fieldDirectives = field.directives ?? [];
-    return filterTruthy(fieldDirectives.map((d) => d.name.value));
 }
