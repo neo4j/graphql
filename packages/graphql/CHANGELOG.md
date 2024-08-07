@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 5.5.4
+
+### Patch Changes
+
+-   [#5440](https://github.com/neo4j/graphql/pull/5440) [`cfcc474`](https://github.com/neo4j/graphql/commit/cfcc474ebcc238d1c4bc9e7ac55674975b8aa1c3) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Generate filters for non-list relationship fields if deprecated array filters have been excluded
+
 ## 5.5.3
 
 ### Patch Changes
