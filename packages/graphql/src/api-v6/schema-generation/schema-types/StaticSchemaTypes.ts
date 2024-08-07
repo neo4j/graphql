@@ -64,6 +64,17 @@ export class StaticSchemaTypes {
         });
     }
 
+    public get createInfo(): ObjectTypeComposer {
+        return this.schemaBuilder.getOrCreateObjectType("CreateInfo", () => {
+            return {
+                fields: {
+                    nodesCreated: this.schemaBuilder.types.int.NonNull,
+                    relationshipsCreated: this.schemaBuilder.types.int.NonNull,
+                },
+            };
+        });
+    }
+
     @Memoize()
     public get sortDirection(): EnumTypeComposer {
         return this.schemaBuilder.createEnumType("SortDirection", ["ASC", "DESC"]);

@@ -303,23 +303,11 @@ export class TopLevelEntitySchemaTypes {
     public get createType(): ObjectTypeComposer {
         return this.schemaBuilder.getOrCreateObjectType(this.entityTypeNames.createResponse, () => {
             const nodeType = this.nodeType;
-            const info = this.createInfo;
 
             return {
                 fields: {
                     [this.entityTypeNames.queryField]: nodeType.NonNull.List.NonNull,
-                    info,
-                },
-            };
-        });
-    }
-
-    public get createInfo(): ObjectTypeComposer {
-        return this.schemaBuilder.getOrCreateObjectType(this.entityTypeNames.createInfo, () => {
-            return {
-                fields: {
-                    nodesCreated: this.schemaBuilder.types.int.NonNull,
-                    relationshipsCreated: this.schemaBuilder.types.int.NonNull,
+                    info: this.schemaTypes.staticTypes.createInfo,
                 },
             };
         });
