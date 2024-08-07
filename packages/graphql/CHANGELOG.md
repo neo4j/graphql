@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 5.5.5
+
+### Patch Changes
+
+-   [#5446](https://github.com/neo4j/graphql/pull/5446) [`1e4a451`](https://github.com/neo4j/graphql/commit/1e4a45143dc66d9829a36b0430aaffd51a4cde50) Thanks [@darrellwarde](https://github.com/darrellwarde)! - A warning will now be given during validation of type definitions if subscriptions has been enabled, and `@authorization` has been used without `@subscriptionsAuthorization`
+
 ## 5.5.4
 
 ### Patch Changes
