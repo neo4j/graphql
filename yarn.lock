@@ -2163,8 +2163,8 @@ __metadata:
   linkType: hard
 
 "@graphql-tools/utils@npm:^10.0.0, @graphql-tools/utils@npm:^10.0.13, @graphql-tools/utils@npm:^10.1.1, @graphql-tools/utils@npm:^10.2.1, @graphql-tools/utils@npm:^10.2.3, @graphql-tools/utils@npm:^10.3.2":
-  version: 10.3.3
-  resolution: "@graphql-tools/utils@npm:10.3.3"
+  version: 10.3.4
+  resolution: "@graphql-tools/utils@npm:10.3.4"
   dependencies:
     "@graphql-typed-document-node/core": "npm:^3.1.1"
     cross-inspect: "npm:1.0.1"
@@ -2172,7 +2172,7 @@ __metadata:
     tslib: "npm:^2.4.0"
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: 10c0/9ac73505a42a7eb0569c9abe665df43470c4f25f89526f77618cf3e8bed0b0ebb23623b6e153d83ba13885b410271892857de755d30527761ba77a8980e45d29
+  checksum: 10c0/15e50dbe40fdabfb132708f2a4f8213c280c1a39df9c13bde5d1d34f90c7e9d8964f646af2ce533603bed25190d60d925b40657441d991f4206b37e701cd8502
   languageName: node
   linkType: hard
 
