@@ -88,11 +88,15 @@ describe("Spatial Types", () => {
               relationshipsDeleted: Int!
             }
 
+            type DeleteResponse {
+              info: DeleteInfo
+            }
+
             type Mutation {
               createNodeTypes(input: [NodeTypeCreateInput!]!): NodeTypeCreateResponse
               createRelatedNodes(input: [RelatedNodeCreateInput!]!): RelatedNodeCreateResponse
-              deleteNodeTypes(where: NodeTypeOperationWhere): NodeTypeDeleteResponse
-              deleteRelatedNodes(where: RelatedNodeOperationWhere): RelatedNodeDeleteResponse
+              deleteNodeTypes(where: NodeTypeOperationWhere): DeleteResponse
+              deleteRelatedNodes(where: RelatedNodeOperationWhere): DeleteResponse
             }
 
             type NodeType {
@@ -122,10 +126,6 @@ describe("Spatial Types", () => {
             type NodeTypeCreateResponse {
               info: CreateInfo
               nodeTypes: [NodeType!]!
-            }
-
-            type NodeTypeDeleteResponse {
-              info: DeleteInfo
             }
 
             type NodeTypeEdge {
@@ -254,10 +254,6 @@ describe("Spatial Types", () => {
             type RelatedNodeCreateResponse {
               info: CreateInfo
               relatedNodes: [RelatedNode!]!
-            }
-
-            type RelatedNodeDeleteResponse {
-              info: DeleteInfo
             }
 
             type RelatedNodeEdge {

@@ -68,6 +68,10 @@ describe("@default on array fields", () => {
               relationshipsDeleted: Int!
             }
 
+            type DeleteResponse {
+              info: DeleteInfo
+            }
+
             input FloatListWhere {
               equals: [Float!]
             }
@@ -112,10 +116,6 @@ describe("@default on array fields", () => {
               movies: [Movie!]!
             }
 
-            type MovieDeleteResponse {
-              info: DeleteInfo
-            }
-
             type MovieEdge {
               cursor: String
               node: Movie
@@ -146,7 +146,7 @@ describe("@default on array fields", () => {
 
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
-              deleteMovies(where: MovieOperationWhere): MovieDeleteResponse
+              deleteMovies(where: MovieOperationWhere): DeleteResponse
             }
 
             type PageInfo {

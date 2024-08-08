@@ -50,6 +50,10 @@ describe("Simple Aura-API", () => {
               relationshipsDeleted: Int!
             }
 
+            type DeleteResponse {
+              info: DeleteInfo
+            }
+
             type Movie {
               title: String
             }
@@ -74,10 +78,6 @@ describe("Simple Aura-API", () => {
             type MovieCreateResponse {
               info: CreateInfo
               movies: [Movie!]!
-            }
-
-            type MovieDeleteResponse {
-              info: DeleteInfo
             }
 
             type MovieEdge {
@@ -109,7 +109,7 @@ describe("Simple Aura-API", () => {
 
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
-              deleteMovies(where: MovieOperationWhere): MovieDeleteResponse
+              deleteMovies(where: MovieOperationWhere): DeleteResponse
             }
 
             type PageInfo {
@@ -187,10 +187,6 @@ describe("Simple Aura-API", () => {
               info: CreateInfo
             }
 
-            type ActorDeleteResponse {
-              info: DeleteInfo
-            }
-
             type ActorEdge {
               cursor: String
               node: Actor
@@ -228,6 +224,10 @@ describe("Simple Aura-API", () => {
               relationshipsDeleted: Int!
             }
 
+            type DeleteResponse {
+              info: DeleteInfo
+            }
+
             type Movie {
               title: String
             }
@@ -252,10 +252,6 @@ describe("Simple Aura-API", () => {
             type MovieCreateResponse {
               info: CreateInfo
               movies: [Movie!]!
-            }
-
-            type MovieDeleteResponse {
-              info: DeleteInfo
             }
 
             type MovieEdge {
@@ -288,8 +284,8 @@ describe("Simple Aura-API", () => {
             type Mutation {
               createActors(input: [ActorCreateInput!]!): ActorCreateResponse
               createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
-              deleteActors(where: ActorOperationWhere): ActorDeleteResponse
-              deleteMovies(where: MovieOperationWhere): MovieDeleteResponse
+              deleteActors(where: ActorOperationWhere): DeleteResponse
+              deleteMovies(where: MovieOperationWhere): DeleteResponse
             }
 
             type PageInfo {
@@ -352,6 +348,10 @@ describe("Simple Aura-API", () => {
               relationshipsDeleted: Int!
             }
 
+            type DeleteResponse {
+              info: DeleteInfo
+            }
+
             type Movie {
               title: String
             }
@@ -376,10 +376,6 @@ describe("Simple Aura-API", () => {
             type MovieCreateResponse {
               info: CreateInfo
               movies: [Movie!]!
-            }
-
-            type MovieDeleteResponse {
-              info: DeleteInfo
             }
 
             type MovieEdge {
@@ -411,7 +407,7 @@ describe("Simple Aura-API", () => {
 
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
-              deleteMovies(where: MovieOperationWhere): MovieDeleteResponse
+              deleteMovies(where: MovieOperationWhere): DeleteResponse
             }
 
             type PageInfo {

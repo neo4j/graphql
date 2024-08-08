@@ -171,6 +171,10 @@ describe("Scalars", () => {
               relationshipsDeleted: Int!
             }
 
+            type DeleteResponse {
+              info: DeleteInfo
+            }
+
             \\"\\"\\"A duration, represented as an ISO 8601 duration string\\"\\"\\"
             scalar Duration
 
@@ -233,8 +237,8 @@ describe("Scalars", () => {
             type Mutation {
               createNodeTypes(input: [NodeTypeCreateInput!]!): NodeTypeCreateResponse
               createRelatedNodes(input: [RelatedNodeCreateInput!]!): RelatedNodeCreateResponse
-              deleteNodeTypes(where: NodeTypeOperationWhere): NodeTypeDeleteResponse
-              deleteRelatedNodes(where: RelatedNodeOperationWhere): RelatedNodeDeleteResponse
+              deleteNodeTypes(where: NodeTypeOperationWhere): DeleteResponse
+              deleteRelatedNodes(where: RelatedNodeOperationWhere): DeleteResponse
             }
 
             type NodeType {
@@ -304,10 +308,6 @@ describe("Scalars", () => {
             type NodeTypeCreateResponse {
               info: CreateInfo
               nodeTypes: [NodeType!]!
-            }
-
-            type NodeTypeDeleteResponse {
-              info: DeleteInfo
             }
 
             type NodeTypeEdge {
@@ -482,10 +482,6 @@ describe("Scalars", () => {
             type RelatedNodeCreateResponse {
               info: CreateInfo
               relatedNodes: [RelatedNode!]!
-            }
-
-            type RelatedNodeDeleteResponse {
-              info: DeleteInfo
             }
 
             type RelatedNodeEdge {
