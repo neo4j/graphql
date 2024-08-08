@@ -86,6 +86,16 @@ export class StaticSchemaTypes {
         });
     }
 
+    public get deleteResponse(): ObjectTypeComposer {
+        return this.schemaBuilder.getOrCreateObjectType("DeleteResponse", () => {
+            return {
+                fields: {
+                    info: this.deleteInfo,
+                },
+            };
+        });
+    }
+
     @Memoize()
     public get sortDirection(): EnumTypeComposer {
         return this.schemaBuilder.createEnumType("SortDirection", ["ASC", "DESC"]);

@@ -156,7 +156,7 @@ export class TopLevelEntitySchemaTypes {
     ) {
         this.schemaBuilder.addMutationField({
             name: this.entity.typeNames.deleteField,
-            type: this.deleteType,
+            type: this.schemaTypes.staticTypes.deleteResponse,
             args: {
                 where: this.filterSchemaTypes.operationWhereTopLevel,
             },
@@ -326,16 +326,6 @@ export class TopLevelEntitySchemaTypes {
                 fields: {
                     [this.entityTypeNames.queryField]: nodeType.NonNull.List.NonNull,
                     info: this.schemaTypes.staticTypes.createInfo,
-                },
-            };
-        });
-    }
-
-    public get deleteType(): ObjectTypeComposer {
-        return this.schemaBuilder.getOrCreateObjectType(this.entityTypeNames.deleteResponse, () => {
-            return {
-                fields: {
-                    info: this.schemaTypes.staticTypes.deleteInfo,
                 },
             };
         });
