@@ -22,8 +22,8 @@ import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
 import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
 import { execute } from "../../utils";
 import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";
-import { parseResolveInfoTreeCreate } from "../queryIRFactory/resolve-tree-parser/parse-resolve-info-tree";
-import { translateCreateResolver } from "../translators/translate-create-operation";
+import { parseResolveInfoTreeUpdate } from "../queryIRFactory/resolve-tree-parser/parse-resolve-info-tree";
+import { translateUpdateOperation } from "../translators/translate-update-operation";
 
 export function generateUpdateResolver({ entity }: { entity: ConcreteEntity }) {
     return async function resolve(
@@ -34,10 +34,10 @@ export function generateUpdateResolver({ entity }: { entity: ConcreteEntity }) {
     ) {
         const resolveTree = getNeo4jResolveTree(info, { args });
         context.resolveTree = resolveTree;
-        const graphQLTreeCreate = parseResolveInfoTreeCreate({ resolveTree: context.resolveTree, entity });
-        const { cypher, params } = translateCreateResolver({
+        const graphQLTreeUpdate = parseResolveInfoTreeUpdate({ resolveTree: context.resolveTree, entity });
+        const { cypher, params } = translateUpdateOperation({
             context: context,
-            graphQLTreeCreate,
+            graphQLTreeUpdate,
             entity,
         });
         const executeResult = await execute({

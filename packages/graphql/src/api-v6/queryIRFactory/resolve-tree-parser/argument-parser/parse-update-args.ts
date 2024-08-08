@@ -17,15 +17,17 @@
  * limitations under the License.
  */
 
-import type { GraphQLTreeCreate, GraphQLTreeCreateInput } from "../resolve-tree-parser/graphql-tree/graphql-tree";
-import { ResolveTreeParserError } from "../resolve-tree-parser/resolve-tree-parser-error";
+import type { GraphQLTreeUpdate, GraphQLTreeUpdateInput } from "../graphql-tree/graphql-tree";
+import { ResolveTreeParserError } from "../resolve-tree-parser-error";
 
-export function parseCreateOperationArgsTopLevel(resolveTreeArgs: Record<string, any>): GraphQLTreeCreate["args"] {
+export function parseUpdateOperationArgsTopLevel(resolveTreeArgs: Record<string, any>): GraphQLTreeUpdate["args"] {
     return {
-        input: parseCreateOperationInput(resolveTreeArgs.input),
+        input: parseUpdateOperationInput(resolveTreeArgs.input),
+        where: resolveTreeArgs.where,
     };
 }
-function parseCreateOperationInput(resolveTreeCreateInput: any): GraphQLTreeCreateInput[] {
+
+function parseUpdateOperationInput(resolveTreeCreateInput: any): GraphQLTreeUpdateInput[] {
     if (!resolveTreeCreateInput || !Array.isArray(resolveTreeCreateInput)) {
         throw new ResolveTreeParserError(`Invalid create input field: ${resolveTreeCreateInput}`);
     }

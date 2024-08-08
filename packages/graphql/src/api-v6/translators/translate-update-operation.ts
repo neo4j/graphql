@@ -22,22 +22,22 @@ import Debug from "debug";
 import { DEBUG_TRANSLATE } from "../../constants";
 import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
 import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
-import { CreateOperationFactory } from "../queryIRFactory/CreateOperationFactory";
-import type { GraphQLTreeCreate } from "../queryIRFactory/resolve-tree-parser/graphql-tree/graphql-tree";
+import { UpdateOperationFactory } from "../queryIRFactory/UpdateOperationFactory";
+import type { GraphQLTreeUpdate } from "../queryIRFactory/resolve-tree-parser/graphql-tree/graphql-tree";
 
 const debug = Debug(DEBUG_TRANSLATE);
 
-export function translateCreateOperation({
+export function translateUpdateOperation({
     context,
     entity,
-    graphQLTreeCreate,
+    graphQLTreeUpdate,
 }: {
     context: Neo4jGraphQLTranslationContext;
-    graphQLTreeCreate: GraphQLTreeCreate;
+    graphQLTreeUpdate: GraphQLTreeUpdate;
     entity: ConcreteEntity;
 }): Cypher.CypherResult {
-    const createFactory = new CreateOperationFactory(context.schemaModel);
-    const createAST = createFactory.createAST({ graphQLTreeCreate, entity });
+    const createFactory = new UpdateOperationFactory(context.schemaModel);
+    const createAST = createFactory.createAST({ graphQLTreeUpdate, entity });
     debug(createAST.print());
     const results = createAST.build(context);
     return results.build();

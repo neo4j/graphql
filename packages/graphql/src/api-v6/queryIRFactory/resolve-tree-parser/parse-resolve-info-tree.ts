@@ -25,14 +25,16 @@ import {
     parseConnectionArgsTopLevel,
     parseOperationArgs,
     parseOperationArgsTopLevel,
-} from "../argument-parser/parse-args";
-import { parseCreateOperationArgsTopLevel } from "../argument-parser/parse-create-args";
+} from "./argument-parser/parse-args";
+import { parseCreateOperationArgsTopLevel } from "./argument-parser/parse-create-args";
+import { parseUpdateOperationArgsTopLevel } from "./argument-parser/parse-update-args";
 import type {
     GraphQLTree,
     GraphQLTreeConnection,
     GraphQLTreeConnectionTopLevel,
     GraphQLTreeCreate,
     GraphQLTreeReadOperation,
+    GraphQLTreeUpdate,
 } from "./graphql-tree/graphql-tree";
 import { parseEdges } from "./parse-edges";
 import { getNodeFields } from "./parse-node";
@@ -69,6 +71,33 @@ export function parseResolveInfoTreeCreate({
     const entityTypes = entity.typeNames;
     const createResponse = findFieldByName(resolveTree, entityTypes.createResponse, entityTypes.queryField);
     const createArgs = parseCreateOperationArgsTopLevel(resolveTree.args);
+    if (!createResponse) {
+        return {
+            alias: resolveTree.alias,
+            name: resolveTree.name,
+            args: createArgs,
+            fields: {},
+        };
+    }
+    const fieldsResolveTree = createResponse.fieldsByTypeName[entityTypes.node] ?? {};
+    const fields = getNodeFields(fieldsResolveTree, entity);
+    return {
+        alias: resolveTree.alias,
+        name: resolveTree.name,
+        args: createArgs,
+        fields,
+    };
+}
+export function parseResolveInfoTreeUpdate({
+    resolveTree,
+    entity,
+}: {
+    resolveTree: ResolveTree;
+    entity: ConcreteEntity;
+}): GraphQLTreeUpdate {
+    const entityTypes = entity.typeNames;
+    const createResponse = findFieldByName(resolveTree, entityTypes.createResponse, entityTypes.queryField);
+    const createArgs = parseUpdateOperationArgsTopLevel(resolveTree.args);
     if (!createResponse) {
         return {
             alias: resolveTree.alias,
