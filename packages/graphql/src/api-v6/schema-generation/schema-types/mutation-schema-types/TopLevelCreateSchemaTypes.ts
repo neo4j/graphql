@@ -58,7 +58,10 @@ export class TopLevelCreateSchemaTypes {
 
     public get createNode(): InputTypeComposer {
         return this.schemaBuilder.getOrCreateInputType(this.entityTypeNames.createNode, (_itc: InputTypeComposer) => {
-            const inputFields = this.getInputFields([...this.entity.attributes.values()]);
+            const relevantFields = [...this.entity.attributes.values()].filter(
+                (attribute) => !attribute.annotations.id
+            );
+            const inputFields = this.getInputFields(relevantFields);
             const isEmpty = Object.keys(inputFields).length === 0;
             const fields = isEmpty ? { _emptyInput: this.schemaBuilder.types.boolean } : inputFields;
             return {

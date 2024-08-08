@@ -22,12 +22,6 @@ import type { SDLValidationContext } from "graphql/validation/ValidationContext"
 import { isSpatial, isTemporal } from "../../../constants";
 import { defaultDirective } from "../../../graphql/directives";
 import {
-    GraphQLBuiltInScalarType,
-    Neo4jGraphQLNumberType,
-    Neo4jGraphQLSpatialType,
-    Neo4jGraphQLTemporalType,
-} from "../../../schema-model/attribute/AttributeType";
-import {
     assertValid,
     createGraphQLError,
     DocumentValidationError,
@@ -35,6 +29,7 @@ import {
 import { getPathToNode } from "../../../schema/validation/custom-rules/utils/path-parser";
 import { assertArgumentHasSameTypeAsField } from "../../../schema/validation/custom-rules/utils/same-type-argument-as-field";
 import { getInnerTypeName, isArrayType } from "../../../schema/validation/custom-rules/utils/utils";
+import { isTypeABuiltInType } from "./utils/is-type-a-built-in-type";
 
 export function ValidDefault(context: SDLValidationContext): ASTVisitor {
     return {
@@ -91,10 +86,4 @@ export function ValidDefault(context: SDLValidationContext): ASTVisitor {
             }
         },
     };
-}
-
-export function isTypeABuiltInType(expectedType: string): boolean {
-    return [GraphQLBuiltInScalarType, Neo4jGraphQLNumberType, Neo4jGraphQLSpatialType, Neo4jGraphQLTemporalType].some(
-        (enumValue) => enumValue[expectedType] === expectedType
-    );
 }
