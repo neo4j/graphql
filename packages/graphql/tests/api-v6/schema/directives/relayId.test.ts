@@ -45,6 +45,15 @@ describe("RelayId", () => {
               relationshipsCreated: Int!
             }
 
+            type DeleteInfo {
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type DeleteResponse {
+              info: DeleteInfo
+            }
+
             input GlobalIdWhere {
               equals: String
             }
@@ -121,6 +130,7 @@ describe("RelayId", () => {
 
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
+              deleteMovies(where: MovieOperationWhere): DeleteResponse
             }
 
             interface Node {

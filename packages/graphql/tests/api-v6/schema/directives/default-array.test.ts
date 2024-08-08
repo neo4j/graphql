@@ -63,6 +63,15 @@ describe("@default on array fields", () => {
               equals: [DateTime!]
             }
 
+            type DeleteInfo {
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type DeleteResponse {
+              info: DeleteInfo
+            }
+
             input FloatListWhere {
               equals: [Float!]
             }
@@ -137,6 +146,7 @@ describe("@default on array fields", () => {
 
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
+              deleteMovies(where: MovieOperationWhere): DeleteResponse
             }
 
             type PageInfo {

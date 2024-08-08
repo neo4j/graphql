@@ -146,6 +146,24 @@ export class TopLevelEntitySchemaTypes {
         });
     }
 
+    public addTopLevelDeleteField(
+        resolver: (
+            _root: any,
+            args: any,
+            context: Neo4jGraphQLTranslationContext,
+            info: GraphQLResolveInfo
+        ) => Promise<any>
+    ) {
+        this.schemaBuilder.addMutationField({
+            name: this.entity.typeNames.deleteField,
+            type: this.schemaTypes.staticTypes.deleteResponse,
+            args: {
+                where: this.filterSchemaTypes.operationWhereTopLevel,
+            },
+            resolver,
+        });
+    }
+
     protected get connectionSort(): InputTypeComposer {
         return this.schemaBuilder.getOrCreateInputType(this.entityTypeNames.connectionSort, () => {
             return {

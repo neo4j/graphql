@@ -45,6 +45,15 @@ describe("Simple Aura-API", () => {
               relationshipsCreated: Int!
             }
 
+            type DeleteInfo {
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type DeleteResponse {
+              info: DeleteInfo
+            }
+
             type Movie {
               title: String
             }
@@ -100,6 +109,7 @@ describe("Simple Aura-API", () => {
 
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
+              deleteMovies(where: MovieOperationWhere): DeleteResponse
             }
 
             type PageInfo {
@@ -209,6 +219,15 @@ describe("Simple Aura-API", () => {
               relationshipsCreated: Int!
             }
 
+            type DeleteInfo {
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type DeleteResponse {
+              info: DeleteInfo
+            }
+
             type Movie {
               title: String
             }
@@ -265,6 +284,8 @@ describe("Simple Aura-API", () => {
             type Mutation {
               createActors(input: [ActorCreateInput!]!): ActorCreateResponse
               createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
+              deleteActors(where: ActorOperationWhere): DeleteResponse
+              deleteMovies(where: MovieOperationWhere): DeleteResponse
             }
 
             type PageInfo {
@@ -322,6 +343,15 @@ describe("Simple Aura-API", () => {
               relationshipsCreated: Int!
             }
 
+            type DeleteInfo {
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type DeleteResponse {
+              info: DeleteInfo
+            }
+
             type Movie {
               title: String
             }
@@ -377,6 +407,7 @@ describe("Simple Aura-API", () => {
 
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
+              deleteMovies(where: MovieOperationWhere): DeleteResponse
             }
 
             type PageInfo {

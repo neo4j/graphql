@@ -158,6 +158,15 @@ describe("Relationships", () => {
               relationshipsCreated: Int!
             }
 
+            type DeleteInfo {
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type DeleteResponse {
+              info: DeleteInfo
+            }
+
             type Movie {
               actors(where: MovieActorsOperationWhere): MovieActorsOperation
               title: String
@@ -269,6 +278,8 @@ describe("Relationships", () => {
             type Mutation {
               createActors(input: [ActorCreateInput!]!): ActorCreateResponse
               createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
+              deleteActors(where: ActorOperationWhere): DeleteResponse
+              deleteMovies(where: MovieOperationWhere): DeleteResponse
             }
 
             type PageInfo {
@@ -458,6 +469,15 @@ describe("Relationships", () => {
               relationshipsCreated: Int!
             }
 
+            type DeleteInfo {
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type DeleteResponse {
+              info: DeleteInfo
+            }
+
             input IntWhere {
               AND: [IntWhere!]
               NOT: IntWhere
@@ -584,6 +604,8 @@ describe("Relationships", () => {
             type Mutation {
               createActors(input: [ActorCreateInput!]!): ActorCreateResponse
               createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
+              deleteActors(where: ActorOperationWhere): DeleteResponse
+              deleteMovies(where: MovieOperationWhere): DeleteResponse
             }
 
             type PageInfo {
