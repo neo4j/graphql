@@ -31,32 +31,35 @@ import type { UpdateProperty } from "./MutationInput/UpdateProperty";
 
 export class V6UpdateOperation extends MutationOperation {
     public readonly target: ConcreteEntityAdapter;
-    private readonly propertySet: UpdateProperty[];
+    private readonly inputFields: UpdateProperty[];
     private readonly projection: V6ReadOperation | undefined;
 
-    protected filters: Filter[] = [];
-    protected selection: EntitySelection;
+    protected filters: Filter[];
+    protected selection: EntitySelection<Cypher.Match>;
 
     constructor({
         target,
-        propertySet,
+        inputFields,
         projection,
         selection,
+        filters = [],
     }: {
-        selection: EntitySelection;
+        selection: EntitySelection<Cypher.Match>;
         target: ConcreteEntityAdapter;
-        propertySet: UpdateProperty[];
+        inputFields: UpdateProperty[];
         projection?: V6ReadOperation;
+        filters?: Filter[];
     }) {
         super();
         this.target = target;
-        this.propertySet = propertySet;
+        this.inputFields = inputFields;
         this.projection = projection;
         this.selection = selection;
+        this.filters = filters;
     }
 
     public getChildren(): QueryASTNode[] {
-        return filterTruthy([...this.propertySet.values(), ...this.filters, this.selection, this.projection]);
+        return filterTruthy([...this.inputFields.values(), ...this.filters, this.selection, this.projection]);
     }
 
     public transpile(context: QueryASTContext): OperationTranspileResult {
@@ -66,9 +69,15 @@ export class V6UpdateOperation extends MutationOperation {
 
         const { selection: selectionClause, nestedContext } = this.selection.apply(context);
 
-        const setParams = this.propertySet.flatMap((p) => p.getSetParams(nestedContext));
+        const setParams = this.inputFields.flatMap((p) => p.getSetParams(nestedContext));
 
-        (selectionClause as Cypher.Match).set(...setParams);
+        selectionClause.set(...setParams);
+
+        // TODO: filter subqueries
+        const filterPredicates = this.filters.map((f) => {
+            return f.getPredicate(nestedContext);
+        });
+        selectionClause.where(Cypher.and(...filterPredicates));
 
         const clauses = Cypher.concat(selectionClause, ...this.getProjectionClause(nestedContext));
         return { projectionExpr: context.returnVariable, clauses: [clauses] };

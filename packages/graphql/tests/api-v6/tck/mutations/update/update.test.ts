@@ -55,8 +55,9 @@ describe("Top-Level Update", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this0:Movie)
+            WHERE this0.title = $param0
             SET
-                this0.title = $param0
+                this0.title = $param1
             WITH *
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
@@ -71,7 +72,8 @@ describe("Top-Level Update", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"The Matrix\\"
+                \\"param0\\": \\"Matrix\\",
+                \\"param1\\": \\"The Matrix\\"
             }"
         `);
     });

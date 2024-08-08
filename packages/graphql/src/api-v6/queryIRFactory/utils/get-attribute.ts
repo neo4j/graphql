@@ -17,21 +17,17 @@
  * limitations under the License.
  */
 
-import type Cypher from "@neo4j/cypher-builder";
-import type { QueryASTContext } from "../QueryASTContext";
-import { QueryASTNode } from "../QueryASTNode";
+import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
+import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import { FactoryParseError } from "../factory-parse-error";
 
-export type SelectionClause = Cypher.Match | Cypher.With | Cypher.Yield;
-
-export abstract class EntitySelection<T extends SelectionClause = SelectionClause> extends QueryASTNode {
-    public getChildren(): QueryASTNode[] {
-        return [];
+/**
+ * Get the attribute from the entity, in case it doesn't exist throw an error
+ **/
+export function getAttribute(entity: ConcreteEntityAdapter, key: string): AttributeAdapter {
+    const attribute = entity.attributes.get(key);
+    if (!attribute) {
+        throw new FactoryParseError(`Transpile Error: Input field ${key} not found in entity ${entity.name}`);
     }
-
-    /** Apply selection over the given context, returns the updated context and the selection clause
-     * TODO: Improve naming */
-    public abstract apply(context: QueryASTContext): {
-        nestedContext: QueryASTContext<Cypher.Node>;
-        selection: T;
-    };
+    return attribute;
 }

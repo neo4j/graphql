@@ -19,7 +19,6 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
-import type { AttributeAdapter } from "../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
 import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { QueryAST } from "../../translate/queryAST/ast/QueryAST";
@@ -27,8 +26,8 @@ import { PropertyInputField } from "../../translate/queryAST/ast/input-fields/Pr
 import type { V6ReadOperation } from "../queryIR/ConnectionReadOperation";
 import { V6CreateOperation } from "../queryIR/CreateOperation";
 import { ReadOperationFactory } from "./ReadOperationFactory";
-import { FactoryParseError } from "./factory-parse-error";
 import type { GraphQLTreeCreate, GraphQLTreeCreateInput } from "./resolve-tree-parser/graphql-tree/graphql-tree";
+import { getAttribute } from "./utils/get-attribute";
 
 export class CreateOperationFactory {
     public schemaModel: Neo4jGraphQLSchemaModel;
@@ -112,15 +111,4 @@ export class CreateOperationFactory {
         }
         return inputFields;
     }
-}
-
-/**
- * Get the attribute from the entity, in case it doesn't exist throw an error
- **/
-function getAttribute(entity: ConcreteEntityAdapter, key: string): AttributeAdapter {
-    const attribute = entity.attributes.get(key);
-    if (!attribute) {
-        throw new FactoryParseError(`Transpile Error: Input field ${key} not found in entity ${entity.name}`);
-    }
-    return attribute;
 }

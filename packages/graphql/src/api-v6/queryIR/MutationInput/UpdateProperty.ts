@@ -54,30 +54,4 @@ export class UpdateProperty extends InputField {
 
         return [setField];
     }
-
-    // private coerceReference(
-    //     variable: Cypher.Variable | Cypher.Property
-    // ): Exclude<Cypher.Expr, Cypher.Map | Cypher.MapProjection> {
-    //     if (this.attribute.typeHelper.isSpatial()) {
-    //         if (!this.attribute.typeHelper.isList()) {
-    //             return Cypher.point(variable);
-    //         }
-    //         const comprehensionVar = new Cypher.Variable();
-    //         const mapPoint = Cypher.point(comprehensionVar);
-    //         return new Cypher.ListComprehension(comprehensionVar, variable).map(mapPoint);
-    //     }
-    //     return variable;
-    // }
-
-    // protected getTarget(queryASTContext: QueryASTContext<Cypher.Node>): Cypher.Node | Cypher.Relationship {
-    //     const target = this.attachedTo === "node" ? queryASTContext.target : queryASTContext.relationship;
-    //     if (!target) {
-    //         throw new Error("No target found");
-    //     }
-    //     return target;
-    // }
-
-    // public getSetParams(_queryASTContext: QueryASTContext, _inputVariable?: Cypher.Variable): Cypher.SetParam[] {
-    //     return [];
-    // }
 }
