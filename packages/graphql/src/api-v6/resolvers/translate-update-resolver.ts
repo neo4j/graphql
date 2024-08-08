@@ -48,7 +48,7 @@ export function generateUpdateResolver({ entity }: { entity: ConcreteEntity }) {
             info,
         });
         return {
-            [entity.typeNames.queryField]: executeResult.records[0]?.data.connection.edges.map(
+            [entity.typeNames.queryField]: executeResult.records[0]?.this.connection.edges.map(
                 (edge: any) => edge.node
             ),
             info: {

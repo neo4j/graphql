@@ -64,7 +64,7 @@ describe("Top-Level Update", () => {
                 WITH edges
                 UNWIND edges AS edge
                 WITH edge.node AS this0
-                RETURN collect({ node: { __id: id(this0), __resolveType: \\"Movie\\" } }) AS var1
+                RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var1
             }
             RETURN { connection: { edges: var1, totalCount: totalCount } } AS this"
         `);

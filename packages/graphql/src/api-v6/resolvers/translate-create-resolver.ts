@@ -47,6 +47,7 @@ export function generateCreateResolver({ entity }: { entity: ConcreteEntity }) {
             context,
             info,
         });
+
         return {
             [entity.typeNames.queryField]: executeResult.records[0]?.data.connection.edges.map(
                 (edge: any) => edge.node

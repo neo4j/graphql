@@ -96,7 +96,7 @@ export function parseResolveInfoTreeUpdate({
     entity: ConcreteEntity;
 }): GraphQLTreeUpdate {
     const entityTypes = entity.typeNames;
-    const createResponse = findFieldByName(resolveTree, entityTypes.createResponse, entityTypes.queryField);
+    const createResponse = findFieldByName(resolveTree, entityTypes.updateResponse, entityTypes.queryField);
     const createArgs = parseUpdateOperationArgsTopLevel(resolveTree.args);
     if (!createResponse) {
         return {
