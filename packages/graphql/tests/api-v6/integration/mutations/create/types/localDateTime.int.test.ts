@@ -18,8 +18,8 @@
  */
 
 import neo4jDriver from "neo4j-driver";
-import type { UniqueType } from "../../../../utils/graphql-types";
-import { TestHelper } from "../../../../utils/tests-helper";
+import type { UniqueType } from "../../../../../utils/graphql-types";
+import { TestHelper } from "../../../../../utils/tests-helper";
 
 describe("Create Nodes with LocalDateTime fields", () => {
     const testHelper = new TestHelper({ v6Api: true });
@@ -38,7 +38,7 @@ describe("Create Nodes with LocalDateTime fields", () => {
     afterEach(async () => {
         await testHelper.close();
     });
-    
+
     test("should be able to create nodes with LocalDateTime fields", async () => {
         const time1 = new Date("2024-02-17T11:49:48.322Z");
         const time2 = new Date("2025-02-17T12:49:48.322Z");

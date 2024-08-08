@@ -17,16 +17,15 @@
  * limitations under the License.
  */
 
-import type { UniqueType } from "../../../../../utils/graphql-types";
-import { TestHelper } from "../../../../../utils/tests-helper";
+import type { UniqueType } from "../../../../../../utils/graphql-types";
+import { TestHelper } from "../../../../../../utils/tests-helper";
 
-describe("Create Nodes with CartesianPoint 3d", () => {
+describe("Create Nodes with Point 2d", () => {
     const testHelper = new TestHelper({ v6Api: true });
 
     let Location: UniqueType;
-
-    const London = { x: -14221.955504767046, y: 6711533.711877272, z: 0 } as const;
-    const Rome = { x: 1391088.9885668862, y: 5146427.7652232265, z: 0 } as const;
+    const London = { longitude: -0.127758, latitude: 51.507351 } as const;
+    const Rome = { longitude: 12.496365, latitude: 41.902782 } as const;
 
     beforeEach(async () => {
         Location = testHelper.createUniqueType("Location");
@@ -34,7 +33,7 @@ describe("Create Nodes with CartesianPoint 3d", () => {
         const typeDefs = /* GraphQL */ `
             type ${Location} @node {
                 id: ID!
-                value: CartesianPoint!
+                value: Point!
             }
         `;
 
@@ -45,31 +44,30 @@ describe("Create Nodes with CartesianPoint 3d", () => {
         await testHelper.close();
     });
 
-    test("should create nodes with wgs-84-3d point fields", async () => {
+    test("should create nodes with wgs-84-2d point fields", async () => {
         const mutation = /* GraphQL */ `
-        mutation {
-            ${Location.operations.create}(input: [
-                    { node: { id: "1", value: { x: ${London.x}, y: ${London.y}, z: ${London.z} } } }
-                    { node: { id: "2", value: { x: ${Rome.x}, y: ${Rome.y}, z: ${Rome.z} } } }
-                ]) 
+            mutation {
+                ${Location.operations.create}(input: [
+                        { node: { id: "1", value: { longitude: ${London.longitude}, latitude: ${London.latitude} } } }
+                        { node: { id: "2", value: { longitude: ${Rome.longitude}, latitude: ${Rome.latitude} } } }
+                    ]) 
                 {
                     ${Location.plural} {
                         id
                         value {
-                            x
-                            y
-                            z
+                            latitude
+                            longitude
+                            height
                             crs
                             srid
                         }
                     }
                 }
-               
-            
-        }
-    `;
+            }
+        `;
 
         const mutationResult = await testHelper.executeGraphQL(mutation);
+
         expect(mutationResult.errors).toBeFalsy();
         expect(mutationResult.data).toEqual({
             [Location.operations.create]: {
@@ -77,21 +75,21 @@ describe("Create Nodes with CartesianPoint 3d", () => {
                     {
                         id: "1",
                         value: {
-                            y: London.y,
-                            x: London.x,
-                            z: London.z,
-                            crs: "cartesian-3d",
-                            srid: 9157,
+                            latitude: London.latitude,
+                            longitude: London.longitude,
+                            height: null,
+                            crs: "wgs-84",
+                            srid: 4326,
                         },
                     },
                     {
                         id: "2",
                         value: {
-                            y: Rome.y,
-                            x: Rome.x,
-                            z: Rome.z,
-                            crs: "cartesian-3d",
-                            srid: 9157,
+                            latitude: Rome.latitude,
+                            longitude: Rome.longitude,
+                            height: null,
+                            crs: "wgs-84",
+                            srid: 4326,
                         },
                     },
                 ]),

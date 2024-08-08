@@ -17,10 +17,11 @@
  * limitations under the License.
  */
 
-import type { UniqueType } from "../../../../utils/graphql-types";
-import { TestHelper } from "../../../../utils/tests-helper";
+import neo4jDriver from "neo4j-driver";
+import type { UniqueType } from "../../../../../utils/graphql-types";
+import { TestHelper } from "../../../../../utils/tests-helper";
 
-describe("Create Nodes with DateTime fields", () => {
+describe("Create Nodes with Date fields", () => {
     const testHelper = new TestHelper({ v6Api: true });
     let Movie: UniqueType;
 
@@ -28,7 +29,7 @@ describe("Create Nodes with DateTime fields", () => {
         Movie = testHelper.createUniqueType("Movie");
         const typeDefs = /* GraphQL */ `
         type ${Movie.name} @node {
-            datetime: DateTime
+            date: Date
         }
     `;
         await testHelper.initNeo4jGraphQL({ typeDefs });
@@ -38,20 +39,22 @@ describe("Create Nodes with DateTime fields", () => {
         await testHelper.close();
     });
 
-    test("should be able to create nodes with DateTime fields", async () => {
+    test("should be able to create nodes with date fields", async () => {
         const date1 = new Date(1716904582368);
-        const date2 = new Date(1796904582368);
+        const date2 = new Date(1736900000000);
+        const neoDate1 = neo4jDriver.types.Date.fromStandardDate(date1);
+        const neoDate2 = neo4jDriver.types.Date.fromStandardDate(date2);
 
         const mutation = /* GraphQL */ `
             mutation {
                 ${Movie.operations.create}(input: [
-                        { node: { datetime: "${date1.toISOString()}" } }
-                        { node: { datetime: "${date2.toISOString()}" } }
+                        { node: { date: "${neoDate1.toString()}" } }
+                        { node: { date: "${neoDate2.toString()}" } }
                     ]) {
-                    ${Movie.plural} {
-                        datetime
+                        ${Movie.plural} {
+                            date
+                        }
                     }
-                }
             }
         `;
 
@@ -61,8 +64,8 @@ describe("Create Nodes with DateTime fields", () => {
         expect(gqlResult.data).toEqual({
             [Movie.operations.create]: {
                 [Movie.plural]: expect.toIncludeSameMembers([
-                    { datetime: date1.toISOString() },
-                    { datetime: date2.toISOString() },
+                    { date: neoDate1.toString() },
+                    { date: neoDate2.toString() },
                 ]),
             },
         });
