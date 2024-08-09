@@ -160,7 +160,6 @@ export class ReadOperationFactory {
         // Selection
         const selection = new RelationshipSelection({
             relationship: relationshipAdapter,
-            alias: parsedTree.alias,
         });
 
         // Fields

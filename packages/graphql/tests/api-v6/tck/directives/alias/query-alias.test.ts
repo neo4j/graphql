@@ -125,20 +125,20 @@ describe("Alias directive", () => {
                 WITH edge.node AS this0
                 CALL {
                     WITH this0
-                    MATCH (this0)<-[this1:DIRECTED]-(directors:Director)
-                    WITH collect({ node: directors, relationship: this1 }) AS edges
+                    MATCH (this0)<-[this1:DIRECTED]-(this2:Director)
+                    WITH collect({ node: this2, relationship: this1 }) AS edges
                     WITH edges, size(edges) AS totalCount
                     CALL {
                         WITH edges
                         UNWIND edges AS edge
-                        WITH edge.node AS directors, edge.relationship AS this1
-                        RETURN collect({ properties: { year: this1.year, movieYear: this1.year }, node: { name: directors.name, nameAgain: directors.name, __resolveType: \\"Director\\" } }) AS var2
+                        WITH edge.node AS this2, edge.relationship AS this1
+                        RETURN collect({ properties: { year: this1.year, movieYear: this1.year }, node: { name: this2.name, nameAgain: this2.name, __resolveType: \\"Director\\" } }) AS var3
                     }
-                    RETURN { connection: { edges: var2, totalCount: totalCount } } AS var3
+                    RETURN { connection: { edges: var3, totalCount: totalCount } } AS var4
                 }
-                RETURN collect({ node: { title: this0.title, titleAgain: this0.title, directors: var3, __resolveType: \\"Movie\\" } }) AS var4
+                RETURN collect({ node: { title: this0.title, titleAgain: this0.title, directors: var4, __resolveType: \\"Movie\\" } }) AS var5
             }
-            RETURN { connection: { edges: var4, totalCount: totalCount } } AS this"
+            RETURN { connection: { edges: var5, totalCount: totalCount } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

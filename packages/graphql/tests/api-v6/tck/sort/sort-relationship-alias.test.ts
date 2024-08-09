@@ -85,22 +85,22 @@ describe("Sort relationship with alias", () => {
                 WITH edge.node AS this0
                 CALL {
                     WITH this0
-                    MATCH (this0)<-[this1:ACTED_IN]-(actors:Actor)
-                    WITH collect({ node: actors, relationship: this1 }) AS edges
+                    MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
+                    WITH collect({ node: this2, relationship: this1 }) AS edges
                     WITH edges, size(edges) AS totalCount
                     CALL {
                         WITH edges
                         UNWIND edges AS edge
-                        WITH edge.node AS actors, edge.relationship AS this1
+                        WITH edge.node AS this2, edge.relationship AS this1
                         WITH *
-                        ORDER BY actors.actorName DESC
-                        RETURN collect({ node: { name: actors.actorName, __resolveType: \\"Actor\\" } }) AS var2
+                        ORDER BY this2.actorName DESC
+                        RETURN collect({ node: { name: this2.actorName, __resolveType: \\"Actor\\" } }) AS var3
                     }
-                    RETURN { connection: { edges: var2, totalCount: totalCount } } AS var3
+                    RETURN { connection: { edges: var3, totalCount: totalCount } } AS var4
                 }
-                RETURN collect({ node: { title: this0.title, actors: var3, __resolveType: \\"Movie\\" } }) AS var4
+                RETURN collect({ node: { title: this0.title, actors: var4, __resolveType: \\"Movie\\" } }) AS var5
             }
-            RETURN { connection: { edges: var4, totalCount: totalCount } } AS this"
+            RETURN { connection: { edges: var5, totalCount: totalCount } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -144,22 +144,22 @@ describe("Sort relationship with alias", () => {
                 WITH edge.node AS this0
                 CALL {
                     WITH this0
-                    MATCH (this0)<-[this1:ACTED_IN]-(actors:Actor)
-                    WITH collect({ node: actors, relationship: this1 }) AS edges
+                    MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
+                    WITH collect({ node: this2, relationship: this1 }) AS edges
                     WITH edges, size(edges) AS totalCount
                     CALL {
                         WITH edges
                         UNWIND edges AS edge
-                        WITH edge.node AS actors, edge.relationship AS this1
+                        WITH edge.node AS this2, edge.relationship AS this1
                         WITH *
-                        ORDER BY actors.actorName DESC, actors.actorAge DESC
-                        RETURN collect({ node: { name: actors.actorName, __resolveType: \\"Actor\\" } }) AS var2
+                        ORDER BY this2.actorName DESC, this2.actorAge DESC
+                        RETURN collect({ node: { name: this2.actorName, __resolveType: \\"Actor\\" } }) AS var3
                     }
-                    RETURN { connection: { edges: var2, totalCount: totalCount } } AS var3
+                    RETURN { connection: { edges: var3, totalCount: totalCount } } AS var4
                 }
-                RETURN collect({ node: { title: this0.title, actors: var3, __resolveType: \\"Movie\\" } }) AS var4
+                RETURN collect({ node: { title: this0.title, actors: var4, __resolveType: \\"Movie\\" } }) AS var5
             }
-            RETURN { connection: { edges: var4, totalCount: totalCount } } AS this"
+            RETURN { connection: { edges: var5, totalCount: totalCount } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -201,22 +201,22 @@ describe("Sort relationship with alias", () => {
                 WITH edge.node AS this0
                 CALL {
                     WITH this0
-                    MATCH (this0)<-[this1:ACTED_IN]-(actors:Actor)
-                    WITH collect({ node: actors, relationship: this1 }) AS edges
+                    MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
+                    WITH collect({ node: this2, relationship: this1 }) AS edges
                     WITH edges, size(edges) AS totalCount
                     CALL {
                         WITH edges
                         UNWIND edges AS edge
-                        WITH edge.node AS actors, edge.relationship AS this1
+                        WITH edge.node AS this2, edge.relationship AS this1
                         WITH *
                         ORDER BY this1.actedInYear DESC
-                        RETURN collect({ node: { name: actors.actorName, __resolveType: \\"Actor\\" } }) AS var2
+                        RETURN collect({ node: { name: this2.actorName, __resolveType: \\"Actor\\" } }) AS var3
                     }
-                    RETURN { connection: { edges: var2, totalCount: totalCount } } AS var3
+                    RETURN { connection: { edges: var3, totalCount: totalCount } } AS var4
                 }
-                RETURN collect({ node: { title: this0.title, actors: var3, __resolveType: \\"Movie\\" } }) AS var4
+                RETURN collect({ node: { title: this0.title, actors: var4, __resolveType: \\"Movie\\" } }) AS var5
             }
-            RETURN { connection: { edges: var4, totalCount: totalCount } } AS this"
+            RETURN { connection: { edges: var5, totalCount: totalCount } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -264,22 +264,22 @@ describe("Sort relationship with alias", () => {
                 WITH edge.node AS this0
                 CALL {
                     WITH this0
-                    MATCH (this0)<-[this1:ACTED_IN]-(actors:Actor)
-                    WITH collect({ node: actors, relationship: this1 }) AS edges
+                    MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
+                    WITH collect({ node: this2, relationship: this1 }) AS edges
                     WITH edges, size(edges) AS totalCount
                     CALL {
                         WITH edges
                         UNWIND edges AS edge
-                        WITH edge.node AS actors, edge.relationship AS this1
+                        WITH edge.node AS this2, edge.relationship AS this1
                         WITH *
-                        ORDER BY this1.actedInYear DESC, actors.actorName ASC, this1.role ASC
-                        RETURN collect({ node: { age: actors.actorAge, __resolveType: \\"Actor\\" } }) AS var2
+                        ORDER BY this1.actedInYear DESC, this2.actorName ASC, this1.role ASC
+                        RETURN collect({ node: { age: this2.actorAge, __resolveType: \\"Actor\\" } }) AS var3
                     }
-                    RETURN { connection: { edges: var2, totalCount: totalCount } } AS var3
+                    RETURN { connection: { edges: var3, totalCount: totalCount } } AS var4
                 }
-                RETURN collect({ node: { title: this0.title, actors: var3, __resolveType: \\"Movie\\" } }) AS var4
+                RETURN collect({ node: { title: this0.title, actors: var4, __resolveType: \\"Movie\\" } }) AS var5
             }
-            RETURN { connection: { edges: var4, totalCount: totalCount } } AS this"
+            RETURN { connection: { edges: var5, totalCount: totalCount } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
