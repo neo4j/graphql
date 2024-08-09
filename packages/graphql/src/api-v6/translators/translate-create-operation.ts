@@ -27,7 +27,7 @@ import type { GraphQLTreeCreate } from "../queryIRFactory/resolve-tree-parser/gr
 
 const debug = Debug(DEBUG_TRANSLATE);
 
-export function translateCreateResolver({
+export function translateCreateOperation({
     context,
     entity,
     graphQLTreeCreate,
