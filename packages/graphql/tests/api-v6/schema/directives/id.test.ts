@@ -85,11 +85,6 @@ describe("@id", () => {
               node: ActorSort
             }
 
-            type ActorCreateInfo {
-              nodesCreated: Int!
-              relationshipsCreated: Int!
-            }
-
             input ActorCreateInput {
               node: ActorCreateNode!
             }
@@ -100,7 +95,7 @@ describe("@id", () => {
 
             type ActorCreateResponse {
               actors: [Actor!]!
-              info: ActorCreateInfo
+              info: CreateInfo
             }
 
             type ActorEdge {
@@ -187,6 +182,20 @@ describe("@id", () => {
               id: IDWhere
               movies: ActorMoviesNestedOperationWhere
               name: StringWhere
+            }
+
+            type CreateInfo {
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            type DeleteInfo {
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type DeleteResponse {
+              info: DeleteInfo
             }
 
             input IDWhere {
@@ -283,11 +292,6 @@ describe("@id", () => {
               node: MovieSort
             }
 
-            type MovieCreateInfo {
-              nodesCreated: Int!
-              relationshipsCreated: Int!
-            }
-
             input MovieCreateInput {
               node: MovieCreateNode!
             }
@@ -297,7 +301,7 @@ describe("@id", () => {
             }
 
             type MovieCreateResponse {
-              info: MovieCreateInfo
+              info: CreateInfo
               movies: [Movie!]!
             }
 
@@ -334,6 +338,8 @@ describe("@id", () => {
             type Mutation {
               createActors(input: [ActorCreateInput!]!): ActorCreateResponse
               createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
+              deleteActors(where: ActorOperationWhere): DeleteResponse
+              deleteMovies(where: MovieOperationWhere): DeleteResponse
             }
 
             type PageInfo {
