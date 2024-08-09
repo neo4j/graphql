@@ -302,21 +302,21 @@ describe("Temporal types", () => {
                 WITH edge.node AS this0
                 CALL {
                     WITH this0
-                    MATCH (this0)-[this1:RELATED_TO]->(relatedNode:RelatedNode)
-                    WHERE (relatedNode.dateTimeNullable = $param0 AND relatedNode.dateTime = $param1 AND relatedNode.localDateTimeNullable = $param2 AND relatedNode.localDateTime = $param3 AND relatedNode.durationNullable = $param4 AND relatedNode.duration = $param5 AND relatedNode.timeNullable = $param6 AND relatedNode.time = $param7 AND relatedNode.localTimeNullable = $param8 AND relatedNode.localTime = $param9)
-                    WITH collect({ node: relatedNode, relationship: this1 }) AS edges
+                    MATCH (this0)-[this1:RELATED_TO]->(this2:RelatedNode)
+                    WHERE (this2.dateTimeNullable = $param0 AND this2.dateTime = $param1 AND this2.localDateTimeNullable = $param2 AND this2.localDateTime = $param3 AND this2.durationNullable = $param4 AND this2.duration = $param5 AND this2.timeNullable = $param6 AND this2.time = $param7 AND this2.localTimeNullable = $param8 AND this2.localTime = $param9)
+                    WITH collect({ node: this2, relationship: this1 }) AS edges
                     WITH edges, size(edges) AS totalCount
                     CALL {
                         WITH edges
                         UNWIND edges AS edge
-                        WITH edge.node AS relatedNode, edge.relationship AS this1
-                        RETURN collect({ node: { dateTime: [var2 IN relatedNode.dateTime | apoc.date.convertFormat(toString(var2), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\")], localDateTime: relatedNode.localDateTime, duration: relatedNode.duration, time: relatedNode.time, localTime: relatedNode.localTime, dateTimeNullable: [var3 IN relatedNode.dateTimeNullable | apoc.date.convertFormat(toString(var3), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\")], localDateTimeNullable: relatedNode.localDateTimeNullable, durationNullable: relatedNode.durationNullable, timeNullable: relatedNode.timeNullable, localTimeNullable: relatedNode.localTimeNullable, __resolveType: \\"RelatedNode\\" } }) AS var4
+                        WITH edge.node AS this2, edge.relationship AS this1
+                        RETURN collect({ node: { dateTime: [var3 IN this2.dateTime | apoc.date.convertFormat(toString(var3), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\")], localDateTime: this2.localDateTime, duration: this2.duration, time: this2.time, localTime: this2.localTime, dateTimeNullable: [var4 IN this2.dateTimeNullable | apoc.date.convertFormat(toString(var4), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\")], localDateTimeNullable: this2.localDateTimeNullable, durationNullable: this2.durationNullable, timeNullable: this2.timeNullable, localTimeNullable: this2.localTimeNullable, __resolveType: \\"RelatedNode\\" } }) AS var5
                     }
-                    RETURN { connection: { edges: var4, totalCount: totalCount } } AS var5
+                    RETURN { connection: { edges: var5, totalCount: totalCount } } AS var6
                 }
-                RETURN collect({ node: { relatedNode: var5, __resolveType: \\"TypeNode\\" } }) AS var6
+                RETURN collect({ node: { relatedNode: var6, __resolveType: \\"TypeNode\\" } }) AS var7
             }
-            RETURN { connection: { edges: var6, totalCount: totalCount } } AS this"
+            RETURN { connection: { edges: var7, totalCount: totalCount } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -494,21 +494,21 @@ describe("Temporal types", () => {
                 WITH edge.node AS this0
                 CALL {
                     WITH this0
-                    MATCH (this0)-[this1:RELATED_TO]->(relatedNode:RelatedNode)
+                    MATCH (this0)-[this1:RELATED_TO]->(this2:RelatedNode)
                     WHERE (this1.dateTimeNullable = $param0 AND this1.dateTime = $param1 AND this1.localDateTimeNullable = $param2 AND this1.localDateTime = $param3 AND this1.durationNullable = $param4 AND this1.duration = $param5 AND this1.timeNullable = $param6 AND this1.time = $param7 AND this1.localTimeNullable = $param8 AND this1.localTime = $param9)
-                    WITH collect({ node: relatedNode, relationship: this1 }) AS edges
+                    WITH collect({ node: this2, relationship: this1 }) AS edges
                     WITH edges, size(edges) AS totalCount
                     CALL {
                         WITH edges
                         UNWIND edges AS edge
-                        WITH edge.node AS relatedNode, edge.relationship AS this1
-                        RETURN collect({ properties: { dateTime: [var2 IN this1.dateTime | apoc.date.convertFormat(toString(var2), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\")], localDateTime: this1.localDateTime, duration: this1.duration, time: this1.time, localTime: this1.localTime, dateTimeNullable: [var3 IN this1.dateTimeNullable | apoc.date.convertFormat(toString(var3), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\")], localDateTimeNullable: this1.localDateTimeNullable, durationNullable: this1.durationNullable, timeNullable: this1.timeNullable, localTimeNullable: this1.localTimeNullable }, node: { __id: id(relatedNode), __resolveType: \\"RelatedNode\\" } }) AS var4
+                        WITH edge.node AS this2, edge.relationship AS this1
+                        RETURN collect({ properties: { dateTime: [var3 IN this1.dateTime | apoc.date.convertFormat(toString(var3), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\")], localDateTime: this1.localDateTime, duration: this1.duration, time: this1.time, localTime: this1.localTime, dateTimeNullable: [var4 IN this1.dateTimeNullable | apoc.date.convertFormat(toString(var4), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\")], localDateTimeNullable: this1.localDateTimeNullable, durationNullable: this1.durationNullable, timeNullable: this1.timeNullable, localTimeNullable: this1.localTimeNullable }, node: { __id: id(this2), __resolveType: \\"RelatedNode\\" } }) AS var5
                     }
-                    RETURN { connection: { edges: var4, totalCount: totalCount } } AS var5
+                    RETURN { connection: { edges: var5, totalCount: totalCount } } AS var6
                 }
-                RETURN collect({ node: { relatedNode: var5, __resolveType: \\"TypeNode\\" } }) AS var6
+                RETURN collect({ node: { relatedNode: var6, __resolveType: \\"TypeNode\\" } }) AS var7
             }
-            RETURN { connection: { edges: var6, totalCount: totalCount } } AS this"
+            RETURN { connection: { edges: var7, totalCount: totalCount } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

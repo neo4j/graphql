@@ -134,20 +134,20 @@ describe("Temporal types", () => {
                 WITH edge.node AS this0
                 CALL {
                     WITH this0
-                    MATCH (this0)-[this1:RELATED_TO]->(relatedNode:RelatedNode)
-                    WITH collect({ node: relatedNode, relationship: this1 }) AS edges
+                    MATCH (this0)-[this1:RELATED_TO]->(this2:RelatedNode)
+                    WITH collect({ node: this2, relationship: this1 }) AS edges
                     WITH edges, size(edges) AS totalCount
                     CALL {
                         WITH edges
                         UNWIND edges AS edge
-                        WITH edge.node AS relatedNode, edge.relationship AS this1
-                        RETURN collect({ node: { dateTime: apoc.date.convertFormat(toString(relatedNode.dateTime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), localDateTime: relatedNode.localDateTime, duration: relatedNode.duration, time: relatedNode.time, localTime: relatedNode.localTime, __resolveType: \\"RelatedNode\\" } }) AS var2
+                        WITH edge.node AS this2, edge.relationship AS this1
+                        RETURN collect({ node: { dateTime: apoc.date.convertFormat(toString(this2.dateTime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), localDateTime: this2.localDateTime, duration: this2.duration, time: this2.time, localTime: this2.localTime, __resolveType: \\"RelatedNode\\" } }) AS var3
                     }
-                    RETURN { connection: { edges: var2, totalCount: totalCount } } AS var3
+                    RETURN { connection: { edges: var3, totalCount: totalCount } } AS var4
                 }
-                RETURN collect({ node: { relatedNode: var3, __resolveType: \\"TypeNode\\" } }) AS var4
+                RETURN collect({ node: { relatedNode: var4, __resolveType: \\"TypeNode\\" } }) AS var5
             }
-            RETURN { connection: { edges: var4, totalCount: totalCount } } AS this"
+            RETURN { connection: { edges: var5, totalCount: totalCount } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -192,20 +192,20 @@ describe("Temporal types", () => {
                 WITH edge.node AS this0
                 CALL {
                     WITH this0
-                    MATCH (this0)-[this1:RELATED_TO]->(relatedNode:RelatedNode)
-                    WITH collect({ node: relatedNode, relationship: this1 }) AS edges
+                    MATCH (this0)-[this1:RELATED_TO]->(this2:RelatedNode)
+                    WITH collect({ node: this2, relationship: this1 }) AS edges
                     WITH edges, size(edges) AS totalCount
                     CALL {
                         WITH edges
                         UNWIND edges AS edge
-                        WITH edge.node AS relatedNode, edge.relationship AS this1
-                        RETURN collect({ properties: { dateTime: apoc.date.convertFormat(toString(this1.dateTime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), localDateTime: this1.localDateTime, duration: this1.duration, time: this1.time, localTime: this1.localTime }, node: { __id: id(relatedNode), __resolveType: \\"RelatedNode\\" } }) AS var2
+                        WITH edge.node AS this2, edge.relationship AS this1
+                        RETURN collect({ properties: { dateTime: apoc.date.convertFormat(toString(this1.dateTime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), localDateTime: this1.localDateTime, duration: this1.duration, time: this1.time, localTime: this1.localTime }, node: { __id: id(this2), __resolveType: \\"RelatedNode\\" } }) AS var3
                     }
-                    RETURN { connection: { edges: var2, totalCount: totalCount } } AS var3
+                    RETURN { connection: { edges: var3, totalCount: totalCount } } AS var4
                 }
-                RETURN collect({ node: { relatedNode: var3, __resolveType: \\"TypeNode\\" } }) AS var4
+                RETURN collect({ node: { relatedNode: var4, __resolveType: \\"TypeNode\\" } }) AS var5
             }
-            RETURN { connection: { edges: var4, totalCount: totalCount } } AS this"
+            RETURN { connection: { edges: var5, totalCount: totalCount } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
