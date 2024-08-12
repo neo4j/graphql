@@ -21,7 +21,7 @@ import { generate } from "randomstring";
 import type { UniqueType } from "../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
-describe("Default values", () => {
+describe("@cypher default values", () => {
     const testHelper = new TestHelper();
     let Movie: UniqueType;
 
