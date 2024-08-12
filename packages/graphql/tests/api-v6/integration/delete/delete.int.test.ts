@@ -24,7 +24,7 @@ describe("Top-Level Delete", () => {
     const testHelper = new TestHelper({ v6Api: true });
 
     let Movie: UniqueType;
-    beforeAll(async () => {
+    beforeEach(async () => {
         Movie = testHelper.createUniqueType("Movie");
 
         const typeDefs = /* GraphQL */ `
@@ -36,7 +36,7 @@ describe("Top-Level Delete", () => {
         await testHelper.initNeo4jGraphQL({ typeDefs });
     });
 
-    afterAll(async () => {
+    afterEach(async () => {
         await testHelper.close();
     });
 
