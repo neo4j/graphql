@@ -28,7 +28,7 @@ describe("Array filters", () => {
         typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
-                alternativeTitles: [String]
+                alternativeTitles: [String!]
             }
         `;
 

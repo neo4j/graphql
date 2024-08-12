@@ -17,10 +17,11 @@
  * limitations under the License.
  */
 
+import { Integer } from "neo4j-driver";
 import type { UniqueType } from "../../../../utils/graphql-types";
 import { TestHelper } from "../../../../utils/tests-helper";
 
-describe("Create with @alias", () => {
+describe("Create with @id", () => {
     const testHelper = new TestHelper({ v6Api: true });
 
     let Movie: UniqueType;
@@ -29,9 +30,9 @@ describe("Create with @alias", () => {
 
         const typeDefs = /* GraphQL */ `
             type ${Movie} @node {
-                id: ID! @id @alias(property: "serverId")
-                title: String! @alias(property: "name")
-                released: Int @alias(property: "year")
+                id: ID! @id
+                title: String!
+                released: Int
             }
         `;
         await testHelper.initNeo4jGraphQL({ typeDefs });
@@ -41,31 +42,40 @@ describe("Create with @alias", () => {
         await testHelper.close();
     });
 
-    test("should create two movies and project them", async () => {
+    test("should create two movies", async () => {
         const mutation = /* GraphQL */ `
             mutation {
                 ${Movie.operations.create}(input: [ 
                         { node: { title: "The Matrix" } }, 
                         { node: { title: "The Matrix 2", released: 2001 } } 
                     ]) {
-                    ${Movie.plural} {
-                        id
-                        title
-                        released
-                    }
+                   info {
+                        nodesCreated
+                   }
                 }
             }
         `;
 
         const gqlResult = await testHelper.executeGraphQL(mutation);
         expect(gqlResult.errors).toBeFalsy();
-        expect(gqlResult.data).toEqual({
-            [Movie.operations.create]: {
-                [Movie.plural]: expect.toIncludeSameMembers([
-                    { id: expect.any(String), title: "The Matrix", released: null },
-                    { id: expect.any(String), title: "The Matrix 2", released: 2001 },
-                ]),
-            },
-        });
+
+        const cypherMatch = await testHelper.executeCypher(
+            `
+              MATCH (m:${Movie})
+              RETURN m
+            `,
+            {}
+        );
+        const records = cypherMatch.records.map((record) => record.toObject());
+        expect(records).toEqual(
+            expect.toIncludeSameMembers([
+                { m: expect.objectContaining({ properties: { id: expect.any(String), title: "The Matrix" } }) },
+                {
+                    m: expect.objectContaining({
+                        properties: { id: expect.any(String), title: "The Matrix 2", released: new Integer(2001) },
+                    }),
+                },
+            ])
+        );
     });
 });

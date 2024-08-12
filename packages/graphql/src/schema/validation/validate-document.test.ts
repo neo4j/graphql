@@ -2525,51 +2525,6 @@ describe("validation 2.0", () => {
             });
         });
 
-        describe("@id", () => {
-            test("@id autogenerate valid", () => {
-                const doc = gql`
-                    type User {
-                        uid: ID @id
-                    }
-                `;
-
-                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
-                expect(executeValidate).not.toThrow();
-            });
-
-            test("@id autogenerate cannot autogenerate array", () => {
-                const doc = gql`
-                    type User {
-                        uid: [ID] @id
-                    }
-                `;
-
-                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
-                const errors = getError(executeValidate);
-
-                expect(errors).toHaveLength(1);
-                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty("message", "Cannot autogenerate an array.");
-                expect(errors[0]).toHaveProperty("path", ["User", "uid", "@id"]);
-            });
-
-            test("@id autogenerate cannot autogenerate a non ID field", () => {
-                const doc = gql`
-                    type User {
-                        uid: String @id
-                    }
-                `;
-
-                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
-                const errors = getError(executeValidate);
-
-                expect(errors).toHaveLength(1);
-                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty("message", "Cannot autogenerate a non ID field.");
-                expect(errors[0]).toHaveProperty("path", ["User", "uid", "@id"]);
-            });
-        });
-
         // TODO: validate custom resolver
         // needs a schema for graphql validation but then not running validators anymore for the logical validation
         // validate-custom-resolver-requires -> graphql validation
