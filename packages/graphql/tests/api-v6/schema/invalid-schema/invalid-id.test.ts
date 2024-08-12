@@ -56,7 +56,6 @@ describe("@id validation", () => {
         { dataType: "String!", errorMsg: "Cannot autogenerate a non ID field." },
         { dataType: "[String!]", errorMsg: "Cannot autogenerate an array." },
         { dataType: "[String!]!", errorMsg: "Cannot autogenerate an array." },
-        { dataType: "[String]!", errorMsg: "Cannot autogenerate an array." },
     ] as const)("should raise when @id is not defined on $dataType field", async ({ dataType, errorMsg }) => {
         const fn = async () => {
             const typeDefs = /* GraphQL */ `

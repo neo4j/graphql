@@ -33,9 +33,6 @@ describe("Numeric array fields", () => {
                 year: [Int!]!
                 rating: [Float!]!
                 viewings: [BigInt!]!
-                yearNullable: [Int]!
-                ratingNullable: [Float]!
-                viewingsNullable: [BigInt]!
 
             }
         `;
@@ -43,9 +40,6 @@ describe("Numeric array fields", () => {
 
         await testHelper.executeCypher(`
             CREATE (movie:${Movie} {
-                yearNullable: [1999],
-                ratingNullable: [4.0],
-                viewingsNullable: [4294967297],
                 year: [1999],
                 rating: [4.0],
                 viewings: [4294967297]
@@ -65,11 +59,8 @@ describe("Numeric array fields", () => {
                         edges {
                             node {
                                 year
-                                yearNullable
                                 viewings
-                                viewingsNullable
                                 rating
-                                ratingNullable
                             }
                         }
 
@@ -87,11 +78,8 @@ describe("Numeric array fields", () => {
                         {
                             node: {
                                 year: [1999],
-                                yearNullable: [1999],
                                 rating: [4.0],
-                                ratingNullable: [4.0],
                                 viewings: ["4294967297"],
-                                viewingsNullable: ["4294967297"],
                             },
                         },
                     ],

@@ -26,7 +26,7 @@ describe("invalid @default usage on List fields", () => {
         const fn = async () => {
             const typeDefs = /* GraphQL */ `
                 type User @node {
-                    name: [String] @default
+                    name: [String!] @default
                 }
             `;
             const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -42,28 +42,28 @@ describe("invalid @default usage on List fields", () => {
 
     test.each([
         {
-            dataType: "[ID]",
+            dataType: "[ID!]",
             value: [1.2],
             errorMsg: "@default.value on ID list fields must be a list of ID values",
         },
         {
-            dataType: "[String]",
+            dataType: "[String!]",
             value: [1.2],
             errorMsg: "@default.value on String list fields must be a list of String values",
         },
         {
-            dataType: "[Boolean]",
+            dataType: "[Boolean!]",
             value: [1.2],
             errorMsg: "@default.value on Boolean list fields must be a list of Boolean values",
         },
-        { dataType: "[Int]", value: 1.2, errorMsg: "@default.value on Int list fields must be a list of Int values" },
+        { dataType: "[Int!]", value: 1.2, errorMsg: "@default.value on Int list fields must be a list of Int values" },
         {
-            dataType: "[Float]",
+            dataType: "[Float!]",
             value: ["stuff"],
             errorMsg: "@default.value on Float list fields must be a list of Float values",
         },
         {
-            dataType: "[DateTime]",
+            dataType: "[DateTime!]",
             value: ["dummy"],
             errorMsg: "@default.value on DateTime list fields must be a list of DateTime values",
         },
@@ -91,20 +91,20 @@ describe("invalid @default usage on List fields", () => {
 
     test.each([
         {
-            dataType: "[ID]",
+            dataType: "[ID!]",
             value: ["some-unique-id", "another-unique-id"],
         },
         {
-            dataType: "[String]",
+            dataType: "[String!]",
             value: ["dummyValue", "anotherDummyValue"],
         },
         {
-            dataType: "[Boolean]",
+            dataType: "[Boolean!]",
             value: [false, true],
         },
-        { dataType: "[Int]", value: [1, 3] },
-        { dataType: "[Float]", value: [1.2, 1.3] },
-        { dataType: "[DateTime]", value: ["2021-01-01T00:00:00", "2022-01-01T00:00:00"] },
+        { dataType: "[Int!]", value: [1, 3] },
+        { dataType: "[Float!]", value: [1.2, 1.3] },
+        { dataType: "[DateTime!]", value: ["2021-01-01T00:00:00", "2022-01-01T00:00:00"] },
     ] as const)("@default should not fail with a valid $dataType value", async ({ dataType, value }) => {
         const fn = async () => {
             const stringValue = value.map((v) => (typeof v === "string" ? `"${v}"` : v)).join(", ");
