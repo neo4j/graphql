@@ -27,11 +27,10 @@ export function parseUpdateOperationArgsTopLevel(resolveTreeArgs: Record<string,
     };
 }
 
-function parseUpdateOperationInput(resolveTreeCreateInput: any): GraphQLTreeUpdateInput[] {
-    if (!resolveTreeCreateInput || !Array.isArray(resolveTreeCreateInput)) {
-        throw new ResolveTreeParserError(`Invalid create input field: ${resolveTreeCreateInput}`);
+function parseUpdateOperationInput(resolveTreeUpdateInput: any): GraphQLTreeUpdateInput {
+    if (!resolveTreeUpdateInput) {
+        throw new ResolveTreeParserError(`Invalid update input field: ${resolveTreeUpdateInput}`);
     }
-    return resolveTreeCreateInput.map((input) => {
-        return input.node;
-    });
+
+    return resolveTreeUpdateInput.node;
 }

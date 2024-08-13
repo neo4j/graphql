@@ -103,13 +103,11 @@ export class UpdateOperationFactory {
         updateInput,
     }: {
         target: ConcreteEntityAdapter;
-        updateInput: GraphQLTreeUpdateInput[];
+        updateInput: GraphQLTreeUpdateInput;
     }): UpdateProperty[] {
-        return updateInput.flatMap((input) => {
-            return Object.entries(input).flatMap(([attributeName, setOperations]) => {
-                const attribute = getAttribute(target, attributeName);
-                return this.getPropertyInputOperations(attribute, setOperations);
-            });
+        return Object.entries(updateInput).flatMap(([attributeName, setOperations]) => {
+            const attribute = getAttribute(target, attributeName);
+            return this.getPropertyInputOperations(attribute, setOperations);
         });
     }
     private getPropertyInputOperations(

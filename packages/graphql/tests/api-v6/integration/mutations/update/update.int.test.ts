@@ -56,9 +56,9 @@ describe("Top-Level Update", () => {
                             }
                         }
                     }
-                    input: [ 
-                        { node: { title: { set: "Another Movie"} } }, 
-                    ]) {
+                    input:  
+                        { node: { title: { set: "Another Movie"} } }
+                    ) {
                    info {
                         nodesCreated
                    }

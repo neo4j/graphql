@@ -36,9 +36,9 @@ export function translateUpdateOperation({
     graphQLTreeUpdate: GraphQLTreeUpdate;
     entity: ConcreteEntity;
 }): Cypher.CypherResult {
-    const createFactory = new UpdateOperationFactory(context.schemaModel);
-    const createAST = createFactory.createAST({ graphQLTreeUpdate, entity });
-    debug(createAST.print());
-    const results = createAST.build(context);
+    const updateFactory = new UpdateOperationFactory(context.schemaModel);
+    const updateAST = updateFactory.createAST({ graphQLTreeUpdate, entity });
+    debug(updateAST.print());
+    const results = updateAST.build(context);
     return results.build();
 }

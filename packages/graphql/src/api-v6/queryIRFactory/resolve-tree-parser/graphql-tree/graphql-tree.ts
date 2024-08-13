@@ -41,7 +41,7 @@ export interface GraphQLTreeUpdate extends GraphQLTreeNode {
     name: string;
     args: {
         where: GraphQLWhereTopLevel;
-        input: GraphQLTreeUpdateInput[];
+        input: GraphQLTreeUpdateInput;
     };
 }
 

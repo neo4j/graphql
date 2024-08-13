@@ -41,7 +41,7 @@ describe("Top-Level Update", () => {
         const mutation = /* GraphQL */ `
             mutation UpdateMovies {
                 updateMovies(
-                    input: [{ node: { title: { set: "The Matrix" } } }]
+                    input: { node: { title: { set: "The Matrix" } } }
                     where: { node: { title: { equals: "Matrix" } } }
                 ) {
                     movies {

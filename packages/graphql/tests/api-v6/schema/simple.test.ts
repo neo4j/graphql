@@ -113,7 +113,7 @@ describe("Simple Aura-API", () => {
 
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
-              updateMovies(input: [MovieUpdateInput!]!, where: MovieOperationWhere): MovieUpdateResponse
+              updateMovies(input: MovieUpdateInput!, where: MovieOperationWhere): MovieUpdateResponse
             }
 
             type PageInfo {
@@ -314,8 +314,8 @@ describe("Simple Aura-API", () => {
             type Mutation {
               createActors(input: [ActorCreateInput!]!): ActorCreateResponse
               createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
-              updateActors(input: [ActorUpdateInput!]!, where: ActorOperationWhere): ActorUpdateResponse
-              updateMovies(input: [MovieUpdateInput!]!, where: MovieOperationWhere): MovieUpdateResponse
+              updateActors(input: ActorUpdateInput!, where: ActorOperationWhere): ActorUpdateResponse
+              updateMovies(input: MovieUpdateInput!, where: MovieOperationWhere): MovieUpdateResponse
             }
 
             type PageInfo {
@@ -445,7 +445,7 @@ describe("Simple Aura-API", () => {
 
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
-              updateMovies(input: [MovieUpdateInput!]!, where: MovieOperationWhere): MovieUpdateResponse
+              updateMovies(input: MovieUpdateInput!, where: MovieOperationWhere): MovieUpdateResponse
             }
 
             type PageInfo {

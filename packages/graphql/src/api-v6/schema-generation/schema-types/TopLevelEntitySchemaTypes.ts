@@ -160,7 +160,7 @@ export class TopLevelEntitySchemaTypes {
             name: this.entity.typeNames.updateField,
             type: this.updateType,
             args: {
-                input: this.updateSchemaTypes.updateInput.NonNull.List.NonNull,
+                input: this.updateSchemaTypes.updateInput.NonNull,
                 where: this.filterSchemaTypes.operationWhereTopLevel,
             },
             resolver,

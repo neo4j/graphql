@@ -139,7 +139,7 @@ describe("RelayId", () => {
 
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
-              updateMovies(input: [MovieUpdateInput!]!, where: MovieOperationWhere): MovieUpdateResponse
+              updateMovies(input: MovieUpdateInput!, where: MovieOperationWhere): MovieUpdateResponse
             }
 
             interface Node {
