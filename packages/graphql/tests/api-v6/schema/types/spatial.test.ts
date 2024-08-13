@@ -82,9 +82,25 @@ describe("Spatial Types", () => {
               set: CartesianPointInput
             }
 
+            type CreateInfo {
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            type DeleteInfo {
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type DeleteResponse {
+              info: DeleteInfo
+            }
+
             type Mutation {
               createNodeTypes(input: [NodeTypeCreateInput!]!): NodeTypeCreateResponse
               createRelatedNodes(input: [RelatedNodeCreateInput!]!): RelatedNodeCreateResponse
+              deleteNodeTypes(where: NodeTypeOperationWhere): DeleteResponse
+              deleteRelatedNodes(where: RelatedNodeOperationWhere): DeleteResponse
               updateNodeTypes(input: NodeTypeUpdateInput!, where: NodeTypeOperationWhere): NodeTypeUpdateResponse
               updateRelatedNodes(input: RelatedNodeUpdateInput!, where: RelatedNodeOperationWhere): RelatedNodeUpdateResponse
             }
@@ -104,7 +120,9 @@ describe("Spatial Types", () => {
 
             type NodeTypeCreateInfo {
               nodesCreated: Int!
+              nodesDelete: Int!
               relationshipsCreated: Int!
+              relationshipsDeleted: Int!
             }
 
             input NodeTypeCreateInput {
@@ -119,7 +137,7 @@ describe("Spatial Types", () => {
             }
 
             type NodeTypeCreateResponse {
-              info: NodeTypeCreateInfo
+              info: CreateInfo
               nodeTypes: [NodeType!]!
             }
 
@@ -257,7 +275,9 @@ describe("Spatial Types", () => {
 
             type RelatedNodeCreateInfo {
               nodesCreated: Int!
+              nodesDelete: Int!
               relationshipsCreated: Int!
+              relationshipsDeleted: Int!
             }
 
             input RelatedNodeCreateInput {
@@ -272,7 +292,7 @@ describe("Spatial Types", () => {
             }
 
             type RelatedNodeCreateResponse {
-              info: RelatedNodeCreateInfo
+              info: CreateInfo
               relatedNodes: [RelatedNode!]!
             }
 

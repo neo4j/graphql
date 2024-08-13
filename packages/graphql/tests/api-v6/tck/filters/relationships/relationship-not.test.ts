@@ -80,21 +80,21 @@ describe("NOT filters", () => {
                 WITH edge.node AS this0
                 CALL {
                     WITH this0
-                    MATCH (this0)<-[this1:ACTED_IN]-(actors:Actor)
+                    MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
                     WHERE NOT (this1.year = $param0)
-                    WITH collect({ node: actors, relationship: this1 }) AS edges
+                    WITH collect({ node: this2, relationship: this1 }) AS edges
                     WITH edges, size(edges) AS totalCount
                     CALL {
                         WITH edges
                         UNWIND edges AS edge
-                        WITH edge.node AS actors, edge.relationship AS this1
-                        RETURN collect({ node: { name: actors.name, __resolveType: \\"Actor\\" } }) AS var2
+                        WITH edge.node AS this2, edge.relationship AS this1
+                        RETURN collect({ node: { name: this2.name, __resolveType: \\"Actor\\" } }) AS var3
                     }
-                    RETURN { connection: { edges: var2, totalCount: totalCount } } AS var3
+                    RETURN { connection: { edges: var3, totalCount: totalCount } } AS var4
                 }
-                RETURN collect({ node: { title: this0.title, actors: var3, __resolveType: \\"Movie\\" } }) AS var4
+                RETURN collect({ node: { title: this0.title, actors: var4, __resolveType: \\"Movie\\" } }) AS var5
             }
-            RETURN { connection: { edges: var4, totalCount: totalCount } } AS this"
+            RETURN { connection: { edges: var5, totalCount: totalCount } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

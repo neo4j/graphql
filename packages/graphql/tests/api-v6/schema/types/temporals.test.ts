@@ -65,6 +65,11 @@ describe("Temporals", () => {
               mutation: Mutation
             }
 
+            type CreateInfo {
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
             \\"\\"\\"A date, represented as a 'yyyy-mm-dd' string\\"\\"\\"
             scalar Date
 
@@ -101,6 +106,15 @@ describe("Temporals", () => {
               in: [Date!]
               lt: Date
               lte: Date
+            }
+
+            type DeleteInfo {
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type DeleteResponse {
+              info: DeleteInfo
             }
 
             \\"\\"\\"A duration, represented as an ISO 8601 duration string\\"\\"\\"
@@ -165,6 +179,8 @@ describe("Temporals", () => {
             type Mutation {
               createNodeTypes(input: [NodeTypeCreateInput!]!): NodeTypeCreateResponse
               createRelatedNodes(input: [RelatedNodeCreateInput!]!): RelatedNodeCreateResponse
+              deleteNodeTypes(where: NodeTypeOperationWhere): DeleteResponse
+              deleteRelatedNodes(where: RelatedNodeOperationWhere): DeleteResponse
               updateNodeTypes(input: NodeTypeUpdateInput!, where: NodeTypeOperationWhere): NodeTypeUpdateResponse
               updateRelatedNodes(input: RelatedNodeUpdateInput!, where: RelatedNodeOperationWhere): RelatedNodeUpdateResponse
             }
@@ -190,7 +206,9 @@ describe("Temporals", () => {
 
             type NodeTypeCreateInfo {
               nodesCreated: Int!
+              nodesDelete: Int!
               relationshipsCreated: Int!
+              relationshipsDeleted: Int!
             }
 
             input NodeTypeCreateInput {
@@ -207,7 +225,7 @@ describe("Temporals", () => {
             }
 
             type NodeTypeCreateResponse {
-              info: NodeTypeCreateInfo
+              info: CreateInfo
               nodeTypes: [NodeType!]!
             }
 
@@ -355,7 +373,9 @@ describe("Temporals", () => {
 
             type RelatedNodeCreateInfo {
               nodesCreated: Int!
+              nodesDelete: Int!
               relationshipsCreated: Int!
+              relationshipsDeleted: Int!
             }
 
             input RelatedNodeCreateInput {
@@ -372,7 +392,7 @@ describe("Temporals", () => {
             }
 
             type RelatedNodeCreateResponse {
-              info: RelatedNodeCreateInfo
+              info: CreateInfo
               relatedNodes: [RelatedNode!]!
             }
 

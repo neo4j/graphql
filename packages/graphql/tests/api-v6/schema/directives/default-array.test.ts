@@ -22,12 +22,16 @@ import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../../src";
 import { raiseOnInvalidSchema } from "../../../utils/raise-on-invalid-schema";
 
-describe("RelayId", () => {
-    test("relayId in a field", async () => {
+describe("@default on array fields", () => {
+    test("@default should add a default value in mutation inputs", async () => {
         const typeDefs = /* GraphQL */ `
             type Movie @node {
-                dbId: ID! @relayId
-                title: String
+                id: [ID!]! @default(value: ["id"])
+                title: [String!] @default(value: ["title"])
+                year: [Int!] @default(value: [2021])
+                length: [Float!] @default(value: [120.5])
+                releasedDateTime: [DateTime!] @default(value: ["2021-01-01T00:00:00"])
+                flags: [Boolean!] @default(value: [true, false])
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -40,9 +44,27 @@ describe("RelayId", () => {
               mutation: Mutation
             }
 
+            input BooleanWhere {
+              AND: [BooleanWhere!]
+              NOT: BooleanWhere
+              OR: [BooleanWhere!]
+              equals: Boolean
+            }
+
             type CreateInfo {
               nodesCreated: Int!
               relationshipsCreated: Int!
+            }
+
+            \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
+            scalar DateTime
+
+            input DateTimeListWhere {
+              equals: [DateTime!]
+            }
+
+            input DateTimeUpdate {
+              set: DateTime
             }
 
             type DeleteInfo {
@@ -54,38 +76,42 @@ describe("RelayId", () => {
               info: DeleteInfo
             }
 
-            input GlobalIdWhere {
-              equals: String
+            input FloatListWhere {
+              equals: [Float!]
+            }
+
+            input FloatUpdate {
+              set: Float
+            }
+
+            input IDListWhere {
+              equals: [ID!]
             }
 
             input IDUpdate {
               set: ID
             }
 
-            input IDWhere {
-              AND: [IDWhere!]
-              NOT: IDWhere
-              OR: [IDWhere!]
-              contains: ID
-              endsWith: ID
-              equals: ID
-              in: [ID!]
-              startsWith: ID
+            input IntListWhere {
+              equals: [Int!]
             }
 
-            type Movie implements Node {
-              dbId: ID!
-              id: ID!
-              title: String
+            input IntUpdate {
+              set: Int
+            }
+
+            type Movie {
+              flags: [Boolean!]
+              id: [ID!]!
+              length: [Float!]
+              releasedDateTime: [DateTime!]
+              title: [String!]
+              year: [Int!]
             }
 
             type MovieConnection {
               edges: [MovieEdge]
               pageInfo: PageInfo
-            }
-
-            input MovieConnectionSort {
-              node: MovieSort
             }
 
             type MovieCreateInfo {
@@ -100,8 +126,12 @@ describe("RelayId", () => {
             }
 
             input MovieCreateNode {
-              dbId: ID!
-              title: String
+              flags: [Boolean!] = [true, false]
+              id: [ID!]! = [\\"id\\"]
+              length: [Float!] = [120.5]
+              releasedDateTime: [DateTime!] = [\\"2021-01-01T00:00:00.000Z\\"]
+              title: [String!] = [\\"title\\"]
+              year: [Int!] = [2021]
             }
 
             type MovieCreateResponse {
@@ -115,7 +145,7 @@ describe("RelayId", () => {
             }
 
             type MovieOperation {
-              connection(after: String, first: Int, sort: [MovieConnectionSort!]): MovieConnection
+              connection(after: String, first: Int): MovieConnection
             }
 
             input MovieOperationWhere {
@@ -125,18 +155,17 @@ describe("RelayId", () => {
               node: MovieWhere
             }
 
-            input MovieSort {
-              dbId: SortDirection
-              title: SortDirection
-            }
-
             input MovieUpdateInput {
               node: MovieUpdateNode!
             }
 
             input MovieUpdateNode {
-              dbId: IDUpdate
+              flags: IntUpdate
+              id: IDUpdate
+              length: FloatUpdate
+              releasedDateTime: DateTimeUpdate
               title: StringUpdate
+              year: IntUpdate
             }
 
             type MovieUpdateResponse {
@@ -148,19 +177,18 @@ describe("RelayId", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              dbId: IDWhere
-              id: GlobalIdWhere
-              title: StringWhere
+              flags: BooleanWhere
+              id: IDListWhere
+              length: FloatListWhere
+              releasedDateTime: DateTimeListWhere
+              title: StringListWhere
+              year: IntListWhere
             }
 
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
               deleteMovies(where: MovieOperationWhere): DeleteResponse
               updateMovies(input: MovieUpdateInput!, where: MovieOperationWhere): MovieUpdateResponse
-            }
-
-            interface Node {
-              id: ID!
             }
 
             type PageInfo {
@@ -172,29 +200,17 @@ describe("RelayId", () => {
 
             type Query {
               movies(where: MovieOperationWhere): MovieOperation
-              \\"\\"\\"Fetches an object given its ID\\"\\"\\"
-              node(id: ID!): Node
             }
 
-            enum SortDirection {
-              ASC
-              DESC
+            input StringListWhere {
+              equals: [String!]
             }
 
             input StringUpdate {
               set: String
-            }
-
-            input StringWhere {
-              AND: [StringWhere!]
-              NOT: StringWhere
-              OR: [StringWhere!]
-              contains: String
-              endsWith: String
-              equals: String
-              in: [String!]
-              startsWith: String
             }"
         `);
     });
+    test.todo("@default directive with relationship properties");
+    test.todo("@default directive with user defined scalars");
 });

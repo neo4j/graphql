@@ -40,6 +40,20 @@ describe("Simple Aura-API", () => {
               mutation: Mutation
             }
 
+            type CreateInfo {
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            type DeleteInfo {
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type DeleteResponse {
+              info: DeleteInfo
+            }
+
             type Movie {
               title: String
             }
@@ -55,7 +69,9 @@ describe("Simple Aura-API", () => {
 
             type MovieCreateInfo {
               nodesCreated: Int!
+              nodesDelete: Int!
               relationshipsCreated: Int!
+              relationshipsDeleted: Int!
             }
 
             input MovieCreateInput {
@@ -67,7 +83,7 @@ describe("Simple Aura-API", () => {
             }
 
             type MovieCreateResponse {
-              info: MovieCreateInfo
+              info: CreateInfo
               movies: [Movie!]!
             }
 
@@ -113,6 +129,7 @@ describe("Simple Aura-API", () => {
 
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
+              deleteMovies(where: MovieOperationWhere): DeleteResponse
               updateMovies(input: MovieUpdateInput!, where: MovieOperationWhere): MovieUpdateResponse
             }
 
@@ -184,7 +201,9 @@ describe("Simple Aura-API", () => {
 
             type ActorCreateInfo {
               nodesCreated: Int!
+              nodesDelete: Int!
               relationshipsCreated: Int!
+              relationshipsDeleted: Int!
             }
 
             input ActorCreateInput {
@@ -197,7 +216,7 @@ describe("Simple Aura-API", () => {
 
             type ActorCreateResponse {
               actors: [Actor!]!
-              info: ActorCreateInfo
+              info: CreateInfo
             }
 
             type ActorEdge {
@@ -240,6 +259,20 @@ describe("Simple Aura-API", () => {
               name: StringWhere
             }
 
+            type CreateInfo {
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            type DeleteInfo {
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type DeleteResponse {
+              info: DeleteInfo
+            }
+
             type Movie {
               title: String
             }
@@ -255,7 +288,9 @@ describe("Simple Aura-API", () => {
 
             type MovieCreateInfo {
               nodesCreated: Int!
+              nodesDelete: Int!
               relationshipsCreated: Int!
+              relationshipsDeleted: Int!
             }
 
             input MovieCreateInput {
@@ -267,7 +302,7 @@ describe("Simple Aura-API", () => {
             }
 
             type MovieCreateResponse {
-              info: MovieCreateInfo
+              info: CreateInfo
               movies: [Movie!]!
             }
 
@@ -314,6 +349,8 @@ describe("Simple Aura-API", () => {
             type Mutation {
               createActors(input: [ActorCreateInput!]!): ActorCreateResponse
               createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
+              deleteActors(where: ActorOperationWhere): DeleteResponse
+              deleteMovies(where: MovieOperationWhere): DeleteResponse
               updateActors(input: ActorUpdateInput!, where: ActorOperationWhere): ActorUpdateResponse
               updateMovies(input: MovieUpdateInput!, where: MovieOperationWhere): MovieUpdateResponse
             }
@@ -372,6 +409,20 @@ describe("Simple Aura-API", () => {
               mutation: Mutation
             }
 
+            type CreateInfo {
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            type DeleteInfo {
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type DeleteResponse {
+              info: DeleteInfo
+            }
+
             type Movie {
               title: String
             }
@@ -387,7 +438,9 @@ describe("Simple Aura-API", () => {
 
             type MovieCreateInfo {
               nodesCreated: Int!
+              nodesDelete: Int!
               relationshipsCreated: Int!
+              relationshipsDeleted: Int!
             }
 
             input MovieCreateInput {
@@ -399,7 +452,7 @@ describe("Simple Aura-API", () => {
             }
 
             type MovieCreateResponse {
-              info: MovieCreateInfo
+              info: CreateInfo
               movies: [Movie!]!
             }
 
@@ -445,6 +498,7 @@ describe("Simple Aura-API", () => {
 
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
+              deleteMovies(where: MovieOperationWhere): DeleteResponse
               updateMovies(input: MovieUpdateInput!, where: MovieOperationWhere): MovieUpdateResponse
             }
 

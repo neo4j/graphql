@@ -19,7 +19,7 @@
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
-import type { GraphQLTree } from "./graphql-tree/graphql-tree";
+import type { GraphQLTreeReadOperationTopLevel } from "./graphql-tree/graphql-tree";
 import { parseNode } from "./parse-node";
 
 /** Parses the resolve info tree for a global node query */
@@ -29,7 +29,7 @@ export function parseGlobalNodeResolveInfoTree({
 }: {
     resolveTree: ResolveTree;
     entity: ConcreteEntity;
-}): GraphQLTree {
+}): GraphQLTreeReadOperationTopLevel {
     const entityTypes = entity.typeNames;
     resolveTree.fieldsByTypeName[entityTypes.node] = {
         ...resolveTree.fieldsByTypeName["Node"],

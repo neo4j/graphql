@@ -22,12 +22,16 @@ import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../../src";
 import { raiseOnInvalidSchema } from "../../../utils/raise-on-invalid-schema";
 
-describe("RelayId", () => {
-    test("relayId in a field", async () => {
+describe("@default on fields", () => {
+    test("@default should add a default value in mutation inputs", async () => {
         const typeDefs = /* GraphQL */ `
             type Movie @node {
-                dbId: ID! @relayId
-                title: String
+                id: ID! @default(value: "id")
+                title: String @default(value: "title")
+                year: Int @default(value: 2021)
+                length: Float @default(value: 120.5)
+                flag: Boolean @default(value: true)
+                releasedDateTime: DateTime @default(value: "2021-01-01T00:00:00")
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -40,9 +44,35 @@ describe("RelayId", () => {
               mutation: Mutation
             }
 
+            input BooleanWhere {
+              AND: [BooleanWhere!]
+              NOT: BooleanWhere
+              OR: [BooleanWhere!]
+              equals: Boolean
+            }
+
             type CreateInfo {
               nodesCreated: Int!
               relationshipsCreated: Int!
+            }
+
+            \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
+            scalar DateTime
+
+            input DateTimeUpdate {
+              set: DateTime
+            }
+
+            input DateTimeWhere {
+              AND: [DateTimeWhere!]
+              NOT: DateTimeWhere
+              OR: [DateTimeWhere!]
+              equals: DateTime
+              gt: DateTime
+              gte: DateTime
+              in: [DateTime!]
+              lt: DateTime
+              lte: DateTime
             }
 
             type DeleteInfo {
@@ -54,8 +84,20 @@ describe("RelayId", () => {
               info: DeleteInfo
             }
 
-            input GlobalIdWhere {
-              equals: String
+            input FloatUpdate {
+              set: Float
+            }
+
+            input FloatWhere {
+              AND: [FloatWhere!]
+              NOT: FloatWhere
+              OR: [FloatWhere!]
+              equals: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
             }
 
             input IDUpdate {
@@ -73,10 +115,29 @@ describe("RelayId", () => {
               startsWith: ID
             }
 
-            type Movie implements Node {
-              dbId: ID!
+            input IntUpdate {
+              set: Int
+            }
+
+            input IntWhere {
+              AND: [IntWhere!]
+              NOT: IntWhere
+              OR: [IntWhere!]
+              equals: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
+            }
+
+            type Movie {
+              flag: Boolean
               id: ID!
+              length: Float
+              releasedDateTime: DateTime
               title: String
+              year: Int
             }
 
             type MovieConnection {
@@ -100,8 +161,12 @@ describe("RelayId", () => {
             }
 
             input MovieCreateNode {
-              dbId: ID!
-              title: String
+              flag: Boolean = true
+              id: ID! = \\"id\\"
+              length: Float = 120.5
+              releasedDateTime: DateTime = \\"2021-01-01T00:00:00.000Z\\"
+              title: String = \\"title\\"
+              year: Int = 2021
             }
 
             type MovieCreateResponse {
@@ -126,8 +191,12 @@ describe("RelayId", () => {
             }
 
             input MovieSort {
-              dbId: SortDirection
+              flag: SortDirection
+              id: SortDirection
+              length: SortDirection
+              releasedDateTime: SortDirection
               title: SortDirection
+              year: SortDirection
             }
 
             input MovieUpdateInput {
@@ -135,8 +204,12 @@ describe("RelayId", () => {
             }
 
             input MovieUpdateNode {
-              dbId: IDUpdate
+              flag: IntUpdate
+              id: IDUpdate
+              length: FloatUpdate
+              releasedDateTime: DateTimeUpdate
               title: StringUpdate
+              year: IntUpdate
             }
 
             type MovieUpdateResponse {
@@ -148,19 +221,18 @@ describe("RelayId", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              dbId: IDWhere
-              id: GlobalIdWhere
+              flag: BooleanWhere
+              id: IDWhere
+              length: FloatWhere
+              releasedDateTime: DateTimeWhere
               title: StringWhere
+              year: IntWhere
             }
 
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
               deleteMovies(where: MovieOperationWhere): DeleteResponse
               updateMovies(input: MovieUpdateInput!, where: MovieOperationWhere): MovieUpdateResponse
-            }
-
-            interface Node {
-              id: ID!
             }
 
             type PageInfo {
@@ -172,8 +244,6 @@ describe("RelayId", () => {
 
             type Query {
               movies(where: MovieOperationWhere): MovieOperation
-              \\"\\"\\"Fetches an object given its ID\\"\\"\\"
-              node(id: ID!): Node
             }
 
             enum SortDirection {
@@ -197,4 +267,7 @@ describe("RelayId", () => {
             }"
         `);
     });
+
+    test.todo("@default directive with relationship properties");
+    test.todo("@default directive with user defined scalars");
 });

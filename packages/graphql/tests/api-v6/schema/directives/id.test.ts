@@ -19,357 +19,25 @@
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
-import { Neo4jGraphQL } from "../../../src";
-import { raiseOnInvalidSchema } from "../../utils/raise-on-invalid-schema";
+import { Neo4jGraphQL } from "../../../../src";
+import { raiseOnInvalidSchema } from "../../../utils/raise-on-invalid-schema";
 
-describe("Relationships", () => {
-    test("Simple relationship without properties", async () => {
+describe("@id", () => {
+    test("should exclude @id marked field from Create and Update input", async () => {
         const typeDefs = /* GraphQL */ `
             type Movie @node {
-                title: String
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
-            }
-            type Actor @node {
-                name: String
-                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
-            }
-        `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const schema = await neoSchema.getAuraSchema();
-        raiseOnInvalidSchema(schema);
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(schema));
-
-        expect(printedSchema).toMatchInlineSnapshot(`
-            "schema {
-              query: Query
-              mutation: Mutation
-            }
-
-            type Actor {
-              movies(where: ActorMoviesOperationWhere): ActorMoviesOperation
-              name: String
-            }
-
-            type ActorConnection {
-              edges: [ActorEdge]
-              pageInfo: PageInfo
-            }
-
-            input ActorConnectionSort {
-              node: ActorSort
-            }
-
-            type ActorCreateInfo {
-              nodesCreated: Int!
-              nodesDelete: Int!
-              relationshipsCreated: Int!
-              relationshipsDeleted: Int!
-            }
-
-            input ActorCreateInput {
-              node: ActorCreateNode!
-            }
-
-            input ActorCreateNode {
-              name: String
-            }
-
-            type ActorCreateResponse {
-              actors: [Actor!]!
-              info: CreateInfo
-            }
-
-            type ActorEdge {
-              cursor: String
-              node: Actor
-            }
-
-            type ActorMoviesConnection {
-              edges: [ActorMoviesEdge]
-              pageInfo: PageInfo
-            }
-
-            input ActorMoviesConnectionSort {
-              edges: ActorMoviesEdgeSort
-            }
-
-            type ActorMoviesEdge {
-              cursor: String
-              node: Movie
-            }
-
-            input ActorMoviesEdgeListWhere {
-              AND: [ActorMoviesEdgeListWhere!]
-              NOT: ActorMoviesEdgeListWhere
-              OR: [ActorMoviesEdgeListWhere!]
-              edges: ActorMoviesEdgeWhere
-            }
-
-            input ActorMoviesEdgeSort {
-              node: MovieSort
-            }
-
-            input ActorMoviesEdgeWhere {
-              AND: [ActorMoviesEdgeWhere!]
-              NOT: ActorMoviesEdgeWhere
-              OR: [ActorMoviesEdgeWhere!]
-              node: MovieWhere
-            }
-
-            input ActorMoviesNestedOperationWhere {
-              AND: [ActorMoviesNestedOperationWhere!]
-              NOT: ActorMoviesNestedOperationWhere
-              OR: [ActorMoviesNestedOperationWhere!]
-              all: ActorMoviesEdgeListWhere
-              none: ActorMoviesEdgeListWhere
-              single: ActorMoviesEdgeListWhere
-              some: ActorMoviesEdgeListWhere
-            }
-
-            type ActorMoviesOperation {
-              connection(after: String, first: Int, sort: [ActorMoviesConnectionSort!]): ActorMoviesConnection
-            }
-
-            input ActorMoviesOperationWhere {
-              AND: [ActorMoviesOperationWhere!]
-              NOT: ActorMoviesOperationWhere
-              OR: [ActorMoviesOperationWhere!]
-              edges: ActorMoviesEdgeWhere
-            }
-
-            type ActorOperation {
-              connection(after: String, first: Int, sort: [ActorConnectionSort!]): ActorConnection
-            }
-
-            input ActorOperationWhere {
-              AND: [ActorOperationWhere!]
-              NOT: ActorOperationWhere
-              OR: [ActorOperationWhere!]
-              node: ActorWhere
-            }
-
-            input ActorSort {
-              name: SortDirection
-            }
-
-            input ActorUpdateInput {
-              node: ActorUpdateNode!
-            }
-
-            input ActorUpdateNode {
-              name: StringUpdate
-            }
-
-            type ActorUpdateResponse {
-              actors: [Actor!]!
-              info: ActorCreateInfo
-            }
-
-            input ActorWhere {
-              AND: [ActorWhere!]
-              NOT: ActorWhere
-              OR: [ActorWhere!]
-              movies: ActorMoviesNestedOperationWhere
-              name: StringWhere
-            }
-
-            type CreateInfo {
-              nodesCreated: Int!
-              relationshipsCreated: Int!
-            }
-
-            type DeleteInfo {
-              nodesDeleted: Int!
-              relationshipsDeleted: Int!
-            }
-
-            type DeleteResponse {
-              info: DeleteInfo
-            }
-
-            type Movie {
-              actors(where: MovieActorsOperationWhere): MovieActorsOperation
-              title: String
-            }
-
-            type MovieActorsConnection {
-              edges: [MovieActorsEdge]
-              pageInfo: PageInfo
-            }
-
-            input MovieActorsConnectionSort {
-              edges: MovieActorsEdgeSort
-            }
-
-            type MovieActorsEdge {
-              cursor: String
-              node: Actor
-            }
-
-            input MovieActorsEdgeListWhere {
-              AND: [MovieActorsEdgeListWhere!]
-              NOT: MovieActorsEdgeListWhere
-              OR: [MovieActorsEdgeListWhere!]
-              edges: MovieActorsEdgeWhere
-            }
-
-            input MovieActorsEdgeSort {
-              node: ActorSort
-            }
-
-            input MovieActorsEdgeWhere {
-              AND: [MovieActorsEdgeWhere!]
-              NOT: MovieActorsEdgeWhere
-              OR: [MovieActorsEdgeWhere!]
-              node: ActorWhere
-            }
-
-            input MovieActorsNestedOperationWhere {
-              AND: [MovieActorsNestedOperationWhere!]
-              NOT: MovieActorsNestedOperationWhere
-              OR: [MovieActorsNestedOperationWhere!]
-              all: MovieActorsEdgeListWhere
-              none: MovieActorsEdgeListWhere
-              single: MovieActorsEdgeListWhere
-              some: MovieActorsEdgeListWhere
-            }
-
-            type MovieActorsOperation {
-              connection(after: String, first: Int, sort: [MovieActorsConnectionSort!]): MovieActorsConnection
-            }
-
-            input MovieActorsOperationWhere {
-              AND: [MovieActorsOperationWhere!]
-              NOT: MovieActorsOperationWhere
-              OR: [MovieActorsOperationWhere!]
-              edges: MovieActorsEdgeWhere
-            }
-
-            type MovieConnection {
-              edges: [MovieEdge]
-              pageInfo: PageInfo
-            }
-
-            input MovieConnectionSort {
-              node: MovieSort
-            }
-
-            type MovieCreateInfo {
-              nodesCreated: Int!
-              nodesDelete: Int!
-              relationshipsCreated: Int!
-              relationshipsDeleted: Int!
-            }
-
-            input MovieCreateInput {
-              node: MovieCreateNode!
-            }
-
-            input MovieCreateNode {
-              title: String
-            }
-
-            type MovieCreateResponse {
-              info: CreateInfo
-              movies: [Movie!]!
-            }
-
-            type MovieEdge {
-              cursor: String
-              node: Movie
-            }
-
-            type MovieOperation {
-              connection(after: String, first: Int, sort: [MovieConnectionSort!]): MovieConnection
-            }
-
-            input MovieOperationWhere {
-              AND: [MovieOperationWhere!]
-              NOT: MovieOperationWhere
-              OR: [MovieOperationWhere!]
-              node: MovieWhere
-            }
-
-            input MovieSort {
-              title: SortDirection
-            }
-
-            input MovieUpdateInput {
-              node: MovieUpdateNode!
-            }
-
-            input MovieUpdateNode {
-              title: StringUpdate
-            }
-
-            type MovieUpdateResponse {
-              info: MovieCreateInfo
-              movies: [Movie!]!
-            }
-
-            input MovieWhere {
-              AND: [MovieWhere!]
-              NOT: MovieWhere
-              OR: [MovieWhere!]
-              actors: MovieActorsNestedOperationWhere
-              title: StringWhere
-            }
-
-            type Mutation {
-              createActors(input: [ActorCreateInput!]!): ActorCreateResponse
-              createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
-              deleteActors(where: ActorOperationWhere): DeleteResponse
-              deleteMovies(where: MovieOperationWhere): DeleteResponse
-              updateActors(input: ActorUpdateInput!, where: ActorOperationWhere): ActorUpdateResponse
-              updateMovies(input: MovieUpdateInput!, where: MovieOperationWhere): MovieUpdateResponse
-            }
-
-            type PageInfo {
-              endCursor: String
-              hasNextPage: Boolean!
-              hasPreviousPage: Boolean!
-              startCursor: String
-            }
-
-            type Query {
-              actors(where: ActorOperationWhere): ActorOperation
-              movies(where: MovieOperationWhere): MovieOperation
-            }
-
-            enum SortDirection {
-              ASC
-              DESC
-            }
-
-            input StringUpdate {
-              set: String
-            }
-
-            input StringWhere {
-              AND: [StringWhere!]
-              NOT: StringWhere
-              OR: [StringWhere!]
-              contains: String
-              endsWith: String
-              equals: String
-              in: [String!]
-              startsWith: String
-            }"
-        `);
-    });
-
-    test("Simple relationship with properties", async () => {
-        const typeDefs = /* GraphQL */ `
-            type Movie @node {
+                id: ID! @id
                 title: String
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
             type Actor @node {
+                id: ID! @id
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
             type ActedIn @relationshipProperties {
+                id: ID! @id
                 year: Int
             }
         `;
@@ -385,10 +53,12 @@ describe("Relationships", () => {
             }
 
             type ActedIn {
+              id: ID!
               year: Int
             }
 
             input ActedInSort {
+              id: SortDirection
               year: SortDirection
             }
 
@@ -396,10 +66,12 @@ describe("Relationships", () => {
               AND: [ActedInWhere!]
               NOT: ActedInWhere
               OR: [ActedInWhere!]
+              id: IDWhere
               year: IntWhere
             }
 
             type Actor {
+              id: ID!
               movies(where: ActorMoviesOperationWhere): ActorMoviesOperation
               name: String
             }
@@ -506,6 +178,7 @@ describe("Relationships", () => {
             }
 
             input ActorSort {
+              id: SortDirection
               name: SortDirection
             }
 
@@ -514,6 +187,7 @@ describe("Relationships", () => {
             }
 
             input ActorUpdateNode {
+              id: IDUpdate
               name: StringUpdate
             }
 
@@ -526,6 +200,7 @@ describe("Relationships", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              id: IDWhere
               movies: ActorMoviesNestedOperationWhere
               name: StringWhere
             }
@@ -542,6 +217,21 @@ describe("Relationships", () => {
 
             type DeleteResponse {
               info: DeleteInfo
+            }
+
+            input IDUpdate {
+              set: ID
+            }
+
+            input IDWhere {
+              AND: [IDWhere!]
+              NOT: IDWhere
+              OR: [IDWhere!]
+              contains: ID
+              endsWith: ID
+              equals: ID
+              in: [ID!]
+              startsWith: ID
             }
 
             input IntWhere {
@@ -558,6 +248,7 @@ describe("Relationships", () => {
 
             type Movie {
               actors(where: MovieActorsOperationWhere): MovieActorsOperation
+              id: ID!
               title: String
             }
 
@@ -663,6 +354,7 @@ describe("Relationships", () => {
             }
 
             input MovieSort {
+              id: SortDirection
               title: SortDirection
             }
 
@@ -671,6 +363,7 @@ describe("Relationships", () => {
             }
 
             input MovieUpdateNode {
+              id: IDUpdate
               title: StringUpdate
             }
 
@@ -684,6 +377,7 @@ describe("Relationships", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               actors: MovieActorsNestedOperationWhere
+              id: IDWhere
               title: StringWhere
             }
 

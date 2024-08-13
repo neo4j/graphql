@@ -27,43 +27,28 @@ describe("Temporal types", () => {
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
             type TypeNode @node {
-                dateTimeNullable: [DateTime]
                 dateTime: [DateTime!]
-                localDateTimeNullable: [LocalDateTime]
                 localDateTime: [LocalDateTime!]
-                durationNullable: [Duration]
                 duration: [Duration!]
-                timeNullable: [Time]
                 time: [Time!]
-                localTimeNullable: [LocalTime]
                 localTime: [LocalTime!]
                 relatedNode: [RelatedNode!]!
                     @relationship(type: "RELATED_TO", direction: OUT, properties: "RelatedNodeProperties")
             }
 
             type RelatedNodeProperties @relationshipProperties {
-                dateTimeNullable: [DateTime]
                 dateTime: [DateTime!]
-                localDateTimeNullable: [LocalDateTime]
                 localDateTime: [LocalDateTime!]
-                durationNullable: [Duration]
                 duration: [Duration!]
-                timeNullable: [Time]
                 time: [Time!]
-                localTimeNullable: [LocalTime]
                 localTime: [LocalTime!]
             }
 
             type RelatedNode @node {
-                dateTimeNullable: [DateTime]
                 dateTime: [DateTime!]
-                localDateTimeNullable: [LocalDateTime]
                 localDateTime: [LocalDateTime!]
-                durationNullable: [Duration]
                 duration: [Duration!]
-                timeNullable: [Time]
                 time: [Time!]
-                localTimeNullable: [LocalTime]
                 localTime: [LocalTime!]
             }
         `;
@@ -80,15 +65,10 @@ describe("Temporal types", () => {
                     connection {
                         edges {
                             node {
-                                dateTimeNullable
                                 dateTime
-                                localDateTimeNullable
                                 localDateTime
-                                durationNullable
                                 duration
-                                timeNullable
                                 time
-                                localTimeNullable
                                 localTime
                             }
                         }
@@ -107,9 +87,9 @@ describe("Temporal types", () => {
                 WITH edges
                 UNWIND edges AS edge
                 WITH edge.node AS this0
-                RETURN collect({ node: { dateTimeNullable: [var1 IN this0.dateTimeNullable | apoc.date.convertFormat(toString(var1), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\")], dateTime: [var2 IN this0.dateTime | apoc.date.convertFormat(toString(var2), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\")], localDateTimeNullable: this0.localDateTimeNullable, localDateTime: this0.localDateTime, durationNullable: this0.durationNullable, duration: this0.duration, timeNullable: this0.timeNullable, time: this0.time, localTimeNullable: this0.localTimeNullable, localTime: this0.localTime, __resolveType: \\"TypeNode\\" } }) AS var3
+                RETURN collect({ node: { dateTime: [var1 IN this0.dateTime | apoc.date.convertFormat(toString(var1), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\")], localDateTime: this0.localDateTime, duration: this0.duration, time: this0.time, localTime: this0.localTime, __resolveType: \\"TypeNode\\" } }) AS var2
             }
-            RETURN { connection: { edges: var3, totalCount: totalCount } } AS this"
+            RETURN { connection: { edges: var2, totalCount: totalCount } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -126,15 +106,10 @@ describe("Temporal types", () => {
                                     connection {
                                         edges {
                                             node {
-                                                dateTimeNullable
                                                 dateTime
-                                                localDateTimeNullable
                                                 localDateTime
-                                                durationNullable
                                                 duration
-                                                timeNullable
                                                 time
-                                                localTimeNullable
                                                 localTime
                                             }
                                         }
@@ -159,14 +134,14 @@ describe("Temporal types", () => {
                 WITH edge.node AS this0
                 CALL {
                     WITH this0
-                    MATCH (this0)-[this1:RELATED_TO]->(relatedNode:RelatedNode)
-                    WITH collect({ node: relatedNode, relationship: this1 }) AS edges
+                    MATCH (this0)-[this1:RELATED_TO]->(this2:RelatedNode)
+                    WITH collect({ node: this2, relationship: this1 }) AS edges
                     WITH edges, size(edges) AS totalCount
                     CALL {
                         WITH edges
                         UNWIND edges AS edge
-                        WITH edge.node AS relatedNode, edge.relationship AS this1
-                        RETURN collect({ node: { dateTimeNullable: [var2 IN relatedNode.dateTimeNullable | apoc.date.convertFormat(toString(var2), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\")], dateTime: [var3 IN relatedNode.dateTime | apoc.date.convertFormat(toString(var3), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\")], localDateTimeNullable: relatedNode.localDateTimeNullable, localDateTime: relatedNode.localDateTime, durationNullable: relatedNode.durationNullable, duration: relatedNode.duration, timeNullable: relatedNode.timeNullable, time: relatedNode.time, localTimeNullable: relatedNode.localTimeNullable, localTime: relatedNode.localTime, __resolveType: \\"RelatedNode\\" } }) AS var4
+                        WITH edge.node AS this2, edge.relationship AS this1
+                        RETURN collect({ node: { dateTime: [var3 IN this2.dateTime | apoc.date.convertFormat(toString(var3), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\")], localDateTime: this2.localDateTime, duration: this2.duration, time: this2.time, localTime: this2.localTime, __resolveType: \\"RelatedNode\\" } }) AS var4
                     }
                     RETURN { connection: { edges: var4, totalCount: totalCount } } AS var5
                 }
@@ -189,15 +164,10 @@ describe("Temporal types", () => {
                                     connection {
                                         edges {
                                             properties {
-                                                dateTimeNullable
                                                 dateTime
-                                                localDateTimeNullable
                                                 localDateTime
-                                                durationNullable
                                                 duration
-                                                timeNullable
                                                 time
-                                                localTimeNullable
                                                 localTime
                                             }
                                         }
@@ -222,14 +192,14 @@ describe("Temporal types", () => {
                 WITH edge.node AS this0
                 CALL {
                     WITH this0
-                    MATCH (this0)-[this1:RELATED_TO]->(relatedNode:RelatedNode)
-                    WITH collect({ node: relatedNode, relationship: this1 }) AS edges
+                    MATCH (this0)-[this1:RELATED_TO]->(this2:RelatedNode)
+                    WITH collect({ node: this2, relationship: this1 }) AS edges
                     WITH edges, size(edges) AS totalCount
                     CALL {
                         WITH edges
                         UNWIND edges AS edge
-                        WITH edge.node AS relatedNode, edge.relationship AS this1
-                        RETURN collect({ properties: { dateTimeNullable: [var2 IN this1.dateTimeNullable | apoc.date.convertFormat(toString(var2), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\")], dateTime: [var3 IN this1.dateTime | apoc.date.convertFormat(toString(var3), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\")], localDateTimeNullable: this1.localDateTimeNullable, localDateTime: this1.localDateTime, durationNullable: this1.durationNullable, duration: this1.duration, timeNullable: this1.timeNullable, time: this1.time, localTimeNullable: this1.localTimeNullable, localTime: this1.localTime }, node: { __id: id(relatedNode), __resolveType: \\"RelatedNode\\" } }) AS var4
+                        WITH edge.node AS this2, edge.relationship AS this1
+                        RETURN collect({ properties: { dateTime: [var3 IN this1.dateTime | apoc.date.convertFormat(toString(var3), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\")], localDateTime: this1.localDateTime, duration: this1.duration, time: this1.time, localTime: this1.localTime }, node: { __id: id(this2), __resolveType: \\"RelatedNode\\" } }) AS var4
                     }
                     RETURN { connection: { edges: var4, totalCount: totalCount } } AS var5
                 }

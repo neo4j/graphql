@@ -73,7 +73,7 @@ export class TopLevelEntitySchemaTypes {
         this.schemaBuilder = schemaBuilder;
         this.entityTypeNames = entity.typeNames;
         this.schemaTypes = schemaTypes;
-        this.createSchemaTypes = new TopLevelCreateSchemaTypes({ schemaBuilder, entity, schemaTypes });
+        this.createSchemaTypes = new TopLevelCreateSchemaTypes({ schemaBuilder, entity });
         this.updateSchemaTypes = new TopLevelUpdateSchemaTypes({ schemaBuilder, entity, schemaTypes });
     }
 
@@ -161,6 +161,24 @@ export class TopLevelEntitySchemaTypes {
             type: this.updateType,
             args: {
                 input: this.updateSchemaTypes.updateInput.NonNull,
+                where: this.filterSchemaTypes.operationWhereTopLevel,
+            },
+            resolver,
+        });
+    }
+
+    public addTopLevelDeleteField(
+        resolver: (
+            _root: any,
+            args: any,
+            context: Neo4jGraphQLTranslationContext,
+            info: GraphQLResolveInfo
+        ) => Promise<any>
+    ) {
+        this.schemaBuilder.addMutationField({
+            name: this.entity.typeNames.deleteField,
+            type: this.schemaTypes.staticTypes.deleteResponse,
+            args: {
                 where: this.filterSchemaTypes.operationWhereTopLevel,
             },
             resolver,
@@ -324,12 +342,11 @@ export class TopLevelEntitySchemaTypes {
     public get createType(): ObjectTypeComposer {
         return this.schemaBuilder.getOrCreateObjectType(this.entityTypeNames.createResponse, () => {
             const nodeType = this.nodeType;
-            const info = this.createInfo;
 
             return {
                 fields: {
                     [this.entityTypeNames.queryField]: nodeType.NonNull.List.NonNull,
-                    info,
+                    info: this.schemaTypes.staticTypes.createInfo,
                 },
             };
         });

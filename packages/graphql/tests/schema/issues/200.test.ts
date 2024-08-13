@@ -18,11 +18,11 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
-describe("200", () => {
+describe("https://github.com/neo4j/graphql/issues/200", () => {
     test("Preserve schema array non null", async () => {
         const typeDefs = gql`
             type Category {

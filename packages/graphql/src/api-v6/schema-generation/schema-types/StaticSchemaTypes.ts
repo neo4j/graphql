@@ -64,6 +64,38 @@ export class StaticSchemaTypes {
         });
     }
 
+    public get createInfo(): ObjectTypeComposer {
+        return this.schemaBuilder.getOrCreateObjectType("CreateInfo", () => {
+            return {
+                fields: {
+                    nodesCreated: this.schemaBuilder.types.int.NonNull,
+                    relationshipsCreated: this.schemaBuilder.types.int.NonNull,
+                },
+            };
+        });
+    }
+
+    public get deleteInfo(): ObjectTypeComposer {
+        return this.schemaBuilder.getOrCreateObjectType("DeleteInfo", () => {
+            return {
+                fields: {
+                    nodesDeleted: this.schemaBuilder.types.int.NonNull,
+                    relationshipsDeleted: this.schemaBuilder.types.int.NonNull,
+                },
+            };
+        });
+    }
+
+    public get deleteResponse(): ObjectTypeComposer {
+        return this.schemaBuilder.getOrCreateObjectType("DeleteResponse", () => {
+            return {
+                fields: {
+                    info: this.deleteInfo,
+                },
+            };
+        });
+    }
+
     @Memoize()
     public get sortDirection(): EnumTypeComposer {
         return this.schemaBuilder.createEnumType("SortDirection", ["ASC", "DESC"]);
@@ -87,17 +119,7 @@ class StaticFilterTypes {
         this.schemaBuilder = schemaBuilder;
     }
 
-    public getStringListWhere(nullable: boolean): InputTypeComposer {
-        if (nullable) {
-            return this.schemaBuilder.getOrCreateInputType("StringListWhereNullable", () => {
-                return {
-                    fields: {
-                        equals: this.schemaBuilder.types.string.List,
-                    },
-                };
-            });
-        }
-
+    public getStringListWhere(): InputTypeComposer {
         return this.schemaBuilder.getOrCreateInputType("StringListWhere", () => {
             return {
                 fields: {
@@ -143,17 +165,7 @@ class StaticFilterTypes {
             };
         });
     }
-    public getDateListWhere(nullable: boolean): InputTypeComposer {
-        if (nullable) {
-            return this.schemaBuilder.getOrCreateInputType("DateListWhereNullable", () => {
-                return {
-                    fields: {
-                        equals: this.schemaBuilder.types.date.List,
-                    },
-                };
-            });
-        }
-
+    public getDateListWhere(): InputTypeComposer {
         return this.schemaBuilder.getOrCreateInputType("DateListWhere", () => {
             return {
                 fields: {
@@ -175,17 +187,7 @@ class StaticFilterTypes {
         });
     }
 
-    public getDateTimeListWhere(nullable: boolean): InputTypeComposer {
-        if (nullable) {
-            return this.schemaBuilder.getOrCreateInputType("DateTimeListWhereNullable", () => {
-                return {
-                    fields: {
-                        equals: this.schemaBuilder.types.dateTime.List,
-                    },
-                };
-            });
-        }
-
+    public getDateTimeListWhere(): InputTypeComposer {
         return this.schemaBuilder.getOrCreateInputType("DateTimeListWhere", () => {
             return {
                 fields: {
@@ -207,17 +209,7 @@ class StaticFilterTypes {
         });
     }
 
-    public getLocalDateTimeListWhere(nullable: boolean): InputTypeComposer {
-        if (nullable) {
-            return this.schemaBuilder.getOrCreateInputType("LocalDateTimeListWhereNullable", () => {
-                return {
-                    fields: {
-                        equals: this.schemaBuilder.types.localDateTime.List,
-                    },
-                };
-            });
-        }
-
+    public getLocalDateTimeListWhere(): InputTypeComposer {
         return this.schemaBuilder.getOrCreateInputType("LocalDateTimeListWhere", () => {
             return {
                 fields: {
@@ -239,17 +231,7 @@ class StaticFilterTypes {
         });
     }
 
-    public getDurationListWhere(nullable: boolean): InputTypeComposer {
-        if (nullable) {
-            return this.schemaBuilder.getOrCreateInputType("DurationListWhereNullable", () => {
-                return {
-                    fields: {
-                        equals: this.schemaBuilder.types.duration.List,
-                    },
-                };
-            });
-        }
-
+    public getDurationListWhere(): InputTypeComposer {
         return this.schemaBuilder.getOrCreateInputType("DurationListWhere", () => {
             return {
                 fields: {
@@ -271,17 +253,7 @@ class StaticFilterTypes {
         });
     }
 
-    public getTimeListWhere(nullable: boolean): InputTypeComposer {
-        if (nullable) {
-            return this.schemaBuilder.getOrCreateInputType("TimeListWhereNullable", () => {
-                return {
-                    fields: {
-                        equals: this.schemaBuilder.types.time.List,
-                    },
-                };
-            });
-        }
-
+    public getTimeListWhere(): InputTypeComposer {
         return this.schemaBuilder.getOrCreateInputType("TimeListWhere", () => {
             return {
                 fields: {
@@ -303,17 +275,7 @@ class StaticFilterTypes {
         });
     }
 
-    public getLocalTimeListWhere(nullable: boolean): InputTypeComposer {
-        if (nullable) {
-            return this.schemaBuilder.getOrCreateInputType("LocalTimeListWhereNullable", () => {
-                return {
-                    fields: {
-                        equals: this.schemaBuilder.types.localTime.List,
-                    },
-                };
-            });
-        }
-
+    public getLocalTimeListWhere(): InputTypeComposer {
         return this.schemaBuilder.getOrCreateInputType("LocalTimeListWhere", () => {
             return {
                 fields: {
@@ -336,17 +298,7 @@ class StaticFilterTypes {
         });
     }
 
-    public getIdListWhere(nullable: boolean): InputTypeComposer {
-        if (nullable) {
-            return this.schemaBuilder.getOrCreateInputType("IDListWhereNullable", () => {
-                return {
-                    fields: {
-                        equals: this.schemaBuilder.types.id.List,
-                    },
-                };
-            });
-        }
-
+    public getIdListWhere(): InputTypeComposer {
         return this.schemaBuilder.getOrCreateInputType("IDListWhere", () => {
             return {
                 fields: {
@@ -368,17 +320,7 @@ class StaticFilterTypes {
         });
     }
 
-    public getIntListWhere(nullable: boolean): InputTypeComposer {
-        if (nullable) {
-            return this.schemaBuilder.getOrCreateInputType("IntListWhereNullable", () => {
-                return {
-                    fields: {
-                        equals: this.schemaBuilder.types.int.List,
-                    },
-                };
-            });
-        }
-
+    public getIntListWhere(): InputTypeComposer {
         return this.schemaBuilder.getOrCreateInputType("IntListWhere", () => {
             return {
                 fields: {
@@ -399,17 +341,7 @@ class StaticFilterTypes {
         });
     }
 
-    public getBigIntListWhere(nullable: boolean): InputTypeComposer {
-        if (nullable) {
-            return this.schemaBuilder.getOrCreateInputType("BigIntListWhereNullable", () => {
-                return {
-                    fields: {
-                        equals: this.schemaBuilder.types.bigInt.List,
-                    },
-                };
-            });
-        }
-
+    public getBigIntListWhere(): InputTypeComposer {
         return this.schemaBuilder.getOrCreateInputType("BigIntListWhere", () => {
             return {
                 fields: {
@@ -431,17 +363,7 @@ class StaticFilterTypes {
         });
     }
 
-    public getFloatListWhere(nullable: boolean): InputTypeComposer {
-        if (nullable) {
-            return this.schemaBuilder.getOrCreateInputType("FloatListWhereNullable", () => {
-                return {
-                    fields: {
-                        equals: this.schemaBuilder.types.float.List,
-                    },
-                };
-            });
-        }
-
+    public getFloatListWhere(): InputTypeComposer {
         return this.schemaBuilder.getOrCreateInputType("FloatListWhere", () => {
             return {
                 fields: {
@@ -463,16 +385,7 @@ class StaticFilterTypes {
         });
     }
 
-    // public getCartesianListWhere(nullable: boolean): InputTypeComposer {
-    //     if (nullable) {
-    //         return this.schemaBuilder.getOrCreateInputType("CartesianListPointWhereNullable", () => {
-    //             return {
-    //                 fields: {
-    //                     equals: toGraphQLList(CartesianPointInput),
-    //                 },
-    //             };
-    //         });
-    //     }
+    // public getCartesianListWhere(): InputTypeComposer {
 
     //     return this.schemaBuilder.getOrCreateInputType("CartesianListPointWhere", () => {
     //         return {
@@ -483,16 +396,7 @@ class StaticFilterTypes {
     //     });
     // }
 
-    // public getPointListWhere(nullable: boolean): InputTypeComposer {
-    //     if (nullable) {
-    //         return this.schemaBuilder.getOrCreateInputType("PointListPointWhereNullable", () => {
-    //             return {
-    //                 fields: {
-    //                     equals: toGraphQLList(PointInput),
-    //                 },
-    //             };
-    //         });
-    //     }
+    // public getPointListWhere(): InputTypeComposer {
 
     //     return this.schemaBuilder.getOrCreateInputType("PointListPointWhere", () => {
     //         return {

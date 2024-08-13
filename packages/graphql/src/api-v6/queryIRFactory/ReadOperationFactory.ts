@@ -44,12 +44,12 @@ import { FilterFactory } from "./FilterFactory";
 import { FactoryParseError } from "./factory-parse-error";
 import type { GraphQLTreePoint } from "./resolve-tree-parser/graphql-tree/attributes";
 import type {
-    GraphQLTree,
     GraphQLTreeConnection,
     GraphQLTreeConnectionTopLevel,
     GraphQLTreeEdgeProperties,
     GraphQLTreeNode,
     GraphQLTreeReadOperation,
+    GraphQLTreeReadOperationTopLevel,
 } from "./resolve-tree-parser/graphql-tree/graphql-tree";
 import type { GraphQLSort, GraphQLSortEdge, GraphQLTreeSortElement } from "./resolve-tree-parser/graphql-tree/sort";
 
@@ -62,7 +62,13 @@ export class ReadOperationFactory {
         this.filterFactory = new FilterFactory(schemaModel);
     }
 
-    public createAST({ graphQLTree, entity }: { graphQLTree: GraphQLTree; entity: ConcreteEntity }): QueryAST {
+    public createAST({
+        graphQLTree,
+        entity,
+    }: {
+        graphQLTree: GraphQLTreeReadOperationTopLevel;
+        entity: ConcreteEntity;
+    }): QueryAST {
         const operation = this.generateOperation({
             graphQLTree,
             entity,
@@ -97,7 +103,7 @@ export class ReadOperationFactory {
         graphQLTree,
         entity,
     }: {
-        graphQLTree: GraphQLTree;
+        graphQLTree: GraphQLTreeReadOperationTopLevel;
         entity: ConcreteEntity;
     }): V6ReadOperation {
         const connectionTree = graphQLTree.fields.connection;
@@ -154,7 +160,6 @@ export class ReadOperationFactory {
         // Selection
         const selection = new RelationshipSelection({
             relationship: relationshipAdapter,
-            alias: parsedTree.alias,
         });
 
         // Fields

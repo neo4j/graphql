@@ -17,41 +17,39 @@
  * limitations under the License.
  */
 
-import type { UniqueType } from "../../../../utils/graphql-types";
 import { TestHelper } from "../../../../utils/tests-helper";
 
-describe("Create with @alias", () => {
+describe("Create with @default", () => {
     const testHelper = new TestHelper({ v6Api: true });
 
-    let Movie: UniqueType;
-    beforeAll(async () => {
-        Movie = testHelper.createUniqueType("Movie");
-
-        const typeDefs = /* GraphQL */ `
-            type ${Movie} @node {
-                id: ID! @id @alias(property: "serverId")
-                title: String! @alias(property: "name")
-                released: Int @alias(property: "year")
-            }
-        `;
-        await testHelper.initNeo4jGraphQL({ typeDefs });
-    });
-
-    afterAll(async () => {
+    afterEach(async () => {
         await testHelper.close();
     });
 
-    test("should create two movies and project them", async () => {
+    test.each([
+        { dataType: "Int", value: 1 },
+        { dataType: "Float", value: 1.2 },
+        { dataType: "DateTime", value: "2024-05-28T13:56:22.368Z" },
+    ] as const)("should create two movies with a $dataType default value", async ({ dataType, value }) => {
+        const Movie = testHelper.createUniqueType("Movie");
+
+        const typeDefs = /* GraphQL */ `
+            type ${Movie} @node {
+                title: String! 
+                testField: ${dataType} @default(value: ${typeof value === "string" ? `"${value}"` : value})
+            }
+        `;
+        await testHelper.initNeo4jGraphQL({ typeDefs });
+
         const mutation = /* GraphQL */ `
             mutation {
                 ${Movie.operations.create}(input: [ 
                         { node: { title: "The Matrix" } }, 
-                        { node: { title: "The Matrix 2", released: 2001 } } 
+                        { node: { title: "The Matrix 2"} } 
                     ]) {
                     ${Movie.plural} {
-                        id
                         title
-                        released
+                        testField
                     }
                 }
             }
@@ -62,8 +60,8 @@ describe("Create with @alias", () => {
         expect(gqlResult.data).toEqual({
             [Movie.operations.create]: {
                 [Movie.plural]: expect.toIncludeSameMembers([
-                    { id: expect.any(String), title: "The Matrix", released: null },
-                    { id: expect.any(String), title: "The Matrix 2", released: 2001 },
+                    { title: "The Matrix", testField: value },
+                    { title: "The Matrix 2", testField: value },
                 ]),
             },
         });

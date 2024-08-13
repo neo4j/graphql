@@ -44,7 +44,10 @@ import { DirectiveCombinationValid } from "../../schema/validation/custom-rules/
 import { WarnIfListOfListsFieldDefinition } from "../../schema/validation/custom-rules/warnings/list-of-lists";
 import { validateSDL } from "../../schema/validation/validate-sdl";
 import type { Neo4jFeaturesSettings } from "../../types";
+import { ValidDefault } from "./rules/valid-default";
+import { ValidID } from "./rules/valid-id";
 import { ValidLimit } from "./rules/valid-limit";
+import { ValidListField } from "./rules/valid-list-element";
 import { ValidRelationship } from "./rules/valid-relationship";
 
 function runNeo4jGraphQLValidationRules({
@@ -65,7 +68,10 @@ function runNeo4jGraphQLValidationRules({
         [
             ...specifiedSDLRules,
             ValidRelationship,
+            ValidListField,
             ValidLimit,
+            ValidDefault,
+            ValidID,
             DirectiveCombinationValid,
             ValidRelationshipProperties,
             ReservedTypeNames,

@@ -17,8 +17,7 @@
  * limitations under the License.
  */
 
-import type { GraphQLScalarType } from "graphql";
-import type { InputTypeComposer, NonNullComposer, ScalarTypeComposer } from "graphql-compose";
+import type { InputTypeComposer, ScalarTypeComposer } from "graphql-compose";
 import type { Attribute } from "../../../../schema-model/attribute/Attribute";
 import type { AttributeType } from "../../../../schema-model/attribute/AttributeType";
 import {
@@ -34,28 +33,17 @@ import {
 import type { ConcreteEntity } from "../../../../schema-model/entity/ConcreteEntity";
 import { filterTruthy } from "../../../../utils/utils";
 import type { TopLevelEntityTypeNames } from "../../../schema-model/graphql-type-names/TopLevelEntityTypeNames";
-import type { SchemaBuilder } from "../../SchemaBuilder";
-import type { SchemaTypes } from "../SchemaTypes";
+import type { InputFieldDefinition, SchemaBuilder, WrappedComposer } from "../../SchemaBuilder";
 
 export class TopLevelCreateSchemaTypes {
     private entityTypeNames: TopLevelEntityTypeNames;
-    private schemaTypes: SchemaTypes;
     private schemaBuilder: SchemaBuilder;
     private entity: ConcreteEntity;
 
-    constructor({
-        entity,
-        schemaBuilder,
-        schemaTypes,
-    }: {
-        entity: ConcreteEntity;
-        schemaBuilder: SchemaBuilder;
-        schemaTypes: SchemaTypes;
-    }) {
+    constructor({ entity, schemaBuilder }: { entity: ConcreteEntity; schemaBuilder: SchemaBuilder }) {
         this.entity = entity;
         this.entityTypeNames = entity.typeNames;
         this.schemaBuilder = schemaBuilder;
-        this.schemaTypes = schemaTypes;
     }
 
     public get createInput(): InputTypeComposer {
@@ -70,7 +58,10 @@ export class TopLevelCreateSchemaTypes {
 
     public get createNode(): InputTypeComposer {
         return this.schemaBuilder.getOrCreateInputType(this.entityTypeNames.createNode, (_itc: InputTypeComposer) => {
-            const inputFields = this.getInputFields([...this.entity.attributes.values()]);
+            const relevantFields = [...this.entity.attributes.values()].filter(
+                (attribute) => !attribute.annotations.id
+            );
+            const inputFields = this.getInputFields(relevantFields);
             const isEmpty = Object.keys(inputFields).length === 0;
             const fields = isEmpty ? { _emptyInput: this.schemaBuilder.types.boolean } : inputFields;
             return {
@@ -79,12 +70,16 @@ export class TopLevelCreateSchemaTypes {
         });
     }
 
-    private getInputFields(attributes: Attribute[]): Record<string, InputTypeComposer> {
-        const inputFields: Array<[string, InputTypeComposer | GraphQLScalarType] | []> = filterTruthy(
+    private getInputFields(attributes: Attribute[]): Record<string, InputFieldDefinition> {
+        const inputFields: Array<[string, InputFieldDefinition] | []> = filterTruthy(
             attributes.map((attribute) => {
                 const inputField = this.attributeToInputField(attribute.type);
+                const fieldDefinition: InputFieldDefinition = {
+                    type: inputField,
+                    defaultValue: attribute.annotations.default?.value,
+                };
                 if (inputField) {
-                    return [attribute.name, inputField];
+                    return [attribute.name, fieldDefinition];
                 }
             })
         );
@@ -109,7 +104,7 @@ export class TopLevelCreateSchemaTypes {
         }
     }
 
-    private createBuiltInFieldInput(type: ScalarType): ScalarTypeComposer | NonNullComposer<ScalarTypeComposer> {
+    private createBuiltInFieldInput(type: ScalarType): WrappedComposer<ScalarTypeComposer> {
         let builtInType: ScalarTypeComposer;
         switch (type.name) {
             case GraphQLBuiltInScalarType.Boolean: {
@@ -146,9 +141,7 @@ export class TopLevelCreateSchemaTypes {
         return builtInType;
     }
 
-    private createTemporalFieldInput(
-        type: Neo4jTemporalType
-    ): ScalarTypeComposer | NonNullComposer<ScalarTypeComposer> {
+    private createTemporalFieldInput(type: Neo4jTemporalType): WrappedComposer<ScalarTypeComposer> {
         let builtInType: ScalarTypeComposer;
         switch (type.name) {
             case Neo4jGraphQLTemporalType.Date: {
@@ -185,7 +178,7 @@ export class TopLevelCreateSchemaTypes {
         return builtInType;
     }
 
-    private createSpatialFieldInput(type: Neo4jSpatialType): InputTypeComposer | NonNullComposer<InputTypeComposer> {
+    private createSpatialFieldInput(type: Neo4jSpatialType): WrappedComposer<InputTypeComposer> {
         let builtInType: InputTypeComposer;
         switch (type.name) {
             case Neo4jGraphQLSpatialType.CartesianPoint: {

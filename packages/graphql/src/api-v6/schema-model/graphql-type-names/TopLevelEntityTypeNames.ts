@@ -109,4 +109,9 @@ export class TopLevelEntityTypeNames extends EntityTypeNames {
     public get updateInfo(): string {
         return `${upperFirst(this.entityName)}UpdateInfo`;
     }
+
+    /** Top Level Delete field */
+    public get deleteField(): string {
+        return `delete${upperFirst(plural(this.entityName))}`;
+    }
 }

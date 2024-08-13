@@ -23,6 +23,7 @@ import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
 import { generateGlobalNodeResolver } from "../resolvers/global-node-resolver";
 import { generateReadResolver } from "../resolvers/read-resolver";
 import { generateCreateResolver } from "../resolvers/translate-create-resolver";
+import { generateDeleteResolver } from "../resolvers/translate-delete-resolver";
 import { generateUpdateResolver } from "../resolvers/translate-update-resolver";
 import { SchemaBuilder } from "./SchemaBuilder";
 import { SchemaTypes } from "./schema-types/SchemaTypes";
@@ -87,6 +88,12 @@ export class SchemaGenerator {
             );
             entitySchemaTypes.addTopLevelUpdateField(
                 generateUpdateResolver({
+                    entity,
+                })
+            );
+
+            entitySchemaTypes.addTopLevelDeleteField(
+                generateDeleteResolver({
                     entity,
                 })
             );

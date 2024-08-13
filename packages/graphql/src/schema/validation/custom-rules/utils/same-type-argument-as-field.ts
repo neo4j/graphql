@@ -16,11 +16,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { EnumTypeDefinitionNode, ArgumentNode, FieldDefinitionNode, ValueNode } from "graphql";
+import type { ArgumentNode, EnumTypeDefinitionNode, FieldDefinitionNode, ValueNode } from "graphql";
 import { Kind } from "graphql";
-import { fromValueKind, getInnerTypeName, isArrayType } from "./utils";
 import { isSpatial, isTemporal } from "../../../../constants";
 import { DocumentValidationError } from "./document-validation-error";
+import { fromValueKind, getInnerTypeName, isArrayType } from "./utils";
 
 export function assertArgumentHasSameTypeAsField({
     directiveName,
@@ -71,7 +71,7 @@ function doTypesMatch(expectedType: string, argumentValueType: ValueNode, enums:
         return true;
     }
     if (expectedType.toLowerCase() === "id") {
-        return !!(fromValueKind(argumentValueType, enums, expectedType)?.toLowerCase() === "string");
+        return Boolean(fromValueKind(argumentValueType, enums, expectedType)?.toLowerCase() === "string");
     }
     return fromValueKind(argumentValueType, enums, expectedType)?.toLowerCase() === expectedType.toLowerCase();
 }

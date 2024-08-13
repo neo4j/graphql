@@ -111,6 +111,20 @@ describe("Scalars", () => {
               equals: Boolean
             }
 
+            type CreateInfo {
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            type DeleteInfo {
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type DeleteResponse {
+              info: DeleteInfo
+            }
+
             input FloatUpdate {
               set: Float
             }
@@ -161,6 +175,8 @@ describe("Scalars", () => {
             type Mutation {
               createNodeTypes(input: [NodeTypeCreateInput!]!): NodeTypeCreateResponse
               createRelatedNodes(input: [RelatedNodeCreateInput!]!): RelatedNodeCreateResponse
+              deleteNodeTypes(where: NodeTypeOperationWhere): DeleteResponse
+              deleteRelatedNodes(where: RelatedNodeOperationWhere): DeleteResponse
               updateNodeTypes(input: NodeTypeUpdateInput!, where: NodeTypeOperationWhere): NodeTypeUpdateResponse
               updateRelatedNodes(input: RelatedNodeUpdateInput!, where: RelatedNodeOperationWhere): RelatedNodeUpdateResponse
             }
@@ -192,7 +208,9 @@ describe("Scalars", () => {
 
             type NodeTypeCreateInfo {
               nodesCreated: Int!
+              nodesDelete: Int!
               relationshipsCreated: Int!
+              relationshipsDeleted: Int!
             }
 
             input NodeTypeCreateInput {
@@ -215,7 +233,7 @@ describe("Scalars", () => {
             }
 
             type NodeTypeCreateResponse {
-              info: NodeTypeCreateInfo
+              info: CreateInfo
               nodeTypes: [NodeType!]!
             }
 
@@ -387,7 +405,9 @@ describe("Scalars", () => {
 
             type RelatedNodeCreateInfo {
               nodesCreated: Int!
+              nodesDelete: Int!
               relationshipsCreated: Int!
+              relationshipsDeleted: Int!
             }
 
             input RelatedNodeCreateInput {
@@ -410,7 +430,7 @@ describe("Scalars", () => {
             }
 
             type RelatedNodeCreateResponse {
-              info: RelatedNodeCreateInfo
+              info: CreateInfo
               relatedNodes: [RelatedNode!]!
             }
 

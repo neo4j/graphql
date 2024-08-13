@@ -31,7 +31,6 @@ describe.each(["Float", "Int", "BigInt"] as const)("%s Filtering array - 'equals
         const typeDefs = /* GraphQL */ `
             type ${Movie} @node {
                 list: [${type}!]!
-                listNullable: [${type}]!
                 title: String!
             }
 
@@ -39,9 +38,9 @@ describe.each(["Float", "Int", "BigInt"] as const)("%s Filtering array - 'equals
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
         await testHelper.executeCypher(`
-            CREATE (:${Movie} {list: [1999, 2000], listNullable: [1999, 2000], title: "The Matrix"})
-            CREATE (:${Movie} {list: [2001, 2000], listNullable: [2001, 2000], title: "The Matrix 2"})
-            CREATE (:${Movie} {list: [1999, 2000], listNullable: [1999, 2000], title: "Bill And Ted"})
+            CREATE (:${Movie} {list: [1999, 2000], title: "The Matrix"})
+            CREATE (:${Movie} {list: [2001, 2000], title: "The Matrix 2"})
+            CREATE (:${Movie} {list: [1999, 2000], title: "Bill And Ted"})
         `);
     });
 
@@ -49,10 +48,10 @@ describe.each(["Float", "Int", "BigInt"] as const)("%s Filtering array - 'equals
         await testHelper.close();
     });
 
-    test.each(["list", "listNullable"])("%s filter by 'equals'", async (field) => {
+    test("list filter by 'equals'", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural}(where: { node: { ${field}: { equals: [2001, 2000] } } }) {
+                ${Movie.plural}(where: { node: { list: { equals: [2001, 2000] } } }) {
                     connection {
                         edges {
                             node {
@@ -81,10 +80,10 @@ describe.each(["Float", "Int", "BigInt"] as const)("%s Filtering array - 'equals
         });
     });
 
-    test.each(["list", "listNullable"])("%s filter by NOT 'equals'", async (field) => {
+    test("List filter by NOT 'equals'", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural}(where: { NOT: { node: { ${field}: { equals: [2001, 2000] } } } }) {
+                ${Movie.plural}(where: { NOT: { node: { list: { equals: [2001, 2000] } } } }) {
                     connection {
                         edges {
                             node {

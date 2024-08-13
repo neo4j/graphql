@@ -18,13 +18,11 @@
  */
 import type { DirectiveNode, FieldDefinitionNode } from "graphql";
 import { Kind } from "graphql";
-import { parseValueNode } from "../../../../schema-model/parser/parse-value-node";
-import { getInnerTypeName } from "../utils/utils";
 import { DocumentValidationError } from "../utils/document-validation-error";
 import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
+import { getInnerTypeName } from "../utils/utils";
 
 export function verifyId({
-    directiveNode,
     traversedDef,
 }: {
     directiveNode: DirectiveNode;
@@ -33,14 +31,6 @@ export function verifyId({
     if (traversedDef.kind !== Kind.FIELD_DEFINITION) {
         // delegate
         return;
-    }
-    // TODO: remove the following as the argument "autogenerate" does not exists anymore
-    const autogenerateArg = directiveNode.arguments?.find((x) => x.name.value === "autogenerate");
-    if (autogenerateArg) {
-        const autogenerate = parseValueNode(autogenerateArg.value);
-        if (!autogenerate) {
-            return;
-        }
     }
 
     if (traversedDef.type.kind === Kind.LIST_TYPE) {
