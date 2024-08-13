@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { afterEach } from "node:test";
 import { generate } from "randomstring";
 import type { UniqueType } from "../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
