@@ -17,56 +17,55 @@
  * limitations under the License.
  */
 
-import neo4jDriver from "neo4j-driver";
-import type { UniqueType } from "../../../../utils/graphql-types";
-import { TestHelper } from "../../../../utils/tests-helper";
+import type { UniqueType } from "../../../../../utils/graphql-types";
+import { TestHelper } from "../../../../../utils/tests-helper";
 
-describe("Create Nodes with LocalTime fields", () => {
+describe("Create Nodes with Numeric fields", () => {
     const testHelper = new TestHelper({ v6Api: true });
+
     let Movie: UniqueType;
-
-    beforeEach(async () => {
+    beforeAll(async () => {
         Movie = testHelper.createUniqueType("Movie");
+
         const typeDefs = /* GraphQL */ `
-        type ${Movie.name} @node {
-            localTime: LocalTime
-        }
-    `;
-        await testHelper.initNeo4jGraphQL({ typeDefs });
-    });
-
-    afterEach(async () => {
-        await testHelper.close();
-    });
-
-    test("should be able to create nodes with LocalTime fields", async () => {
-        const time1 = new Date("2024-02-17T11:49:48.322Z");
-        const time2 = new Date("2025-02-17T12:49:48.322Z");
-
-        const neoTime1 = neo4jDriver.LocalTime.fromStandardDate(time1);
-        const neoTime2 = neo4jDriver.LocalTime.fromStandardDate(time2);
-
-        const mutation = /* GraphQL */ `
-            mutation {
-                ${Movie.operations.create}(input: [
-                        { node: { localTime: "${neoTime1.toString()}" } }
-                        { node: { localTime: "${neoTime2.toString()}" } }
-                    ]) {
-                    ${Movie.plural} {
-                        localTime
-                    }
-                }
+            type ${Movie} @node {
+                year: Int!
+                rating: Float!
+                viewings: BigInt!
             }
         `;
 
-        const gqlResult = await testHelper.executeGraphQL(mutation);
+        await testHelper.initNeo4jGraphQL({ typeDefs });
+    });
 
+    afterAll(async () => {
+        await testHelper.close();
+    });
+
+    test("should be able to create nodes with numeric fields", async () => {
+        const mutation = /* GraphQL */ `
+            mutation {
+                ${Movie.operations.create}(input: [
+                        { node: { rating: 9.3, viewings: "900000000000000", year: 2000 } },
+                        { node: { rating: 8, viewings: "50000000000000", year: 2001 } }
+                    ]) {
+                        ${Movie.plural} {
+                            year
+                            rating
+                            viewings
+                        }
+                               
+                    }
+                }
+            `;
+
+        const gqlResult = await testHelper.executeGraphQL(mutation);
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data).toEqual({
             [Movie.operations.create]: {
                 [Movie.plural]: expect.toIncludeSameMembers([
-                    { localTime: neoTime1.toString() },
-                    { localTime: neoTime2.toString() },
+                    { rating: 9.3, viewings: "900000000000000", year: 2000 },
+                    { rating: 8, viewings: "50000000000000", year: 2001 },
                 ]),
             },
         });

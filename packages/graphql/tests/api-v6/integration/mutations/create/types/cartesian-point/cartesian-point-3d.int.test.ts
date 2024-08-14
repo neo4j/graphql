@@ -17,16 +17,16 @@
  * limitations under the License.
  */
 
-import type { UniqueType } from "../../../../../utils/graphql-types";
-import { TestHelper } from "../../../../../utils/tests-helper";
+import type { UniqueType } from "../../../../../../utils/graphql-types";
+import { TestHelper } from "../../../../../../utils/tests-helper";
 
-describe("Create Nodes with CartesianPoint 2d", () => {
+describe("Create Nodes with CartesianPoint 3d", () => {
     const testHelper = new TestHelper({ v6Api: true });
 
     let Location: UniqueType;
 
-    const London = { x: -14221.955504767046, y: 6711533.711877272 } as const;
-    const Rome = { x: 1391088.9885668862, y: 5146427.7652232265 } as const;
+    const London = { x: -14221.955504767046, y: 6711533.711877272, z: 0 } as const;
+    const Rome = { x: 1391088.9885668862, y: 5146427.7652232265, z: 0 } as const;
 
     beforeEach(async () => {
         Location = testHelper.createUniqueType("Location");
@@ -45,12 +45,12 @@ describe("Create Nodes with CartesianPoint 2d", () => {
         await testHelper.close();
     });
 
-    test("should create nodes with wgs-84-2d point fields", async () => {
+    test("should create nodes with wgs-84-3d point fields", async () => {
         const mutation = /* GraphQL */ `
         mutation {
             ${Location.operations.create}(input: [
-                    { node: { id: "1", value: { x: ${London.x}, y: ${London.y} } }  }
-                    { node: { id: "2", value: { x: ${Rome.x}, y: ${Rome.y} } } }
+                    { node: { id: "1", value: { x: ${London.x}, y: ${London.y}, z: ${London.z} } } }
+                    { node: { id: "2", value: { x: ${Rome.x}, y: ${Rome.y}, z: ${Rome.z} } } }
                 ]) 
                 {
                     ${Location.plural} {
@@ -58,6 +58,7 @@ describe("Create Nodes with CartesianPoint 2d", () => {
                         value {
                             x
                             y
+                            z
                             crs
                             srid
                         }
@@ -78,8 +79,9 @@ describe("Create Nodes with CartesianPoint 2d", () => {
                         value: {
                             y: London.y,
                             x: London.x,
-                            crs: "cartesian",
-                            srid: 7203,
+                            z: London.z,
+                            crs: "cartesian-3d",
+                            srid: 9157,
                         },
                     },
                     {
@@ -87,8 +89,9 @@ describe("Create Nodes with CartesianPoint 2d", () => {
                         value: {
                             y: Rome.y,
                             x: Rome.x,
-                            crs: "cartesian",
-                            srid: 7203,
+                            z: Rome.z,
+                            crs: "cartesian-3d",
+                            srid: 9157,
                         },
                     },
                 ]),

@@ -78,6 +78,10 @@ describe("Spatial Types", () => {
               z: Float
             }
 
+            input CartesianPointInputUpdate {
+              set: CartesianPointInput
+            }
+
             type CreateInfo {
               nodesCreated: Int!
               relationshipsCreated: Int!
@@ -97,6 +101,8 @@ describe("Spatial Types", () => {
               createRelatedNodes(input: [RelatedNodeCreateInput!]!): RelatedNodeCreateResponse
               deleteNodeTypes(where: NodeTypeOperationWhere): DeleteResponse
               deleteRelatedNodes(where: RelatedNodeOperationWhere): DeleteResponse
+              updateNodeTypes(input: NodeTypeUpdateInput!, where: NodeTypeOperationWhere): NodeTypeUpdateResponse
+              updateRelatedNodes(input: RelatedNodeUpdateInput!, where: RelatedNodeOperationWhere): RelatedNodeUpdateResponse
             }
 
             type NodeType {
@@ -110,6 +116,13 @@ describe("Spatial Types", () => {
             type NodeTypeConnection {
               edges: [NodeTypeEdge]
               pageInfo: PageInfo
+            }
+
+            type NodeTypeCreateInfo {
+              nodesCreated: Int!
+              nodesDelete: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
             }
 
             input NodeTypeCreateInput {
@@ -191,6 +204,22 @@ describe("Spatial Types", () => {
               edges: NodeTypeRelatedNodeEdgeWhere
             }
 
+            input NodeTypeUpdateInput {
+              node: NodeTypeUpdateNode!
+            }
+
+            input NodeTypeUpdateNode {
+              cartesianPoint: CartesianPointInputUpdate
+              cartesianPointNullable: CartesianPointInputUpdate
+              point: PointInputUpdate
+              pointNullable: PointInputUpdate
+            }
+
+            type NodeTypeUpdateResponse {
+              info: NodeTypeCreateInfo
+              nodeTypes: [NodeType!]!
+            }
+
             input NodeTypeWhere {
               AND: [NodeTypeWhere!]
               NOT: NodeTypeWhere
@@ -223,6 +252,10 @@ describe("Spatial Types", () => {
               longitude: Float!
             }
 
+            input PointInputUpdate {
+              set: PointInput
+            }
+
             type Query {
               nodeTypes(where: NodeTypeOperationWhere): NodeTypeOperation
               relatedNodes(where: RelatedNodeOperationWhere): RelatedNodeOperation
@@ -238,6 +271,13 @@ describe("Spatial Types", () => {
             type RelatedNodeConnection {
               edges: [RelatedNodeEdge]
               pageInfo: PageInfo
+            }
+
+            type RelatedNodeCreateInfo {
+              nodesCreated: Int!
+              nodesDelete: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
             }
 
             input RelatedNodeCreateInput {
@@ -283,6 +323,22 @@ describe("Spatial Types", () => {
               AND: [RelatedNodePropertiesWhere!]
               NOT: RelatedNodePropertiesWhere
               OR: [RelatedNodePropertiesWhere!]
+            }
+
+            input RelatedNodeUpdateInput {
+              node: RelatedNodeUpdateNode!
+            }
+
+            input RelatedNodeUpdateNode {
+              cartesianPoint: CartesianPointInputUpdate
+              cartesianPointNullable: CartesianPointInputUpdate
+              point: PointInputUpdate
+              pointNullable: PointInputUpdate
+            }
+
+            type RelatedNodeUpdateResponse {
+              info: RelatedNodeCreateInfo
+              relatedNodes: [RelatedNode!]!
             }
 
             input RelatedNodeWhere {

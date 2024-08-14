@@ -58,6 +58,10 @@ describe("RelayId", () => {
               equals: String
             }
 
+            input IDUpdate {
+              set: ID
+            }
+
             input IDWhere {
               AND: [IDWhere!]
               NOT: IDWhere
@@ -82,6 +86,13 @@ describe("RelayId", () => {
 
             input MovieConnectionSort {
               node: MovieSort
+            }
+
+            type MovieCreateInfo {
+              nodesCreated: Int!
+              nodesDelete: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
             }
 
             input MovieCreateInput {
@@ -119,6 +130,20 @@ describe("RelayId", () => {
               title: SortDirection
             }
 
+            input MovieUpdateInput {
+              node: MovieUpdateNode!
+            }
+
+            input MovieUpdateNode {
+              dbId: IDUpdate
+              title: StringUpdate
+            }
+
+            type MovieUpdateResponse {
+              info: MovieCreateInfo
+              movies: [Movie!]!
+            }
+
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
@@ -131,6 +156,7 @@ describe("RelayId", () => {
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
               deleteMovies(where: MovieOperationWhere): DeleteResponse
+              updateMovies(input: MovieUpdateInput!, where: MovieOperationWhere): MovieUpdateResponse
             }
 
             interface Node {
@@ -153,6 +179,10 @@ describe("RelayId", () => {
             enum SortDirection {
               ASC
               DESC
+            }
+
+            input StringUpdate {
+              set: String
             }
 
             input StringWhere {

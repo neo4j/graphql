@@ -17,58 +17,60 @@
  * limitations under the License.
  */
 
-import neo4jDriver from "neo4j-driver";
+import { Integer } from "neo4j-driver";
 import type { UniqueType } from "../../../../utils/graphql-types";
 import { TestHelper } from "../../../../utils/tests-helper";
 
-describe("Create Node with Time", () => {
+describe("Top-Level Create", () => {
     const testHelper = new TestHelper({ v6Api: true });
-    let Movie: UniqueType;
 
-    beforeEach(async () => {
+    let Movie: UniqueType;
+    beforeAll(async () => {
         Movie = testHelper.createUniqueType("Movie");
+
         const typeDefs = /* GraphQL */ `
-        type ${Movie.name} @node {
-            time: Time
-        }
-    `;
+            type ${Movie} @node {
+                title: String!
+                released: Int
+            }
+        `;
         await testHelper.initNeo4jGraphQL({ typeDefs });
     });
 
-    afterEach(async () => {
+    afterAll(async () => {
         await testHelper.close();
     });
 
-    test("should return a movie created with a Time parameter", async () => {
-        const time1 = new Date("2024-02-17T11:49:48.322Z");
-        const time2 = new Date("2025-02-17T12:49:48.322Z");
-
-        const neoTime1 = neo4jDriver.Time.fromStandardDate(time1);
-        const neoTime2 = neo4jDriver.Time.fromStandardDate(time2);
-
+    test("should create two movies", async () => {
         const mutation = /* GraphQL */ `
             mutation {
-                ${Movie.operations.create}(input: [
-                        { node: { time: "${neoTime1.toString()}" } }
-                        { node: { time: "${neoTime2.toString()}" } }
+                ${Movie.operations.create}(input: [ 
+                        { node: { title: "The Matrix" } }, 
+                        { node: { title: "The Matrix 2", released: 2001 } } 
                     ]) {
-                    ${Movie.plural} {
-                        time
-                    }
+                   info {
+                        nodesCreated
+                   }
                 }
             }
         `;
 
         const gqlResult = await testHelper.executeGraphQL(mutation);
-
         expect(gqlResult.errors).toBeFalsy();
-        expect(gqlResult.data).toEqual({
-            [Movie.operations.create]: {
-                [Movie.plural]: expect.toIncludeSameMembers([
-                    { time: neoTime1.toString() },
-                    { time: neoTime2.toString() },
-                ]),
-            },
-        });
+
+        const cypherMatch = await testHelper.executeCypher(
+            `
+              MATCH (m:${Movie})
+              RETURN m
+            `,
+            {}
+        );
+        const records = cypherMatch.records.map((record) => record.toObject());
+        expect(records).toEqual(
+            expect.toIncludeSameMembers([
+                { m: expect.objectContaining({ properties: { title: "The Matrix" } }) },
+                { m: expect.objectContaining({ properties: { title: "The Matrix 2", released: new Integer(2001) } }) },
+            ])
+        );
     });
 });

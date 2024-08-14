@@ -21,9 +21,9 @@ import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { createNode, getEntityLabels } from "../../utils/create-node-from-entity";
 import { QueryASTContext } from "../QueryASTContext";
-import { EntitySelection, type SelectionClause } from "./EntitySelection";
+import { EntitySelection } from "./EntitySelection";
 
-export class NodeSelection extends EntitySelection {
+export class NodeSelection extends EntitySelection<Cypher.Match> {
     private target: ConcreteEntityAdapter;
     private alias: string | undefined;
     private optional: boolean;
@@ -49,7 +49,7 @@ export class NodeSelection extends EntitySelection {
 
     public apply(context: QueryASTContext): {
         nestedContext: QueryASTContext<Cypher.Node>;
-        selection: SelectionClause;
+        selection: Cypher.Match;
     } {
         let node: Cypher.Node;
         let matchPattern: Cypher.Pattern | undefined;

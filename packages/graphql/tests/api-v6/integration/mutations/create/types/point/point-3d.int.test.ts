@@ -17,15 +17,15 @@
  * limitations under the License.
  */
 
-import type { UniqueType } from "../../../../../utils/graphql-types";
-import { TestHelper } from "../../../../../utils/tests-helper";
+import type { UniqueType } from "../../../../../../utils/graphql-types";
+import { TestHelper } from "../../../../../../utils/tests-helper";
 
-describe("Create Nodes with Point 2d", () => {
+describe("Create Nodes with Point 3d", () => {
     const testHelper = new TestHelper({ v6Api: true });
 
     let Location: UniqueType;
-    const London = { longitude: -0.127758, latitude: 51.507351 } as const;
-    const Rome = { longitude: 12.496365, latitude: 41.902782 } as const;
+    const London = { longitude: -0.127758, latitude: 51.507351, height: 24 } as const;
+    const Rome = { longitude: 12.496365, latitude: 41.902782, height: 35 } as const;
 
     beforeEach(async () => {
         Location = testHelper.createUniqueType("Location");
@@ -44,30 +44,31 @@ describe("Create Nodes with Point 2d", () => {
         await testHelper.close();
     });
 
-    test("should create nodes with wgs-84-2d point fields", async () => {
+    test("should create nodes with wgs-84-3d point fields", async () => {
         const mutation = /* GraphQL */ `
             mutation {
                 ${Location.operations.create}(input: [
-                        { node: { id: "1", value: { longitude: ${London.longitude}, latitude: ${London.latitude} } } }
-                        { node: { id: "2", value: { longitude: ${Rome.longitude}, latitude: ${Rome.latitude} } } }
+                        { node: { id: "1", value: { longitude: ${London.longitude}, latitude: ${London.latitude}, height: ${London.height} } } }
+                        { node: { id: "2", value: { longitude: ${Rome.longitude}, latitude: ${Rome.latitude}, height: ${Rome.height} } } }
                     ]) 
-                {
-                    ${Location.plural} {
-                        id
-                        value {
-                            latitude
-                            longitude
-                            height
-                            crs
-                            srid
+                    {
+                        ${Location.plural} {
+                            id
+                            value {
+                                latitude
+                                longitude
+                                height
+                                crs
+                                srid
+                            }
                         }
                     }
-                }
+                   
+                
             }
         `;
 
         const mutationResult = await testHelper.executeGraphQL(mutation);
-
         expect(mutationResult.errors).toBeFalsy();
         expect(mutationResult.data).toEqual({
             [Location.operations.create]: {
@@ -77,9 +78,9 @@ describe("Create Nodes with Point 2d", () => {
                         value: {
                             latitude: London.latitude,
                             longitude: London.longitude,
-                            height: null,
-                            crs: "wgs-84",
-                            srid: 4326,
+                            height: London.height,
+                            crs: "wgs-84-3d",
+                            srid: 4979,
                         },
                     },
                     {
@@ -87,9 +88,9 @@ describe("Create Nodes with Point 2d", () => {
                         value: {
                             latitude: Rome.latitude,
                             longitude: Rome.longitude,
-                            height: null,
-                            crs: "wgs-84",
-                            srid: 4326,
+                            height: Rome.height,
+                            crs: "wgs-84-3d",
+                            srid: 4979,
                         },
                     },
                 ]),

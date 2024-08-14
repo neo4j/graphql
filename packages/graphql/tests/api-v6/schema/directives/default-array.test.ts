@@ -63,6 +63,10 @@ describe("@default on array fields", () => {
               equals: [DateTime!]
             }
 
+            input DateTimeUpdate {
+              set: DateTime
+            }
+
             type DeleteInfo {
               nodesDeleted: Int!
               relationshipsDeleted: Int!
@@ -76,12 +80,24 @@ describe("@default on array fields", () => {
               equals: [Float!]
             }
 
+            input FloatUpdate {
+              set: Float
+            }
+
             input IDListWhere {
               equals: [ID!]
             }
 
+            input IDUpdate {
+              set: ID
+            }
+
             input IntListWhere {
               equals: [Int!]
+            }
+
+            input IntUpdate {
+              set: Int
             }
 
             type Movie {
@@ -96,6 +112,13 @@ describe("@default on array fields", () => {
             type MovieConnection {
               edges: [MovieEdge]
               pageInfo: PageInfo
+            }
+
+            type MovieCreateInfo {
+              nodesCreated: Int!
+              nodesDelete: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
             }
 
             input MovieCreateInput {
@@ -132,6 +155,24 @@ describe("@default on array fields", () => {
               node: MovieWhere
             }
 
+            input MovieUpdateInput {
+              node: MovieUpdateNode!
+            }
+
+            input MovieUpdateNode {
+              flags: IntUpdate
+              id: IDUpdate
+              length: FloatUpdate
+              releasedDateTime: DateTimeUpdate
+              title: StringUpdate
+              year: IntUpdate
+            }
+
+            type MovieUpdateResponse {
+              info: MovieCreateInfo
+              movies: [Movie!]!
+            }
+
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
@@ -147,6 +188,7 @@ describe("@default on array fields", () => {
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
               deleteMovies(where: MovieOperationWhere): DeleteResponse
+              updateMovies(input: MovieUpdateInput!, where: MovieOperationWhere): MovieUpdateResponse
             }
 
             type PageInfo {
@@ -162,6 +204,10 @@ describe("@default on array fields", () => {
 
             input StringListWhere {
               equals: [String!]
+            }
+
+            input StringUpdate {
+              set: String
             }"
         `);
     });

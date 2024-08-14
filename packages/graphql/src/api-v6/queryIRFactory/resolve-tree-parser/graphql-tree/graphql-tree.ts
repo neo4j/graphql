@@ -25,11 +25,23 @@ import type { GraphQLWhere, GraphQLWhereTopLevel } from "./where";
 
 // TODO GraphQLTreeCreateInput should be a union of PrimitiveTypes and relationship fields
 export type GraphQLTreeCreateInput = Record<string, unknown>;
+export type GraphQLTreeUpdateInput = Record<string, GraphQLTreeUpdateField>;
+
+export type UpdateOperation = "set";
+export type GraphQLTreeUpdateField = Record<UpdateOperation, any>;
 
 export interface GraphQLTreeCreate extends GraphQLTreeNode {
     name: string;
     args: {
         input: GraphQLTreeCreateInput[];
+    };
+}
+
+export interface GraphQLTreeUpdate extends GraphQLTreeNode {
+    name: string;
+    args: {
+        where: GraphQLWhereTopLevel;
+        input: GraphQLTreeUpdateInput;
     };
 }
 

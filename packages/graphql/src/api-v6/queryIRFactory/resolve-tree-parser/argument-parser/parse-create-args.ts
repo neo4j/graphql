@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import type { GraphQLTreeCreate, GraphQLTreeCreateInput } from "../resolve-tree-parser/graphql-tree/graphql-tree";
-import { ResolveTreeParserError } from "../resolve-tree-parser/resolve-tree-parser-error";
+import type { GraphQLTreeCreate, GraphQLTreeCreateInput } from "../graphql-tree/graphql-tree";
+import { ResolveTreeParserError } from "../resolve-tree-parser-error";
 
 export function parseCreateOperationArgsTopLevel(resolveTreeArgs: Record<string, any>): GraphQLTreeCreate["args"] {
     return {
