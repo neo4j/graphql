@@ -108,7 +108,8 @@ export class AttributeAdapter {
             this.typeHelper.isUserScalar() ||
             this.typeHelper.isEnum() ||
             this.typeHelper.isTemporal() ||
-            this.typeHelper.isSpatial()
+            this.typeHelper.isSpatial() ||
+            this.typeHelper.isBigInt()
         );
     }
 
