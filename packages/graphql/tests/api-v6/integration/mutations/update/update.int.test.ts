@@ -24,23 +24,30 @@ describe("Top-Level Update", () => {
     const testHelper = new TestHelper({ v6Api: true });
 
     let Movie: UniqueType;
-    beforeAll(async () => {
+    let Actor: UniqueType;
+    beforeEach(async () => {
         Movie = testHelper.createUniqueType("Movie");
+        Actor = testHelper.createUniqueType("Actor");
 
         const typeDefs = /* GraphQL */ `
             type ${Movie} @node {
                 title: String!
                 released: Int
+                actors: [${Actor}!]! @relationship(direction: IN, type: "ACTED_IN")
+            }
+
+            type ${Actor} @node {
+                name: String!
             }
         `;
         await testHelper.initNeo4jGraphQL({ typeDefs });
     });
 
-    afterAll(async () => {
+    afterEach(async () => {
         await testHelper.close();
     });
 
-    test("should update a movies", async () => {
+    test("should update a movie", async () => {
         await testHelper.executeCypher(`
             CREATE(n:${Movie} {title: "The Matrix"})
             CREATE(:${Movie} {title: "The Matrix 2"})
@@ -53,6 +60,80 @@ describe("Top-Level Update", () => {
                         node: {
                             title: {
                                 equals: "The Matrix"
+                            }
+                        }
+                    }
+                    input:  
+                        { node: { title: { set: "Another Movie"} } }
+                    ) {
+                   info {
+                        nodesCreated
+                   }
+                    ${Movie.plural} {
+                        title
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(mutation);
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data).toEqual({
+            [Movie.operations.update]: {
+                info: {
+                    nodesCreated: 0,
+                },
+                [Movie.plural]: [
+                    {
+                        title: "Another Movie",
+                    },
+                ],
+            },
+        });
+
+        const cypherMatch = await testHelper.executeCypher(
+            `
+              MATCH (m:${Movie})
+              RETURN {title: m.title} as m
+            `,
+            {}
+        );
+        const records = cypherMatch.records.map((record) => record.toObject());
+        expect(records).toEqual(
+            expect.toIncludeSameMembers([
+                {
+                    m: {
+                        title: "The Matrix 2",
+                    },
+                },
+                {
+                    m: {
+                        title: "Another Movie",
+                    },
+                },
+            ])
+        );
+    });
+
+    test("should update a movies with nested filter", async () => {
+        await testHelper.executeCypher(`
+            CREATE(n:${Movie} {title: "The Matrix"})<-[:ACTED_IN]-(:${Actor} {name: "Keanu"})
+            CREATE(:${Movie} {title: "The Matrix 2"})<-[:ACTED_IN]-(:${Actor} {name: "Uneak"})
+        `);
+
+        const mutation = /* GraphQL */ `
+            mutation {
+                ${Movie.operations.update}(
+                    where: {
+                        node: {
+                            actors: {
+                                some: {
+                                    edges: {
+                                        node: {
+                                            name: {equals: "Keanu"}
+                                        }
+                                    }
+                                }
                             }
                         }
                     }

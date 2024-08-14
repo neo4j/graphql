@@ -114,7 +114,7 @@ export class UpdateOperationFactory {
         attribute: AttributeAdapter,
         operations: GraphQLTreeUpdateField
     ): UpdateProperty[] {
-        return Object.entries(operations).map(([operation, value]) => {
+        return Object.entries(operations).map(([_operation, value]) => {
             // TODO: other operations
             return new UpdateProperty({
                 value,
