@@ -35,20 +35,19 @@ export function replaceArgumentsInStatement({
         return statement;
     }
     const reg = new RegExp(`\\$(${argNames.join("|")})\\b`, "g");
-
-    const paramsRecord: Record<string, string> = {};
+    const paramsRecord = new Map<unknown, string>();
 
     return statement.replaceAll(reg, (_match, arg): string => {
         const value = rawArguments[arg];
         if (value === undefined || value === null) {
             return "NULL";
         } else {
-            const storedParamName = paramsRecord[value];
+            const storedParamName = paramsRecord.get(value);
             if (storedParamName) {
                 return storedParamName;
             }
             const paramName = new Cypher.Param(value).getCypher(env);
-            paramsRecord[value] = paramName;
+            paramsRecord.set(value, paramName);
             return paramName;
         }
     });
