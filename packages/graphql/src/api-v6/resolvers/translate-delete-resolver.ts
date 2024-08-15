@@ -22,8 +22,8 @@ import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
 import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
 import { execute } from "../../utils";
 import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";
-import { parseResolveInfoTreeCreate } from "../queryIRFactory/resolve-tree-parser/parse-resolve-info-tree";
-import { translateCreateOperation } from "../translators/translate-create-operation";
+import { parseResolveInfoTreeDelete } from "../queryIRFactory/resolve-tree-parser/parse-resolve-info-tree";
+import { translateDeleteResolver } from "../translators/translate-delete-operation";
 
 export function generateDeleteResolver({ entity }: { entity: ConcreteEntity }) {
     return async function resolve(
@@ -35,10 +35,10 @@ export function generateDeleteResolver({ entity }: { entity: ConcreteEntity }) {
         const resolveTree = getNeo4jResolveTree(info, { args });
         context.resolveTree = resolveTree;
         // TODO: Implement delete resolver
-        const graphQLTreeCreate = parseResolveInfoTreeCreate({ resolveTree: context.resolveTree, entity });
-        const { cypher, params } = translateCreateOperation({
+        const graphQLTreeDelete = parseResolveInfoTreeDelete({ resolveTree: context.resolveTree, entity });
+        const { cypher, params } = translateDeleteResolver({
             context: context,
-            graphQLTreeCreate,
+            graphQLTreeDelete,
             entity,
         });
         const executeResult = await execute({

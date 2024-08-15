@@ -32,6 +32,7 @@ import type {
     GraphQLTreeConnection,
     GraphQLTreeConnectionTopLevel,
     GraphQLTreeCreate,
+    GraphQLTreeDelete,
     GraphQLTreeReadOperation,
     GraphQLTreeReadOperationTopLevel,
     GraphQLTreeUpdate,
@@ -112,6 +113,34 @@ export function parseResolveInfoTreeUpdate({
         alias: resolveTree.alias,
         name: resolveTree.name,
         args: createArgs,
+        fields,
+    };
+}
+
+export function parseResolveInfoTreeDelete({
+    resolveTree,
+    entity,
+}: {
+    resolveTree: ResolveTree;
+    entity: ConcreteEntity;
+}): GraphQLTreeDelete {
+    const entityTypes = entity.typeNames;
+    const deleteResponse = findFieldByName(resolveTree, "DeleteResponse", entityTypes.queryField);
+    const deleteArgs = parseOperationArgsTopLevel(resolveTree.args);
+    if (!deleteResponse) {
+        return {
+            alias: resolveTree.alias,
+            name: resolveTree.name,
+            args: deleteArgs,
+            fields: {},
+        };
+    }
+    const fieldsResolveTree = deleteResponse.fieldsByTypeName[entityTypes.node] ?? {};
+    const fields = getNodeFields(fieldsResolveTree, entity);
+    return {
+        alias: resolveTree.alias,
+        name: resolveTree.name,
+        args: deleteArgs,
         fields,
     };
 }

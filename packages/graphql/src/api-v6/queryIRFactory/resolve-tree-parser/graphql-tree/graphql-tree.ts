@@ -30,6 +30,13 @@ export type GraphQLTreeUpdateInput = Record<string, GraphQLTreeUpdateField>;
 export type UpdateOperation = "set";
 export type GraphQLTreeUpdateField = Record<UpdateOperation, any>;
 
+export interface GraphQLTreeDelete extends GraphQLTreeNode {
+    name: string;
+    args: {
+        where?: GraphQLWhereTopLevel;
+    };
+}
+
 export interface GraphQLTreeCreate extends GraphQLTreeNode {
     name: string;
     args: {
