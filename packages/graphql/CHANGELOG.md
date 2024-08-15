@@ -1,5 +1,13 @@
 # @neo4j/graphql
 
+## 5.5.6
+
+### Patch Changes
+
+-   [#5468](https://github.com/neo4j/graphql/pull/5468) [`24f6d79`](https://github.com/neo4j/graphql/commit/24f6d79750918c69294f2b93b9547508fd04df01) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix unique constraints for BigInt
+
+-   [#5470](https://github.com/neo4j/graphql/pull/5470) [`4f05a62`](https://github.com/neo4j/graphql/commit/4f05a629ccc6119522db165aaa07369ecc1ad5c6) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix problem with parameters colliding in the cypher directive
+
 ## 5.5.5
 
 ### Patch Changes
