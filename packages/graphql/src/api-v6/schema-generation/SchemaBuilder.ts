@@ -59,7 +59,7 @@ export type InputFieldDefinition = {
     args?: Record<string, any>;
     deprecationReason?: string | null;
     description?: string | null;
-    defaultValue: any;
+    defaultValue?: any;
 };
 
 export class SchemaBuilder {

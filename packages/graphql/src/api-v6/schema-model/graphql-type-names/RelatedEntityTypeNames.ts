@@ -83,4 +83,12 @@ export class RelatedEntityTypeNames extends EntityTypeNames {
         }
         return `${this.relationship.propertiesTypeName}Sort`;
     }
+
+    public get deleteOperation(): string {
+        return `${this.relatedEntityTypeName}DeleteOperation`;
+    }
+
+    public get deleteInput(): string {
+        return `${this.relatedEntityTypeName}DeleteInput`;
+    }
 }
