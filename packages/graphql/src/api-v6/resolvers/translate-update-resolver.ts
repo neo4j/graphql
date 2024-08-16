@@ -22,10 +22,10 @@ import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
 import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
 import { execute } from "../../utils";
 import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";
-import { parseResolveInfoTreeDelete } from "../queryIRFactory/resolve-tree-parser/parse-resolve-info-tree";
-import { translateDeleteResolver } from "../translators/translate-delete-operation";
+import { parseResolveInfoTreeUpdate } from "../queryIRFactory/resolve-tree-parser/parse-resolve-info-tree";
+import { translateUpdateOperation } from "../translators/translate-update-operation";
 
-export function generateDeleteResolver({ entity }: { entity: ConcreteEntity }) {
+export function generateUpdateResolver({ entity }: { entity: ConcreteEntity }) {
     return async function resolve(
         _root: any,
         args: any,
@@ -34,11 +34,10 @@ export function generateDeleteResolver({ entity }: { entity: ConcreteEntity }) {
     ) {
         const resolveTree = getNeo4jResolveTree(info, { args });
         context.resolveTree = resolveTree;
-        // TODO: Implement delete resolver
-        const graphQLTreeDelete = parseResolveInfoTreeDelete({ resolveTree: context.resolveTree, entity });
-        const { cypher, params } = translateDeleteResolver({
+        const graphQLTreeUpdate = parseResolveInfoTreeUpdate({ resolveTree: context.resolveTree, entity });
+        const { cypher, params } = translateUpdateOperation({
             context: context,
-            graphQLTreeDelete,
+            graphQLTreeUpdate,
             entity,
         });
         const executeResult = await execute({
@@ -49,6 +48,9 @@ export function generateDeleteResolver({ entity }: { entity: ConcreteEntity }) {
             info,
         });
         return {
+            [entity.typeNames.queryField]: executeResult.records[0]?.this.connection.edges.map(
+                (edge: any) => edge.node
+            ),
             info: {
                 ...executeResult.statistics,
             },

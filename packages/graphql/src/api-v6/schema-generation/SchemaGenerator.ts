@@ -24,6 +24,7 @@ import { generateGlobalNodeResolver } from "../resolvers/global-node-resolver";
 import { generateReadResolver } from "../resolvers/read-resolver";
 import { generateCreateResolver } from "../resolvers/translate-create-resolver";
 import { generateDeleteResolver } from "../resolvers/translate-delete-resolver";
+import { generateUpdateResolver } from "../resolvers/translate-update-resolver";
 import { SchemaBuilder } from "./SchemaBuilder";
 import { SchemaTypes } from "./schema-types/SchemaTypes";
 import { StaticSchemaTypes } from "./schema-types/StaticSchemaTypes";
@@ -41,8 +42,7 @@ export class SchemaGenerator {
     public generate(schemaModel: Neo4jGraphQLSchemaModel): GraphQLSchema {
         const entityTypesMap = this.generateEntityTypes(schemaModel);
         this.generateTopLevelQueryFields(entityTypesMap);
-        this.generateTopLevelCreateFields(entityTypesMap);
-        this.generateTopLevelDeleteFields(entityTypesMap);
+        this.generateTopLevelMutationFields(entityTypesMap);
 
         this.generateGlobalNodeQueryField(schemaModel);
 
@@ -79,21 +79,24 @@ export class SchemaGenerator {
         }
     }
 
-    private generateTopLevelCreateFields(entityTypesMap: Map<ConcreteEntity, TopLevelEntitySchemaTypes>): void {
+    private generateTopLevelMutationFields(entityTypesMap: Map<ConcreteEntity, TopLevelEntitySchemaTypes>): void {
         for (const [entity, entitySchemaTypes] of entityTypesMap.entries()) {
-            const resolver = generateCreateResolver({
-                entity,
-            });
-            entitySchemaTypes.addTopLevelCreateField(resolver);
-        }
-    }
+            entitySchemaTypes.addTopLevelCreateField(
+                generateCreateResolver({
+                    entity,
+                })
+            );
+            entitySchemaTypes.addTopLevelUpdateField(
+                generateUpdateResolver({
+                    entity,
+                })
+            );
 
-    private generateTopLevelDeleteFields(entityTypesMap: Map<ConcreteEntity, TopLevelEntitySchemaTypes>): void {
-        for (const [entity, entitySchemaTypes] of entityTypesMap.entries()) {
-            const resolver = generateDeleteResolver({
-                entity,
-            });
-            entitySchemaTypes.addTopLevelDeleteField(resolver);
+            entitySchemaTypes.addTopLevelDeleteField(
+                generateDeleteResolver({
+                    entity,
+                })
+            );
         }
     }
 

@@ -92,6 +92,10 @@ describe("Scalars", () => {
               equals: [BigInt!]
             }
 
+            input BigIntUpdate {
+              set: BigInt
+            }
+
             input BooleanWhere {
               AND: [BooleanWhere!]
               NOT: BooleanWhere
@@ -118,6 +122,14 @@ describe("Scalars", () => {
               equals: [DateTime!]
             }
 
+            input DateTimeUpdate {
+              set: DateTime
+            }
+
+            input DateUpdate {
+              set: Date
+            }
+
             type DeleteInfo {
               nodesDeleted: Int!
               relationshipsDeleted: Int!
@@ -134,16 +146,32 @@ describe("Scalars", () => {
               equals: [Duration!]
             }
 
+            input DurationUpdate {
+              set: Duration
+            }
+
             input FloatListWhere {
               equals: [Float!]
+            }
+
+            input FloatUpdate {
+              set: Float
             }
 
             input IDListWhere {
               equals: [ID!]
             }
 
+            input IDUpdate {
+              set: ID
+            }
+
             input IntListWhere {
               equals: [Int!]
+            }
+
+            input IntUpdate {
+              set: Int
             }
 
             \\"\\"\\"A local datetime, represented as 'YYYY-MM-DDTHH:MM:SS'\\"\\"\\"
@@ -151,6 +179,10 @@ describe("Scalars", () => {
 
             input LocalDateTimeListWhere {
               equals: [LocalDateTime!]
+            }
+
+            input LocalDateTimeUpdate {
+              set: LocalDateTime
             }
 
             \\"\\"\\"
@@ -162,11 +194,17 @@ describe("Scalars", () => {
               equals: [LocalTime!]
             }
 
+            input LocalTimeUpdate {
+              set: LocalTime
+            }
+
             type Mutation {
               createNodeTypes(input: [NodeTypeCreateInput!]!): NodeTypeCreateResponse
               createRelatedNodes(input: [RelatedNodeCreateInput!]!): RelatedNodeCreateResponse
               deleteNodeTypes(where: NodeTypeOperationWhere): DeleteResponse
               deleteRelatedNodes(where: RelatedNodeOperationWhere): DeleteResponse
+              updateNodeTypes(input: NodeTypeUpdateInput!, where: NodeTypeOperationWhere): NodeTypeUpdateResponse
+              updateRelatedNodes(input: RelatedNodeUpdateInput!, where: RelatedNodeOperationWhere): RelatedNodeUpdateResponse
             }
 
             type NodeType {
@@ -188,6 +226,13 @@ describe("Scalars", () => {
             type NodeTypeConnection {
               edges: [NodeTypeEdge]
               pageInfo: PageInfo
+            }
+
+            type NodeTypeCreateInfo {
+              nodesCreated: Int!
+              nodesDelete: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
             }
 
             input NodeTypeCreateInput {
@@ -277,6 +322,30 @@ describe("Scalars", () => {
               edges: NodeTypeRelatedNodeEdgeWhere
             }
 
+            input NodeTypeUpdateInput {
+              node: NodeTypeUpdateNode!
+            }
+
+            input NodeTypeUpdateNode {
+              bigIntList: BigIntUpdate
+              booleanList: IntUpdate
+              dateList: DateUpdate
+              dateTimeList: DateTimeUpdate
+              durationList: DurationUpdate
+              floatList: FloatUpdate
+              idList: IDUpdate
+              intList: IntUpdate
+              localDateTimeList: LocalDateTimeUpdate
+              localTimeList: LocalTimeUpdate
+              stringList: StringUpdate
+              timeList: TimeUpdate
+            }
+
+            type NodeTypeUpdateResponse {
+              info: NodeTypeCreateInfo
+              nodeTypes: [NodeType!]!
+            }
+
             input NodeTypeWhere {
               AND: [NodeTypeWhere!]
               NOT: NodeTypeWhere
@@ -326,6 +395,13 @@ describe("Scalars", () => {
             type RelatedNodeConnection {
               edges: [RelatedNodeEdge]
               pageInfo: PageInfo
+            }
+
+            type RelatedNodeCreateInfo {
+              nodesCreated: Int!
+              nodesDelete: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
             }
 
             input RelatedNodeCreateInput {
@@ -401,6 +477,30 @@ describe("Scalars", () => {
               timeList: TimeListWhere
             }
 
+            input RelatedNodeUpdateInput {
+              node: RelatedNodeUpdateNode!
+            }
+
+            input RelatedNodeUpdateNode {
+              bigIntList: BigIntUpdate
+              booleanList: IntUpdate
+              dateList: DateUpdate
+              dateTimeList: DateTimeUpdate
+              durationList: DurationUpdate
+              floatList: FloatUpdate
+              idList: IDUpdate
+              intList: IntUpdate
+              localDateTimeList: LocalDateTimeUpdate
+              localTimeList: LocalTimeUpdate
+              stringList: StringUpdate
+              timeList: TimeUpdate
+            }
+
+            type RelatedNodeUpdateResponse {
+              info: RelatedNodeCreateInfo
+              relatedNodes: [RelatedNode!]!
+            }
+
             input RelatedNodeWhere {
               AND: [RelatedNodeWhere!]
               NOT: RelatedNodeWhere
@@ -423,11 +523,19 @@ describe("Scalars", () => {
               equals: [String!]
             }
 
+            input StringUpdate {
+              set: String
+            }
+
             \\"\\"\\"A time, represented as an RFC3339 time string\\"\\"\\"
             scalar Time
 
             input TimeListWhere {
               equals: [Time!]
+            }
+
+            input TimeUpdate {
+              set: Time
             }"
         `);
     });

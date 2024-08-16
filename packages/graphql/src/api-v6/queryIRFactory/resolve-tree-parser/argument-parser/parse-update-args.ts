@@ -17,21 +17,20 @@
  * limitations under the License.
  */
 
-import type Cypher from "@neo4j/cypher-builder";
-import type { QueryASTContext } from "../QueryASTContext";
-import { QueryASTNode } from "../QueryASTNode";
+import type { GraphQLTreeUpdate, GraphQLTreeUpdateInput } from "../graphql-tree/graphql-tree";
+import { ResolveTreeParserError } from "../resolve-tree-parser-error";
 
-export type SelectionClause = Cypher.Match | Cypher.With | Cypher.Yield;
+export function parseUpdateOperationArgsTopLevel(resolveTreeArgs: Record<string, any>): GraphQLTreeUpdate["args"] {
+    return {
+        input: parseUpdateOperationInput(resolveTreeArgs.input),
+        where: resolveTreeArgs.where,
+    };
+}
 
-export abstract class EntitySelection<T extends SelectionClause = SelectionClause> extends QueryASTNode {
-    public getChildren(): QueryASTNode[] {
-        return [];
+function parseUpdateOperationInput(resolveTreeUpdateInput: any): GraphQLTreeUpdateInput {
+    if (!resolveTreeUpdateInput) {
+        throw new ResolveTreeParserError(`Invalid update input field: ${resolveTreeUpdateInput}`);
     }
 
-    /** Apply selection over the given context, returns the updated context and the selection clause
-     * TODO: Improve naming */
-    public abstract apply(context: QueryASTContext): {
-        nestedContext: QueryASTContext<Cypher.Node>;
-        selection: T;
-    };
+    return resolveTreeUpdateInput.node;
 }

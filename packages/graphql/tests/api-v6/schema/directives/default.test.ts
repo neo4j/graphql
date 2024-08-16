@@ -59,6 +59,10 @@ describe("@default on fields", () => {
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
             scalar DateTime
 
+            input DateTimeUpdate {
+              set: DateTime
+            }
+
             input DateTimeWhere {
               AND: [DateTimeWhere!]
               NOT: DateTimeWhere
@@ -80,6 +84,10 @@ describe("@default on fields", () => {
               info: DeleteInfo
             }
 
+            input FloatUpdate {
+              set: Float
+            }
+
             input FloatWhere {
               AND: [FloatWhere!]
               NOT: FloatWhere
@@ -92,6 +100,10 @@ describe("@default on fields", () => {
               lte: Float
             }
 
+            input IDUpdate {
+              set: ID
+            }
+
             input IDWhere {
               AND: [IDWhere!]
               NOT: IDWhere
@@ -101,6 +113,10 @@ describe("@default on fields", () => {
               equals: ID
               in: [ID!]
               startsWith: ID
+            }
+
+            input IntUpdate {
+              set: Int
             }
 
             input IntWhere {
@@ -131,6 +147,13 @@ describe("@default on fields", () => {
 
             input MovieConnectionSort {
               node: MovieSort
+            }
+
+            type MovieCreateInfo {
+              nodesCreated: Int!
+              nodesDelete: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
             }
 
             input MovieCreateInput {
@@ -176,6 +199,24 @@ describe("@default on fields", () => {
               year: SortDirection
             }
 
+            input MovieUpdateInput {
+              node: MovieUpdateNode!
+            }
+
+            input MovieUpdateNode {
+              flag: IntUpdate
+              id: IDUpdate
+              length: FloatUpdate
+              releasedDateTime: DateTimeUpdate
+              title: StringUpdate
+              year: IntUpdate
+            }
+
+            type MovieUpdateResponse {
+              info: MovieCreateInfo
+              movies: [Movie!]!
+            }
+
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
@@ -191,6 +232,7 @@ describe("@default on fields", () => {
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
               deleteMovies(where: MovieOperationWhere): DeleteResponse
+              updateMovies(input: MovieUpdateInput!, where: MovieOperationWhere): MovieUpdateResponse
             }
 
             type PageInfo {
@@ -207,6 +249,10 @@ describe("@default on fields", () => {
             enum SortDirection {
               ASC
               DESC
+            }
+
+            input StringUpdate {
+              set: String
             }
 
             input StringWhere {
