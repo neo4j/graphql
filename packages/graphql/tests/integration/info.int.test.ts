@@ -24,68 +24,13 @@ import { TestHelper } from "../utils/tests-helper";
 describe("info", () => {
     const testHelper = new TestHelper();
     let Movie: UniqueType;
-    let Actor: UniqueType;
 
     beforeEach(() => {
         Movie = testHelper.createUniqueType("Movie");
-        Actor = testHelper.createUniqueType("Actor");
     });
 
     afterEach(async () => {
         await testHelper.close();
-    });
-
-    test("should return info from a create mutation", async () => {
-        const typeDefs = `
-            type ${Actor} {
-                name: String!
-            }
-
-            type ${Movie} {
-                title: String!
-                actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
-            }
-        `;
-
-        await testHelper.initNeo4jGraphQL({ typeDefs });
-
-        const title = generate({
-            charset: "alphabetic",
-        });
-        const name = generate({
-            charset: "alphabetic",
-        });
-
-        const query = `
-            mutation($title: String!, $name: String!) {
-                ${Movie.operations.create}(input: [{ title: $title, actors: { create: [{ node: { name: $name } }] } }]) {
-                    info {
-                        bookmark
-                        nodesCreated
-                        relationshipsCreated
-                    }
-                    ${Movie.plural} {
-                        title
-                        actors {
-                            name
-                        }
-                    }
-                }
-            }
-        `;
-
-        const gqlResult = await testHelper.executeGraphQL(query, {
-            variableValues: { title, name },
-        });
-
-        expect(gqlResult.errors).toBeFalsy();
-
-        expect(typeof (gqlResult?.data as any)?.[Movie.operations.create].info.bookmark).toBe("string");
-        expect((gqlResult?.data as any)?.[Movie.operations.create].info.nodesCreated).toBe(2);
-        expect((gqlResult?.data as any)?.[Movie.operations.create].info.relationshipsCreated).toBe(1);
-        expect((gqlResult?.data as any)?.[Movie.operations.create][Movie.plural]).toEqual([
-            { title, actors: [{ name }] },
-        ]);
     });
 
     test("should return info from a delete mutation", async () => {

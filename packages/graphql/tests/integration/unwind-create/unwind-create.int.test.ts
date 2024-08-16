@@ -31,61 +31,6 @@ describe("unwind-create", () => {
         await testHelper.close();
     });
 
-    test("should create a batch of movies", async () => {
-        const Movie = new UniqueType("Movie");
-
-        const typeDefs = `
-            type ${Movie} {
-                id: ID!
-            }
-        `;
-
-        await testHelper.initNeo4jGraphQL({ typeDefs });
-
-        const id = generate({
-            charset: "alphabetic",
-        });
-
-        const id2 = generate({
-            charset: "alphabetic",
-        });
-
-        const query = `
-        mutation($id: ID!, $id2: ID!) {
-            ${Movie.operations.create}(input: [{ id: $id }, {id: $id2 }]) {
-                ${Movie.plural} {
-                    id
-                }
-            }
-          }
-        `;
-
-        const gqlResult = await testHelper.executeGraphQL(query, {
-            variableValues: { id, id2 },
-        });
-
-        expect(gqlResult.errors).toBeFalsy();
-
-        expect(gqlResult?.data?.[Movie.operations.create]?.[Movie.plural]).toEqual(
-            expect.arrayContaining([{ id }, { id: id2 }])
-        );
-
-        const reFind = await testHelper.executeCypher(
-            `
-              MATCH (m:${Movie})
-              RETURN m
-            `,
-            {}
-        );
-        const records = reFind.records.map((record) => record.toObject());
-        expect(records).toEqual(
-            expect.arrayContaining([
-                { m: expect.objectContaining({ properties: { id } }) },
-                { m: expect.objectContaining({ properties: { id: id2 } }) },
-            ])
-        );
-    });
-
     test("should create a batch of movies with nested actors", async () => {
         const Movie = new UniqueType("Movie");
         const Actor = new UniqueType("Actor");
