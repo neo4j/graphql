@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
-export * from "./classes";
-export { DeleteInfo, GraphQLOptionsArg, GraphQLWhereArg, GraphQLSortArg } from "./types";
+import { Model, OGM } from "./classes";
 export { default as generate } from "./generate";
+export { DeleteInfo, GraphQLOptionsArg, GraphQLSortArg, GraphQLWhereArg } from "./types";
+export { Model, OGM };
