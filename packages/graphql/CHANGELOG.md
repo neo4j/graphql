@@ -1,5 +1,7 @@
 # @neo4j/graphql
 
+## 5.6.0
+
 ## 5.5.6
 
 ### Patch Changes
