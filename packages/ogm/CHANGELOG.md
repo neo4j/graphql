@@ -1,5 +1,16 @@
 # @neo4j/graphql-ogm
 
+## 5.6.0
+
+### Minor Changes
+
+-   [#5474](https://github.com/neo4j/graphql/pull/5474) [`51c48d4`](https://github.com/neo4j/graphql/commit/51c48d4e9914363b634e776b632ecc434707c8ec) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Enabled named import of OGM when using ES Modules
+
+### Patch Changes
+
+-   Updated dependencies []:
+    -   @neo4j/graphql@5.6.0
+
 ## 5.5.6
 
 ### Patch Changes
