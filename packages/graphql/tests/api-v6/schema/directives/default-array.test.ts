@@ -139,6 +139,14 @@ describe("@default on array fields", () => {
               movies: [Movie!]!
             }
 
+            input MovieDeleteInput {
+              node: MovieDeleteNode
+            }
+
+            input MovieDeleteNode {
+              _emptyInput: Boolean
+            }
+
             type MovieEdge {
               cursor: String
               node: Movie
@@ -187,7 +195,7 @@ describe("@default on array fields", () => {
 
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
-              deleteMovies(where: MovieOperationWhere): DeleteResponse
+              deleteMovies(input: MovieDeleteInput, where: MovieOperationWhere): DeleteResponse
               updateMovies(input: MovieUpdateInput!, where: MovieOperationWhere): MovieUpdateResponse
             }
 

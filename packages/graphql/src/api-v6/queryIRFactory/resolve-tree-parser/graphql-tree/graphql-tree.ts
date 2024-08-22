@@ -26,6 +26,7 @@ import type { GraphQLWhere, GraphQLWhereTopLevel } from "./where";
 // TODO GraphQLTreeCreateInput should be a union of PrimitiveTypes and relationship fields
 export type GraphQLTreeCreateInput = Record<string, unknown>;
 export type GraphQLTreeUpdateInput = Record<string, GraphQLTreeUpdateField>;
+export type GraphQLTreeDeleteInput = Record<string, unknown>;
 
 export type UpdateOperation = "set";
 export type GraphQLTreeUpdateField = Record<UpdateOperation, any>;
@@ -34,6 +35,7 @@ export interface GraphQLTreeDelete extends GraphQLTreeNode {
     name: string;
     args: {
         where?: GraphQLWhereTopLevel;
+        input?: GraphQLTreeDeleteInput;
     };
 }
 

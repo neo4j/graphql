@@ -48,6 +48,7 @@ import { RelatedEntitySchemaTypes } from "./RelatedEntitySchemaTypes";
 import type { SchemaTypes } from "./SchemaTypes";
 import { TopLevelFilterSchemaTypes } from "./filter-schema-types/TopLevelFilterSchemaTypes";
 import { TopLevelCreateSchemaTypes } from "./mutation-schema-types/TopLevelCreateSchemaTypes";
+import { TopLevelDeleteSchemaTypes } from "./mutation-schema-types/TopLevelDeleteSchemaTypes";
 import { TopLevelUpdateSchemaTypes } from "./mutation-schema-types/TopLevelUpdateSchemaTypes";
 
 export class TopLevelEntitySchemaTypes {
@@ -58,6 +59,7 @@ export class TopLevelEntitySchemaTypes {
     private schemaTypes: SchemaTypes;
     private createSchemaTypes: TopLevelCreateSchemaTypes;
     private updateSchemaTypes: TopLevelUpdateSchemaTypes;
+    private deleteSchemaTypes: TopLevelDeleteSchemaTypes;
 
     constructor({
         entity,
@@ -75,6 +77,7 @@ export class TopLevelEntitySchemaTypes {
         this.schemaTypes = schemaTypes;
         this.createSchemaTypes = new TopLevelCreateSchemaTypes({ schemaBuilder, entity });
         this.updateSchemaTypes = new TopLevelUpdateSchemaTypes({ schemaBuilder, entity, schemaTypes });
+        this.deleteSchemaTypes = new TopLevelDeleteSchemaTypes({ schemaBuilder, entity, schemaTypes });
     }
 
     public addTopLevelQueryField(
@@ -179,6 +182,7 @@ export class TopLevelEntitySchemaTypes {
             name: this.entity.typeNames.deleteField,
             type: this.schemaTypes.staticTypes.deleteResponse,
             args: {
+                input: this.deleteSchemaTypes.deleteInput,
                 where: this.filterSchemaTypes.operationWhereTopLevel,
             },
             resolver,

@@ -201,8 +201,8 @@ describe("Scalars", () => {
             type Mutation {
               createNodeTypes(input: [NodeTypeCreateInput!]!): NodeTypeCreateResponse
               createRelatedNodes(input: [RelatedNodeCreateInput!]!): RelatedNodeCreateResponse
-              deleteNodeTypes(where: NodeTypeOperationWhere): DeleteResponse
-              deleteRelatedNodes(where: RelatedNodeOperationWhere): DeleteResponse
+              deleteNodeTypes(input: NodeTypeDeleteInput, where: NodeTypeOperationWhere): DeleteResponse
+              deleteRelatedNodes(input: RelatedNodeDeleteInput, where: RelatedNodeOperationWhere): DeleteResponse
               updateNodeTypes(input: NodeTypeUpdateInput!, where: NodeTypeOperationWhere): NodeTypeUpdateResponse
               updateRelatedNodes(input: RelatedNodeUpdateInput!, where: RelatedNodeOperationWhere): RelatedNodeUpdateResponse
             }
@@ -259,6 +259,14 @@ describe("Scalars", () => {
               nodeTypes: [NodeType!]!
             }
 
+            input NodeTypeDeleteInput {
+              node: NodeTypeDeleteNode
+            }
+
+            input NodeTypeDeleteNode {
+              relatedNode: NodeTypeRelatedNodeDeleteOperation
+            }
+
             type NodeTypeEdge {
               cursor: String
               node: NodeType
@@ -278,6 +286,15 @@ describe("Scalars", () => {
             type NodeTypeRelatedNodeConnection {
               edges: [NodeTypeRelatedNodeEdge]
               pageInfo: PageInfo
+            }
+
+            input NodeTypeRelatedNodeDeleteInput {
+              input: RelatedNodeDeleteInput
+              where: NodeTypeRelatedNodeOperationWhere
+            }
+
+            input NodeTypeRelatedNodeDeleteOperation {
+              delete: NodeTypeRelatedNodeDeleteInput
             }
 
             type NodeTypeRelatedNodeEdge {
@@ -426,6 +443,14 @@ describe("Scalars", () => {
             type RelatedNodeCreateResponse {
               info: CreateInfo
               relatedNodes: [RelatedNode!]!
+            }
+
+            input RelatedNodeDeleteInput {
+              node: RelatedNodeDeleteNode
+            }
+
+            input RelatedNodeDeleteNode {
+              _emptyInput: Boolean
             }
 
             type RelatedNodeEdge {

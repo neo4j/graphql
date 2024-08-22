@@ -105,6 +105,14 @@ describe("@id", () => {
               info: CreateInfo
             }
 
+            input ActorDeleteInput {
+              node: ActorDeleteNode
+            }
+
+            input ActorDeleteNode {
+              movies: ActorMoviesDeleteOperation
+            }
+
             type ActorEdge {
               cursor: String
               node: Actor
@@ -117,6 +125,15 @@ describe("@id", () => {
 
             input ActorMoviesConnectionSort {
               edges: ActorMoviesEdgeSort
+            }
+
+            input ActorMoviesDeleteInput {
+              input: MovieDeleteInput
+              where: ActorMoviesOperationWhere
+            }
+
+            input ActorMoviesDeleteOperation {
+              delete: ActorMoviesDeleteInput
             }
 
             type ActorMoviesEdge {
@@ -261,6 +278,15 @@ describe("@id", () => {
               edges: MovieActorsEdgeSort
             }
 
+            input MovieActorsDeleteInput {
+              input: ActorDeleteInput
+              where: MovieActorsOperationWhere
+            }
+
+            input MovieActorsDeleteOperation {
+              delete: MovieActorsDeleteInput
+            }
+
             type MovieActorsEdge {
               cursor: String
               node: Actor
@@ -337,6 +363,14 @@ describe("@id", () => {
               movies: [Movie!]!
             }
 
+            input MovieDeleteInput {
+              node: MovieDeleteNode
+            }
+
+            input MovieDeleteNode {
+              actors: MovieActorsDeleteOperation
+            }
+
             type MovieEdge {
               cursor: String
               node: Movie
@@ -384,8 +418,8 @@ describe("@id", () => {
             type Mutation {
               createActors(input: [ActorCreateInput!]!): ActorCreateResponse
               createMovies(input: [MovieCreateInput!]!): MovieCreateResponse
-              deleteActors(where: ActorOperationWhere): DeleteResponse
-              deleteMovies(where: MovieOperationWhere): DeleteResponse
+              deleteActors(input: ActorDeleteInput, where: ActorOperationWhere): DeleteResponse
+              deleteMovies(input: MovieDeleteInput, where: MovieOperationWhere): DeleteResponse
               updateActors(input: ActorUpdateInput!, where: ActorOperationWhere): ActorUpdateResponse
               updateMovies(input: MovieUpdateInput!, where: MovieOperationWhere): MovieUpdateResponse
             }
