@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 5.5.1
+
+### Patch Changes
+
+-   [#5230](https://github.com/neo4j/graphql/pull/5230) [`acb6659`](https://github.com/neo4j/graphql/commit/acb6659f8e02dc3fef5dd328ae257b6b73669f54) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Remove `connectComponentsPlanner` argument from the `CypherQueryOptions`
+
 ## 5.5.0
 
 ### Minor Changes
