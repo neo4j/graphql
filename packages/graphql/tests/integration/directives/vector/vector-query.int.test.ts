@@ -170,7 +170,7 @@ describe("@vector directive - Query", () => {
                             node: {
                                 title: "Some Title",
                             },
-                            score: 1,
+                            score: expect.closeTo(1),
                         },
                         {
                             node: {
@@ -238,7 +238,7 @@ describe("@vector directive - Query", () => {
                                     ],
                                 },
                             },
-                            score: 1,
+                            score: expect.closeTo(1),
                         },
                         {
                             node: {

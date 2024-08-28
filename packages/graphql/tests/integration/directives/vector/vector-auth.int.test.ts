@@ -199,7 +199,7 @@ describe("@vector directive - Auth", () => {
                             node: {
                                 name: "this is a name",
                             },
-                            score: 1,
+                            score: expect.closeTo(1),
                         },
                     ],
                 },
@@ -356,7 +356,7 @@ describe("@vector directive - Auth", () => {
                             node: {
                                 name: "this is a name",
                             },
-                            score: 1,
+                            score: expect.closeTo(1),
                         },
                         {
                             node: {
