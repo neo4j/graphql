@@ -41,7 +41,7 @@
     },
     "author": "Neo4j Inc.",
     "devDependencies": {
-        "@apollo/gateway": "2.8.4",
+        "@apollo/gateway": "2.8.5",
         "@apollo/server": "4.11.0",
         "@types/deep-equal": "1.0.4",
         "@types/is-uuid": "1.0.2",
