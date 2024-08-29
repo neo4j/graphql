@@ -1200,6 +1200,7 @@ describe("Cypher Auth Where", () => {
             OPTIONAL MATCH (this)-[this_content0_disconnect0_rel:HAS_CONTENT]->(this_content0_disconnect0:Post)
             OPTIONAL MATCH (this_content0_disconnect0)<-[:HAS_CONTENT]-(authorization__before_this0:User)
             WITH *, count(authorization__before_this0) AS creatorCount
+            WITH *
             WHERE (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)) AND ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub))))
             CALL {
             	WITH this_content0_disconnect0, this_content0_disconnect0_rel, this
@@ -1274,6 +1275,7 @@ describe("Cypher Auth Where", () => {
             OPTIONAL MATCH (this)-[this_content0_disconnect0_rel:HAS_CONTENT]->(this_content0_disconnect0:Post)
             OPTIONAL MATCH (this_content0_disconnect0)<-[:HAS_CONTENT]-(authorization__before_this0:User)
             WITH *, count(authorization__before_this0) AS creatorCount
+            WITH *
             WHERE this_content0_disconnect0.id = $updateUsers_args_update_content0_disconnect0_where_Post_this_content0_disconnect0param0 AND (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)) AND ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub))))
             CALL {
             	WITH this_content0_disconnect0, this_content0_disconnect0_rel, this
@@ -1361,6 +1363,7 @@ describe("Cypher Auth Where", () => {
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Post)
             OPTIONAL MATCH (this_disconnect_content0)<-[:HAS_CONTENT]-(authorization__before_this0:User)
             WITH *, count(authorization__before_this0) AS creatorCount
+            WITH *
             WHERE (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)) AND ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub))))
             CALL {
             	WITH this_disconnect_content0, this_disconnect_content0_rel, this
@@ -1437,6 +1440,7 @@ describe("Cypher Auth Where", () => {
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Post)
             OPTIONAL MATCH (this_disconnect_content0)<-[:HAS_CONTENT]-(authorization__before_this0:User)
             WITH *, count(authorization__before_this0) AS creatorCount
+            WITH *
             WHERE this_disconnect_content0.id = $updateUsers_args_disconnect_content0_where_Post_this_disconnect_content0param0 AND (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)) AND ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub))))
             CALL {
             	WITH this_disconnect_content0, this_disconnect_content0_rel, this
