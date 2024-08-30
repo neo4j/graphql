@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 5.6.1
+
+### Patch Changes
+
+-   [#5507](https://github.com/neo4j/graphql/pull/5507) [`461ee3a`](https://github.com/neo4j/graphql/commit/461ee3a0a1a9a79542b955d8e5e02135038a8662) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix generated cypher for disconnect operations with filters #5497
+
 ## 5.6.0
 
 ## 5.5.6
