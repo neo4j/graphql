@@ -99,10 +99,7 @@ describe("Cypher Projection", () => {
                 WITH create_this1
                 MATCH (create_this1)-[create_this2:HAS_PHOTO]->(create_this3:Photo)
                 WHERE create_this3.url = $create_param1
-                WITH create_this3 { .url, location: CASE
-                    WHEN create_this3.location IS NOT NULL THEN { point: create_this3.location }
-                    ELSE NULL
-                END } AS create_this3
+                WITH create_this3 { .url, .location } AS create_this3
                 RETURN collect(create_this3) AS create_var4
             }
             CALL {
