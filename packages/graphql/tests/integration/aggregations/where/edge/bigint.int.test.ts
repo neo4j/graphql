@@ -33,11 +33,11 @@ describe("aggregations-where-edge-bigint", () => {
         Post = testHelper.createUniqueType("Post");
 
         const typeDefs = `
-            type ${User} {
+            type ${User} @node {
                 testString: String!
             }
 
-            type ${Post} {
+            type ${Post} @node {
                 testString: String!
                 likes: [${User}!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }

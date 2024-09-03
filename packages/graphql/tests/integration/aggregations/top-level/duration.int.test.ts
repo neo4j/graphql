@@ -30,7 +30,7 @@ describe("aggregations-top_level-duration", () => {
     beforeEach(async () => {
         Movie = testHelper.createUniqueType("Movie");
         typeDefs = `
-            type ${Movie} {
+            type ${Movie} @node {
                 testString: String
                 runningTime: Duration
             }

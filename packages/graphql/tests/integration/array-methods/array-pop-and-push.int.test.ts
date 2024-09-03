@@ -34,7 +34,7 @@ describe("array-pop-and-push", () => {
         const typeMovie = testHelper.createUniqueType("Movie");
 
         const typeDefs = gql`
-            type ${typeMovie} {
+            type ${typeMovie} @node {
                 title: String
                 tags: [String]
                 moreTags: [String]

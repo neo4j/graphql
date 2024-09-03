@@ -32,12 +32,12 @@ describe("Field Level Aggregations Where", () => {
         typePerson = testHelper.createUniqueType("Person");
 
         typeDefs = `
-        type ${typeMovie.name} {
+        type ${typeMovie.name} @node {
             title: String
             actors: [${typePerson.name}!]! @relationship(type: "ACTED_IN", direction: IN, properties:"ActedIn")
         }
 
-        type ${typePerson.name} {
+        type ${typePerson.name} @node {
             name: String
             age: Int
             born: DateTime

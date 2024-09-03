@@ -41,12 +41,12 @@ describe("Connect using aggregate where", () => {
         postType = testHelper.createUniqueType("Post");
         likeInterface = testHelper.createUniqueType("LikeEdge");
         typeDefs = `
-            type ${userType.name} {
+            type ${userType.name} @node {
                 name: String!
                 likedPosts: [${postType.name}!]! @relationship(type: "LIKES", direction: OUT, properties: "${likeInterface.name}")
             }
     
-            type ${postType.name} {
+            type ${postType.name} @node {
                 id: ID
                 content: String!
                 likes: [${userType.name}!]! @relationship(type: "LIKES", direction: IN, properties: "${likeInterface.name}")
@@ -334,19 +334,19 @@ describe("Connect UNIONs using aggregate where", () => {
         likeInterface = testHelper.createUniqueType("LikeEdge");
         userUnion = testHelper.createUniqueType("UserUnion");
         typeDefs = `
-            type ${userType.name} {
+            type ${userType.name} @node {
                 name: String!
                 likedPosts: [${postType.name}!]! @relationship(type: "LIKES", direction: OUT, properties: "${likeInterface.name}")
             }
 
-            type ${specialUserType.name} {
+            type ${specialUserType.name} @node {
                 specialName: String!
                 likedPosts: [${postType.name}!]! @relationship(type: "LIKES", direction: OUT, properties: "${likeInterface.name}")
             }
 
             union ${userUnion.name} = ${userType.name} | ${specialUserType.name}
     
-            type ${postType.name} {
+            type ${postType.name} @node {
                 id: ID
                 content: String!
                 likes: [${userUnion.name}!]! @relationship(type: "LIKES", direction: IN, properties: "${likeInterface.name}")

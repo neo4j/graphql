@@ -37,7 +37,7 @@ describe("array-pop-errors", () => {
         const typeMovie = testHelper.createUniqueType("Movie");
 
         const typeDefs = gql`
-            type ${typeMovie} {
+            type ${typeMovie} @node {
                 title: String
                 tags: [String]
             }
@@ -81,7 +81,7 @@ describe("array-pop-errors", () => {
         const typeMovie = testHelper.createUniqueType("Movie");
 
         const typeDefs = gql`
-            type ${typeMovie} {
+            type ${typeMovie} @node {
                 title: String
                 tags: [String]
                 otherTags: [String]
@@ -128,7 +128,7 @@ describe("array-pop-errors", () => {
     test("should throw an error if not authenticated on field definition", async () => {
         const typeMovie = testHelper.createUniqueType("Movie");
         const typeDefs = `
-            type ${typeMovie} {
+            type ${typeMovie} @node {
                 title: String
                 tags: [String] @authentication(operations: [UPDATE])
             }
@@ -177,7 +177,7 @@ describe("array-pop-errors", () => {
         const typeMovie = testHelper.createUniqueType("Movie");
 
         const typeDefs = gql`
-            type ${typeMovie} {
+            type ${typeMovie} @node {
                 title: String
                 tags: [String]
             }
@@ -222,7 +222,7 @@ describe("array-pop-errors", () => {
         const typeMovie = testHelper.createUniqueType("Movie");
 
         const typeDefs = gql`
-            type ${typeMovie} {
+            type ${typeMovie} @node {
                 title: String
                 tags: [String]
             }
@@ -267,12 +267,12 @@ describe("array-pop-errors", () => {
         const movie = testHelper.createUniqueType("Movie");
         const actor = testHelper.createUniqueType("Actor");
         const typeDefs = `
-            type ${movie.name} {
+            type ${movie.name} @node {
                 title: String
                 actors: [${actor.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
             }
             
-            type ${actor.name} {
+            type ${actor.name} @node {
                 id: ID!
                 name: String!
                 actedIn: [${movie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)

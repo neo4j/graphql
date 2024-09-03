@@ -28,7 +28,7 @@ describe("aggregations-top_level-id", () => {
     beforeEach(async () => {
         Movie = testHelper.createUniqueType("Movie");
         const typeDefs = `
-        type ${Movie} {
+        type ${Movie} @node {
             testId: ID
             id: ID
         }

@@ -37,7 +37,7 @@ describe("array-pop-and-push", () => {
         const typeMovie = testHelper.createUniqueType("Movie");
 
         const typeDefs = gql`
-            type ${typeMovie} {
+            type ${typeMovie} @node {
                 title: String
                 tags: [String]
                 moreTags: [String]
@@ -81,7 +81,7 @@ describe("array-pop-and-push", () => {
     test("should throw an error if not authenticated on field definition", async () => {
         const typeMovie = testHelper.createUniqueType("Movie");
         const typeDefs = `
-            type ${typeMovie} {
+            type ${typeMovie} @node {
                 title: String
                 tags: [String] @authentication(operations: [UPDATE])
                 moreTags: [String]
@@ -129,7 +129,7 @@ describe("array-pop-and-push", () => {
         const typeMovie = testHelper.createUniqueType("Movie");
 
         const typeDefs = gql`
-            type ${typeMovie} {
+            type ${typeMovie} @node {
                 title: String
                 tags: [String]
                 moreTags: [String]

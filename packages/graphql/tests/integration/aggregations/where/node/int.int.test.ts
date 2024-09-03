@@ -39,16 +39,16 @@ describe("aggregations-where-node-int", () => {
             someInt: Int!
         }
 
-        type ${Person} implements Human {
+        type ${Person} implements Human @node {
             testString: String!
             someInt: Int!
         }
-            type ${User} implements Human {
+            type ${User} implements Human @node {
                 testString: String!
                 someInt: Int!
             }
     
-            type ${Post} {
+            type ${Post} @node {
               testString: String!
               likes: [Human!]! @relationship(type: "LIKES", direction: IN)
             }
@@ -521,16 +521,16 @@ describe("aggregations-where-node-int interface relationships of concrete types"
             someInt: Int!
         }
 
-        type ${Person} implements Human {
+        type ${Person} implements Human @node {
             testString: String!
             someInt: Int!
         }
-            type ${User} implements Human {
+            type ${User} implements Human @node {
                 testString: String!
                 someInt: Int!
             }
     
-            type ${Post} {
+            type ${Post} @node {
               testString: String!
               likes: [Human!]! @relationship(type: "LIKES", direction: IN)
             }

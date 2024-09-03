@@ -34,7 +34,7 @@ describe("Field Level Aggregations Field Authorization", () => {
         Actor = testHelper.createUniqueType("Actor");
 
         const typeDefs = `
-            type ${Series} {
+            type ${Series} @node {
                 title: String! @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "series_title_aggregator" } } }])
                 cost: Float!
                 episodes: Int!
@@ -42,7 +42,7 @@ describe("Field Level Aggregations Field Authorization", () => {
             type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
-            type ${Actor} {
+            type ${Actor} @node {
                 name: String!
                 actedIn: [${Series}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
