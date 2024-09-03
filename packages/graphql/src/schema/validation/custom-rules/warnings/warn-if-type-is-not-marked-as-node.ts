@@ -18,6 +18,7 @@
  */
 
 import type { ASTVisitor, ObjectTypeDefinitionNode } from "graphql";
+import { jwt, nodeDirective, relationshipPropertiesDirective } from "../../../../graphql/directives";
 
 export function WarnIfTypeIsNotMarkedAsNode() {
     return function (): ASTVisitor {
@@ -25,14 +26,19 @@ export function WarnIfTypeIsNotMarkedAsNode() {
 
         return {
             ObjectTypeDefinition(objectTypeDefinition: ObjectTypeDefinitionNode) {
-                if (!objectTypeDefinition.directives) {
+                if (warningAlreadyIssued) {
                     return;
                 }
-                const hasNodeDirective = objectTypeDefinition.directives.some(
-                    (directive) => directive.name.value === "node"
-                );
-
-                if (!warningAlreadyIssued && !hasNodeDirective) {
+                let hasNodeDirective = false;
+                for (const directive of objectTypeDefinition.directives ?? []) {
+                    if ([relationshipPropertiesDirective.name, jwt.name].includes(directive.name.value)) {
+                        return;
+                    }
+                    if (directive.name.value === nodeDirective.name) {
+                        hasNodeDirective = true;
+                    }
+                }
+                if (!hasNodeDirective) {
                     console.warn(
                         `Future library versions will require marking all types representing Neo4j nodes with the @node directive.`
                     );

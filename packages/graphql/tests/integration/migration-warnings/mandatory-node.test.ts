@@ -19,7 +19,7 @@
 
 import { Neo4jGraphQL } from "../../../src/classes";
 
-describe("v6 migration warnings", () => {
+describe("mandatory @node warnings", () => {
     let warn: jest.SpyInstance;
 
     beforeEach(() => {
@@ -78,6 +78,90 @@ describe("v6 migration warnings", () => {
             }
             type Movie @node(labels: ["Film"]) {
                 id: ID!
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs: typeDefsWithNodeDirective,
+            validate: true,
+        });
+        await neoSchema.getSchema();
+        expect(warn).not.toHaveBeenCalled();
+    });
+
+    test("type with @jwt directive should not produces a warn message", async () => {
+        const typeDefsWithNodeDirective = /* GraphQL */ `
+            type User @node {
+                id: ID!
+                firstName: String!
+                lastName: String!
+            }
+
+            type JWT @jwt {
+                roles: [String!]!
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs: typeDefsWithNodeDirective,
+            validate: true,
+        });
+        await neoSchema.getSchema();
+        expect(warn).not.toHaveBeenCalled();
+    });
+
+    test("type with @relationshipProperties directive should not produces a warn message", async () => {
+        const typeDefsWithNodeDirective = /* GraphQL */ `
+            type Series @node {
+                title: String!
+                cost: Float!
+                episodes: Int!
+            }
+            type ActedIn @relationshipProperties {
+                screenTime: Int!
+            }
+            type Actor @node {
+                name: String!
+                actedIn: [Series!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs: typeDefsWithNodeDirective,
+            validate: true,
+        });
+        await neoSchema.getSchema();
+        expect(warn).not.toHaveBeenCalled();
+    });
+
+    test("type implementing an interface should not produces a warn message when the @node is being used", async () => {
+        const typeDefsWithNodeDirective = /* GraphQL */ `
+            interface Person {
+                name: String!
+            }
+
+            type Actor implements Person @node {
+                name: String!
+                role: String!
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs: typeDefsWithNodeDirective,
+            validate: true,
+        });
+        await neoSchema.getSchema();
+        expect(warn).not.toHaveBeenCalled();
+    });
+
+    test("extended type should not produces a warn message when the @node is being used", async () => {
+        const typeDefsWithNodeDirective = /* GraphQL */ `
+            type Actor {
+                name: String!
+                role: String!
+            }
+            extend type Actor @node {
+                age: Int!
             }
         `;
 
