@@ -39,17 +39,17 @@ describe("Union filtering", () => {
         typeDefs = /* GraphQL */ `
             union Production = ${Movie} | ${Series}
 
-            type ${Movie} {
+            type ${Movie} @node {
                 title: String!
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
             
-            type ${Series} {
+            type ${Series} @node {
                 title: String!
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type ${Actor} {
+            type ${Actor} @node {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
