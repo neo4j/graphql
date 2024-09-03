@@ -78,7 +78,9 @@ export class DeleteOperation extends MutationOperation {
     ): OperationTranspileResult {
         this.validateSelection(selection);
         const filterSubqueries = wrapSubqueriesInCypherCalls(context, this.filters, [context.target]);
-        const authBeforeSubqueries = this.getAuthFilterSubqueries(context);
+        const authBeforeSubqueries = this.getAuthFilterSubqueries(context).map((c) => {
+            return new Cypher.Call(c).importWith(context.target);
+        });
         const predicate = this.getPredicate(context);
         const extraSelections = this.getExtraSelections(context);
 
@@ -105,7 +107,10 @@ export class DeleteOperation extends MutationOperation {
             throw new Error("Transpile error: No relationship found!");
         }
         const filterSubqueries = wrapSubqueriesInCypherCalls(context, this.filters, [context.target]);
-        const authBeforeSubqueries = this.getAuthFilterSubqueries(context);
+
+        const authBeforeSubqueries = this.getAuthFilterSubqueries(context).map((c) => {
+            return new Cypher.Call(c).importWith(context.target);
+        });
         const predicate = this.getPredicate(context);
         const extraSelections = this.getExtraSelections(context);
         const collect = Cypher.collect(context.target).distinct();
