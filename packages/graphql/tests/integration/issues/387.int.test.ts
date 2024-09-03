@@ -42,7 +42,7 @@ describe("https://github.com/neo4j/graphql/issues/387", () => {
         typeDefs = gql`
         scalar URL
 
-        type ${Place} {
+        type ${Place} @node {
             name: String
             url: URL
                 @cypher(

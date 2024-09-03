@@ -36,7 +36,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
         pageType = testHelper.createUniqueType("User");
 
         typeDefs = /* GraphQL */ `
-        type ${userType} {
+        type ${userType} @node {
             id: ID!
             authId: String
             workspaces: [${workspaceType}!]! @relationship(type: "MEMBER_OF", direction: OUT)
@@ -45,6 +45,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
         }
 
         type ${workspaceType}
+            @node
             @authorization(
                 filter: [
                     {
@@ -62,6 +63,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
         }
 
         type ${pageType}
+            @node
             @authorization(
                 filter: [
                     {

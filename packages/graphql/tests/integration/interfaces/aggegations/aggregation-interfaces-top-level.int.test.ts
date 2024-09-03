@@ -36,13 +36,13 @@ describe("Top-level interface query fields", () => {
                 cost: Float!
             }
 
-            type ${Movie} implements Production {
+            type ${Movie} implements Production @node {
                 title: String!
                 cost: Float!
                 runtime: Int
             }
 
-            type ${Series} implements Production {
+            type ${Series} implements Production @node {
                 title: String!
                 cost: Float!
                 episodes: Int

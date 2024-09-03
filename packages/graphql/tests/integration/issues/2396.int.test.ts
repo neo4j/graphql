@@ -38,7 +38,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
         Estate = testHelper.createUniqueType("Estate");
 
         const typeDefs = `
-            type ${PostalCode} @mutation(operations: [CREATE, UPDATE]) {
+            type ${PostalCode} @mutation(operations: [CREATE, UPDATE]) @node {
                 archivedAt: DateTime
                 number: String! @unique
 
@@ -47,7 +47,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
 
             extend type ${PostalCode} @authorization(filter: [{ where: { node: { archivedAt: null } } }])
 
-            type ${Address} @mutation(operations: [CREATE, UPDATE]) {
+            type ${Address} @mutation(operations: [CREATE, UPDATE]) @node {
                 archivedAt: DateTime
                 uuid: ID! @id @unique
                 createdAt: DateTime! @timestamp(operations: [CREATE])
@@ -58,7 +58,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
 
             extend type ${Address} @authorization(filter: [{ where: { node: { archivedAt: null } } }])
 
-            type ${Mandate} @mutation(operations: [CREATE, UPDATE]) {
+            type ${Mandate} @mutation(operations: [CREATE, UPDATE]) @node {
                 archivedAt: DateTime
                 number: ID! @id @unique # numéro
                 createdAt: DateTime! @timestamp(operations: [CREATE])
@@ -71,7 +71,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
 
             extend type ${Mandate} @authorization(filter: [{ where: { node: { archivedAt: null } } }])
 
-            type ${Valuation} @mutation(operations: [CREATE, UPDATE]) {
+            type ${Valuation} @mutation(operations: [CREATE, UPDATE]) @node {
                 archivedAt: DateTime
                 uuid: ID! @id @unique
                 createdAt: DateTime! @timestamp(operations: [CREATE])
@@ -97,7 +97,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
                 BUSINESS_FUND
             }
 
-            type ${Estate} @mutation(operations: [CREATE, UPDATE]) {
+            type ${Estate} @node @mutation(operations: [CREATE, UPDATE]) {
                 archivedAt: DateTime
                 uuid: ID! @id @unique
                 createdAt: DateTime! @timestamp(operations: [CREATE])

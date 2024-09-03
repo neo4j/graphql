@@ -42,12 +42,12 @@ describe("interface relationships aliased fields", () => {
                 title: String!
             }
 
-            type ${typeMovie} implements Production {
+            type ${typeMovie} implements Production @node {
                 title: String! @alias(property: "movieTitle")
                 runtime: Int!
             }
 
-            type ${typeSeries} implements Production {
+            type ${typeSeries} implements Production @node {
                 title: String! @alias(property: "seriesTitle")
                 episodes: Int!
             }
@@ -56,13 +56,13 @@ describe("interface relationships aliased fields", () => {
                 screenTime: Int!
             }
 
-            type ${typeActor} {
+            type ${typeActor} @node {
                 name: String!
                 currentlyActingIn: Production @relationship(type: "CURRENTLY_ACTING_IN", direction: OUT)
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
-            type ${ProtectedActor} @authorization(validate: [{ where: { node: { actedInConnection: { node: { title: "$jwt.title"  } } } } }]) {
+            type ${ProtectedActor} @node @authorization(validate: [{ where: { node: { actedInConnection: { node: { title: "$jwt.title"  } } } } }]) {
                 name: String! @alias(property: "dbName")
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }

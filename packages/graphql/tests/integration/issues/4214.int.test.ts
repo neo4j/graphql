@@ -43,21 +43,21 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
                 store: ID
             }
 
-            type ${User} {
+            type ${User} @node {
                 id: ID! @id @unique
                 email: String!
                 roles: [String!]!
                 store: ${Store} @relationship(type: "WORKS_AT", direction: OUT)
             }
 
-            type ${Store} {
+            type ${Store} @node {
                 id: ID! @id @unique
                 name: String!
                 employees: [${User}!]! @relationship(type: "WORKS_AT", direction: IN)
                 transactions: [${Transaction}!]! @relationship(type: "TRANSACTION", direction: IN)
             }
 
-            type ${Transaction} {
+            type ${Transaction} @node {
                 id: ID! @id @unique
                 store: ${Store}! @relationship(type: "TRANSACTION", direction: OUT)
                 type: String!
@@ -65,7 +65,7 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
                 completed: Boolean
             }
 
-            type ${TransactionItem} {
+            type ${TransactionItem} @node {
                 transaction: ${Transaction} @relationship(type: "ITEM_TRANSACTED", direction: OUT)
                 name: String
                 price: Float

@@ -31,7 +31,7 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
         projectType = testHelper.createUniqueType("Project");
 
         const typeDefs = `
-            type ${employeeType} {
+            type ${employeeType} @node {
                 employeeId: ID! @unique
                 firstName: String! @settable(onCreate: false, onUpdate: false)
                 lastName: String @settable(onCreate: false, onUpdate: false)
@@ -43,7 +43,7 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
                 allocation: Float
             }
         
-            type ${projectType} {
+            type ${projectType} @node {
                 projectId: ID! @unique
                 name: String! @settable(onCreate: false, onUpdate: false)
                 description: String

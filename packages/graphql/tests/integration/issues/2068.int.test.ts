@@ -42,7 +42,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
         const movieOrTVShowType = testHelper.createUniqueType("MovieOrTVShow");
 
         const typeDefs = `
-            type ${actorType.name} {
+            type ${actorType.name} @node {
                 name: String
                 age: Int
                 movies(title: String): [${movieType.name}]
@@ -76,7 +76,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
             union ${movieOrTVShowType.name} = ${movieType.name} | ${tvShowType.name}
 
-            type ${tvShowType.name} {
+            type ${tvShowType.name} @node {
                 id: ID
                 title: String
                 numSeasons: Int
@@ -98,7 +98,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                     )
             }
 
-            type ${movieType.name} {
+            type ${movieType.name} @node {
                 id: ID
                 title: String
                 actors: [${actorType.name}]
@@ -191,13 +191,13 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 creator: ${userType.name}! @declareRelationship
             }
     
-            type ${userType.name} {
+            type ${userType.name} @node {
                 id: ID
                 name: String
                 content: [${contentType.name}!]! @relationship(type: "HAS_CONTENT", direction: OUT)
             }
     
-            type ${commentType.name} implements ${contentType.name} {
+            type ${commentType.name} implements ${contentType.name} @node {
                 id: ID
                 content: String
                 creator: ${userType.name}!  @relationship(type: "HAS_CONTENT", direction: IN)
@@ -206,7 +206,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
             extend type ${userType.name}
                 @authorization(filter: [{ operations: [READ, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }])
     
-            extend type ${userType.name} {
+            extend type ${userType.name} @node {
                 password: String! @authorization(filter: [{ operations: [READ], where: { node: { id: "$jwt.sub" } } }])
             }
         `;
@@ -369,12 +369,12 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 roles: [String!]!
             }
             
-            type ${movieType.name} {
+            type ${movieType.name} @node {
                 title: String
                 genres: [${genreType.name}!]! @relationship(type: "IN_GENRE", direction: OUT)
             }
     
-            type ${genreType.name} @authorization(validate: [{ operations: ${operations}, where: { jwt: { roles_INCLUDES: "${requiredRole}" } } }]) {
+            type ${genreType.name} @authorization(validate: [{ operations: ${operations}, where: { jwt: { roles_INCLUDES: "${requiredRole}" } } }]) @node {
                 name: String @unique
             }
         `;
@@ -737,12 +737,12 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
             actorType = testHelper.createUniqueType("Actor");
 
             typeDefs = `
-            type ${movieType.name} {
+            type ${movieType.name} @node {
                 title: String
                 actors: [${actorType.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
             }
             
-            type ${actorType.name} {
+            type ${actorType.name} @node {
                 name: String
                 movies: [${movieType.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }

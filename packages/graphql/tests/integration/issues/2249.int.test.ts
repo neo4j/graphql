@@ -33,7 +33,7 @@ describe("https://github.com/neo4j/graphql/issues/2249", () => {
         Influencer = testHelper.createUniqueType("Influencer");
 
         const typeDefs = `
-            type ${Movie} {
+            type ${Movie} @node {
                 title: String!
                 reviewers: [Reviewer!]! @relationship(type: "REVIEWED", properties: "Review", direction: IN)
                 imdbId: Int @unique
@@ -43,11 +43,11 @@ describe("https://github.com/neo4j/graphql/issues/2249", () => {
                 score: Int!
             }
 
-            type ${Person} implements Reviewer {
+            type ${Person} implements Reviewer @node {
                 name: String!
                 reputation: Int!
             }
-            type ${Influencer} implements Reviewer {
+            type ${Influencer} implements Reviewer @node {
                 reputation: Int!
                 url: String!
                 reviewerId: Int

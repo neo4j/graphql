@@ -43,28 +43,28 @@ describe("https://github.com/neo4j/graphql/issues/4113", () => {
                 store: ID
             }
 
-            type ${User.name} {
+            type ${User.name} @node {
                 id: ID! @id @unique
                 email: String!
                 roles: [String!]!
                 store: ${Store.name} @relationship(type: "WORKS_AT", direction: OUT)
             }
 
-            type ${Store.name} {
+            type ${Store.name} @node {
                 id: ID! @id @unique
                 name: String!
                 employees: [${User.name}!]! @relationship(type: "WORKS_AT", direction: IN)
                 transactions: [${Transaction.name}!]! @relationship(type: "TRANSACTION", direction: IN)
             }
 
-            type ${Transaction.name} {
+            type ${Transaction.name} @node {
                 id: ID! @id @unique
                 store: ${Store.name}! @relationship(type: "TRANSACTION", direction: OUT)
                 type: String!
                 items: [${TransactionItem.name}!]! @relationship(type: "ITEM_TRANSACTED", direction: IN)
             }
 
-            type ${TransactionItem.name} {
+            type ${TransactionItem.name} @node {
                 transaction: ${Transaction.name} @relationship(type: "ITEM_TRANSACTED", direction: OUT)
                 name: String
                 price: Float
@@ -242,21 +242,21 @@ describe("replicates the test for relationship to interface so that multiple ref
                 store: ID
             }
 
-            type ${User.name} {
+            type ${User.name} @node {
                 id: ID! @id @unique
                 email: String!
                 roles: [String!]!
                 store: ${Store.name} @relationship(type: "WORKS_AT", direction: OUT)
             }
 
-            type ${Store.name} {
+            type ${Store.name} @node {
                 id: ID! @id @unique
                 name: String!
                 employees: [${User.name}!]! @relationship(type: "WORKS_AT", direction: IN)
                 transactions: [${Transaction.name}!]! @relationship(type: "TRANSACTION", direction: IN)
             }
 
-            type ${Transaction.name} {
+            type ${Transaction.name} @node {
                 id: ID! @id @unique
                 store: ${Store.name}! @relationship(type: "TRANSACTION", direction: OUT)
                 type: String!
@@ -270,14 +270,14 @@ describe("replicates the test for relationship to interface so that multiple ref
                 quantity: Int
             }
 
-            type ${TransactionItem1.name} implements TransactionItemI {
+            type ${TransactionItem1.name} implements TransactionItemI @node {
                 transaction: ${Transaction.name} @relationship(type: "ITEM_TRANSACTED", direction: OUT)
                 name: String
                 price: Float
                 quantity: Int
             }
 
-            type ${TransactionItem2.name} implements TransactionItemI {
+            type ${TransactionItem2.name} implements TransactionItemI @node {
                 transaction: ${Transaction.name} @relationship(type: "ITEM_TRANSACTED", direction: OUT)
                 name: String
                 price: Float

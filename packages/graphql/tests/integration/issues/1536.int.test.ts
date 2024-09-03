@@ -33,12 +33,12 @@ describe("https://github.com/neo4j/graphql/issues/1536", () => {
         MyImplementationType = testHelper.createUniqueType("MyImplementation");
 
         const typeDefs = `
-            type ${SomeNodeType} {
+            type ${SomeNodeType} @node {
                 id: ID! @id @unique
                 other: ${OtherNodeType}! @relationship(type: "HAS_OTHER_NODES", direction: OUT)
             }
 
-            type ${OtherNodeType} {
+            type ${OtherNodeType} @node {
                 id: ID! @id @unique
                 interfaceField: MyInterface! @relationship(type: "HAS_INTERFACE_NODES", direction: OUT)
             }
@@ -47,7 +47,7 @@ describe("https://github.com/neo4j/graphql/issues/1536", () => {
                 id: ID!
             }
 
-            type ${MyImplementationType} implements MyInterface {
+            type ${MyImplementationType} implements MyInterface @node {
                 id: ID! @id @unique
             }
         `;

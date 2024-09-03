@@ -31,11 +31,11 @@ describe("https://github.com/neo4j/graphql/issues/207", () => {
         typeDefs = `
             union Result = ${Book} | ${Author}
 
-            type ${Book} {
+            type ${Book} @node {
                 title: String
             }
 
-            type ${Author} {
+            type ${Author} @node {
                 name: String
             }
 

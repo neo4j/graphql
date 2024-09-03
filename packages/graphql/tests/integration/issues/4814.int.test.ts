@@ -37,13 +37,13 @@ describe("https://github.com/neo4j/graphql/issues/4814", () => {
                 prevs: [Step!]! @declareRelationship
             }
 
-            type ${AStep} implements Step {
+            type ${AStep} implements Step @node {
                 id: ID! @id
                 nexts: [Step!]! @relationship(type: "FOLLOWED_BY", direction: OUT)
                 prevs: [Step!]! @relationship(type: "FOLLOWED_BY", direction: IN)
             }
 
-            type ${BStep} implements Step {
+            type ${BStep} implements Step @node {
                 id: ID! @id
                 nexts: [Step!]! @relationship(type: "FOLLOWED_BY", direction: OUT)
                 prevs: [Step!]! @relationship(type: "FOLLOWED_BY", direction: IN)
