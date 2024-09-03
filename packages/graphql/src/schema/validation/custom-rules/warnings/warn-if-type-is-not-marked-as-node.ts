@@ -34,7 +34,7 @@ export function WarnIfTypeIsNotMarkedAsNode() {
 
                 if (!warningAlreadyIssued && !hasNodeDirective) {
                     console.warn(
-                        `type ${objectTypeDefinition.name.value} is not marked as a @node type. Future library versions will require marking all types representing Neo4j nodes with the @node directive.`
+                        `Future library versions will require marking all types representing Neo4j nodes with the @node directive.`
                     );
                     warningAlreadyIssued = true;
                 }

@@ -45,7 +45,7 @@ describe("v6 migration warnings", () => {
         });
         await neoSchema.getSchema();
         expect(warn).toHaveBeenCalledWith(
-            "type User is not marked as a @node type. Future library versions will require marking all types representing Neo4j nodes with the @node directive."
+            "Future library versions will require marking all types representing Neo4j nodes with the @node directive."
         );
     });
 
