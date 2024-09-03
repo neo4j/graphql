@@ -26,6 +26,9 @@ export function WarnIfTypeIsNotMarkedAsNode() {
 
         return {
             ObjectTypeDefinition(objectTypeDefinition: ObjectTypeDefinitionNode) {
+                if (["Query", "Mutation", "Subscription"].includes(objectTypeDefinition.name.value)) {
+                    return;
+                }
                 if (warningAlreadyIssued) {
                     return;
                 }
