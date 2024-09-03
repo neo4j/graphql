@@ -31,7 +31,7 @@ describe("Subscriptions Single Instance Plugin", () => {
     beforeAll(async () => {
         plugin = new Neo4jGraphQLSubscriptionsDefaultEngine();
         const typeDefs = gql`
-            type ${typeMovie.name} {
+            type ${typeMovie.name} @node {
                 id: ID!
             }
         `;

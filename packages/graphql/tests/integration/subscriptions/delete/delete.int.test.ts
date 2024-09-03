@@ -35,12 +35,12 @@ describe("Subscriptions delete", () => {
 
         plugin = new TestSubscriptionsEngine();
         const typeDefs = gql`
-            type ${typeActor.name} {
+            type ${typeActor.name} @node {
                 id: ID!
                 movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type ${typeMovie.name} {
+            type ${typeMovie.name} @node {
                 id: ID!
                 actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
             }

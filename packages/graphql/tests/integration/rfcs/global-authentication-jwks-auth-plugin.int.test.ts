@@ -36,7 +36,7 @@ describe("Global authentication - Authorization JWKS plugin", () => {
         testMovie = testHelper.createUniqueType("Movie");
 
         typeDefs = `
-            type ${testMovie} {
+            type ${testMovie} @node {
                 name: String
             }
             extend schema @authentication

@@ -29,7 +29,7 @@ describe("Global authentication - Authorization JWT plugin", () => {
     const testMovie = new UniqueType("Movie");
 
     const typeDefs = `
-        type ${testMovie} {
+        type ${testMovie} @node {
             name: String
         }
         extend schema @authentication
