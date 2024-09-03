@@ -39,7 +39,7 @@ describe("timestamp/datetime", () => {
     describe("create", () => {
         test("should create a movie (with timestamps)", async () => {
             const typeDefs = `
-                type ${Movie} {
+                type ${Movie} @node {
                   id: ID
                   createdAt: DateTime @timestamp(operations: [CREATE])
                 }
@@ -83,7 +83,7 @@ describe("timestamp/datetime", () => {
 
         test("create timestamp on relationship property", async () => {
             const typeDefs = `
-                type ${Actor} {
+                type ${Actor} @node {
                     name: String!
                 }
 
@@ -92,7 +92,7 @@ describe("timestamp/datetime", () => {
                     screenTime: Int!
                 }
 
-                type ${Movie} {
+                type ${Movie} @node {
                     title: String!
                     actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
                 }
@@ -142,7 +142,7 @@ describe("timestamp/datetime", () => {
     describe("update", () => {
         test("should update a movie (with timestamps)", async () => {
             const typeDefs = `
-                type ${Movie} {
+                type ${Movie} @node {
                   id: ID
                   updatedAt: DateTime @timestamp(operations: [UPDATE])
                 }
@@ -190,7 +190,7 @@ describe("timestamp/datetime", () => {
 
         test("update timestamp on relationship property", async () => {
             const typeDefs = `
-                type ${Actor} {
+                type ${Actor} @node {
                     name: String!
                 }
 
@@ -199,7 +199,7 @@ describe("timestamp/datetime", () => {
                     screenTime: Int!
                 }
 
-                type ${Movie} {
+                type ${Movie} @node {
                     title: String!
                     actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
                 }
@@ -255,7 +255,7 @@ describe("timestamp/datetime", () => {
     describe("create/update (explicit)", () => {
         test("should create a movie (with timestamps)", async () => {
             const typeDefs = `
-                type ${Movie} {
+                type ${Movie} @node {
                   id: ID
                   createdAt: DateTime @timestamp(operations: [CREATE, UPDATE])
                 }
@@ -299,7 +299,7 @@ describe("timestamp/datetime", () => {
 
         test("create timestamp on relationship property", async () => {
             const typeDefs = `
-                type ${Actor} {
+                type ${Actor} @node {
                     name: String!
                 }
 
@@ -308,7 +308,7 @@ describe("timestamp/datetime", () => {
                     screenTime: Int!
                 }
 
-                type ${Movie} {
+                type ${Movie} @node {
                     title: String!
                     actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
                 }
@@ -356,7 +356,7 @@ describe("timestamp/datetime", () => {
 
         test("update timestamp on relationship property", async () => {
             const typeDefs = `
-                type ${Actor} {
+                type ${Actor} @node {
                     name: String!
                 }
 
@@ -365,7 +365,7 @@ describe("timestamp/datetime", () => {
                     screenTime: Int!
                 }
 
-                type ${Movie} {
+                type ${Movie} @node {
                     title: String!
                     actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
                 }
@@ -419,7 +419,7 @@ describe("timestamp/datetime", () => {
 
         test("should update a movie (with timestamps)", async () => {
             const typeDefs = `
-                type ${Movie} {
+                type ${Movie} @node {
                   id: ID
                   updatedAt: DateTime @timestamp(operations: [CREATE, UPDATE])
                 }
@@ -469,7 +469,7 @@ describe("timestamp/datetime", () => {
     describe("create/update (implicit)", () => {
         test("should create a movie (with timestamps)", async () => {
             const typeDefs = `
-                type ${Movie} {
+                type ${Movie} @node {
                   id: ID
                   createdAt: DateTime @timestamp
                 }
@@ -513,7 +513,7 @@ describe("timestamp/datetime", () => {
 
         test("create timestamp on relationship property", async () => {
             const typeDefs = `
-                type ${Actor} {
+                type ${Actor} @node {
                     name: String!
                 }
 
@@ -522,7 +522,7 @@ describe("timestamp/datetime", () => {
                     screenTime: Int!
                 }
 
-                type ${Movie} {
+                type ${Movie} @node {
                     title: String!
                     actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
                 }
@@ -570,7 +570,7 @@ describe("timestamp/datetime", () => {
 
         test("update timestamp on relationship property", async () => {
             const typeDefs = `
-                type ${Actor} {
+                type ${Actor} @node {
                     name: String!
                 }
 
@@ -579,7 +579,7 @@ describe("timestamp/datetime", () => {
                     screenTime: Int!
                 }
 
-                type ${Movie} {
+                type ${Movie} @node {
                     title: String!
                     actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
                 }
@@ -633,7 +633,7 @@ describe("timestamp/datetime", () => {
 
         test("should update a movie (with timestamps)", async () => {
             const typeDefs = `
-                type ${Movie} {
+                type ${Movie} @node {
                   id: ID
                   updatedAt: DateTime @timestamp
                 }

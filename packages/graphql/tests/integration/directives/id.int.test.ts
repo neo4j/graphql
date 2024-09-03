@@ -40,7 +40,7 @@ describe("@id directive", () => {
 
     test("should create a movie with autogenerate id", async () => {
         const typeDefs = `
-            type ${Movie} {
+            type ${Movie} @node {
               id: ID! @id @unique
               name: String
             }
@@ -75,7 +75,7 @@ describe("@id directive", () => {
                 id: ID!
             }
 
-            type ${Movie} implements MovieInterface {
+            type ${Movie} implements MovieInterface @node {
               id: ID! @id
               name: String
             }
@@ -106,12 +106,12 @@ describe("@id directive", () => {
 
     test("should create a movie with autogenerate id and a nested genre with autogenerate id", async () => {
         const typeDefs = `
-            type ${Genre} {
+            type ${Genre} @node {
                 id: ID! @id @unique
                 name: String!
             }
 
-            type ${Movie} {
+            type ${Movie} @node {
                 id: ID! @id @unique
                 name: String!
                 genres: [${Genre}!]! @relationship(type: "HAS_GENRE", direction: OUT)
@@ -156,7 +156,7 @@ describe("@id directive", () => {
 
     test("should autogenerate an ID for a relationship property", async () => {
         const typeDefs = `
-            type ${Actor} {
+            type ${Actor} @node {
                 id: ID! @id @unique
                 name: String!
             }
@@ -166,7 +166,7 @@ describe("@id directive", () => {
                 screenTime: Int!
             }
 
-            type ${Movie} {
+            type ${Movie} @node {
                 id: ID! @id @unique
                 title: String!
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")

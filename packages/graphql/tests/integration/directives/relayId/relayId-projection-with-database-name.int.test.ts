@@ -33,19 +33,19 @@ describe("RelayId projection with different database name", () => {
 
     beforeAll(async () => {
         const typeDefs = `
-            type ${Movie} {
+            type ${Movie} @node {
                 dbId: ID! @id @unique @relayId @alias(property: "serverId")
                 title: String!
                 genre: ${Genre}! @relationship(type: "HAS_GENRE", direction: OUT)
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type ${Genre} {
+            type ${Genre} @node {
                 dbId: ID! @id @unique @relayId @alias(property: "serverId")
                 name: String!
             }
 
-            type ${Actor} {
+            type ${Actor} @node {
                 dbId: ID! @id @unique @relayId @alias(property: "serverId")
                 name: String!
             }

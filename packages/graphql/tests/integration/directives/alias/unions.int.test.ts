@@ -34,13 +34,13 @@ describe("@alias directive", () => {
         typeActor = testHelper.createUniqueType("Actor");
 
         const typeDefs = gql`
-            type ${typeMovie.name} {
+            type ${typeMovie.name} @node {
                 title: String!
                 titleAgain: String @alias(property: "title")
                 isan: String! @unique
             }
 
-            type ${typeSeries.name} {
+            type ${typeSeries.name} @node {
                 title: String!
                 titleAgain: String @alias(property: "title")
                 isan: String! @unique
@@ -52,7 +52,7 @@ describe("@alias directive", () => {
                 screentime: Int!
             }
 
-            type ${typeActor.name} {
+            type ${typeActor.name} @node {
                 name: String!
                 nameAgain: String @alias(property: "name")
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
