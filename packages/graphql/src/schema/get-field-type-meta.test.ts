@@ -24,7 +24,7 @@ import getFieldTypeMeta from "./get-field-type-meta";
 describe("getFieldTypeMeta", () => {
     test("should return NonNullType ListType type name", () => {
         const typeDefs = `
-            type User {
+            type User @node {
                 name: [ABC]!
             }
           `;
@@ -45,7 +45,7 @@ describe("getFieldTypeMeta", () => {
 
     test("should return NonNullType NamedType type name", () => {
         const typeDefs = `
-            type User {
+            type User @node {
                 name: ABC!
             }
           `;
@@ -66,7 +66,7 @@ describe("getFieldTypeMeta", () => {
 
     test("should return NamedType type name", () => {
         const typeDefs = `
-            type User {
+            type User @node {
                 name: String
             }
           `;
@@ -87,7 +87,7 @@ describe("getFieldTypeMeta", () => {
 
     test("should return ListType NamedType type name", () => {
         const typeDefs = `
-            type User {
+            type User @node {
                 name: [ABC]
             }
           `;
@@ -108,7 +108,7 @@ describe("getFieldTypeMeta", () => {
 
     test("should return ListType NonNullType type name", () => {
         const typeDefs = `
-            type User {
+            type User @node {
                 name: [ABC!]
             }
           `;

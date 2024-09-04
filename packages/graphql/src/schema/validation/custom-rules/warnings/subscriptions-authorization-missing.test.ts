@@ -46,7 +46,7 @@ describe("WarnObjectFieldsWithoutResolver", () => {
     describe("Subscriptions authorization rule", () => {
         test("warns if @authorization is used on type and @subscriptionsAuthorization is missing", () => {
             const doc = gql`
-                type User @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
+                type User @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) @node {
                     id: ID!
                     name: String!
                     password: String!
@@ -63,7 +63,7 @@ describe("WarnObjectFieldsWithoutResolver", () => {
 
         test("warns if @authorization is used on field and @subscriptionsAuthorization is missing", () => {
             const doc = gql`
-                type User {
+                type User @node {
                     id: ID!
                     name: String!
                     password: String! @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
@@ -99,7 +99,7 @@ describe("WarnObjectFieldsWithoutResolver", () => {
 
         test("does not warn if both directives are used on field", () => {
             const doc = gql`
-                type User {
+                type User @node {
                     id: ID!
                     name: String!
                     password: String!
@@ -118,7 +118,7 @@ describe("WarnObjectFieldsWithoutResolver", () => {
 
         test("does not warn if subscriptions not enabled", () => {
             const doc = gql`
-                type User @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
+                type User @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) @node {
                     id: ID!
                     name: String!
                     password: String!
