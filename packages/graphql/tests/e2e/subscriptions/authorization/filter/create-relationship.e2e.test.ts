@@ -45,6 +45,7 @@ describe("Subscriptions authorization with relationship creation events", () => 
             }
 
             type ${User}
+                @node
                 @subscriptionsAuthorization(
                     filter: [
                         { where: { relationship: { follows: { node: { id: "$jwt.sub" } } }, jwt: { roles_INCLUDES: "user" } } }

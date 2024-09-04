@@ -58,7 +58,7 @@ describe.each([
         typeMovie = testHelper.createUniqueType("Movie");
         typeActor = testHelper.createUniqueType("Actor");
         const typeDefs = `
-         type ${typeMovie} {
+         type ${typeMovie} @node {
             id: ID
             title: String
             releasedIn: Int
@@ -68,7 +68,7 @@ describe.each([
             similarTitles: [String]
          }
 
-         type ${typeActor} {
+         type ${typeActor} @node {
              name: String
          }
          `;

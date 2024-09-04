@@ -64,7 +64,7 @@ describe.each([
         typeInfluencer = new UniqueType("Influencer");
 
         typeDefs = `
-            type ${typeMovie} {
+            type ${typeMovie} @node {
                 title: String!
                 actors: [${typeActor}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
                 directors: [Director!]! @relationship(type: "DIRECTED", properties: "Directed", direction: IN)
@@ -72,7 +72,7 @@ describe.each([
                 imdbId: Int @unique
             }
             
-            type ${typeActor} {
+            type ${typeActor} @node {
                 name: String!
                 id: Int @unique
                 movies: [${typeMovie}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
@@ -90,7 +90,7 @@ describe.each([
                 score: Int!
             }
         
-            type ${typePerson} implements Reviewer {
+            type ${typePerson} implements Reviewer @node {
                 name: String!
                 reputation: Int!
                 id: Int @unique
@@ -98,7 +98,7 @@ describe.each([
                 movies: [${typeMovie}!]! @relationship(type: "REVIEWED", direction: OUT, properties: "Review")
             }
             
-            type ${typeInfluencer} implements Reviewer {
+            type ${typeInfluencer} implements Reviewer @node {
                 reputation: Int!
                 url: String!
                 reviewerId: Int
