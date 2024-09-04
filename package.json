@@ -34,7 +34,7 @@
         "eslint-import-resolver-typescript": "3.6.3",
         "eslint-plugin-eslint-comments": "3.2.0",
         "eslint-plugin-import": "2.30.0",
-        "eslint-plugin-jest": "28.8.2",
+        "eslint-plugin-jest": "28.8.3",
         "eslint-plugin-jsx-a11y": "6.9.0",
         "eslint-plugin-react": "7.35.2",
         "eslint-plugin-simple-import-sort": "12.1.1",
