@@ -25,7 +25,7 @@ import { Neo4jGraphQL } from "../../../src";
 describe("609", () => {
     test("@deprecated directive should remain in output", async () => {
         const typeDefs = gql`
-            type Deprecated {
+            type Deprecated @node {
                 deprecatedField: String @deprecated
             }
         `;

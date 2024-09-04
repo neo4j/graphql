@@ -18,14 +18,14 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Query Direction", () => {
     test("DEFAULT_UNDIRECTED", async () => {
         const typeDefs = gql`
-            type User {
+            type User @node {
                 name: String!
                 friends: [User!]!
                     @relationship(type: "FRIENDS_WITH", direction: OUT, queryDirection: DEFAULT_UNDIRECTED)
@@ -356,7 +356,7 @@ describe("Query Direction", () => {
 
     test("DIRECTED_ONLY", async () => {
         const typeDefs = gql`
-            type User {
+            type User @node {
                 name: String!
                 friends: [User!]! @relationship(type: "FRIENDS_WITH", direction: OUT, queryDirection: DIRECTED_ONLY)
             }
@@ -686,7 +686,7 @@ describe("Query Direction", () => {
 
     test("UNDIRECTED_ONLY", async () => {
         const typeDefs = gql`
-            type User {
+            type User @node {
                 name: String!
                 friends: [User!]! @relationship(type: "FRIENDS_WITH", direction: OUT, queryDirection: UNDIRECTED_ONLY)
             }

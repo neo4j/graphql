@@ -25,7 +25,7 @@ import { Neo4jGraphQL } from "../../../src";
 describe("Remove deprecated fields for aggregations", () => {
     test("Top Level Aggregations", async () => {
         const typeDefs = gql`
-            type Movie {
+            type Movie @node {
                 id: ID
                 isbn: String!
                 title: String
@@ -376,7 +376,7 @@ describe("Remove deprecated fields for aggregations", () => {
 
     test("Where Level Aggregations", async () => {
         const typeDefs = gql`
-            type User {
+            type User @node {
                 someId: ID
                 someString: String
                 someFloat: Float
@@ -389,7 +389,7 @@ describe("Remove deprecated fields for aggregations", () => {
                 someDuration: Duration
             }
 
-            type Post {
+            type Post @node {
                 title: String
                 likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }

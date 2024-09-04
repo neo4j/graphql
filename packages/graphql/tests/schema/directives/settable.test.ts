@@ -32,7 +32,7 @@ describe("@settable", () => {
 
     test("Disable create fields", async () => {
         const typeDefs = gql`
-            type Movie @query(aggregate: true) {
+            type Movie @query(aggregate: true) @node {
                 title: String!
                 description: String @settable(onCreate: false, onUpdate: true)
             }
@@ -195,7 +195,7 @@ describe("@settable", () => {
 
     test("Disable update fields", async () => {
         const typeDefs = gql`
-            type Movie @query(aggregate: true) {
+            type Movie @query(aggregate: true) @node {
                 title: String!
                 description: String @settable(onCreate: true, onUpdate: false)
             }
@@ -358,7 +358,7 @@ describe("@settable", () => {
 
     test("Disable create and update fields", async () => {
         const typeDefs = gql`
-            type Movie @query(aggregate: true) {
+            type Movie @query(aggregate: true) @node {
                 title: String!
                 description: String @settable(onCreate: false, onUpdate: false)
             }
@@ -586,12 +586,12 @@ describe("@settable", () => {
     describe("Relationships to a concrete type", () => {
         test("Prevent relationship field creation", async () => {
             const typeDefs = gql`
-                type Movie @query(aggregate: true) {
+                type Movie @query(aggregate: true) @node {
                     title: String!
                     description: String
                 }
 
-                type Actor @query(aggregate: true) {
+                type Actor @query(aggregate: true) @node {
                     name: String!
                     actedIn: [Movie!]!
                         @relationship(type: "ACTED_IN", direction: OUT)
@@ -1040,12 +1040,12 @@ describe("@settable", () => {
 
         test("Prevent relationship field update", async () => {
             const typeDefs = gql`
-                type Movie @query(aggregate: true) {
+                type Movie @query(aggregate: true) @node {
                     title: String!
                     description: String
                 }
 
-                type Actor @query(aggregate: true) {
+                type Actor @query(aggregate: true) @node {
                     name: String!
                     actedIn: [Movie!]!
                         @relationship(type: "ACTED_IN", direction: OUT)
@@ -1486,13 +1486,13 @@ describe("@settable", () => {
 
         test("Prevent update on nested relationships", async () => {
             const typeDefs = gql`
-                type Movie @query(aggregate: true) {
+                type Movie @query(aggregate: true) @node {
                     title: String!
                     description: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type Actor @query(aggregate: true) {
+                type Actor @query(aggregate: true) @node {
                     name: String!
                     actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT) @settable(onUpdate: false)
                 }
@@ -2114,13 +2114,13 @@ describe("@settable", () => {
 
         test("Prevent create on nested relationships", async () => {
             const typeDefs = gql`
-                type Movie @query(aggregate: true) {
+                type Movie @query(aggregate: true) @node {
                     title: String!
                     description: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type Actor @query(aggregate: true) {
+                type Actor @query(aggregate: true) @node {
                     name: String!
                     actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT) @settable(onCreate: false)
                 }
@@ -2751,19 +2751,19 @@ describe("@settable", () => {
     describe("Relationships to a union type", () => {
         test("Prevent relationship field creation", async () => {
             const typeDefs = gql`
-                type Movie @query(aggregate: true) {
+                type Movie @query(aggregate: true) @node {
                     title: String!
                     description: String
                 }
 
-                type Series @query(aggregate: true) {
+                type Series @query(aggregate: true) @node {
                     name: String!
                     description: String
                 }
 
                 union Production = Movie | Series
 
-                type Actor @query(aggregate: true) {
+                type Actor @query(aggregate: true) @node {
                     name: String!
                     actedIn: [Production!]!
                         @relationship(type: "ACTED_IN", direction: OUT)
@@ -3280,19 +3280,19 @@ describe("@settable", () => {
 
         test("Prevent relationship field update", async () => {
             const typeDefs = gql`
-                type Movie @query(aggregate: true) {
+                type Movie @query(aggregate: true) @node {
                     title: String!
                     description: String
                 }
 
-                type Series @query(aggregate: true) {
+                type Series @query(aggregate: true) @node {
                     name: String!
                     description: String
                 }
 
                 union Production = Movie | Series
 
-                type Actor @query(aggregate: true) {
+                type Actor @query(aggregate: true) @node {
                     name: String!
                     actedIn: [Production!]!
                         @relationship(type: "ACTED_IN", direction: OUT)
@@ -3793,20 +3793,20 @@ describe("@settable", () => {
 
         test("Prevent update on nested relationships", async () => {
             const typeDefs = gql`
-                type Movie @query(aggregate: true) {
+                type Movie @query(aggregate: true) @node {
                     title: String!
                     description: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type Series @query(aggregate: true) {
+                type Series @query(aggregate: true) @node {
                     name: String!
                     description: String
                 }
 
                 union Production = Movie | Series
 
-                type Actor @query(aggregate: true) {
+                type Actor @query(aggregate: true) @node {
                     name: String!
                     actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT) @settable(onUpdate: false)
                 }
@@ -4488,20 +4488,20 @@ describe("@settable", () => {
 
         test("Prevent create on nested relationships", async () => {
             const typeDefs = gql`
-                type Movie @query(aggregate: true) {
+                type Movie @query(aggregate: true) @node {
                     title: String!
                     description: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type Series @query(aggregate: true) {
+                type Series @query(aggregate: true) @node {
                     name: String!
                     description: String
                 }
 
                 union Production = Movie | Series
 
-                type Actor @query(aggregate: true) {
+                type Actor @query(aggregate: true) @node {
                     name: String!
                     actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT) @settable(onCreate: false)
                 }
@@ -5206,17 +5206,17 @@ describe("@settable", () => {
                     description: String
                 }
 
-                type Movie implements Production @query(aggregate: true) {
+                type Movie implements Production @query(aggregate: true) @node {
                     title: String!
                     description: String
                 }
 
-                type Series implements Production @query(aggregate: true) {
+                type Series implements Production @query(aggregate: true) @node {
                     title: String!
                     description: String
                 }
 
-                type Actor @query(aggregate: true) {
+                type Actor @query(aggregate: true) @node {
                     name: String!
                     actedIn: [Production!]!
                         @relationship(type: "ACTED_IN", direction: OUT)
@@ -5841,17 +5841,17 @@ describe("@settable", () => {
                     description: String
                 }
 
-                type Movie implements Production @query(aggregate: true) {
+                type Movie implements Production @query(aggregate: true) @node {
                     title: String!
                     description: String
                 }
 
-                type Series implements Production @query(aggregate: true) {
+                type Series implements Production @query(aggregate: true) @node {
                     title: String!
                     description: String
                 }
 
-                type Actor @query(aggregate: true) {
+                type Actor @query(aggregate: true) @node {
                     name: String!
                     actedIn: [Production!]!
                         @relationship(type: "ACTED_IN", direction: OUT)
@@ -6464,19 +6464,19 @@ describe("@settable", () => {
                     actors: [Actor!]! @declareRelationship
                 }
 
-                type Movie implements Production @query(aggregate: true) {
+                type Movie implements Production @query(aggregate: true) @node {
                     title: String!
                     description: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type Series implements Production @query(aggregate: true) {
+                type Series implements Production @query(aggregate: true) @node {
                     title: String!
                     description: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type Actor @query(aggregate: true) {
+                type Actor @query(aggregate: true) @node {
                     name: String!
                     actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT) @settable(onUpdate: false)
                 }
@@ -7518,19 +7518,19 @@ describe("@settable", () => {
                     actors: [Actor!]! @declareRelationship
                 }
 
-                type Movie implements Production @query(aggregate: true) {
+                type Movie implements Production @query(aggregate: true) @node {
                     title: String!
                     description: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type Series implements Production @query(aggregate: true) {
+                type Series implements Production @query(aggregate: true) @node {
                     title: String!
                     description: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type Actor @query(aggregate: true) {
+                type Actor @query(aggregate: true) @node {
                     name: String!
                     actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT) @settable(onCreate: false)
                 }

@@ -35,7 +35,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
                 info: String!
             }
 
-            type Movie implements IProduct {
+            type Movie implements IProduct @node {
                 id: String!
 
                 name: String!
@@ -43,7 +43,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
                 info: String! @customResolver(requires: "id name")
             }
 
-            type Genre {
+            type Genre @node {
                 name: String! @unique
                 product: [IProduct!]! @relationship(type: "HAS_GENRE", direction: IN)
             }
@@ -1081,7 +1081,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
                 info: String!
             }
 
-            type Movie implements IProduct {
+            type Movie implements IProduct @node {
                 id: String!
 
                 name: String!
@@ -1089,7 +1089,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
                 info: String! @customResolver(requires: "id name")
             }
 
-            type Genre {
+            type Genre @node {
                 name: String! @unique
                 product: [IProduct!]! @relationship(type: "HAS_GENRE", direction: IN)
             }
@@ -2238,7 +2238,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
                 info: String!
             }
 
-            type Movie implements IProduct {
+            type Movie implements IProduct @node {
                 id: String!
 
                 name: String!
@@ -2246,7 +2246,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
                 info: String! @customResolver(requires: "id name")
             }
 
-            type Series implements IProduct {
+            type Series implements IProduct @node {
                 id: String!
 
                 name: String!
@@ -2254,7 +2254,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
                 info: String!
             }
 
-            type Genre {
+            type Genre @node {
                 name: String! @unique
                 product: [IProduct!]! @relationship(type: "HAS_GENRE", direction: IN)
             }

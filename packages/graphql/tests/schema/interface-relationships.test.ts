@@ -29,12 +29,12 @@ describe("Interface Relationships", () => {
                 title: String!
             }
 
-            type Movie implements Production {
+            type Movie implements Production @node {
                 title: String!
                 runtime: Int!
             }
 
-            type Series implements Production {
+            type Series implements Production @node {
                 title: String!
                 episodes: Int!
             }
@@ -43,7 +43,7 @@ describe("Interface Relationships", () => {
                 screenTime: Int!
             }
 
-            type Actor {
+            type Actor @node {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
@@ -705,7 +705,7 @@ describe("Interface Relationships", () => {
 
     test("Interface Relationships - multiple - same relationship implementation", async () => {
         const typeDefs = gql`
-            type Episode {
+            type Episode @node {
                 runtime: Int!
                 series: Series! @relationship(type: "HAS_EPISODE", direction: IN)
             }
@@ -715,13 +715,13 @@ describe("Interface Relationships", () => {
                 actors: [Actor!]! @declareRelationship
             }
 
-            type Movie implements Production {
+            type Movie implements Production @node {
                 title: String!
                 runtime: Int!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type Series implements Production {
+            type Series implements Production @node {
                 title: String!
                 episodeCount: Int!
                 episodes: [Episode!]! @relationship(type: "HAS_EPISODE", direction: OUT)
@@ -732,7 +732,7 @@ describe("Interface Relationships", () => {
                 screenTime: Int!
             }
 
-            type Actor {
+            type Actor @node {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
@@ -2334,7 +2334,7 @@ describe("Interface Relationships", () => {
 
     test("Interface Relationships - multiple - different relationship implementations", async () => {
         const typeDefs = gql`
-            type Episode {
+            type Episode @node {
                 runtime: Int!
                 series: Series! @relationship(type: "HAS_EPISODE", direction: IN)
             }
@@ -2344,13 +2344,13 @@ describe("Interface Relationships", () => {
                 actors: [Actor!]! @declareRelationship
             }
 
-            type Movie implements Production {
+            type Movie implements Production @node {
                 title: String!
                 runtime: Int!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type Series implements Production {
+            type Series implements Production @node {
                 title: String!
                 episodeCount: Int!
                 episodes: [Episode!]! @relationship(type: "HAS_EPISODE", direction: OUT)
@@ -2365,7 +2365,7 @@ describe("Interface Relationships", () => {
                 seasons: Int!
             }
 
-            type Actor {
+            type Actor @node {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
@@ -4062,25 +4062,25 @@ describe("Interface Relationships", () => {
                 field2: String
             }
 
-            type Type1Interface1 implements Interface1 {
+            type Type1Interface1 implements Interface1 @node {
                 field1: String!
                 interface2: [Interface2!]! @relationship(type: "INTERFACE_TWO", direction: OUT)
             }
 
-            type Type2Interface1 implements Interface1 {
+            type Type2Interface1 implements Interface1 @node {
                 field1: String!
                 interface2: [Interface2!]! @relationship(type: "INTERFACE_TWO", direction: OUT)
             }
 
-            type Type1Interface2 implements Interface2 {
+            type Type1Interface2 implements Interface2 @node {
                 field2: String!
             }
 
-            type Type2Interface2 implements Interface2 {
+            type Type2Interface2 implements Interface2 @node {
                 field2: String!
             }
 
-            type Type1 {
+            type Type1 @node {
                 field1: String!
                 interface1: [Interface1!]! @relationship(type: "INTERFACE_ONE", direction: OUT)
             }
@@ -5334,25 +5334,25 @@ describe("Interface Relationships", () => {
                 field2: String
             }
 
-            type Type1Interface1 implements Interface1 {
+            type Type1Interface1 implements Interface1 @node {
                 field1: String!
                 interface2: [Interface2!]! @relationship(type: "INTERFACE_TWO", direction: OUT, properties: "Props")
             }
 
-            type Type2Interface1 implements Interface1 {
+            type Type2Interface1 implements Interface1 @node {
                 field1: String!
                 interface2: [Interface2!]! @relationship(type: "INTERFACE_TWO", direction: OUT, properties: "Props")
             }
 
-            type Type1Interface2 implements Interface2 {
+            type Type1Interface2 implements Interface2 @node {
                 field2: String!
             }
 
-            type Type2Interface2 implements Interface2 {
+            type Type2Interface2 implements Interface2 @node {
                 field2: String!
             }
 
-            type Type1 {
+            type Type1 @node {
                 field1: String!
                 interface1: [Interface1!]! @relationship(type: "INTERFACE_ONE", direction: OUT)
             }
@@ -6758,27 +6758,27 @@ describe("Interface Relationships", () => {
                 field2: String
             }
 
-            type Type1Interface1 implements Interface1 {
+            type Type1Interface1 implements Interface1 @node {
                 field1: String!
                 interface2: [Interface2!]!
                     @relationship(type: "INTERFACE_TWO", direction: OUT, properties: "Type1Props")
             }
 
-            type Type2Interface1 implements Interface1 {
+            type Type2Interface1 implements Interface1 @node {
                 field1: String!
                 interface2: [Interface2!]!
                     @relationship(type: "INTERFACE_TWO", direction: OUT, properties: "Type2Props")
             }
 
-            type Type1Interface2 implements Interface2 {
+            type Type1Interface2 implements Interface2 @node {
                 field2: String!
             }
 
-            type Type2Interface2 implements Interface2 {
+            type Type2Interface2 implements Interface2 @node {
                 field2: String!
             }
 
-            type Type1 {
+            type Type1 @node {
                 field1: String!
                 interface1: [Interface1!]! @relationship(type: "INTERFACE_ONE", direction: OUT)
             }
@@ -8271,21 +8271,21 @@ describe("Interface Relationships", () => {
                 creator: User! @declareRelationship
             }
 
-            type Comment implements Content {
+            type Comment implements Content @node {
                 id: ID
                 content: String
                 creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
                 post: Post! @relationship(type: "HAS_COMMENT", direction: IN)
             }
 
-            type Post implements Content {
+            type Post implements Content @node {
                 id: ID
                 content: String
                 creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
                 comments: [Comment!]! @relationship(type: "HAS_COMMENT", direction: OUT)
             }
 
-            type User {
+            type User @node {
                 id: ID
                 name: String
                 content: [Content!]! @relationship(type: "HAS_CONTENT", direction: OUT)
@@ -9606,13 +9606,13 @@ describe("Interface Relationships", () => {
                 actors: [Actor!]!
             }
 
-            type Movie implements Production & Show {
+            type Movie implements Production & Show @node {
                 title: String!
                 runtime: Int!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type Series implements Production & Show {
+            type Series implements Production & Show @node {
                 title: String!
                 episodeCount: Int!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "StarredIn")
@@ -9626,7 +9626,7 @@ describe("Interface Relationships", () => {
                 episodeNr: Int!
             }
 
-            type Actor {
+            type Actor @node {
                 name: String!
                 actedIn: [Show!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }

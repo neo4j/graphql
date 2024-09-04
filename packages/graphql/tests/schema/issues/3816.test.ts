@@ -25,12 +25,12 @@ import { Neo4jGraphQL } from "../../../src";
 describe("https://github.com/neo4j/graphql/issues/3816", () => {
     test("Combination of nested operations in reported issue", async () => {
         const typeDefs = gql`
-            type Movie {
+            type Movie @node {
                 name: String!
                 genre: Genre! @relationship(type: "HAS_GENRE", direction: OUT, nestedOperations: [CONNECT, DISCONNECT])
             }
 
-            type Genre {
+            type Genre @node {
                 name: String!
                 movies: [Movie!]! @relationship(type: "HAS_GENRE", direction: IN)
             }
@@ -567,12 +567,12 @@ describe("https://github.com/neo4j/graphql/issues/3816", () => {
 
     test("No nested operations in one type", async () => {
         const typeDefs = gql`
-            type Movie {
+            type Movie @node {
                 name: String!
                 genre: Genre! @relationship(type: "HAS_GENRE", direction: OUT, nestedOperations: [])
             }
 
-            type Genre {
+            type Genre @node {
                 name: String!
                 movies: [Movie!]! @relationship(type: "HAS_GENRE", direction: IN)
             }

@@ -31,7 +31,7 @@ describe("Interfaces", () => {
                 customQuery: [Movie]
             }
 
-            type Movie implements MovieNode {
+            type Movie implements MovieNode @node {
                 id: ID
                 nodes: [MovieNode]
                 movies: [Movie!]! @relationship(type: "HAS_MOVIE", direction: OUT)
@@ -456,7 +456,7 @@ describe("Interfaces", () => {
                 customQuery: [Movie]
             }
 
-            type Movie implements MovieNode {
+            type Movie implements MovieNode @node{
                 id: ID
                 nodes: [MovieNode]
                 movies: [Movie!]! @relationship(type: "HAS_MOVIE", direction: OUT)

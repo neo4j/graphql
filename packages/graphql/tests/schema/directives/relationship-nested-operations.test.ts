@@ -27,11 +27,11 @@ describe("Relationship nested operations", () => {
     describe("Related to a concrete type", () => {
         test("Should not generate UpdateFieldInput input with no nested operations", async () => {
             const typeDefs = gql`
-                type Person {
+                type Person @node {
                     name: String
                 }
 
-                type Movie {
+                type Movie @node {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [])
                 }
@@ -384,11 +384,11 @@ describe("Relationship nested operations", () => {
 
         test("Single relationship with nested operation CREATE specified", async () => {
             const typeDefs = gql`
-                type Person {
+                type Person @node {
                     name: String
                 }
 
-                type Movie {
+                type Movie @node {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CREATE])
                 }
@@ -755,11 +755,11 @@ describe("Relationship nested operations", () => {
 
         test("Single relationship with nested operation CONNECT specified", async () => {
             const typeDefs = gql`
-                type Person {
+                type Person @node {
                     name: String
                 }
 
-                type Movie {
+                type Movie @node {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CONNECT])
                 }
@@ -1134,11 +1134,11 @@ describe("Relationship nested operations", () => {
 
         test("Single relationship with nested operation UPDATE specified", async () => {
             const typeDefs = gql`
-                type Person {
+                type Person @node {
                     name: String
                 }
 
-                type Movie {
+                type Movie @node {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [UPDATE])
                 }
@@ -1496,11 +1496,11 @@ describe("Relationship nested operations", () => {
 
         test("Single relationship with nested operation DELETE specified", async () => {
             const typeDefs = gql`
-                type Person {
+                type Person @node {
                     name: String
                 }
 
-                type Movie {
+                type Movie @node {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [DELETE])
                 }
@@ -1862,11 +1862,11 @@ describe("Relationship nested operations", () => {
 
         test("Single relationship with nested operation DISCONNECT specified", async () => {
             const typeDefs = gql`
-                type Person {
+                type Person @node {
                     name: String
                 }
 
-                type Movie {
+                type Movie @node {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [DISCONNECT])
                 }
@@ -2228,11 +2228,11 @@ describe("Relationship nested operations", () => {
 
         test("Should not generate any nested operations if only CONNECT_OR_CREATE is specified and the related type does not have a unique field", async () => {
             const typeDefs = gql`
-                type Person {
+                type Person @node {
                     name: String
                 }
 
-                type Movie {
+                type Movie @node {
                     id: ID
                     actors: [Person!]!
                         @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CONNECT_OR_CREATE])
@@ -2581,12 +2581,12 @@ describe("Relationship nested operations", () => {
 
         test("Single relationship to type with unique field with nested operation CONNECT_OR_CREATE specified", async () => {
             const typeDefs = gql`
-                type Person {
+                type Person @node {
                     id: ID! @id @unique
                     name: String
                 }
 
-                type Movie {
+                type Movie @node {
                     id: ID
                     actors: [Person!]!
                         @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CONNECT_OR_CREATE])
@@ -2986,11 +2986,11 @@ describe("Relationship nested operations", () => {
 
         test("Two relationships with nested operations specified on one", async () => {
             const typeDefs = gql`
-                type Person {
+                type Person @node {
                     name: String
                 }
 
-                type Movie {
+                type Movie @node {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN)
                     producers: [Person!]! @relationship(type: "PRODUCED", direction: IN, nestedOperations: [DISCONNECT])
@@ -3527,11 +3527,11 @@ describe("Relationship nested operations", () => {
 
         test("Two relationships with nested operations specified on both", async () => {
             const typeDefs = gql`
-                type Person {
+                type Person @node {
                     name: String
                 }
 
-                type Movie {
+                type Movie @node {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CREATE])
                     producers: [Person!]! @relationship(type: "PRODUCED", direction: IN, nestedOperations: [DISCONNECT])
@@ -4032,17 +4032,17 @@ describe("Relationship nested operations", () => {
     describe("Related to a union type", () => {
         test("Should not generate UpdateFieldInput input with no nested operations", async () => {
             const typeDefs = gql`
-                type PersonOne {
+                type PersonOne @node {
                     name: String
                 }
 
-                type PersonTwo {
+                type PersonTwo @node {
                     nameTwo: String
                 }
 
                 union Person = PersonOne | PersonTwo
 
-                type Movie {
+                type Movie @node {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [])
                 }
@@ -4430,17 +4430,17 @@ describe("Relationship nested operations", () => {
 
         test("Single relationship with nested operation CREATE specified", async () => {
             const typeDefs = gql`
-                type PersonOne {
+                type PersonOne @node {
                     name: String
                 }
 
-                type PersonTwo {
+                type PersonTwo @node {
                     nameTwo: String
                 }
 
                 union Person = PersonOne | PersonTwo
 
-                type Movie {
+                type Movie @node {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CREATE])
                 }
@@ -4870,17 +4870,17 @@ describe("Relationship nested operations", () => {
 
         test("Single relationship with nested operation CONNECT specified", async () => {
             const typeDefs = gql`
-                type PersonOne {
+                type PersonOne @node {
                     name: String
                 }
 
-                type PersonTwo {
+                type PersonTwo @node {
                     nameTwo: String
                 }
 
                 union Person = PersonOne | PersonTwo
 
-                type Movie {
+                type Movie @node {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CONNECT])
                 }
@@ -5318,17 +5318,17 @@ describe("Relationship nested operations", () => {
 
         test("Single relationship with nested operation UPDATE specified", async () => {
             const typeDefs = gql`
-                type PersonOne {
+                type PersonOne @node {
                     name: String
                 }
 
-                type PersonTwo {
+                type PersonTwo @node {
                     nameTwo: String
                 }
 
                 union Person = PersonOne | PersonTwo
 
-                type Movie {
+                type Movie @node {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [UPDATE])
                 }
@@ -5735,17 +5735,17 @@ describe("Relationship nested operations", () => {
 
         test("Single relationship with nested operation DELETE specified", async () => {
             const typeDefs = gql`
-                type PersonOne {
+                type PersonOne @node {
                     name: String
                 }
 
-                type PersonTwo {
+                type PersonTwo @node {
                     nameTwo: String
                 }
 
                 union Person = PersonOne | PersonTwo
 
-                type Movie {
+                type Movie @node {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [DELETE])
                 }
@@ -6161,17 +6161,17 @@ describe("Relationship nested operations", () => {
 
         test("Single relationship with nested operation DISCONNECT specified", async () => {
             const typeDefs = gql`
-                type PersonOne {
+                type PersonOne @node {
                     name: String
                 }
 
-                type PersonTwo {
+                type PersonTwo @node {
                     nameTwo: String
                 }
 
                 union Person = PersonOne | PersonTwo
 
-                type Movie {
+                type Movie @node {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [DISCONNECT])
                 }
@@ -6587,17 +6587,17 @@ describe("Relationship nested operations", () => {
 
         test("Should not generate any nested operations if only CONNECT_OR_CREATE is specified and the related type does not have a unique field", async () => {
             const typeDefs = gql`
-                type PersonOne {
+                type PersonOne @node {
                     name: String
                 }
 
-                type PersonTwo {
+                type PersonTwo @node {
                     nameTwo: String
                 }
 
                 union Person = PersonOne | PersonTwo
 
-                type Movie {
+                type Movie @node {
                     id: ID
                     actors: [Person!]!
                         @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CONNECT_OR_CREATE])
@@ -6981,19 +6981,19 @@ describe("Relationship nested operations", () => {
 
         test("Single relationship to type with unique field with nested operation CONNECT_OR_CREATE specified", async () => {
             const typeDefs = gql`
-                type PersonOne {
+                type PersonOne @node {
                     id: ID! @id @unique
                     name: String
                 }
 
-                type PersonTwo {
+                type PersonTwo @node {
                     id: ID! @id @unique
                     nameTwo: String
                 }
 
                 union Person = PersonOne | PersonTwo
 
-                type Movie {
+                type Movie @node {
                     id: ID
                     actors: [Person!]!
                         @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CONNECT_OR_CREATE])
@@ -7484,17 +7484,17 @@ describe("Relationship nested operations", () => {
 
         test("Two relationships with nested operations specified on one", async () => {
             const typeDefs = gql`
-                type PersonOne {
+                type PersonOne @node {
                     name: String
                 }
 
-                type PersonTwo {
+                type PersonTwo @node {
                     nameTwo: String
                 }
 
                 union Person = PersonOne | PersonTwo
 
-                type Movie {
+                type Movie @node {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN)
                     producers: [Person!]! @relationship(type: "PRODUCED", direction: IN, nestedOperations: [DISCONNECT])
@@ -8094,17 +8094,17 @@ describe("Relationship nested operations", () => {
 
         test("Two relationships with nested operations specified on both", async () => {
             const typeDefs = gql`
-                type PersonOne {
+                type PersonOne @node {
                     name: String
                 }
 
-                type PersonTwo {
+                type PersonTwo @node {
                     nameTwo: String
                 }
 
                 union Person = PersonOne | PersonTwo
 
-                type Movie {
+                type Movie @node {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CREATE])
                     producers: [Person!]! @relationship(type: "PRODUCED", direction: IN, nestedOperations: [DISCONNECT])
@@ -8636,16 +8636,16 @@ describe("Relationship nested operations", () => {
                     name: String
                 }
 
-                type PersonOne implements Person {
+                type PersonOne implements Person @node {
                     name: String
                     someExtraProp: [Int!]!
                 }
 
-                type PersonTwo implements Person {
+                type PersonTwo implements Person @node {
                     name: String
                 }
 
-                type Movie {
+                type Movie @node {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [])
                 }
@@ -9148,16 +9148,16 @@ describe("Relationship nested operations", () => {
                     name: String
                 }
 
-                type PersonOne implements Person {
+                type PersonOne implements Person @node {
                     name: String
                     someExtraProp: [Int!]!
                 }
 
-                type PersonTwo implements Person {
+                type PersonTwo implements Person @node {
                     name: String
                 }
 
-                type Movie {
+                type Movie @node {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CREATE])
                 }
@@ -9679,16 +9679,16 @@ describe("Relationship nested operations", () => {
                     name: String
                 }
 
-                type PersonOne implements Person {
+                type PersonOne implements Person @node {
                     name: String
                     someExtraProp: [Int!]!
                 }
 
-                type PersonTwo implements Person {
+                type PersonTwo implements Person @node {
                     name: String
                 }
 
-                type Movie {
+                type Movie @node {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CONNECT])
                 }
@@ -10209,16 +10209,16 @@ describe("Relationship nested operations", () => {
                     name: String
                 }
 
-                type PersonOne implements Person {
+                type PersonOne implements Person @node {
                     name: String
                     someExtraProp: [Int!]!
                 }
 
-                type PersonTwo implements Person {
+                type PersonTwo implements Person @node {
                     name: String
                 }
 
-                type Movie {
+                type Movie @node {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [UPDATE])
                 }
@@ -10730,16 +10730,16 @@ describe("Relationship nested operations", () => {
                     name: String
                 }
 
-                type PersonOne implements Person {
+                type PersonOne implements Person @node {
                     name: String
                     someExtraProp: [Int!]!
                 }
 
-                type PersonTwo implements Person {
+                type PersonTwo implements Person @node {
                     name: String
                 }
 
-                type Movie {
+                type Movie @node {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [DELETE])
                 }
@@ -11251,16 +11251,16 @@ describe("Relationship nested operations", () => {
                     name: String
                 }
 
-                type PersonOne implements Person {
+                type PersonOne implements Person @node {
                     name: String
                     someExtraProp: [Int!]!
                 }
 
-                type PersonTwo implements Person {
+                type PersonTwo implements Person @node {
                     name: String
                 }
 
-                type Movie {
+                type Movie @node {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [DISCONNECT])
                 }
@@ -11772,16 +11772,16 @@ describe("Relationship nested operations", () => {
                     name: String
                 }
 
-                type PersonOne implements Person {
+                type PersonOne implements Person @node {
                     name: String
                     someExtraProp: [Int!]!
                 }
 
-                type PersonTwo implements Person {
+                type PersonTwo implements Person @node {
                     name: String
                 }
 
-                type Movie {
+                type Movie @node {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN)
                     producers: [Person!]! @relationship(type: "PRODUCED", direction: IN, nestedOperations: [DISCONNECT])
@@ -12473,16 +12473,16 @@ describe("Relationship nested operations", () => {
                     name: String
                 }
 
-                type PersonOne implements Person {
+                type PersonOne implements Person @node {
                     name: String
                     someExtraProp: [Int!]!
                 }
 
-                type PersonTwo implements Person {
+                type PersonTwo implements Person @node {
                     name: String
                 }
 
-                type Movie {
+                type Movie @node {
                     id: ID
                     actors: [Person!]!
                         @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CREATE, DELETE])

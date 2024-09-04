@@ -18,14 +18,14 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("https://github.com/neo4j/graphql/issues/2187", () => {
     test("Deprecated directive should be present on genres in generated schema", async () => {
         const typeDefs = gql`
-            type Movie {
+            type Movie @node {
                 title: String @deprecated(reason: "Do not use title")
                 year: Int
                 imdbRating: Float
@@ -34,7 +34,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
                     @deprecated(reason: "Do not use genre")
             }
 
-            type Genre {
+            type Genre @node {
                 name: String
                 movies: [Movie!]! @relationship(type: "IN_GENRE", direction: IN)
             }

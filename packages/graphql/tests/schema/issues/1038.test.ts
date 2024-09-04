@@ -18,19 +18,19 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("https://github.com/neo4j/graphql/issues/1038", () => {
     test("AWSAccount and DNSZone should be cased correctly", async () => {
         const typeDefs = gql`
-            type AWSAccount {
+            type AWSAccount @node {
                 code: String
                 accountName: String
             }
 
-            type DNSZone {
+            type DNSZone @node {
                 awsId: String
                 zoneType: String
             }

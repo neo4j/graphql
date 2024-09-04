@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("@private directive", () => {
@@ -30,7 +30,7 @@ describe("@private directive", () => {
                 private: String @private
             }
 
-            type User implements UserInterface {
+            type User implements UserInterface @node {
                 id: ID
                 password: String @private
                 private: String @private
@@ -246,7 +246,7 @@ describe("@private directive", () => {
                 private: String @private
             }
 
-            type User implements UserInterface {
+            type User implements UserInterface @node {
                 id: ID
                 password: String @private
                 private: String

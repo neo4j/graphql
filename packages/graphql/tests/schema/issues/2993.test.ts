@@ -30,7 +30,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
                 userName: String!
             }
 
-            type User implements Profile {
+            type User implements Profile @node {
                 id: ID! @id
                 userName: String!
                 following: [Profile!]! @relationship(type: "FOLLOWS", direction: OUT, properties: "FOLLOWS")

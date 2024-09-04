@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Unions", () => {
@@ -27,11 +27,11 @@ describe("Unions", () => {
         const typeDefs = gql`
             union Search = Movie | Genre
 
-            type Genre {
+            type Genre @node {
                 id: ID
             }
 
-            type Movie {
+            type Movie @node {
                 id: ID
                 search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
                 searchNoDirective: Search

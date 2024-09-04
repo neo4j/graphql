@@ -18,24 +18,24 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("https://github.com/neo4j/graphql/issues/872", () => {
     test("a single type should be created for multiple actorOnCreate", async () => {
         const typeDefs = gql`
-            type Movie {
+            type Movie @node {
                 title: String!
                 id: ID! @id @unique
             }
 
-            type Actor {
+            type Actor @node {
                 name: String!
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type Actor2 {
+            type Actor2 @node {
                 name: String!
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }

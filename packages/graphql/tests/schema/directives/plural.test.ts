@@ -25,11 +25,11 @@ import { Neo4jGraphQL } from "../../../src";
 describe("Plural option", () => {
     test("Partial types with plural", async () => {
         const typeDefs = gql`
-            type Tech @plural(value: "Techs") {
+            type Tech @plural(value: "Techs") @node {
                 name: String
             }
 
-            type Tech {
+            type Tech @node {
                 value: String
             }
         `;
@@ -193,11 +193,11 @@ describe("Plural option", () => {
 
     test("Partial types with same plural in both", async () => {
         const typeDefs = gql`
-            type Tech @plural(value: "Techs") {
+            type Tech @plural(value: "Techs") @node {
                 name: String
             }
 
-            type Tech @plural(value: "Techs") {
+            type Tech @plural(value: "Techs") @node {
                 value: String
             }
         `;
@@ -361,11 +361,11 @@ describe("Plural option", () => {
 
     test("Partial types with different plural", async () => {
         const typeDefs = gql`
-            type Tech @plural(value: "Techs") {
+            type Tech @plural(value: "Techs") @node {
                 name: String
             }
 
-            type Tech @plural(value: "Technologies") {
+            type Tech @plural(value: "Technologies") @node {
                 value: String
             }
         `;
@@ -529,11 +529,11 @@ describe("Plural option", () => {
 
     test("Collision between Type and plural", async () => {
         const typeDefs = gql`
-            type Tech @plural(value: "Techs") {
+            type Tech @plural(value: "Techs") @node {
                 name: String
             }
 
-            type Techs {
+            type Techs @node {
                 value: String
             }
         `;
@@ -682,11 +682,11 @@ describe("Plural option", () => {
 
     test("Same plural on multiple nodes", async () => {
         const typeDefs = gql`
-            type Tech @plural(value: "Techs") {
+            type Tech @plural(value: "Techs") @node {
                 name: String
             }
 
-            type User @plural(value: "Techs") {
+            type User @plural(value: "Techs") @node {
                 value: String
             }
         `;
@@ -835,11 +835,11 @@ describe("Plural option", () => {
 
     test("Collision with pluralize", async () => {
         const typeDefs = gql`
-            type Tech @plural(value: "Users") {
+            type Tech @plural(value: "Users") @node {
                 name: String
             }
 
-            type User {
+            type User @node {
                 value: String
             }
         `;
@@ -988,11 +988,11 @@ describe("Plural option", () => {
 
     test("Type collision with pluralize", async () => {
         const typeDefs = gql`
-            type User {
+            type User @node {
                 name: String
             }
 
-            type Users {
+            type Users @node {
                 value: String
             }
         `;

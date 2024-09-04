@@ -18,14 +18,14 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("https://github.com/neo4j/graphql/issues/2981", () => {
     test("BookTranslatedTitleCreateFieldInput fields should not be of type List", async () => {
         const typeDefs = gql`
-            type Book {
+            type Book @node {
                 originalTitle: String!
                 translatedTitle: BookTitle @relationship(type: "TRANSLATED_BOOK_TITLE", direction: IN)
                 isbn: String!
@@ -33,12 +33,12 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
 
             union BookTitle = BookTitle_SV | BookTitle_EN
 
-            type BookTitle_SV {
+            type BookTitle_SV @node {
                 book: Book! @relationship(type: "TRANSLATED_BOOK_TITLE", direction: OUT)
                 value: String!
             }
 
-            type BookTitle_EN {
+            type BookTitle_EN @node {
                 book: Book! @relationship(type: "TRANSLATED_BOOK_TITLE", direction: OUT)
                 value: String!
             }

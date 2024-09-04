@@ -25,12 +25,12 @@ import { Neo4jGraphQL } from "../../../src";
 describe("Enums", () => {
     test("Enum Relationship Properties", async () => {
         const typeDefs = gql`
-            type Actor {
+            type Actor @node {
                 name: String!
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
-            type Movie {
+            type Movie @node {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }

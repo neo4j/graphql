@@ -18,14 +18,14 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Point", () => {
     test("Point", async () => {
         const typeDefs = gql`
-            type Movie {
+            type Movie @node {
                 filmedAt: Point!
             }
         `;
@@ -192,7 +192,7 @@ describe("Point", () => {
 
     test("CartesianPoint", async () => {
         const typeDefs = gql`
-            type Machine {
+            type Machine @node {
                 partLocation: CartesianPoint!
             }
         `;
@@ -358,7 +358,7 @@ describe("Point", () => {
 
     test("Points", async () => {
         const typeDefs = gql`
-            type Movie {
+            type Movie @node {
                 filmedAt: [Point!]!
             }
         `;
@@ -496,7 +496,7 @@ describe("Point", () => {
 
     test("CartesianPoints", async () => {
         const typeDefs = gql`
-            type Machine {
+            type Machine @node {
                 partLocations: [CartesianPoint!]!
             }
         `;

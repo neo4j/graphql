@@ -25,12 +25,12 @@ import { Neo4jGraphQL } from "../../src";
 describe("Connect Or Create", () => {
     test("Connect Or Create", async () => {
         const typeDefs = gql`
-            type Movie {
+            type Movie @node {
                 title: String!
                 isan: String! @unique
             }
 
-            type Actor {
+            type Actor @node {
                 name: String!
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -512,12 +512,12 @@ describe("Connect Or Create", () => {
 
     test("Connect Or Create with relation properties", async () => {
         const typeDefs = gql`
-            type Movie {
+            type Movie @node {
                 title: String!
                 isan: String! @unique
             }
 
-            type Actor {
+            type Actor @node {
                 name: String!
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }

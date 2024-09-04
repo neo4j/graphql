@@ -25,7 +25,7 @@ import { Neo4jGraphQL } from "../../src";
 describe("Algebraic", () => {
     test("Int fields should be extended with Increment/Decrement operators", async () => {
         const typeDefs = gql`
-            type Movie {
+            type Movie @node {
                 id: ID
                 viewers: Int!
             }
@@ -196,7 +196,7 @@ describe("Algebraic", () => {
 
     test("BigInt fields should be extended with Increment/Decrement operators", async () => {
         const typeDefs = gql`
-            type Movie {
+            type Movie @node {
                 id: ID
                 viewers: BigInt!
             }
@@ -372,7 +372,7 @@ describe("Algebraic", () => {
 
     test("Float fields should be extended with Add/Subtract/Multiply/Divide operators", async () => {
         const typeDefs = gql`
-            type Movie {
+            type Movie @node {
                 id: ID
                 viewers: Float!
             }
@@ -546,13 +546,13 @@ describe("Algebraic", () => {
 
     test("Operators should be presents in nested updates", async () => {
         const typeDefs = gql`
-            type Movie {
+            type Movie @node {
                 id: ID
                 viewers: Int!
                 directedBy: Director @relationship(type: "DIRECTS", direction: IN)
             }
 
-            type Director {
+            type Director @node {
                 lastName: String!
                 directs: [Movie!]! @relationship(type: "DIRECTS", direction: OUT)
             }
@@ -1136,13 +1136,13 @@ describe("Algebraic", () => {
                 viewers: Int!
             }
 
-            type Movie implements Production {
+            type Movie implements Production @node {
                 id: ID
                 viewers: Int!
                 workers: [Person!]! @relationship(type: "WORKED_IN", direction: IN)
             }
 
-            type Person {
+            type Person @node {
                 name: String!
                 worksInProduction: [Production!]! @relationship(type: "WORKED_IN", direction: OUT)
             }
@@ -1805,12 +1805,12 @@ describe("Algebraic", () => {
 
     test("Should be supported in Relationship properties", async () => {
         const typeDefs = gql`
-            type Person {
+            type Person @node {
                 name: String!
                 actedInMovies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            type Movie {
+            type Movie @node {
                 title: String!
                 actors: [Person!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
             }

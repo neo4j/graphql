@@ -28,7 +28,7 @@ describe("@populatedBy tests", () => {
         describe("Directive combinations", () => {
             test("PopulatedBy and default directives", async () => {
                 const typeDefs = gql`
-                    type Movie {
+                    type Movie @node {
                         id: ID
                         callback1: String!
                             @populatedBy(operations: [CREATE], callback: "callback1")
@@ -66,7 +66,7 @@ describe("@populatedBy tests", () => {
 
             test("PopulatedBy and id directives", async () => {
                 const typeDefs = gql`
-                    type Movie {
+                    type Movie @node {
                         id: ID
                         callback1: ID! @populatedBy(operations: [CREATE], callback: "callback1") @id
                     }
@@ -103,7 +103,7 @@ describe("@populatedBy tests", () => {
 
         test("PopulatedBy - existence", async () => {
             const typeDefs = gql`
-                type Movie {
+                type Movie @node {
                     id: ID
                     callback1: String! @populatedBy(operations: [CREATE], callback: "callback1")
                 }
@@ -133,7 +133,7 @@ describe("@populatedBy tests", () => {
             const callback3 = () => "random-string";
 
             const typeDefs = gql`
-                type Movie {
+                type Movie @node {
                     id: ID
                     callback1: String! @populatedBy(operations: [CREATE], callback: "callback1")
                     callback2: String! @populatedBy(operations: [UPDATE], callback: "callback2")
@@ -348,7 +348,7 @@ describe("@populatedBy tests", () => {
             const callback3 = () => "random-int";
 
             const typeDefs = gql`
-                type Movie {
+                type Movie @node {
                     id: ID
                     callback1: Int! @populatedBy(operations: [CREATE], callback: "callback1")
                     callback2: Int! @populatedBy(operations: [UPDATE], callback: "callback2")
@@ -559,7 +559,7 @@ describe("@populatedBy tests", () => {
         describe("Directive combinations", () => {
             test("PopulatedBy and default directives", async () => {
                 const typeDefs = gql`
-                    type Movie {
+                    type Movie @node {
                         id: ID
                         genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "RelProperties")
                     }
@@ -571,7 +571,7 @@ describe("@populatedBy tests", () => {
                             @default(value: "Test")
                     }
 
-                    type Genre {
+                    type Genre @node {
                         id: ID!
                     }
                 `;
@@ -606,7 +606,7 @@ describe("@populatedBy tests", () => {
 
             test("PopulatedBy and id directives", async () => {
                 const typeDefs = gql`
-                    type Movie {
+                    type Movie @node {
                         id: ID
                         genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "RelProperties")
                     }
@@ -616,7 +616,7 @@ describe("@populatedBy tests", () => {
                         callback1: ID! @populatedBy(operations: [CREATE], callback: "callback4") @id
                     }
 
-                    type Genre {
+                    type Genre @node {
                         id: ID!
                     }
                 `;
@@ -652,7 +652,7 @@ describe("@populatedBy tests", () => {
 
         test("PopulatedBy - existence", async () => {
             const typeDefs = gql`
-                type Movie {
+                type Movie @node {
                     id: ID
                     genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "RelProperties")
                 }
@@ -662,7 +662,7 @@ describe("@populatedBy tests", () => {
                     callback1: String! @populatedBy(operations: [CREATE], callback: "callback4")
                 }
 
-                type Genre {
+                type Genre @node {
                     id: ID!
                 }
             `;
@@ -696,7 +696,7 @@ describe("@populatedBy tests", () => {
             const callback3 = () => "random-string";
 
             const typeDefs = gql`
-                type Movie {
+                type Movie @node {
                     id: ID
                     genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "RelProperties")
                 }
@@ -708,7 +708,7 @@ describe("@populatedBy tests", () => {
                     callback3: String! @populatedBy(operations: [CREATE, UPDATE], callback: "callback3")
                 }
 
-                type Genre {
+                type Genre @node {
                     id: ID!
                 }
             `;
@@ -1300,7 +1300,7 @@ describe("@populatedBy tests", () => {
             const callback3 = () => "random-int";
 
             const typeDefs = gql`
-                type Movie {
+                type Movie @node {
                     id: ID
                     genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "RelProperties")
                 }
@@ -1312,7 +1312,7 @@ describe("@populatedBy tests", () => {
                     callback3: Int! @populatedBy(operations: [CREATE, UPDATE], callback: "callback3")
                 }
 
-                type Genre {
+                type Genre @node {
                     id: ID!
                 }
             `;

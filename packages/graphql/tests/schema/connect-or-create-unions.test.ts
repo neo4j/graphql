@@ -25,23 +25,23 @@ import { Neo4jGraphQL } from "../../src";
 describe("Connect Or Create", () => {
     test("With Unions", async () => {
         const typeDefs = gql`
-            type Movie {
+            type Movie @node {
                 title: String!
                 isan: String! @unique
             }
 
-            type Series {
+            type Series @node {
                 title: String!
                 isan: String! @unique
             }
 
             union Production = Movie | Series
 
-            type ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties  {
                 screenTime: Int!
             }
 
-            type Actor {
+            type Actor @node {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
