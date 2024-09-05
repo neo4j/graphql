@@ -23,12 +23,12 @@ import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-ut
 describe("https://github.com/neo4j/graphql/issues/4667", () => {
     test("when passed null as an argument of a relationship filter should check that a relationship does not exist", async () => {
         const typeDefs = /* GraphQL */ `
-            type MyThing {
+            type MyThing @node {
                 id: ID! @id
                 stuff: MyStuff @relationship(type: "THE_STUFF", direction: OUT)
             }
 
-            type MyStuff {
+            type MyStuff @node {
                 id: ID! @id
                 thing: MyThing @relationship(type: "THE_STUFF", direction: IN)
             }

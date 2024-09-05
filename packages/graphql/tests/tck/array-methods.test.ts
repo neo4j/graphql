@@ -24,7 +24,7 @@ import { formatCypher, formatParams, translateQuery } from "./utils/tck-test-uti
 describe("Arrays Methods", () => {
     test("push", async () => {
         const typeDefs = /* GraphQL */ `
-            type Movie {
+            type Movie @node {
                 title: String!
                 ratings: [Float!]!
             }
@@ -67,7 +67,7 @@ describe("Arrays Methods", () => {
 
     test("push multiple", async () => {
         const typeDefs = /* GraphQL */ `
-            type Movie {
+            type Movie @node {
                 title: String!
                 ratings: [Float!]!
                 scores: [Float!]!
@@ -116,7 +116,7 @@ describe("Arrays Methods", () => {
 
     test("push (point)", async () => {
         const typeDefs = /* GraphQL */ `
-            type Movie {
+            type Movie @node {
                 title: String!
                 filmingLocations: [Point!]!
             }
@@ -179,7 +179,7 @@ describe("Arrays Methods", () => {
                 roles: [String!]!
             }
 
-            type Movie {
+            type Movie @node {
                 title: String!
                 ratings: [Float!]!
                     @authorization(validate: [{ operations: [UPDATE], where: { jwt: { roles_INCLUDES: "update" } } }])
@@ -234,7 +234,7 @@ describe("Arrays Methods", () => {
 
     test("pop", async () => {
         const typeDefs = /* GraphQL */ `
-            type Movie {
+            type Movie @node {
                 title: String!
                 ratings: [Float!]!
             }
@@ -278,7 +278,7 @@ describe("Arrays Methods", () => {
 
     test("pop multiple", async () => {
         const typeDefs = /* GraphQL */ `
-            type Movie {
+            type Movie @node {
                 title: String!
                 ratings: [Float!]!
                 scores: [Float!]!
@@ -333,7 +333,7 @@ describe("Arrays Methods", () => {
                 roles: [String!]!
             }
 
-            type Movie {
+            type Movie @node {
                 title: String!
                 ratings: [Float!]!
                     @authorization(validate: [{ operations: [UPDATE], where: { jwt: { roles_INCLUDES: "update" } } }])
@@ -389,7 +389,7 @@ describe("Arrays Methods", () => {
 
     test("pop and push", async () => {
         const typeDefs = /* GraphQL */ `
-            type Movie {
+            type Movie @node {
                 title: String!
                 ratings: [Float!]!
                 scores: [Float!]!
@@ -439,12 +439,12 @@ describe("Arrays Methods", () => {
 
     test("push on relationship properties", async () => {
         const typeDefs = `
-            type Movie {
+            type Movie @node {
                 title: String
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
             }
 
-            type Actor {
+            type Actor @node {
                 id: ID!
                 name: String!
                 actedIn: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
@@ -541,12 +541,12 @@ describe("Arrays Methods", () => {
 
     test("pop on relationship properties", async () => {
         const typeDefs = `
-            type Movie {
+            type Movie @node {
                 title: String
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
             }
 
-            type Actor {
+            type Actor @node {
                 id: ID!
                 name: String!
                 actedIn: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)

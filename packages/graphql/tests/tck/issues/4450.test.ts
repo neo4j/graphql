@@ -23,18 +23,18 @@ import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-ut
 describe("https://github.com/neo4j/graphql/issues/4450", () => {
     test("filtering through a connection to a many-to-1 relationship should work", async () => {
         const typeDefs = /* GraphQL */ `
-            type Actor {
+            type Actor @node {
                 name: String
                 scene: [Scene!]! @relationship(type: "IN_SCENE", properties: "ActorScene", direction: OUT)
             }
 
-            type Scene {
+            type Scene @node {
                 number: Int
                 actors: [Actor!]! @relationship(type: "IN_SCENE", properties: "ActorScene", direction: IN)
                 location: Location! @relationship(type: "AT_LOCATION", direction: OUT)
             }
 
-            type Location {
+            type Location @node {
                 city: String
                 scenes: [Scene!]! @relationship(type: "AT_LOCATION", direction: IN)
             }

@@ -34,7 +34,7 @@ describe("@auth allow on specific interface implementation", () => {
                 creator: User! @declareRelationship
             }
 
-            type Comment implements Content {
+            type Comment implements Content @node {
                 id: ID
                 content: String
                 creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
@@ -42,6 +42,7 @@ describe("@auth allow on specific interface implementation", () => {
             }
 
             type Post implements Content
+                @node
                 @authorization(
                     validate: [
                         {
@@ -57,7 +58,7 @@ describe("@auth allow on specific interface implementation", () => {
                 comments: [Comment!]! @relationship(type: "HAS_COMMENT", direction: OUT)
             }
 
-            type User {
+            type User @node {
                 id: ID
                 name: String
                 content: [Content!]! @relationship(type: "HAS_CONTENT", direction: OUT)

@@ -32,7 +32,7 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
                 material: Material! @relationship(type: "MATERIAL_BULK", direction: OUT)
             }
 
-            type Material @mutation(operations: []) {
+            type Material @mutation(operations: []) @node {
                 id: ID!
                 itemNumber: String!
 
@@ -40,7 +40,7 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
                     @relationship(type: "MATERIAL_SUPPLIER", properties: "RelationMaterialSupplier", direction: OUT)
             }
 
-            type Supplier @mutation(operations: []) {
+            type Supplier @mutation(operations: []) @node {
                 id: ID!
                 name: String
                 supplierId: String!

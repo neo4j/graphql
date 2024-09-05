@@ -28,12 +28,12 @@ describe("Cypher Auth Allow", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Post {
+            type Post @node {
                 id: ID
                 creator: User! @relationship(type: "HAS_POST", direction: IN)
             }
 
-            type User {
+            type User @node {
                 id: ID
                 name: String
                 posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)

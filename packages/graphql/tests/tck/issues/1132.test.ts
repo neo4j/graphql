@@ -18,13 +18,14 @@
  */
 
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 import { createBearerToken } from "../../utils/create-bearer-token";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/1132", () => {
     test("Auth CONNECT rules checked against correct property", async () => {
         const typeDefs = /* GraphQL */ `
             type Source
+                @node
                 @authorization(
                     validate: [
                         { when: [BEFORE], operations: [CREATE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }
@@ -34,7 +35,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
                 targets: [Target!]! @relationship(type: "HAS_TARGET", direction: OUT)
             }
 
-            type Target {
+            type Target @node {
                 id: ID!
             }
         `;
@@ -99,6 +100,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
     test("Auth DISCONNECT rules checked against correct property", async () => {
         const typeDefs = /* GraphQL */ `
             type Source
+                @node
                 @authorization(
                     validate: [
                         { when: [BEFORE], operations: [DELETE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }
@@ -108,7 +110,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
                 targets: [Target!]! @relationship(type: "HAS_TARGET", direction: OUT)
             }
 
-            type Target {
+            type Target @node {
                 id: ID!
             }
         `;

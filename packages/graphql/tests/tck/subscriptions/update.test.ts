@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Subscriptions metadata on update", () => {
     let typeDefs: string;
@@ -29,12 +29,12 @@ describe("Subscriptions metadata on update", () => {
     beforeAll(() => {
         plugin = new TestSubscriptionsEngine();
         typeDefs = /* GraphQL */ `
-            type Actor {
+            type Actor @node {
                 name: String!
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type Movie {
+            type Movie @node {
                 id: ID!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }

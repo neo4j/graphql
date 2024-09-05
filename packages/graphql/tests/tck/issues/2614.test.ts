@@ -37,7 +37,7 @@ describe("https://github.com/neo4j/graphql/issues/2614", () => {
                 runtime: Int!
             }
             
-            type Series implements Production {
+            type Series implements Production @node {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
                 episodes: Int!
@@ -47,7 +47,7 @@ describe("https://github.com/neo4j/graphql/issues/2614", () => {
                 role: String!
             }
             
-            type Actor {
+            type Actor @node {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }

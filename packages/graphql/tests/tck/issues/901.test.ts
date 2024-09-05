@@ -26,7 +26,7 @@ describe("https://github.com/neo4j/graphql/issues/901", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Series {
+            type Series @node {
                 id: ID! @id @unique
                 name: String!
                 brand: Series @relationship(type: "HAS_BRAND", direction: OUT, properties: "Properties")

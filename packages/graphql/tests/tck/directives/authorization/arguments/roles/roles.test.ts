@@ -32,27 +32,27 @@ describe("Cypher Auth Roles", () => {
                 roles: [String!]!
             }
 
-            type History {
+            type History @node {
                 url: String
                     @authorization(
                         validate: [{ operations: [READ], where: { jwt: { roles_INCLUDES: "super-admin" } } }]
                     )
             }
 
-            type Comment {
+            type Comment @node {
                 id: String
                 content: String
                 post: Post! @relationship(type: "HAS_COMMENT", direction: IN)
             }
 
-            type Post {
+            type Post @node {
                 id: String
                 content: String
                 creator: User! @relationship(type: "HAS_POST", direction: OUT)
                 comments: [Comment!]! @relationship(type: "HAS_COMMENT", direction: OUT)
             }
 
-            type User {
+            type User @node {
                 id: ID
                 name: String
                 password: String

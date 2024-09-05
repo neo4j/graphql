@@ -28,11 +28,11 @@ describe("https://github.com/neo4j/graphql/issues/3888", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type User {
+            type User @node {
                 id: ID!
             }
 
-            type Post @authorization(filter: [{ where: { node: { author: { id: "$jwt.sub" } } } }]) {
+            type Post @authorization(filter: [{ where: { node: { author: { id: "$jwt.sub" } } } }]) @node {
                 title: String!
                 content: String!
                 author: User! @relationship(type: "AUTHORED", direction: IN)

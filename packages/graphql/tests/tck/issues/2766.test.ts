@@ -18,13 +18,13 @@
  */
 
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/2766", () => {
     let neoSchema: Neo4jGraphQL;
 
     const typeDefs = /* GraphQL */ `
-        type Actor {
+        type Actor @node {
             name: String!
             movies(title: String): [Movie]
                 @cypher(
@@ -36,7 +36,7 @@ describe("https://github.com/neo4j/graphql/issues/2766", () => {
                 )
         }
 
-        type Movie {
+        type Movie @node {
             title: String!
             actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
         }

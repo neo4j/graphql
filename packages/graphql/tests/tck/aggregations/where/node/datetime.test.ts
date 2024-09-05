@@ -26,12 +26,12 @@ describe("Cypher Aggregations where node with DateTime", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type User {
+            type User @node {
                 someDateTime: DateTime
                 someDateTimeAlias: DateTime @alias(property: "_someDateTimeAlias")
             }
 
-            type Post {
+            type Post @node {
                 content: String!
                 likes: [User!]! @relationship(type: "LIKES", direction: IN)
             }

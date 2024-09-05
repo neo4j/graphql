@@ -26,14 +26,14 @@ describe("https://github.com/neo4j/graphql/issues/1751", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Organization {
+            type Organization @node {
                 organizationId: ID! @id @unique
                 title: String
                 createdAt: DateTime!
                 admins: [Admin!]! @relationship(type: "HAS_ADMINISTRATOR", direction: OUT)
             }
 
-            type Admin {
+            type Admin @node {
                 adminId: ID! @id @unique
                 createdAt: DateTime!
                 isSuperAdmin: Boolean

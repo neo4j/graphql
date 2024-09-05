@@ -28,16 +28,16 @@ describe("Cypher Auth isAuthenticated", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type History {
+            type History @node {
                 url: String @authentication(operations: [READ])
             }
 
-            type Post {
+            type Post @node {
                 id: String
                 content: String
             }
 
-            type User {
+            type User @node {
                 id: ID
                 name: String
                 password: String
