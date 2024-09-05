@@ -68,9 +68,6 @@ function transformNodes(nodes: NodeMap): GraphQLNodeMap {
             nodeDirective.addLabels(neo4jNode.labels);
         }
         node.addDirective(nodeDirective);
-       /*  if (nodeDirective.toString().length) {
-            node.addDirective(nodeDirective);
-        } */
 
         const fields = createNodeFields(neo4jNode.properties, node.typeName);
         fields.forEach((f) => node.addField(f));
