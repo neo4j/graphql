@@ -71,7 +71,7 @@ describe("issues/635", () => {
           ## END ENUMS ##
 
           ## START NODES ##
-          type User {
+          type User @node {
             id: ID! @id
             email: String! @unique
             firstName: String!
@@ -87,14 +87,14 @@ describe("issues/635", () => {
             timeHistory: [TimeClock!]! @relationship(type: "CLOCK_FOR", direction: IN)
           }
 
-          type TimeClock {
+          type TimeClock @node {
             id: ID! @id
             type: TimeClockType
             createdAt: DateTime! @timestamp(operations: [CREATE])
             user: User! @relationship(type: "CLOCK_FOR", direction: OUT)
           }
 
-          type Company {
+          type Company @node {
             id: ID! @id
             name: String! @unique
             stripeCustomerId: String @unique
@@ -112,7 +112,7 @@ describe("issues/635", () => {
               @relationship(type: "INTEGRATION_FOR", direction: IN)
           }
 
-          type CompanyIntegrations {
+          type CompanyIntegrations @node {
             id: ID! @id
             name: IntegrationNames!
             publicApiKey: String!
@@ -120,21 +120,21 @@ describe("issues/635", () => {
             company: Company! @relationship(type: "INTEGRATION_FOR", direction: OUT)
           }
 
-          type CompanyClockSettings {
+          type CompanyClockSettings @node {
             id: ID! @id
             breakTime: Int @default(value: 15)
             lunchTime: Int @default(value: 30)
             company: Company! @relationship(type: "CLOCK_SETTINGS", direction: IN)
           }
 
-          type CompanyFeatures {
+          type CompanyFeatures @node {
             id: ID! @id
             featureName: FeatureName!
             createdAt: DateTime! @timestamp(operations: [CREATE])
             company: Company! @relationship(type: "FEATURE_TOGGLED", direction: IN)
           }
 
-          type WorkOrder {
+          type WorkOrder @node {
             id: ID! @id
             budget: Float
             description: String!
@@ -149,7 +149,7 @@ describe("issues/635", () => {
             vehicle: Vehicle! @relationship(type: "SERVICE_FOR", direction: OUT)
           }
 
-          type WorkOrderItem {
+          type WorkOrderItem @node {
             id: ID! @id
             item: String!
             cost: Float
@@ -161,7 +161,7 @@ describe("issues/635", () => {
             workOrder: WorkOrder @relationship(type: "ITEM_FOR", direction: OUT)
           }
 
-          type Customer {
+          type Customer @node {
             id: ID! @id
             email: String!
             firstName: String!
@@ -172,7 +172,7 @@ describe("issues/635", () => {
             vehicles: [Customer!]! @relationship(type: "VEHICLE_OWNED_BY", direction: IN)
           }
 
-          type Vehicle {
+          type Vehicle @node {
             id: ID! @id
             vin: String!
             workOrders: [WorkOrder!]! @relationship(type: "SERVICE_FOR", direction: IN)
@@ -180,13 +180,13 @@ describe("issues/635", () => {
             model: ModelTrim! @relationship(type: "VEHICLE_MODEL", direction: OUT)
           }
 
-          type Manufacturer {
+          type Manufacturer @node {
             id: ID! @id
             name: String! @unique
             models: [Model!]! @relationship(type: "MADE_BY", direction: IN)
           }
 
-          type Model {
+          type Model @node {
             id: ID! @id
             year: Int!
             style: BodyStyle!
@@ -195,7 +195,7 @@ describe("issues/635", () => {
             trims: [ModelTrim!]! @relationship(type: "TRIM_FOR", direction: IN)
           }
 
-          type ModelTrim {
+          type ModelTrim @node {
             id: ID! @id
             name: String!
             model: Model @relationship(type: "TRIM_FOR", direction: OUT)
@@ -204,7 +204,7 @@ describe("issues/635", () => {
             paintCodes: [PaintCodes!]! @relationship(type: "HAS_PAINT", direction: OUT)
           }
 
-          type PaintCodes {
+          type PaintCodes @node {
             id: ID! @id
             code: String! @unique
             trims: [ModelTrim!]! @relationship(type: "HAS_PAINT", direction: IN)

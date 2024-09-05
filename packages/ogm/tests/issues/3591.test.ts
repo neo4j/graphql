@@ -22,20 +22,20 @@ import { generate, OGM } from "../../src";
 describe("issues/3591", () => {
     test("should correctly generate types and ignore all the schema configuration directives", async () => {
         const typeDefs = `
-          type User @query(aggregate: false) @mutation(operation: [CREATE]), @subscription(events: [CREATED]) {
+          type User @query(aggregate: false) @mutation(operation: [CREATE]), @subscription(events: [CREATED]) @node {
             id: ID! @id
             company: [Company!]! @relationship(type: "WORKS_AT", direction: OUT)
             favoriteRestaurants: [Restaurant!]! @relationship(type: "FAVORITE_RESTAURANTS", direction: OUT)           
           }
 
-          type Company {
+          type Company @node {
             id: ID! @id
             field1: String @filterable(byValue: false, byAggregate: false)
             field2: String @selectable(onRead: false, onAggregate: false)
             field3: String @settable(onCreate: false, onUpdate: false)
           }
 
-          type Restaurant {
+          type Restaurant @node {
             name: String
           }
         `;

@@ -50,7 +50,7 @@ describe("https://github.com/neo4j/graphql/issues/3773", () => {
 
     test("should re-create issue and return types without throwing", async () => {
         const typeDefs = /* GraphQL */ `
-            type ${EventType} {
+            type ${EventType} @node {
                 name: String!
                 userAttending: Boolean!
                     @cypher(
@@ -62,7 +62,7 @@ describe("https://github.com/neo4j/graphql/issues/3773", () => {
                     )
             }
 
-            type ${UserType} {
+            type ${UserType} @node {
                 id: ID!
                 events: [${EventType}!]! @relationship(type: "ATTENDS", direction: OUT)
             }
