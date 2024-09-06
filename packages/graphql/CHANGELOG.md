@@ -1,5 +1,13 @@
 # @neo4j/graphql
 
+## 5.6.2
+
+### Patch Changes
+
+-   [#5524](https://github.com/neo4j/graphql/pull/5524) [`5d0db54`](https://github.com/neo4j/graphql/commit/5d0db540344c48b85156dda9ba7a4c769079ae04) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix authorization filtering in delete operations
+
+-   [#5521](https://github.com/neo4j/graphql/pull/5521) [`2e6de36`](https://github.com/neo4j/graphql/commit/2e6de360c03c8eb678024c065a58875884f6a760) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Simplify the projection of spatial properties
+
 ## 5.6.1
 
 ### Patch Changes
