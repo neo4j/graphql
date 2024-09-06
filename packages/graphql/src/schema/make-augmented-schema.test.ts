@@ -286,7 +286,7 @@ describe("makeAugmentedSchema", () => {
                 input ActionMapping {
                     action: [String!]
                 }
-                type TestType {
+                type TestType @node {
                     someField: String
                 }
             `;
