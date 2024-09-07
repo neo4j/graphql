@@ -2,7 +2,7 @@ version: '3.5'
 # This is just for local testing
 services:
     rabbitmq:
-        image: rabbitmq:3.13-management@sha256:8952def14de918579ec5373c74b334affd1d0e0d15f566c4dfaf341f82ad9397
+        image: rabbitmq:3.13-management@sha256:6e82606a1a5101ab1e9b07e08140ae28a4cb2221350b94c836422e49cb5e32c7
         ports:
             - "5672:5672"
             - "15672:15672"
