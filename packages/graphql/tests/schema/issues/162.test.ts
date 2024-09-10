@@ -461,9 +461,10 @@ describe("162", () => {
               AND: [TigerJawLevel2Part1Where!]
               NOT: TigerJawLevel2Part1Where
               OR: [TigerJawLevel2Part1Where!]
-              id: ID
+              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
+              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -513,9 +514,10 @@ describe("162", () => {
               AND: [TigerJawLevel2Where!]
               NOT: TigerJawLevel2Where
               OR: [TigerJawLevel2Where!]
-              id: ID
+              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
+              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -562,7 +564,8 @@ describe("162", () => {
               AND: [TigerWhere!]
               NOT: TigerWhere
               OR: [TigerWhere!]
-              x: Int
+              x: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              x_EQ: Int
               x_GT: Int
               x_GTE: Int
               x_IN: [Int]

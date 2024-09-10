@@ -143,9 +143,10 @@ describe("https://github.com/neo4j/graphql/issues/5428", () => {
             input TestWhere {
               AND: [TestWhere!]
               NOT: TestWhere
-              Name: String
+              Name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               Name_CONTAINS: String
               Name_ENDS_WITH: String
+              Name_EQ: String
               Name_IN: [String]
               Name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               Name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")

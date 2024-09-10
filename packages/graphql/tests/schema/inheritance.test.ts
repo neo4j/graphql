@@ -258,9 +258,10 @@ describe("inheritance", () => {
               friends_SINGLE: PersonWhere
               \\"\\"\\"Return Actors where some of the related People match this filter\\"\\"\\"
               friends_SOME: PersonWhere
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -356,7 +357,8 @@ describe("inheritance", () => {
               AND: [FriendsWithWhere!]
               NOT: FriendsWithWhere
               OR: [FriendsWithWhere!]
-              since: Int
+              since: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              since_EQ: Int
               since_GT: Int
               since_GTE: Int
               since_IN: [Int]
@@ -645,9 +647,10 @@ describe("inheritance", () => {
               friends_SINGLE: PersonWhere
               \\"\\"\\"Return People where some of the related People match this filter\\"\\"\\"
               friends_SOME: PersonWhere
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")

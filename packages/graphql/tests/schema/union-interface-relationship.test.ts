@@ -138,7 +138,8 @@ describe("Union Interface Relationships", () => {
               AND: [ActedInWhere!]
               NOT: ActedInWhere
               OR: [ActedInWhere!]
-              screenTime: Int
+              screenTime: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              screenTime_EQ: Int
               screenTime_GT: Int
               screenTime_GTE: Int
               screenTime_IN: [Int!]
@@ -416,7 +417,8 @@ describe("Union Interface Relationships", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
-              id: Int
+              id: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id_EQ: Int
               id_GT: Int
               id_GTE: Int
               id_IN: [Int]
@@ -453,9 +455,10 @@ describe("Union Interface Relationships", () => {
               movies_SINGLE: MovieWhere
               \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
               movies_SOME: MovieWhere
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -535,7 +538,8 @@ describe("Union Interface Relationships", () => {
               AND: [DirectedWhere!]
               NOT: DirectedWhere
               OR: [DirectedWhere!]
-              year: Int
+              year: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              year_EQ: Int
               year_GT: Int
               year_GTE: Int
               year_IN: [Int!]
@@ -608,7 +612,8 @@ describe("Union Interface Relationships", () => {
               AND: [InfluencerWhere!]
               NOT: InfluencerWhere
               OR: [InfluencerWhere!]
-              reputation: Int
+              reputation: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              reputation_EQ: Int
               reputation_GT: Int
               reputation_GTE: Int
               reputation_IN: [Int!]
@@ -616,7 +621,8 @@ describe("Union Interface Relationships", () => {
               reputation_LTE: Int
               reputation_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               reputation_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              reviewerId: Int
+              reviewerId: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              reviewerId_EQ: Int
               reviewerId_GT: Int
               reviewerId_GTE: Int
               reviewerId_IN: [Int]
@@ -624,9 +630,10 @@ describe("Union Interface Relationships", () => {
               reviewerId_LTE: Int
               reviewerId_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               reviewerId_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              url: String
+              url: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               url_CONTAINS: String
               url_ENDS_WITH: String
+              url_EQ: String
               url_IN: [String!]
               url_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               url_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1320,7 +1327,8 @@ describe("Union Interface Relationships", () => {
               directors_SINGLE: DirectorWhere
               \\"\\"\\"Return Movies where some of the related Directors match this filter\\"\\"\\"
               directors_SOME: DirectorWhere
-              imdbId: Int
+              imdbId: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              imdbId_EQ: Int
               imdbId_GT: Int
               imdbId_GTE: Int
               imdbId_IN: [Int]
@@ -1357,9 +1365,10 @@ describe("Union Interface Relationships", () => {
               reviewers_SINGLE: ReviewerWhere
               \\"\\"\\"Return Movies where some of the related Reviewers match this filter\\"\\"\\"
               reviewers_SOME: ReviewerWhere
-              title: String
+              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
+              title_EQ: String
               title_IN: [String!]
               title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1689,7 +1698,8 @@ describe("Union Interface Relationships", () => {
               AND: [PersonWhere!]
               NOT: PersonWhere
               OR: [PersonWhere!]
-              id: Int
+              id: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id_EQ: Int
               id_GT: Int
               id_GTE: Int
               id_IN: [Int]
@@ -1726,9 +1736,10 @@ describe("Union Interface Relationships", () => {
               movies_SINGLE: MovieWhere
               \\"\\"\\"Return People where some of the related Movies match this filter\\"\\"\\"
               movies_SOME: MovieWhere
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1736,7 +1747,8 @@ describe("Union Interface Relationships", () => {
               name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
-              reputation: Int
+              reputation: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              reputation_EQ: Int
               reputation_GT: Int
               reputation_GTE: Int
               reputation_IN: [Int!]
@@ -1744,7 +1756,8 @@ describe("Union Interface Relationships", () => {
               reputation_LTE: Int
               reputation_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               reputation_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              reviewerId: Int
+              reviewerId: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              reviewerId_EQ: Int
               reviewerId_GT: Int
               reviewerId_GTE: Int
               reviewerId_IN: [Int]
@@ -1837,7 +1850,8 @@ describe("Union Interface Relationships", () => {
               AND: [ReviewWhere!]
               NOT: ReviewWhere
               OR: [ReviewWhere!]
-              score: Int
+              score: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              score_EQ: Int
               score_GT: Int
               score_GTE: Int
               score_IN: [Int!]
@@ -1907,7 +1921,8 @@ describe("Union Interface Relationships", () => {
               AND: [ReviewerWhere!]
               NOT: ReviewerWhere
               OR: [ReviewerWhere!]
-              reputation: Int
+              reputation: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              reputation_EQ: Int
               reputation_GT: Int
               reputation_GTE: Int
               reputation_IN: [Int!]
@@ -1915,7 +1930,8 @@ describe("Union Interface Relationships", () => {
               reputation_LTE: Int
               reputation_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               reputation_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              reviewerId: Int
+              reviewerId: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              reviewerId_EQ: Int
               reviewerId_GT: Int
               reviewerId_GTE: Int
               reviewerId_IN: [Int]

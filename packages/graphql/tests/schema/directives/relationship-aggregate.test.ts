@@ -278,9 +278,10 @@ describe("@relationship directive, aggregate argument", () => {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
-                  password: String
+                  password: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   password_CONTAINS: String
                   password_ENDS_WITH: String
+                  password_EQ: String
                   password_IN: [String!]
                   password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -288,9 +289,10 @@ describe("@relationship directive, aggregate argument", () => {
                   password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   password_STARTS_WITH: String
-                  username: String
+                  username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   username_CONTAINS: String
                   username_ENDS_WITH: String
+                  username_EQ: String
                   username_IN: [String!]
                   username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -574,9 +576,10 @@ describe("@relationship directive, aggregate argument", () => {
                   actors_SINGLE: ActorWhere
                   \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
                   actors_SOME: ActorWhere
-                  title: String
+                  title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   title_CONTAINS: String
                   title_ENDS_WITH: String
+                  title_EQ: String
                   title_IN: [String]
                   title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -727,9 +730,10 @@ describe("@relationship directive, aggregate argument", () => {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
-                  password: String
+                  password: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   password_CONTAINS: String
                   password_ENDS_WITH: String
+                  password_EQ: String
                   password_IN: [String!]
                   password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -737,9 +741,10 @@ describe("@relationship directive, aggregate argument", () => {
                   password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   password_STARTS_WITH: String
-                  username: String
+                  username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   username_CONTAINS: String
                   username_ENDS_WITH: String
+                  username_EQ: String
                   username_IN: [String!]
                   username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1034,9 +1039,10 @@ describe("@relationship directive, aggregate argument", () => {
                   actors_SINGLE: ActorWhere
                   \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
                   actors_SOME: ActorWhere
-                  title: String
+                  title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   title_CONTAINS: String
                   title_ENDS_WITH: String
+                  title_EQ: String
                   title_IN: [String]
                   title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1189,9 +1195,10 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      password: String
+                      password: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       password_CONTAINS: String
                       password_ENDS_WITH: String
+                      password_EQ: String
                       password_IN: [String!]
                       password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1199,9 +1206,10 @@ describe("@relationship directive, aggregate argument", () => {
                       password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
-                      username: String
+                      username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       username_CONTAINS: String
                       username_ENDS_WITH: String
+                      username_EQ: String
                       username_IN: [String!]
                       username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1481,9 +1489,10 @@ describe("@relationship directive, aggregate argument", () => {
                       actors_SINGLE: PersonWhere
                       \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                       actors_SOME: PersonWhere
-                      title: String
+                      title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       title_CONTAINS: String
                       title_ENDS_WITH: String
+                      title_EQ: String
                       title_IN: [String]
                       title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1576,9 +1585,10 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [PersonWhere!]
                       NOT: PersonWhere
                       OR: [PersonWhere!]
-                      password: String
+                      password: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       password_CONTAINS: String
                       password_ENDS_WITH: String
+                      password_EQ: String
                       password_IN: [String!]
                       password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1587,9 +1597,10 @@ describe("@relationship directive, aggregate argument", () => {
                       password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       typename_IN: [PersonImplementation!]
-                      username: String
+                      username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       username_CONTAINS: String
                       username_ENDS_WITH: String
+                      username_EQ: String
                       username_IN: [String!]
                       username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1720,9 +1731,10 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      password: String
+                      password: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       password_CONTAINS: String
                       password_ENDS_WITH: String
+                      password_EQ: String
                       password_IN: [String!]
                       password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1730,9 +1742,10 @@ describe("@relationship directive, aggregate argument", () => {
                       password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
-                      username: String
+                      username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       username_CONTAINS: String
                       username_ENDS_WITH: String
+                      username_EQ: String
                       username_IN: [String!]
                       username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -2023,9 +2036,10 @@ describe("@relationship directive, aggregate argument", () => {
                       actors_SINGLE: PersonWhere
                       \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                       actors_SOME: PersonWhere
-                      title: String
+                      title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       title_CONTAINS: String
                       title_ENDS_WITH: String
+                      title_EQ: String
                       title_IN: [String]
                       title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -2118,9 +2132,10 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [PersonWhere!]
                       NOT: PersonWhere
                       OR: [PersonWhere!]
-                      password: String
+                      password: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       password_CONTAINS: String
                       password_ENDS_WITH: String
+                      password_EQ: String
                       password_IN: [String!]
                       password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -2129,9 +2144,10 @@ describe("@relationship directive, aggregate argument", () => {
                       password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       typename_IN: [PersonImplementation!]
-                      username: String
+                      username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       username_CONTAINS: String
                       username_ENDS_WITH: String
+                      username_EQ: String
                       username_IN: [String!]
                       username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -2270,9 +2286,10 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      password: String
+                      password: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       password_CONTAINS: String
                       password_ENDS_WITH: String
+                      password_EQ: String
                       password_IN: [String!]
                       password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -2280,9 +2297,10 @@ describe("@relationship directive, aggregate argument", () => {
                       password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
-                      username: String
+                      username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       username_CONTAINS: String
                       username_ENDS_WITH: String
+                      username_EQ: String
                       username_IN: [String!]
                       username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -2558,9 +2576,10 @@ describe("@relationship directive, aggregate argument", () => {
                       actors_SINGLE: CastMemberWhere
                       \\"\\"\\"Return Movies where some of the related CastMembers match this filter\\"\\"\\"
                       actors_SOME: CastMemberWhere
-                      title: String
+                      title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       title_CONTAINS: String
                       title_ENDS_WITH: String
+                      title_EQ: String
                       title_IN: [String]
                       title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -2648,9 +2667,10 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [PersonWhere!]
                       NOT: PersonWhere
                       OR: [PersonWhere!]
-                      name: String
+                      name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       name_CONTAINS: String
                       name_ENDS_WITH: String
+                      name_EQ: String
                       name_IN: [String!]
                       name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -2798,9 +2818,10 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      password: String
+                      password: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       password_CONTAINS: String
                       password_ENDS_WITH: String
+                      password_EQ: String
                       password_IN: [String!]
                       password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -2808,9 +2829,10 @@ describe("@relationship directive, aggregate argument", () => {
                       password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
-                      username: String
+                      username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       username_CONTAINS: String
                       username_ENDS_WITH: String
+                      username_EQ: String
                       username_IN: [String!]
                       username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -3086,9 +3108,10 @@ describe("@relationship directive, aggregate argument", () => {
                       actors_SINGLE: CastMemberWhere
                       \\"\\"\\"Return Movies where some of the related CastMembers match this filter\\"\\"\\"
                       actors_SOME: CastMemberWhere
-                      title: String
+                      title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       title_CONTAINS: String
                       title_ENDS_WITH: String
+                      title_EQ: String
                       title_IN: [String]
                       title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -3176,9 +3199,10 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [PersonWhere!]
                       NOT: PersonWhere
                       OR: [PersonWhere!]
-                      name: String
+                      name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       name_CONTAINS: String
                       name_ENDS_WITH: String
+                      name_EQ: String
                       name_IN: [String!]
                       name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
