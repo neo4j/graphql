@@ -24,13 +24,9 @@ import { TestHelper } from "../../utils/tests-helper";
 describe("Advanced Filtering", () => {
     const testHelper = new TestHelper();
 
-    beforeEach(() => {
-        process.env.NEO4J_GRAPHQL_ENABLE_REGEX = "true"; // this may cause race condition
-    });
-
+   
     afterEach(async () => {
         await testHelper.close();
-        delete process.env.NEO4J_GRAPHQL_ENABLE_REGEX;
     });
 
     describe.each(["ID", "String"] as const)("%s Filtering", (type) => {
