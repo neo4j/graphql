@@ -181,7 +181,7 @@ export class FilterFactory {
         isNot: boolean;
         attachedTo?: "node" | "relationship";
     }): PropertyFilter {
-        const filterOperator = operator || "EQ";
+        const filterOperator = operator ?? "EQ";
         if (attribute.typeHelper.isDuration()) {
             return new DurationFilter({
                 attribute,
