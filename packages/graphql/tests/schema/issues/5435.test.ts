@@ -25,11 +25,11 @@ import { Neo4jGraphQL } from "../../../src";
 describe("https://github.com/neo4j/graphql/issues/5435", () => {
     test("filters should be generated for non-list relationships with array filters disabled", async () => {
         const typeDefs = gql`
-            type User {
+            type User @node {
                 id: ID! @id
             }
 
-            type Post @authorization(validate: [{ where: { node: { author: { id: "$jwt.sub" } } } }]) {
+            type Post @authorization(validate: [{ where: { node: { author: { id: "$jwt.sub" } } } }]) @node {
                 title: String!
                 content: String!
                 author: User! @relationship(type: "AUTHORED", direction: IN)

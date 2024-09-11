@@ -94,7 +94,7 @@ describe("array-pop", () => {
             const typeMovie = testHelper.createUniqueType("Movie");
 
             const typeDefs = gql`
-            type ${typeMovie} {
+            type ${typeMovie} @node {
                 title: String
                 tags: [${inputType}]
             }
@@ -194,7 +194,7 @@ describe("array-pop", () => {
             const typeMovie = testHelper.createUniqueType("Movie");
 
             const typeDefs = gql`
-            type ${typeMovie} {
+            type ${typeMovie} @node {
                 title: String
                 tags: [${inputType}]
             }
@@ -294,7 +294,7 @@ describe("array-pop", () => {
             const typeMovie = testHelper.createUniqueType("Movie");
 
             const typeDefs = gql`
-            type ${typeMovie} {
+            type ${typeMovie} @node {
                 title: String
                 tags: [${inputType}]
             }
@@ -374,7 +374,7 @@ describe("array-pop", () => {
         const typeMovie = testHelper.createUniqueType("Movie");
 
         const typeDefs = gql`
-            type ${typeMovie} {
+            type ${typeMovie} @node {
                 title: String
                 tags: [Point]
             }
@@ -485,7 +485,7 @@ describe("array-pop", () => {
         const typeMovie = testHelper.createUniqueType("Movie");
 
         const typeDefs = gql`
-            type ${typeMovie} {
+            type ${typeMovie} @node {
                 title: String
                 tags: [CartesianPoint]
             }
@@ -561,7 +561,7 @@ describe("array-pop", () => {
         const typeMovie = testHelper.createUniqueType("Movie");
 
         const typeDefs = gql`
-            type ${typeMovie} {
+            type ${typeMovie} @node {
                 title: String
                 tags: [String]
                 moreTags: [String]
@@ -610,11 +610,11 @@ describe("array-pop", () => {
         const movie = testHelper.createUniqueType("Movie");
         const actor = testHelper.createUniqueType("Actor");
         const typeDefs = `
-            type ${movie.name} {
+            type ${movie.name} @node {
                 viewers: [Int]!
                 workers: [${actor.name}!]! @relationship(type: "WORKED_IN", direction: IN)
             }
-            type ${actor.name} {
+            type ${actor.name} @node {
                 id: ID!
                 name: String!
                 worksInMovies: [${movie.name}!]! @relationship(type: "WORKED_IN", direction: OUT)
@@ -678,12 +678,12 @@ describe("array-pop", () => {
         const movie = testHelper.createUniqueType("Movie");
         const actor = testHelper.createUniqueType("Actor");
         const typeDefs = `
-            type ${movie.name} {
+            type ${movie.name} @node {
                 title: String
                 actors: [${actor.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
             }
 
-            type ${actor.name} {
+            type ${actor.name} @node {
                 id: ID!
                 name: String!
                 actedIn: [${movie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
@@ -761,12 +761,12 @@ describe("array-pop", () => {
         const movie = testHelper.createUniqueType("Movie");
         const actor = testHelper.createUniqueType("Actor");
         const typeDefs = `
-            type ${movie.name} {
+            type ${movie.name} @node {
                 title: String
                 actors: [${actor.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
             }
 
-            type ${actor.name} {
+            type ${actor.name} @node {
                 id: ID!
                 name: String!
                 actedIn: [${movie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)

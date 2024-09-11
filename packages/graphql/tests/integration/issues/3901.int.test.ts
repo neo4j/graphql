@@ -40,12 +40,12 @@ describe("https://github.com/neo4j/graphql/issues/3901", () => {
                 roles: [String!]!
             }
 
-            type ${User} {
+            type ${User} @node {
                 id: ID! 
                 series: [${Serie}!]! @relationship(type: "PUBLISHER", direction: OUT)
             }
 
-            type ${Serie}
+            type ${Serie} @node
                 @authorization(
                     validate: [
                         {
@@ -68,7 +68,7 @@ describe("https://github.com/neo4j/graphql/issues/3901", () => {
                 publisher: ${User}! @relationship(type: "PUBLISHER", direction: IN)
             }
 
-            type ${Season}
+            type ${Season} @node
                 @authorization(
                     validate: [
                         {

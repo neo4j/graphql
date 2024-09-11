@@ -36,7 +36,7 @@ describe("BigInt", () => {
     describe("create", () => {
         test("should create an object with a BigInt specified inline in the mutation", async () => {
             const typeDefs = `
-                type ${File} {
+                type ${File} @node {
                   name: String!
                   size: BigInt!
                 }
@@ -81,7 +81,7 @@ describe("BigInt", () => {
     describe("read", () => {
         test("should successfully query an node with a BigInt property", async () => {
             const typeDefs = `
-                type ${File} {
+                type ${File} @node {
                   name: String!
                   size: BigInt!
                 }
@@ -124,7 +124,7 @@ describe("BigInt", () => {
 
         test("should successfully query an node with a BigInt property using in where", async () => {
             const typeDefs = `
-                type ${File} {
+                type ${File} @node {
                   name: String!
                   size: BigInt!
                 }
@@ -173,7 +173,7 @@ describe("BigInt", () => {
             });
 
             const typeDefs = `
-                type ${File} {
+                type ${File} @node {
                   name: String!
                   size: BigInt! @cypher(statement: """
                       RETURN 9223372036854775807 as result

@@ -26,7 +26,7 @@ describe("https://github.com/neo4j/graphql/issues/1535", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Tenant {
+            type Tenant @node {
                 id: ID! @id @unique
                 name: String!
                 events: [Event!]! @relationship(type: "HOSTED_BY", direction: IN)
@@ -39,20 +39,20 @@ describe("https://github.com/neo4j/graphql/issues/1535", () => {
                 beginsAt: DateTime!
             }
 
-            type Screening implements Event {
+            type Screening implements Event @node {
                 id: ID! @id @unique
                 title: String
                 beginsAt: DateTime!
             }
 
-            type Booking implements Event {
+            type Booking implements Event @node {
                 id: ID!
                 title: String
                 beginsAt: DateTime!
                 duration: Int!
             }
 
-            type FooBar {
+            type FooBar @node {
                 id: ID! @id @unique
                 name: String!
             }

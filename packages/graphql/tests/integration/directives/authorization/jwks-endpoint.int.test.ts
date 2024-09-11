@@ -46,7 +46,7 @@ describe("auth/jwks-endpoint", () => {
 
     test("tests the config path that uses JWKS Endpoint", async () => {
         const typeDefs = `
-            type ${User} {
+            type ${User} @node {
                 id: ID
             }
             extend type ${User} @authentication
@@ -98,7 +98,7 @@ describe("auth/jwks-endpoint", () => {
                 roles: [String!]! @jwtClaim(path: "https://myAuthTest\\\\.auth0\\\\.com/jwt/claims.my-auth-roles")
             }
 
-            type ${User} {
+            type ${User} @node {
                 id: ID
             }
 
@@ -154,7 +154,7 @@ describe("auth/jwks-endpoint", () => {
                 roles: [String!]! @jwtClaim(path: "https://myAuthTest\\\\.auth0\\\\.com/jwt/claims.my-auth-roles")
             }
 
-            type ${User} {
+            type ${User} @node {
                 id: ID
             }
             extend type ${User} @authorization(validate: [{ operations: [READ], where: { jwt: { roles_INCLUDES: "editor" } } }])
@@ -204,7 +204,7 @@ describe("auth/jwks-endpoint", () => {
 
     test("should throw Unauthenticated if the issuer in the JWT token does not match the issuer provided in the Neo4jGraphQLAuthJWKSPlugin", async () => {
         const typeDefs = `
-            type ${User} {
+            type ${User} @node {
                 id: ID
             }
             extend type ${User} @authentication
@@ -255,7 +255,7 @@ describe("auth/jwks-endpoint", () => {
 
     test("should verify the issuer in the JWT token against the provided issuer in the Neo4jGraphQLAuthJWKSPlugin", async () => {
         const typeDefs = `
-            type ${User} {
+            type ${User} @node {
                 id: ID
             }
             extend type ${User} @authentication
@@ -307,7 +307,7 @@ describe("auth/jwks-endpoint", () => {
 
     test("should throw Unauthenticated if the audience in the JWT token does not match the audience provided in the Neo4jGraphQLAuthJWKSPlugin", async () => {
         const typeDefs = `
-            type ${User} {
+            type ${User} @node {
                 id: ID
             }
             extend type ${User} @authentication
@@ -358,7 +358,7 @@ describe("auth/jwks-endpoint", () => {
 
     test("should verify the audience in the JWT token against the provided audience in the Neo4jGraphQLAuthJWKSPlugin", async () => {
         const typeDefs = `
-            type ${User} {
+            type ${User} @node {
                 id: ID
             }
             extend type ${User} @authentication

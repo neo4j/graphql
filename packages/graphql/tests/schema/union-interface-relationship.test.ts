@@ -23,49 +23,49 @@ import { Neo4jGraphQL } from "../../src";
 
 describe("Union Interface Relationships", () => {
     test("Union Interface Relationships", async () => {
-        const typeDefs = `
-            type Movie {
+        const typeDefs = /* GraphQL */ `
+            type Movie @node {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
                 directors: [Director!]! @relationship(type: "DIRECTED", properties: "Directed", direction: IN)
                 reviewers: [Reviewer!]! @relationship(type: "REVIEWED", properties: "Review", direction: IN)
                 imdbId: Int @unique
             }
-            
-            type Actor {
+
+            type Actor @node {
                 name: String!
                 id: Int @unique
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
-            
+
             type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
-            
+
             type Directed @relationshipProperties {
                 year: Int!
             }
-            
+
             type Review @relationshipProperties {
                 score: Int!
             }
-        
-            type Person implements Reviewer {
+
+            type Person implements Reviewer @node {
                 name: String!
                 reputation: Int!
                 id: Int @unique
                 reviewerId: Int @unique
                 movies: [Movie!]! @relationship(type: "REVIEWED", direction: OUT, properties: "Review")
             }
-            
-            type Influencer implements Reviewer {
+
+            type Influencer implements Reviewer @node {
                 reputation: Int!
                 url: String!
                 reviewerId: Int
             }
-            
+
             union Director = Person | Actor
-            
+
             interface Reviewer {
                 reputation: Int!
                 reviewerId: Int

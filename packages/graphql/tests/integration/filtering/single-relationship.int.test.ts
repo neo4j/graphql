@@ -31,14 +31,14 @@ describe("Single relationship (1-*) filtering", () => {
         Movie = testHelper.createUniqueType("Movie");
 
         const typeDefs = `
-        type ${Person} {
+        type ${Person} @node {
             name: String!
             actedIn: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
             directedMovies: [${Movie}!]! @relationship(type: "DIRECTED", direction: OUT)
             producedMovies: [${Movie}!]! @relationship(type: "PRODUCED", direction: OUT)
         }
 
-        type ${Movie} {
+        type ${Movie} @node {
             title: String!
             actors: [${Person}!]! @relationship(type: "ACTED_IN", direction: OUT)
             director: ${Person}! @relationship(type: "DIRECTED", direction: IN)

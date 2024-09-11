@@ -44,7 +44,7 @@ describe("Subscriptions authorization with create events", () => {
                 roles: [String!]! @jwtClaim(path: "myApplication.roles")
             }
 
-            type ${User}
+            type ${User} @node
                 @subscriptionsAuthorization(
                     filter: [
                         { events: [CREATED], where: { node: { id: "$jwt.sub" } } }

@@ -47,7 +47,7 @@ describe("delete interface relationships", () => {
 
     beforeEach(async () => {
         const typeDefs = gql`
-            type ${episodeType.name} {
+            type ${episodeType.name} @node {
                 runtime: Int!
                 series: ${seriesType.name} ! @relationship(type: "HAS_EPISODE", direction: IN)
             }
@@ -57,19 +57,19 @@ describe("delete interface relationships", () => {
                 actors: [${actorType.name}!]! @declareRelationship
             }
 
-            type ${movieType.name} implements Production {
+            type ${movieType.name} implements Production @node {
                 title: String!
                 runtime: Int!
                 actors: [${actorType.name}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type ${seriesType.name} implements Production {
+            type ${seriesType.name} implements Production @node {
                 title: String!
                 episodes: [${episodeType.name}!]! @relationship(type: "HAS_EPISODE", direction: OUT)
                 actors: [${actorType.name}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type ${actorType.name} {
+            type ${actorType.name} @node {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }

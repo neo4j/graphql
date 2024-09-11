@@ -30,7 +30,7 @@ describe("@default directive", () => {
                 toBeOverridden: String!
             }
 
-            type User implements UserInterface {
+            type User implements UserInterface @node {
                 id: ID! @default(value: "00000000-00000000-00000000-00000000")
                 name: String! @default(value: "Jane Smith")
                 verified: Boolean! @default(value: false)

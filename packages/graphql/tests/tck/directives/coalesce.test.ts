@@ -35,7 +35,7 @@ describe("Cypher coalesce()", () => {
                 toBeOverridden: String!
             }
 
-            type User implements UserInterface {
+            type User implements UserInterface @node {
                 id: ID! @coalesce(value: "00000000-00000000-00000000-00000000")
                 name: String! @coalesce(value: "Jane Smith")
                 verified: Boolean! @coalesce(value: false)
@@ -123,7 +123,7 @@ describe("Cypher coalesce()", () => {
                 ACTIVE
                 INACTIVE
             }
-            type Movie {
+            type Movie @node {
                 id: ID
                 status: Status @coalesce(value: ACTIVE)
             }
@@ -170,12 +170,12 @@ describe("Cypher coalesce()", () => {
                 ACTIVE
                 INACTIVE
             }
-            type Movie {
+            type Movie @node {
                 id: ID
                 status: Status @coalesce(value: ACTIVE)
             }
 
-            type Actor {
+            type Actor @node {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
@@ -240,12 +240,12 @@ describe("Cypher coalesce()", () => {
                 ACTIVE
                 INACTIVE
             }
-            type Movie {
+            type Movie @node {
                 id: ID
                 statuses: [Status!]! @coalesce(value: [ACTIVE, INACTIVE])
             }
 
-            type Actor {
+            type Actor @node {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;

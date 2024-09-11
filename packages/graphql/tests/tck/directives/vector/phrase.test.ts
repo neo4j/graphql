@@ -30,6 +30,7 @@ describe("phrase input - genAI plugin", () => {
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
             type Movie
+                @node
                 @vector(indexes: [{ indexName: "movie_index", embeddingProperty: "movieVector", queryName: "${queryName}", provider: OPEN_AI }]) {
                 title: String!
                 released: Int!

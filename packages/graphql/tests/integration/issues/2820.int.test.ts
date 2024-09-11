@@ -37,17 +37,17 @@ describe("https://github.com/neo4j/graphql/issues/2820", () => {
                 title: String!
             }
 
-            type ${Movie} implements Production {
+            type ${Movie} implements Production @node {
                 title: String!
             }
 
-            type ${Series} implements Production {
+            type ${Series} implements Production @node {
                 title: String!
             }
 
             union ProductionUnion = ${Movie} | ${Series}
 
-            type ${Actor} {
+            type ${Actor} @node {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT)
                 actedInUnion: [ProductionUnion!]! @relationship(type: "ACTED_IN", direction: OUT)

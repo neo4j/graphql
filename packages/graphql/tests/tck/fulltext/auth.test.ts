@@ -41,13 +41,14 @@ describe("Cypher -> fulltext -> Auth", () => {
         test("simple match with auth where", async () => {
             const typeDefs = /* GraphQL */ `
                 type Movie
+                    @node
                     @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
                     @authorization(filter: [{ where: { node: { director: { id: "$jwt.sub" } } } }]) {
                     title: String
                     director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
                 }
 
-                type Person {
+                type Person @node {
                     id: ID
                 }
             `;
@@ -97,13 +98,14 @@ describe("Cypher -> fulltext -> Auth", () => {
         test("simple match with auth allow", async () => {
             const typeDefs = /* GraphQL */ `
                 type Movie
+                    @node
                     @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
                     @authorization(validate: [{ when: [BEFORE], where: { node: { director: { id: "$jwt.sub" } } } }]) {
                     title: String
                     director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
                 }
 
-                type Person {
+                type Person @node {
                     id: ID
                 }
             `;
@@ -153,6 +155,7 @@ describe("Cypher -> fulltext -> Auth", () => {
         test("simple match with auth allow ALL", async () => {
             const typeDefs = /* GraphQL */ `
                 type Movie
+                    @node
                     @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
                     @authorization(
                         validate: [{ when: [BEFORE], where: { node: { director_ALL: { id: "$jwt.sub" } } } }]
@@ -161,7 +164,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                     director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
                 }
 
-                type Person {
+                type Person @node {
                     id: ID
                 }
             `;
@@ -211,6 +214,7 @@ describe("Cypher -> fulltext -> Auth", () => {
         test("simple match with auth allow on connection node", async () => {
             const typeDefs = /* GraphQL */ `
                 type Movie
+                    @node
                     @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
                     @authorization(
                         validate: [
@@ -221,7 +225,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                     director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
                 }
 
-                type Person {
+                type Person @node {
                     id: ID
                 }
             `;
@@ -271,6 +275,7 @@ describe("Cypher -> fulltext -> Auth", () => {
         test("simple match with auth allow on connection node ALL", async () => {
             const typeDefs = /* GraphQL */ `
                 type Movie
+                    @node
                     @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
                     @authorization(
                         validate: [
@@ -284,7 +289,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                     director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
                 }
 
-                type Person {
+                type Person @node {
                     id: ID
                 }
             `;
@@ -334,6 +339,7 @@ describe("Cypher -> fulltext -> Auth", () => {
         test("simple match with auth allow on connection edge", async () => {
             const typeDefs = /* GraphQL */ `
                 type Movie
+                    @node
                     @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
                     @authorization(
                         validate: [
@@ -344,7 +350,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                     director: [Person!]! @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
                 }
 
-                type Person {
+                type Person @node {
                     id: ID
                 }
 
@@ -395,6 +401,7 @@ describe("Cypher -> fulltext -> Auth", () => {
         test("simple match with auth allow on connection edge ALL", async () => {
             const typeDefs = /* GraphQL */ `
                 type Movie
+                    @node
                     @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
                     @authorization(
                         validate: [
@@ -405,7 +412,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                     director: [Person!]! @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
                 }
 
-                type Person {
+                type Person @node {
                     id: ID
                 }
 
@@ -458,13 +465,14 @@ describe("Cypher -> fulltext -> Auth", () => {
         test("simple match with auth where", async () => {
             const typeDefs = /* GraphQL */ `
                 type Movie
+                    @node
                     @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
                     @authorization(filter: [{ where: { node: { director: { id: "$jwt.sub" } } } }]) {
                     title: String
                     director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
                 }
 
-                type Person {
+                type Person @node {
                     id: ID
                 }
             `;
@@ -517,13 +525,14 @@ describe("Cypher -> fulltext -> Auth", () => {
         test("simple match with auth allow", async () => {
             const typeDefs = /* GraphQL */ `
                 type Movie
+                    @node
                     @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
                     @authorization(validate: [{ when: [BEFORE], where: { node: { director: { id: "$jwt.sub" } } } }]) {
                     title: String
                     director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
                 }
 
-                type Person {
+                type Person @node {
                     id: ID
                 }
             `;
@@ -576,6 +585,7 @@ describe("Cypher -> fulltext -> Auth", () => {
         test("simple match with auth allow ALL", async () => {
             const typeDefs = /* GraphQL */ `
                 type Movie
+                    @node
                     @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
                     @authorization(
                         validate: [{ when: [BEFORE], where: { node: { director_ALL: { id: "$jwt.sub" } } } }]
@@ -584,7 +594,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                     director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
                 }
 
-                type Person {
+                type Person @node {
                     id: ID
                 }
             `;
@@ -640,6 +650,7 @@ describe("Cypher -> fulltext -> Auth", () => {
         test("simple match with auth allow on connection node", async () => {
             const typeDefs = /* GraphQL */ `
                 type Movie
+                    @node
                     @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
                     @authorization(
                         validate: [
@@ -650,7 +661,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                     director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
                 }
 
-                type Person {
+                type Person @node {
                     id: ID
                 }
             `;
@@ -703,6 +714,7 @@ describe("Cypher -> fulltext -> Auth", () => {
         test("simple match with auth allow on connection node ALL", async () => {
             const typeDefs = /* GraphQL */ `
                 type Movie
+                    @node
                     @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
                     @authorization(
                         validate: [
@@ -716,7 +728,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                     director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
                 }
 
-                type Person {
+                type Person @node {
                     id: ID
                 }
             `;
@@ -772,6 +784,7 @@ describe("Cypher -> fulltext -> Auth", () => {
         test("simple match with auth allow on connection edge", async () => {
             const typeDefs = /* GraphQL */ `
                 type Movie
+                    @node
                     @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
                     @authorization(
                         validate: [
@@ -782,7 +795,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                     director: [Person!]! @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
                 }
 
-                type Person {
+                type Person @node {
                     id: ID
                 }
 
@@ -836,6 +849,7 @@ describe("Cypher -> fulltext -> Auth", () => {
         test("simple match with auth allow on connection edge ALL", async () => {
             const typeDefs = /* GraphQL */ `
                 type Movie
+                    @node
                     @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
                     @authorization(
                         validate: [
@@ -846,7 +860,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                     director: [Person!]! @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
                 }
 
-                type Person {
+                type Person @node {
                     id: ID
                 }
 

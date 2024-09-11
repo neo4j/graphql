@@ -29,13 +29,13 @@ describe("Update -> ConnectOrCreate Top Level", () => {
 
     beforeEach(async () => {
         typeDefs = /* GraphQL */ `
-        type ${typeMovie.name} {
+        type ${typeMovie.name} @node {
             title: String!
             id: Int! @unique
             ${typeActor.plural}: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN, properties:"ActedIn")
         }
 
-        type ${typeActor.name} {
+        type ${typeActor.name} @node {
             name: String
             ${typeMovie.plural}: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT, properties:"ActedIn")
         }

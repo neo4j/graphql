@@ -39,7 +39,7 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
                 distribution: [DistributionHouse!]! @relationship(type: "DISTRIBUTED_BY", direction: IN)
             }
 
-            type Series implements Production {
+            type Series implements Production @node {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
                 episodes: Int!
@@ -55,12 +55,12 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
                 actedIn: [Production!]! @declareRelationship
             }
 
-            type MaleActor implements Actor {
+            type MaleActor implements Actor @node {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
                 rating: Int!
             }
-            type FemaleActor implements Actor {
+            type FemaleActor implements Actor @node {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
                 age: Int!
@@ -70,17 +70,17 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
                 name: String!
             }
 
-            type Dishney implements DistributionHouse {
+            type Dishney implements DistributionHouse @node {
                 name: String!
                 review: String!
             }
 
-            type Prime implements DistributionHouse {
+            type Prime implements DistributionHouse @node {
                 name: String!
                 review: String!
             }
 
-            type Netflix implements DistributionHouse {
+            type Netflix implements DistributionHouse @node {
                 name: String!
                 review: String!
             }
@@ -163,7 +163,7 @@ describe("https://github.com/neo4j/graphql/issues/2709 union parity", () => {
                 distribution: [DistributionHouse!]! @relationship(type: "DISTRIBUTED_BY", direction: IN)
             }
 
-            type Series {
+            type Series @node {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
                 episodes: Int!
@@ -179,12 +179,12 @@ describe("https://github.com/neo4j/graphql/issues/2709 union parity", () => {
                 actedIn: [Production!]! @declareRelationship
             }
 
-            type MaleActor implements Actor {
+            type MaleActor implements Actor @node {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
                 rating: Int!
             }
-            type FemaleActor implements Actor {
+            type FemaleActor implements Actor @node {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
                 age: Int!
@@ -192,17 +192,17 @@ describe("https://github.com/neo4j/graphql/issues/2709 union parity", () => {
 
             union DistributionHouse = Dishney | Prime | Netflix
 
-            type Dishney {
+            type Dishney @node {
                 name: String!
                 review: String!
             }
 
-            type Prime {
+            type Prime @node {
                 name: String!
                 review: String!
             }
 
-            type Netflix {
+            type Netflix @node {
                 name: String!
                 review: String!
             }

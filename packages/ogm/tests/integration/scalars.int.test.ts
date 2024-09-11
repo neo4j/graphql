@@ -27,7 +27,7 @@ describe("Neo4j native types used with OGM", () => {
     const TestType = new UniqueType("TestType");
 
     const typeDefs = /* GraphQL */ `
-        type ${TestType.name} {
+        type ${TestType.name} @node {
             date: Date
             dateTime: DateTime
             duration: Duration

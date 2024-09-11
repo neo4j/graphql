@@ -43,7 +43,7 @@ describe("auth/object-path", () => {
                 nestedSub: String! @jwtClaim(path: "nested.object.path.sub")
             }
 
-            type ${User} {
+            type ${User} @node {
                 id: ID
             }
 
@@ -95,16 +95,16 @@ describe("auth/object-path", () => {
 
     test("should use $context value plucking on auth", async () => {
         const typeDefs = `
-            type ${User} {
+            type ${User} @node {
                 id: ID
             }
 
-            type ${Post} {
+            type ${Post} @node {
                 id: ID
                 creator: ${User}! @relationship(type: "HAS_POST", direction: IN)
             }
 
-            extend type ${Post} @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { creator: { id: "$context.userId" } } } }])
+            extend type ${Post} @node @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { creator: { id: "$context.userId" } } } }])
         `;
 
         const userId = generate({
@@ -154,7 +154,7 @@ describe("auth/object-path", () => {
                 roles: [String!]! @jwtClaim(path: "https://github\\\\.com/claims.https://github\\\\.com/claims/roles")
             }
 
-            type ${User} {
+            type ${User} @node {
                 id: ID
             }
 
@@ -204,7 +204,7 @@ describe("auth/object-path", () => {
                 roles: [String!]! 
             }
 
-            type ${User} {
+            type ${User} @node {
                 id: ID
             }
 

@@ -18,18 +18,18 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Cypher", () => {
     test("Custom Directive Simple", async () => {
         const typeDefs = gql`
-            type Actor {
+            type Actor @node {
                 name: String
             }
 
-            type Movie {
+            type Movie @node {
                 id: ID
                 actors(title: String): [Actor]
                     @cypher(
@@ -269,7 +269,7 @@ describe("Cypher", () => {
 
     test("Sort On Primitive Field", async () => {
         const typeDefs = gql`
-            type Actor {
+            type Actor @node {
                 name: String
                 totalScreenTime: Int!
                     @cypher(
@@ -281,7 +281,7 @@ describe("Cypher", () => {
                     )
             }
 
-            type Movie {
+            type Movie @node {
                 id: ID
                 actors(title: String): [Actor]
                     @cypher(

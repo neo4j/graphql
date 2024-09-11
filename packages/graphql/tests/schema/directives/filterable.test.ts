@@ -34,13 +34,13 @@ describe("@filterable directive", () => {
     describe("on SCALAR", () => {
         test("default arguments should disable aggregation", async () => {
             const typeDefs = gql`
-                type Actor {
+                type Actor @node {
                     username: String!
                     password: String!
                     movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
 
-                type Movie {
+                type Movie @node {
                     title: String @filterable
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
@@ -103,13 +103,13 @@ describe("@filterable directive", () => {
 
         test("enable value and aggregation filters", async () => {
             const typeDefs = gql`
-                type Actor {
+                type Actor @node {
                     username: String!
                     password: String!
                     movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
 
-                type Movie {
+                type Movie @node {
                     title: String @filterable(byValue: true, byAggregate: true)
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
@@ -210,13 +210,13 @@ describe("@filterable directive", () => {
 
         test("enable only aggregation filters", async () => {
             const typeDefs = gql`
-                type Actor {
+                type Actor @node {
                     username: String!
                     password: String!
                     movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
 
-                type Movie {
+                type Movie @node {
                     title: String @filterable(byValue: false, byAggregate: true)
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
@@ -300,13 +300,13 @@ describe("@filterable directive", () => {
     describe("on RELATIONSHIP FIELD", () => {
         test("default arguments should disable aggregation", async () => {
             const typeDefs = gql`
-                type Actor {
+                type Actor @node {
                     username: String!
                     password: String!
                     movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
 
-                type Movie {
+                type Movie @node {
                     title: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN) @filterable
                 }
@@ -348,13 +348,13 @@ describe("@filterable directive", () => {
 
         test("enable value and aggregation filters", async () => {
             const typeDefs = gql`
-                type Actor {
+                type Actor @node {
                     username: String!
                     password: String!
                     movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
 
-                type Movie {
+                type Movie @node {
                     title: String
                     actors: [Actor!]!
                         @relationship(type: "ACTED_IN", direction: IN)
@@ -398,13 +398,13 @@ describe("@filterable directive", () => {
 
         test("enable only aggregation filters", async () => {
             const typeDefs = gql`
-                type Actor {
+                type Actor @node {
                     username: String!
                     password: String!
                     movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
 
-                type Movie {
+                type Movie @node {
                     title: String
                     actors: [Actor!]!
                         @relationship(type: "ACTED_IN", direction: IN)
@@ -448,13 +448,13 @@ describe("@filterable directive", () => {
 
         test("enable only value filters", async () => {
             const typeDefs = gql`
-                type Actor {
+                type Actor @node {
                     username: String!
                     password: String!
                     movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
 
-                type Movie {
+                type Movie @node {
                     title: String
                     actors: [Actor!]!
                         @relationship(type: "ACTED_IN", direction: IN)
@@ -500,7 +500,7 @@ describe("@filterable directive", () => {
     describe("on INTERFACE RELATIONSHIP FIELD, (aggregation are not generated for abstract types)", () => {
         test("default arguments should disable aggregation", async () => {
             const typeDefs = gql`
-                type Actor implements Person {
+                type Actor implements Person @node {
                     username: String!
                     password: String!
                     movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
@@ -510,7 +510,7 @@ describe("@filterable directive", () => {
                     username: String!
                 }
 
-                type Movie {
+                type Movie @node {
                     title: String
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN) @filterable
                 }
@@ -552,7 +552,7 @@ describe("@filterable directive", () => {
 
         test("enable value and aggregation filters", async () => {
             const typeDefs = gql`
-                type Actor implements Person {
+                type Actor implements Person @node {
                     username: String!
                     password: String!
                     movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
@@ -562,7 +562,7 @@ describe("@filterable directive", () => {
                     username: String!
                 }
 
-                type Movie {
+                type Movie @node {
                     title: String
                     actors: [Person!]!
                         @relationship(type: "ACTED_IN", direction: IN)
@@ -606,7 +606,7 @@ describe("@filterable directive", () => {
 
         test("enable only value filters", async () => {
             const typeDefs = gql`
-                type Actor implements Person {
+                type Actor implements Person @node {
                     username: String!
                     password: String!
                     movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
@@ -616,7 +616,7 @@ describe("@filterable directive", () => {
                     username: String!
                 }
 
-                type Movie {
+                type Movie @node {
                     title: String
                     actors: [Person!]!
                         @relationship(type: "ACTED_IN", direction: IN)
@@ -660,7 +660,7 @@ describe("@filterable directive", () => {
 
         test("disable value filters", async () => {
             const typeDefs = gql`
-                type Actor implements Person {
+                type Actor implements Person @node {
                     username: String!
                     password: String!
                     movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
@@ -670,7 +670,7 @@ describe("@filterable directive", () => {
                     username: String!
                 }
 
-                type Movie {
+                type Movie @node {
                     title: String
                     actors: [Person!]!
                         @relationship(type: "ACTED_IN", direction: IN)
@@ -716,13 +716,13 @@ describe("@filterable directive", () => {
     describe("on UNION RELATIONSHIP FIELD, (aggregation are no generated for abstract types)", () => {
         test("default arguments should disable aggregation", async () => {
             const typeDefs = gql`
-                type Actor {
+                type Actor @node {
                     username: String!
                     password: String!
                     movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
 
-                type Appearance {
+                type Appearance @node {
                     username: String!
                     password: String!
                     movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
@@ -730,7 +730,7 @@ describe("@filterable directive", () => {
 
                 union Person = Actor | Appearance
 
-                type Movie {
+                type Movie @node {
                     title: String
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN) @filterable
                 }
@@ -772,13 +772,13 @@ describe("@filterable directive", () => {
 
         test("enable value and aggregation filters", async () => {
             const typeDefs = gql`
-                type Actor {
+                type Actor @node {
                     username: String!
                     password: String!
                     movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
 
-                type Appearance {
+                type Appearance @node {
                     username: String!
                     password: String!
                     movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
@@ -786,7 +786,7 @@ describe("@filterable directive", () => {
 
                 union Person = Actor | Appearance
 
-                type Movie {
+                type Movie @node {
                     title: String
                     actors: [Person!]!
                         @relationship(type: "ACTED_IN", direction: IN)
@@ -830,13 +830,13 @@ describe("@filterable directive", () => {
 
         test("enable only value filters", async () => {
             const typeDefs = gql`
-                type Actor {
+                type Actor @node {
                     username: String!
                     password: String!
                     movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
 
-                type Appearance {
+                type Appearance @node {
                     username: String!
                     password: String!
                     movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
@@ -844,7 +844,7 @@ describe("@filterable directive", () => {
 
                 union Person = Actor | Appearance
 
-                type Movie {
+                type Movie @node {
                     title: String
                     actors: [Person!]!
                         @relationship(type: "ACTED_IN", direction: IN)
@@ -891,13 +891,13 @@ describe("@filterable directive", () => {
         describe("on SCALAR", () => {
             test("default arguments should disable aggregation", async () => {
                 const typeDefs = gql`
-                    type Actor {
+                    type Actor @node {
                         username: String!
                         password: String!
                         movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
 
-                    type Movie {
+                    type Movie @node {
                         title: String @filterable
                         actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                     }
@@ -1704,13 +1704,13 @@ describe("@filterable directive", () => {
 
             test("enable value and aggregation filters", async () => {
                 const typeDefs = gql`
-                    type Actor {
+                    type Actor @node {
                         username: String!
                         password: String!
                         movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
 
-                    type Movie {
+                    type Movie @node {
                         title: String @filterable(byValue: true, byAggregate: true)
                         actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                     }
@@ -2559,13 +2559,13 @@ describe("@filterable directive", () => {
 
             test("enable only aggregation filters", async () => {
                 const typeDefs = gql`
-                    type Actor {
+                    type Actor @node {
                         username: String!
                         password: String!
                         movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
 
-                    type Movie {
+                    type Movie @node {
                         title: String @filterable(byValue: false, byAggregate: true)
                         actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                     }
@@ -3378,13 +3378,13 @@ describe("@filterable directive", () => {
         describe("on RELATIONSHIP FIELD", () => {
             test("default arguments should disable aggregation", async () => {
                 const typeDefs = gql`
-                    type Actor {
+                    type Actor @node {
                         username: String!
                         password: String!
                         movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
 
-                    type Movie {
+                    type Movie @node {
                         title: String
                         actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN) @filterable
                     }
@@ -4145,13 +4145,13 @@ describe("@filterable directive", () => {
 
             test("enable value and aggregation filters", async () => {
                 const typeDefs = gql`
-                    type Actor {
+                    type Actor @node {
                         username: String!
                         password: String!
                         movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
 
-                    type Movie {
+                    type Movie @node {
                         title: String
                         actors: [Actor!]!
                             @relationship(type: "ACTED_IN", direction: IN)
@@ -5002,13 +5002,13 @@ describe("@filterable directive", () => {
 
             test("enable only aggregation filters", async () => {
                 const typeDefs = gql`
-                    type Actor {
+                    type Actor @node {
                         username: String!
                         password: String!
                         movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
 
-                    type Movie {
+                    type Movie @node {
                         title: String
                         actors: [Actor!]!
                             @relationship(type: "ACTED_IN", direction: IN)
@@ -5831,13 +5831,13 @@ describe("@filterable directive", () => {
 
             test("enable only value filters", async () => {
                 const typeDefs = gql`
-                    type Actor {
+                    type Actor @node {
                         username: String!
                         password: String!
                         movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
 
-                    type Movie {
+                    type Movie @node {
                         title: String
                         actors: [Actor!]!
                             @relationship(type: "ACTED_IN", direction: IN)
@@ -6601,7 +6601,7 @@ describe("@filterable directive", () => {
         describe("on INTERFACE RELATIONSHIP FIELD, (aggregation does not exists on abstract types)", () => {
             test("default arguments should disable aggregation", async () => {
                 const typeDefs = gql`
-                    type Actor implements Person {
+                    type Actor implements Person @node {
                         username: String!
                         password: String!
                         movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
@@ -6611,7 +6611,7 @@ describe("@filterable directive", () => {
                         username: String!
                     }
 
-                    type Movie {
+                    type Movie @node {
                         title: String
                         actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN) @filterable
                     }
@@ -7453,7 +7453,7 @@ describe("@filterable directive", () => {
 
             test("enable value and aggregation filters", async () => {
                 const typeDefs = gql`
-                    type Actor implements Person {
+                    type Actor implements Person @node {
                         username: String!
                         password: String!
                         movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
@@ -7463,7 +7463,7 @@ describe("@filterable directive", () => {
                         username: String!
                     }
 
-                    type Movie {
+                    type Movie @node {
                         title: String
                         actors: [Person!]!
                             @relationship(type: "ACTED_IN", direction: IN)
@@ -8361,7 +8361,7 @@ describe("@filterable directive", () => {
 
             test("enable only value filters", async () => {
                 const typeDefs = gql`
-                    type Actor implements Person {
+                    type Actor implements Person @node {
                         username: String!
                         password: String!
                         movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
@@ -8371,7 +8371,7 @@ describe("@filterable directive", () => {
                         username: String!
                     }
 
-                    type Movie {
+                    type Movie @node {
                         title: String
                         actors: [Person!]!
                             @relationship(type: "ACTED_IN", direction: IN)
@@ -9217,13 +9217,13 @@ describe("@filterable directive", () => {
         describe("on UNION RELATIONSHIP FIELD, (aggregation does not exists on abstract types)", () => {
             test("default arguments should disable aggregation", async () => {
                 const typeDefs = gql`
-                    type Actor {
+                    type Actor @node {
                         username: String!
                         password: String!
                         movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
 
-                    type Appearance {
+                    type Appearance @node {
                         username: String!
                         password: String!
                         movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
@@ -9231,7 +9231,7 @@ describe("@filterable directive", () => {
 
                     union Person = Actor | Appearance
 
-                    type Movie {
+                    type Movie @node {
                         title: String
                         actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN) @filterable
                     }
@@ -10452,13 +10452,13 @@ describe("@filterable directive", () => {
 
             test("enable value and aggregation filters", async () => {
                 const typeDefs = gql`
-                    type Actor {
+                    type Actor @node {
                         username: String!
                         password: String!
                         movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
 
-                    type Appearance {
+                    type Appearance @node {
                         username: String!
                         password: String!
                         movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
@@ -10466,7 +10466,7 @@ describe("@filterable directive", () => {
 
                     union Person = Actor | Appearance
 
-                    type Movie {
+                    type Movie @node {
                         title: String
                         actors: [Person!]!
                             @relationship(type: "ACTED_IN", direction: IN)
@@ -11689,13 +11689,13 @@ describe("@filterable directive", () => {
 
             test("enable only value filters", async () => {
                 const typeDefs = gql`
-                    type Actor {
+                    type Actor @node {
                         username: String!
                         password: String!
                         movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
 
-                    type Appearance {
+                    type Appearance @node {
                         username: String!
                         password: String!
                         movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
@@ -11703,7 +11703,7 @@ describe("@filterable directive", () => {
 
                     union Person = Actor | Appearance
 
-                    type Movie {
+                    type Movie @node {
                         title: String
                         actors: [Person!]!
                             @relationship(type: "ACTED_IN", direction: IN)

@@ -39,13 +39,13 @@ describe("Top-level interface query fields", () => {
         MyOtherImplementationType = testHelper.createUniqueType("MyOtherImplementation");
 
         typeDefs = `
-            type ${SomeNodeType} implements MyOtherInterface & MyInterface {
+            type ${SomeNodeType} implements MyOtherInterface & MyInterface @node {
                 id: ID! @id @unique
                 something: String
                 somethingElse: String
                 other: [${OtherNodeType}!]! @relationship(type: "HAS_OTHER_NODES", direction: OUT)
             }
-            type ${OtherNodeType} {
+            type ${OtherNodeType} @node {
                 id: ID! @id @unique
                 interfaceField: MyInterface! @relationship(type: "HAS_INTERFACE_NODES", direction: OUT)
             }
@@ -57,11 +57,11 @@ describe("Top-level interface query fields", () => {
                 something: String
             }
 
-            type ${MyImplementationType} implements MyInterface {
+            type ${MyImplementationType} implements MyInterface @node {
                 id: ID! @id @unique
             }
 
-            type ${MyOtherImplementationType} implements MyInterface {
+            type ${MyOtherImplementationType} implements MyInterface @node {
                 id: ID! @id @unique
                 someField: String
             }

@@ -43,7 +43,7 @@ describe("Field Level Aggregations Auth", () => {
             typeMovie = testHelper.createUniqueType("Movie");
             typeActor = testHelper.createUniqueType("Actor");
             typeDefs = `
-        type ${typeMovie.name} {
+        type ${typeMovie.name} @node {
             name: String
             year: Int
             createdAt: DateTime
@@ -51,7 +51,7 @@ describe("Field Level Aggregations Auth", () => {
             ${typeActor.plural}: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
         }
     
-        type ${typeActor.name} {
+        type ${typeActor.name} @node {
             name: String
             year: Int
             createdAt: DateTime
@@ -150,7 +150,7 @@ describe("Field Level Aggregations Auth", () => {
             typeMovie = testHelper.createUniqueType("Movie");
             typeActor = testHelper.createUniqueType("Actor");
             typeDefs = `
-                type ${typeMovie.name} {
+                type ${typeMovie.name} @node {
                     name: String
                     year: Int
                     createdAt: DateTime
@@ -158,7 +158,7 @@ describe("Field Level Aggregations Auth", () => {
                     ${typeActor.plural}: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
             
-                type ${typeActor.name} {
+                type ${typeActor.name} @node {
                     name: String
                     year: Int
                     createdAt: DateTime

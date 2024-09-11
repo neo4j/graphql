@@ -42,7 +42,7 @@ describe("Neo4jGraphQL", () => {
                 const errors: Error[] = await getErrorAsync(async () => {
                     schema = await new Neo4jGraphQL({
                         typeDefs:
-                            'type User @authorization(filter: [{ where: { banana: { id: "$jwt.sub" } } }]) {id: ID}',
+                            'type User @node @authorization(filter: [{ where: { banana: { id: "$jwt.sub" } } }]) {id: ID}',
                     }).getExecutableSchema();
                 });
                 expect(errors).toHaveLength(1);

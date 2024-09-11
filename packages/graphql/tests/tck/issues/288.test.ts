@@ -26,13 +26,13 @@ describe("#288", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type USER {
+            type USER @node {
                 USERID: String
                 COMPANYID: String
                 COMPANY: [COMPANY!]! @relationship(type: "IS_PART_OF", direction: OUT)
             }
 
-            type COMPANY {
+            type COMPANY @node {
                 USERS: [USER!]! @relationship(type: "IS_PART_OF", direction: IN)
             }
         `;

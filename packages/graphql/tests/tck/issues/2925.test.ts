@@ -18,19 +18,19 @@
  */
 
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/2925", () => {
     let neoSchema: Neo4jGraphQL;
 
     const typeDefs = /* GraphQL */ `
-        type Group {
+        type Group @node {
             name: String
             hasGroupUser: [User!]! @relationship(type: "HAS_GROUP", direction: IN)
             hasRequiredGroupUser: [User!]! @relationship(type: "HAS_REQUIRED_GROUP", direction: IN)
         }
 
-        type User {
+        type User @node {
             name: String
             hasGroup: Group @relationship(type: "HAS_GROUP", direction: OUT)
             hasRequiredGroup: Group! @relationship(type: "HAS_REQUIRED_GROUP", direction: OUT)

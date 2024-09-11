@@ -32,7 +32,7 @@ describe("generate", () => {
 
     test("should generate simple types of a single node and return the string", async () => {
         const typeDefs = `
-            type User {
+            type User @node {
                 name: String
             }
         `;
@@ -309,7 +309,7 @@ describe("generate", () => {
 
     test("should generate simple types of a single node with fulltext directive and return the string", async () => {
         const typeDefs = `
-            type User {
+            type User @node {
                 name: String
             }
 
@@ -644,7 +644,7 @@ describe("generate", () => {
         filesToDelete.push(outFile);
 
         const typeDefs = `
-            type User {
+            type User @node {
                 name: String
             }
         `;
@@ -923,11 +923,11 @@ describe("generate", () => {
 
     test("should generate more complex types of two nodes with a relationship and properties and return the string", async () => {
         const typeDefs = `
-            type Movie {
+            type Movie @node {
                 title: String!
                 actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
-            type Person {
+            type Person @node {
                 name: String!
             }
             type ActedIn @relationshipProperties {
@@ -1688,7 +1688,7 @@ describe("generate", () => {
 
     test("should throw outFile or noWrite required", async () => {
         const typeDefs = `
-          type User {
+          type User @node {
               name: String
           }
         `;
@@ -1708,7 +1708,7 @@ describe("generate", () => {
 
     test("https://github.com/neo4j/graphql/issues/3539", async () => {
         const typeDefs = /* GraphQL */ `
-            type FAQ {
+            type FAQ @node {
                 id: ID! @id @unique
                 activated: Boolean!
                 name: String!
@@ -1716,7 +1716,7 @@ describe("generate", () => {
                     @relationship(type: "FAQ_ENTRY_IN_FAQ", properties: "FaqEntryInFaq", direction: IN)
             }
 
-            type FAQEntry {
+            type FAQEntry @node {
                 id: ID! @id @unique
                 title: String!
                 body: String!

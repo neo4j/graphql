@@ -36,7 +36,7 @@ describe("interface implementing interface with declared relationships - three l
         Episode = testHelper.createUniqueType("Episode");
 
         const typeDefs = gql`
-            type ${Episode} {
+            type ${Episode} @node {
                 runtime: Int!
                 series: ${Series}! @relationship(type: "HAS_EPISODE", direction: IN)
             }
@@ -61,13 +61,13 @@ describe("interface implementing interface with declared relationships - three l
                 actors: [${Actor}!]! 
             }
 
-            type ${Movie} implements WatchableThing & Production & Show & Thing {
+            type ${Movie} implements WatchableThing & Production & Show & Thing @node {
                 title: String!
                 runtime: Int!
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type ${Series} implements WatchableThing & Production & Show & Thing {
+            type ${Series} implements WatchableThing & Production & Show & Thing @node {
                 title: String!
                 episodeCount: Int!
                 episodes: [${Episode}!]! @relationship(type: "HAS_EPISODE", direction: OUT)
@@ -83,7 +83,7 @@ describe("interface implementing interface with declared relationships - three l
                 episodeNr: Int!
             }
 
-            type ${Actor} {
+            type ${Actor} @node {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }

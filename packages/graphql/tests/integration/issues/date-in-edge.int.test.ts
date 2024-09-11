@@ -40,17 +40,17 @@ describe("587: Dates in edges can cause wrongly generated cypher", () => {
 
     test("should not throw when returning a date in an edge", async () => {
         typeDefs = `
-            type ${Genre} {
+            type ${Genre} @node {
                 id: ID!
                 movies: [${Movie}!]! @relationship(type: "MOVIE", direction: OUT)
             }
 
-            type ${Movie} {
+            type ${Movie} @node {
                 title: String!
                 actors: [${Actor}!]! @relationship(type: "ACTOR", direction: OUT)
             }
 
-            type ${Actor} {
+            type ${Actor} @node {
                 name: String!
                 birthday: DateTime!
                 movie: ${Movie}! @relationship(type: "ACTOR", direction: IN)

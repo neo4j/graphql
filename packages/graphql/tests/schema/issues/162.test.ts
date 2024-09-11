@@ -18,23 +18,23 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("162", () => {
     test("2 instances of DeleteInput type created", async () => {
         const typeDefs = gql`
-            type Tiger {
+            type Tiger @node {
                 x: Int
             }
 
-            type TigerJawLevel2 {
+            type TigerJawLevel2 @node {
                 id: ID
                 part1: TigerJawLevel2Part1! @relationship(type: "REL1", direction: OUT)
             }
 
-            type TigerJawLevel2Part1 {
+            type TigerJawLevel2Part1 @node {
                 id: ID
                 tiger: Tiger! @relationship(type: "REL2", direction: OUT)
             }

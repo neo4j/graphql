@@ -25,7 +25,7 @@ import { Neo4jGraphQL } from "../../src";
 describe("String Comparators", () => {
     test("String comparators should be present if explicitly defined in the configuration", async () => {
         const typeDefs = gql`
-            type Movie {
+            type Movie @node {
                 title: String
             }
         `;
@@ -190,7 +190,7 @@ describe("String Comparators", () => {
 
     test("String comparators should not be present if not explicitly defined in the configuration", async () => {
         const typeDefs = gql`
-            type Movie {
+            type Movie @node {
                 title: String
             }
         `;
@@ -341,7 +341,7 @@ describe("String Comparators", () => {
 
     test("If String comparators are partially defined, then only the defined ones should be present", async () => {
         const typeDefs = gql`
-            type Movie {
+            type Movie @node {
                 title: String
             }
         `;
@@ -503,7 +503,7 @@ describe("String Comparators", () => {
 
     test("string comparator relationship and relationship properties", async () => {
         const typeDefs = gql`
-            type Movie {
+            type Movie @node {
                 title: String
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
@@ -512,7 +512,7 @@ describe("String Comparators", () => {
                 screenTime: String
             }
 
-            type Actor {
+            type Actor @node {
                 name: String
                 actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }

@@ -40,7 +40,7 @@ describe("auth/bind", () => {
     describe("create", () => {
         test("should throw forbidden when creating a node with invalid bind", async () => {
             const typeDefs = `
-                type ${User} {
+                type ${User} @node {
                     id: ID
                 }
 
@@ -79,12 +79,12 @@ describe("auth/bind", () => {
 
         test("should throw forbidden when creating a nested node with invalid bind", async () => {
             const typeDefs = `
-                type ${Post} {
+                type ${Post} @node {
                     id: ID
                     creator: ${User}! @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                type ${User} {
+                type ${User} @node {
                     id: ID
                     posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
@@ -136,12 +136,12 @@ describe("auth/bind", () => {
 
         test("should throw forbidden when creating field with invalid bind", async () => {
             const typeDefs = `
-                type ${Post} {
+                type ${Post} @node {
                     id: ID
                     creator: ${User}! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                type ${User} {
+                type ${User} @node {
                     id: ID
                 }
 
@@ -196,7 +196,7 @@ describe("auth/bind", () => {
 
         test("should no throw forbidden when creating a node without passing the bind specified at the Field level", async () => {
             const typeDefs = `
-                type ${User} {
+                type ${User} @node {
                     id: ID
                     name: String
                 }
@@ -247,7 +247,7 @@ describe("auth/bind", () => {
 
         test("should throw forbidden when creating a node when rule is not satisfied", async () => {
             const typeDefs = `
-                type ${User} {
+                type ${User} @node {
                     id: ID 
                     name: String
                 }
@@ -298,13 +298,13 @@ describe("auth/bind", () => {
 
         test("should no throw forbidden when creating a nested node without passing the bind specified at the Field level", async () => {
             const typeDefs = `
-                type ${Post} {
+                type ${Post} @node {
                     id: ID
                     title: String
                     creator: ${User}! @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                type ${User} {
+                type ${User} @node {
                     id: ID
                     posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
@@ -364,12 +364,12 @@ describe("auth/bind", () => {
 
         test("should throw forbidden when creating field with invalid bind (bind across relationships)", async () => {
             const typeDefs = `
-                type ${Post} {
+                type ${Post} @node {
                     id: ID
                     creator: ${User}! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                type ${User} {
+                type ${User} @node {
                     id: ID
                 }
 
@@ -428,7 +428,7 @@ describe("auth/bind", () => {
     describe("update", () => {
         test("should throw forbidden when updating a node with invalid bind", async () => {
             const typeDefs = `
-                type ${User} {
+                type ${User} @node {
                     id: ID
                 }
 
@@ -471,12 +471,12 @@ describe("auth/bind", () => {
 
         test("should throw forbidden when updating a nested node with invalid bind", async () => {
             const typeDefs = `
-                type ${Post} {
+                type ${Post} @node {
                     id: ID
                     creator: ${User}! @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                type ${User} {
+                type ${User} @node {
                     id: ID
                     posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
@@ -536,7 +536,7 @@ describe("auth/bind", () => {
 
         test("should throw forbidden when updating a node property with invalid bind", async () => {
             const typeDefs = `
-                type ${User} {
+                type ${User} @node {
                     id: ID
                 }
 
@@ -585,11 +585,11 @@ describe("auth/bind", () => {
     describe("connect", () => {
         test("should throw forbidden when connecting a node property with invalid bind", async () => {
             const typeDefs = `
-                type ${User} {
+                type ${User} @node {
                     id: ID
                 }
 
-                type ${Post} {
+                type ${Post} @node {
                     id: ID
                     creator: ${User}! @relationship(type: "HAS_POST", direction: IN)
                 }
@@ -646,11 +646,11 @@ describe("auth/bind", () => {
     describe("disconnect", () => {
         test("should throw forbidden when disconnecting a node property with invalid bind", async () => {
             const typeDefs = `
-                type ${User} {
+                type ${User} @node {
                     id: ID
                 }
 
-                type ${Post} {
+                type ${Post} @node {
                     id: ID
                     creator: ${User}! @relationship(type: "HAS_POST", direction: IN)
                 }

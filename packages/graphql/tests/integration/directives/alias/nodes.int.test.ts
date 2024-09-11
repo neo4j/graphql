@@ -31,7 +31,7 @@ describe("@alias directive", () => {
         typeDirector = testHelper.createUniqueType("Director");
 
         const typeDefs = `
-            type ${typeDirector} {
+            type ${typeDirector} @node {
                 name: String
                 nameAgain: String @alias(property: "name")
                 movies: [${typeMovie}!]! @relationship(direction: OUT, type: "DIRECTED", properties: "Directed")
@@ -42,7 +42,7 @@ describe("@alias directive", () => {
                 movieYear: Int @alias(property: "year")
             }
 
-            type ${typeMovie} {
+            type ${typeMovie} @node {
                 title: String
                 titleAgain: String @alias(property: "title")
                 directors: [${typeDirector}!]! @relationship(direction: IN, type: "DIRECTED", properties: "Directed")

@@ -29,7 +29,7 @@ describe("parseLimitDirective", () => {
         const defaultLimit = 10;
 
         const typeDefs = gql`
-            type Movie @limit(max: ${maxLimit}, default: ${defaultLimit}) {
+            type Movie @limit(max: ${maxLimit}, default: ${defaultLimit}) @node {
                 id: ID
             }
         `;
@@ -47,7 +47,7 @@ describe("parseLimitDirective", () => {
 
     test("should return correct object if default limit is undefined", () => {
         const typeDefs = gql`
-            type Movie @limit {
+            type Movie @limit @node {
                 id: ID
             }
         `;
@@ -67,7 +67,7 @@ describe("parseLimitDirective", () => {
         const defaultLimit = 100;
 
         const typeDefs = gql`
-            type Movie @limit(max: ${maxLimit}, default: ${defaultLimit}) {
+            type Movie @limit(max: ${maxLimit}, default: ${defaultLimit}) @node {
                 id: ID
             }
         `;
@@ -89,7 +89,7 @@ describe("parseLimitDirective", () => {
         test("should throw error when default limit is less than or equal to 0", () => {
             [-10, -100, 0].forEach((i) => {
                 const typeDefs = gql`
-                type Movie @limit(default: ${i}) {
+                type Movie @limit(default: ${i}) @node {
                     id: ID
                 }
             `;
@@ -109,7 +109,7 @@ describe("parseLimitDirective", () => {
     describe("max argument", () => {
         test("should fail if value is 0", () => {
             const typeDefs = gql`
-                type Movie @limit(max: 0) {
+                type Movie @limit(max: 0) @node {
                     id: ID
                 }
             `;
@@ -126,7 +126,7 @@ describe("parseLimitDirective", () => {
 
         test("should fail if value is less 0", () => {
             const typeDefs = gql`
-                type Movie @limit(max: -10) {
+                type Movie @limit(max: -10) @node {
                     id: ID
                 }
             `;

@@ -25,13 +25,13 @@ import { Neo4jGraphQL } from "../../../src";
 describe("Connection with interfaces", () => {
     test("Interface with connect mutation", async () => {
         const typeDefs = gql`
-            type Movie implements Production @subscription(events: []) {
+            type Movie implements Production @subscription(events: []) @node {
                 title: String!
                 id: ID @unique
                 director: [Creature!]! @relationship(type: "DIRECTED", direction: IN)
             }
 
-            type Series implements Production {
+            type Series implements Production @node {
                 title: String!
                 episode: Int!
                 id: ID @unique
@@ -43,7 +43,7 @@ describe("Connection with interfaces", () => {
                 director: [Creature!]! @declareRelationship
             }
 
-            type Person implements Creature {
+            type Person implements Creature @node {
                 id: ID
                 movies: Production! @relationship(type: "DIRECTED", direction: OUT)
             }

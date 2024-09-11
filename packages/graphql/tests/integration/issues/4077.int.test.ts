@@ -39,7 +39,7 @@ describe("https://github.com/neo4j/graphql/issues/4077", () => {
                 roles: [String!]!
             }
 
-            type ${PreviewClip} @mutation(operations: [DELETE]) {
+            type ${PreviewClip} @mutation(operations: [DELETE]) @node {
                 id: ID! @id
                 markedAsDone: Boolean! @default(value: false)
                 clippedFrom: ${Video}! @relationship(type: "VIDEO_HAS_PREVIEW_CLIP", direction: IN)
@@ -53,7 +53,7 @@ describe("https://github.com/neo4j/graphql/issues/4077", () => {
                     ]
                 )
 
-            type ${Video} @mutation(operations: [UPDATE]) {
+            type ${Video} @mutation(operations: [UPDATE]) @node {
                 id: ID! @id
 
                 publisher: ${User}! @relationship(type: "PUBLISHER", direction: IN)
@@ -75,7 +75,7 @@ describe("https://github.com/neo4j/graphql/issues/4077", () => {
                     ]
                 )
 
-            type ${User} @mutation(operations: [UPDATE]) {
+            type ${User} @mutation(operations: [UPDATE]) @node {
                 id: ID! @id
             }
 

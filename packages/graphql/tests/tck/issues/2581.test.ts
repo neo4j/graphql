@@ -18,7 +18,7 @@
  */
 
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/2581", () => {
     let typeDefs: string;
@@ -26,7 +26,7 @@ describe("https://github.com/neo4j/graphql/issues/2581", () => {
 
     beforeAll(() => {
         typeDefs = `
-            type Author {
+            type Author @node {
                 name: String
                 mostRecentBook: Book
                     @cypher(
@@ -46,7 +46,7 @@ describe("https://github.com/neo4j/graphql/issues/2581", () => {
                 books: [Book!]! @relationship(type: "AUTHORED_BOOK", direction: OUT)
             }
 
-            type Book {
+            type Book @node {
                 name: String!
                 year: Int
                 refID: ID @id @unique
@@ -63,7 +63,7 @@ describe("https://github.com/neo4j/graphql/issues/2581", () => {
                 authors: [Author!]! @relationship(type: "AUTHORED_BOOK", direction: IN)
             }
 
-            type Sales {
+            type Sales @node {
                 price: Int
                 refID: ID
             }

@@ -26,7 +26,7 @@ describe("Undirected Aggregations", () => {
 
     test("query with undirected aggregation", async () => {
         typeDefs = /* GraphQL */ `
-            type User {
+            type User @node {
                 name: String!
                 friends: [User!]! @relationship(type: "FRIENDS_WITH", direction: OUT)
             }

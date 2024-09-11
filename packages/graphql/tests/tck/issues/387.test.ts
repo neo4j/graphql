@@ -28,7 +28,7 @@ describe("https://github.com/neo4j/graphql/issues/387", () => {
         typeDefs = /* GraphQL */ `
             scalar URL
 
-            type Place {
+            type Place @node {
                 name: String
                 url_works: String
                     @cypher(

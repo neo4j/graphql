@@ -26,14 +26,14 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
 
     test("should apply where filter for deep relations, two relations deep", async () => {
         typeDefs = /* GraphQL */ `
-            type Series {
+            type Series @node {
                 id: ID! @unique
                 current: Boolean!
                 architecture: [MasterData!]!
                     @relationship(type: "ARCHITECTURE", properties: "RelationProps", direction: OUT)
             }
 
-            type NameDetails @mutation(operations: []) @query(read: false, aggregate: false) {
+            type NameDetails @mutation(operations: []) @query(read: false, aggregate: false) @node {
                 fullName: String!
             }
 
@@ -41,7 +41,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
                 current: Boolean!
             }
 
-            type MasterData {
+            type MasterData @node {
                 id: ID! @unique
                 current: Boolean!
                 nameDetails: NameDetails @relationship(type: "HAS_NAME", properties: "RelationProps", direction: OUT)
@@ -128,20 +128,20 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
 
     test("should apply where filter for deep relations, three relations deep", async () => {
         typeDefs = /* GraphQL */ `
-            type Main {
+            type Main @node {
                 id: ID! @unique
                 current: Boolean!
                 main: [Series!]! @relationship(type: "MAIN", properties: "RelationProps", direction: OUT)
             }
 
-            type Series {
+            type Series @node {
                 id: ID! @unique
                 current: Boolean!
                 architecture: [MasterData!]!
                     @relationship(type: "ARCHITECTURE", properties: "RelationProps", direction: OUT)
             }
 
-            type NameDetails @mutation(operations: []) @query(read: false, aggregate: false) {
+            type NameDetails @mutation(operations: []) @query(read: false, aggregate: false) @node {
                 fullName: String!
             }
 
@@ -149,7 +149,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
                 current: Boolean!
             }
 
-            type MasterData {
+            type MasterData @node {
                 id: ID! @unique
                 current: Boolean!
                 nameDetails: NameDetails @relationship(type: "HAS_NAME", properties: "RelationProps", direction: OUT)

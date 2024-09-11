@@ -277,7 +277,7 @@ class Node extends GraphElement {
     }
 
     public getAllLabels(): string[] {
-        return this.nodeDirective?.labels || [this.name];
+        return this.nodeDirective?.labels.length ? this.nodeDirective.labels : [this.name];
     }
 
     public getGlobalIdField(): string {

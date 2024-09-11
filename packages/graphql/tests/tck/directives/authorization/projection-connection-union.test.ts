@@ -28,12 +28,12 @@ describe("Cypher Auth Projection On Connections On Unions", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Post {
+            type Post @node {
                 content: String
                 creator: User! @relationship(type: "HAS_POST", direction: IN)
             }
 
-            type User {
+            type User @node {
                 id: ID
                 name: String
                 content: [Content!]! @relationship(type: "PUBLISHED", direction: OUT)

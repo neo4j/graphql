@@ -29,14 +29,14 @@ describe("connect-or-create with @id", () => {
 
     beforeEach(async () => {
         typeDefs = /* GraphQL */ `
-        type ${typeMovie.name} {
+        type ${typeMovie.name} @node {
             title: String! @unique
             subtitle: String @unique
             id: ID! @id @unique
             actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
         }
 
-        type ${typeActor.name} {
+        type ${typeActor.name} @node {
             name: String
             movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
         }

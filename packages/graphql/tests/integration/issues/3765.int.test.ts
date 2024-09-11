@@ -31,10 +31,10 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
         User = testHelper.createUniqueType("User");
 
         const typeDefs = `#graphql
-            type ${User} {
+            type ${User} @node {
                 otherName: String
             }
-            type ${Post} {
+            type ${Post} @node {
                 content: String!
                 likes: [${User}!]! @relationship(type: "LIKES", direction: IN)
             }

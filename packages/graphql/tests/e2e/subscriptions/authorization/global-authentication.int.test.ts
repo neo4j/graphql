@@ -33,7 +33,7 @@ describe("Subscription global authentication", () => {
     const secret = "secret";
     const typeMovie = testHelper.createUniqueType("Movie");
     const typeDefs = `
-        type ${typeMovie} {
+        type ${typeMovie} @node {
             title: String!
         }
         extend type ${typeMovie} @authentication

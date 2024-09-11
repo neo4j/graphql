@@ -26,7 +26,7 @@ describe("#360", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Event {
+            type Event @node {
                 id: ID!
                 name: String
                 start: DateTime

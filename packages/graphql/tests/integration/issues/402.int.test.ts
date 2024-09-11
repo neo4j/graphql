@@ -38,12 +38,12 @@ describe("https://github.com/neo4j/graphql/issues/402", () => {
 
     test("should recreate test and return correct data", async () => {
         typeDefs = `
-            type ${Event} {
+            type ${Event} @node {
                 id: ID!
                 area: ${Area}! @relationship(type: "HAPPENS_IN", direction: OUT)
             }
 
-            type ${Area} {
+            type ${Area} @node {
                 id: ID!
             }
         `;

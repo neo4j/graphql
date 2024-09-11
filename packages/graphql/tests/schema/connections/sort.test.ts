@@ -18,19 +18,19 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Sort", () => {
     test("sort argument is not present when nothing to sort", async () => {
         const typeDefs = gql`
-            type Node1 {
+            type Node1 @node {
                 property: String!
                 relatedTo: [Node2!]! @relationship(type: "RELATED_TO", direction: OUT)
             }
 
-            type Node2 {
+            type Node2 @node {
                 relatedTo: [Node1!]! @relationship(type: "RELATED_TO", direction: OUT)
             }
         `;

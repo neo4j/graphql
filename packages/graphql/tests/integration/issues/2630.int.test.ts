@@ -42,15 +42,15 @@ describe("https://github.com/neo4j/graphql/issues/2630", () => {
             name: String!
           }
 
-          type ${Post} {
+          type ${Post} @node {
             id: ID! @id @unique
             subject: ${PostSubject}! @relationship(type: "POST_FOR", direction: OUT)
           }
 
-          type ${User} implements ${HasName} {
+          type ${User} implements ${HasName} @node {
             name: String!
           }
-          type ${Group} implements ${HasName} {
+          type ${Group} implements ${HasName} @node {
             name: String!
           }
 

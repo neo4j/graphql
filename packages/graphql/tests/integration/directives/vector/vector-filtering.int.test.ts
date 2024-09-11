@@ -82,7 +82,7 @@ describe("@vector directive - filtering", () => {
         Movie = testHelper.createUniqueType("Movie");
 
         const typeDefs = `
-        type ${Movie.name}  @vector(indexes: [{ indexName: "${Movie}Index", embeddingProperty: "embedding", queryName: "${queryName}" }]) {
+        type ${Movie.name}  @vector(indexes: [{ indexName: "${Movie}Index", embeddingProperty: "embedding", queryName: "${queryName}" }]) @node {
             title: String!
             released: Int!
         }`;

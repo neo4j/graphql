@@ -34,7 +34,7 @@ describe("inheritance", () => {
                 friends: [Person!]! @declareRelationship @customDirectiveField
             }
 
-            type Actor implements Person @customDirectiveObj {
+            type Actor implements Person @customDirectiveObj @node {
                 name: String
                 friends: [Person!]! @relationship(type: "FRIENDS_WITH", direction: OUT, properties: "FriendsWith")
             }

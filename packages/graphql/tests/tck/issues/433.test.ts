@@ -27,12 +27,12 @@ describe("#413", () => {
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
             # Cannot use 'type Node'
-            type Movie {
+            type Movie @node {
                 title: String
                 actors: [Person!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type Person {
+            type Person @node {
                 name: String
             }
         `;

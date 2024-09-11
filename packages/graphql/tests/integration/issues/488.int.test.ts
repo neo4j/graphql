@@ -37,24 +37,24 @@ describe("https://github.com/neo4j/graphql/issues/488", () => {
         const testText = testHelper.createUniqueType("Text");
 
         const typeDefs = gql`
-            type ${testJournalist.name} {
+            type ${testJournalist.name} @node {
                 id: ID!
                 keywords: [Keyword!]! @relationship(type: "HAS_KEYWORD", direction: OUT)
             }
 
             union Keyword = ${testEmoji.name} | ${testHashtag.name} | ${testText.name}
 
-            type ${testEmoji.name} {
+            type ${testEmoji.name} @node {
                 id: ID! @id @unique
                 type: String!
             }
 
-            type ${testHashtag.name} {
+            type ${testHashtag.name} @node {
                 id: ID! @id @unique
                 type: String!
             }
 
-            type ${testText.name} {
+            type ${testText.name} @node {
                 id: ID! @id @unique
                 type: String!
             }

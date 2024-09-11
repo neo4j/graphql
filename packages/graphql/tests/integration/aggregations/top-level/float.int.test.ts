@@ -28,7 +28,7 @@ describe("aggregations-top_level-float", () => {
     beforeAll(async () => {
         Movie = testHelper.createUniqueType("Movie");
         const typeDefs = `
-            type ${Movie} {
+            type ${Movie} @node {
                 testString: String
                 imdbRating: Float
             }

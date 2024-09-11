@@ -53,7 +53,7 @@ describe("https://github.com/neo4j/graphql/issues/283", () => {
                 )
         }
 
-        type ${Post} {
+        type ${Post} @node {
             id: ID! @id @unique
             title: String!
             datetime: DateTime @timestamp(operations: [CREATE])

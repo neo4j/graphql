@@ -26,6 +26,7 @@ describe("@fulltext schema", () => {
     test("fulltext", async () => {
         const typeDefs = gql`
             type Movie
+                @node
                 @fulltext(
                     indexes: [
                         { name: "MovieTitle", fields: ["title"] }

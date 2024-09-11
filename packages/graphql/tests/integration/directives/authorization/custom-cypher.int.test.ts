@@ -110,7 +110,7 @@ describe("should inject the auth into cypher directive", () => {
 
     test("mutation", async () => {
         const typeDefs = `
-            type User {
+            type ${User} @node {
                 id: ID
             }
 
@@ -151,7 +151,7 @@ describe("should inject the auth into cypher directive", () => {
 
     test("mutation (decoded JWT)", async () => {
         const typeDefs = `
-            type User {
+            type ${User} @node {
                 id: ID
             }
 
@@ -191,7 +191,7 @@ describe("should inject the auth into cypher directive", () => {
 
     test("should inject the auth into cypher directive on fields", async () => {
         const typeDefs = `
-            type ${User} {
+            type ${User} @node {
                 id: ID
                 userId: ID @cypher(statement: """
                     RETURN $jwt.sub AS a
@@ -235,7 +235,7 @@ describe("should inject the auth into cypher directive", () => {
 
     test("should inject the auth into cypher directive on fields (decoded JWT)", async () => {
         const typeDefs = `
-            type ${User} {
+            type ${User} @node {
                 id: ID
                 userId: ID @cypher(statement: """
                     RETURN $jwt.sub AS a

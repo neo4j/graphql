@@ -25,12 +25,12 @@ import { Neo4jGraphQL } from "../../../src";
 describe("https://github.com/neo4j/graphql/issues/2969", () => {
     test("authorAggregate should not be generated", async () => {
         const typeDefs = gql`
-            type Post {
+            type Post @node {
                 content: String!
                 author: User! @relationship(type: "HAS_AUTHOR", direction: OUT)
             }
 
-            type User {
+            type User @node {
                 id: ID!
                 name: String!
                 posts: [Post!]! @relationship(type: "HAS_AUTHOR", direction: IN)

@@ -26,11 +26,11 @@ describe("https://github.com/neo4j/graphql/issues/4004", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Episode {
+            type Episode @node {
                 id: ID!
             }
 
-            type Series {
+            type Series @node {
                 id: ID!
                 allEpisodes(options: [Int!]!): [Episode!]!
                     @cypher(

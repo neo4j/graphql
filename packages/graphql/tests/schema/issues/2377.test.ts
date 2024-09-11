@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("https://github.com/neo4j/graphql/issues/2377", () => {
@@ -57,7 +57,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
                 properties: [Property!]
             }
 
-            type Resource implements ResourceEntity {
+            type Resource implements ResourceEntity @node {
                 id: ID! @unique
                 name: String
                 type: ResourceType!

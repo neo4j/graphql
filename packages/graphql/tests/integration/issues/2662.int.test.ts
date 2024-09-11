@@ -44,10 +44,10 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
         likesInterface = testHelper.createUniqueType("Likes");
 
         const typeDefs = `
-            type ${userType} {
+            type ${userType} @node {
                 name: String!
             }
-            type ${postType} {
+            type ${postType} @node {
                 content: String!
                 likes: [${userType}!]! @relationship(type: "LIKES", direction: IN, properties: "${likesInterface}")
             }
@@ -752,10 +752,10 @@ describe("https://github.com/neo4j/graphql/issues/2662 - alternative typedefs", 
         likesInterface = testHelper.createUniqueType("Likes");
 
         const typeDefs = `
-            type ${userType} {
+            type ${userType} @node {
                 someProperty: Int!
             }
-            type ${postType} {
+            type ${postType} @node {
                 someProperty: Int!
                 likes: [${userType}!]! @relationship(type: "LIKES", direction: IN, properties: "${likesInterface}")
             }

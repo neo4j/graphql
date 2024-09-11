@@ -27,7 +27,7 @@ describe("https://github.com/neo4j/graphql/issues/4831", () => {
     beforeAll(async () => {
         Test = new UniqueType("Test");
         const typeDefs = /* GraphQL */ `
-            type ${Test} {
+            type ${Test} @node {
                 testBoolean(value: Boolean): Boolean @cypher(statement: "RETURN $value as value", columnName: "value")
                 testString(value: String): String @cypher(statement: "RETURN $value as value", columnName: "value")
             }

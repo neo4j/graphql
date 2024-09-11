@@ -26,7 +26,7 @@ describe("Cypher directive", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Actor {
+            type Actor @node {
                 name: String
                 year: Int
                 movies(title: String): [Movie]
@@ -55,8 +55,7 @@ describe("Cypher directive", () => {
                     )
             }
 
-
-            type TVShow {
+            type TVShow @node {
                 id: ID
                 title: String
                 numSeasons: Int
@@ -78,7 +77,7 @@ describe("Cypher directive", () => {
                     )
             }
 
-            type Movie {
+            type Movie @node {
                 id: ID
                 title: String
                 actors: [Actor]
@@ -437,13 +436,13 @@ describe("Cypher directive", () => {
 
     describe("Top level cypher", () => {
         test("should query custom query and return relationship data", async () => {
-            const typeDefs = `
-                type Movie {
+            const typeDefs = /* GraphQL */ `
+                type Movie @node {
                     title: String!
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type Actor {
+                type Actor @node {
                     name: String!
                     movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
@@ -454,7 +453,7 @@ describe("Cypher directive", () => {
                             statement: """
                             MATCH (m:Movie {title: $title})
                             RETURN m
-                            """,
+                            """
                             columnName: "m"
                         )
                 }
@@ -499,24 +498,24 @@ describe("Cypher directive", () => {
         });
 
         test("should query custom query and return relationship data with given columnName", async () => {
-            const typeDefs = `
-                type Movie {
+            const typeDefs = /* GraphQL */ `
+                type Movie @node {
                     title: String!
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type Actor {
+                type Actor @node {
                     name: String!
                     movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
 
-                type Query {
+                type Query @node {
                     customMovies(title: String!): [Movie]
                         @cypher(
                             statement: """
                             MATCH (m:Movie {title: $title})
                             RETURN m
-                            """,
+                            """
                             columnName: "m"
                         )
                 }
@@ -562,7 +561,7 @@ describe("Cypher directive", () => {
 
         test("should query field custom query and return relationship data with given columnName", async () => {
             const typeDefs = `
-                type Movie {
+                type Movie @node {
                     title: String!
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                     custom(title: String!): [Movie]
@@ -575,7 +574,7 @@ describe("Cypher directive", () => {
                         )
                 }
 
-                type Actor {
+                type Actor @node {
                     name: String!
                     movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }

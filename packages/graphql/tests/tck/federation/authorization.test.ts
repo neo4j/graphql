@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
-import { createBearerToken } from "../../utils/create-bearer-token";
 import { versionInfo } from "graphql";
+import { Neo4jGraphQL } from "../../../src";
+import { createBearerToken } from "../../utils/create-bearer-token";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Federation and authorization", () => {
     test("type level", async () => {
@@ -32,7 +32,7 @@ describe("Federation and authorization", () => {
         const typeDefs = /* GraphQL */ `
             extend schema @link(url: "https://specs.apollo.dev/federation/v2.3", import: ["@key"])
 
-            type User @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) @key(fields: "id") {
+            type User @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) @key(fields: "id") @node {
                 id: ID!
                 name: String!
             }
@@ -92,7 +92,7 @@ describe("Federation and authorization", () => {
         const typeDefs = /* GraphQL */ `
             extend schema @link(url: "https://specs.apollo.dev/federation/v2.3", import: ["@key"])
 
-            type User @key(fields: "id") {
+            type User @key(fields: "id") @node {
                 id: ID!
                 name: String!
                 password: String! @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
@@ -154,12 +154,13 @@ describe("Federation and authorization", () => {
         const typeDefs = /* GraphQL */ `
             extend schema @link(url: "https://specs.apollo.dev/federation/v2.3", import: ["@key"])
 
-            type User @key(fields: "id") {
+            type User @key(fields: "id") @node {
                 id: ID!
                 name: String!
             }
 
             type Post
+                @node
                 @authorization(filter: [{ where: { node: { authorsAggregate: { count_GT: 2 } } } }])
                 @key(fields: "id") {
                 id: ID!

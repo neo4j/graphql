@@ -26,7 +26,7 @@ describe("Cypher directive on union", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Actor {
+            type Actor @node {
                 name: String
                 year: Int
                 movies(title: String): [Movie]
@@ -68,7 +68,7 @@ describe("Cypher directive on union", () => {
 
             union MovieOrTVShow = Movie | TVShow
 
-            type TVShow {
+            type TVShow @node {
                 id: ID
                 title: String
                 numSeasons: Int
@@ -90,7 +90,7 @@ describe("Cypher directive on union", () => {
                     )
             }
 
-            type Movie {
+            type Movie @node {
                 id: ID
                 title: String
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)

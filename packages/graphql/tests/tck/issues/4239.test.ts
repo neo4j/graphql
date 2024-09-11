@@ -18,8 +18,8 @@
  */
 
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery } from "../utils/tck-test-utils";
 import { createBearerToken } from "../../utils/create-bearer-token";
+import { formatCypher, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/4239", () => {
     let verifyTCK;
@@ -40,6 +40,7 @@ describe("https://github.com/neo4j/graphql/issues/4239", () => {
     test("should produce a predicate for apoc.util.validatePredicate for version 4.4", async () => {
         const typeDefs = /* GraphQL */ `
             type Movie
+                @node
                 @authorization(
                     validate: [
                         { when: [BEFORE], where: { node: { directorConnection: { node: { id: "$jwt.sub" } } } } }
@@ -49,7 +50,7 @@ describe("https://github.com/neo4j/graphql/issues/4239", () => {
                 director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
             }
 
-            type Person {
+            type Person @node {
                 id: ID
             }
         `;
@@ -96,12 +97,13 @@ describe("https://github.com/neo4j/graphql/issues/4239", () => {
     test("should produce a predicate for apoc.util.validatePredicate for version 4.4 (simple API)", async () => {
         const typeDefs = /* GraphQL */ `
             type Movie
+                @node
                 @authorization(validate: [{ when: [BEFORE], where: { node: { director_SOME: { id: "$jwt.sub" } } } }]) {
                 title: String
                 director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
             }
 
-            type Person {
+            type Person @node {
                 id: ID
             }
         `;
@@ -148,6 +150,7 @@ describe("https://github.com/neo4j/graphql/issues/4239", () => {
     test("should produce a predicate for apoc.util.validatePredicate for version 5.0", async () => {
         const typeDefs = /* GraphQL */ `
             type Movie
+                @node
                 @authorization(
                     validate: [
                         { when: [BEFORE], where: { node: { directorConnection: { node: { id: "$jwt.sub" } } } } }
@@ -157,7 +160,7 @@ describe("https://github.com/neo4j/graphql/issues/4239", () => {
                 director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
             }
 
-            type Person {
+            type Person @node {
                 id: ID
             }
         `;

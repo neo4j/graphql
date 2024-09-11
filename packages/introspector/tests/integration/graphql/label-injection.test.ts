@@ -93,11 +93,11 @@ describe("GraphQL - Infer Schema on graphs", () => {
 
         const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm));
         expect(typeDefs).toMatchInlineSnapshot(`
-            "type Salat {
+            "type Salat @node {
             	wurstsMatcHnDetachdeletEn: [Wurst!]! @relationship(type: \\"\`MATCH (n) DETACH DELETE n //\\", direction: IN)
             }
 
-            type Wurst {
+            type Wurst @node {
             	matcHnDetachdeletEnSalats: [Salat!]! @relationship(type: \\"\`MATCH (n) DETACH DELETE n //\\", direction: OUT)
             }"
         `);

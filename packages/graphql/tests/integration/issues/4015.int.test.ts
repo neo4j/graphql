@@ -39,12 +39,12 @@ describe("https://github.com/neo4j/graphql/issues/4007", () => {
 
     test("should return all the selected node fields", async () => {
         const typeDefs = gql`
-            type ${typeMovie.name} {
+            type ${typeMovie.name} @node {
                 title: String!
                 actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type ${typeActor.name} {
+            type ${typeActor.name} @node {
                 name: String!
                 surname: String
                 movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)

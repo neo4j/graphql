@@ -31,12 +31,12 @@ describe("https://github.com/neo4j/graphql/issues/526 - Int Argument on Custom Q
         Tag = testHelper.createUniqueType("Tag");
 
         typeDefs = `
-        type ${Movie} {
+        type ${Movie} @node {
             title: String
             tags: [${Tag}!]! @relationship(type: "HAS", direction: OUT)
         }
 
-        type ${Tag} {
+        type ${Tag} @node {
             name: String!
             papers: [${Movie}!]! @relationship(type: "HAS", direction: IN)
         }

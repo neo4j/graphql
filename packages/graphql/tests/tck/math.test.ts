@@ -30,12 +30,12 @@ describe("Math operators", () => {
                 marriageLength: Int
             }
 
-            type Star implements Wife {
+            type Star implements Wife @node {
                 marriageLength: Int
                 marriedWith: Actor @relationship(type: "MARRIED_WITH", direction: IN)
             }
 
-            type Movie {
+            type Movie @node {
                 id: ID! @id @unique
                 title: String!
                 viewers: Int
@@ -43,7 +43,7 @@ describe("Math operators", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
             }
 
-            type Actor {
+            type Actor @node {
                 id: ID!
                 name: String!
                 actedIn: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)

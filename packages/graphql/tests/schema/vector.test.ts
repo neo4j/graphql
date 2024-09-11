@@ -25,7 +25,7 @@ import { Neo4jGraphQL } from "../../src";
 describe("@vector schema", () => {
     test("vector", async () => {
         const typeDefs = gql`
-            type Movie
+            type Movie @node
                 @vector(
                     indexes: [
                         { indexName: "MovieTitle", embeddingProperty: "title", queryName: "titleQuery" }

@@ -26,7 +26,7 @@ describe("#582", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Entity {
+            type Entity @node {
                 children: [Entity!]! @relationship(type: "EDGE", properties: "Edge", direction: OUT)
                 parents: [Entity!]! @relationship(type: "EDGE", properties: "Edge", direction: IN)
                 type: String!

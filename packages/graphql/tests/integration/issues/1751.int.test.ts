@@ -31,12 +31,12 @@ describe("https://github.com/neo4j/graphql/issues/1735", () => {
         adminType = testHelper.createUniqueType("Admin");
 
         const typeDefs = `
-        type ${organizationType} {
+        type ${organizationType} @node {
             title: String
             admins: [${adminType}!]! @relationship(type: "HAS_ADMINISTRATOR", direction: OUT)
         }
 
-        type ${adminType} {
+        type ${adminType} @node {
             adminId: ID! @id @unique
             organizations: [${organizationType}!]! @relationship(type: "HAS_ADMINISTRATOR", direction: IN)
         }

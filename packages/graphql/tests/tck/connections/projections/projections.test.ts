@@ -28,17 +28,17 @@ describe("Relay Cursor Connection projections", () => {
         typeDefs = /* GraphQL */ `
             union Production = Movie | Series
 
-            type Movie {
+            type Movie @node {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Series {
+            type Series @node {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor {
+            type Actor @node {
                 name: String!
                 productions: [Production!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
