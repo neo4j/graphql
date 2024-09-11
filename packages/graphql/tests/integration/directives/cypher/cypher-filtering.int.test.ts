@@ -436,6 +436,47 @@ describe("cypher directive filtering", () => {
         });
     });
 
+    test("Duration cypher field", async () => {
+        const typeDefs = `
+            type ${CustomType} @node {
+                title: String
+                special_duration: Duration
+                    @cypher(
+                        statement: """
+                        RETURN duration('P14DT16H12M') AS d
+                        """
+                        columnName: "d"
+                    )
+            }
+        `;
+
+        await testHelper.initNeo4jGraphQL({ typeDefs });
+        await testHelper.executeCypher(`CREATE (m:${CustomType} { title: "test" })`, {});
+
+        const query = `
+            query {
+                ${CustomType.plural}(
+                    where: {
+                        special_duration: "P14DT16H12M"
+                    }
+                ) {
+                    title
+                }
+            }
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult?.data).toEqual({
+            [CustomType.plural]: [
+                {
+                    title: "test",
+                },
+            ],
+        });
+    });
+
     test("With relationship filter (non-Cypher field)", async () => {
         const Movie = testHelper.createUniqueType("Movie");
         const Actor = testHelper.createUniqueType("Actor");

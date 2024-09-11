@@ -453,6 +453,72 @@ describe("cypher directive filtering", () => {
         `);
     });
 
+    test("Duration cypher field", async () => {
+        const typeDefs = `
+            type Movie @node {
+                title: String
+                special_duration: Duration
+                    @cypher(
+                        statement: """
+                        RETURN duration('P14DT16H12M') AS d
+                        """
+                        columnName: "d"
+                    )
+            }
+        `;
+        const query = `
+            query {
+                movies(
+                    where: {
+                        special_duration: "P14DT16H12M"
+                    }
+                ) {
+                    title
+                }
+            }
+        `;
+
+        const neoSchema: Neo4jGraphQL = new Neo4jGraphQL({
+            typeDefs,
+        });
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Movie)
+            CALL {
+                WITH this
+                CALL {
+                    WITH this
+                    WITH this AS this
+                    RETURN duration('P14DT16H12M') AS d
+                }
+                WITH d AS this0
+                RETURN this0 AS var1
+            }
+            WITH *
+            WHERE var1 = $param0
+            RETURN this { .title } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": {
+                    \\"months\\": 0,
+                    \\"days\\": 14,
+                    \\"seconds\\": {
+                        \\"low\\": 58320,
+                        \\"high\\": 0
+                    },
+                    \\"nanoseconds\\": {
+                        \\"low\\": 0,
+                        \\"high\\": 0
+                    }
+                }
+            }"
+        `);
+    });
+
     test("With relationship filter (non-Cypher field)", async () => {
         const typeDefs = `
             type Movie @node {
