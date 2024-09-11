@@ -61,7 +61,7 @@ describe("cypher directive filtering", () => {
         },
     ] as const)("$title", async ({ filter }) => {
         const typeDefs = `
-            type ${CustomType} {
+            type ${CustomType} @node {
                 title: String
                 special_count: Int
                     @cypher(
@@ -120,7 +120,7 @@ describe("cypher directive filtering", () => {
         },
     ] as const)("$title", async ({ filter }) => {
         const typeDefs = `
-            type ${CustomType} {
+            type ${CustomType} @node {
                 title: String
                 special_word: String
                     @cypher(
@@ -157,7 +157,7 @@ describe("cypher directive filtering", () => {
 
     test("Int cypher field AND String title field", async () => {
         const typeDefs = `
-            type ${CustomType} {
+            type ${CustomType} @node {
                 title: String
                 special_count: Int
                     @cypher(
@@ -206,7 +206,7 @@ describe("cypher directive filtering", () => {
 
     test("unmatched Int cypher field AND String title field", async () => {
         const typeDefs = `
-            type ${CustomType} {
+            type ${CustomType} @node {
                 title: String
                 special_count: Int
                     @cypher(
@@ -251,7 +251,7 @@ describe("cypher directive filtering", () => {
 
     test("Int cypher field, selecting String title field", async () => {
         const typeDefs = `
-            type ${CustomType} {
+            type ${CustomType} @node {
                 title: String
                 special_count: Int
                     @cypher(
@@ -289,7 +289,7 @@ describe("cypher directive filtering", () => {
 
     test("Point cypher field", async () => {
         const typeDefs = `
-            type ${CustomType} {
+            type ${CustomType} @node {
                 title: String
                 special_location: Point
                     @cypher(
@@ -341,7 +341,7 @@ describe("cypher directive filtering", () => {
 
     test("CartesianPoint cypher field", async () => {
         const typeDefs = `
-            type ${CustomType} {
+            type ${CustomType} @node {
                 title: String
                 special_location: CartesianPoint
                     @cypher(
@@ -395,7 +395,7 @@ describe("cypher directive filtering", () => {
 
     test("DateTime cypher field", async () => {
         const typeDefs = `
-            type ${CustomType} {
+            type ${CustomType} @node {
                 title: String
                 special_time: DateTime
                     @cypher(
@@ -441,7 +441,7 @@ describe("cypher directive filtering", () => {
         const Actor = testHelper.createUniqueType("Actor");
 
         const typeDefs = `
-            type ${Movie} {
+            type ${Movie} @node {
                 title: String
                 custom_field: String
                     @cypher(
@@ -453,7 +453,7 @@ describe("cypher directive filtering", () => {
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type ${Actor} {
+            type ${Actor} @node {
                 name: String
                 movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -511,7 +511,7 @@ describe("cypher directive filtering", () => {
         const Actor = testHelper.createUniqueType("Actor");
 
         const typeDefs = `
-            type ${Movie} {
+            type ${Movie} @node {
                 title: String
                 custom_field: String
                     @cypher(
@@ -523,7 +523,7 @@ describe("cypher directive filtering", () => {
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type ${Actor} {
+            type ${Actor} @node {
                 name: String
                 movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -572,7 +572,7 @@ describe("cypher directive filtering", () => {
         const Actor = testHelper.createUniqueType("Actor");
 
         const typeDefs = `
-            type ${Movie} {
+            type ${Movie} @node {
                 title: String
                 custom_field: String
                     @cypher(
@@ -584,7 +584,7 @@ describe("cypher directive filtering", () => {
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type ${Actor} {
+            type ${Actor} @node {
                 name: String
                 movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -633,7 +633,7 @@ describe("cypher directive filtering", () => {
         const Actor = testHelper.createUniqueType("Actor");
 
         const typeDefs = `
-            type ${Movie} {
+            type ${Movie} @node {
                 title: String
                 custom_field: String
                     @cypher(
@@ -646,7 +646,7 @@ describe("cypher directive filtering", () => {
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type ${Actor} {
+            type ${Actor} @node {
                 name: String
                 movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -707,7 +707,7 @@ describe("cypher directive filtering", () => {
         const Actor = testHelper.createUniqueType("Actor");
 
         const typeDefs = `
-            type ${Movie} {
+            type ${Movie} @node {
                 title: String @authorization(filter: [{ where: { node: { title: "$jwt.title" } } }])
                 custom_field: String
                     @cypher(
@@ -719,7 +719,7 @@ describe("cypher directive filtering", () => {
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type ${Actor} {
+            type ${Actor} @node {
                 name: String
                 movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -778,7 +778,7 @@ describe("cypher directive filtering", () => {
         const Actor = testHelper.createUniqueType("Actor");
 
         const typeDefs = `
-            type ${Movie} {
+            type ${Movie} @node {
                 title: String
                 custom_field: String
                     @cypher(
@@ -790,7 +790,7 @@ describe("cypher directive filtering", () => {
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type ${Actor} {
+            type ${Actor} @node {
                 name: String
                 movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -860,12 +860,12 @@ describe("cypher directive filtering", () => {
         const Actor = testHelper.createUniqueType("Actor");
 
         const typeDefs = `
-            type ${Movie} {
+            type ${Movie} @node {
                 title: String
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type ${Actor} {
+            type ${Actor} @node {
                 name: String
                 custom_field: String
                     @cypher(
@@ -952,7 +952,7 @@ describe("cypher directive filtering", () => {
         const Actor = testHelper.createUniqueType("Actor");
 
         const typeDefs = `
-            type ${Movie} {
+            type ${Movie} @node {
                 title: String
                 custom_field: String
                     @cypher(
@@ -971,7 +971,7 @@ describe("cypher directive filtering", () => {
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type ${Actor} {
+            type ${Actor} @node {
                 name: String
                 another_custom_field: String
                     @cypher(
@@ -1027,7 +1027,7 @@ describe("cypher directive filtering", () => {
         const Actor = testHelper.createUniqueType("Actor");
 
         const typeDefs = `
-            type ${Movie} {
+            type ${Movie} @node {
                 title: String
                 custom_field: String
                     @cypher(
@@ -1039,7 +1039,7 @@ describe("cypher directive filtering", () => {
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type ${Actor} {
+            type ${Actor} @node {
                 name: String
                 another_custom_field: String
                     @cypher(

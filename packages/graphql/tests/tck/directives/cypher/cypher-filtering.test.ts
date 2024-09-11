@@ -24,7 +24,7 @@ import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test
 describe("cypher directive filtering", () => {
     test("Int cypher field AND String title field", async () => {
         const typeDefs = `
-            type Movie {
+            type Movie @node {
                 title: String
                 special_count: Int
                     @cypher(
@@ -93,7 +93,7 @@ describe("cypher directive filtering", () => {
 
     test("unmatched Int cypher field AND String title field", async () => {
         const typeDefs = `
-            type Movie {
+            type Movie @node {
                 title: String
                 special_count: Int
                     @cypher(
@@ -162,7 +162,7 @@ describe("cypher directive filtering", () => {
 
     test("Int cypher field, selecting String title field", async () => {
         const typeDefs = `
-            type Movie {
+            type Movie @node {
                 title: String
                 special_count: Int
                     @cypher(
@@ -219,7 +219,7 @@ describe("cypher directive filtering", () => {
 
     test("Point cypher field", async () => {
         const typeDefs = `
-            type Movie {
+            type Movie @node {
                 title: String
                 special_location: Point
                     @cypher(
@@ -298,7 +298,7 @@ describe("cypher directive filtering", () => {
 
     test("CartesianPoint cypher field", async () => {
         const typeDefs = `
-            type Movie {
+            type Movie @node {
                 title: String
                 special_location: CartesianPoint
                     @cypher(
@@ -379,7 +379,7 @@ describe("cypher directive filtering", () => {
 
     test("DateTime cypher field", async () => {
         const typeDefs = `
-            type Movie {
+            type Movie @node {
                 title: String
                 special_time: DateTime
                     @cypher(
@@ -455,7 +455,7 @@ describe("cypher directive filtering", () => {
 
     test("With relationship filter (non-Cypher field)", async () => {
         const typeDefs = `
-            type Movie {
+            type Movie @node {
                 title: String
                 custom_field: String
                     @cypher(
@@ -544,7 +544,7 @@ describe("cypher directive filtering", () => {
 
     test("In a nested filter", async () => {
         const typeDefs = `
-            type Movie {
+            type Movie @node {
                 title: String
                 custom_field: String
                     @cypher(
@@ -611,7 +611,7 @@ describe("cypher directive filtering", () => {
 
     test("With a nested filter", async () => {
         const typeDefs = `
-            type Movie {
+            type Movie @node {
                 title: String
                 custom_field: String
                     @cypher(
@@ -680,7 +680,7 @@ describe("cypher directive filtering", () => {
 
     test("With authorization (custom Cypher field)", async () => {
         const typeDefs = `
-            type Movie {
+            type Movie @node {
                 title: String
                 custom_field: String
                     @cypher(
@@ -771,7 +771,7 @@ describe("cypher directive filtering", () => {
 
     test("With authorization (not custom Cypher field)", async () => {
         const typeDefs = `
-            type Movie {
+            type Movie @node {
                 title: String @authorization(filter: [{ where: { node: { title: "$jwt.title" } } }])
                 custom_field: String
                     @cypher(
@@ -850,7 +850,7 @@ describe("cypher directive filtering", () => {
 
     test("With sorting", async () => {
         const typeDefs = `
-            type Movie {
+            type Movie @node {
                 title: String
                 custom_field: String
                     @cypher(
@@ -922,7 +922,7 @@ describe("cypher directive filtering", () => {
 
     test("Connect filter", async () => {
         const typeDefs = `
-            type Movie {
+            type Movie @node {
                 title: String
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
@@ -1052,7 +1052,7 @@ describe("cypher directive filtering", () => {
 
     test("With two cypher fields", async () => {
         const typeDefs = `
-            type Movie {
+            type Movie @node {
                 title: String
                 custom_field: String
                     @cypher(
@@ -1147,7 +1147,7 @@ describe("cypher directive filtering", () => {
 
     test("With two cypher fields, one nested", async () => {
         const typeDefs = `
-            type Movie {
+            type Movie @node {
                 title: String
                 custom_field: String
                     @cypher(
