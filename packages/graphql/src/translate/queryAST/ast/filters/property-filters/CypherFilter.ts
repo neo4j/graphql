@@ -79,20 +79,7 @@ export class CypherFilter extends Filter {
             param: new Cypher.Param(this.comparisonValue),
         });
 
-        // const scope = context.getTargetScope();
-        // // by setting the return variable of this operation in the attribute scope, we can avoid duplicate the same cypher resolution for sorting and projection purposes
-        // scope.set(this.cypherAttributeField.name, context.returnVariable);
-
         return operation;
-
-        // let retProj;
-
-        // if (this.isNested && this.cypherAttributeField.typeHelper.isList()) {
-        //     retProj = [Cypher.collect(nestedContext.returnVariable), context.returnVariable];
-        // } else {
-        //     retProj = [nestedContext.returnVariable, context.returnVariable];
-        // }
-        // const ret = new Cypher.Return(retProj);
     }
 
     private coalesceValueIfNeeded(expr: Cypher.Expr): Cypher.Expr {
@@ -115,8 +102,6 @@ export class CypherFilter extends Filter {
         param: Cypher.Expr;
     }): Cypher.ComparisonOp {
         const coalesceProperty = this.coalesceValueIfNeeded(property);
-
-        // Check for point
 
         if (operator === "DISTANCE") {
             return createPointOperation({
