@@ -135,8 +135,7 @@ export class AttributeAdapter {
         return (
             (this.typeHelper.isEnum() || this.typeHelper.isSpatial() || this.typeHelper.isScalar()) &&
             this.isFilterable() &&
-            !this.isCustomResolvable() &&
-            !this.isCypher()
+            !this.isCustomResolvable()
         );
     }
 

@@ -18,38 +18,18 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { WhereOperator } from "../Filter";
+import { coalesceValueIfNeeded } from "../utils/coalesce-if-needed";
+import { createDurationOperation } from "../utils/create-duration-operation";
 import { PropertyFilter } from "./PropertyFilter";
 
 export class DurationFilter extends PropertyFilter {
-    protected getOperation(prop: Cypher.Property): Cypher.ComparisonOp {
-        // NOTE: this may not be needed
-        if (this.operator === "EQ") {
-            return Cypher.eq(prop, new Cypher.Param(this.comparisonValue));
-        }
-        return this.createDurationOperation({
+    protected getOperation(prop: Cypher.Expr): Cypher.ComparisonOp {
+        const coalesceProperty = coalesceValueIfNeeded(this.attribute, prop);
+
+        return createDurationOperation({
             operator: this.operator,
-            property: prop,
+            property: coalesceProperty,
             param: new Cypher.Param(this.comparisonValue),
-        });
-    }
-
-    private createDurationOperation({
-        operator,
-        property,
-        param,
-    }: {
-        operator: WhereOperator | "EQ";
-        property: Cypher.Expr;
-        param: Cypher.Expr;
-    }) {
-        const variable = Cypher.plus(Cypher.datetime(), param);
-        const propertyRef = Cypher.plus(Cypher.datetime(), property);
-
-        return this.createBaseOperation({
-            operator,
-            property: propertyRef,
-            param: variable,
         });
     }
 }

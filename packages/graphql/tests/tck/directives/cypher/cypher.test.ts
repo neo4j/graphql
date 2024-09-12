@@ -21,87 +21,81 @@ import { Neo4jGraphQL } from "../../../../src";
 import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
 describe("Cypher directive", () => {
-    let typeDefs: string;
-    let neoSchema: Neo4jGraphQL;
+    const typeDefs = /* GraphQL */ `
+        type Actor @node {
+            name: String
+            year: Int
+            movies(title: String): [Movie]
+                @cypher(
+                    statement: """
+                    MATCH (m:Movie {title: $title})
+                    RETURN m
+                    """
+                    columnName: "m"
+                )
+            tvShows(title: String): [Movie]
+                @cypher(
+                    statement: """
+                    MATCH (t:TVShow {title: $title})
+                    RETURN t
+                    """
+                    columnName: "t"
+                )
 
-    beforeAll(() => {
-        typeDefs = /* GraphQL */ `
-            type Actor @node {
-                name: String
-                year: Int
-                movies(title: String): [Movie]
-                    @cypher(
-                        statement: """
-                        MATCH (m:Movie {title: $title})
-                        RETURN m
-                        """
-                        columnName: "m"
-                    )
-                tvShows(title: String): [Movie]
-                    @cypher(
-                        statement: """
-                        MATCH (t:TVShow {title: $title})
-                        RETURN t
-                        """
-                        columnName: "t"
-                    )
+            randomNumber: Int
+                @cypher(
+                    statement: """
+                    RETURN rand() as res
+                    """
+                    columnName: "res"
+                )
+        }
 
-                randomNumber: Int
-                    @cypher(
-                        statement: """
-                        RETURN rand() as res
-                        """
-                        columnName: "res"
-                    )
-            }
+        type TVShow @node {
+            id: ID
+            title: String
+            numSeasons: Int
+            actors: [Actor]
+                @cypher(
+                    statement: """
+                    MATCH (a:Actor)
+                    RETURN a
+                    """
+                    columnName: "a"
+                )
+            topActor: Actor
+                @cypher(
+                    statement: """
+                    MATCH (a:Actor)
+                    RETURN a
+                    """
+                    columnName: "a"
+                )
+        }
 
-            type TVShow @node {
-                id: ID
-                title: String
-                numSeasons: Int
-                actors: [Actor]
-                    @cypher(
-                        statement: """
-                        MATCH (a:Actor)
-                        RETURN a
-                        """
-                        columnName: "a"
-                    )
-                topActor: Actor
-                    @cypher(
-                        statement: """
-                        MATCH (a:Actor)
-                        RETURN a
-                        """
-                        columnName: "a"
-                    )
-            }
-
-            type Movie @node {
-                id: ID
-                title: String
-                actors: [Actor]
-                    @cypher(
-                        statement: """
-                        MATCH (a:Actor)
-                        RETURN a
-                        """
-                        columnName: "a"
-                    )
-                topActor: Actor
-                    @cypher(
-                        statement: """
-                        MATCH (a:Actor)
-                        RETURN a
-                        """
-                        columnName: "a"
-                    )
-            }
-        `;
-
-        neoSchema = new Neo4jGraphQL({
-            typeDefs,
-        });
+        type Movie @node {
+            id: ID
+            title: String
+            actors: [Actor]
+                @cypher(
+                    statement: """
+                    MATCH (a:Actor)
+                    RETURN a
+                    """
+                    columnName: "a"
+                )
+            topActor: Actor
+                @cypher(
+                    statement: """
+                    MATCH (a:Actor)
+                    RETURN a
+                    """
+                    columnName: "a"
+                )
+        }
+    `;
+    const neoSchema: Neo4jGraphQL = new Neo4jGraphQL({
+        typeDefs,
     });
 
     test("Simple directive", async () => {

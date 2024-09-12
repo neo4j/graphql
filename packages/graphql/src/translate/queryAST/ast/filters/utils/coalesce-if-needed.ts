@@ -18,16 +18,13 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import { createPointOperation } from "../utils/create-point-operation";
-import { PropertyFilter } from "./PropertyFilter";
+import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 
-export class PointFilter extends PropertyFilter {
-    protected getOperation(prop: Cypher.Property): Cypher.ComparisonOp {
-        return createPointOperation({
-            operator: this.operator || "EQ",
-            property: prop,
-            param: new Cypher.Param(this.comparisonValue),
-            attribute: this.attribute,
-        });
+export function coalesceValueIfNeeded(attribute: AttributeAdapter, expr: Cypher.Expr): Cypher.Expr {
+    if (attribute.annotations.coalesce) {
+        const value = attribute.annotations.coalesce.value;
+        const literal = new Cypher.Literal(value);
+        return Cypher.coalesce(expr, literal);
     }
+    return expr;
 }
