@@ -20,12 +20,14 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import { createComparisonOperation } from "../../../utils/create-comparison-operator";
-import { createPointOperation } from "../../../utils/create-point-operation";
 import type { QueryASTContext } from "../../QueryASTContext";
 import type { QueryASTNode } from "../../QueryASTNode";
 import type { CustomCypherSelection } from "../../selection/CustomCypherSelection";
 import type { FilterOperator } from "../Filter";
 import { Filter } from "../Filter";
+import { coalesceValueIfNeeded } from "../utils/coalesce-if-needed";
+import { createDurationOperation } from "../utils/create-duration-operation";
+import { createPointOperation } from "../utils/create-point-operation";
 
 /** A property which comparison has already been parsed into a Param */
 export class CypherFilter extends Filter {
@@ -82,15 +84,6 @@ export class CypherFilter extends Filter {
         return operation;
     }
 
-    private coalesceValueIfNeeded(expr: Cypher.Expr): Cypher.Expr {
-        if (this.attribute.annotations.coalesce) {
-            const value = this.attribute.annotations.coalesce.value;
-            const literal = new Cypher.Literal(value);
-            return Cypher.coalesce(expr, literal);
-        }
-        return expr;
-    }
-
     /** Returns the default operation for a given filter */
     private createBaseOperation({
         operator,
@@ -101,9 +94,22 @@ export class CypherFilter extends Filter {
         property: Cypher.Expr;
         param: Cypher.Expr;
     }): Cypher.ComparisonOp {
-        const coalesceProperty = this.coalesceValueIfNeeded(property);
+        const coalesceProperty = coalesceValueIfNeeded(this.attribute, property);
 
-        if (operator === "DISTANCE") {
+        // This could be solved with specific a specific CypherDurationFilter but
+        // we need to use the return variable for the cypher subquery.
+        // To allow us to extend the DurationFilter class with a CypherDurationFilter class
+        // we would need to have a way to provide the return variable
+        // to the PropertyFilter's getPropertyRef method.
+        if (this.attribute.typeHelper.isDuration()) {
+            return createDurationOperation({
+                operator,
+                property: coalesceProperty,
+                param: new Cypher.Param(this.comparisonValue),
+            });
+        }
+
+        if (this.attribute.typeHelper.isSpatial()) {
             return createPointOperation({
                 operator,
                 property: coalesceProperty,

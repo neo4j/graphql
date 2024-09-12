@@ -18,7 +18,7 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import { createPointOperation } from "../../../utils/create-point-operation";
+import { createPointOperation } from "../utils/create-point-operation";
 import { PropertyFilter } from "./PropertyFilter";
 
 export class PointFilter extends PropertyFilter {

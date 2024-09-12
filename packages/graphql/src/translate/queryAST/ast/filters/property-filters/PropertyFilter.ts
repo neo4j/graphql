@@ -19,14 +19,15 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
+import { InterfaceEntityAdapter } from "../../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { hasTarget } from "../../../utils/context-has-target";
 import { createComparisonOperation } from "../../../utils/create-comparison-operator";
 import type { QueryASTContext } from "../../QueryASTContext";
 import type { QueryASTNode } from "../../QueryASTNode";
 import type { FilterOperator } from "../Filter";
 import { Filter } from "../Filter";
-import { hasTarget } from "../../../utils/context-has-target";
-import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import { InterfaceEntityAdapter } from "../../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import { coalesceValueIfNeeded } from "../utils/coalesce-if-needed";
 
 export class PropertyFilter extends Filter {
     protected attribute: AttributeAdapter;
@@ -130,7 +131,7 @@ export class PropertyFilter extends Filter {
     /** Returns the operation for a given filter.
      * To be overridden by subclasses
      */
-    protected getOperation(prop: Cypher.Property | Cypher.Case): Cypher.ComparisonOp {
+    protected getOperation(prop: Cypher.Expr): Cypher.ComparisonOp {
         return this.createBaseOperation({
             operator: this.operator,
             property: prop,
@@ -148,18 +149,9 @@ export class PropertyFilter extends Filter {
         property: Cypher.Expr;
         param: Cypher.Expr;
     }): Cypher.ComparisonOp {
-        const coalesceProperty = this.coalesceValueIfNeeded(property);
+        const coalesceProperty = coalesceValueIfNeeded(this.attribute, property);
 
         return createComparisonOperation({ operator, property: coalesceProperty, param });
-    }
-
-    protected coalesceValueIfNeeded(expr: Cypher.Expr): Cypher.Expr {
-        if (this.attribute.annotations.coalesce) {
-            const value = this.attribute.annotations.coalesce.value;
-            const literal = new Cypher.Literal(value);
-            return Cypher.coalesce(expr, literal);
-        }
-        return expr;
     }
 
     private getNullPredicate(propertyRef: Cypher.Property | Cypher.Case): Cypher.Predicate {
