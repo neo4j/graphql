@@ -116,4 +116,168 @@ describe("cypher directive filtering", () => {
             ],
         });
     });
+
+    test("Duration cypher field LT", async () => {
+        const typeDefs = `
+            type ${CustomType} @node {
+                title: String
+                special_duration: Duration
+                    @cypher(
+                        statement: """
+                        RETURN duration('P14DT16H12M') AS d
+                        """
+                        columnName: "d"
+                    )
+            }
+        `;
+
+        await testHelper.initNeo4jGraphQL({ typeDefs });
+        await testHelper.executeCypher(`CREATE (m:${CustomType} { title: "test" })`, {});
+
+        const query = `
+            query {
+                ${CustomType.plural}(
+                    where: {
+                        special_duration_LT: "P14DT16H13M"
+                    }
+                ) {
+                    title
+                }
+            }
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult?.data).toEqual({
+            [CustomType.plural]: [
+                {
+                    title: "test",
+                },
+            ],
+        });
+    });
+
+    test("Duration cypher field LTE", async () => {
+        const typeDefs = `
+            type ${CustomType} @node {
+                title: String
+                special_duration: Duration
+                    @cypher(
+                        statement: """
+                        RETURN duration('P14DT16H12M') AS d
+                        """
+                        columnName: "d"
+                    )
+            }
+        `;
+
+        await testHelper.initNeo4jGraphQL({ typeDefs });
+        await testHelper.executeCypher(`CREATE (m:${CustomType} { title: "test" })`, {});
+
+        const query = `
+            query {
+                ${CustomType.plural}(
+                    where: {
+                        special_duration_LTE: "P14DT16H12M"
+                    }
+                ) {
+                    title
+                }
+            }
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult?.data).toEqual({
+            [CustomType.plural]: [
+                {
+                    title: "test",
+                },
+            ],
+        });
+    });
+
+    test("Duration cypher field GT", async () => {
+        const typeDefs = `
+            type ${CustomType} @node {
+                title: String
+                special_duration: Duration
+                    @cypher(
+                        statement: """
+                        RETURN duration('P14DT16H12M') AS d
+                        """
+                        columnName: "d"
+                    )
+            }
+        `;
+
+        await testHelper.initNeo4jGraphQL({ typeDefs });
+        await testHelper.executeCypher(`CREATE (m:${CustomType} { title: "test" })`, {});
+
+        const query = `
+            query {
+                ${CustomType.plural}(
+                    where: {
+                        special_duration_GT: "P14DT16H11M"
+                    }
+                ) {
+                    title
+                }
+            }
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult?.data).toEqual({
+            [CustomType.plural]: [
+                {
+                    title: "test",
+                },
+            ],
+        });
+    });
+
+    test("Duration cypher field GTE", async () => {
+        const typeDefs = `
+            type ${CustomType} @node {
+                title: String
+                special_duration: Duration
+                    @cypher(
+                        statement: """
+                        RETURN duration('P14DT16H12M') AS d
+                        """
+                        columnName: "d"
+                    )
+            }
+        `;
+
+        await testHelper.initNeo4jGraphQL({ typeDefs });
+        await testHelper.executeCypher(`CREATE (m:${CustomType} { title: "test" })`, {});
+
+        const query = `
+            query {
+                ${CustomType.plural}(
+                    where: {
+                        special_duration_GTE: "P14DT16H12M"
+                    }
+                ) {
+                    title
+                }
+            }
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult?.data).toEqual({
+            [CustomType.plural]: [
+                {
+                    title: "test",
+                },
+            ],
+        });
+    });
 });
