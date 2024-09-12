@@ -363,8 +363,6 @@ describe("Cypher", () => {
               totalScreenTime_IN: [Int!]
               totalScreenTime_LT: Int
               totalScreenTime_LTE: Int
-              totalScreenTime_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              totalScreenTime_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type ActorsConnection {
