@@ -51,12 +51,12 @@ describe("authorization warning", () => {
 
     test("authorization warning only occurs once for multiple directives", () => {
         const doc = gql`
-            type Movie @authorization(validate: [{ where: { id: "1" } }]) @node {
+            type Movie @authorization(validate: [{ where: { id: "1" } }]) {
                 id: ID @authorization(validate: [{ where: { id: "1" } }])
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type Actor @node {
+            type Actor {
                 name: String
             }
         `;
@@ -87,11 +87,11 @@ describe("list of lists warning", () => {
 
     test("list of lists warning only occurs once for multiple fields", () => {
         const doc = gql`
-            type Movie @node {
+            type Movie {
                 id: [[ID]]
             }
 
-            type Actor @node {
+            type Actor {
                 name: [[String]]
             }
         `;
@@ -110,7 +110,7 @@ describe("list of lists warning", () => {
 
     test("works for non-nullable lists", () => {
         const doc = gql`
-            type Movie @node {
+            type Movie {
                 id: [[ID!]!]!
             }
         `;
@@ -145,7 +145,7 @@ describe("default max limit bypass warning", () => {
                 title: String
             }
 
-            type Movie implements Production @node {
+            type Movie implements Production {
                 title: String
             }
         `;
@@ -164,7 +164,7 @@ describe("default max limit bypass warning", () => {
                 title: String
             }
 
-            type Movie implements Production @limit(max: 10) @node {
+            type Movie implements Production @limit(max: 10) {
                 title: String
             }
         `;
@@ -187,7 +187,7 @@ describe("default max limit bypass warning", () => {
                 title: String
             }
 
-            type Movie implements Production @limit(max: 10) @node {
+            type Movie implements Production @limit(max: 10) {
                 title: String
             }
         `;
@@ -206,7 +206,7 @@ describe("default max limit bypass warning", () => {
                 title: String
             }
 
-            type Movie implements Production @limit(max: 2) @node {
+            type Movie implements Production @limit(max: 2) {
                 title: String
             }
         `;
@@ -229,11 +229,11 @@ describe("default max limit bypass warning", () => {
                 title: String
             }
 
-            type Movie implements Production @node {
+            type Movie implements Production {
                 title: String
             }
 
-            type Series implements Production @limit(max: 2) @node {
+            type Series implements Production @limit(max: 2) {
                 title: String
             }
         `;
@@ -256,11 +256,11 @@ describe("default max limit bypass warning", () => {
                 title: String
             }
 
-            type Movie implements Production @limit(max: 6) @node {
+            type Movie implements Production @limit(max: 6) {
                 title: String
             }
 
-            type Series implements Production @limit(max: 2) @node {
+            type Series implements Production @limit(max: 2) {
                 title: String
             }
         `;
@@ -286,11 +286,11 @@ describe("default max limit bypass warning", () => {
                 title: String
             }
 
-            type Movie implements Production @limit(default: 6) @node {
+            type Movie implements Production @limit(default: 6) {
                 title: String
             }
 
-            type Series implements Production @limit(default: 3) @node {
+            type Series implements Production @limit(default: 3) {
                 title: String
             }
         `;
@@ -309,7 +309,7 @@ describe("validation 2.0", () => {
         describe("@cypher", () => {
             test("@cypher columnName required", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         name: String
                             @cypher(
                                 statement: """
@@ -325,7 +325,7 @@ describe("validation 2.0", () => {
             });
             test("@cypher statement required", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         name: String @cypher(columnName: "x")
                     }
                 `;
@@ -336,7 +336,7 @@ describe("validation 2.0", () => {
             });
             test("@cypher ok", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         name: String
                             @cypher(
                                 statement: """
@@ -353,7 +353,7 @@ describe("validation 2.0", () => {
         describe("@alias", () => {
             test("@alias property required", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         name: String @alias
                     }
                 `;
@@ -364,7 +364,7 @@ describe("validation 2.0", () => {
             });
             test("@cypher ok", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         name: String @alias(property: "sub")
                     }
                 `;
@@ -375,7 +375,7 @@ describe("validation 2.0", () => {
         describe("@coalesce", () => {
             test("@coalesce property required", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         name: String @coalesce
                     }
                 `;
@@ -393,7 +393,7 @@ describe("validation 2.0", () => {
             });
             test("@coalesce ok", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         name: String @coalesce(value: "dummy")
                     }
                 `;
@@ -410,7 +410,7 @@ describe("validation 2.0", () => {
         describe("@default", () => {
             test("@default property required", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         name: String @default
                     }
                 `;
@@ -428,7 +428,7 @@ describe("validation 2.0", () => {
             });
             test("@default ok", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         name: String @default(value: "dummy")
                     }
                 `;
@@ -445,7 +445,7 @@ describe("validation 2.0", () => {
         describe("@fulltext", () => {
             test("@fulltext property required", () => {
                 const doc = gql`
-                    type User @fulltext @node {
+                    type User @fulltext {
                         name: String
                     }
                 `;
@@ -456,7 +456,7 @@ describe("validation 2.0", () => {
             });
             test("@fulltext ok", () => {
                 const doc = gql`
-                    type User @fulltext(indexes: [{ fields: ["name"] }]) @node {
+                    type User @fulltext(indexes: [{ fields: ["name"] }]) {
                         name: String
                     }
                 `;
@@ -467,7 +467,7 @@ describe("validation 2.0", () => {
         describe("@jwtClaim", () => {
             test("@jwtClaim property required", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         name: String @jwtClaim
                     }
                 `;
@@ -500,7 +500,7 @@ describe("validation 2.0", () => {
         describe("@plural", () => {
             test("@plural property required", () => {
                 const doc = gql`
-                    type User @plural @node {
+                    type User @plural {
                         name: String
                     }
                 `;
@@ -511,7 +511,7 @@ describe("validation 2.0", () => {
             });
             test("@plural ok", () => {
                 const doc = gql`
-                    type User @plural(value: "kings") @node {
+                    type User @plural(value: "kings") {
                         name: String
                     }
                 `;
@@ -522,7 +522,7 @@ describe("validation 2.0", () => {
         describe("@populatedBy", () => {
             test("@populatedBy property required", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         name: String @populatedBy
                     }
                 `;
@@ -553,7 +553,7 @@ describe("validation 2.0", () => {
                 "Duration",
             ])("@populatedBy does not throw with correct arguments on type %s", (type: string) => {
                 const doc = /* GraphQL */ `
-                    type User @node {
+                    type User {
                         name: ${type} @populatedBy(callback: "myCallback")
                     }
                 `;
@@ -571,7 +571,7 @@ describe("validation 2.0", () => {
                 "@populatedBy throws when used on invalid type %s",
                 (type: string) => {
                     const doc = /* GraphQL */ `
-                    type User @node {
+                    type User {
                         name: ${type} @populatedBy(callback: "myCallback")
                     }
                 `;
@@ -592,7 +592,7 @@ describe("validation 2.0", () => {
                 "@populatedBy throws when used on invalid type %s",
                 (type: string) => {
                     const doc = /* GraphQL */ `
-                    type User @node {
+                    type User {
                         name: ${type} @populatedBy(callback: "myCallback")
                     }
                 `;
@@ -612,10 +612,10 @@ describe("validation 2.0", () => {
         describe("@relationship", () => {
             test("@relationship properties required", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         name: Post @relationship
                     }
-                    type Post @node {
+                    type Post {
                         title: String
                     }
                 `;
@@ -632,10 +632,10 @@ describe("validation 2.0", () => {
             });
             test("@relationship type required", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         name: Post @relationship(direction: IN)
                     }
-                    type Post @node {
+                    type Post {
                         title: String
                     }
                 `;
@@ -652,10 +652,10 @@ describe("validation 2.0", () => {
             });
             test("@relationship direction required", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         name: Post @relationship(type: "HAS_POST")
                     }
-                    type Post @node {
+                    type Post {
                         title: String
                     }
                 `;
@@ -672,10 +672,10 @@ describe("validation 2.0", () => {
             });
             test("@relationship ok", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         name: Post @relationship(direction: IN, type: "HAS_POST")
                     }
-                    type Post @node {
+                    type Post {
                         title: String
                     }
                 `;
@@ -694,7 +694,7 @@ describe("validation 2.0", () => {
     describe("Directive Argument Type", () => {
         test("@fulltext.indexes property required", () => {
             const doc = gql`
-                type User @fulltext(indexes: [{ name: "something" }]) @node {
+                type User @fulltext(indexes: [{ name: "something" }]) {
                     name: String
                 }
             `;
@@ -712,7 +712,7 @@ describe("validation 2.0", () => {
 
         test("@fulltext.indexes property required extension", () => {
             const doc = gql`
-                type User @node {
+                type User {
                     name: String
                 }
                 extend type User @fulltext(indexes: [{ name: "something" }])
@@ -731,10 +731,10 @@ describe("validation 2.0", () => {
 
         test("@relationship.direction property must be enum value", () => {
             const doc = gql`
-                type User @node {
+                type User {
                     post: Post @relationship(direction: "EVERYWHERE", type: "HAS_NAME")
                 }
-                type Post @node {
+                type Post {
                     title: String
                 }
             `;
@@ -757,13 +757,13 @@ describe("validation 2.0", () => {
 
         test("@relationship.direction property must be enum value extension", () => {
             const doc = gql`
-                type User @node {
+                type User {
                     id: ID
                 }
                 extend type User {
                     post: Post @relationship(direction: "EVERYWHERE", type: "HAS_NAME")
                 }
-                type Post @node {
+                type Post {
                     title: String
                 }
             `;
@@ -786,10 +786,10 @@ describe("validation 2.0", () => {
 
         test("@relationship.type property must be string", () => {
             const doc = gql`
-                type User @node {
+                type User {
                     post: Post @relationship(type: 42, direction: IN)
                 }
-                type Post @node {
+                type Post {
                     title: String
                 }
             `;
@@ -817,10 +817,10 @@ describe("validation 2.0", () => {
                 }
             `;
             const doc = gql`
-                type User implements Person @node {
+                type User implements Person {
                     post: Post @relationship(type: 42, direction: IN)
                 }
-                type Post @node {
+                type Post {
                     title: String
                 }
                 ${interfaceDoc}
@@ -853,11 +853,11 @@ describe("validation 2.0", () => {
                 }
             `;
             const doc = gql`
-                type User implements Person @node {
+                type User implements Person {
                     id: ID
                     post: Post @relationship(type: 42, direction: IN)
                 }
-                type Post @node {
+                type Post {
                     title: String
                 }
                 ${interfaceDoc}
@@ -882,7 +882,7 @@ describe("validation 2.0", () => {
 
         test("@customResolver.required property must be string", () => {
             const doc = gql`
-                type User @node {
+                type User {
                     myStuff: String @customResolver(requires: 42)
                 }
             `;
@@ -899,7 +899,7 @@ describe("validation 2.0", () => {
 
         test("@cypher.columnName property must be string", () => {
             const doc = gql`
-                type User @node {
+                type User {
                     name: String @cypher(statement: 42, columnName: "x")
                 }
             `;
@@ -917,7 +917,7 @@ describe("validation 2.0", () => {
 
         test("@cypher.columnName property must be string extension", () => {
             const doc = gql`
-                type User @node {
+                type User {
                     id: ID
                 }
                 extend type User {
@@ -938,7 +938,7 @@ describe("validation 2.0", () => {
 
         test("@cypher.statement property must be string", () => {
             const doc = gql`
-                type User @node {
+                type User {
                     name: String
                         @cypher(
                             statement: """
@@ -1000,7 +1000,7 @@ describe("validation 2.0", () => {
         describe("@default", () => {
             test("@default on datetime must be valid datetime", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         updatedAt: DateTime @default(value: "dummy")
                     }
                 `;
@@ -1022,7 +1022,7 @@ describe("validation 2.0", () => {
 
             test("@default on datetime must be valid datetime extension", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         id: ID
                     }
                     extend type User {
@@ -1047,7 +1047,7 @@ describe("validation 2.0", () => {
 
             test("@default on datetime must be valid datetime correct", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         updatedAt: DateTime @default(value: "2023-07-06T09:45:11.336Z")
                     }
                 `;
@@ -1071,7 +1071,7 @@ describe("validation 2.0", () => {
                 `;
                 const doc = gql`
                     ${enumTypes}
-                    type User @node {
+                    type User {
                         status: Status @default(value: "dummy")
                     }
                 `;
@@ -1102,7 +1102,7 @@ describe("validation 2.0", () => {
                 `;
                 const doc = gql`
                     ${enumTypes}
-                    type User @node {
+                    type User {
                         status: Status @default(value: REGISTERED)
                     }
                 `;
@@ -1129,7 +1129,7 @@ describe("validation 2.0", () => {
                 `;
                 const doc = gql`
                     ${enumTypes}
-                    type User @node {
+                    type User {
                         statuses: [Status] @default(value: "dummy")
                     }
                 `;
@@ -1163,7 +1163,7 @@ describe("validation 2.0", () => {
                 `;
                 const doc = gql`
                     ${enumTypes}
-                    type User @node {
+                    type User {
                         statuses: [Status] @default(value: ["dummy"])
                     }
                 `;
@@ -1197,7 +1197,7 @@ describe("validation 2.0", () => {
                 `;
                 const doc = gql`
                     ${enumTypes}
-                    type User @node {
+                    type User {
                         statuses: [Status] @default(value: [PENDING])
                     }
                 `;
@@ -1216,7 +1216,7 @@ describe("validation 2.0", () => {
 
             test("@default on int must be int", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         age: Int @default(value: "dummy")
                     }
                 `;
@@ -1237,7 +1237,7 @@ describe("validation 2.0", () => {
 
             test("@default on int must be int correct", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         age: Int @default(value: 23)
                     }
                 `;
@@ -1254,7 +1254,7 @@ describe("validation 2.0", () => {
 
             test("@default on int list must be list of int values", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         ages: [Int] @default(value: ["dummy"])
                     }
                 `;
@@ -1278,7 +1278,7 @@ describe("validation 2.0", () => {
 
             test("@default on int list must be list of int values correct", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         ages: [Int] @default(value: [12])
                     }
                 `;
@@ -1295,7 +1295,7 @@ describe("validation 2.0", () => {
 
             test("@default on float must be float", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         avg: Float @default(value: 2)
                     }
                 `;
@@ -1316,7 +1316,7 @@ describe("validation 2.0", () => {
 
             test("@default on float must be float correct", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         avg: Float @default(value: 2.3)
                     }
                 `;
@@ -1333,7 +1333,7 @@ describe("validation 2.0", () => {
 
             test("@default on float list must be list of float values", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         avgs: [Float] @default(value: [1])
                     }
                 `;
@@ -1357,7 +1357,7 @@ describe("validation 2.0", () => {
 
             test("@default on float list must be list of float values correct", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         avgs: [Float] @default(value: [1.2])
                     }
                 `;
@@ -1374,7 +1374,7 @@ describe("validation 2.0", () => {
 
             test("@default on boolean must be boolean", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         registered: Boolean @default(value: 2)
                     }
                 `;
@@ -1395,7 +1395,7 @@ describe("validation 2.0", () => {
 
             test("@default on boolean must be boolean correct", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         registered: Boolean @default(value: false)
                     }
                 `;
@@ -1412,7 +1412,7 @@ describe("validation 2.0", () => {
 
             test("@default on boolean list must be list of boolean values", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         statuses: [Boolean] @default(value: [2])
                     }
                 `;
@@ -1436,7 +1436,7 @@ describe("validation 2.0", () => {
 
             test("@default on boolean list must be list of boolean values correct", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         statuses: [Boolean] @default(value: [true])
                     }
                 `;
@@ -1453,7 +1453,7 @@ describe("validation 2.0", () => {
 
             test("@default on string must be string", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         name: String @default(value: 2)
                     }
                 `;
@@ -1474,7 +1474,7 @@ describe("validation 2.0", () => {
 
             test("@default on string must be string correct", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         registered: String @default(value: "Bob")
                     }
                 `;
@@ -1491,7 +1491,7 @@ describe("validation 2.0", () => {
 
             test("@default on string list must be list of string values", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         names: [String] @default(value: [2])
                     }
                 `;
@@ -1515,7 +1515,7 @@ describe("validation 2.0", () => {
 
             test("@default on string list must be list of string values correct", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         names: [String] @default(value: ["Bob"])
                     }
                 `;
@@ -1532,7 +1532,7 @@ describe("validation 2.0", () => {
 
             test("@default on ID must be ID", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         uid: ID @default(value: 2)
                     }
                 `;
@@ -1553,7 +1553,7 @@ describe("validation 2.0", () => {
 
             test("@default on ID list must be list of ID values", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         ids: [ID] @default(value: [2])
                     }
                 `;
@@ -1577,7 +1577,7 @@ describe("validation 2.0", () => {
 
             test("@default on ID list must be list of ID values correct", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         ids: [ID] @default(value: ["123-223"])
                     }
                 `;
@@ -1594,7 +1594,7 @@ describe("validation 2.0", () => {
 
             test("@default on ID must be ID correct", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         uid: ID @default(value: "234-432")
                     }
                 `;
@@ -1611,7 +1611,7 @@ describe("validation 2.0", () => {
 
             test("@default not supported on Spatial types", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         updatedAt: Point @default(value: "test")
                     }
                 `;
@@ -1632,10 +1632,10 @@ describe("validation 2.0", () => {
 
             test("@default only supported on scalar types", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         post: Post @default(value: "test")
                     }
-                    type Post @node {
+                    type Post {
                         title: String
                     }
                 `;
@@ -1668,7 +1668,7 @@ describe("validation 2.0", () => {
                 `;
                 const doc = gql`
                     ${enumTypes}
-                    type User @node {
+                    type User {
                         status: Status @coalesce(value: "dummy")
                     }
                 `;
@@ -1699,7 +1699,7 @@ describe("validation 2.0", () => {
                 `;
                 const doc = gql`
                     ${enumTypes}
-                    type User @node {
+                    type User {
                         id: ID
                     }
                     extend type User {
@@ -1733,7 +1733,7 @@ describe("validation 2.0", () => {
                 `;
                 const doc = gql`
                     ${enumTypes}
-                    type User @node {
+                    type User {
                         status: Status @default(value: REGISTERED)
                     }
                 `;
@@ -1760,7 +1760,7 @@ describe("validation 2.0", () => {
                 `;
                 const doc = gql`
                     ${enumTypes}
-                    type User @node {
+                    type User {
                         statuses: [Status] @coalesce(value: "dummy")
                     }
                 `;
@@ -1794,7 +1794,7 @@ describe("validation 2.0", () => {
                 `;
                 const doc = gql`
                     ${enumTypes}
-                    type User @node {
+                    type User {
                         statuses: [Status] @coalesce(value: ["dummy"])
                     }
                 `;
@@ -1828,7 +1828,7 @@ describe("validation 2.0", () => {
                 `;
                 const doc = gql`
                     ${enumTypes}
-                    type User @node {
+                    type User {
                         statuses: [Status] @coalesce(value: [PENDING])
                     }
                 `;
@@ -1848,7 +1848,7 @@ describe("validation 2.0", () => {
 
             test("@coalesce on int must be int", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         age: Int @coalesce(value: "dummy")
                     }
                 `;
@@ -1869,7 +1869,7 @@ describe("validation 2.0", () => {
 
             test("@coalesce on int must be int correct", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         age: Int @coalesce(value: 23)
                     }
                 `;
@@ -1886,7 +1886,7 @@ describe("validation 2.0", () => {
 
             test("@coalesce on int list must be list of int values", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         ages: [Int] @coalesce(value: ["dummy"])
                     }
                 `;
@@ -1910,7 +1910,7 @@ describe("validation 2.0", () => {
 
             test("@coalesce on int list must be list of int values correct", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         ages: [Int] @coalesce(value: [12])
                     }
                 `;
@@ -1927,7 +1927,7 @@ describe("validation 2.0", () => {
 
             test("@coalesce on float must be float", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         avg: Float @coalesce(value: 2)
                     }
                 `;
@@ -1948,7 +1948,7 @@ describe("validation 2.0", () => {
 
             test("@coalesce on float must be float correct", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         avg: Float @coalesce(value: 2.3)
                     }
                 `;
@@ -1965,7 +1965,7 @@ describe("validation 2.0", () => {
 
             test("@coalesce on float list must be list of float values", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         avgs: [Float] @coalesce(value: [1])
                     }
                 `;
@@ -1989,7 +1989,7 @@ describe("validation 2.0", () => {
 
             test("@coalesce on float list must be list of float values correct", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         avgs: [Float] @coalesce(value: [1.2])
                     }
                 `;
@@ -2006,7 +2006,7 @@ describe("validation 2.0", () => {
 
             test("@coalesce on boolean must be boolean", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         registered: Boolean @coalesce(value: 2)
                     }
                 `;
@@ -2030,7 +2030,7 @@ describe("validation 2.0", () => {
 
             test("@coalesce on boolean must be boolean correct", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         registered: Boolean @coalesce(value: false)
                     }
                 `;
@@ -2047,7 +2047,7 @@ describe("validation 2.0", () => {
 
             test("@coalesce on boolean list must be list of boolean values", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         statuses: [Boolean] @coalesce(value: [2])
                     }
                 `;
@@ -2071,7 +2071,7 @@ describe("validation 2.0", () => {
 
             test("@coalesce on boolean list must be list of boolean values correct", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         statuses: [Boolean] @coalesce(value: [true])
                     }
                 `;
@@ -2088,7 +2088,7 @@ describe("validation 2.0", () => {
 
             test("@coalesce on string must be string", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         name: String @coalesce(value: 2)
                     }
                 `;
@@ -2109,7 +2109,7 @@ describe("validation 2.0", () => {
 
             test("@coalesce on string must be string correct", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         registered: String @coalesce(value: "Bob")
                     }
                 `;
@@ -2126,7 +2126,7 @@ describe("validation 2.0", () => {
 
             test("@coalesce on string list must be list of string values", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         names: [String] @coalesce(value: [2])
                     }
                 `;
@@ -2150,7 +2150,7 @@ describe("validation 2.0", () => {
 
             test("@coalesce on string list must be list of string values correct", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         names: [String] @coalesce(value: ["Bob"])
                     }
                 `;
@@ -2167,7 +2167,7 @@ describe("validation 2.0", () => {
 
             test("@coalesce on ID must be ID", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         uid: ID @coalesce(value: 2)
                     }
                 `;
@@ -2188,7 +2188,7 @@ describe("validation 2.0", () => {
 
             test("@coalesce on ID list must be list of ID values", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         ids: [ID] @coalesce(value: [2])
                     }
                 `;
@@ -2212,7 +2212,7 @@ describe("validation 2.0", () => {
 
             test("@coalesce on ID list must be list of ID values correct", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         ids: [ID] @coalesce(value: ["123-223"])
                     }
                 `;
@@ -2229,7 +2229,7 @@ describe("validation 2.0", () => {
 
             test("@coalesce on ID must be ID correct", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         uid: ID @coalesce(value: "234-432")
                     }
                 `;
@@ -2246,7 +2246,7 @@ describe("validation 2.0", () => {
 
             test("@coalesce not supported on Spatial types", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         updatedAt: Point @coalesce(value: "test")
                     }
                 `;
@@ -2267,7 +2267,7 @@ describe("validation 2.0", () => {
 
             test("@coalesce not supported on Temporal types", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         updatedAt: DateTime @coalesce(value: "test")
                     }
                 `;
@@ -2288,10 +2288,10 @@ describe("validation 2.0", () => {
 
             test("@coalesce only supported on scalar types", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         post: Post @coalesce(value: "test")
                     }
-                    type Post @node {
+                    type Post {
                         title: String
                     }
                 `;
@@ -2320,7 +2320,7 @@ describe("validation 2.0", () => {
                     interface Person @limit(default: -1) {
                         name: String
                     }
-                    type User implements Person @node {
+                    type User implements Person {
                         name: String
                     }
                 `;
@@ -2339,7 +2339,7 @@ describe("validation 2.0", () => {
 
             test("@limit default must be > 0", () => {
                 const doc = gql`
-                    type User @limit(default: -1) @node {
+                    type User @limit(default: -1) {
                         name: String
                     }
                 `;
@@ -2358,7 +2358,7 @@ describe("validation 2.0", () => {
 
             test("@limit default must be > 0 extension", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         name: String
                     }
                     extend type User @limit(default: -1)
@@ -2378,7 +2378,7 @@ describe("validation 2.0", () => {
 
             test("@limit max must be > 0", () => {
                 const doc = gql`
-                    type User @limit(max: -1) @node {
+                    type User @limit(max: -1) {
                         name: String
                     }
                 `;
@@ -2394,7 +2394,7 @@ describe("validation 2.0", () => {
 
             test("@limit default must be < max", () => {
                 const doc = gql`
-                    type User @limit(default: 10, max: 9) @node {
+                    type User @limit(default: 10, max: 9) {
                         name: String
                     }
                 `;
@@ -2413,7 +2413,7 @@ describe("validation 2.0", () => {
 
             test("@limit empty limit argument is correct", () => {
                 const doc = gql`
-                    type User @limit @node {
+                    type User @limit {
                         name: String
                     }
                 `;
@@ -2424,7 +2424,7 @@ describe("validation 2.0", () => {
 
             test("@limit correct", () => {
                 const doc = gql`
-                    type User @limit(default: 1, max: 2) @node {
+                    type User @limit(default: 1, max: 2) {
                         name: String
                     }
                 `;
@@ -2455,7 +2455,7 @@ describe("validation 2.0", () => {
 
             test("@fulltext duplicate index names extension", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         name: String
                         id: ID
                     }
@@ -2474,7 +2474,7 @@ describe("validation 2.0", () => {
 
             test("@fulltext index on type not String or ID", () => {
                 const doc = gql`
-                    type User @fulltext(indexes: [{ indexName: "a", fields: ["age"] }]) @node {
+                    type User @fulltext(indexes: [{ indexName: "a", fields: ["age"] }]) {
                         age: Int
                     }
                 `;
@@ -2508,13 +2508,13 @@ describe("validation 2.0", () => {
         describe("@relationship", () => {
             test("@relationship duplicate [type, direction, fieldType] combination", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         name: String
                         posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                         liked: [Post!]! @relationship(type: "HAS_POST", direction: IN)
                         archivedPosts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                     }
-                    type Post @node {
+                    type Post {
                         title: String
                     }
                 `;
@@ -2544,12 +2544,12 @@ describe("validation 2.0", () => {
                 `;
                 const doc = gql`
                     ${interfaceDoc}
-                    type SomeSite implements Site @node {
+                    type SomeSite implements Site {
                         name: String
                         posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                         archivedPosts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                     }
-                    type Post @node {
+                    type Post {
                         title: String
                     }
                 `;
@@ -2582,12 +2582,12 @@ describe("validation 2.0", () => {
                 `;
                 const doc = gql`
                     ${interfaceDoc}
-                    type SomeSite implements Site @node {
+                    type SomeSite implements Site {
                         name: String
                         posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                         archivedPosts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                     }
-                    type Post @node {
+                    type Post {
                         title: String
                     }
                 `;
@@ -2611,11 +2611,11 @@ describe("validation 2.0", () => {
 
             test("@relationship no relationshipProperties type found", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         name: String
                         posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT, properties: "Poster")
                     }
-                    type Post @node {
+                    type Post {
                         title: String
                     }
                 `;
@@ -2638,10 +2638,10 @@ describe("validation 2.0", () => {
 
             test("@relationship no relationshipProperties type found extension", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         name: String
                     }
-                    type Post @node {
+                    type Post {
                         title: String
                     }
                     extend type User {
@@ -2667,16 +2667,16 @@ describe("validation 2.0", () => {
 
             test("@relationship relationshipProperties type not annotated with @relationshipProperties", () => {
                 const relationshipProperties = gql`
-                    type Poster @node {
+                    type Poster {
                         createdAt: String
                     }
                 `;
                 const doc = gql`
-                    type User @node {
+                    type User {
                         name: String
                         posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT, properties: "Poster")
                     }
-                    type Post @node {
+                    type Post {
                         title: String
                     }
                 `;
@@ -2708,14 +2708,14 @@ describe("validation 2.0", () => {
                     }
                 `;
                 const doc = gql`
-                    type User @node {
+                    type User {
                         name: String
                         posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT, properties: "Poster")
                         archived: [Post!]!
                             @relationship(type: "HAS_ARCHIVED_POST", direction: OUT, properties: "Poster")
                         favorite: Post @relationship(type: "HAS_FAVORITE", direction: OUT)
                     }
-                    type Post @node {
+                    type Post {
                         title: String
                     }
                 `;
@@ -2741,11 +2741,11 @@ describe("validation 2.0", () => {
                 `;
                 const doc = gql`
                     ${interfaceDoc}
-                    type SomeSite implements Site @node {
+                    type SomeSite implements Site {
                         name: String
                         posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                     }
-                    type Post @node {
+                    type Post {
                         title: String
                     }
                 `;
@@ -2765,15 +2765,15 @@ describe("validation 2.0", () => {
 
             test("@relationship correct usage when different type", () => {
                 const doc = gql`
-                    type SomeSite @node {
+                    type SomeSite {
                         name: String
                         posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                     }
-                    type OtherSite @node {
+                    type OtherSite {
                         name: String
                         posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                     }
-                    type Post @node {
+                    type Post {
                         title: String
                     }
                 `;
@@ -2796,7 +2796,7 @@ describe("validation 2.0", () => {
         describe("@populatedBy", () => {
             test("@populatedBy callback not provided", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         name: String @populatedBy(operations: [CREATE], callback: "getUName")
                     }
                 `;
@@ -2814,7 +2814,7 @@ describe("validation 2.0", () => {
 
             test("@populatedBy callback not a function", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         name: String @populatedBy(operations: [CREATE], callback: "getUName")
                     }
                 `;
@@ -2843,7 +2843,7 @@ describe("validation 2.0", () => {
 
             test("@populatedBy callback not a function extension", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         id: ID
                     }
                     extend type User {
@@ -2875,7 +2875,7 @@ describe("validation 2.0", () => {
 
             test("@populatedBy correct usage", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         name: String @populatedBy(operations: [CREATE], callback: "getUName")
                     }
                 `;
@@ -2893,7 +2893,7 @@ describe("validation 2.0", () => {
         describe("@unique", () => {
             test("@unique valid", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         name: String @unique
                     }
                 `;
@@ -2924,7 +2924,7 @@ describe("validation 2.0", () => {
 
         test("should throw cannot auto-generate a non ID field", () => {
             const doc = gql`
-                type Movie @node {
+                type Movie {
                     name: String! @id
                 }
             `;
@@ -2940,7 +2940,7 @@ describe("validation 2.0", () => {
 
         test("should throw cannot auto-generate an array", () => {
             const doc = gql`
-                type Movie @node {
+                type Movie {
                     name: [ID] @id
                 }
             `;
@@ -2957,7 +2957,7 @@ describe("validation 2.0", () => {
         describe("@timestamp", () => {
             test("@timestamp valid", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         lastSeenAt: DateTime @timestamp
                     }
                 `;
@@ -2968,7 +2968,7 @@ describe("validation 2.0", () => {
 
             test("@timestamp cannot autogenerate array", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         lastSeenAt: [DateTime] @timestamp
                     }
                 `;
@@ -2984,7 +2984,7 @@ describe("validation 2.0", () => {
 
             test("should throw cannot timestamp on array of DateTime", () => {
                 const doc = gql`
-                    type Movie @node {
+                    type Movie {
                         name: [DateTime] @timestamp(operations: [CREATE])
                     }
                 `;
@@ -3000,7 +3000,7 @@ describe("validation 2.0", () => {
 
             test("@timestamp cannot timestamp temporal fields lacking time zone information", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         lastSeenAt: Date @timestamp
                     }
                 `;
@@ -3021,7 +3021,7 @@ describe("validation 2.0", () => {
         describe("@id", () => {
             test("@id autogenerate valid", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         uid: ID @id
                     }
                 `;
@@ -3032,7 +3032,7 @@ describe("validation 2.0", () => {
 
             test("@id autogenerate cannot autogenerate array", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         uid: [ID] @id
                     }
                 `;
@@ -3048,7 +3048,7 @@ describe("validation 2.0", () => {
 
             test("@id autogenerate cannot autogenerate a non ID field", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         uid: String @id
                     }
                 `;
@@ -3073,7 +3073,7 @@ describe("validation 2.0", () => {
         describe("valid", () => {
             test("@cypher with @timestamp on Field", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         id: ID
                         name: DateTime
                             @cypher(
@@ -3118,12 +3118,12 @@ describe("validation 2.0", () => {
         describe("invalid", () => {
             test("@unique can't be used with @relationship", () => {
                 const doc = gql`
-                    type Movie @node {
+                    type Movie {
                         id: ID
                         actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT) @unique
                     }
 
-                    type Actor @node {
+                    type Actor {
                         name: String
                     }
                 `;
@@ -3148,12 +3148,12 @@ describe("validation 2.0", () => {
 
             test("@authentication can't be used with @relationship", () => {
                 const doc = gql`
-                    type Movie @node {
+                    type Movie {
                         id: ID
                         actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT) @authentication
                     }
 
-                    type Actor @node {
+                    type Actor {
                         name: String
                     }
                 `;
@@ -3178,14 +3178,14 @@ describe("validation 2.0", () => {
 
             test("@subscriptionsAuthorization can't be used with @relationship", () => {
                 const doc = gql`
-                    type Movie @node {
+                    type Movie {
                         id: ID
                         actors: [Actor!]!
                             @relationship(type: "ACTED_IN", direction: OUT)
                             @subscriptionsAuthorization(filter: [{ where: { id: "1" } }])
                     }
 
-                    type Actor @node {
+                    type Actor {
                         name: String
                     }
                 `;
@@ -3210,14 +3210,14 @@ describe("validation 2.0", () => {
 
             test("@authorization can't be used with @relationship", () => {
                 const doc = gql`
-                    type Movie @node {
+                    type Movie {
                         id: ID
                         actors: [Actor!]!
                             @relationship(type: "ACTED_IN", direction: OUT)
                             @authorization(validate: [{ where: { id: "1" } }])
                     }
 
-                    type Actor @node {
+                    type Actor {
                         name: String
                     }
                 `;
@@ -3242,7 +3242,7 @@ describe("validation 2.0", () => {
 
             test("@cypher with @relationship on Field", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         id: ID
                         post: [Post!]!
                             @cypher(
@@ -3253,7 +3253,7 @@ describe("validation 2.0", () => {
                             )
                             @relationship(type: "HAS_POST", direction: OUT)
                     }
-                    type Post @node {
+                    type Post {
                         title: String
                     }
                 `;
@@ -3281,7 +3281,7 @@ describe("validation 2.0", () => {
                     interface Person {
                         post: [Post!]! @declareRelationship
                     }
-                    type User implements Person @node {
+                    type User implements Person {
                         id: ID
                         post: [Post!]!
                             @cypher(
@@ -3292,7 +3292,7 @@ describe("validation 2.0", () => {
                             )
                             @relationship(type: "HAS_POST", direction: OUT)
                     }
-                    type Post @node {
+                    type Post {
                         title: String
                     }
                 `;
@@ -3317,7 +3317,7 @@ describe("validation 2.0", () => {
 
             test("@cypher with inherited @relationship on Field reverse order", () => {
                 const doc = gql`
-                    type User implements Person @node {
+                    type User implements Person {
                         id: ID
                         post: [Post!]!
                             @cypher(
@@ -3331,7 +3331,7 @@ describe("validation 2.0", () => {
                     interface Person {
                         post: [Post!]! @declareRelationship
                     }
-                    type Post @node {
+                    type Post {
                         title: String
                     }
                 `;
@@ -3356,7 +3356,7 @@ describe("validation 2.0", () => {
 
             test("@cypher double", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         id: ID
                         post: [Post]
                             @cypher(
@@ -3372,7 +3372,7 @@ describe("validation 2.0", () => {
                                 columnName: "p"
                             )
                     }
-                    type Post @node {
+                    type Post {
                         title: String
                     }
                 `;
@@ -3437,7 +3437,7 @@ describe("validation 2.0", () => {
                     someActors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
 
-                type Actor @node {
+                type Actor {
                     name: String
                 }
             `;
@@ -3466,7 +3466,7 @@ describe("validation 2.0", () => {
                     me: String
                 }
 
-                type Actor @node {
+                type Actor {
                     name: String
                 }
 
@@ -3499,7 +3499,7 @@ describe("validation 2.0", () => {
                     someActors: [Actor!]! @authorization(filter: [{ where: { jwt: { roles_INCLUDES: "admin" } } }])
                 }
 
-                type Actor @node {
+                type Actor {
                     name: String
                 }
             `;
@@ -3528,7 +3528,7 @@ describe("validation 2.0", () => {
                     me: String
                 }
 
-                type Actor @node {
+                type Actor {
                     name: String
                 }
                 extend type Query {
@@ -3567,7 +3567,7 @@ describe("validation 2.0", () => {
                         @authorization(filter: [{ where: { jwt: { roles_INCLUDES: "admin" } } }])
                 }
 
-                type Actor @node {
+                type Actor {
                     name: String
                 }
             `;
@@ -3596,7 +3596,7 @@ describe("validation 2.0", () => {
                     someActors: [Actor!]! @populatedBy(callback: "myCallback")
                 }
 
-                type Actor @node {
+                type Actor {
                     name: String
                 }
             `;
@@ -3637,7 +3637,7 @@ describe("validation 2.0", () => {
                     someActors: [Actor!]! @authentication
                 }
 
-                type Actor @node {
+                type Actor {
                     name: String
                 }
             `;
@@ -3665,7 +3665,7 @@ describe("validation 2.0", () => {
                         @authentication
                 }
 
-                type Actor @node {
+                type Actor {
                     name: String
                 }
             `;
@@ -3692,7 +3692,7 @@ describe("validation 2.0", () => {
                         )
                 }
 
-                type Actor @node {
+                type Actor {
                     name: String
                 }
             `;
@@ -3719,7 +3719,7 @@ describe("validation 2.0", () => {
                         )
                 }
 
-                type Actor @node {
+                type Actor {
                     name: String
                 }
             `;
@@ -3756,7 +3756,7 @@ describe("validation 2.0", () => {
                         )
                 }
 
-                type Actor implements Person @node {
+                type Actor implements Person {
                     name: String
                 }
             `;
@@ -3785,7 +3785,7 @@ describe("validation 2.0", () => {
                     actor: [Actor!]! @relationship(type: "IS_ACTOR", direction: IN)
                 }
 
-                type Actor implements Person @node {
+                type Actor implements Person {
                     name: String
                     actor: [Actor!]!
                 }
@@ -3816,7 +3816,7 @@ describe("validation 2.0", () => {
                     id: ID
                 }
 
-                type Actor implements Person @node {
+                type Actor implements Person {
                     name: String
                     id: ID
                 }
@@ -3838,7 +3838,7 @@ describe("validation 2.0", () => {
                     name: String @settable(onCreate: false)
                 }
 
-                type Actor implements Person @node {
+                type Actor implements Person {
                     name: String
                 }
             `;
@@ -3857,11 +3857,11 @@ describe("validation 2.0", () => {
     describe("@declareRelationship", () => {
         test("@declareRelationship cannot be used on the field of an object type", () => {
             const doc = gql`
-                type Person @node {
+                type Person {
                     name: String
                 }
 
-                type Actor @node {
+                type Actor {
                     name: Person @declareRelationship
                 }
             `;
@@ -3890,7 +3890,7 @@ describe("validation 2.0", () => {
                     name: Actor @declareRelationship
                 }
 
-                type Actor @node {
+                type Actor {
                     name: String
                 }
             `;
@@ -3911,7 +3911,7 @@ describe("validation 2.0", () => {
                     name: String @declareRelationship
                 }
 
-                type Actor @node {
+                type Actor {
                     name: String
                 }
             `;
@@ -3940,7 +3940,7 @@ describe("validation 2.0", () => {
                     actor: [Actor!]! @declareRelationship
                 }
 
-                type Actor implements Person @node {
+                type Actor implements Person {
                     name: String
                     actor: [Actor!]! @relationship(type: "IS_ACTOR", direction: IN)
                 }
@@ -3958,7 +3958,7 @@ describe("validation 2.0", () => {
 
         test("@declareRelationship correct usage - reverse definitions", () => {
             const doc = gql`
-                type Actor implements Person @node {
+                type Actor implements Person {
                     name: String
                     actor: [Actor!]! @relationship(type: "IS_ACTOR", direction: IN)
                 }
@@ -3984,7 +3984,7 @@ describe("validation 2.0", () => {
                     actor: [Actor!]! @declareRelationship
                 }
 
-                type Actor implements Person @node {
+                type Actor implements Person {
                     name: String
                     actor: [Actor!]!
                 }
@@ -4010,7 +4010,7 @@ describe("validation 2.0", () => {
 
         test("@declareRelationship does not have a corresponding @relationship - reverse definitions", () => {
             const doc = gql`
-                type Actor implements Person @node {
+                type Actor implements Person {
                     name: String
                     actor: [Actor!]!
                 }
@@ -4044,7 +4044,7 @@ describe("validation 2.0", () => {
                     name: String
                 }
 
-                type Actor implements Person @node {
+                type Actor implements Person {
                     name: String
                     actor: [Actor!]!
                 }
@@ -4074,7 +4074,7 @@ describe("validation 2.0", () => {
 
         test("@declareRelationship correct usage on extension", () => {
             const doc = gql`
-                type Actor implements Person @node {
+                type Actor implements Person {
                     name: String
                 }
 
@@ -4099,7 +4099,7 @@ describe("validation 2.0", () => {
 
         test("@declareRelationship does not have corresponding @relationship, implements on extension", () => {
             const doc = gql`
-                type Actor @node {
+                type Actor {
                     name: String
                     actor: [Actor!]!
                 }
@@ -4131,7 +4131,7 @@ describe("validation 2.0", () => {
 
         test("@declareRelationship correct usage on extension, relationship on extension", () => {
             const doc = gql`
-                type Actor @node {
+                type Actor {
                     name: String
                 }
 
@@ -4164,7 +4164,7 @@ describe("validation 2.0", () => {
                     actor: [Actor!]! @declareRelationship
                 }
 
-                type Actor implements Person @node {
+                type Actor implements Person {
                     name: String
                     actor: [Actor!]! @relationship(type: "IS_ACTOR", direction: IN)
                     director: [Actor!]!
@@ -4314,7 +4314,7 @@ describe("validation 2.0", () => {
                     type JWTPayload @jwt {
                         post: Post
                     }
-                    type Post @node {
+                    type Post {
                         title: String
                     }
                 `;
@@ -4336,7 +4336,7 @@ describe("validation 2.0", () => {
                     type JWTPayload @jwt {
                         me: String
                     }
-                    type Post @node {
+                    type Post {
                         title: String
                     }
                     extend type JWTPayload {
@@ -4368,7 +4368,7 @@ describe("validation 2.0", () => {
                         me: String
                         post: Post
                     }
-                    type Post @node {
+                    type Post {
                         title: String
                     }
                 `;
@@ -4410,7 +4410,7 @@ describe("validation 2.0", () => {
         describe("global nodes", () => {
             test("should throw error if more than one @relayId directive field", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         email: ID! @relayId
                         name: ID! @relayId
                     }
@@ -4428,7 +4428,7 @@ describe("validation 2.0", () => {
             });
             test("should throw error if more than one @relayId directive field extension", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         email: ID! @relayId
                     }
                     extend type User {
@@ -4449,7 +4449,7 @@ describe("validation 2.0", () => {
 
             test("should throw if a type already contains an id field", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         id: ID!
                         email: ID! @relayId
                     }
@@ -4469,7 +4469,7 @@ describe("validation 2.0", () => {
 
             test("should throw if a type already contains an id field extension", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         email: ID! @relayId
                     }
                     extend type User {
@@ -4490,7 +4490,7 @@ describe("validation 2.0", () => {
             });
             test("should not throw if a type already contains an id field but the field is aliased", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         id: Int @alias(property: "other")
                         dbId: ID! @relayId
                     }
@@ -4501,7 +4501,7 @@ describe("validation 2.0", () => {
 
             test("should not throw if a type already contains an id field but the field is aliased on extension", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         dbId: ID! @relayId
                     }
                     extend type User {
@@ -4515,7 +4515,7 @@ describe("validation 2.0", () => {
 
         test("only one field can be @relayId", () => {
             const doc = gql`
-                type Movie @node {
+                type Movie {
                     rottenid: ID! @relayId
                     imdbid: ID @relayId
                     title: String
@@ -4540,7 +4540,7 @@ describe("validation 2.0", () => {
                     imdbid: ID! @relayId
                 }
 
-                type Movie implements MovieInterface @node {
+                type Movie implements MovieInterface {
                     rottenid: ID! @relayId
                     imdbid: ID!
                     title: String
@@ -4575,7 +4575,7 @@ describe("validation 2.0", () => {
                     id: ID!
                 }
 
-                type Movie implements MovieInterface & ScorableInterface @node {
+                type Movie implements MovieInterface & ScorableInterface {
                     rottenid: ID! @relayId
                     id: ID!
                     title: String
@@ -4596,7 +4596,7 @@ describe("validation 2.0", () => {
 
         test("field named id already exists", () => {
             const doc = gql`
-                type Movie @node {
+                type Movie {
                     id: ID!
                     imdbd: ID @relayId
                     title: String
@@ -4617,7 +4617,7 @@ describe("validation 2.0", () => {
 
         test("field named id already exists and not aliased on interface", () => {
             const doc = gql`
-                type Movie implements MovieInterface @node {
+                type Movie implements MovieInterface {
                     rottenid: ID! @relayId
                     id: ID!
                     title: String
@@ -4640,7 +4640,7 @@ describe("validation 2.0", () => {
 
         test("valid", () => {
             const doc = gql`
-                type Movie @node {
+                type Movie {
                     rottenid: ID! @id
                     imdbId: ID! @relayId
                     title: String
@@ -4655,11 +4655,11 @@ describe("validation 2.0", () => {
     describe("union has no types", () => {
         test("union has no types - invalid", () => {
             const doc = gql`
-                type Movie @node {
+                type Movie {
                     id: ID!
                     title: String
                 }
-                type Series @node {
+                type Series {
                     title: String
                     episodes: Int
                 }
@@ -4676,11 +4676,11 @@ describe("validation 2.0", () => {
 
         test("union has types - valid", () => {
             const doc = gql`
-                type Movie @node {
+                type Movie {
                     id: ID!
                     title: String
                 }
-                type Series @node {
+                type Series {
                     title: String
                     episodes: Int
                 }
@@ -4702,7 +4702,7 @@ describe("validation 2.0", () => {
                 `;
                 const doc = gql`
                     ${interfaceTypes}
-                    type User implements UserInterface @node {
+                    type User implements UserInterface {
                         id: ID
                         password: String @private
                         private: String
@@ -4734,7 +4734,7 @@ describe("validation 2.0", () => {
                 `;
                 const doc = gql`
                     ${interfaceTypes}
-                    type User implements UserInterface @node {
+                    type User implements UserInterface {
                         id: ID
                         password: String @private
                         private: String
@@ -4766,7 +4766,7 @@ describe("validation 2.0", () => {
                 `;
                 const doc = gql`
                     ${interfaceTypes}
-                    type User implements UserInterface @node {
+                    type User implements UserInterface {
                         password: String @private
                     }
                     extend type User {
@@ -4794,7 +4794,7 @@ describe("validation 2.0", () => {
             test("Interfaces must have one or more fields", () => {
                 const doc = gql`
                     interface Production
-                    type Movie implements Production @node {
+                    type Movie implements Production {
                         id: ID!
                         title: String
                     }
@@ -4810,7 +4810,7 @@ describe("validation 2.0", () => {
 
             test("valid", () => {
                 const doc = gql`
-                    type Movie implements Production @node {
+                    type Movie implements Production {
                         id: ID!
                         title: String
                         episodes: Int
@@ -4827,7 +4827,7 @@ describe("validation 2.0", () => {
         describe("@authorization", () => {
             test("should throw error if there are no arguments", () => {
                 const doc = gql`
-                    type Movie @node {
+                    type Movie {
                         id: ID!
                         title: String @authorization
                     }
@@ -4847,7 +4847,7 @@ describe("validation 2.0", () => {
 
             test("should not throw error when there is a valid argument", () => {
                 const doc = gql`
-                    type Movie @node {
+                    type Movie {
                         id: ID!
                         title: String @authorization(filter: ["filter"])
                     }
@@ -4859,7 +4859,7 @@ describe("validation 2.0", () => {
 
             test("should throw error when there is an invalid argument", () => {
                 const doc = gql`
-                    type Movie @node {
+                    type Movie {
                         id: ID!
                         title: String @authorization(test: "test")
                     }
@@ -4880,7 +4880,7 @@ describe("validation 2.0", () => {
         describe("@subscriptionsAuthorization", () => {
             test("should throw error if there are no arguments", () => {
                 const doc = gql`
-                    type Movie @node {
+                    type Movie {
                         id: ID!
                         title: String @subscriptionsAuthorization
                     }
@@ -4899,7 +4899,7 @@ describe("validation 2.0", () => {
 
             test("should not throw error when there is a valid argument", () => {
                 const doc = gql`
-                    type Movie @node {
+                    type Movie {
                         id: ID!
                         title: String @subscriptionsAuthorization(filter: ["filter"])
                     }
@@ -4911,7 +4911,7 @@ describe("validation 2.0", () => {
 
             test("should throw error when there is an invalid argument", () => {
                 const doc = gql`
-                    type Movie @node {
+                    type Movie {
                         id: ID!
                         title: String @subscriptionsAuthorization(test: "test")
                     }
@@ -4943,11 +4943,11 @@ describe("validation 2.0", () => {
                     `;
                     const doc = gql`
                         ${relationshipProperties}
-                        type Movie @node {
+                        type Movie {
                             actors: Actor! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
                         }
 
-                        type Actor @node {
+                        type Actor {
                             name: String
                         }
                     `;
@@ -4985,11 +4985,11 @@ describe("validation 2.0", () => {
                     `;
                     const doc = gql`
                         ${relationshipProperties}
-                        type Movie @node {
+                        type Movie {
                             actors: Actor! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
                         }
 
-                        type Actor @node {
+                        type Actor {
                             name: String
                         }
                     `;
@@ -5023,11 +5023,11 @@ describe("validation 2.0", () => {
                     `;
                     const doc = gql`
                         ${relationshipProperties}
-                        type Movie @node {
+                        type Movie {
                             actors: Actor! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
                         }
 
-                        type Actor @node {
+                        type Actor {
                             name: String
                         }
                     `;
@@ -5061,11 +5061,11 @@ describe("validation 2.0", () => {
                     `;
                     const doc = gql`
                         ${relationshipProperties}
-                        type Movie @node {
+                        type Movie {
                             actors: Actor! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
                         }
 
-                        type Actor @node {
+                        type Actor {
                             name: String
                         }
                     `;
@@ -5100,11 +5100,11 @@ describe("validation 2.0", () => {
                     `;
                     const doc = gql`
                         ${relationshipProperties}
-                        type Movie @node {
+                        type Movie {
                             actors: Actor! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
                         }
 
-                        type Actor @node {
+                        type Actor {
                             name: String
                         }
                     `;
@@ -5140,11 +5140,11 @@ describe("validation 2.0", () => {
                     `;
                     const doc = gql`
                         ${relationshipProperties}
-                        type Movie @node {
+                        type Movie {
                             actors: Actor! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
                         }
 
-                        type Actor @node {
+                        type Actor {
                             name: String
                         }
                     `;
@@ -5179,11 +5179,11 @@ describe("validation 2.0", () => {
                     `;
                     const doc = gql`
                         ${relationshipProperties}
-                        type User @node {
+                        type User {
                             name: String
                             posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT, properties: "HasPost")
                         }
-                        type Post @node {
+                        type Post {
                             title: String
                         }
                     `;
@@ -5224,11 +5224,11 @@ describe("validation 2.0", () => {
                     `;
                     const doc = gql`
                         ${relationshipProperties}
-                        type User @node {
+                        type User {
                             name: String
                             posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT, properties: "HasPost")
                         }
-                        type Post @node {
+                        type Post {
                             title: String
                         }
                     `;
@@ -5265,11 +5265,11 @@ describe("validation 2.0", () => {
                     `;
                     const doc = gql`
                         ${relationshipProperties}
-                        type User @node {
+                        type User {
                             name: String
                             posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT, properties: "HasPost")
                         }
-                        type Post @node {
+                        type Post {
                             title: String
                         }
                     `;
@@ -5294,10 +5294,10 @@ describe("validation 2.0", () => {
             describe("invalid", () => {
                 test("@relationship nullable list type", () => {
                     const doc = gql`
-                        type User @node {
+                        type User {
                             posts: [Post!] @relationship(type: "HAS_POST", direction: OUT)
                         }
-                        type Post @node {
+                        type Post {
                             title: String
                         }
                     `;
@@ -5321,10 +5321,10 @@ describe("validation 2.0", () => {
 
                 test("@relationship non-nullable list of nullable type", () => {
                     const doc = gql`
-                        type User @node {
+                        type User {
                             posts: [Post]! @relationship(type: "HAS_POST", direction: OUT)
                         }
-                        type Post @node {
+                        type Post {
                             title: String
                         }
                     `;
@@ -5348,11 +5348,11 @@ describe("validation 2.0", () => {
 
                 test("@relationship non-nullable list of nullable type extension", () => {
                     const doc = gql`
-                        type User @node {
+                        type User {
                             name: String
                         }
 
-                        type Post @node {
+                        type Post {
                             title: String
                         }
                         extend type User {
@@ -5379,7 +5379,7 @@ describe("validation 2.0", () => {
 
                 test("@relationship scalar", () => {
                     const doc = gql`
-                        type User @node {
+                        type User {
                             name: String
                             posts: Int! @relationship(type: "HAS_POST", direction: OUT)
                             allPosts: [Int!] @relationship(type: "HAS_POST", direction: OUT)
@@ -5413,7 +5413,7 @@ describe("validation 2.0", () => {
             describe("valid", () => {
                 test("simple list", () => {
                     const doc = gql`
-                        type Post @node {
+                        type Post {
                             titles: [String]
                         }
                     `;
@@ -5425,10 +5425,10 @@ describe("validation 2.0", () => {
 
                 test("@relationship non-null list of non-nullable type", () => {
                     const doc = gql`
-                        type User @node {
+                        type User {
                             posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                         }
-                        type Post @node {
+                        type Post {
                             title: String
                         }
                     `;
@@ -5454,12 +5454,12 @@ describe("validation 2.0", () => {
                 `;
                 const doc = gql`
                     ${relationshipPropertiesTypes}
-                    type Movie @node {
+                    type Movie {
                         id: ID
                         actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
                     }
 
-                    type Actor @node {
+                    type Actor {
                         name: String
                     }
                 `;
@@ -5494,12 +5494,12 @@ describe("validation 2.0", () => {
                 `;
                 const doc = gql`
                     ${relationshipPropertiesTypes}
-                    type Movie @node {
+                    type Movie {
                         id: ID
                         actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
                     }
 
-                    type Actor @node {
+                    type Actor {
                         name: String
                     }
                 `;
@@ -5532,12 +5532,12 @@ describe("validation 2.0", () => {
                 `;
                 const doc = gql`
                     ${relationshipPropertiesTypes}
-                    type Movie @node {
+                    type Movie {
                         id: ID
                         actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
                     }
 
-                    type Actor @node {
+                    type Actor {
                         name: String
                     }
                 `;
@@ -5564,7 +5564,7 @@ describe("validation 2.0", () => {
 
             test("PageInfo type", () => {
                 const doc = gql`
-                    type PageInfo @node {
+                    type PageInfo {
                         id: ID
                     }
                 `;
@@ -5654,7 +5654,7 @@ describe("validation 2.0", () => {
 
             test("Connection", () => {
                 const doc = gql`
-                    type SomeConnection @node {
+                    type SomeConnection {
                         id: ID
                     }
                 `;
@@ -5672,7 +5672,7 @@ describe("validation 2.0", () => {
 
             test("Node type", () => {
                 const doc = gql`
-                    type Node @node {
+                    type Node {
                         id: ID
                     }
                 `;
@@ -5765,7 +5765,7 @@ describe("validation 2.0", () => {
     describe("validateDocument", () => {
         test("should throw an error if a directive is in the wrong location", () => {
             const doc = gql`
-                type User @coalesce @node {
+                type User @coalesce {
                     name: String
                 }
             `;
@@ -5786,7 +5786,7 @@ describe("validation 2.0", () => {
 
         test("should throw an error if a directive is missing an argument", () => {
             const doc = gql`
-                type User @node {
+                type User {
                     name: String @coalesce
                 }
             `;
@@ -5809,7 +5809,7 @@ describe("validation 2.0", () => {
 
         test("should throw a missing scalar error", () => {
             const doc = gql`
-                type User @node {
+                type User {
                     name: Unknown
                 }
             `;
@@ -5821,12 +5821,12 @@ describe("validation 2.0", () => {
 
         test("should throw an error if a user tries to pass in their own Point definition", () => {
             const doc = gql`
-                type Point @node {
+                type Point {
                     latitude: Float!
                     longitude: Float!
                 }
 
-                type User @node {
+                type User {
                     location: Point
                 }
             `;
@@ -5840,7 +5840,7 @@ describe("validation 2.0", () => {
             const doc = gql`
                 scalar DateTime
 
-                type User @node {
+                type User {
                     birthDateTime: DateTime
                 }
             `;
@@ -5852,7 +5852,7 @@ describe("validation 2.0", () => {
 
         test("should throw an error if a user tries to user @fulltext incorrectly", () => {
             const doc = gql`
-                type User @node {
+                type User {
                     name: String
                 }
 
@@ -5887,7 +5887,7 @@ describe("validation 2.0", () => {
                     age: Int!
                 }
 
-                type User implements UserInterface @node {
+                type User implements UserInterface {
                     name: String!
                 }
             `;
@@ -5901,7 +5901,7 @@ describe("validation 2.0", () => {
             const doc = gql`
                 directive @relationship on FIELD_DEFINITION
 
-                type Movie @node {
+                type Movie {
                     title: String
                 }
             `;
@@ -5929,7 +5929,7 @@ describe("validation 2.0", () => {
                         )
                 }
 
-                type Post @node {
+                type Post {
                     id: ID! @id @unique
                     title: String!
                     datetime: DateTime @timestamp(operations: [CREATE])
@@ -5954,12 +5954,12 @@ describe("validation 2.0", () => {
                 const doc = gql`
                     ${relationshipProperties}
 
-                    type Actor @node {
+                    type Actor {
                         name: String!
                         movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
                     }
 
-                    type Movie @node {
+                    type Movie {
                         title: String!
                         actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
                     }
@@ -5993,7 +5993,7 @@ describe("validation 2.0", () => {
 
             test("should throw if used on a field", () => {
                 const doc = gql`
-                    type ActedIn @node {
+                    type ActedIn {
                         screenTime: Int! @relationshipProperties
                     }
                 `;
@@ -6006,7 +6006,7 @@ describe("validation 2.0", () => {
 
         test("should not throw error on use of internal input types within input types", () => {
             const doc = gql`
-                type Salary @node {
+                type Salary {
                     salaryId: ID!
                     amount: Float
                     currency: String
@@ -6017,7 +6017,7 @@ describe("validation 2.0", () => {
                     pays_salary: EmploymentRecord! @relationship(type: "PAYS_SALARY", direction: IN)
                 }
 
-                type EmploymentRecord @node {
+                type EmploymentRecord {
                     employmentRecordId: ID!
                     pays_salary: [Salary!]! @relationship(type: "PAYS_SALARY", direction: OUT)
                 }
@@ -6113,11 +6113,11 @@ describe("validation 2.0", () => {
         describe("https://github.com/neo4j/graphql/issues/4232", () => {
             test("interface at the end", () => {
                 const doc = gql`
-                    type Person @node {
+                    type Person {
                         name: String!
                     }
 
-                    type Episode implements IProduct @node {
+                    type Episode implements IProduct {
                         editorsInCharge: [Person!]!
                             @relationship(
                                 type: "EDITORS_IN_CHARGE"
@@ -6126,7 +6126,7 @@ describe("validation 2.0", () => {
                             )
                     }
 
-                    type Series implements IProduct @node {
+                    type Series implements IProduct {
                         editorsInCharge: [Person!]!
                             @cypher(
                                 statement: """
@@ -6154,7 +6154,7 @@ describe("validation 2.0", () => {
 
             test("interface at the beginning", () => {
                 const doc = gql`
-                    type Person @node {
+                    type Person {
                         name: String!
                     }
 
@@ -6162,7 +6162,7 @@ describe("validation 2.0", () => {
                         editorsInCharge: [Person!]!
                     }
 
-                    type Episode implements IProduct @node {
+                    type Episode implements IProduct {
                         editorsInCharge: [Person!]!
                             @relationship(
                                 type: "EDITORS_IN_CHARGE"
@@ -6171,7 +6171,7 @@ describe("validation 2.0", () => {
                             )
                     }
 
-                    type Series implements IProduct @node {
+                    type Series implements IProduct {
                         editorsInCharge: [Person!]!
                             @cypher(
                                 statement: """
@@ -6197,7 +6197,7 @@ describe("validation 2.0", () => {
         describe("https://github.com/neo4j/graphql/issues/442", () => {
             test("should not throw error on validation of schema if MutationResponse used", () => {
                 const doc = gql`
-                    type Post @node {
+                    type Post {
                         id: Int!
                         text: String!
                     }
@@ -6217,7 +6217,7 @@ describe("validation 2.0", () => {
 
             test("should not throw error on validation of schema if SortDirection used", () => {
                 const doc = gql`
-                    type Post @node {
+                    type Post {
                         id: Int!
                         text: String!
                     }
@@ -6239,7 +6239,7 @@ describe("validation 2.0", () => {
         describe("Issue https://codesandbox.io/s/github/johnymontana/training-v3/tree/master/modules/graphql-apis/supplemental/code/03-graphql-apis-custom-logic/end?file=/schema.graphql:64-86", () => {
             test("should not throw error on validation of schema", () => {
                 const doc = gql`
-                    type Order @node {
+                    type Order {
                         orderID: ID! @id @unique
                         placedAt: DateTime @timestamp
                         shipTo: Address! @relationship(type: "SHIPS_TO", direction: OUT)
@@ -6261,7 +6261,7 @@ describe("validation 2.0", () => {
                         estimatedDelivery: DateTime @customResolver
                     }
 
-                    type Customer @node {
+                    type Customer {
                         username: String
                         orders: [Order!]! @relationship(type: "PLACED", direction: OUT)
                         reviews: [Review!]! @relationship(type: "WROTE", direction: OUT)
@@ -6272,7 +6272,7 @@ describe("validation 2.0", () => {
                             )
                     }
 
-                    type Address @node {
+                    type Address {
                         address: String
                         location: Point
                         order: Order @relationship(type: "SHIPS_TO", direction: IN)
@@ -6286,7 +6286,7 @@ describe("validation 2.0", () => {
                             )
                     }
 
-                    type Weather @node {
+                    type Weather {
                         temperature: Int
                         windSpeed: Int
                         windDirection: Int
@@ -6294,7 +6294,7 @@ describe("validation 2.0", () => {
                         summary: String
                     }
 
-                    type Book @node {
+                    type Book {
                         isbn: ID!
                         title: String
                         price: Float
@@ -6320,7 +6320,7 @@ describe("validation 2.0", () => {
                             )
                     }
 
-                    type Review @node {
+                    type Review {
                         rating: Int
                         text: String
                         createdAt: DateTime @timestamp
@@ -6328,12 +6328,12 @@ describe("validation 2.0", () => {
                         author: Customer! @relationship(type: "WROTE", direction: IN)
                     }
 
-                    type Author @node {
+                    type Author {
                         name: String!
                         books: [Book!]! @relationship(type: "AUTHOR_OF", direction: OUT)
                     }
 
-                    type Subject @node {
+                    type Subject {
                         name: String!
                         books: [Book!]! @relationship(type: "ABOUT", direction: IN)
                     }
@@ -6382,7 +6382,7 @@ describe("validation 2.0", () => {
                         color: String # NOTE: 'color' is optional on the interface
                     }
 
-                    type Car implements Vehicle @node {
+                    type Car implements Vehicle {
                         id: ID!
                         color: String! # NOTE: 'color' is mandatory on the type, which should be okay
                     }
@@ -6404,7 +6404,7 @@ describe("validation 2.0", () => {
         describe("@alias directive", () => {
             test("should throw an error if missing an argument", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         name: String @alias
                     }
                 `;
@@ -6414,7 +6414,7 @@ describe("validation 2.0", () => {
             });
             test("should throw an error if a directive is in the wrong location", () => {
                 const doc = gql`
-                    type User @alias @node {
+                    type User @alias {
                         name: String
                     }
                 `;
@@ -6424,7 +6424,7 @@ describe("validation 2.0", () => {
             });
             test("should not throw when used correctly", () => {
                 const doc = gql`
-                    type User @node {
+                    type User {
                         name: String @alias(property: "dbName")
                     }
                 `;
@@ -6441,7 +6441,7 @@ describe("validation 2.0", () => {
             describe("Node", () => {
                 test("should throw when using PageInfo as node name", () => {
                     const doc = gql`
-                        type PageInfo @node {
+                        type PageInfo {
                             id: ID
                         }
                     `;
@@ -6457,7 +6457,7 @@ describe("validation 2.0", () => {
 
                 test("should throw when using Connection in a node name", () => {
                     const doc = gql`
-                        type NodeConnection @node {
+                        type NodeConnection {
                             id: ID
                         }
                     `;
@@ -6473,7 +6473,7 @@ describe("validation 2.0", () => {
 
                 test("should throw when using Node as node name", () => {
                     const doc = gql`
-                        type Node @node {
+                        type Node {
                             id: ID
                         }
                     `;
@@ -6491,7 +6491,7 @@ describe("validation 2.0", () => {
             describe("Interface", () => {
                 test("should throw when using PageInfo as relationship properties interface name", () => {
                     const doc = gql`
-                        type Movie @node {
+                        type Movie {
                             id: ID
                             actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "PageInfo")
                         }
@@ -6500,7 +6500,7 @@ describe("validation 2.0", () => {
                             screenTime: Int
                         }
 
-                        type Actor @node {
+                        type Actor {
                             name: String
                         }
                     `;
@@ -6516,7 +6516,7 @@ describe("validation 2.0", () => {
 
                 test("should throw when using Connection in a properties interface name", () => {
                     const doc = gql`
-                        type Movie @node {
+                        type Movie {
                             id: ID
                             actors: [Actor!]!
                                 @relationship(type: "ACTED_IN", direction: OUT, properties: "NodeConnection")
@@ -6526,7 +6526,7 @@ describe("validation 2.0", () => {
                             screenTime: Int
                         }
 
-                        type Actor @node {
+                        type Actor {
                             name: String
                         }
                     `;
@@ -6542,7 +6542,7 @@ describe("validation 2.0", () => {
 
                 test("should throw when using Node as relationship properties interface name", () => {
                     const doc = gql`
-                        type Movie @node {
+                        type Movie {
                             id: ID
                             actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "Node")
                         }
@@ -6551,7 +6551,7 @@ describe("validation 2.0", () => {
                             screenTime: Int
                         }
 
-                        type Actor @node {
+                        type Actor {
                             name: String
                         }
                     `;
@@ -6570,7 +6570,7 @@ describe("validation 2.0", () => {
         describe("https://github.com/neo4j/graphql/issues/609 - specified directives", () => {
             test("should not throw error when using @deprecated directive", () => {
                 const doc = gql`
-                    type Deprecated @node {
+                    type Deprecated {
                         deprecatedField: String @deprecated
                     }
                 `;
@@ -6587,11 +6587,11 @@ describe("validation 2.0", () => {
         describe("https://github.com/neo4j/graphql/issues/2325 - SortDirection", () => {
             test("should not throw error when using SortDirection", () => {
                 const doc = gql`
-                    type Movie @node {
+                    type Movie {
                         title: String
                         actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                     }
-                    type Actor @node {
+                    type Actor {
                         name: String
                         movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
@@ -6644,13 +6644,13 @@ describe.skip("TODO", () => {
                 actors: [Actor!]!
             }
 
-            type Movie implements WatchableThing & Production & Show & Thing @node {
+            type Movie implements WatchableThing & Production & Show & Thing {
                 title: String!
                 runtime: Int!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type Series implements WatchableThing & Production & Show & Thing @node {
+            type Series implements WatchableThing & Production & Show & Thing {
                 title: String!
                 episodeCount: Int!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "StarredIn")
@@ -6664,7 +6664,7 @@ describe.skip("TODO", () => {
                 episodeNr: Int!
             }
 
-            type Actor @node {
+            type Actor {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
