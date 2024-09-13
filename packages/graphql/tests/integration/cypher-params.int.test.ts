@@ -34,7 +34,7 @@ describe("cypherParams", () => {
     });
 
     test("should inject cypherParams on top-level cypher query", async () => {
-        const typeDefs = /* GraphQL */ `
+        const typeDefs = `
             type ${Movie} @node {
               id: ID
             }
@@ -68,7 +68,7 @@ describe("cypherParams", () => {
     });
 
     test("should inject cypherParams on field level nested query", async () => {
-        const typeDefs = /* GraphQL */ `
+        const typeDefs = `
             type CypherParams {
                 id: ID
             }
@@ -126,7 +126,7 @@ describe("cypherParams", () => {
     });
 
     test("should inject cypherParams on top-level cypher mutation", async () => {
-        const typeDefs = /* GraphQL */ `
+        const typeDefs = `
             type ${Movie} @node {
               id: ID
             }
