@@ -18,7 +18,7 @@
  */
 
 import { Neo4jGraphQL } from "../../src";
-import { formatCypher, formatParams, setTestEnvVars, translateQuery, unsetTestEnvVars } from "./utils/tck-test-utils";
+import { formatCypher, formatParams, setTestEnvVars, translateQuery } from "./utils/tck-test-utils";
 
 describe("Cypher Advanced Filtering", () => {
     let typeDefs: string;
