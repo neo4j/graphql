@@ -33,19 +33,19 @@ describe("https://github.com/neo4j/graphql/issues/2574", () => {
         D = testHelper.createUniqueType("D");
 
         const typeDefs = `
-            type ${A} @node {
+            type ${A} {
                 uuid: ID! @id @unique
                 child: ${D}! @relationship(type: "HAS_PARENT", direction: IN)
             }
 
-            type ${B} @node {
+            type ${B} {
                 uuid: ID! @id @unique
                 child: ${D}! @relationship(type: "HAS_PARENT", direction: IN)
             }
 
             union C = ${A} | ${B}
 
-            type ${D} @node {
+            type ${D} {
                 uuid: ID! @id @unique
                 test: String!
                 parent: C! @relationship(type: "HAS_PARENT", direction: OUT)

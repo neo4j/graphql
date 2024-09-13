@@ -49,7 +49,7 @@ describe("interface filters of declared relationships", () => {
         Episode = testHelper.createUniqueType("Episode");
 
         const typeDefs = gql`
-            type ${Episode} @node {
+            type ${Episode} {
                 runtime: Int!
                 series: ${Series}! @relationship(type: "HAS_EPISODE", direction: IN)
             }
@@ -59,13 +59,13 @@ describe("interface filters of declared relationships", () => {
                 actors: [${Actor}!]! @declareRelationship
             }
 
-            type ${Movie} implements Production @node {
+            type ${Movie} implements Production {
                 title: String!
                 runtime: Int!
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type ${Series} implements Production @node {
+            type ${Series} implements Production {
                 title: String!
                 episodeCount: Int!
                 episodes: [${Episode}!]! @relationship(type: "HAS_EPISODE", direction: OUT)
@@ -81,7 +81,7 @@ describe("interface filters of declared relationships", () => {
                 episodeNr: Int!
             }
 
-            type ${Actor} @node {
+            type ${Actor} {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
@@ -347,7 +347,7 @@ describe("interface filters of declared interface relationships", () => {
         Episode = testHelper.createUniqueType("Episode");
 
         const typeDefs = gql`
-            type ${Episode} @node {
+            type ${Episode} {
                 runtime: Int!
                 series: ${Series}! @relationship(type: "HAS_EPISODE", direction: IN)
             }
@@ -357,13 +357,13 @@ describe("interface filters of declared interface relationships", () => {
                 actors: [Person!]! @declareRelationship
             }
 
-            type ${Movie} implements Production @node {
+            type ${Movie} implements Production {
                 title: String!
                 runtime: Int!
                 actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type ${Series} implements Production @node {
+            type ${Series} implements Production {
                 title: String!
                 episodeCount: Int!
                 episodes: [${Episode}!]! @relationship(type: "HAS_EPISODE", direction: OUT)
@@ -384,12 +384,12 @@ describe("interface filters of declared interface relationships", () => {
                 actedIn: [Production!]! @declareRelationship
             }
 
-            type ${Actor} implements Person @node {
+            type ${Actor} implements Person {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
-            type ${UntrainedPerson} implements Person @node {
+            type ${UntrainedPerson} implements Person {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }

@@ -34,12 +34,12 @@ describe("https://github.com/neo4j/graphql/issues/315", () => {
         typeDefs = `
         union Content = ${Post}
 
-        type ${Post} @node {
+        type ${Post} {
             content: String!
             modifiedDate: DateTime! @timestamp(operations: [CREATE, UPDATE])
         }
 
-        type ${User} @node {
+        type ${User} {
             id: ID!
             friends: [${User}!]! @relationship(type: "HAS_FRIEND", direction: OUT)
             posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)

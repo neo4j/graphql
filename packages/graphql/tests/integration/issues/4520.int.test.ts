@@ -47,25 +47,25 @@ describe("https://github.com/neo4j/graphql/issues/4520", () => {
                 name: String
             }
 
-            type ${Movie} implements Production @node {
+            type ${Movie} implements Production {
                 title: String!
                 crew: [Person!]! @relationship(type: "WORKED_AT", direction: IN)
             }
 
-            type ${Serie} implements Production @node {
+            type ${Serie} implements Production {
                 title: String!
                 crew: [Person!]! @relationship(type: "WORKED_AT", direction: IN)
             }
 
-            type ${FxEngineer} implements Person @node {
+            type ${FxEngineer} implements Person {
                 name: String!
             }
 
-            type ${Actor} implements Person @node {
+            type ${Actor} implements Person {
                 name: String!
             }
 
-            type Collection @node {
+            type Collection {
                 name: String!
                 productions: [Production!]! @relationship(type: "HAS_PRODUCTION", direction: OUT)
             }

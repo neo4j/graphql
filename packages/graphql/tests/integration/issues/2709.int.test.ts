@@ -26,19 +26,11 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
     let Movie: UniqueType;
     let Dishney: UniqueType;
     let Netflix: UniqueType;
-    let Series: UniqueType;
-    let MaleActor: UniqueType;
-    let FemaleActor: UniqueType;
-    let Prime: UniqueType;
 
     beforeEach(async () => {
         Movie = testHelper.createUniqueType("Movie");
         Dishney = testHelper.createUniqueType("Dishney");
         Netflix = testHelper.createUniqueType("Netflix");
-        Series = testHelper.createUniqueType("Series");
-        MaleActor = testHelper.createUniqueType("MaleActor");
-        FemaleActor = testHelper.createUniqueType("FemaleActor");
-        Prime = testHelper.createUniqueType("Prime");
 
         const typeDefs = `
             interface Production {
@@ -54,7 +46,7 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
                 distribution: [DistributionHouse!]! @relationship(type: "DISTRIBUTED_BY", direction: IN)
             }
 
-            type ${Series} implements Production @node {
+            type Series implements Production {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
                 episodes: Int!
@@ -70,12 +62,12 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
                 actedIn: [Production!]! @declareRelationship
             }
 
-            type ${MaleActor} implements Actor @node {
+            type MaleActor implements Actor {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
                 rating: Int!
             }
-            type ${FemaleActor} implements Actor @node {
+            type FemaleActor implements Actor {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
                 age: Int!
@@ -85,17 +77,17 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
                 name: String!
             }
 
-            type ${Dishney} implements DistributionHouse @node {
+            type ${Dishney} implements DistributionHouse {
                 name: String!
                 review: String!
             }
 
-            type ${Prime} implements DistributionHouse @node {
+            type Prime implements DistributionHouse {
                 name: String!
                 review: String!
             }
 
-            type ${Netflix} implements DistributionHouse @node {
+            type ${Netflix} implements DistributionHouse {
                 name: String!
                 review: String!
             }
@@ -168,20 +160,12 @@ describe("https://github.com/neo4j/graphql/issues/2709 - extended", () => {
     let Movie: UniqueType;
     let Dishney: UniqueType;
     let Netflix: UniqueType;
-    let Series: UniqueType;
-    let MaleActor: UniqueType;
-    let FemaleActor: UniqueType;
-    let Prime: UniqueType;
     let Publisher: UniqueType;
 
     beforeEach(async () => {
         Movie = testHelper.createUniqueType("Movie");
         Dishney = testHelper.createUniqueType("Dishney");
         Netflix = testHelper.createUniqueType("Netflix");
-        Series = testHelper.createUniqueType("Series");
-        MaleActor = testHelper.createUniqueType("MaleActor");
-        FemaleActor = testHelper.createUniqueType("FemaleActor");
-        Prime = testHelper.createUniqueType("Prime");
         Publisher = testHelper.createUniqueType("Publisher");
 
         const typeDefs = `
@@ -199,7 +183,7 @@ describe("https://github.com/neo4j/graphql/issues/2709 - extended", () => {
                 publisher: ${Publisher}! @relationship(type: "DISTRIBUTED_BY", direction: IN)
             }
 
-            type ${Series} implements Production @node {
+            type Series implements Production {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
                 episodes: Int!
@@ -215,12 +199,12 @@ describe("https://github.com/neo4j/graphql/issues/2709 - extended", () => {
                 actedIn: [Production!]! @declareRelationship
             }
 
-            type ${MaleActor} implements Actor @node {
+            type MaleActor implements Actor {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
                 rating: Int!
             }
-            type ${FemaleActor} implements Actor @node {
+            type FemaleActor implements Actor {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
                 age: Int!
@@ -230,23 +214,23 @@ describe("https://github.com/neo4j/graphql/issues/2709 - extended", () => {
                 name: String!
             }
 
-            type ${Dishney} implements DistributionHouse @node {
+            type ${Dishney} implements DistributionHouse {
                 name: String!
                 review: String!
             }
 
-            type ${Prime} implements DistributionHouse @node {
+            type Prime implements DistributionHouse {
                 name: String!
                 review: String!
             }
 
-            type ${Netflix} implements DistributionHouse @node {
+            type ${Netflix} implements DistributionHouse {
                 name: String!
                 review: String!
             }
 
             ### Extension ###
-            type ${Publisher} @node {
+            type ${Publisher} {
                 name: String!
             }
             ################

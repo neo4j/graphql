@@ -36,7 +36,7 @@ describe("https://github.com/neo4j/graphql/issues/2982", () => {
         BlogArticle = testHelper.createUniqueType("BlogArticle");
 
         const typeDefs = `
-            type ${User} @node {
+            type ${User} {
                 id: ID!
                 ${Post.plural}: [${Post}!]! @relationship(type: "USER_POSTS", direction: OUT)
             }
@@ -45,11 +45,11 @@ describe("https://github.com/neo4j/graphql/issues/2982", () => {
                 id: ID!
             }
 
-            type ${Comment} @node {
+            type ${Comment} {
                 id: ID!
             }
 
-            type ${BlogArticle} implements ${Post} @node {
+            type ${BlogArticle} implements ${Post} {
                 id: ID!
                 ${Comment.plural}: [${Comment}!]! @relationship(type: "ARTICLE_COMMENTS", direction: OUT)
             }

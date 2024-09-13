@@ -36,13 +36,13 @@ describe("https://github.com/neo4j/graphql/issues/350", () => {
     test("Retain attributes when aliasing the same field multiple times in a single query", async () => {
         Post = testHelper.createUniqueType("Post");
         typeDefs = `
-            type ${Post} @node {
+            type ${Post} {
                 id: ID!
                 title: String!
                 content: String!
                 comments: [${Comment}!]! @relationship(type: "HAS_COMMENT", direction: OUT)
             }
-            type ${Comment} @node {
+            type ${Comment} {
                 id: ID!
                 flagged: Boolean!
                 content: String!

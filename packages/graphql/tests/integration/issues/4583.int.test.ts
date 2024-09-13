@@ -50,7 +50,7 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
         Episode = testHelper.createUniqueType("Episode");
 
         const typeDefs = gql`
-            type ${Episode} @node {
+            type ${Episode} {
                 runtime: Int!
                 series: ${Series}! @relationship(type: "HAS_EPISODE", direction: IN)
             }
@@ -60,13 +60,13 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
                 actors: [${Actor}!]! @declareRelationship
             }
 
-            type ${Movie} implements Production @node {
+            type ${Movie} implements Production {
                 title: String!
                 runtime: Int!
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type ${Series} implements Production @node {
+            type ${Series} implements Production {
                 title: String!
                 episodeCount: Int!
                 episodes: [${Episode}!]! @relationship(type: "HAS_EPISODE", direction: OUT)
@@ -81,7 +81,7 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
                 episodeNr: Int!
             }
 
-            type ${Actor} @node {
+            type ${Actor} {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }

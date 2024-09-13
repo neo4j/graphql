@@ -35,7 +35,7 @@ describe("https://github.com/neo4j/graphql/issues/1121", () => {
         Syrup = testHelper.createUniqueType("Syrup");
 
         const typeDefs = `
-            type ${Food.name} @node {
+            type ${Food.name} {
                 name: String
                 ingredients_interface: [Ingredient_Interface!]!
                     @relationship(type: "has_Ingredient_Interface", direction: OUT)
@@ -48,7 +48,7 @@ describe("https://github.com/neo4j/graphql/issues/1121", () => {
                 qty_ozs: Float
             }
 
-            type ${Banana.name} implements Ingredient_Interface @node {
+            type ${Banana.name} implements Ingredient_Interface {
                 id: ID! @id @unique
                 name: String
                 sweetness: String
@@ -57,14 +57,14 @@ describe("https://github.com/neo4j/graphql/issues/1121", () => {
 
             union Ingredient_Union = ${Sugar.name} | ${Syrup.name}
 
-            type ${Sugar.name} @node {
+            type ${Sugar.name} {
                 id: ID! @id @unique
                 name: String
                 sweetness: String
                 qty_ozs: Float
             }
 
-            type ${Syrup.name} @node {
+            type ${Syrup.name} {
                 id: ID! @id @unique
                 name: String
                 sweetness: String

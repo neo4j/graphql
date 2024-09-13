@@ -31,7 +31,7 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
         Test_Feedback = testHelper.createUniqueType("Test_Feedback");
 
         const typeDefs = `
-            type ${Test_Item} @node {
+            type ${Test_Item} {
                 uuid: ID! @id @unique
                 int: Int
                 str: String
@@ -48,7 +48,7 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
                         columnName: "t"
                     )
             }
-            type ${Test_Feedback} @node {
+            type ${Test_Feedback} {
                 uuid: ID! @id @unique
                 int: Int
                 str: String

@@ -33,7 +33,7 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
         manufacturerType = testHelper.createUniqueType("Manufacturer");
 
         const typeDefs = `
-            type ${seriesType.name} @node {
+            type ${seriesType.name} {
                 name: String
                 current: Boolean!
                 manufacturer: [${manufacturerType.name}!]!
@@ -41,12 +41,12 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
                 brand: [${brandType.name}!]! @relationship(type: "BRAND", properties: "RelationProps", direction: OUT)
             }
 
-            type ${brandType.name} @node {
+            type ${brandType.name} {
                 name: String
                 current: Boolean!
             }
 
-            type ${manufacturerType.name} @node {
+            type ${manufacturerType.name} {
                 name: String
                 current: Boolean!
             }

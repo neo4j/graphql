@@ -33,16 +33,16 @@ describe("https://github.com/neo4j/graphql/issues/4477", () => {
         Collection = testHelper.createUniqueType("Collection");
 
         const typeDefs = /* GraphQL */ `
-            type ${Brand} @node {
+            type ${Brand} {
                 services: [${Service}!]! @relationship(type: "HAS_SERVICE", direction: OUT)
                 name: String!
             }
 
-            type ${Collection} @node {
+            type ${Collection} {
                 services: [${Service}!]! @relationship(type: "HAS_SERVICE", direction: OUT)
             }
 
-            type ${Service} @node {
+            type ${Service} {
                 collection: ${Collection} @relationship(type: "HAS_SERVICE", direction: IN)
             }
         `;

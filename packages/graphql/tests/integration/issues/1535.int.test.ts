@@ -33,7 +33,7 @@ describe("https://github.com/neo4j/graphql/issues/1535", () => {
         FooBar = testHelper.createUniqueType("FooBar");
 
         const typeDefs = `
-            type ${testTenant} @node {
+            type ${testTenant} {
                 id: ID! @id @unique
                 name: String!
                 events: [Event!]! @relationship(type: "HOSTED_BY", direction: IN)
@@ -46,20 +46,20 @@ describe("https://github.com/neo4j/graphql/issues/1535", () => {
                 beginsAt: DateTime!
             }
             
-            type Screening implements Event @node {
+            type Screening implements Event {
                 id: ID! @id @unique
                 title: String
                 beginsAt: DateTime!
             }
             
-            type ${testBooking} implements Event @node {
+            type ${testBooking} implements Event {
                 id: ID!
                 title: String
                 beginsAt: DateTime!
                 duration: Int!
             }
             
-            type ${FooBar} @node {
+            type ${FooBar} {
                 id: ID! @id @unique
                 name: String!
             }

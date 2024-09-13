@@ -33,17 +33,17 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
         testCommunity = testHelper.createUniqueType("Community");
 
         const typeDefs = `
-            type ${testContent.name} @node {
+            type ${testContent.name} {
                 name: String!
             }
 
-            type ${testProject.name} @node {
+            type ${testProject.name} {
                 name: String!
             }
 
             union FeedItem = ${testContent.name} | ${testProject.name}
 
-            type ${testCommunity.name} @node {
+            type ${testCommunity.name} {
                 id: Int!
                 feedItem: FeedItem
                     @cypher(

@@ -57,7 +57,7 @@ describe("https://github.com/neo4j/graphql/issues/326", () => {
                   )
             }
 
-            type ${User.name} @node {
+            type ${User.name} {
                 id: ID
                 email: String! @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
             }
@@ -101,7 +101,7 @@ describe("https://github.com/neo4j/graphql/issues/326", () => {
                   )
             }
 
-            type ${User.name} @node {
+            type ${User.name} {
                 id: ID
                 email: String! @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
             }

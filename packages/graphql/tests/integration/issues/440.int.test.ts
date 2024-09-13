@@ -33,12 +33,12 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
         Category = testHelper.createUniqueType("Category");
 
         typeDefs = `
-        type ${Video} @node {
+        type ${Video} {
             id: ID! @unique
             categories: [${Category}!]! @relationship(type: "IS_CATEGORIZED_AS", direction: OUT)
         }
 
-        type ${Category} @node {
+        type ${Category} {
             id: ID! @unique
             videos: [${Video}!]! @relationship(type: "IS_CATEGORIZED_AS", direction: IN)
         }

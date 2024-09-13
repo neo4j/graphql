@@ -37,20 +37,20 @@ describe("Interface filtering", () => {
                 actors: [${Actor}!]! @declareRelationship
             }
 
-            type ${Movie} implements Show @limit(default: 3, max: 10) @node {
+            type ${Movie} implements Show @limit(default: 3, max: 10) {
                 title: String!
                 cost: Float
                 runtime: Int
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type ${Series} implements Show @node {
+            type ${Series} implements Show {
                 title: String!
                 episodes: Int
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type ${Actor} @node {
+            type ${Actor} {
                 name: String!
                 actedIn: [Show!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }

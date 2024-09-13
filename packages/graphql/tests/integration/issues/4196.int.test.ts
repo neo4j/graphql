@@ -33,17 +33,17 @@ describe("https://github.com/neo4j/graphql/issues/4196", () => {
         FooBar = testHelper.createUniqueType("FooBar");
 
         const typeDefs = /* GraphQL */ `
-            type ${Foo} @node {
+            type ${Foo} {
                 name: String
                 bars: [${Bar}!]! @relationship(type: "relatesTo", direction: OUT)
             }
             
-            type ${Bar} @node {
+            type ${Bar} {
                 name: String
                 foobars: [${FooBar}!]! @relationship(type: "relatesTo", direction: OUT)
             }
 
-            type ${FooBar} @node {
+            type ${FooBar} {
                 name: String
                 bars: [${FooBar}!]! @relationship(type: "relatesTo", direction: IN)
             }

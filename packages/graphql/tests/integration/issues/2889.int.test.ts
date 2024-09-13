@@ -34,7 +34,7 @@ describe("https://github.com/neo4j/graphql/issues/2889", () => {
                 SECOND
             }
 
-            type ${MyEnumHolder} @node {
+            type ${MyEnumHolder} {
                 myEnums: [MyEnum!]!
             }
         `;

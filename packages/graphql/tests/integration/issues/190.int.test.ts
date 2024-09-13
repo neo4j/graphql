@@ -34,13 +34,13 @@ describe("https://github.com/neo4j/graphql/issues/190", () => {
         UserDemographics = testHelper.createUniqueType("UserDemographics");
 
         typeDefs = gql`
-        type ${User} @node {
+        type ${User} {
             client_id: String
             uid: String
             demographics: [${UserDemographics}!]! @relationship(type: "HAS_DEMOGRAPHIC", direction: OUT)
         }
 
-        type ${UserDemographics} @node {
+        type ${UserDemographics} {
             client_id: String
             type: String
             value: String

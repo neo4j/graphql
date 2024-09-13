@@ -35,7 +35,7 @@ describe("https://github.com/neo4j/graphql/issues/3912", () => {
                 PUBLIC
             }
 
-            type ${Event} @node {
+            type ${Event} {
                 id: ID! @id
                 name: String!
                 # The Privacy for the Event --> See Enum

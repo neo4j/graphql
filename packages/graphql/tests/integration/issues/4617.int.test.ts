@@ -59,7 +59,7 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
 
     test("should not throw forbidden when user does have a correct allow on projection field", async () => {
         const typeDefs = `
-            type ${Post.name} @node {
+            type ${Post.name} {
                 title: String
                 likedBy: [${User.name}!]! @cypher(
                     statement: """
@@ -69,7 +69,7 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
                   )
             }
 
-            type ${User.name} @node {
+            type ${User.name} {
                 id: ID
                 email: String! @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
             }
@@ -105,7 +105,7 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
 
     test("should throw forbidden when user does not have correct allow on projection field", async () => {
         const typeDefs = `
-            type ${Post.name} @node {
+            type ${Post.name} {
                 title: String
                 likedBy: [${User.name}!]! @cypher(
                     statement: """
@@ -115,7 +115,7 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
                   )
             }
 
-            type ${User.name} @node {
+            type ${User.name} {
                 id: ID
                 email: String! @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
             }
@@ -152,7 +152,7 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
 
     test("should not throw forbidden when user does have a correct allow on projection field (single target)", async () => {
         const typeDefs = `
-            type ${Post.name} @node {
+            type ${Post.name} {
                 title: String
                 likedBy: ${User.name} @cypher(
                     statement: """
@@ -162,7 +162,7 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
                   )
             }
 
-            type ${User.name} @node {
+            type ${User.name} {
                 id: ID
                 email: String! @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
             }
@@ -198,7 +198,7 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
 
     test("should throw forbidden when user does not have correct allow on projection field (single target)", async () => {
         const typeDefs = `
-            type ${Post.name} @node {
+            type ${Post.name} {
                 title: String
                 likedBy: ${User.name} @cypher(
                     statement: """
@@ -208,7 +208,7 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
                   )
             }
 
-            type ${User.name} @node {
+            type ${User.name} {
                 id: ID
                 email: String! @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
             }
@@ -245,7 +245,7 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
 
     test("should not throw forbidden when user does have a correct allow on projection field (interface target)", async () => {
         const typeDefs = `
-            type ${Post.name} @node {
+            type ${Post.name} {
                 title: String
                 likedBy: [Person!]! @cypher(
                     statement: """
@@ -260,12 +260,12 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
                 email: String!
             }
 
-            type ${User.name} implements Person @node {
+            type ${User.name} implements Person {
                 id: ID
                 email: String! @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
             }
 
-            type ${Actor.name} implements Person @node {
+            type ${Actor.name} implements Person {
                 id: ID
                 email: String! @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
                 name: String!
@@ -302,7 +302,7 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
 
     test("should throw forbidden when user does not have correct allow on projection field (interface target)", async () => {
         const typeDefs = `
-            type ${Post.name} @node {
+            type ${Post.name} {
                 title: String
                 likedBy: [Person!]! @cypher(
                     statement: """
@@ -317,12 +317,12 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
                 email: String!
             }
 
-            type ${User.name} implements Person @node {
+            type ${User.name} implements Person {
                 id: ID
                 email: String! @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
             }
 
-            type ${Actor.name} implements Person @node {
+            type ${Actor.name} implements Person {
                 id: ID
                 email: String! @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
                 name: String!
@@ -361,7 +361,7 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
 
     test("should not throw forbidden when user does have a correct allow on projection field (union target)", async () => {
         const typeDefs = `
-            type ${Post.name} @node {
+            type ${Post.name} {
                 title: String
                 likedBy: [Person!]! @cypher(
                     statement: """
@@ -373,12 +373,12 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
 
             union Person = ${User.name} | ${Actor.name}
 
-            type ${User.name} @node {
+            type ${User.name} {
                 id: ID
                 email: String! @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
             }
 
-            type ${Actor.name} @node {
+            type ${Actor.name} {
                 id: ID
                 email: String! @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
                 name: String
@@ -423,7 +423,7 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
 
     test("should throw forbidden when user does not have correct allow on projection field (union target)", async () => {
         const typeDefs = `
-            type ${Post.name} @node {
+            type ${Post.name} {
                 title: String
                 likedBy: [Person!]! @cypher(
                     statement: """
@@ -435,12 +435,12 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
 
             union Person = ${User.name} | ${Actor.name}
 
-            type ${User.name} @node {
+            type ${User.name} {
                 id: ID
                 email: String! @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
             }
 
-            type ${Actor.name} @node {
+            type ${Actor.name} {
                 id: ID
                 email: String! @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
                 name: String

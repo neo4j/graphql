@@ -68,24 +68,24 @@ describe("https://github.com/neo4j/graphql/issues/583", () => {
                 awardsGiven: Int!
             }
 
-            type ${Actor} implements Awardable @node {
+            type ${Actor} implements Awardable {
                 id: ID!
                 name: String
                 awardsGiven: Int!
                 actedIn: [Show!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type ${Movie} implements Show & Awardable @node {
+            type ${Movie} implements Show & Awardable {
                 title: String
                 awardsGiven: Int!
             }
 
-            type ${Series} implements Show & Awardable @node {
+            type ${Series} implements Show & Awardable {
                 title: String
                 awardsGiven: Int!
             }
 
-            type ${ShortFilm} implements Show @node {
+            type ${ShortFilm} implements Show {
                 title: String
             }
         `;

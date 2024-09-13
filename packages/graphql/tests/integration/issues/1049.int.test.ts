@@ -73,7 +73,7 @@ describe("https://github.com/neo4j/graphql/issues/1049", () => {
                 runTime: Int!
             }
 
-            type ${Person.name} @node {
+            type ${Person.name} {
                 name: String
                 likes: [${Media.name}!]! @relationship(type: "LIKES", direction: OUT)
             }

@@ -31,12 +31,12 @@ describe("https://github.com/neo4j/graphql/issues/2652", () => {
         Review = testHelper.createUniqueType("Review");
 
         const typeDefs = `
-            type ${Location} @node {
+            type ${Location} {
                 id: ID!
                 reviews: [${Review}!]! @relationship(type: "HAS_REVIEW", direction: OUT)
             }
 
-            type ${Review} @node {
+            type ${Review} {
                 id: ID!
                 rating: Int!
             }

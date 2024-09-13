@@ -33,7 +33,7 @@ describe("https://github.com/neo4j/graphql/issues/4287", () => {
         Series = testHelper.createUniqueType("Series");
 
         const typeDefs = /* GraphQL */ `
-            type ${Actor} @node {
+            type ${Actor} {
                 name: String
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", properties: "actedIn", direction: OUT)
             }
@@ -43,11 +43,11 @@ describe("https://github.com/neo4j/graphql/issues/4287", () => {
             interface Production {
                 title: String
             }
-            type ${Movie} implements Production @node {
+            type ${Movie} implements Production {
                 title: String
                 runtime: Int
             }
-            type ${Series} implements Production @node {
+            type ${Series} implements Production {
                 title: String
                 episodes: Int
             }

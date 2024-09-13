@@ -50,7 +50,6 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
                 roles: [String]
             }
             type ${User.name}
-                @node
                 @authorization(
                     validate: [
                         { where: { node: { userId: "$jwt.id" } }, operations: [READ] }
@@ -62,7 +61,6 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
             }
     
             type ${Tenant.name}
-                @node
                 @authorization(
                     validate: [
                         { where: { node: { admins: { userId: "$jwt.id" } } } }
@@ -75,7 +73,6 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
             }
     
             type ${Settings.name}
-                @node
                 @authorization(
                     validate: [
                         { where: { node: { tenant: { admins: { userId: "$jwt.id" } } } } }
@@ -89,7 +86,6 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
             }
     
             type ${OpeningDay.name}
-                @node
                 @authorization(
                     validate: [{ where: { node: { settings: { tenant: { admins: { userId: "$jwt.id" } } } } } }]
                 ) {
@@ -98,7 +94,7 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
                 name: String
             }
     
-            type ${LOL.name} @authorization(validate: [{ where: { node: { host: { admins: { userId: "$jwt.id" } } } } }]) @node {
+            type ${LOL.name} @authorization(validate: [{ where: { node: { host: { admins: { userId: "$jwt.id" } } } } }]) {
                 host: ${Tenant.name}! @relationship(type: "HOSTED_BY", direction: OUT)
                 openingDays: [${OpeningDay.name}!]! @relationship(type: "HAS_OPENING_DAY", direction: OUT)
             }

@@ -35,12 +35,12 @@ describe("https://github.com/neo4j/graphql/issues/354", () => {
         const testPost = testHelper.createUniqueType("Post");
 
         const typeDefs = gql`
-            type ${testComment.name} @node {
+            type ${testComment.name} {
                 comment_id: ID!
                 post: ${testPost.name}! @relationship(type: "HAS_POST", direction: OUT)
             }
 
-            type ${testPost.name} @node {
+            type ${testPost.name} {
                 post_id: ID!
             }
         `;

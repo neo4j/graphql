@@ -39,12 +39,12 @@ describe("https://github.com/neo4j/graphql/issues/433", () => {
     test("should recreate issue and return correct data", async () => {
         typeDefs = `
             # Cannot use 'type Node'
-            type ${Movie} @node {
+            type ${Movie} {
                 title: String
                 actors: [${Person}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type ${Person} @node {
+            type ${Person} {
                 name: String
             }
         `;

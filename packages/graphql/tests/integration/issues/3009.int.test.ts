@@ -33,7 +33,7 @@ describe("https://github.com/neo4j/graphql/issues/3009", () => {
 
     test("custom resolvers should correctly format dates", async () => {
         const typeDefs = `
-            type ${User} @node {
+            type ${User} {
                 joinedAt: Date!
             }
         `;
@@ -57,7 +57,7 @@ describe("https://github.com/neo4j/graphql/issues/3009", () => {
 
     test("custom resolvers should correctly format dateTimes", async () => {
         const typeDefs = `
-            type ${User} @node {
+            type ${User} {
                 joinedAt: DateTime!
             }
         `;

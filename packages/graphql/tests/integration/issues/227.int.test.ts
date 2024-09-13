@@ -49,12 +49,12 @@ describe("https://github.com/neo4j/graphql/issues/227", () => {
         });
 
         const typeDefs = /* GraphQL */ `
-                    type ${Member} @node {
+                    type ${Member} {
                         id: ID!
                         gender: ${Gender}! @relationship(type: "HAS_GENDER", direction: OUT)
                     }
 
-                    type ${Gender} @node {
+                    type ${Gender} {
                         gender: String!
                     }
 

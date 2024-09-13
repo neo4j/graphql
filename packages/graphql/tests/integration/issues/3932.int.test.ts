@@ -36,7 +36,7 @@ describe("https://github.com/neo4j/graphql/issues/3932", () => {
                 UPLOADED
             }
 
-            type ${Image} @node {
+            type ${Image} {
                 status: ImageStatus! @default(value: PENDING)
             }
 
@@ -45,7 +45,7 @@ describe("https://github.com/neo4j/graphql/issues/3932", () => {
                 ACCEPTED
             }
 
-            type ${Invite} @node {
+            type ${Invite} {
                 status: InviteStatus! @default(value: PENDING)
             }
         `;

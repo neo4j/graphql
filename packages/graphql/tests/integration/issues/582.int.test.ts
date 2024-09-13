@@ -30,7 +30,7 @@ describe("https://github.com/neo4j/graphql/issues/582", () => {
         type = testHelper.createUniqueType("Entity");
 
         typeDefs = `
-            type ${type.name} @node {
+            type ${type.name} {
                 children: [${type.name}!]! @relationship(type: "EDGE", properties: "Edge", direction: OUT)
                 parents: [${type.name}!]! @relationship(type: "EDGE", properties: "Edge", direction: IN)
                 type: String!

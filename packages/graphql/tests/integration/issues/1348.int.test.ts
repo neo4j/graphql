@@ -38,14 +38,14 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
                 relatedTo: [Product!]!
             }
 
-            type ${Series} implements Product @node {
+            type ${Series} implements Product {
                 productTitle: String!
                 relatedTo: [Product!]!  @relationship(type: "RELATES_TO", direction: OUT, queryDirection: DEFAULT_UNDIRECTED)
 
                 seasons: [${Season}!]!
             }
 
-            type ${Season} implements Product @node {
+            type ${Season} implements Product {
                 productTitle: String!
                 relatedTo: [Product!]!  @relationship(type: "RELATES_TO", direction: OUT, queryDirection: DEFAULT_UNDIRECTED)
 
@@ -53,7 +53,7 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
                 episodes: [${ProgrammeItem}!]!
             }
 
-            type ${ProgrammeItem} implements Product @node {
+            type ${ProgrammeItem} implements Product {
                 productTitle: String!
                 relatedTo: [Product!]!  @relationship(type: "RELATES_TO", direction: OUT, queryDirection: DEFAULT_UNDIRECTED)
 

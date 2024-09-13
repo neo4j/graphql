@@ -31,13 +31,13 @@ describe("https://github.com/neo4j/graphql/issues/4759", () => {
         Node2 = testHelper.createUniqueType("Node2");
 
         const typeDefs = /* GraphQL */ `
-            type ${Node2} @node {
+            type ${Node2} {
                 uuid: ID! @id
                 name: String!
                 active: Boolean!
             }
 
-            type ${Node1} @node {
+            type ${Node1} {
                 uuid: ID! @id
                 name: String!
                 nodes: [${Node2}!]! @relationship(type: "HAS_NODE", direction: IN)

@@ -46,7 +46,7 @@ describe("https://github.com/neo4j/graphql/issues/4112", () => {
                 roles: [String!]! @jwtClaim(path: "groups")
             }
 
-            type ${Category} @authentication(operations: [READ], jwt: { roles_INCLUDES: "admin" }) @node {
+            type ${Category} @authentication(operations: [READ], jwt: { roles_INCLUDES: "admin" }) {
                 name: String! @unique
             }
         `;
@@ -92,7 +92,7 @@ describe("https://github.com/neo4j/graphql/issues/4112", () => {
                 roles: [String!]! @jwtClaim(path: "myApplication.roles")
             }
 
-            type ${Category} @authentication(operations: [READ], jwt: { roles_INCLUDES: "admin" }) @node {
+            type ${Category} @authentication(operations: [READ], jwt: { roles_INCLUDES: "admin" }) {
                 name: String! @unique
             }
         `;
@@ -138,7 +138,7 @@ describe("https://github.com/neo4j/graphql/issues/4112", () => {
                 roles: [String!]! @jwtClaim(path: "https://github\\\\.com/claims.https://github\\\\.com/claims/roles")
             }
 
-            type ${Category} @authentication(operations: [READ], jwt: { roles_INCLUDES: "admin" }) @node {
+            type ${Category} @authentication(operations: [READ], jwt: { roles_INCLUDES: "admin" }) {
                 name: String! @unique
             }
         `;

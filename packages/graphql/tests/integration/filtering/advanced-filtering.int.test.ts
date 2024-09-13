@@ -35,7 +35,7 @@ describe("Advanced Filtering", () => {
             const randomType = testHelper.createUniqueType("Movie");
 
             const typeDefs = `
-                        type ${randomType.name} @node {
+                        type ${randomType.name} {
                             property: ${type}
                         }
                     `;
@@ -83,7 +83,7 @@ describe("Advanced Filtering", () => {
             const randomType = testHelper.createUniqueType("Movie");
 
             const typeDefs = `
-                        type ${randomType.name} @node {
+                        type ${randomType.name} {
                             property: ${type}
                         }
                     `;
@@ -130,7 +130,7 @@ describe("Advanced Filtering", () => {
             const randomType = testHelper.createUniqueType("Movie");
 
             const typeDefs = `
-                        type ${randomType.name} @node {
+                        type ${randomType.name} {
                             property: ${type}
                         }
                     `;
@@ -176,7 +176,7 @@ describe("Advanced Filtering", () => {
             const randomType = testHelper.createUniqueType("Movie");
 
             const typeDefs = `
-                        type ${randomType.name} @node {
+                        type ${randomType.name} {
                             property: ${type}
                         }
                     `;
@@ -228,7 +228,7 @@ describe("Advanced Filtering", () => {
             const randomType = testHelper.createUniqueType("Movie");
 
             const typeDefs = `
-                        type ${randomType.name} @node {
+                        type ${randomType.name} {
                             property: ${type}
                         }
                     `;
@@ -272,7 +272,7 @@ describe("Advanced Filtering", () => {
             const randomType = testHelper.createUniqueType("Movie");
 
             const typeDefs = `
-                        type ${randomType.name} @node {
+                        type ${randomType.name} {
                             property: ${type}
                         }
                     `;
@@ -319,7 +319,7 @@ describe("Advanced Filtering", () => {
             const randomType = testHelper.createUniqueType("Movie");
 
             const typeDefs = `
-                        type ${randomType.name} @node {
+                        type ${randomType.name} {
                             property: ${type}
                         }
                     `;
@@ -365,7 +365,7 @@ describe("Advanced Filtering", () => {
             const randomType = testHelper.createUniqueType("Movie");
 
             const typeDefs = `
-                        type ${randomType.name} @node {
+                        type ${randomType.name} {
                             property: ${type}
                         }
                     `;
@@ -410,7 +410,7 @@ describe("Advanced Filtering", () => {
             const randomType = testHelper.createUniqueType("Movie");
 
             const typeDefs = `
-                        type ${randomType.name} @node {
+                        type ${randomType.name} {
                             property: ${type}
                         }
                     `;
@@ -457,7 +457,7 @@ describe("Advanced Filtering", () => {
             const randomType = testHelper.createUniqueType("Movie");
 
             const typeDefs = `
-                        type ${randomType.name} @node {
+                        type ${randomType.name} {
                             property: ${type}
                         }
                     `;
@@ -507,7 +507,7 @@ describe("Advanced Filtering", () => {
             const movieType = testHelper.createUniqueType("Movie");
 
             const typeDefs = `
-                        type ${movieType.name} @node {
+                        type ${movieType.name} {
                             title: String
                         }
                     `;
@@ -567,7 +567,7 @@ describe("Advanced Filtering", () => {
             const movieType = testHelper.createUniqueType("Movie");
 
             const typeDefs = `
-                        type ${movieType.name} @node {
+                        type ${movieType.name} {
                             title: String
                         }
                     `;
@@ -627,7 +627,7 @@ describe("Advanced Filtering", () => {
             const movieType = testHelper.createUniqueType("Movie");
 
             const typeDefs = `
-                        type ${movieType.name} @node {
+                        type ${movieType.name} {
                             title: String
                         }
                     `;
@@ -687,7 +687,7 @@ describe("Advanced Filtering", () => {
             const movieType = testHelper.createUniqueType("Movie");
 
             const typeDefs = `
-                        type ${movieType.name} @node {
+                        type ${movieType.name} {
                             title: String
                         }
                     `;
@@ -755,7 +755,7 @@ describe("Advanced Filtering", () => {
             const randomType = testHelper.createUniqueType("Movie");
 
             const typeDefs = `
-                        type ${randomType.name} @node {
+                        type ${randomType.name} {
                             property: ${type}
                         }
                     `;
@@ -806,7 +806,7 @@ describe("Advanced Filtering", () => {
             const randomType = testHelper.createUniqueType("Movie");
 
             const typeDefs = `
-                        type ${randomType.name} @node {
+                        type ${randomType.name} {
                             property: ${type}
                         }
                     `;
@@ -864,7 +864,7 @@ describe("Advanced Filtering", () => {
             const randomType = testHelper.createUniqueType("Movie");
 
             const typeDefs = `
-                        type ${randomType.name} @node {
+                        type ${randomType.name} {
                             property: ${type}
                         }
                     `;
@@ -924,7 +924,7 @@ describe("Advanced Filtering", () => {
             const randomType = testHelper.createUniqueType("Movie");
 
             const typeDefs = `
-                        type ${randomType.name} @node {
+                        type ${randomType.name} {
                             property: ${type}
                         }
                     `;
@@ -969,7 +969,7 @@ describe("Advanced Filtering", () => {
             const randomType = testHelper.createUniqueType("Movie");
 
             const typeDefs = `
-                        type ${randomType.name} @node {
+                        type ${randomType.name} {
                             property: ${type}
                         }
                     `;
@@ -1013,7 +1013,7 @@ describe("Advanced Filtering", () => {
             const randomType = testHelper.createUniqueType("Movie");
 
             const typeDefs = `
-                        type ${randomType.name} @node {
+                        type ${randomType.name} {
                             property: ${type}
                         }
                     `;
@@ -1058,7 +1058,7 @@ describe("Advanced Filtering", () => {
             const randomType = testHelper.createUniqueType("Movie");
 
             const typeDefs = `
-                        type ${randomType.name} @node {
+                        type ${randomType.name} {
                             property: ${type}
                         }
                     `;
@@ -1104,7 +1104,7 @@ describe("Advanced Filtering", () => {
             const randomType = testHelper.createUniqueType("Movie");
 
             const typeDefs = `
-                        type ${randomType.name} @node {
+                        type ${randomType.name} {
                             property: Boolean
                         }
                     `;
@@ -1139,7 +1139,7 @@ describe("Advanced Filtering", () => {
             const randomType = testHelper.createUniqueType("Movie");
 
             const typeDefs = `
-                        type ${randomType.name} @node {
+                        type ${randomType.name} {
                             property: Boolean
                         }
                     `;
@@ -1178,12 +1178,12 @@ describe("Advanced Filtering", () => {
                 const randomType2 = testHelper.createUniqueType("Genre");
 
                 const typeDefs = `
-                        type ${randomType1.name} @node {
+                        type ${randomType1.name} {
                             id: ID
                             ${randomType2.plural}: [${randomType2.name}!]! @relationship(type: "IN_GENRE", direction: OUT)
                         }
 
-                        type ${randomType2.name} @node {
+                        type ${randomType2.name} {
                             id: ID
                         }
                 `;
@@ -1240,12 +1240,12 @@ describe("Advanced Filtering", () => {
                 const Genre = testHelper.createUniqueType("Genre");
 
                 const typeDefs = `
-                        type ${Movie} @node {
+                        type ${Movie} {
                             id: ID
                             genres: [${Genre}!]! @relationship(type: "IN_GENRE", direction: OUT)
                         }
 
-                        type ${Genre} @node {
+                        type ${Genre} {
                             id: ID
                         }
                 `;
@@ -1297,12 +1297,12 @@ describe("Advanced Filtering", () => {
                 const Genre = testHelper.createUniqueType("Genre");
 
                 const typeDefs = `
-                        type ${Movie} @node {
+                        type ${Movie} {
                             id: ID
                             genres: [${Genre}!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "ActedIn")
                         }
 
-                        type ${Genre} @node {
+                        type ${Genre} {
                             id: ID
                         }
 
@@ -1361,12 +1361,12 @@ describe("Advanced Filtering", () => {
                 const Genre = testHelper.createUniqueType("Genre");
 
                 const typeDefs = `
-                        type ${Movie} @node {
+                        type ${Movie} {
                             id: ID
                             genres: [${Genre}!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "ActedIn")
                         }
 
-                        type ${Genre} @node {
+                        type ${Genre} {
                             id: ID
                         }
 
@@ -1428,12 +1428,12 @@ describe("Advanced Filtering", () => {
                 const randomType2 = testHelper.createUniqueType("Genre");
 
                 const typeDefs = `
-                        type ${randomType1.name} @node {
+                        type ${randomType1.name} {
                             id: ID
                             ${randomType2.plural}: [${randomType2.name}!]! @relationship(type: "IN_GENRE", direction: OUT)
                         }
 
-                        type ${randomType2.name} @node {
+                        type ${randomType2.name} {
                             id: ID
                         }
                 `;
@@ -1493,12 +1493,12 @@ describe("Advanced Filtering", () => {
                 const randomType2 = testHelper.createUniqueType("Genre");
 
                 const typeDefs = `
-                        type ${randomType1.name} @node {
+                        type ${randomType1.name} {
                             id: ID
                             ${randomType2.plural}: [${randomType2.name}!]! @relationship(type: "IN_GENRE", direction: OUT)
                         }
 
-                        type ${randomType2.name} @node {
+                        type ${randomType2.name} {
                             id: ID
                         }
                 `;
@@ -1554,12 +1554,12 @@ describe("Advanced Filtering", () => {
                 const randomType2 = testHelper.createUniqueType("Genre");
 
                 const typeDefs = `
-                        type ${randomType1.name} @node {
+                        type ${randomType1.name} {
                             id: ID
                             ${randomType2.plural}: [${randomType2.name}!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "ActedIn")
                         }
 
-                        type ${randomType2.name} @node {
+                        type ${randomType2.name} {
                             id: ID
                         }
 
@@ -1638,13 +1638,13 @@ describe("Advanced Filtering", () => {
                 Actor = testHelper.createUniqueType("Actor");
 
                 const typeDefs = `
-                type ${Movie} @node {
+                type ${Movie} {
                     id: ID! @id @unique
                     budget: Int!
                     actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type ${Actor} @node {
+                type ${Actor} {
                     id: ID! @id @unique
                     flag: Boolean!
                     actedIn: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
@@ -2024,12 +2024,12 @@ describe("Advanced Filtering", () => {
             const randomType2 = testHelper.createUniqueType("Genre");
 
             const typeDefs = `
-                    type ${randomType1.name} @node {
+                    type ${randomType1.name} {
                         id: ID
                         ${randomType2.plural}: [${randomType2.name}!]! @relationship(type: "IN_GENRE", direction: OUT)
                     }
 
-                    type ${randomType2.name} @node {
+                    type ${randomType2.name} {
                         id: ID
                     }
             `;
@@ -2105,7 +2105,7 @@ describe("Advanced Filtering", () => {
             const randomType = testHelper.createUniqueType("Movie");
 
             const typeDefs = `
-                type ${randomType.name} @node {
+                type ${randomType.name} {
                     id: String!
                     optional: String
                 }
