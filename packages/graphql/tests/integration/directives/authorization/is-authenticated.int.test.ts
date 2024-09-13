@@ -30,14 +30,12 @@ describe("auth/is-authenticated", () => {
 
     let Product: UniqueType;
     let User: UniqueType;
-    let Post: UniqueType;
 
     const secret = "secret";
 
     beforeEach(async () => {
         Product = testHelper.createUniqueType("Product");
         User = testHelper.createUniqueType("User");
-        Post = testHelper.createUniqueType("Post");
         await testHelper.executeCypher(
             `CREATE(p:${Product} {id: "1", name: "Marvin"})
             CREATE(u:${User} {id: "1", password: "dontpanic42", name: "Arthur"})
@@ -52,7 +50,7 @@ describe("auth/is-authenticated", () => {
     describe("read", () => {
         test("should throw if not authenticated type definition", async () => {
             const typeDefs = `
-                type ${Product} @authentication(operations: [READ]) @node {
+                type ${Product} @authentication(operations: [READ]) {
                     id: ID
                     name: String
                 }
@@ -88,7 +86,7 @@ describe("auth/is-authenticated", () => {
 
         test("should not throw if authenticated type definition", async () => {
             const typeDefs = `
-                type ${Product} @authentication(operations: [READ]) @node {
+                type ${Product} @authentication(operations: [READ]) {
                     id: ID
                     name: String
                 }
@@ -123,7 +121,7 @@ describe("auth/is-authenticated", () => {
                 type JWTPayload @jwt {
                     roles: [String!]!
                 }
-                type ${Product} @authentication(operations: [READ], jwt: { roles_INCLUDES: "admin" }) @node {
+                type ${Product} @authentication(operations: [READ], jwt: { roles_INCLUDES: "admin" }) {
                     id: ID
                     name: String
                 }
@@ -158,7 +156,7 @@ describe("auth/is-authenticated", () => {
                 type JWTPayload @jwt {
                     roles: [String!]!
                 }
-                type ${Product} @authentication(operations: [READ], jwt: { roles_INCLUDES: "admin" }) @node {
+                type ${Product} @authentication(operations: [READ], jwt: { roles_INCLUDES: "admin" }) {
                     id: ID
                     name: String
                 }
@@ -190,7 +188,7 @@ describe("auth/is-authenticated", () => {
 
         test("should throw if not authenticated on field definition", async () => {
             const typeDefs = `
-                type ${User} @node {
+                type ${User}  {
                     id: ID
                     password: String  @authentication(operations: [READ]) 
                 }
@@ -228,7 +226,7 @@ describe("auth/is-authenticated", () => {
     describe("create", () => {
         test("should not throw if authenticated on type definition", async () => {
             const typeDefs = `
-                type ${User} @authentication(operations: [CREATE]) @node {
+                type ${User} @authentication(operations: [CREATE]) {
                     id: ID
                     name: String
                 }
@@ -266,7 +264,7 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
 
-                type ${User} @authentication(operations: [CREATE], jwt: {roles_INCLUDES: "admin"}) @node {
+                type ${User} @authentication(operations: [CREATE], jwt: {roles_INCLUDES: "admin"}) {
                     id: ID
                     name: String
                 }
@@ -300,7 +298,7 @@ describe("auth/is-authenticated", () => {
 
         test("should throw if not authenticated on type definition", async () => {
             const typeDefs = `
-                type ${User} @authentication(operations: [CREATE]) @node {
+                type ${User} @authentication(operations: [CREATE]) {
                     id: ID
                     name: String
                 }
@@ -341,7 +339,7 @@ describe("auth/is-authenticated", () => {
                 type JWTPayload @jwt {
                     roles: [String!]!
                 }
-                type ${User} @authentication(operations: [CREATE], jwt: { roles_INCLUDES: "admin" }) @node {
+                type ${User} @authentication(operations: [CREATE], jwt: { roles_INCLUDES: "admin" }) {
                     id: ID
                     name: String
                 }
@@ -375,13 +373,13 @@ describe("auth/is-authenticated", () => {
 
         test("should throw if not authenticated on nested create type", async () => {
             const typeDefs = `
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     name: String
                     products: [${Product}!]! @relationship(type: "HAS_PRODUCT", direction: OUT) 
                 }
 
-                type ${Product} @authentication(operations: [CREATE]) @node {
+                type ${Product} @authentication(operations: [CREATE]) {
                     id: ID
                 }   
             `;
@@ -422,13 +420,13 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
                 
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     name: String
                     products: [${Product}!]! @relationship(type: "HAS_PRODUCT", direction: OUT) 
                 }
 
-                type ${Product} @authentication(operations: [CREATE], jwt: { roles_INCLUDES: "admin" }) @node {
+                type ${Product} @authentication(operations: [CREATE], jwt: { roles_INCLUDES: "admin" }) {
                     id: ID
                 }   
             `;
@@ -465,13 +463,13 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
                 
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     name: String
                     products: [${Product}!]! @relationship(type: "HAS_PRODUCT", direction: OUT) 
                 }
 
-                type ${Product} @authentication(operations: [CREATE], jwt: { roles_INCLUDES: "admin" }) @node {
+                type ${Product} @authentication(operations: [CREATE], jwt: { roles_INCLUDES: "admin" }) {
                     id: ID
                 }   
             `;
@@ -505,7 +503,7 @@ describe("auth/is-authenticated", () => {
 
         test("should not throw if authenticated on field definition", async () => {
             const typeDefs = `
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     password: String  @authentication(operations: [CREATE]) 
                 }
@@ -538,7 +536,7 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
 
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     password: String  @authentication(operations: [CREATE], jwt: {roles_INCLUDES: "admin"}) 
                 }
@@ -568,7 +566,7 @@ describe("auth/is-authenticated", () => {
 
         test("should throw if not authenticated on field definition", async () => {
             const typeDefs = `
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     password: String  @authentication(operations: [CREATE]) 
                 }
@@ -606,7 +604,7 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
             
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     password: String  @authentication(operations: [CREATE], jwt: { roles_INCLUDES: "admin" }) 
                 }
@@ -640,7 +638,7 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
             
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     password: String  @authentication(operations: [CREATE], jwt: { roles_INCLUDES: "admin" }) 
                 }
@@ -670,13 +668,13 @@ describe("auth/is-authenticated", () => {
 
         test("should throw if not authenticated on nested create field", async () => {
             const typeDefs = `
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     name: String
                     products: [${Product}!]! @relationship(type: "HAS_PRODUCT", direction: OUT) 
                 }
 
-                type ${Product} @node {
+                type ${Product} {
                     id: ID  @authentication(operations: [CREATE]) 
                 }   
             `;
@@ -717,13 +715,13 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
 
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     name: String
                     products: [${Product}!]! @relationship(type: "HAS_PRODUCT", direction: OUT) 
                 }
 
-                type ${Product} @node {
+                type ${Product} {
                     id: ID  @authentication(operations: [CREATE], jwt: { roles_INCLUDES: "admin" }) 
                 }   
             `;
@@ -760,13 +758,13 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
 
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     name: String
                     products: [${Product}!]! @relationship(type: "HAS_PRODUCT", direction: OUT) 
                 }
 
-                type ${Product} @node {
+                type ${Product} {
                     id: ID  @authentication(operations: [CREATE], jwt: { roles_INCLUDES: "admin" }) 
                 }   
             `;
@@ -802,7 +800,7 @@ describe("auth/is-authenticated", () => {
     describe("update", () => {
         test("should not throw if authenticated on type definition", async () => {
             const typeDefs = `
-                type ${User}  @authentication(operations: [UPDATE])  @node {
+                type ${User}  @authentication(operations: [UPDATE])  {
                     id: ID
                     name: String
                 }
@@ -840,7 +838,7 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
 
-                type ${User}  @authentication(operations: [UPDATE], jwt: {roles_INCLUDES: "admin"})  @node {
+                type ${User}  @authentication(operations: [UPDATE], jwt: {roles_INCLUDES: "admin"})  {
                     id: ID
                     name: String
                 }
@@ -874,7 +872,7 @@ describe("auth/is-authenticated", () => {
 
         test("should throw if not authenticated on type definition", async () => {
             const typeDefs = `
-                type ${User}  @authentication(operations: [UPDATE])  @node {
+                type ${User}  @authentication(operations: [UPDATE])  {
                     id: ID
                     name: String
                 }
@@ -915,7 +913,7 @@ describe("auth/is-authenticated", () => {
                 type JWTPayload @jwt {
                     roles: [String!]!
                 }
-                type ${User}  @authentication(operations: [UPDATE],  jwt: { roles_INCLUDES: "admin" })  @node {
+                type ${User}  @authentication(operations: [UPDATE],  jwt: { roles_INCLUDES: "admin" })  {
                     id: ID
                     name: String
                 }
@@ -949,7 +947,7 @@ describe("auth/is-authenticated", () => {
 
         test("should not throw if authenticated on field definition", async () => {
             const typeDefs = `
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     password: String  @authentication(operations: [UPDATE]) 
                 }
@@ -987,7 +985,7 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
         
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     password: String  @authentication(operations: [UPDATE], jwt: {roles_INCLUDES: "admin"}) 
                 }
@@ -1021,7 +1019,7 @@ describe("auth/is-authenticated", () => {
 
         test("should throw if not authenticated on field definition", async () => {
             const typeDefs = `
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     password: String  @authentication(operations: [UPDATE]) 
                 }
@@ -1062,7 +1060,7 @@ describe("auth/is-authenticated", () => {
                 type JWTPayload @jwt {
                     roles: [String!]!
                 }
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     password: String  @authentication(operations: [UPDATE],  jwt: { roles_INCLUDES: "admin" }) 
                 }
@@ -1100,12 +1098,12 @@ describe("auth/is-authenticated", () => {
             const Post = testHelper.createUniqueType("Post");
 
             const typeDefs = `
-                type ${Post} @node {
+                type ${Post} {
                     id: String
                     content: String
                 }
 
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     name: String
                     password: String
@@ -1165,12 +1163,12 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
 
-                type ${Post} @node {
+                type ${Post} {
                     id: String
                     content: String
                 }
 
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     name: String
                     password: String
@@ -1230,12 +1228,12 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
 
-                type ${Post} @node {
+                type ${Post} {
                     id: String
                     content: String
                 }
 
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     name: String
                     password: String
@@ -1288,12 +1286,12 @@ describe("auth/is-authenticated", () => {
             const Post = testHelper.createUniqueType("Post");
 
             const typeDefs = `
-                type ${Post} @node {
+                type ${Post} {
                     id: String
                     content: String
                 }
 
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     name: String
                     password: String
@@ -1354,12 +1352,12 @@ describe("auth/is-authenticated", () => {
             const Post = testHelper.createUniqueType("Post");
 
             const typeDefs = `
-                type ${Post} @node {
+                type ${Post} {
                     id: String
                     content: String
                 }
 
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     name: String
                     password: String
@@ -1421,12 +1419,12 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
 
-                type ${Post} @node {
+                type ${Post} {
                     id: String
                     content: String
                 }
 
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     name: String
                     password: String
@@ -1486,12 +1484,12 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
 
-                type ${Post} @node {
+                type ${Post} {
                     id: String
                     content: String
                 }
 
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     name: String
                     password: String
@@ -1546,12 +1544,12 @@ describe("auth/is-authenticated", () => {
             const Post = testHelper.createUniqueType("Post");
 
             const typeDefs = `
-                type ${Post} @node {
+                type ${Post} {
                     id: String @unique
                     content: String
                 }
 
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     name: String
                     password: String
@@ -1611,12 +1609,12 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
 
-                type ${Post} @node {
+                type ${Post} {
                     id: String  @unique
                     content: String
                 }
 
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     name: String
                     password: String
@@ -1676,12 +1674,12 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
 
-                type ${Post} @node {
+                type ${Post} {
                     id: String  @unique
                     content: String
                 }
 
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     name: String
                     password: String
@@ -1734,12 +1732,12 @@ describe("auth/is-authenticated", () => {
             const Post = testHelper.createUniqueType("Post");
 
             const typeDefs = `
-                type ${Post} @node {
+                type ${Post} {
                     id: String  @unique
                     content: String
                 }
 
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     name: String
                     password: String
@@ -1800,12 +1798,12 @@ describe("auth/is-authenticated", () => {
             const Post = testHelper.createUniqueType("Post");
 
             const typeDefs = `
-                type ${Post} @node {
+                type ${Post} {
                     id: String  @unique
                     content: String
                 }
 
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     name: String
                     password: String
@@ -1867,12 +1865,12 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
 
-                type ${Post} @node {
+                type ${Post} {
                     id: String  @unique
                     content: String
                 }
 
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     name: String
                     password: String
@@ -1932,12 +1930,12 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
 
-                type ${Post} @node {
+                type ${Post} {
                     id: String  @unique
                     content: String
                 }
 
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     name: String
                     password: String
@@ -1992,12 +1990,12 @@ describe("auth/is-authenticated", () => {
             const Post = testHelper.createUniqueType("Post");
 
             const typeDefs = `
-                type ${Post} @node {
+                type ${Post} {
                     id: String
                     content: String
                 }
 
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     name: String
                     password: String
@@ -2057,12 +2055,12 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
 
-                type ${Post} @node {
+                type ${Post} {
                     id: String
                     content: String
                 }
 
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     name: String
                     password: String
@@ -2122,12 +2120,12 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
 
-                type ${Post} @node {
+                type ${Post} {
                     id: String
                     content: String
                 }
 
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     name: String
                     password: String
@@ -2180,12 +2178,12 @@ describe("auth/is-authenticated", () => {
             const Post = testHelper.createUniqueType("Post");
 
             const typeDefs = `
-                type ${Post} @node {
+                type ${Post} {
                     id: String
                     content: String
                 }
 
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     name: String
                     password: String
@@ -2246,12 +2244,12 @@ describe("auth/is-authenticated", () => {
             const Post = testHelper.createUniqueType("Post");
 
             const typeDefs = `
-                type ${Post} @node {
+                type ${Post} {
                     id: String
                     content: String
                 }
 
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     name: String
                     password: String
@@ -2313,12 +2311,12 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
 
-                type ${Post} @node {
+                type ${Post} {
                     id: String
                     content: String
                 }
 
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     name: String
                     password: String
@@ -2378,12 +2376,12 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
 
-                type ${Post} @node {
+                type ${Post} {
                     id: String
                     content: String
                 }
 
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     name: String
                     password: String
@@ -2436,7 +2434,7 @@ describe("auth/is-authenticated", () => {
     describe("delete", () => {
         test("should not throw if authenticated on type definition", async () => {
             const typeDefs = `
-                type ${User} @authentication(operations: [DELETE])  @node {
+                type ${User} @authentication(operations: [DELETE])  {
                     id: ID
                     name: String
                 }
@@ -2472,7 +2470,7 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
 
-                type ${User} @authentication(operations: [DELETE], jwt: {roles_INCLUDES: "admin"}) @node {
+                type ${User} @authentication(operations: [DELETE], jwt: {roles_INCLUDES: "admin"})  {
                     id: ID
                     name: String
                 }
@@ -2504,7 +2502,7 @@ describe("auth/is-authenticated", () => {
 
         test("should throw if not authenticated on type definition", async () => {
             const typeDefs = `
-                type ${User} @authentication(operations: [DELETE])  @node {
+                type ${User} @authentication(operations: [DELETE])  {
                     id: ID
                     name: String
                 }
@@ -2540,13 +2538,13 @@ describe("auth/is-authenticated", () => {
 
         test("should throw if not authenticated on type definition (with nested delete)", async () => {
             const typeDefs = `
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     name: String
-                    posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                type ${Post} @node @authentication(operations: [DELETE]) {
+                type Post @authentication(operations: [DELETE]) {
                     id: ID
                     name: String
                 }
@@ -2598,7 +2596,7 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
 
-                type ${User} @authentication(operations: [DELETE],  jwt: { roles_INCLUDES: "admin" })  @node {
+                type ${User} @authentication(operations: [DELETE],  jwt: { roles_INCLUDES: "admin" })  {
                     id: ID
                     name: String
                 }
@@ -2634,13 +2632,13 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
 
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     name: String
-                    posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                type ${Post} @node @authentication(operations: [DELETE],  jwt: { roles_INCLUDES: "admin" }) {
+                type Post @authentication(operations: [DELETE],  jwt: { roles_INCLUDES: "admin" }) {
                     id: ID
                     name: String
                 }
@@ -2684,13 +2682,13 @@ describe("auth/is-authenticated", () => {
 
         test("should throw if not authenticated on type definition (with nested delete) on field", async () => {
             const typeDefs = `
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     name: String
-                    posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                type ${Post} @node @authentication(operations: [DELETE]) {
+                type Post @authentication(operations: [DELETE]) {
                     id: ID 
                     name: String
                 }
@@ -2715,7 +2713,7 @@ describe("auth/is-authenticated", () => {
 
             const query = `
                 mutation {
-                    ${User.operations.delete}(where: {id: "${userId}"}, delete:{ posts: {where:{node: { id: "${postId}"}}} }) {
+                    ${User.operations.delete}(where: {id: "${userId}"}, delete:{posts: {where:{node: { id: "${postId}"}}} }) {
                         nodesDeleted
                     }
                 }
@@ -2724,7 +2722,7 @@ describe("auth/is-authenticated", () => {
             const token = "not valid token";
 
             await testHelper.executeCypher(`
-                    CREATE (:${User} {id: "${userId}"})-[:HAS_POST]->(:${Post} {id: "${postId}"})
+                    CREATE (:${User} {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
                 `);
 
             const socket = new Socket({ readable: true });
@@ -2740,7 +2738,7 @@ describe("auth/is-authenticated", () => {
     describe("custom-resolvers", () => {
         test("should not throw if authenticated on custom Query with @cypher", async () => {
             const typeDefs = `
-                type ${User} @mutation(operations: []) @query(read: false, aggregate: false) @node {
+                type ${User} @mutation(operations: []) @query(read: false, aggregate: false) {
                     id: ID
                     name: String
                 }
@@ -2780,7 +2778,7 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
 
-                type ${User} @mutation(operations: []) @query(read: false, aggregate: false) @node {
+                type ${User} @mutation(operations: []) @query(read: false, aggregate: false) {
                     id: ID
                     name: String
                 }
@@ -2816,7 +2814,7 @@ describe("auth/is-authenticated", () => {
 
         test("should throw if not authenticated on custom Query with @cypher", async () => {
             const typeDefs = `
-                type ${User} @mutation(operations: []) @query(read: false, aggregate: false) @node {
+                type ${User} @mutation(operations: []) @query(read: false, aggregate: false) {
                     id: ID
                     name: String
                 }
@@ -2860,7 +2858,7 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
 
-                type ${User} @mutation(operations: []) @query(read: false, aggregate: false) @node {
+                type ${User} @mutation(operations: []) @query(read: false, aggregate: false) {
                     id: ID
                     name: String
                 }
@@ -2896,7 +2894,7 @@ describe("auth/is-authenticated", () => {
 
         test("should not throw if authenticated on custom Mutation with @cypher", async () => {
             const typeDefs = `
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     name: String
                 }
@@ -2936,7 +2934,7 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
 
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     name: String
                 }
@@ -2972,7 +2970,7 @@ describe("auth/is-authenticated", () => {
 
         test("should throw if not authenticated on custom Mutation with @cypher", async () => {
             const typeDefs = `
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     name: String
                 }
@@ -3016,7 +3014,7 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
 
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     name: String
                 }
@@ -3054,11 +3052,11 @@ describe("auth/is-authenticated", () => {
             const History = testHelper.createUniqueType("History");
 
             const typeDefs = `
-                type ${History} @node {
+                type ${History} {
                     url: String
                 }
 
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     history: [${History}]
                         @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:${History}) RETURN h", columnName: "h")
@@ -3100,11 +3098,11 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
 
-                type ${History} @node {
+                type ${History} {
                     url: String
                 }
 
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     history: [${History}]
                         @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:${History}) RETURN h", columnName: "h")
@@ -3142,11 +3140,11 @@ describe("auth/is-authenticated", () => {
             const History = testHelper.createUniqueType("History");
 
             const typeDefs = `
-                type ${History} @node {
+                type ${History} {
                     url: String
                 }
 
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     history: [${History}]
                         @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:${History}) RETURN h", columnName: "h")
@@ -3192,11 +3190,11 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
 
-                type ${History} @node {
+                type ${History} {
                     url: String
                 }
 
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     history: [${History}]
                         @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:${History}) RETURN h", columnName: "h")
@@ -3232,7 +3230,7 @@ describe("auth/is-authenticated", () => {
 
         test("should not throw if decoded JWT passed in context", async () => {
             const typeDefs = `
-                type ${Product} @authentication(operations: [READ])  @node {
+                type ${Product} @authentication(operations: [READ])  {
                     id: ID
                     name: String
                 }
@@ -3274,7 +3272,7 @@ describe("auth/is-authenticated", () => {
                     name: String!
                 }
 
-                type ${Product} @authentication(operations: [READ], jwt: {name_STARTS_WITH: "John"})  @node {
+                type ${Product} @authentication(operations: [READ], jwt: {name_STARTS_WITH: "John"})  {
                     id: ID
                     name: String
                 }
@@ -3316,7 +3314,7 @@ describe("auth/is-authenticated", () => {
                     name: String!
                 }
 
-                type ${Product} @authentication(operations: [READ], jwt: {name_STARTS_WITH: "Doe"})  @node {
+                type ${Product} @authentication(operations: [READ], jwt: {name_STARTS_WITH: "Doe"})  {
                     id: ID
                     name: String
                 }
@@ -3357,7 +3355,7 @@ describe("auth/is-authenticated", () => {
         describe("read", () => {
             beforeEach(async () => {
                 const typeDefs = `
-                type ${Product} @node {
+                type ${Product} {
                     id: ID
                     name: String
                 }
@@ -3413,7 +3411,7 @@ describe("auth/is-authenticated", () => {
         describe("create", () => {
             beforeEach(async () => {
                 const typeDefs = `
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     name: String
                 }
@@ -3473,7 +3471,7 @@ describe("auth/is-authenticated", () => {
         describe("update", () => {
             beforeEach(async () => {
                 const typeDefs = `
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     name: String
                 }
@@ -3537,12 +3535,12 @@ describe("auth/is-authenticated", () => {
                 Post = testHelper.createUniqueType("Post");
 
                 const typeDefs = `
-                type ${Post} @node {
+                type ${Post} {
                     id: String
                     content: String
                 }
 
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     name: String
                     password: String
@@ -3634,12 +3632,12 @@ describe("auth/is-authenticated", () => {
                 Post = testHelper.createUniqueType("Post");
 
                 const typeDefs = `
-                type ${Post} @node {
+                type ${Post} {
                     id: String @unique
                     content: String
                 }
 
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     name: String
                     password: String
@@ -3731,12 +3729,12 @@ describe("auth/is-authenticated", () => {
                 Post = testHelper.createUniqueType("Post");
 
                 const typeDefs = `
-                type ${Post} @node {
+                type ${Post} {
                     id: String
                     content: String
                 }
 
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     name: String
                     password: String
@@ -3824,7 +3822,7 @@ describe("auth/is-authenticated", () => {
         describe("delete", () => {
             beforeEach(async () => {
                 const typeDefs = `
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     name: String
                 }
@@ -3880,7 +3878,7 @@ describe("auth/is-authenticated", () => {
         describe("custom-resolvers", () => {
             beforeEach(async () => {
                 const typeDefs = `
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     name: String
                 }

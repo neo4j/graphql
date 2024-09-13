@@ -62,7 +62,7 @@ describe("auth/roles", () => {
                     when: [BEFORE],
                     operations: [READ],
                     where: { jwt: { roles_INCLUDES: "admin" } }
-                }]) @node {
+                }]) {
                     id: ID
                     name: String
                 }
@@ -98,7 +98,7 @@ describe("auth/roles", () => {
                     roles: [String!]!
                 }
 
-                type ${typeUser}  @node {
+                type ${typeUser}  {
                     id: ID
                     password: String @authorization(validate: [{
                         when: [BEFORE],
@@ -138,14 +138,14 @@ describe("auth/roles", () => {
                     roles: [String!]!
                 }
 
-                type ${typeHistory} @node {
+                type ${typeHistory} {
                     url: String @authorization(validate: [{
                         when: [BEFORE],
                         operations: [READ],
                         where: { jwt: { roles_INCLUDES: "super-admin" } }
                     }])
                 }
-                type ${typeUser} @node {
+                type ${typeUser} {
                     id: ID
                     name: String
                     password: String
@@ -264,7 +264,7 @@ describe("auth/roles", () => {
                     when: [AFTER],
                     operations: [CREATE],
                     where: { jwt: { roles_INCLUDES: "admin" } }
-                }]) @node {
+                }]) {
                     id: ID
                     name: String
                 }
@@ -302,7 +302,7 @@ describe("auth/roles", () => {
                     roles: [String!]!
                 }
 
-                type ${typeUser} @node {
+                type ${typeUser} {
                     id: ID
                     password: String @authorization(validate: [{
                         when: [AFTER],
@@ -344,7 +344,7 @@ describe("auth/roles", () => {
                     roles: [String!]!
                 }
 
-                type ${typeUser} @node {
+                type ${typeUser} {
                     id: ID
                     password: String @authorization(validate: [{
                         when: [AFTER],
@@ -392,7 +392,7 @@ describe("auth/roles", () => {
                     when: [BEFORE],
                     operations: [UPDATE],
                     where: { jwt: { roles_INCLUDES: "admin" } }
-                }]) @node{
+                }]) {
                     id: ID
                     name: String
                 }
@@ -430,7 +430,7 @@ describe("auth/roles", () => {
                     roles: [String!]!
                 }
 
-                type ${typeUser} @node {
+                type ${typeUser} {
                     id: ID
                     password: String @authorization(validate: [{
                         when: [BEFORE],
@@ -474,12 +474,12 @@ describe("auth/roles", () => {
                     roles: [String!]!
                 }
 
-                type ${typePost} @node {
+                type ${typePost} {
                     id: String
                     content: String
                 }
 
-                type ${typeUser} @node {
+                type ${typeUser} {
                     id: ID
                     name: String
                     password: String
@@ -545,20 +545,20 @@ describe("auth/roles", () => {
                     roles: [String!]!
                 }
 
-                type ${typeComment} @node {
+                type ${typeComment} {
                     id: String
                     content: String
                     post: ${typePost}! @relationship(type: "HAS_COMMENT", direction: IN)
                 }
 
-                type ${typePost} @node {
+                type ${typePost} {
                     id: String
                     content: String
                     creator: ${typeUser}! @relationship(type: "HAS_POST", direction: IN)
                     comments: [${typeComment}!]! @relationship(type: "HAS_COMMENT", direction: OUT)
                 }
 
-                type ${typeUser} @node {
+                type ${typeUser} {
                     id: ID
                     name: String
                     posts: [${typePost}!]! @relationship(type: "HAS_POST", direction: OUT)
@@ -634,12 +634,12 @@ describe("auth/roles", () => {
                     roles: [String!]!
                 }
 
-                type ${typePost} @node {
+                type ${typePost} {
                     id: String
                     content: String
                 }
 
-                type ${typeUser} @node {
+                type ${typeUser} {
                     id: ID
                     name: String
                     password: String
@@ -705,20 +705,20 @@ describe("auth/roles", () => {
                     roles: [String!]!
                 }
 
-                type ${typeComment} @node {
+                type ${typeComment} {
                     id: String
                     content: String
                     post: ${typePost}! @relationship(type: "HAS_COMMENT", direction: IN)
                 }
 
-                type ${typePost} @node {
+                type ${typePost} {
                     id: String
                     content: String
                     creator: ${typeUser}! @relationship(type: "HAS_POST", direction: IN)
                     comments: [${typeComment}!]! @relationship(type: "HAS_COMMENT", direction: OUT)
                 }
 
-                type ${typeUser} @node {
+                type ${typeUser} {
                     id: ID
                     name: String
                     posts: [${typePost}!]! @relationship(type: "HAS_POST", direction: OUT)
@@ -793,7 +793,7 @@ describe("auth/roles", () => {
                     roles: [String!]!
                 }
 
-                type ${typeUser} @node @authorization(validate: [{
+                type ${typeUser} @authorization(validate: [{
                     when: [BEFORE],
                     operations: [DELETE],
                     where: { jwt: { roles_INCLUDES: "admin" } }
@@ -833,13 +833,13 @@ describe("auth/roles", () => {
                     roles: [String!]!
                 }
 
-                type ${typeUser} @node {
+                type ${typeUser} {
                     id: ID
                     name: String
                     posts: [${typePost}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                type ${typePost} @node @authorization(validate: [{
+                type ${typePost} @authorization(validate: [{
                     when: [BEFORE],
                     operations: [DELETE],
                     where: { jwt: { roles_INCLUDES: "admin" } }
@@ -894,7 +894,7 @@ describe("auth/roles", () => {
                     roles: [String!]!
                 }
 
-                type ${typeUser} @mutation(operations: []) @query(read: false, aggregate: false) @node {
+                type ${typeUser} @mutation(operations: []) @query(read: false, aggregate: false) {
                     id: ID
                     name: String
                 }
@@ -934,7 +934,7 @@ describe("auth/roles", () => {
                     roles: [String!]!
                 }
 
-                type ${typeUser} @node {
+                type ${typeUser} {
                     id: ID
                     name: String
                 }
@@ -974,11 +974,11 @@ describe("auth/roles", () => {
                     roles: [String!]!
                 }
 
-                type ${typeHistory} @node {
+                type ${typeHistory} {
                     url: String
                 }
 
-                type ${typeUser} @node {
+                type ${typeUser} {
                     id: ID
                     history: [${typeHistory}]
                         @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:${typeHistory}) RETURN h AS h", columnName: "h")
@@ -1026,7 +1026,7 @@ describe("auth/roles", () => {
                     roles: [String!]!
                 }
 
-                type ${type.name} @node {
+                type ${type.name} {
                     id: ID
                     name: String
                     password: String
@@ -1108,7 +1108,7 @@ describe("auth/roles", () => {
                     roles: [String!]! @jwtClaim(path: "https://auth0\\\\.mysite\\\\.com/claims.https://auth0\\\\.mysite\\\\.com/claims/roles")
                 }
 
-                type ${type.name} @node {
+                type ${type.name} {
                     id: ID
                     name: String
                     password: String

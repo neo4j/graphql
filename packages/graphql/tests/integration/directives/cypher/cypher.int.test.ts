@@ -50,12 +50,12 @@ describe("cypher directive", () => {
                 });
 
                 const typeDefs = `
-                    type ${Movie} @node {
+                    type ${Movie} {
                         title: String!
                         actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
                     }
 
-                    type ${Actor} @node {
+                    type ${Actor} {
                         name: String!
                         movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
@@ -115,12 +115,12 @@ describe("cypher directive", () => {
                 });
 
                 const typeDefs = `
-                    type ${Movie} @node {
+                    type ${Movie} {
                         title: String!
                         actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
                     }
 
-                    type ${Actor} @node {
+                    type ${Actor} {
                         name: String!
                         movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
@@ -182,7 +182,7 @@ describe("cypher directive", () => {
                         roles: [String!]!
                     }
 
-                    type ${Movie} @node {
+                    type ${Movie} {
                         title: String!
                         actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
                     }
@@ -254,12 +254,12 @@ describe("cypher directive", () => {
                 });
 
                 const typeDefs = `
-                    type ${Movie} @node {
+                    type ${Movie} {
                         title: String!
                         actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
                     }
 
-                    type ${Actor} @node {
+                    type ${Actor} {
                         name: String!
                         movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
@@ -336,18 +336,18 @@ describe("cypher directive", () => {
                 });
 
                 const typeDefs = `
-                    type ${Movie} @node {
+                    type ${Movie} {
                         title: String!
                         actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
                         directors: [${Director}!]! @relationship(type: "DIRECTED", direction: IN)
                     }
 
-                    type ${Actor} @node {
+                    type ${Actor} {
                         name: String!
                         movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
 
-                    type ${Director} @node {
+                    type ${Director} {
                         name: String!
                         movies: [${Movie}!]! @relationship(type: "DIRECTED", direction: OUT)
                     }
@@ -437,12 +437,12 @@ describe("cypher directive", () => {
                 });
 
                 const typeDefs = `
-                    type ${Movie} @node {
+                    type ${Movie} {
                         title: String!
                         actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
                     }
 
-                    type ${Actor} @node {
+                    type ${Actor} {
                         name: String!
                         movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
@@ -502,12 +502,12 @@ describe("cypher directive", () => {
                 });
 
                 const typeDefs = `
-                    type ${Movie} @node {
+                    type ${Movie} {
                         title: String!
                         actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
                     }
 
-                    type ${Actor} @node {
+                    type ${Actor} {
                         name: String!
                         movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
@@ -568,7 +568,7 @@ describe("cypher directive", () => {
                         roles: [String!]!
                     }
 
-                    type ${Movie} @node {
+                    type ${Movie} {
                         title: String!
                         actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
                     }
@@ -638,7 +638,7 @@ describe("cypher directive", () => {
                 Town = testHelper.createUniqueType("Town");
 
                 const typeDefs = `
-                type ${Destination} @node {
+                type ${Destination} {
                     id: ID!
                     preposition(caseName: String = null): String! @cypher(statement: "RETURN coalesce($caseName, '${defaultPreposition}') as result", columnName: "result")
                 }
@@ -732,7 +732,7 @@ describe("cypher directive", () => {
                 Town = testHelper.createUniqueType("Town");
 
                 const typeDefs = `
-                type ${Destination} @node {
+                type ${Destination} {
                     id: ID!
                     preposition(caseName: String): String! @cypher(statement: "RETURN coalesce($caseName, '${defaultPreposition}') as result", columnName: "result")
                 }
@@ -829,15 +829,15 @@ describe("cypher directive", () => {
                 const typeDefs = `
                 union PostMovieUser = ${Post} | ${Movie} | ${User}
 
-                type ${Post} @node {
+                type ${Post} {
                     name: String
                 }
 
-                type ${Movie} @node {
+                type ${Movie} {
                     name: String
                 }
 
-                type ${User} @node {
+                type ${User} {
                     id: ID @id @unique
                     updates: [PostMovieUser!]!
                         @cypher(

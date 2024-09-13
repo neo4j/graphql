@@ -38,7 +38,7 @@ describe("connectOrCreate", () => {
                 roles: [String!]!
             }
             
-            type ${typeMovie.name} @node {
+            type ${typeMovie.name} {
                 title: String
                 genres: [${typeGenre.name}!]! @relationship(type: "IN_GENRE", direction: OUT)
             }

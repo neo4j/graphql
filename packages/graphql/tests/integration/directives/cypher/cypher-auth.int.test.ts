@@ -54,7 +54,7 @@ describe("https://github.com/neo4j/graphql/issues/5270", () => {
                 to: ${User}! @relationship(type: "IS_BLOCKING", direction: OUT) @settable(onCreate: true, onUpdate: false)
             }
 
-            type ${Thing} @node {
+            type ${Thing} {
                 user: ${User} @cypher(statement: "OPTIONAL MATCH (u:${User} {id: $jwt.sub}) RETURN u", columnName: "u")
             }
         

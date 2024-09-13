@@ -39,7 +39,7 @@ describe("auth/custom-resolvers", () => {
     describe("auth-injection", () => {
         test("should inject auth in context of custom Query", async () => {
             const typeDefs = `
-                type ${User} @node {
+                type ${User} {
                     id: ID
                 }
 
@@ -84,7 +84,7 @@ describe("auth/custom-resolvers", () => {
 
         test("should inject auth in context of custom Mutation", async () => {
             const typeDefs = `
-                type ${User} @node {
+                type ${User} {
                     id: ID
                 }
 
@@ -125,7 +125,7 @@ describe("auth/custom-resolvers", () => {
 
         test("should inject auth in context of custom Field resolver", async () => {
             const typeDefs = `
-                type ${User} @node {
+                type ${User} {
                     customId: ID
                 }
 
@@ -169,7 +169,7 @@ describe("auth/custom-resolvers", () => {
 
         test("should inject auth in context of custom Query when decoded JWT passed in", async () => {
             const typeDefs = `
-                type ${User} @node {
+                type ${User} {
                     id: ID
                 }
 

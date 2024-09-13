@@ -29,9 +29,8 @@ describe("@coalesce directive", () => {
     });
 
     test("on non-primitive field should throw an error", async () => {
-        const type = testHelper.createUniqueType("User");
         const typeDefs = `
-            type ${type} @node {
+            type User {
                 name: String!
                 location: Point! @coalesce(value: "default")
             }
@@ -47,9 +46,8 @@ describe("@coalesce directive", () => {
     });
 
     test("on DateTime field should throw an error", async () => {
-        const type = testHelper.createUniqueType("User");
         const typeDefs = `
-            type ${type} @node {
+            type User {
                 name: String!
                 createdAt: DateTime! @coalesce(value: "1970-01-01T00:00:00.000Z")
             }
@@ -65,9 +63,8 @@ describe("@coalesce directive", () => {
     });
 
     test("with an argument with a type which doesn't match the field should throw an error", async () => {
-        const type = testHelper.createUniqueType("User");
         const typeDefs = `
-            type ${type} @node {
+            type User {
                 name: String! @coalesce(value: 2)
             }
         `;
@@ -85,7 +82,7 @@ describe("@coalesce directive", () => {
         const type = testHelper.createUniqueType("Movie");
 
         const typeDefs = `
-            type ${type.name} @node {
+            type ${type.name} {
                 id: ID!
                 classification: String @coalesce(value: "Unrated")
             }
@@ -130,7 +127,7 @@ describe("@coalesce directive", () => {
                 ACTIVE
                 INACTIVE
             }
-            type ${type.name} @node {
+            type ${type.name} {
                 id: ID
                 status: Status @coalesce(value: ACTIVE)
             }
@@ -176,7 +173,7 @@ describe("@coalesce directive", () => {
                 INACTIVE
             }
 
-            type ${type.name} @node {
+            type ${type.name} {
                 id: ID
                 statuses: [Status!] @coalesce(value: [ACTIVE, INACTIVE])
             }

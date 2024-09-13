@@ -30,13 +30,13 @@ import { TestHelper } from "../../../utils/tests-helper";
 
 function generatedTypeDefs(personType: UniqueType, movieType: UniqueType): string {
     return `
-        type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }]) @node {
+        type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }]) {
             name: String!
             born: Int!
             actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
         } 
 
-        type ${movieType.name} @node {
+        type ${movieType.name} {
             title: String!
             released: Int!
             actors: [${personType.name}!]! @relationship(type: "ACTED_IN", direction: IN)
@@ -1221,14 +1221,14 @@ describe("@fulltext directive", () => {
             }
 
             const typeDefs = `
-                    type ${personType.name} @node @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
+                    type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
                     @authorization(filter: [{ where: { node: { name: "$jwt.name" } } }]) {
                         name: String!
                         born: Int!
                         actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
     
-                    type ${movieType.name} @node {
+                    type ${movieType.name} {
                         title: String!
                         released: Int!
                         actors: [${personType.name}!]! @relationship(type: "ACTED_IN", direction: IN)
@@ -1282,14 +1282,14 @@ describe("@fulltext directive", () => {
             }
 
             const typeDefs = `
-                    type ${personType.name} @node @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
+                    type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
                     @authorization(filter: [{ where: { node: { name: "$jwt.name" } } }]) {
                         name: String!
                         born: Int!
                         actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
     
-                    type ${movieType.name} @node {
+                    type ${movieType.name} {
                         title: String!
                         released: Int!
                         actors: [${personType.name}!]! @relationship(type: "ACTED_IN", direction: IN)
@@ -1343,14 +1343,14 @@ describe("@fulltext directive", () => {
                         roles: [String!]!
                     }
     
-                    type ${personType.name} @node @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
+                    type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
                     @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "admin" } } }]) {
                         name: String!
                         born: Int!
                         actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
     
-                    type ${movieType.name} @node {
+                    type ${movieType.name} {
                         title: String!
                         released: Int!
                         actors: [${personType.name}!]! @relationship(type: "ACTED_IN", direction: IN)
@@ -1419,14 +1419,14 @@ describe("@fulltext directive", () => {
                         roles: [String!]!
                     }
     
-                    type ${personType.name} @node @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
+                    type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
                     @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "admin" } } }]) {
                         name: String!
                         born: Int!
                         actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
     
-                    type ${movieType.name} @node {
+                    type ${movieType.name} {
                         title: String!
                         released: Int!
                         actors: [${personType.name}!]! @relationship(type: "ACTED_IN", direction: IN)
@@ -1475,14 +1475,14 @@ describe("@fulltext directive", () => {
             }
 
             const typeDefs = `
-                    type ${personType.name} @node @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
+                    type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
                     @authorization(validate: [{ when: BEFORE, where: { node: { name: "$jwt.name" } } }]) {
                         name: String!
                         born: Int!
                         actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
     
-                    type ${movieType.name} @node {
+                    type ${movieType.name} {
                         title: String!
                         released: Int!
                         actors: [${personType.name}!]! @relationship(type: "ACTED_IN", direction: IN)
@@ -1534,14 +1534,14 @@ describe("@fulltext directive", () => {
             }
 
             const typeDefs = `
-                    type ${personType.name} @node @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
+                    type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
                     @authorization(validate: [{ when: BEFORE, where: { node: { name: "$jwt.name" } } }]) {
                         name: String!
                         born: Int!
                         actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
     
-                    type ${movieType.name} @node {
+                    type ${movieType.name} {
                         title: String!
                         released: Int!
                         actors: [${personType.name}!]! @relationship(type: "ACTED_IN", direction: IN)
@@ -1594,14 +1594,14 @@ describe("@fulltext directive", () => {
                         roles: [String!]!
                     }
     
-                    type ${personType.name} @node @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
+                    type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
                     @authorization(validate: [{ operations: [READ], where: { jwt: { roles_INCLUDES: "admin" } } }]) {
                         name: String!
                         born: Int!
                         actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
     
-                    type ${movieType.name} @node {
+                    type ${movieType.name} {
                         title: String!
                         released: Int!
                         actors: [${personType.name}!]! @relationship(type: "ACTED_IN", direction: IN)
@@ -1652,13 +1652,13 @@ describe("@fulltext directive", () => {
             const moveTypeLowerFirst = movieType.singular;
             queryType = `${movieType.plural}Fulltext${upperFirst(movieType.name)}Index`;
             const typeDefs = `
-                    type ${personType.name} @node {
+                    type ${personType.name} {
                         name: String!
                         born: Int!
                         actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
     
-                    type ${movieType.name} @node @fulltext(indexes: [{ indexName: "${movieType.name}Index", fields: ["title", "description"] }]) {
+                    type ${movieType.name} @fulltext(indexes: [{ indexName: "${movieType.name}Index", fields: ["title", "description"] }]) {
                         title: String!
                         description: String
                         released: Int!
@@ -1727,7 +1727,7 @@ describe("@fulltext directive", () => {
             );
 
             const typeDefs = `
-                    type ${personType.name} @node @fulltext(indexes: [{ queryName: "${queryType}", indexName: "${personType.name}CustomIndex", fields: ["name"] }]) {
+                    type ${personType.name} @fulltext(indexes: [{ queryName: "${queryType}", indexName: "${personType.name}CustomIndex", fields: ["name"] }]) {
                         name: String!
                         born: Int!
                     }
@@ -1783,7 +1783,7 @@ describe("@fulltext directive", () => {
             const moveTypeLowerFirst = movieType.singular;
             queryType = "SomeCustomQueryName";
             const typeDefs = `
-                    type ${movieType.name} @node @fulltext(indexes: [{ queryName: "${queryType}", indexName: "${movieType.name}Index", fields: ["title", "description"] }]) {
+                    type ${movieType.name} @fulltext(indexes: [{ queryName: "${queryType}", indexName: "${movieType.name}Index", fields: ["title", "description"] }]) {
                         title: String!
                         description: String
                         released: Int!
@@ -1850,7 +1850,7 @@ describe("@fulltext directive", () => {
             );
 
             const typeDefs = `
-                    type ${movieType.name} @node @fulltext(indexes: [
+                    type ${movieType.name} @fulltext(indexes: [
                             { queryName: "${queryType1}", indexName: "${movieType.name}CustomIndex", fields: ["title"] },
                             { queryName: "${queryType2}", indexName: "${movieType.name}CustomIndex2", fields: ["description"] }
                         ]) {
@@ -1971,7 +1971,7 @@ describe("@fulltext directive", () => {
             }
 
             const typeDefs = gql`
-            type ${type.name} @node @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }]) {
+            type ${type.name} @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }]) {
                     title: String!
                 }
             `;
@@ -2006,7 +2006,7 @@ describe("@fulltext directive", () => {
             }
 
             const typeDefs = gql`
-                type ${type.name} @node @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }, { indexName: "${indexName2}", fields: ["description"] }]) {
+                type ${type.name} @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }, { indexName: "${indexName2}", fields: ["description"] }]) {
                     title: String!
                     description: String!
                 }
@@ -2119,7 +2119,7 @@ describe("@fulltext directive", () => {
             }
 
             const typeDefs = gql`
-                type ${type.name} @node @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }]) {
+                type ${type.name} @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }]) {
                     title: String!
                 }
             `;
@@ -2143,7 +2143,7 @@ describe("@fulltext directive", () => {
             }
 
             const typeDefs = gql`
-                type ${type.name} @node @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title", "description"] }]) {
+                type ${type.name} @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title", "description"] }]) {
                     title: String!
                     description: String!
                 }
@@ -2174,7 +2174,7 @@ describe("@fulltext directive", () => {
             }
 
             const typeDefs = gql`
-                type ${type.name} @node @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title", "description"] }]) {
+                type ${type.name} @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title", "description"] }]) {
                     title: String!
                     description: String! @alias(property: "${aliasName}")
                 }
@@ -2209,7 +2209,7 @@ describe("@fulltext directive", () => {
             }
 
             const typeDefs = gql`
-                type ${type.name} @node @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }]) {
+                type ${type.name} @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }]) {
                     title: String!
                 }
             `;
@@ -2241,7 +2241,7 @@ describe("@fulltext directive", () => {
             }
 
             const typeDefs = gql`
-                type ${type.name} @node @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title", "description"] }]) {
+                type ${type.name} @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title", "description"] }]) {
                     title: String!
                     description: String!
                 }
@@ -2275,7 +2275,7 @@ describe("@fulltext directive", () => {
             }
 
             const typeDefs = gql`
-                type ${type.name} @node @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["id"] }]) {
+                type ${type.name} @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["id"] }]) {
                     id: ID!
                 }
             `;

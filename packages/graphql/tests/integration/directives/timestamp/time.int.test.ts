@@ -40,7 +40,7 @@ describe("timestamp/time", () => {
     describe("create", () => {
         test("should create a movie (with timestamps)", async () => {
             const typeDefs = `
-                    type ${Movie} @node {
+                    type ${Movie} {
                       id: ID
                       createdAt: Time @timestamp(operations: [CREATE])
                     }
@@ -84,7 +84,7 @@ describe("timestamp/time", () => {
 
         test("create timestamp on relationship property", async () => {
             const typeDefs = `
-                    type ${Actor} @node {
+                    type ${Actor} {
                         name: String!
                     }
 
@@ -93,7 +93,7 @@ describe("timestamp/time", () => {
                         screenTime: Int!
                     }
 
-                    type ${Movie} @node {
+                    type ${Movie} {
                         title: String!
                         actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
                     }
@@ -154,7 +154,7 @@ describe("timestamp/time", () => {
     describe("update", () => {
         test("should update a movie (with timestamps)", async () => {
             const typeDefs = `
-                    type ${Movie} @node {
+                    type ${Movie} {
                       id: ID
                       updatedAt: Time @timestamp(operations: [UPDATE])
                     }
@@ -199,7 +199,7 @@ describe("timestamp/time", () => {
 
         test("update timestamp on relationship property", async () => {
             const typeDefs = `
-                    type ${Actor} @node {
+                    type ${Actor} {
                         name: String!
                     }
 
@@ -208,7 +208,7 @@ describe("timestamp/time", () => {
                         screenTime: Int!
                     }
 
-                    type ${Movie} @node {
+                    type ${Movie} {
                         title: String!
                         actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
                     }
@@ -275,7 +275,7 @@ describe("timestamp/time", () => {
     describe("create/update (explicit)", () => {
         test("should create a movie (with timestamps)", async () => {
             const typeDefs = `
-                    type ${Movie} @node {
+                    type ${Movie} {
                       id: ID
                       createdAt: Time @timestamp(operations: [CREATE, UPDATE])
                     }
@@ -314,7 +314,7 @@ describe("timestamp/time", () => {
 
         test("create timestamp on relationship property", async () => {
             const typeDefs = `
-                    type ${Actor} @node {
+                    type ${Actor} {
                         name: String!
                     }
 
@@ -323,7 +323,7 @@ describe("timestamp/time", () => {
                         screenTime: Int!
                     }
 
-                    type ${Movie} @node {
+                    type ${Movie} {
                         title: String!
                         actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
                     }
@@ -382,7 +382,7 @@ describe("timestamp/time", () => {
 
         test("update timestamp on relationship property", async () => {
             const typeDefs = `
-                    type ${Actor} @node {
+                    type ${Actor} {
                         name: String!
                     }
 
@@ -391,7 +391,7 @@ describe("timestamp/time", () => {
                         screenTime: Int!
                     }
 
-                    type ${Movie} @node {
+                    type ${Movie} {
                         title: String!
                         actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
                     }
@@ -456,7 +456,7 @@ describe("timestamp/time", () => {
 
         test("should update a movie (with timestamps)", async () => {
             const typeDefs = `
-                    type ${Movie} @node {
+                    type ${Movie} {
                       id: ID
                       updatedAt: Time @timestamp(operations: [CREATE, UPDATE])
                     }
@@ -503,7 +503,7 @@ describe("timestamp/time", () => {
     describe("create/update (implicit)", () => {
         test("should create a movie (with timestamps)", async () => {
             const typeDefs = `
-                    type ${Movie} @node {
+                    type ${Movie} {
                       id: ID
                       createdAt: Time @timestamp
                     }
@@ -542,7 +542,7 @@ describe("timestamp/time", () => {
 
         test("create timestamp on relationship property", async () => {
             const typeDefs = `
-                    type ${Actor} @node {
+                    type ${Actor} {
                         name: String!
                     }
 
@@ -551,7 +551,7 @@ describe("timestamp/time", () => {
                         screenTime: Int!
                     }
 
-                    type ${Movie} @node {
+                    type ${Movie} {
                         title: String!
                         actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
                     }
@@ -610,7 +610,7 @@ describe("timestamp/time", () => {
 
         test("update timestamp on relationship property", async () => {
             const typeDefs = `
-                    type ${Actor} @node {
+                    type ${Actor} {
                         name: String!
                     }
 
@@ -619,7 +619,7 @@ describe("timestamp/time", () => {
                         screenTime: Int!
                     }
 
-                    type ${Movie} @node {
+                    type ${Movie} {
                         title: String!
                         actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
                     }
@@ -684,7 +684,7 @@ describe("timestamp/time", () => {
 
         test("should update a movie (with timestamps)", async () => {
             const typeDefs = `
-                    type ${Movie} @node {
+                    type ${Movie} {
                       id: ID
                       updatedAt: Time @timestamp
                     }

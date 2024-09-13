@@ -30,12 +30,12 @@ describe("Create -> ConnectOrCreate Union", () => {
 
     beforeEach(async () => {
         typeDefs = /* GraphQL */ `
-        type ${typeMovie.name} @node {
+        type ${typeMovie.name} {
         	title: String!
         	isan: String! @unique
         }
 
-        type ${typeSeries.name} @node {
+        type ${typeSeries.name} {
             title: String!
         	isan: String! @unique
         }
@@ -46,7 +46,7 @@ describe("Create -> ConnectOrCreate Union", () => {
         	screentime: Int!
         }
 
-        type ${typeActor.name} @node {
+        type ${typeActor.name} {
           name: String!
           actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
         }

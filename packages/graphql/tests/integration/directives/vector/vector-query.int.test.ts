@@ -78,13 +78,13 @@ describe("@vector directive - Query", () => {
         Person = testHelper.createUniqueType("Person");
 
         const typeDefs = /* GraphQL */ `
-            type ${Movie}  @vector(indexes: [{ indexName: "${Movie}Index", embeddingProperty: "embedding", queryName: "${queryName}" }]) @node {
+            type ${Movie}  @vector(indexes: [{ indexName: "${Movie}Index", embeddingProperty: "embedding", queryName: "${queryName}" }]) {
                 title: String!
                 released: Int!
                 actors: [${Person}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
             
-            type ${Person} @node {
+            type ${Person} {
                 name: String!
             }
         `;

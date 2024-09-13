@@ -30,12 +30,12 @@ describe("Enum Relationship Properties", () => {
         Movie = testHelper.createUniqueType("Movie");
         Actor = testHelper.createUniqueType("Actor");
         const typeDefs = `
-            type ${Actor} @node {
+            type ${Actor} {
                 name: String!
                 movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
     
-            type ${Movie} @node {
+            type ${Movie} {
                 title: String!
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }

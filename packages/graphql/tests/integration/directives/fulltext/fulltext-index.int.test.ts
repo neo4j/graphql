@@ -76,7 +76,7 @@ describe("@fulltext directive - indexes constraints", () => {
         const type = testHelper.createUniqueType("Movie");
 
         const typeDefs = /* GraphQL */ `
-            type ${type.name} @fulltext(indexes: [{ indexName: "${indexName}", fields: ["title"] }]) @node {
+            type ${type.name} @fulltext(indexes: [{ indexName: "${indexName}", fields: ["title"] }]) {
                 title: String!
             }
         `;
@@ -247,7 +247,7 @@ describe("@fulltext directive - indexes constraints", () => {
         const type = testHelper.createUniqueType("Movie");
 
         const typeDefs = /* GraphQL */ `
-            type ${type.name} @fulltext(indexes: [{ indexName: "${indexName}", fields: ["title"] }]) @node {
+            type ${type.name} @fulltext(indexes: [{ indexName: "${indexName}", fields: ["title"] }]) {
                 title: String!
             }
         `;
@@ -273,7 +273,7 @@ describe("@fulltext directive - indexes constraints", () => {
         const type = testHelper.createUniqueType("Movie");
 
         const typeDefs = /* GraphQL */ `
-            type ${type.name} @fulltext(indexes: [{ indexName: "${indexName}", fields: ["title", "description"] }]) @node {
+            type ${type.name} @fulltext(indexes: [{ indexName: "${indexName}", fields: ["title", "description"] }]) {
                 title: String!
                 description: String!
             }
@@ -307,7 +307,7 @@ describe("@fulltext directive - indexes constraints", () => {
         const type = testHelper.createUniqueType("Movie");
 
         const typeDefs = /* GraphQL */ `
-            type ${type.name} @fulltext(indexes: [{ indexName: "${indexName}", fields: ["title", "description"] }]) @node {
+            type ${type.name} @fulltext(indexes: [{ indexName: "${indexName}", fields: ["title", "description"] }]) {
                 title: String!
                 description: String! @alias(property: "${alias}")
             }
@@ -346,7 +346,7 @@ describe("@fulltext directive - indexes constraints", () => {
         const type = testHelper.createUniqueType("Movie");
 
         const typeDefs = /* GraphQL */ `
-            type ${type.name} @fulltext(indexes: [{ indexName: "${indexName}", fields: ["title"] }]) @node {
+            type ${type.name} @fulltext(indexes: [{ indexName: "${indexName}", fields: ["title"] }]) {
                 title: String!
             }
         `;
@@ -414,7 +414,7 @@ describe("@fulltext directive - indexes constraints", () => {
         const type = testHelper.createUniqueType("Movie");
 
         const typeDefs = /* GraphQL */ `
-            type ${type.name} @fulltext(indexes: [{ indexName: "${indexName}", fields: ["title", "description"] }]) @node {
+            type ${type.name} @fulltext(indexes: [{ indexName: "${indexName}", fields: ["title", "description"] }]) {
                 title: String!
                 description: String!
             }
@@ -451,7 +451,7 @@ describe("@fulltext directive - indexes constraints", () => {
         const type = testHelper.createUniqueType("Movie");
 
         const typeDefs = /* GraphQL */ `
-            type ${type.name} @fulltext(indexes: [{ indexName: "${indexName}", fields: ["id"] }]) @node {
+            type ${type.name} @fulltext(indexes: [{ indexName: "${indexName}", fields: ["id"] }]) {
                 id: ID!
             }
         `;

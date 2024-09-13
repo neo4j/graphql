@@ -79,17 +79,17 @@ describe("cypher targeting union", () => {
         );
 
         const typeDefs = `
-            type ${Movie} @node {
+            type ${Movie} {
                 title: String!
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type ${Series} @node {
+            type ${Series} {
                 title: String!
                 episodes: Int
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
-            type ${Actor} @node {
+            type ${Actor} {
                 name: String!
                 productions(title: String!): [Production!]! @cypher(
                     statement: """
