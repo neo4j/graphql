@@ -102,9 +102,8 @@ describe("Point", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              filmedAt: PointInput @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              filmedAt: PointInput
               filmedAt_DISTANCE: PointDistance
-              filmedAt_EQ: PointInput
               filmedAt_GT: PointDistance
               filmedAt_GTE: PointDistance
               filmedAt_IN: [PointInput!]
@@ -294,9 +293,8 @@ describe("Point", () => {
               AND: [MachineWhere!]
               NOT: MachineWhere
               OR: [MachineWhere!]
-              partLocation: CartesianPointInput @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              partLocation: CartesianPointInput
               partLocation_DISTANCE: CartesianPointDistance
-              partLocation_EQ: CartesianPointInput
               partLocation_GT: CartesianPointDistance
               partLocation_GTE: CartesianPointDistance
               partLocation_IN: [CartesianPointInput!]
@@ -428,8 +426,7 @@ describe("Point", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              filmedAt: [PointInput!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              filmedAt_EQ: [PointInput!]
+              filmedAt: [PointInput!]
               filmedAt_INCLUDES: PointInput
               filmedAt_NOT: [PointInput!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               filmedAt_NOT_INCLUDES: PointInput @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -585,8 +582,7 @@ describe("Point", () => {
               AND: [MachineWhere!]
               NOT: MachineWhere
               OR: [MachineWhere!]
-              partLocations: [CartesianPointInput!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              partLocations_EQ: [CartesianPointInput!]
+              partLocations: [CartesianPointInput!]
               partLocations_INCLUDES: CartesianPointInput
               partLocations_NOT: [CartesianPointInput!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               partLocations_NOT_INCLUDES: CartesianPointInput @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")

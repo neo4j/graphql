@@ -122,10 +122,9 @@ describe("Algebraic", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -133,8 +132,7 @@ describe("Algebraic", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
-              viewers: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              viewers_EQ: Int
+              viewers: Int
               viewers_GT: Int
               viewers_GTE: Int
               viewers_IN: [Int!]
@@ -300,10 +298,9 @@ describe("Algebraic", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -311,8 +308,7 @@ describe("Algebraic", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
-              viewers: BigInt @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              viewers_EQ: BigInt
+              viewers: BigInt
               viewers_GT: BigInt
               viewers_GTE: BigInt
               viewers_IN: [BigInt!]
@@ -476,10 +472,9 @@ describe("Algebraic", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -487,8 +482,7 @@ describe("Algebraic", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
-              viewers: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              viewers_EQ: Float
+              viewers: Float
               viewers_GT: Float
               viewers_GTE: Float
               viewers_IN: [Float!]
@@ -813,10 +807,9 @@ describe("Algebraic", () => {
               directs_SINGLE: MovieWhere
               \\"\\"\\"Return Directors where some of the related Movies match this filter\\"\\"\\"
               directs_SOME: MovieWhere
-              lastName: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              lastName: String
               lastName_CONTAINS: String
               lastName_ENDS_WITH: String
-              lastName_EQ: String
               lastName_IN: [String!]
               lastName_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               lastName_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1049,10 +1042,9 @@ describe("Algebraic", () => {
               directedByConnection: MovieDirectedByConnectionWhere
               directedByConnection_NOT: MovieDirectedByConnectionWhere
               directedBy_NOT: DirectorWhere
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1060,8 +1052,7 @@ describe("Algebraic", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
-              viewers: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              viewers_EQ: Int
+              viewers: Int
               viewers_GT: Int
               viewers_GTE: Int
               viewers_IN: [Int!]
@@ -1283,10 +1274,9 @@ describe("Algebraic", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1294,8 +1284,7 @@ describe("Algebraic", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
-              viewers: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              viewers_EQ: Int
+              viewers: Int
               viewers_GT: Int
               viewers_GTE: Int
               viewers_IN: [Int!]
@@ -1556,10 +1545,9 @@ describe("Algebraic", () => {
               AND: [PersonWhere!]
               NOT: PersonWhere
               OR: [PersonWhere!]
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1751,8 +1739,7 @@ describe("Algebraic", () => {
               NOT: ProductionWhere
               OR: [ProductionWhere!]
               typename_IN: [ProductionImplementation!]
-              viewers: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              viewers_EQ: Int
+              viewers: Int
               viewers_GT: Int
               viewers_GTE: Int
               viewers_IN: [Int!]
@@ -1908,8 +1895,7 @@ describe("Algebraic", () => {
               AND: [ActedInWhere!]
               NOT: ActedInWhere
               OR: [ActedInWhere!]
-              pay: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              pay_EQ: Float
+              pay: Float
               pay_GT: Float
               pay_GTE: Float
               pay_IN: [Float]
@@ -1917,8 +1903,7 @@ describe("Algebraic", () => {
               pay_LTE: Float
               pay_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               pay_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              roles: [String!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              roles_EQ: [String!]
+              roles: [String!]
               roles_INCLUDES: String
               roles_NOT: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               roles_NOT_INCLUDES: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -2194,10 +2179,9 @@ describe("Algebraic", () => {
               actors_SINGLE: PersonWhere
               \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
               actors_SOME: PersonWhere
-              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_EQ: String
               title_IN: [String!]
               title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -2471,10 +2455,9 @@ describe("Algebraic", () => {
               actedInMovies_SINGLE: MovieWhere
               \\"\\"\\"Return People where some of the related Movies match this filter\\"\\"\\"
               actedInMovies_SOME: MovieWhere
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")

@@ -222,10 +222,9 @@ describe("Sort", () => {
               AND: [Node1Where!]
               NOT: Node1Where
               OR: [Node1Where!]
-              property: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              property: String
               property_CONTAINS: String
               property_ENDS_WITH: String
-              property_EQ: String
               property_IN: [String!]
               property_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               property_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")

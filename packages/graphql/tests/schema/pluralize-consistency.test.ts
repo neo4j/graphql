@@ -189,10 +189,9 @@ describe("Pluralize consistency", () => {
               AND: [super_friendWhere!]
               NOT: super_friendWhere
               OR: [super_friendWhere!]
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -416,10 +415,9 @@ describe("Pluralize consistency", () => {
               Return super_users where some of the related super_friends match this filter
               \\"\\"\\"
               my_friend_SOME: super_friendWhere
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")

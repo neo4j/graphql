@@ -36,7 +36,7 @@ describe("cypher directive filtering", () => {
     test.each([
         {
             title: "Int cypher field: exact match",
-            filter: `special_count_EQ: 1`,
+            filter: `special_count: 1`,
         },
         {
             title: "Int cypher field: GT",
@@ -99,7 +99,7 @@ describe("cypher directive filtering", () => {
     test.each([
         {
             title: "String cypher field: exact match",
-            filter: `special_word_EQ: "test"`,
+            filter: `special_word: "test"`,
         },
         {
             title: "String cypher field: CONTAINS",
@@ -185,7 +185,7 @@ describe("cypher directive filtering", () => {
 
         const query = `
             query {
-                ${CustomType.plural}(where: { special_count_GTE: 1, title_EQ: "CustomType One" }) {
+                ${CustomType.plural}(where: { special_count_GTE: 1, title: "CustomType One" }) {
                     special_count
                 }
             }

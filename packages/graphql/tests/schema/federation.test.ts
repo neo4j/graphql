@@ -312,10 +312,9 @@ describe("Apollo Federation", () => {
               authorConnection: PostAuthorConnectionWhere
               authorConnection_NOT: PostAuthorConnectionWhere
               author_NOT: UserWhere
-              content: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              content: String
               content_CONTAINS: String
               content_ENDS_WITH: String
-              content_EQ: String
               content_IN: [String!]
               content_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               content_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -568,10 +567,9 @@ describe("Apollo Federation", () => {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -920,10 +918,9 @@ describe("Apollo Federation", () => {
               authorConnection: PostAuthorConnectionWhere
               authorConnection_NOT: PostAuthorConnectionWhere
               author_NOT: UserWhere
-              content: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              content: String
               content_CONTAINS: String
               content_ENDS_WITH: String
-              content_EQ: String
               content_IN: [String!]
               content_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               content_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1030,10 +1027,9 @@ describe("Apollo Federation", () => {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")

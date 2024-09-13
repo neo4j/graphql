@@ -102,10 +102,9 @@ describe("200", () => {
               AND: [CategoryWhere!]
               NOT: CategoryWhere
               OR: [CategoryWhere!]
-              categoryId: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              categoryId: ID
               categoryId_CONTAINS: ID
               categoryId_ENDS_WITH: ID
-              categoryId_EQ: ID
               categoryId_IN: [ID!]
               categoryId_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               categoryId_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -113,10 +112,9 @@ describe("200", () => {
               categoryId_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               categoryId_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               categoryId_STARTS_WITH: ID
-              description: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              description: String
               description_CONTAINS: String
               description_ENDS_WITH: String
-              description_EQ: String
               description_IN: [String!]
               description_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               description_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -124,15 +122,13 @@ describe("200", () => {
               description_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               description_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               description_STARTS_WITH: String
-              exampleImageLocations: [String!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              exampleImageLocations_EQ: [String!]
+              exampleImageLocations: [String!]
               exampleImageLocations_INCLUDES: String
               exampleImageLocations_NOT: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               exampleImageLocations_NOT_INCLUDES: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")

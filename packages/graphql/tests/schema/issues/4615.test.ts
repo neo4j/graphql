@@ -122,8 +122,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               AND: [ActedInWhere!]
               NOT: ActedInWhere
               OR: [ActedInWhere!]
-              screenTime: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              screenTime_EQ: Int
+              screenTime: Int
               screenTime_GT: Int
               screenTime_GTE: Int
               screenTime_IN: [Int]
@@ -364,10 +363,9 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               actedIn_SINGLE: ShowWhere
               \\"\\"\\"Return Actors where some of the related Shows match this filter\\"\\"\\"
               actedIn_SOME: ShowWhere
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -637,8 +635,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
-              release: DateTime @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              release_EQ: DateTime
+              release: DateTime
               release_GT: DateTime
               release_GTE: DateTime
               release_IN: [DateTime!]
@@ -646,8 +643,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               release_LTE: DateTime
               release_NOT: DateTime @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               release_NOT_IN: [DateTime!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              runtime: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              runtime_EQ: Int
+              runtime: Int
               runtime_GT: Int
               runtime_GTE: Int
               runtime_IN: [Int]
@@ -655,10 +651,9 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               runtime_LTE: Int
               runtime_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               runtime_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_EQ: String
               title_IN: [String!]
               title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -916,8 +911,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
-              episodes: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              episodes_EQ: Int
+              episodes: Int
               episodes_GT: Int
               episodes_GTE: Int
               episodes_IN: [Int]
@@ -925,10 +919,9 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               episodes_LTE: Int
               episodes_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               episodes_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_EQ: String
               title_IN: [String!]
               title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1201,10 +1194,9 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Shows where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
-              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_EQ: String
               title_IN: [String!]
               title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")

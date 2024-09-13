@@ -124,10 +124,9 @@ describe("Localtime", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -135,8 +134,7 @@ describe("Localtime", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
-              time: LocalTime @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              time_EQ: LocalTime
+              time: LocalTime
               time_GT: LocalTime
               time_GTE: LocalTime
               time_IN: [LocalTime]

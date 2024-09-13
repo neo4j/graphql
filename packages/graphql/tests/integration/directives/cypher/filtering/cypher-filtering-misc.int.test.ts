@@ -63,9 +63,9 @@ describe("cypher directive filtering", () => {
             query {
                 ${Movie.plural}(
                     where: {
-                        custom_field_EQ: "hello world!"
+                        custom_field: "hello world!"
                         actors_SOME: {
-                            name_EQ: "Keanu Reeves"
+                            name: "Keanu Reeves"
                         } 
                     }
                 ) {
@@ -133,7 +133,7 @@ describe("cypher directive filtering", () => {
             query {
                 ${Actor.plural} {
                     name
-                    movies(where: { custom_field_EQ: "hello world!"}) {
+                    movies(where: { custom_field: "hello world!"}) {
                         title
                     }
                 }
@@ -192,9 +192,9 @@ describe("cypher directive filtering", () => {
 
         const query = `
             query {
-                ${Movie.plural}(where: { custom_field_EQ: "hello world!" }) {
+                ${Movie.plural}(where: { custom_field: "hello world!" }) {
                     title
-                    actors(where: { name_EQ: "Keanu Reeves" }) {
+                    actors(where: { name: "Keanu Reeves" }) {
                         name
                     }
                 }
@@ -267,7 +267,7 @@ describe("cypher directive filtering", () => {
 
         const query = `
             query {
-                ${Movie.plural}(where: { custom_field_EQ: "hello world!", another_custom_field_GT: 50 }) {
+                ${Movie.plural}(where: { custom_field: "hello world!", another_custom_field_GT: 50 }) {
                     title
                     actors {
                         name
@@ -335,9 +335,9 @@ describe("cypher directive filtering", () => {
 
         const query = `
             query {
-                ${Movie.plural}(where: { custom_field_EQ: "hello world!" }) {
+                ${Movie.plural}(where: { custom_field: "hello world!" }) {
                     title
-                    actors(where: { another_custom_field_EQ: "goodbye!" name_EQ: "Keanu Reeves" }) {
+                    actors(where: { another_custom_field: "goodbye!" name: "Keanu Reeves" }) {
                         name
                     }
                 }

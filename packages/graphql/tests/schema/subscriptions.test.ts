@@ -117,10 +117,9 @@ describe("Subscriptions", () => {
               AND: [ActorSubscriptionWhere!]
               NOT: ActorSubscriptionWhere
               OR: [ActorSubscriptionWhere!]
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -145,10 +144,9 @@ describe("Subscriptions", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -478,8 +476,7 @@ describe("Subscriptions", () => {
               AND: [MovieSubscriptionWhere!]
               NOT: MovieSubscriptionWhere
               OR: [MovieSubscriptionWhere!]
-              actorCount: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              actorCount_EQ: Int
+              actorCount: Int
               actorCount_GT: Int
               actorCount_GTE: Int
               actorCount_IN: [Int]
@@ -487,8 +484,7 @@ describe("Subscriptions", () => {
               actorCount_LTE: Int
               actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              averageRating: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              averageRating_EQ: Float
+              averageRating: Float
               averageRating_GT: Float
               averageRating_GTE: Float
               averageRating_IN: [Float]
@@ -496,10 +492,9 @@ describe("Subscriptions", () => {
               averageRating_LTE: Float
               averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -507,8 +502,7 @@ describe("Subscriptions", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
-              isActive: Boolean @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              isActive_EQ: Boolean
+              isActive: Boolean
               isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
@@ -537,8 +531,7 @@ describe("Subscriptions", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              actorCount: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              actorCount_EQ: Int
+              actorCount: Int
               actorCount_GT: Int
               actorCount_GTE: Int
               actorCount_IN: [Int]
@@ -575,8 +568,7 @@ describe("Subscriptions", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
-              averageRating: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              averageRating_EQ: Float
+              averageRating: Float
               averageRating_GT: Float
               averageRating_GTE: Float
               averageRating_IN: [Float]
@@ -584,10 +576,9 @@ describe("Subscriptions", () => {
               averageRating_LTE: Float
               averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -595,8 +586,7 @@ describe("Subscriptions", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
-              isActive: Boolean @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              isActive_EQ: Boolean
+              isActive: Boolean
               isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
@@ -1250,8 +1240,7 @@ describe("Subscriptions", () => {
               AND: [MovieSubscriptionWhere!]
               NOT: MovieSubscriptionWhere
               OR: [MovieSubscriptionWhere!]
-              actorCount: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              actorCount_EQ: Int
+              actorCount: Int
               actorCount_GT: Int
               actorCount_GTE: Int
               actorCount_IN: [Int]
@@ -1259,8 +1248,7 @@ describe("Subscriptions", () => {
               actorCount_LTE: Int
               actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              averageRating: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              averageRating_EQ: Float
+              averageRating: Float
               averageRating_GT: Float
               averageRating_GTE: Float
               averageRating_IN: [Float]
@@ -1268,10 +1256,9 @@ describe("Subscriptions", () => {
               averageRating_LTE: Float
               averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1279,8 +1266,7 @@ describe("Subscriptions", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
-              isActive: Boolean @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              isActive_EQ: Boolean
+              isActive: Boolean
               isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
@@ -1309,8 +1295,7 @@ describe("Subscriptions", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              actorCount: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              actorCount_EQ: Int
+              actorCount: Int
               actorCount_GT: Int
               actorCount_GTE: Int
               actorCount_IN: [Int]
@@ -1347,8 +1332,7 @@ describe("Subscriptions", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
-              averageRating: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              averageRating_EQ: Float
+              averageRating: Float
               averageRating_GT: Float
               averageRating_GTE: Float
               averageRating_IN: [Float]
@@ -1356,10 +1340,9 @@ describe("Subscriptions", () => {
               averageRating_LTE: Float
               averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1367,8 +1350,7 @@ describe("Subscriptions", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
-              isActive: Boolean @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              isActive_EQ: Boolean
+              isActive: Boolean
               isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
@@ -1806,8 +1788,7 @@ describe("Subscriptions", () => {
               AND: [MovieSubscriptionWhere!]
               NOT: MovieSubscriptionWhere
               OR: [MovieSubscriptionWhere!]
-              actorCount: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              actorCount_EQ: Int
+              actorCount: Int
               actorCount_GT: Int
               actorCount_GTE: Int
               actorCount_IN: [Int]
@@ -1815,8 +1796,7 @@ describe("Subscriptions", () => {
               actorCount_LTE: Int
               actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              averageRating: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              averageRating_EQ: Float
+              averageRating: Float
               averageRating_GT: Float
               averageRating_GTE: Float
               averageRating_IN: [Float]
@@ -1824,10 +1804,9 @@ describe("Subscriptions", () => {
               averageRating_LTE: Float
               averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1835,8 +1814,7 @@ describe("Subscriptions", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
-              isActive: Boolean @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              isActive_EQ: Boolean
+              isActive: Boolean
               isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
@@ -1865,8 +1843,7 @@ describe("Subscriptions", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              actorCount: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              actorCount_EQ: Int
+              actorCount: Int
               actorCount_GT: Int
               actorCount_GTE: Int
               actorCount_IN: [Int]
@@ -1902,8 +1879,7 @@ describe("Subscriptions", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
-              averageRating: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              averageRating_EQ: Float
+              averageRating: Float
               averageRating_GT: Float
               averageRating_GTE: Float
               averageRating_IN: [Float]
@@ -1911,10 +1887,9 @@ describe("Subscriptions", () => {
               averageRating_LTE: Float
               averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1922,8 +1897,7 @@ describe("Subscriptions", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
-              isActive: Boolean @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              isActive_EQ: Boolean
+              isActive: Boolean
               isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
@@ -2692,8 +2666,7 @@ describe("Subscriptions", () => {
               AND: [ActedInSubscriptionWhere!]
               NOT: ActedInSubscriptionWhere
               OR: [ActedInSubscriptionWhere!]
-              screenTime: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              screenTime_EQ: Int
+              screenTime: Int
               screenTime_GT: Int
               screenTime_GTE: Int
               screenTime_IN: [Int!]
@@ -2713,8 +2686,7 @@ describe("Subscriptions", () => {
               AND: [ActedInWhere!]
               NOT: ActedInWhere
               OR: [ActedInWhere!]
-              screenTime: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              screenTime_EQ: Int
+              screenTime: Int
               screenTime_GT: Int
               screenTime_GTE: Int
               screenTime_IN: [Int!]
@@ -3300,8 +3272,7 @@ describe("Subscriptions", () => {
               AND: [MovieSubscriptionWhere!]
               NOT: MovieSubscriptionWhere
               OR: [MovieSubscriptionWhere!]
-              actorCount: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              actorCount_EQ: Int
+              actorCount: Int
               actorCount_GT: Int
               actorCount_GTE: Int
               actorCount_IN: [Int]
@@ -3309,8 +3280,7 @@ describe("Subscriptions", () => {
               actorCount_LTE: Int
               actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              averageRating: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              averageRating_EQ: Float
+              averageRating: Float
               averageRating_GT: Float
               averageRating_GTE: Float
               averageRating_IN: [Float]
@@ -3318,10 +3288,9 @@ describe("Subscriptions", () => {
               averageRating_LTE: Float
               averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -3329,8 +3298,7 @@ describe("Subscriptions", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
-              isActive: Boolean @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              isActive_EQ: Boolean
+              isActive: Boolean
               isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
@@ -3359,8 +3327,7 @@ describe("Subscriptions", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              actorCount: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              actorCount_EQ: Int
+              actorCount: Int
               actorCount_GT: Int
               actorCount_GTE: Int
               actorCount_IN: [Int]
@@ -3397,8 +3364,7 @@ describe("Subscriptions", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
-              averageRating: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              averageRating_EQ: Float
+              averageRating: Float
               averageRating_GT: Float
               averageRating_GTE: Float
               averageRating_IN: [Float]
@@ -3406,10 +3372,9 @@ describe("Subscriptions", () => {
               averageRating_LTE: Float
               averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -3417,8 +3382,7 @@ describe("Subscriptions", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
-              isActive: Boolean @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              isActive_EQ: Boolean
+              isActive: Boolean
               isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
@@ -3585,10 +3549,9 @@ describe("Subscriptions", () => {
               AND: [ActorSubscriptionWhere!]
               NOT: ActorSubscriptionWhere
               OR: [ActorSubscriptionWhere!]
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -3613,10 +3576,9 @@ describe("Subscriptions", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -3893,8 +3855,7 @@ describe("Subscriptions", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              actorCount: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              actorCount_EQ: Int
+              actorCount: Int
               actorCount_GT: Int
               actorCount_GTE: Int
               actorCount_IN: [Int]
@@ -3931,8 +3892,7 @@ describe("Subscriptions", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
-              averageRating: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              averageRating_EQ: Float
+              averageRating: Float
               averageRating_GT: Float
               averageRating_GTE: Float
               averageRating_IN: [Float]
@@ -3940,10 +3900,9 @@ describe("Subscriptions", () => {
               averageRating_LTE: Float
               averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -3951,8 +3910,7 @@ describe("Subscriptions", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
-              isActive: Boolean @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              isActive_EQ: Boolean
+              isActive: Boolean
               isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
@@ -4333,8 +4291,7 @@ describe("Subscriptions", () => {
               AND: [AgreementSubscriptionWhere!]
               NOT: AgreementSubscriptionWhere
               OR: [AgreementSubscriptionWhere!]
-              id: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_EQ: Int
+              id: Int
               id_GT: Int
               id_GTE: Int
               id_IN: [Int!]
@@ -4342,10 +4299,9 @@ describe("Subscriptions", () => {
               id_LTE: Int
               id_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_EQ: String
               name_IN: [String]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -4384,8 +4340,7 @@ describe("Subscriptions", () => {
               AND: [AgreementWhere!]
               NOT: AgreementWhere
               OR: [AgreementWhere!]
-              id: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_EQ: Int
+              id: Int
               id_GT: Int
               id_GTE: Int
               id_IN: [Int!]
@@ -4393,10 +4348,9 @@ describe("Subscriptions", () => {
               id_LTE: Int
               id_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_EQ: String
               name_IN: [String]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -4566,10 +4520,9 @@ describe("Subscriptions", () => {
               AND: [UserSubscriptionWhere!]
               NOT: UserSubscriptionWhere
               OR: [UserSubscriptionWhere!]
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_EQ: String
               name_IN: [String]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -4577,10 +4530,9 @@ describe("Subscriptions", () => {
               name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
-              username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              username: String
               username_CONTAINS: String
               username_ENDS_WITH: String
-              username_EQ: String
               username_IN: [String!]
               username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -4599,10 +4551,9 @@ describe("Subscriptions", () => {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_EQ: String
               name_IN: [String]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -4610,10 +4561,9 @@ describe("Subscriptions", () => {
               name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
-              username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              username: String
               username_CONTAINS: String
               username_ENDS_WITH: String
-              username_EQ: String
               username_IN: [String!]
               username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -4989,8 +4939,7 @@ describe("Subscriptions", () => {
               AND: [MovieSubscriptionWhere!]
               NOT: MovieSubscriptionWhere
               OR: [MovieSubscriptionWhere!]
-              actorCount: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              actorCount_EQ: Int
+              actorCount: Int
               actorCount_GT: Int
               actorCount_GTE: Int
               actorCount_IN: [Int]
@@ -4998,8 +4947,7 @@ describe("Subscriptions", () => {
               actorCount_LTE: Int
               actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              averageRating: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              averageRating_EQ: Float
+              averageRating: Float
               averageRating_GT: Float
               averageRating_GTE: Float
               averageRating_IN: [Float]
@@ -5007,10 +4955,9 @@ describe("Subscriptions", () => {
               averageRating_LTE: Float
               averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -5018,8 +4965,7 @@ describe("Subscriptions", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
-              isActive: Boolean @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              isActive_EQ: Boolean
+              isActive: Boolean
               isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
@@ -5048,8 +4994,7 @@ describe("Subscriptions", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              actorCount: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              actorCount_EQ: Int
+              actorCount: Int
               actorCount_GT: Int
               actorCount_GTE: Int
               actorCount_IN: [Int]
@@ -5085,8 +5030,7 @@ describe("Subscriptions", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
-              averageRating: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              averageRating_EQ: Float
+              averageRating: Float
               averageRating_GT: Float
               averageRating_GTE: Float
               averageRating_IN: [Float]
@@ -5094,10 +5038,9 @@ describe("Subscriptions", () => {
               averageRating_LTE: Float
               averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -5105,8 +5048,7 @@ describe("Subscriptions", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
-              isActive: Boolean @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              isActive_EQ: Boolean
+              isActive: Boolean
               isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
@@ -6089,10 +6031,9 @@ describe("Subscriptions", () => {
               directorConnection: ProductionDirectorConnectionWhere
               directorConnection_NOT: ProductionDirectorConnectionWhere
               director_NOT: CreatureWhere
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -6100,10 +6041,9 @@ describe("Subscriptions", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
-              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_EQ: String
               title_IN: [String!]
               title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -6450,10 +6390,9 @@ describe("Subscriptions", () => {
               AND: [ProductionSubscriptionWhere!]
               NOT: ProductionSubscriptionWhere
               OR: [ProductionSubscriptionWhere!]
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -6478,10 +6417,9 @@ describe("Subscriptions", () => {
               directorConnection: ProductionDirectorConnectionWhere
               directorConnection_NOT: ProductionDirectorConnectionWhere
               director_NOT: CreatureWhere
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -6686,8 +6624,7 @@ describe("Subscriptions", () => {
               AND: [SeriesSubscriptionWhere!]
               NOT: SeriesSubscriptionWhere
               OR: [SeriesSubscriptionWhere!]
-              episode: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              episode_EQ: Int
+              episode: Int
               episode_GT: Int
               episode_GTE: Int
               episode_IN: [Int!]
@@ -6695,10 +6632,9 @@ describe("Subscriptions", () => {
               episode_LTE: Int
               episode_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               episode_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -6706,10 +6642,9 @@ describe("Subscriptions", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
-              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_EQ: String
               title_IN: [String!]
               title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -6744,8 +6679,7 @@ describe("Subscriptions", () => {
               directorConnection: ProductionDirectorConnectionWhere
               directorConnection_NOT: ProductionDirectorConnectionWhere
               director_NOT: CreatureWhere
-              episode: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              episode_EQ: Int
+              episode: Int
               episode_GT: Int
               episode_GTE: Int
               episode_IN: [Int!]
@@ -6753,10 +6687,9 @@ describe("Subscriptions", () => {
               episode_LTE: Int
               episode_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               episode_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -6764,10 +6697,9 @@ describe("Subscriptions", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
-              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_EQ: String
               title_IN: [String!]
               title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")

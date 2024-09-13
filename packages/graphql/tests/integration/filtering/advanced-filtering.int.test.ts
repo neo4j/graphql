@@ -24,8 +24,13 @@ import { TestHelper } from "../../utils/tests-helper";
 describe("Advanced Filtering", () => {
     const testHelper = new TestHelper();
 
+    beforeEach(() => {
+        process.env.NEO4J_GRAPHQL_ENABLE_REGEX = "true"; // this may cause race condition
+    });
+
     afterEach(async () => {
         await testHelper.close();
+        delete process.env.NEO4J_GRAPHQL_ENABLE_REGEX;
     });
 
     describe.each(["ID", "String"] as const)("%s Filtering", (type) => {
@@ -501,102 +506,6 @@ describe("Advanced Filtering", () => {
     });
 
     describe("String Filtering", () => {
-        test("should find Movies implicit EQ string", async () => {
-            const movieType = testHelper.createUniqueType("Movie");
-
-            const typeDefs = `
-                        type ${movieType.name} @node {
-                            title: String
-                        }
-                    `;
-
-            await testHelper.initNeo4jGraphQL({
-                typeDefs,
-            });
-
-            const animatrix = "The Animatrix";
-            const matrix = "The Matrix";
-            const matrixReloaded = "The Matrix Reloaded";
-            const matrixRevolutions = "The Matrix Revolutions";
-
-            await testHelper.executeCypher(
-                `
-                            CREATE (:${movieType.name} {title: $animatrix})
-                            CREATE (:${movieType.name} {title: $matrix})
-                            CREATE (:${movieType.name} {title: $matrixReloaded})
-                            CREATE (:${movieType.name} {title: $matrixRevolutions})
-                        `,
-                { animatrix, matrix, matrixReloaded, matrixRevolutions }
-            );
-
-            const query = `
-                            {
-                                ${movieType.plural}(where: { title: "${matrix}" }) {
-                                    title
-                                }
-                            }
-                        `;
-
-            const gqlResult = await testHelper.executeGraphQL(query);
-
-            if (gqlResult.errors) {
-                console.log(JSON.stringify(gqlResult.errors, null, 2));
-            }
-
-            expect(gqlResult.errors).toBeUndefined();
-
-            expect((gqlResult.data as any)[movieType.plural]).toHaveLength(1);
-            expect((gqlResult.data as any)[movieType.plural]).toEqual(expect.arrayContaining([{ title: matrix }]));
-        });
-
-        test("should find Movies EQ string", async () => {
-            const movieType = testHelper.createUniqueType("Movie");
-
-            const typeDefs = `
-                        type ${movieType.name} @node {
-                            title: String
-                        }
-                    `;
-
-            await testHelper.initNeo4jGraphQL({
-                typeDefs,
-            });
-
-            const animatrix = "The Animatrix";
-            const matrix = "The Matrix";
-            const matrixReloaded = "The Matrix Reloaded";
-            const matrixRevolutions = "The Matrix Revolutions";
-
-            await testHelper.executeCypher(
-                `
-                            CREATE (:${movieType.name} {title: $animatrix})
-                            CREATE (:${movieType.name} {title: $matrix})
-                            CREATE (:${movieType.name} {title: $matrixReloaded})
-                            CREATE (:${movieType.name} {title: $matrixRevolutions})
-                        `,
-                { animatrix, matrix, matrixReloaded, matrixRevolutions }
-            );
-
-            const query = `
-                            {
-                                ${movieType.plural}(where: { title_EQ: "${matrix}" }) {
-                                    title
-                                }
-                            }
-                        `;
-
-            const gqlResult = await testHelper.executeGraphQL(query);
-
-            if (gqlResult.errors) {
-                console.log(JSON.stringify(gqlResult.errors, null, 2));
-            }
-
-            expect(gqlResult.errors).toBeUndefined();
-
-            expect((gqlResult.data as any)[movieType.plural]).toHaveLength(1);
-            expect((gqlResult.data as any)[movieType.plural]).toEqual(expect.arrayContaining([{ title: matrix }]));
-        });
-
         test("should find Movies GT string", async () => {
             const movieType = testHelper.createUniqueType("Movie");
 

@@ -91,10 +91,9 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
               AND: [AWSAccountWhere!]
               NOT: AWSAccountWhere
               OR: [AWSAccountWhere!]
-              accountName: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              accountName: String
               accountName_CONTAINS: String
               accountName_ENDS_WITH: String
-              accountName_EQ: String
               accountName_IN: [String]
               accountName_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               accountName_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -102,10 +101,9 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
               accountName_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               accountName_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               accountName_STARTS_WITH: String
-              code: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              code: String
               code_CONTAINS: String
               code_ENDS_WITH: String
-              code_EQ: String
               code_IN: [String]
               code_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               code_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -187,10 +185,9 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
               AND: [DNSZoneWhere!]
               NOT: DNSZoneWhere
               OR: [DNSZoneWhere!]
-              awsId: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              awsId: String
               awsId_CONTAINS: String
               awsId_ENDS_WITH: String
-              awsId_EQ: String
               awsId_IN: [String]
               awsId_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               awsId_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -198,10 +195,9 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
               awsId_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               awsId_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               awsId_STARTS_WITH: String
-              zoneType: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              zoneType: String
               zoneType_CONTAINS: String
               zoneType_ENDS_WITH: String
-              zoneType_EQ: String
               zoneType_IN: [String]
               zoneType_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               zoneType_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")

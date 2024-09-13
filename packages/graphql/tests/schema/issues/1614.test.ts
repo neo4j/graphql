@@ -25,7 +25,7 @@ import { Neo4jGraphQL } from "../../../src/classes";
 describe("https://github.com/neo4j/graphql/issues/1614", () => {
     test("should include enumFields on relationships", async () => {
         const typeDefs = gql`
-            enum CrewPositionType {
+            enum CrewPositionType  {
                 BoomOperator
                 Gaffer
                 KeyGrip
@@ -293,8 +293,7 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               AND: [CrewPositionWhere!]
               NOT: CrewPositionWhere
               OR: [CrewPositionWhere!]
-              position: CrewPositionType @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              position_EQ: CrewPositionType
+              position: CrewPositionType
               position_IN: [CrewPositionType]
               position_NOT: CrewPositionType @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               position_NOT_IN: [CrewPositionType] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -355,10 +354,9 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")

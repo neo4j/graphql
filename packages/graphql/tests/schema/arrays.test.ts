@@ -131,8 +131,7 @@ describe("Arrays", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              averageRating: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              averageRating_EQ: Float
+              averageRating: Float
               averageRating_GT: Float
               averageRating_GTE: Float
               averageRating_IN: [Float!]
@@ -140,10 +139,9 @@ describe("Arrays", () => {
               averageRating_LTE: Float
               averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               averageRating_NOT_IN: [Float!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_EQ: ID
               id_IN: [ID!]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -151,8 +149,7 @@ describe("Arrays", () => {
               id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
-              ratings: [Float!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              ratings_EQ: [Float!]
+              ratings: [Float!]
               ratings_INCLUDES: Float
               ratings_NOT: [Float!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               ratings_NOT_INCLUDES: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")

@@ -39,7 +39,7 @@ describe("cypher directive filtering", () => {
 
         const query = `
             query {
-                movies(where: { special_count_GTE: 1, title_EQ: "CustomType One" }) {
+                movies(where: { special_count_GTE: 1, title: "CustomType One" }) {
                     special_count
                 }
             }
@@ -108,7 +108,7 @@ describe("cypher directive filtering", () => {
 
         const query = `
             query {
-                movies(where: { special_count_GTE: 1, title_EQ: "CustomType Unknown" }) {
+                movies(where: { special_count_GTE: 1, title: "CustomType Unknown" }) {
                     special_count
                 }
             }
@@ -470,7 +470,7 @@ describe("cypher directive filtering", () => {
             query {
                 movies(
                     where: {
-                        special_duration_EQ: "P14DT16H12M"
+                        special_duration: "P14DT16H12M"
                     }
                 ) {
                     title
@@ -533,7 +533,7 @@ describe("cypher directive filtering", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor @node {
+            type Actor {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -543,9 +543,9 @@ describe("cypher directive filtering", () => {
             query {
                 movies(
                     where: {
-                        custom_field_EQ: "hello world!"
+                        custom_field: "hello world!"
                         actors_SOME: {
-                            name_EQ: "Keanu Reeves"
+                            name: "Keanu Reeves"
                         } 
                     }
                 ) {
@@ -622,7 +622,7 @@ describe("cypher directive filtering", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor @node {
+            type Actor {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -632,7 +632,7 @@ describe("cypher directive filtering", () => {
             query {
                 actors {
                     name
-                    movies(where: { custom_field_EQ: "hello world!"}) {
+                    movies(where: { custom_field: "hello world!"}) {
                         title
                     }
                 }
@@ -689,7 +689,7 @@ describe("cypher directive filtering", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor @node {
+            type Actor {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -697,9 +697,9 @@ describe("cypher directive filtering", () => {
 
         const query = `
             query {
-                movies(where: { custom_field_EQ: "hello world!" }) {
+                movies(where: { custom_field: "hello world!" }) {
                     title
-                    actors(where: { name_EQ: "Keanu Reeves" }) {
+                    actors(where: { name: "Keanu Reeves" }) {
                         name
                     }
                 }
@@ -755,11 +755,11 @@ describe("cypher directive filtering", () => {
                         """
                         columnName: "s"
                     )
-                    @authorization(filter: [{ where: { node: { title_EQ: "$jwt.title" } } }])
+                    @authorization(filter: [{ where: { node: { title: "$jwt.title" } } }])
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor @node {
+            type Actor {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -769,7 +769,7 @@ describe("cypher directive filtering", () => {
 
         const query = `
             query {
-                movies(where: { custom_field_EQ: "hello world!" }) {
+                movies(where: { custom_field: "hello world!" }) {
                     title
                     custom_field
                     actors {
@@ -838,7 +838,7 @@ describe("cypher directive filtering", () => {
     test("With authorization (not custom Cypher field)", async () => {
         const typeDefs = `
             type Movie @node {
-                title: String @authorization(filter: [{ where: { node: { title_EQ: "$jwt.title" } } }])
+                title: String @authorization(filter: [{ where: { node: { title: "$jwt.title" } } }])
                 custom_field: String
                     @cypher(
                         statement: """
@@ -849,7 +849,7 @@ describe("cypher directive filtering", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor @node {
+            type Actor {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -859,7 +859,7 @@ describe("cypher directive filtering", () => {
 
         const query = `
             query {
-                movies(where: { custom_field_EQ: "hello world!" }) {
+                movies(where: { custom_field: "hello world!" }) {
                     title
                     actors {
                         name
@@ -928,7 +928,7 @@ describe("cypher directive filtering", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor @node {
+            type Actor {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -937,7 +937,7 @@ describe("cypher directive filtering", () => {
         const query = `
             query {
                 movies(
-                    where: { custom_field_EQ: "hello world!" }
+                    where: { custom_field: "hello world!" }
                     options: { sort: [{ title: DESC }] }
                 ) {
                     title
@@ -993,7 +993,7 @@ describe("cypher directive filtering", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor @node {
+            type Actor {
                 name: String
                 custom_field: String
                     @cypher(
@@ -1017,8 +1017,8 @@ describe("cypher directive filtering", () => {
                                     {
                                         where: {
                                             node: {
-                                                name_EQ: "Keanu Reeves",
-                                                custom_field_EQ: "hello world!"
+                                                name: "Keanu Reeves",
+                                                custom_field: "hello world!"
                                             }
                                         }
                                     }
@@ -1137,7 +1137,7 @@ describe("cypher directive filtering", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor @node {
+            type Actor {
                 name: String
                 another_custom_field: String
                     @cypher(
@@ -1152,7 +1152,7 @@ describe("cypher directive filtering", () => {
 
         const query = `
             query {
-                movies(where: { custom_field_EQ: "hello world!", another_custom_field_GT: 50 }) {
+                movies(where: { custom_field: "hello world!", another_custom_field_GT: 50 }) {
                     title
                     actors {
                         name
@@ -1225,7 +1225,7 @@ describe("cypher directive filtering", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor @node {
+            type Actor {
                 name: String
                 another_custom_field: String
                     @cypher(
@@ -1240,9 +1240,9 @@ describe("cypher directive filtering", () => {
 
         const query = `
             query {
-                movies(where: { custom_field_EQ: "hello world!" }) {
+                movies(where: { custom_field: "hello world!" }) {
                     title
-                    actors(where: { another_custom_field_EQ: "goodbye!" name_EQ: "Keanu Reeves" }) {
+                    actors(where: { another_custom_field: "goodbye!" name: "Keanu Reeves" }) {
                         name
                     }
                 }

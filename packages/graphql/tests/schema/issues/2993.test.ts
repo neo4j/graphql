@@ -122,8 +122,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               AND: [FOLLOWSWhere!]
               NOT: FOLLOWSWhere
               OR: [FOLLOWSWhere!]
-              since: DateTime @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              since_EQ: DateTime
+              since: DateTime
               since_GT: DateTime
               since_GTE: DateTime
               since_IN: [DateTime!]
@@ -206,10 +205,9 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               AND: [ProfileWhere!]
               NOT: ProfileWhere
               OR: [ProfileWhere!]
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_EQ: ID
               id_IN: [ID!]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -218,10 +216,9 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               typename_IN: [ProfileImplementation!]
-              userName: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              userName: String
               userName_CONTAINS: String
               userName_ENDS_WITH: String
-              userName_EQ: String
               userName_IN: [String!]
               userName_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               userName_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -502,10 +499,9 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               following_SINGLE: ProfileWhere
               \\"\\"\\"Return Users where some of the related Profiles match this filter\\"\\"\\"
               following_SOME: ProfileWhere
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_EQ: ID
               id_IN: [ID!]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -513,10 +509,9 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
-              userName: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              userName: String
               userName_CONTAINS: String
               userName_ENDS_WITH: String
-              userName_EQ: String
               userName_IN: [String!]
               userName_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               userName_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
