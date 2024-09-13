@@ -77,7 +77,6 @@ describe("ConcreteEntity generation", () => {
         beforeAll(() => {
             const typeDefs = gql`
                 type User
-                    @node
                     @authorization(
                         validate: [
                             { when: ["BEFORE"], where: { node: { id: { equals: "$jwt.sub" } } } }
@@ -169,7 +168,7 @@ describe("ConcreteEntity generation", () => {
 
         beforeAll(() => {
             const typeDefs = gql`
-                type User @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) @node {
+                type User @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
                     id: ID!
                     name: String!
                 }
@@ -260,7 +259,6 @@ describe("ComposeEntity generation", () => {
             }
 
             type User implements Human & Animal
-                @node
                 @authorization(
                     validate: [
                         { when: "BEFORE", where: { node: { id: { equals: "$jwt.sub" } } } }
@@ -462,7 +460,7 @@ describe("ConcreteEntity Annotations & Attributes", () => {
 
     beforeAll(() => {
         const typeDefs = gql`
-            type User @query @mutation @subscription @node {
+            type User @query @mutation @subscription {
                 id: ID!
                 name: String! @selectable(onAggregate: true) @alias(property: "dbName")
                 defaultName: String! @default(value: "John")
@@ -470,7 +468,7 @@ describe("ConcreteEntity Annotations & Attributes", () => {
                 accounts: [Account!]! @relationship(type: "HAS_ACCOUNT", direction: OUT)
             }
 
-            type Account @subscription(events: [CREATED]) @node {
+            type Account @subscription(events: [CREATED]) {
                 id: ID!
                 accountName: String! @settable(onCreate: false)
             }
