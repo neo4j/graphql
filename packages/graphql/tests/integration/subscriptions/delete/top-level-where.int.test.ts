@@ -46,11 +46,11 @@ describe("Delete using top level aggregate where - subscriptions enabled", () =>
         plugin = new TestSubscriptionsEngine();
 
         const typeDefs = `
-            type ${userType.name} @node {
+            type ${userType.name} {
                 testString: String!
             }
 
-            type ${postType.name} @node {
+            type ${postType.name} {
               content: String!
               likes: [${userType.name}!]! @relationship(type: "LIKES", direction: IN)
             }

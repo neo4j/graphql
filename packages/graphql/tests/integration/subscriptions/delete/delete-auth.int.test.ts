@@ -37,7 +37,7 @@ describe("Subscriptions delete", () => {
     test("should throw Forbidden when deleting a node with invalid allow", async () => {
         const typeUser = testHelper.createUniqueType("User");
         const typeDefs = `
-        type ${typeUser.name} @node {
+        type ${typeUser.name} {
             id: ID
         }
 

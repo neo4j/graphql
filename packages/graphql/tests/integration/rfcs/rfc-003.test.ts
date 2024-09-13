@@ -43,11 +43,11 @@ describe("integration/rfc/003", () => {
         describe("create", () => {
             test("should throw when creating node without a required relationship", async () => {
                 const typeDefs = /* GraphQL */ `
-                    type ${Director} @node {
+                    type ${Director} {
                         id: ID!
                     }
 
-                    type ${Movie} @node {
+                    type ${Movie} {
                         id: ID!
                         director: ${Director}! @relationship(type: "DIRECTED", direction: IN)
                     }
@@ -78,16 +78,16 @@ describe("integration/rfc/003", () => {
             describe("nested mutations", () => {
                 test("should throw when creating node without a required relationship", async () => {
                     const typeDefs = /* GraphQL */ `
-                        type ${Address} @node {
+                        type ${Address} {
                             street: String!
                         }
 
-                        type ${Director} @node {
+                        type ${Director} {
                             id: ID!
                             address: ${Address}! @relationship(type: "HAS_ADDRESS", direction: OUT)
                         }
 
-                        type ${Movie} @node {
+                        type ${Movie} {
                             id: ID!
                             director: ${Director}! @relationship(type: "DIRECTED", direction: IN)
                         }
@@ -124,11 +124,11 @@ describe("integration/rfc/003", () => {
         describe("update", () => {
             test("should throw error when updating a node without a required relationship", async () => {
                 const typeDefs = /* GraphQL */ `
-                    type ${Director} @node {
+                    type ${Director} {
                         id: ID!
                     }
 
-                    type ${Movie} @node {
+                    type ${Movie} {
                         id: ID!
                         director: ${Director}! @relationship(type: "DIRECTED", direction: IN)
                     }
@@ -163,16 +163,16 @@ describe("integration/rfc/003", () => {
             describe("nested mutations", () => {
                 test("should throw when creating node without relationship", async () => {
                     const typeDefs = /* GraphQL */ `
-                        type ${Address} @node {
+                        type ${Address} {
                             street: String!
                         }
 
-                        type ${Director} @node {
+                        type ${Director} {
                             id: ID!
                             address: ${Address}! @relationship(type: "HAS_ADDRESS", direction: OUT)
                         }
 
-                        type ${Movie} @node {
+                        type ${Movie} {
                             id: ID!
                             director: ${Director}! @relationship(type: "DIRECTED", direction: IN)
                         }
@@ -213,16 +213,16 @@ describe("integration/rfc/003", () => {
 
                 test("should throw error when creating a node without a required relationship through a nested mutation", async () => {
                     const typeDefs = /* GraphQL */ `
-                        type ${Address} @node {
+                        type ${Address} {
                             street: String!
                         }
 
-                        type ${Director} @node {
+                        type ${Director} {
                             id: ID!
                             address: ${Address}! @relationship(type: "HAS_ADDRESS", direction: OUT)
                         }
 
-                        type ${Movie} @node {
+                        type ${Movie} {
                             id: ID!
                             director: ${Director}! @relationship(type: "DIRECTED", direction: IN)
                         }
@@ -267,15 +267,15 @@ describe("integration/rfc/003", () => {
             describe("nested mutations", () => {
                 test("should throw error when deleting a required relationship", async () => {
                     const typeDefs = /* GraphQL */ `
-                        type ${Director} @node {
+                        type ${Director} {
                             id: ID!
                         }
 
-                        type ${CoDirector} @node {
+                        type ${CoDirector} {
                             id: ID!
                         }
 
-                        type ${Movie} @node {
+                        type ${Movie} {
                             id: ID!
                             director: ${Director}! @relationship(type: "DIRECTED", direction: IN)
                             coDirector: ${CoDirector} @relationship(type: "CO_DIRECTED", direction: IN)
@@ -320,11 +320,11 @@ describe("integration/rfc/003", () => {
         describe("connect", () => {
             test("should throw error when connecting to a required relationship that is not found", async () => {
                 const typeDefs = /* GraphQL */ `
-                    type ${Director} @node {
+                    type ${Director} {
                         id: ID!
                     }
 
-                    type ${Movie} @node {
+                    type ${Movie} {
                         id: ID!
                         director: ${Director}! @relationship(type: "DIRECTED", direction: IN)
                     }
@@ -359,16 +359,16 @@ describe("integration/rfc/003", () => {
             describe("nested mutations", () => {
                 test("should throw error when connecting to a required node that is not found", async () => {
                     const typeDefs = /* GraphQL */ `
-                        type ${Address} @node {
+                        type ${Address} {
                             street: String!
                         }
 
-                        type ${Director} @node {
+                        type ${Director} {
                             id: ID!
                             address: ${Address}! @relationship(type: "HAS_ADDRESS", direction: OUT)
                         }
 
-                        type ${Movie} @node {
+                        type ${Movie} {
                             id: ID!
                             director: ${Director}! @relationship(type: "DIRECTED", direction: IN)
                         }
@@ -422,11 +422,11 @@ describe("integration/rfc/003", () => {
             describe("nested mutations", () => {
                 test("should throw error when disconnecting a required relationship", async () => {
                     const typeDefs = /* GraphQL */ `
-                        type ${Director} @node {
+                        type ${Director} {
                             id: ID!
                         }
 
-                        type ${Movie} @node {
+                        type ${Movie} {
                             id: ID!
                             director: ${Director}! @relationship(type: "DIRECTED", direction: IN)
                         }
@@ -467,11 +467,11 @@ describe("integration/rfc/003", () => {
         describe("reconnect", () => {
             test("should disconnect and then reconnect to a new node on a required relationship", async () => {
                 const typeDefs = /* GraphQL */ `
-                    type ${Director} @node {
+                    type ${Director} {
                         id: ID!
                     }
 
-                    type ${Movie} @node {
+                    type ${Movie} {
                         id: ID!
                         director: ${Director}! @relationship(type: "DIRECTED", direction: IN)
                     }
@@ -533,11 +533,11 @@ describe("integration/rfc/003", () => {
 
             test("should disconnect and then reconnect to a new node on a non required relationship", async () => {
                 const typeDefs = /* GraphQL */ `
-                    type ${Director} @node {
+                    type ${Director} {
                         id: ID!
                     }
 
-                    type ${Movie} @node {
+                    type ${Movie} {
                         id: ID!
                         director: ${Director} @relationship(type: "DIRECTED", direction: IN)
                     }
@@ -601,11 +601,11 @@ describe("integration/rfc/003", () => {
         describe("relationship length", () => {
             test("should throw if connecting to more than one node", async () => {
                 const typeDefs = /* GraphQL */ `
-                    type ${Director} @node {
+                    type ${Director} {
                         id: ID!
                     }
 
-                    type ${Movie} @node {
+                    type ${Movie} {
                         id: ID!
                         director: ${Director} @relationship(type: "DIRECTED", direction: IN)
                     }

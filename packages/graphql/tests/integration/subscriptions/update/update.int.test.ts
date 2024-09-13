@@ -35,12 +35,12 @@ describe("Subscriptions update", () => {
 
         plugin = new TestSubscriptionsEngine();
         const typeDefs = gql`
-            type ${typeActor.name} @node {
+            type ${typeActor.name} {
                 name: String!
                 movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type ${typeMovie.name} @node {
+            type ${typeMovie.name} {
                 id: ID!
                 name: String
                 tagline: String

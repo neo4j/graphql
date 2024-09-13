@@ -34,13 +34,13 @@ describe("Create -> ConnectOrCreate", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-        type ${typeMovie.name} @node {
+        type ${typeMovie.name} {
             title: String!
             id: Int! @unique
             ${typeActor.plural}: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN, properties:"ActedIn")
         }
 
-        type ${typeActor.name} @node {
+        type ${typeActor.name} {
             name: String
             ${typeMovie.plural}: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT, properties:"ActedIn")
         }

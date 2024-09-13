@@ -41,12 +41,12 @@ describe("auth/bind", () => {
     describe("create", () => {
         test("should throw forbidden when creating a nested node with invalid bind", async () => {
             const typeDefs = `
-                type ${Post} @node {
+                type ${Post} {
                     id: ID
                     creator: ${User}! @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
