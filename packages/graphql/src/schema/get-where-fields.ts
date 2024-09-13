@@ -208,7 +208,7 @@ export function getWhereFieldsForAttributes({
         const deprecatedDirectives = graphqlDirectivesToCompose(
             (userDefinedDirectivesOnField ?? []).filter((directive) => directive.name.value === DEPRECATED)
         );
-        if (shouldAddDeprecatedFields(features, "implicitEqualFilters")) {
+        if (shouldAddDeprecatedFields(features, "implicitEqualFilters") && !field.isCypher()) {
             result[field.name] = {
                 type: field.getInputTypeNames().where.pretty,
                 directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_EQUAL_FILTERS],
@@ -218,7 +218,8 @@ export function getWhereFieldsForAttributes({
             type: field.getInputTypeNames().where.pretty,
             directives: deprecatedDirectives,
         };
-        if (shouldAddDeprecatedFields(features, "negationFilters")) {
+
+        if (shouldAddDeprecatedFields(features, "negationFilters") && !field.isCypher()) {
             result[`${field.name}_NOT`] = {
                 type: field.getInputTypeNames().where.pretty,
                 directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
@@ -251,7 +252,7 @@ export function getWhereFieldsForAttributes({
             type: field.getFilterableInputTypeName(),
             directives: deprecatedDirectives,
         };
-        if (shouldAddDeprecatedFields(features, "negationFilters")) {
+        if (shouldAddDeprecatedFields(features, "negationFilters") && !field.isCypher()) {
             result[`${field.name}_NOT_IN`] = {
                 type: field.getFilterableInputTypeName(),
                 directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],

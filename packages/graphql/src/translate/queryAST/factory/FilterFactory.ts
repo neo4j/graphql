@@ -37,10 +37,12 @@ import { AggregationDurationFilter } from "../ast/filters/aggregation/Aggregatio
 import { AggregationFilter } from "../ast/filters/aggregation/AggregationFilter";
 import { AggregationPropertyFilter } from "../ast/filters/aggregation/AggregationPropertyFilter";
 import { CountFilter } from "../ast/filters/aggregation/CountFilter";
+import { CypherFilter } from "../ast/filters/property-filters/CypherFilter";
 import { DurationFilter } from "../ast/filters/property-filters/DurationFilter";
 import { PointFilter } from "../ast/filters/property-filters/PointFilter";
 import { PropertyFilter } from "../ast/filters/property-filters/PropertyFilter";
 import { TypenameFilter } from "../ast/filters/property-filters/TypenameFilter";
+import { CustomCypherSelection } from "../ast/selection/CustomCypherSelection";
 import { getConcreteEntities } from "../utils/get-concrete-entities";
 import { isConcreteEntity } from "../utils/is-concrete-entity";
 import { isInterfaceEntity } from "../utils/is-interface-entity";
@@ -180,8 +182,24 @@ export class FilterFactory {
         operator: WhereOperator | undefined;
         isNot: boolean;
         attachedTo?: "node" | "relationship";
-    }): PropertyFilter {
+    }): PropertyFilter | CypherFilter {
         const filterOperator = operator ?? "EQ";
+
+        if (attribute.annotations.cypher) {
+            const selection = new CustomCypherSelection({
+                operationField: attribute,
+                rawArguments: {},
+                isNested: true,
+            });
+
+            return new CypherFilter({
+                selection,
+                attribute,
+                comparisonValue,
+                operator: filterOperator,
+            });
+        }
+
         if (attribute.typeHelper.isDuration()) {
             return new DurationFilter({
                 attribute,
