@@ -26,12 +26,12 @@ describe("Cypher Aggregations where node with BigInt", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type User @node {
+            type User {
                 someBigInt: BigInt
                 someBigIntAlias: BigInt @alias(property: "_someBigIntAlias")
             }
 
-            type Post @node {
+            type Post {
                 content: String!
                 likes: [User!]! @relationship(type: "LIKES", direction: IN)
             }

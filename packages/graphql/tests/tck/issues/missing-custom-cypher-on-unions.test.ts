@@ -90,7 +90,7 @@ describe("Missing custom Cypher on unions", () => {
                     columnName: "result"
                 )
         }
-        type choNode @mutation(operations: []) @node {
+        type choNode @mutation(operations: []) {
             iri: ID! @id @alias(property: "uri")
             identifier: String
             title: [title]
@@ -100,7 +100,7 @@ describe("Missing custom Cypher on unions", () => {
             partOfType: String
         }
 
-        type title @mutation(operations: []) @node {
+        type title @mutation(operations: []) {
             value: String
             language: String
         }

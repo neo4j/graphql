@@ -18,7 +18,7 @@
  */
 
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
+import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("Cypher Disconnect", () => {
     let typeDefs: string;
@@ -26,7 +26,7 @@ describe("Cypher Disconnect", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Product @node {
+            type Product {
                 id: ID!
                 name: String
                 sizes: [Size!]! @relationship(type: "HAS_SIZE", direction: OUT)
@@ -34,18 +34,18 @@ describe("Cypher Disconnect", () => {
                 photos: [Photo!]! @relationship(type: "HAS_PHOTO", direction: OUT)
             }
 
-            type Size @node {
+            type Size {
                 id: ID!
                 name: String!
             }
 
-            type Color @node {
+            type Color {
                 id: ID!
                 name: String!
                 photos: [Photo!]! @relationship(type: "OF_COLOR", direction: IN)
             }
 
-            type Photo @node {
+            type Photo {
                 id: ID!
                 description: String!
                 url: String!

@@ -26,12 +26,12 @@ describe("https://github.com/neo4j/graphql/issues/1536", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type SomeNode @node {
+            type SomeNode {
                 id: ID! @id @unique
                 other: OtherNode! @relationship(type: "HAS_OTHER_NODES", direction: OUT)
             }
 
-            type OtherNode @node {
+            type OtherNode {
                 id: ID! @id @unique
                 interfaceField: MyInterface! @relationship(type: "HAS_INTERFACE_NODES", direction: OUT)
             }
@@ -40,7 +40,7 @@ describe("https://github.com/neo4j/graphql/issues/1536", () => {
                 id: ID!
             }
 
-            type MyImplementation implements MyInterface @node {
+            type MyImplementation implements MyInterface {
                 id: ID! @id @unique
             }
         `;

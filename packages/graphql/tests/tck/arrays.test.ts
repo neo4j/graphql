@@ -26,7 +26,7 @@ describe("Cypher Arrays", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Movie @node {
+            type Movie {
                 title: String!
                 ratings: [Float!]!
             }

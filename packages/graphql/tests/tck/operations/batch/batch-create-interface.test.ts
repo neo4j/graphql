@@ -31,27 +31,27 @@ describe("Batch Create, Interface", () => {
                 name: String
             }
 
-            type Actor implements Person @node {
+            type Actor implements Person {
                 id: ID!
                 name: String
                 website: Website @relationship(type: "HAS_WEBSITE", direction: OUT)
                 movies: [Movie!]! @relationship(type: "EMPLOYED", direction: OUT, properties: "ActedIn")
             }
 
-            type Modeler implements Person @node {
+            type Modeler implements Person {
                 id: ID!
                 name: String
                 website: Website @relationship(type: "HAS_WEBSITE", direction: OUT)
                 movies: [Movie!]! @relationship(type: "EMPLOYED", direction: OUT, properties: "ActedIn")
             }
 
-            type Movie @node {
+            type Movie {
                 id: ID
                 website: Website @relationship(type: "HAS_WEBSITE", direction: OUT)
                 workers: [Person!]! @relationship(type: "EMPLOYED", direction: IN, properties: "ActedIn")
             }
 
-            type Website @node {
+            type Website {
                 address: String
             }
 

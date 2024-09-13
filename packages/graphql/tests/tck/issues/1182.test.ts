@@ -26,13 +26,13 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Movie @node {
+            type Movie {
                 id: ID! @id @unique
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor @node {
+            type Actor {
                 id: ID! @id @unique
                 name: String!
                 dob: DateTime!

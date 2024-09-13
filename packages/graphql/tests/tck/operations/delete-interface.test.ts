@@ -26,7 +26,7 @@ describe("Cypher Delete - interface", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Episode @node {
+            type Episode {
                 runtime: Int!
                 series: Series! @relationship(type: "HAS_EPISODE", direction: IN)
             }
@@ -40,29 +40,29 @@ describe("Cypher Delete - interface", () => {
                 name: String
             }
 
-            type ScreenWriter implements Worker @node {
+            type ScreenWriter implements Worker {
                 name: String
             }
 
-            type StuntPerformer implements Worker @node {
+            type StuntPerformer implements Worker {
                 name: String!
                 workedOn: [Production!]! @relationship(type: "WORKED_ON", direction: OUT)
             }
 
-            type Movie implements Production @node {
+            type Movie implements Production {
                 title: String!
                 runtime: Int!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
                 workers: [Worker!]! @relationship(type: "WORKED_ON", direction: IN)
             }
 
-            type Series implements Production @node {
+            type Series implements Production {
                 title: String!
                 episodes: [Episode!]! @relationship(type: "HAS_EPISODE", direction: OUT)
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type Actor @node {
+            type Actor {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }

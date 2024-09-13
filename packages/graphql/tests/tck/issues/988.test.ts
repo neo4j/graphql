@@ -26,7 +26,7 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Series @node {
+            type Series {
                 name: String
                 current: Boolean!
                 manufacturer: [Manufacturer!]!
@@ -34,12 +34,12 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
                 brand: [Brand!]! @relationship(type: "BRAND", properties: "RelationProps", direction: OUT)
             }
 
-            type Brand @node {
+            type Brand {
                 name: String
                 current: Boolean!
             }
 
-            type Manufacturer @node {
+            type Manufacturer {
                 name: String
                 current: Boolean!
             }

@@ -26,7 +26,7 @@ describe("Cypher Date", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Movie @node {
+            type Movie {
                 id: ID
                 date: Date
             }

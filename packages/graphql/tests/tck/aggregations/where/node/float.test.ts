@@ -26,12 +26,12 @@ describe("Cypher Aggregations where node with Float", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type User @node {
+            type User {
                 someFloat: Float
                 someFloatAlias: Float @alias(property: "_someFloatAlias")
             }
 
-            type Post @node {
+            type Post {
                 content: String!
                 likes: [User!]! @relationship(type: "LIKES", direction: IN)
             }

@@ -28,7 +28,7 @@ describe("Cypher Aggregations with Auth", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type User @node {
+            type User {
                 id: ID
                     @authorization(
                         validate: [{ operations: [READ], when: [BEFORE], where: { node: { id: "$jwt.sub" } } }]

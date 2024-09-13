@@ -26,11 +26,11 @@ describe("https://github.com/neo4j/graphql/issues/4838", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Test @node {
+            type Test {
                 test: Boolean! @cypher(statement: "RETURN true AS value", columnName: "value")
             }
 
-            type ParentTest @node {
+            type ParentTest {
                 tests: [Test!]! @relationship(type: "REL", direction: OUT)
             }
         `;

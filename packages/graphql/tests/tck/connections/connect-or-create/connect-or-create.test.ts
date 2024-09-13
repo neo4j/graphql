@@ -27,12 +27,12 @@ describe("Create or Connect", () => {
 
         beforeAll(() => {
             typeDefs = /* GraphQL */ `
-                type Movie @node {
+                type Movie {
                     title: String! @unique
                     actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
                 }
 
-                type Actor @node {
+                type Actor {
                     name: String!
                     movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
                 }
@@ -174,14 +174,14 @@ describe("Create or Connect", () => {
 
         beforeAll(() => {
             typeDefs = /* GraphQL */ `
-                type Movie @node {
+                type Movie {
                     id: ID! @id @unique
                     createdAt: DateTime! @timestamp(operations: [CREATE])
                     title: String! @unique
                     actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
                 }
 
-                type Actor @node {
+                type Actor {
                     name: String!
                     movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
                 }
@@ -449,12 +449,12 @@ describe("Create or Connect", () => {
 
         beforeAll(() => {
             typeDefs = /* GraphQL */ `
-                type Movie @node {
+                type Movie {
                     title: String! @unique
                     actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
                 }
 
-                type Actor @node {
+                type Actor {
                     name: String!
                     movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
                 }

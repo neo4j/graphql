@@ -24,12 +24,12 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
     let neoSchema: Neo4jGraphQL;
 
     const typeDefs = /* GraphQL */ `
-        type Movie @node {
+        type Movie {
             actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             released: Int!
         }
 
-        type Actor @node {
+        type Actor {
             movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             name: String
         }

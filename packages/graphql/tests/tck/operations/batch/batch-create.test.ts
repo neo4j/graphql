@@ -26,20 +26,20 @@ describe("Batch Create", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Actor @node {
+            type Actor {
                 id: ID! @id @unique
                 name: String
                 website: Website @relationship(type: "HAS_WEBSITE", direction: OUT)
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
-            type Movie @node {
+            type Movie {
                 id: ID
                 website: Website @relationship(type: "HAS_WEBSITE", direction: OUT)
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type Website @node {
+            type Website {
                 address: String
             }
 

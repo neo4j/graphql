@@ -31,20 +31,20 @@ describe("Top level interface connections", () => {
                 actors: [Actor!]! @declareRelationship
             }
 
-            type Movie implements Show @node {
+            type Movie implements Show {
                 title: String!
                 cost: Float
                 runtime: Int
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type Series implements Show @node {
+            type Series implements Show {
                 title: String!
                 episodes: Int
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type Actor @node {
+            type Actor {
                 name: String!
                 actedIn: [Show!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }

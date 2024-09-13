@@ -18,7 +18,7 @@
  */
 
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
+import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("context-variable-not-always-resolved-on-cypher-queries", () => {
     let neoSchema: Neo4jGraphQL;
@@ -40,7 +40,7 @@ describe("context-variable-not-always-resolved-on-cypher-queries", () => {
             iri: ID! @id @alias(property: "uri")
             hasResourceType: [ResourceType!]! @relationship(type: "hasResourceType", direction: OUT)
         }
-        type ResourceType @mutation(operations: []) @limit(default: 1, max: 1000) @node {
+        type ResourceType @mutation(operations: []) @limit(default: 1, max: 1000) {
             iri: ID! @id @alias(property: "uri")
         }
 
@@ -50,10 +50,7 @@ describe("context-variable-not-always-resolved-on-cypher-queries", () => {
             @limit(default: 100, max: 1000) {
             iri: ID! @id @alias(property: "uri")
         }
-        type coreRoot
-            @node(labels: ["coreRoot", "Resource"])
-            @mutation(operations: [])
-            @limit(default: 100, max: 300) {
+        type coreRoot @node(labels: ["coreRoot", "Resource"]) @mutation(operations: []) @limit(default: 100, max: 300) {
             iri: ID! @id @alias(property: "uri")
         }
 

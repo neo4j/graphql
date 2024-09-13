@@ -26,14 +26,14 @@ describe("Field Level Aggregations Where", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Movie @node {
+            type Movie {
                 title: String
                 actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN)
                 directors: [Person!]! @relationship(type: "DIRECTED", direction: IN)
                 released: DateTime
             }
 
-            type Person @node {
+            type Person {
                 name: String
                 age: Int
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)

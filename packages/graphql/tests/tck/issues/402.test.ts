@@ -26,12 +26,12 @@ describe("#402", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Event @node {
+            type Event {
                 id: ID!
                 area: Area! @relationship(type: "HAPPENS_IN", direction: OUT)
             }
 
-            type Area @node {
+            type Area {
                 id: ID!
             }
         `;

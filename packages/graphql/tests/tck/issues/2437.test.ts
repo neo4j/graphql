@@ -18,8 +18,8 @@
  */
 
 import { Neo4jGraphQL } from "../../../src";
+import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 import { createBearerToken } from "../../utils/create-bearer-token";
-import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/2437", () => {
     let typeDefs: string;
@@ -31,7 +31,7 @@ describe("https://github.com/neo4j/graphql/issues/2437", () => {
                 roles: [String!]!
             }
 
-            type Agent @mutation(operations: [CREATE, UPDATE]) @node {
+            type Agent @mutation(operations: [CREATE, UPDATE]) {
                 uuid: ID! @id @unique
                 archivedAt: DateTime
 
@@ -40,7 +40,7 @@ describe("https://github.com/neo4j/graphql/issues/2437", () => {
             extend type Agent
                 @authorization(validate: [{ operations: [CREATE], where: { jwt: { roles_INCLUDES: "Admin" } } }], filter: [{ where: { node: { archivedAt: null } } }])
 
-            type Valuation @mutation(operations: [CREATE, UPDATE]) @node {
+            type Valuation @mutation(operations: [CREATE, UPDATE]) {
                 uuid: ID! @id @unique
                 archivedAt: DateTime
 

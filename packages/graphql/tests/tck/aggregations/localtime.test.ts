@@ -26,7 +26,7 @@ describe("Cypher Aggregations LocalTime", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Movie @node {
+            type Movie {
                 createdAt: LocalTime!
             }
         `;

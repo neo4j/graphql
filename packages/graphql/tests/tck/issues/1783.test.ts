@@ -26,7 +26,7 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Series @node {
+            type Series {
                 id: ID! @unique
                 current: Boolean!
                 architecture: [MasterData!]!
@@ -34,7 +34,7 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
                 nameDetails: NameDetails @relationship(type: "HAS_NAME", properties: "RelationProps", direction: OUT)
             }
 
-            type NameDetails @mutation(operations: []) @query(read: false, aggregate: false) @node {
+            type NameDetails @mutation(operations: []) @query(read: false, aggregate: false) {
                 fullName: String!
             }
 
@@ -42,7 +42,7 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
                 current: Boolean!
             }
 
-            type MasterData @node {
+            type MasterData {
                 id: ID! @unique
                 current: Boolean!
                 nameDetails: NameDetails @relationship(type: "HAS_NAME", properties: "RelationProps", direction: OUT)

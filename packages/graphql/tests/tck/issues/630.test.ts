@@ -26,7 +26,7 @@ describe("Cypher directive", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Actor @node {
+            type Actor {
                 name: String
                 movies(title: String): [Movie]
                     @cypher(
@@ -38,7 +38,7 @@ describe("Cypher directive", () => {
                     )
             }
 
-            type Movie @node {
+            type Movie {
                 id: ID
                 title: String
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)

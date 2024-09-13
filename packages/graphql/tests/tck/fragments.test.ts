@@ -30,7 +30,7 @@ describe("Cypher Fragment", () => {
                 username: String!
             }
 
-            type User implements Entity @node {
+            type User implements Entity {
                 id: ID! @id @unique
                 username: String!
                 owns: [OwnableType!]! @relationship(type: "OWNS", direction: OUT)
@@ -43,12 +43,12 @@ describe("Cypher Fragment", () => {
                 owner: User
             }
 
-            type Tile implements Ownable @node {
+            type Tile implements Ownable {
                 id: ID! @id @unique
                 owner: User! @relationship(type: "OWNS", direction: IN)
             }
 
-            type Character implements Ownable @node {
+            type Character implements Ownable {
                 id: ID! @id @unique
                 owner: User! @relationship(type: "OWNS", direction: IN)
             }
@@ -155,12 +155,12 @@ describe("Cypher Fragment", () => {
                 runtime: Int!
             }
 
-            type Movie implements Production @node {
+            type Movie implements Production {
                 title: String!
                 runtime: Int!
             }
 
-            type Series implements Production @node {
+            type Series implements Production {
                 title: String!
                 runtime: Int!
                 episodes: Int!
@@ -174,7 +174,7 @@ describe("Cypher Fragment", () => {
                 actedIn: [Production!]! @declareRelationship
             }
 
-            type Actor implements InterfaceA @node {
+            type Actor implements InterfaceA {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }

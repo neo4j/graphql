@@ -26,13 +26,13 @@ describe("https://github.com/neo4j/graphql/issues/1320", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Risk @node {
+            type Risk {
                 code: String!
                 ownedBy: Team @relationship(type: "OWNS_RISK", direction: IN)
                 mitigationState: [MitigationState]
             }
 
-            type Team @node {
+            type Team {
                 code: String!
                 ownsRisks: [Risk!]! @relationship(type: "OWNS_RISK", direction: OUT)
             }

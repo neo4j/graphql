@@ -30,19 +30,18 @@ describe("https://github.com/neo4j/graphql/issues/5023", () => {
             type JWT @jwt {
                 id: String
             }
-            type User @authorization(filter: [{ where: { node: { userId: "$jwt.id" } } }]) @node {
+            type User @authorization(filter: [{ where: { node: { userId: "$jwt.id" } } }]) {
                 userId: String! @unique
                 adminAccess: [Tenant!]! @relationship(type: "ADMIN_IN", direction: OUT, aggregate: false)
             }
 
-            type Tenant @authorization(validate: [{ where: { node: { admins: { userId: "$jwt.id" } } } }]) @node {
+            type Tenant @authorization(validate: [{ where: { node: { admins: { userId: "$jwt.id" } } } }]) {
                 id: ID! @id
                 admins: [User!]! @relationship(type: "ADMIN_IN", direction: IN, aggregate: false)
                 settings: Settings! @relationship(type: "HAS_SETTINGS", direction: OUT, aggregate: false)
             }
 
             type Settings
-                @node
                 @authorization(validate: [{ where: { node: { tenant: { admins: { userId: "$jwt.id" } } } } }]) {
                 tenant: Tenant! @relationship(type: "HAS_SETTINGS", direction: IN, aggregate: false)
                 extendedOpeningHours: [OpeningDay!]!
@@ -50,7 +49,6 @@ describe("https://github.com/neo4j/graphql/issues/5023", () => {
             }
 
             type OpeningDay
-                @node
                 @authorization(
                     validate: [{ where: { node: { settings: { tenant: { admins: { userId: "$jwt.id" } } } } } }]
                 ) {
@@ -61,7 +59,6 @@ describe("https://github.com/neo4j/graphql/issues/5023", () => {
             }
 
             type OpeningHoursInterval
-                @node
                 @authorization(
                     validate: [
                         { where: { node: { openingDay: { settings: { tenant: { admins: { userId: "$jwt.id" } } } } } } }

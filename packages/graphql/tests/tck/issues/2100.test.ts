@@ -26,11 +26,11 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type ServiceLog @node {
+            type ServiceLog {
                 id: ID
                 records: [Record!]! @relationship(type: "HAS_BUSSING", direction: OUT)
             }
-            type BussingRecord implements Record @node {
+            type BussingRecord implements Record {
                 id: ID!
                 attendance: Int
                 markedAttendance: Boolean!
@@ -50,7 +50,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                 serviceLogs: [ServiceLog!]! @declareRelationship
             }
 
-            type Bacenta implements Church @node {
+            type Bacenta implements Church {
                 id: ID @id @unique
                 name: String!
                 serviceLogs: [ServiceLog!]! @relationship(type: "HAS_HISTORY", direction: OUT)
@@ -65,7 +65,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                     )
             }
 
-            type TimeGraph @node {
+            type TimeGraph {
                 date: Date
             }
 

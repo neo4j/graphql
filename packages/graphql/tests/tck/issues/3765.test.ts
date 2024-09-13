@@ -26,11 +26,11 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type User @node {
+            type User {
                 name: String!
                 otherName: String
             }
-            type Post @node {
+            type Post {
                 content: String!
                 alternateContent: String!
                 likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "likesProperties")

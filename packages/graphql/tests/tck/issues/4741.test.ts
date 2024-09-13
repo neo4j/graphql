@@ -26,12 +26,12 @@ describe("https://github.com/neo4j/graphql/issues/4741", () => {
 
     beforeEach(() => {
         typeDefs = /* GraphQL */ `
-            type Opportunity @node {
+            type Opportunity {
                 country: String!
                 listsOlis: [ListOli!]! @relationship(type: "HAS_LIST", direction: OUT)
             }
 
-            type ListOli @node {
+            type ListOli {
                 name: String!
             }
         `;

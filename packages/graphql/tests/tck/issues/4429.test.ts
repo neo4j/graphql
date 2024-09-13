@@ -18,7 +18,7 @@
  */
 
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
+import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/4429", () => {
     let neoSchema: Neo4jGraphQL;
@@ -28,27 +28,24 @@ describe("https://github.com/neo4j/graphql/issues/4429", () => {
             id: String
             roles: [String]
         }
-        type User @authorization(validate: [{ where: { node: { userId: "$jwt.id" } }, operations: [READ] }]) @node {
+        type User @authorization(validate: [{ where: { node: { userId: "$jwt.id" } }, operations: [READ] }]) {
             userId: String! @unique
             adminAccess: [Tenant!]! @relationship(type: "ADMIN_IN", direction: OUT)
         }
 
-        type Tenant @authorization(validate: [{ where: { node: { admins: { userId: "$jwt.id" } } } }]) @node {
+        type Tenant @authorization(validate: [{ where: { node: { admins: { userId: "$jwt.id" } } } }]) {
             id: ID! @id
             admins: [User!]! @relationship(type: "ADMIN_IN", direction: IN)
             settings: Settings @relationship(type: "VEHICLECARD_OWNER", direction: IN)
         }
 
-        type Settings
-            @authorization(validate: [{ where: { node: { tenant: { admins: { userId: "$jwt.id" } } } } }])
-            @node {
+        type Settings @authorization(validate: [{ where: { node: { tenant: { admins: { userId: "$jwt.id" } } } } }]) {
             id: ID! @id
             openingDays: [OpeningDay!]! @relationship(type: "VALID_GARAGES", direction: OUT)
             tenant: Tenant! @relationship(type: "VEHICLECARD_OWNER", direction: OUT) # <---  this line
         }
 
         type OpeningDay
-            @node
             @authorization(
                 validate: [{ where: { node: { settings: { tenant: { admins: { userId: "$jwt.id" } } } } } }]
             ) {
@@ -57,7 +54,6 @@ describe("https://github.com/neo4j/graphql/issues/4429", () => {
             open: [OpeningHoursInterval!]! @relationship(type: "HAS_OPEN_INTERVALS", direction: OUT)
         }
         type OpeningHoursInterval
-            @node
             @authorization(
                 validate: [
                     { where: { node: { openingDay: { settings: { tenant: { admins: { userId: "$jwt.id" } } } } } } }

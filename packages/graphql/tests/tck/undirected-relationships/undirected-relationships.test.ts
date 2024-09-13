@@ -26,7 +26,7 @@ describe("Undirected relationships", () => {
 
     test("query with directed and undirected relationships", async () => {
         typeDefs = /* GraphQL */ `
-            type User @node {
+            type User {
                 name: String!
                 friends: [User!]! @relationship(type: "FRIENDS_WITH", direction: OUT)
             }
@@ -75,16 +75,16 @@ describe("Undirected relationships", () => {
         typeDefs = /* GraphQL */ `
             union Content = Blog | Post
 
-            type Blog @node {
+            type Blog {
                 title: String
                 posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
             }
 
-            type Post @node {
+            type Post {
                 content: String
             }
 
-            type User @node {
+            type User {
                 name: String
                 content: [Content!]! @relationship(type: "HAS_CONTENT", direction: OUT)
             }
@@ -141,13 +141,13 @@ describe("Undirected relationships", () => {
                 actors: [Actor!]!
             }
 
-            type Movie implements Production @node {
+            type Movie implements Production {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
                 runtime: Int!
             }
 
-            type Series implements Production @node {
+            type Series implements Production {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
                 episodes: Int!
@@ -157,7 +157,7 @@ describe("Undirected relationships", () => {
                 role: String!
             }
 
-            type Actor @node {
+            type Actor {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
@@ -204,14 +204,14 @@ describe("Undirected relationships", () => {
 
     test("nested undirected relationship", async () => {
         typeDefs = /* GraphQL */ `
-            type Foo @node {
+            type Foo {
                 id: ID @unique
                 Name: String
                 Age: Int
                 DrinksAt: Bar @relationship(type: "DRINKS_AT", direction: OUT)
             }
 
-            type Bar @node {
+            type Bar {
                 id: ID @unique
                 Adress: String
                 Customers: [Foo!]! @relationship(type: "DRINKS_AT", direction: IN)

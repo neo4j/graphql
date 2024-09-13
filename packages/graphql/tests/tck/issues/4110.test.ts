@@ -29,14 +29,13 @@ describe("https://github.com/neo4j/graphql/issues/4110", () => {
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
             type Company
-                @node
                 @authorization(
                     filter: [{ operations: [READ], where: { node: { inBetween: { company: { id: "example" } } } } }]
                 ) {
                 id: ID @id
                 inBetween: InBetween @relationship(type: "CONNECT_TO", direction: OUT)
             }
-            type InBetween @node {
+            type InBetween {
                 id: ID @id
                 company: Company! @relationship(type: "CONNECT_TO", direction: IN)
             }

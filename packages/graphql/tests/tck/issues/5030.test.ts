@@ -26,7 +26,7 @@ describe("https://github.com/neo4j/graphql/issues/5030", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Movie @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }]) @node {
+            type Movie @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }]) {
                 title: String
                 released: Int
             }

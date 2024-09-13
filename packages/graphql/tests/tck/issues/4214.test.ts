@@ -33,21 +33,21 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
             store: ID
         }
 
-        type User @node {
+        type User {
             id: ID! @id @unique
             email: String!
             roles: [String!]!
             store: Store @relationship(type: "WORKS_AT", direction: OUT)
         }
 
-        type Store @node {
+        type Store {
             id: ID! @id @unique
             name: String!
             employees: [User!]! @relationship(type: "WORKS_AT", direction: IN)
             transactions: [Transaction!]! @relationship(type: "TRANSACTION", direction: IN)
         }
 
-        type Transaction @node {
+        type Transaction {
             id: ID! @id @unique
             store: Store! @relationship(type: "TRANSACTION", direction: OUT)
             type: String!
@@ -55,7 +55,7 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
             completed: Boolean
         }
 
-        type TransactionItem @node {
+        type TransactionItem {
             transaction: Transaction @relationship(type: "ITEM_TRANSACTED", direction: OUT)
             name: String
             price: Float

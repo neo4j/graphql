@@ -28,19 +28,18 @@ describe("https://github.com/neo4j/graphql/issues/4115", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type User @node {
+            type User {
                 id: ID! @unique
                 roles: [String!]!
             }
 
-            type Family @node {
+            type Family {
                 id: ID! @id @unique
                 members: [Person!]! @relationship(type: "MEMBER_OF", direction: IN)
                 creator: User! @relationship(type: "CREATOR_OF", direction: IN)
             }
 
             type Person
-                @node
                 @authorization(
                     filter: [{ where: { node: { family: { creator: { roles_INCLUDES: "plan:paid" } } } } }]
                 ) {

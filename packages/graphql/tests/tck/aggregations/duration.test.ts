@@ -26,7 +26,7 @@ describe("Cypher Aggregations Duration", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Movie @node {
+            type Movie {
                 screenTime: Duration!
             }
         `;

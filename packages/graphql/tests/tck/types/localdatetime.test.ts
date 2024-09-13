@@ -26,7 +26,7 @@ describe("Cypher LocalDateTime", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Movie @node {
+            type Movie {
                 id: ID
                 localDT: LocalDateTime
             }

@@ -18,7 +18,7 @@
  */
 
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
+import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("Cypher BigInt", () => {
     let typeDefs: string;
@@ -26,7 +26,7 @@ describe("Cypher BigInt", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type File @node {
+            type File {
                 name: String!
                 size: BigInt!
             }

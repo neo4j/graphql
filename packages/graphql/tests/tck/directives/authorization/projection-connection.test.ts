@@ -28,12 +28,12 @@ describe("Cypher Auth Projection On Connections", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Post @node {
+            type Post {
                 content: String
                 creator: User! @relationship(type: "HAS_POST", direction: IN)
             }
 
-            type User @node {
+            type User {
                 id: ID
                 name: String
                 posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
@@ -195,12 +195,12 @@ describe("Cypher Auth Projection On top-level connections", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Post @node {
+            type Post {
                 content: String
                 creator: User! @relationship(type: "HAS_POST", direction: IN)
             }
 
-            type User @node {
+            type User {
                 id: ID
                 name: String
                 posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)

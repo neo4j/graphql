@@ -31,13 +31,13 @@ describe("Interface Relationships - Update update", () => {
                 actors: [Actor!]! @declareRelationship
             }
 
-            type Movie implements Production @node {
+            type Movie implements Production {
                 title: String!
                 runtime: Int!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type Series implements Production @node {
+            type Series implements Production {
                 title: String!
                 episodes: Int!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
@@ -47,7 +47,7 @@ describe("Interface Relationships - Update update", () => {
                 screenTime: Int!
             }
 
-            type Actor @node {
+            type Actor {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }

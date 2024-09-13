@@ -26,7 +26,7 @@ describe("Batch Create, Scalar types", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Actor @node {
+            type Actor {
                 id: ID! @id @unique
                 name: String
                 born: Date
@@ -35,7 +35,7 @@ describe("Batch Create, Scalar types", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
-            type Movie @node {
+            type Movie {
                 id: ID
                 runningTime: Duration
                 location: Point
@@ -44,7 +44,7 @@ describe("Batch Create, Scalar types", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type Website @node {
+            type Website {
                 address: String
             }
 

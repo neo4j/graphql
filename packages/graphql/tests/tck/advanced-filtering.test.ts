@@ -26,7 +26,7 @@ describe("Cypher Advanced Filtering", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Movie @node {
+            type Movie {
                 _id: ID
                 id: ID
                 title: String
@@ -35,7 +35,7 @@ describe("Cypher Advanced Filtering", () => {
                 genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT)
             }
 
-            type Genre @node {
+            type Genre {
                 name: String
                 movies: [Movie!]! @relationship(type: "IN_GENRE", direction: IN)
             }

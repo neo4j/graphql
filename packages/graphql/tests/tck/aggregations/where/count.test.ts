@@ -26,11 +26,11 @@ describe("Cypher Aggregations where with count", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type User @node {
+            type User {
                 name: String!
             }
 
-            type Post @node {
+            type Post {
                 content: String!
                 likes: [User!]! @relationship(type: "LIKES", direction: IN)
             }

@@ -18,25 +18,25 @@
  */
 
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
+import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/2871", () => {
     let neoSchema: Neo4jGraphQL;
 
     const typeDefs = /* GraphQL */ `
-        type FirstLevel @node {
+        type FirstLevel {
             id: ID! @id @unique
             secondLevel: SecondLevel! @relationship(type: "HAS_SECOND_LEVEL", direction: OUT)
             createdAt: DateTime! @timestamp(operations: [CREATE])
         }
 
-        type SecondLevel @node {
+        type SecondLevel {
             id: ID! @id @unique
             thirdLevel: [ThirdLevel!]! @relationship(type: "HAS_THIRD_LEVEL", direction: OUT)
             createdAt: DateTime! @timestamp(operations: [CREATE])
         }
 
-        type ThirdLevel @node {
+        type ThirdLevel {
             id: ID! @id @unique
             createdAt: DateTime! @timestamp(operations: [CREATE])
         }

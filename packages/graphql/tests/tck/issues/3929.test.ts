@@ -28,20 +28,20 @@ describe("https://github.com/neo4j/graphql/issues/3929", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type User @authorization(filter: [{ where: { node: { id: "$jwt.uid" } } }]) @node {
+            type User @authorization(filter: [{ where: { node: { id: "$jwt.uid" } } }]) {
                 id: ID! @unique
                 email: String!
                 name: String
             }
 
-            type Group @authorization(validate: [{ where: { node: { creator: { id: "$jwt.uid" } } } }]) @node {
+            type Group @authorization(validate: [{ where: { node: { creator: { id: "$jwt.uid" } } } }]) {
                 id: ID! @id @unique
                 name: String
                 members: [Person!]! @relationship(type: "MEMBER_OF", direction: IN)
                 creator: User! @relationship(type: "CREATOR_OF", direction: IN, nestedOperations: [CONNECT])
             }
 
-            type Person @authorization(validate: [{ where: { node: { creator: { id: "$jwt.uid" } } } }]) @node {
+            type Person @authorization(validate: [{ where: { node: { creator: { id: "$jwt.uid" } } } }]) {
                 id: ID! @id @unique
                 name: String!
                 creator: User! @relationship(type: "CREATOR_OF", direction: IN)

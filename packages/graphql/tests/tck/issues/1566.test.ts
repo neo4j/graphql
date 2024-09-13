@@ -26,19 +26,19 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Content @node {
+            type Content {
                 id: Int!
                 name: String!
             }
 
-            type Project @node {
+            type Project {
                 id: Int!
                 name: String!
             }
 
             union FeedItem = Content | Project
 
-            type Community @node {
+            type Community {
                 id: Int!
                 name: String!
 

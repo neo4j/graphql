@@ -26,7 +26,7 @@ describe("Cypher Duration", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Movie @node {
+            type Movie {
                 id: ID
                 duration: Duration
             }

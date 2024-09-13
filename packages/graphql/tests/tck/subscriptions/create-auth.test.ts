@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQL } from "../../../src";
-import { createBearerToken } from "../../utils/create-bearer-token";
 import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
-import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
+import { Neo4jGraphQL } from "../../../src";
+import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("Subscriptions metadata on create", () => {
     let typeDefs: string;
@@ -30,12 +30,12 @@ describe("Subscriptions metadata on create", () => {
     beforeAll(() => {
         plugin = new TestSubscriptionsEngine();
         typeDefs = /* GraphQL */ `
-            type Actor @node {
+            type Actor {
                 id: String!
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type Movie @node {
+            type Movie {
                 id: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }

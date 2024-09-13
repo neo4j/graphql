@@ -26,13 +26,13 @@ describe("https://github.com/neo4j/graphql/issues/1779", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Person @node {
+            type Person {
                 name: String
                 age: Int
                 attends: [School!]! @relationship(type: "attends", direction: OUT)
             }
 
-            type School @node {
+            type School {
                 name: String
                 students: [Person!]! @relationship(type: "attends", direction: IN)
             }

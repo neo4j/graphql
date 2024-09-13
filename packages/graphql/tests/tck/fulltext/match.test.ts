@@ -26,7 +26,7 @@ describe("Cypher -> fulltext -> Match", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Movie @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }]) @node {
+            type Movie @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }]) {
                 title: String
             }
         `;

@@ -23,7 +23,7 @@ import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-ut
 describe("https://github.com/neo4j/graphql/issues/4532", () => {
     test("connections to interfaces with sort", async () => {
         const typeDefs = /* GraphQL */ `
-            type Inventory @node {
+            type Inventory {
                 id: ID
                 children: [Scenario!]!
                     @relationship(type: "HasChildren", properties: "InventoryChildRelation", direction: OUT)
@@ -33,11 +33,11 @@ describe("https://github.com/neo4j/graphql/issues/4532", () => {
                 id: ID
             }
 
-            type Image implements Scenario @node {
+            type Image implements Scenario {
                 id: ID
             }
 
-            type Video implements Scenario @node {
+            type Video implements Scenario {
                 id: ID
             }
 
