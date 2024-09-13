@@ -29,7 +29,7 @@ describe("aggregations-top_level-datetime", () => {
     beforeEach(async () => {
         Movie = testHelper.createUniqueType("Movie");
         typeDefs = `
-            type ${Movie} @node {
+            type ${Movie} {
                 testString: String
                 createdAt: DateTime
             }

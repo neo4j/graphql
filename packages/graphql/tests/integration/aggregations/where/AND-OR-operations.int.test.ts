@@ -42,11 +42,11 @@ describe("Nested within AND/OR", () => {
         postType = testHelper.createUniqueType("Post");
 
         const typeDefs = `
-            type ${userType.name} @node {
+            type ${userType.name} {
                 testString: String!
             }
 
-            type ${postType.name} @node {
+            type ${postType.name} {
               content: String!
               likes: [${userType.name}!]! @relationship(type: "LIKES", direction: IN)
             }

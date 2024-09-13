@@ -41,12 +41,12 @@ describe("Update using aggregate where", () => {
         postType = testHelper.createUniqueType("Post");
         likeInterface = testHelper.createUniqueType("LikeEdge");
         typeDefs = `
-            type ${userType.name} @node {
+            type ${userType.name} {
                 name: String!
                 likedPosts: [${postType.name}!]! @relationship(type: "LIKES", direction: OUT, properties: "${likeInterface.name}")
             }
     
-            type ${postType.name} @node {
+            type ${postType.name} {
                 id: ID
                 content: String!
                 likes: [${userType.name}!]! @relationship(type: "LIKES", direction: IN, properties: "${likeInterface.name}")

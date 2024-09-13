@@ -31,12 +31,12 @@ describe("aggregations-where-node-float - connections", () => {
         User = testHelper.createUniqueType("User");
         Post = testHelper.createUniqueType("Post");
         const typeDefs = `
-            type ${User} @node {
+            type ${User} {
                 testString: String!
                 someFloat: Float!
             }
     
-            type ${Post} @node {
+            type ${Post} {
               testString: String!
               likes: [${User}!]! @relationship(type: "LIKES", direction: IN)
             }
@@ -323,17 +323,17 @@ describe("aggregations-where-node-float - connections - interface relationships 
             someFloat: Float!
         }
 
-        type ${Person} implements Human @node {
+        type ${Person} implements Human {
             testString: String!
             someFloat: Float!
         }
 
-            type ${User} implements Human @node {
+            type ${User} implements Human {
                 testString: String!
                 someFloat: Float!
             }
     
-            type ${Post} @node {
+            type ${Post} {
               testString: String!
               likes: [Human!]! @relationship(type: "LIKES", direction: IN)
             }

@@ -31,11 +31,11 @@ describe("aggregations-where-edge-id", () => {
         User = testHelper.createUniqueType("User");
 
         const typeDefs = `
-            type ${User} @node {
+            type ${User} {
                 testString: String!
             }
 
-            type ${Post} @node {
+            type ${Post} {
               testString: String!
               likes: [${User}!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }

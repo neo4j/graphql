@@ -32,12 +32,12 @@ describe("Nested Field Level Aggregations", () => {
         typeActor = testHelper.createUniqueType("Actor");
 
         typeDefs = `
-        type ${typeMovie.name} @node {
+        type ${typeMovie.name} {
             title: String
             ${typeActor.plural}: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN, properties:"ActedIn")
         }
 
-        type ${typeActor.name} @node {
+        type ${typeActor.name} {
             name: String
             age: Int
             born: DateTime

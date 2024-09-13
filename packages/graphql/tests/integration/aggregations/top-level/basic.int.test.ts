@@ -32,7 +32,7 @@ describe("aggregations-top_level-basic", () => {
         const randomType = testHelper.createUniqueType("Movie");
 
         const typeDefs = `
-            type ${randomType.name} @node {
+            type ${randomType.name} {
                 id: ID
             }
         `;

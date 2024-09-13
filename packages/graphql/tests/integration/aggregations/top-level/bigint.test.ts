@@ -35,7 +35,7 @@ describe("aggregations-top_level-bigint", () => {
         const movieType = testHelper.createUniqueType("Movie");
 
         const typeDefs = `
-            type ${movieType.name} @node {
+            type ${movieType.name} {
                 testString: String
                 imdbRatingBigInt: BigInt
             }
@@ -85,7 +85,7 @@ describe("aggregations-top_level-bigint", () => {
         const movieType = testHelper.createUniqueType("Movie");
 
         const typeDefs = `
-            type ${movieType.name} @node {
+            type ${movieType.name} {
                 testString: String
                 imdbRatingBigInt: BigInt
             }
@@ -135,7 +135,7 @@ describe("aggregations-top_level-bigint", () => {
         const movieType = testHelper.createUniqueType("Movie");
 
         const typeDefs = `
-            type ${movieType.name}  @node {
+            type ${movieType.name}  {
                 testString: String
                 imdbRatingBigInt: BigInt
             }
@@ -185,7 +185,7 @@ describe("aggregations-top_level-bigint", () => {
         const movieType = testHelper.createUniqueType("Movie");
 
         const typeDefs = `
-            type ${movieType.name} @node {
+            type ${movieType.name} {
                 testString: String
                 imdbRatingBigInt: BigInt
             }
@@ -235,7 +235,7 @@ describe("aggregations-top_level-bigint", () => {
         const movieType = testHelper.createUniqueType("Movie");
 
         const typeDefs = `
-            type ${movieType.name} @node {
+            type ${movieType.name} {
                 testString: String
                 imdbRatingBigInt: BigInt
             }

@@ -33,7 +33,7 @@ describe("aggregations-top_level authorization", () => {
         const randomType = testHelper.createUniqueType("Movie");
 
         const typeDefs = `
-            type ${randomType.name} @node {
+            type ${randomType.name} {
                 id: ID
             }
 

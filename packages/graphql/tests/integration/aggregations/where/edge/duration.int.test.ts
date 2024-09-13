@@ -31,11 +31,11 @@ describe("aggregations-where-edge-duration", () => {
         Post = testHelper.createUniqueType("Post");
 
         const typeDefs = `
-        type ${User} @node {
+        type ${User} {
             name: String
         }
 
-        type ${Post} @node {
+        type ${Post} {
             content: String!
             likes: [${User}!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
         }
