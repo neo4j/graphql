@@ -61,10 +61,6 @@ describe("Cypher Advanced Filtering", () => {
         setTestEnvVars("NEO4J_GRAPHQL_ENABLE_REGEX=1");
     });
 
-    afterAll(() => {
-        unsetTestEnvVars(undefined);
-    });
-
     test("IN", async () => {
         const query = /* GraphQL */ `
             {
