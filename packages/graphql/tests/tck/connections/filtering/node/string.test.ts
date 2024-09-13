@@ -18,13 +18,7 @@
  */
 
 import { Neo4jGraphQL } from "../../../../../src";
-import {
-    formatCypher,
-    formatParams,
-    setTestEnvVars,
-    translateQuery,
-    unsetTestEnvVars,
-} from "../../../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../../../utils/tck-test-utils";
 
 describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
     let typeDefs: string;
@@ -57,11 +51,6 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
                 },
             },
         });
-        setTestEnvVars("NEO4J_GRAPHQL_ENABLE_REGEX=1");
-    });
-
-    afterAll(() => {
-        unsetTestEnvVars(undefined);
     });
 
     test("CONTAINS", async () => {

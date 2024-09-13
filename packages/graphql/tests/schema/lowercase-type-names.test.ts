@@ -436,7 +436,8 @@ describe("lower case type names", () => {
               AND: [actorWhere!]
               NOT: actorWhere
               OR: [actorWhere!]
-              createdAt: DateTime
+              createdAt: DateTime @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              createdAt_EQ: DateTime
               createdAt_GT: DateTime
               createdAt_GTE: DateTime
               createdAt_IN: [DateTime]
@@ -473,9 +474,10 @@ describe("lower case type names", () => {
               movies_SINGLE: movieWhere
               \\"\\"\\"Return actors where some of the related movies match this filter\\"\\"\\"
               movies_SOME: movieWhere
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -483,7 +485,8 @@ describe("lower case type names", () => {
               name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
-              year: Int
+              year: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              year_EQ: Int
               year_GT: Int
               year_GTE: Int
               year_IN: [Int]
@@ -775,7 +778,8 @@ describe("lower case type names", () => {
               actors_SINGLE: actorWhere
               \\"\\"\\"Return movies where some of the related actors match this filter\\"\\"\\"
               actors_SOME: actorWhere
-              createdAt: DateTime
+              createdAt: DateTime @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              createdAt_EQ: DateTime
               createdAt_GT: DateTime
               createdAt_GTE: DateTime
               createdAt_IN: [DateTime]
@@ -783,9 +787,10 @@ describe("lower case type names", () => {
               createdAt_LTE: DateTime
               createdAt_NOT: DateTime @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               createdAt_NOT_IN: [DateTime] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -793,9 +798,10 @@ describe("lower case type names", () => {
               name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
-              testId: String
+              testId: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               testId_CONTAINS: String
               testId_ENDS_WITH: String
+              testId_EQ: String
               testId_IN: [String]
               testId_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               testId_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -803,7 +809,8 @@ describe("lower case type names", () => {
               testId_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               testId_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               testId_STARTS_WITH: String
-              year: Int
+              year: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              year_EQ: Int
               year_GT: Int
               year_GTE: Int
               year_IN: [Int]

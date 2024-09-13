@@ -125,9 +125,10 @@ describe("Scalar", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              id: ID
+              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
+              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -135,15 +136,18 @@ describe("Scalar", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
-              myCustomArrayScalar: [CustomScalar!]
+              myCustomArrayScalar: [CustomScalar!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              myCustomArrayScalar_EQ: [CustomScalar!]
               myCustomArrayScalar_INCLUDES: CustomScalar
               myCustomArrayScalar_NOT: [CustomScalar!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               myCustomArrayScalar_NOT_INCLUDES: CustomScalar @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              myCustomScalar: CustomScalar
+              myCustomScalar: CustomScalar @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              myCustomScalar_EQ: CustomScalar
               myCustomScalar_IN: [CustomScalar]
               myCustomScalar_NOT: CustomScalar @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               myCustomScalar_NOT_IN: [CustomScalar] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              myRequiredCustomArrayScalar: [CustomScalar!]
+              myRequiredCustomArrayScalar: [CustomScalar!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              myRequiredCustomArrayScalar_EQ: [CustomScalar!]
               myRequiredCustomArrayScalar_INCLUDES: CustomScalar
               myRequiredCustomArrayScalar_NOT: [CustomScalar!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               myRequiredCustomArrayScalar_NOT_INCLUDES: CustomScalar @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")

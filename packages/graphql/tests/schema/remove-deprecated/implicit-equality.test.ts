@@ -22,44 +22,27 @@ import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
-describe("Comments", () => {
-    test("Simple", async () => {
-        const typeDefs = gql`
-            "A custom scalar."
-            scalar CustomScalar
-
-            "An enumeration of movie genres."
-            enum Genre {
-                ACTION
-                DRAMA
-                ROMANCE
-            }
-
-            """
-            A type describing a movie.
-            """
+describe("Implicit Equality filters", () => {
+    test("Should remove implicitEqualFilters if specified by the settings", async () => {
+        const typeDefs = /* GraphQL */ `
             type Movie @node {
                 id: ID
-                "The number of actors who acted in the movie."
+                title: String
                 actorCount: Int
-                """
-                The average rating for the movie.
-                """
                 averageRating: Float
-                """
-                Is the movie active?
-
-                This is measured based on annual profit.
-                """
                 isActive: Boolean
-                genre: Genre
-                customScalar: CustomScalar
+                viewers: BigInt
+                location: Point
+                geoLocation: CartesianPoint
+                alternativeTitles: [String]
+                released: Date
             }
         `;
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             features: {
                 excludeDeprecatedFields: {
+                    implicitEqualFilters: false,
                     bookmark: true,
                     negationFilters: true,
                     arrayFilters: true,
@@ -77,6 +60,42 @@ describe("Comments", () => {
             }
 
             \\"\\"\\"
+            A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.
+            \\"\\"\\"
+            scalar BigInt
+
+            type BigIntAggregateSelection {
+              average: BigInt
+              max: BigInt
+              min: BigInt
+              sum: BigInt
+            }
+
+            \\"\\"\\"
+            A point in a two- or three-dimensional Cartesian coordinate system or in a three-dimensional cylindrical coordinate system. For more information, see https://neo4j.com/docs/graphql/4/type-definitions/types/spatial/#cartesian-point
+            \\"\\"\\"
+            type CartesianPoint {
+              crs: String!
+              srid: Int!
+              x: Float!
+              y: Float!
+              z: Float
+            }
+
+            \\"\\"\\"Input type for a cartesian point with a distance\\"\\"\\"
+            input CartesianPointDistance {
+              distance: Float!
+              point: CartesianPointInput!
+            }
+
+            \\"\\"\\"Input type for a cartesian point\\"\\"\\"
+            input CartesianPointInput {
+              x: Float!
+              y: Float!
+              z: Float
+            }
+
+            \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
             type CreateInfo {
@@ -89,8 +108,8 @@ describe("Comments", () => {
               movies: [Movie!]!
             }
 
-            \\"\\"\\"A custom scalar.\\"\\"\\"
-            scalar CustomScalar
+            \\"\\"\\"A date, represented as a 'yyyy-mm-dd' string\\"\\"\\"
+            scalar Date
 
             \\"\\"\\"
             Information about the number of nodes and relationships deleted during a delete mutation
@@ -107,13 +126,6 @@ describe("Comments", () => {
               sum: Float
             }
 
-            \\"\\"\\"An enumeration of movie genres.\\"\\"\\"
-            enum Genre {
-              ACTION
-              DRAMA
-              ROMANCE
-            }
-
             type IDAggregateSelection {
               longest: ID
               shortest: ID
@@ -126,21 +138,17 @@ describe("Comments", () => {
               sum: Int
             }
 
-            \\"\\"\\"A type describing a movie.\\"\\"\\"
             type Movie {
-              \\"\\"\\"The number of actors who acted in the movie.\\"\\"\\"
               actorCount: Int
-              \\"\\"\\"The average rating for the movie.\\"\\"\\"
+              alternativeTitles: [String]
               averageRating: Float
-              customScalar: CustomScalar
-              genre: Genre
+              geoLocation: CartesianPoint
               id: ID
-              \\"\\"\\"
-              Is the movie active?
-              
-              This is measured based on annual profit.
-              \\"\\"\\"
               isActive: Boolean
+              location: Point
+              released: Date
+              title: String
+              viewers: BigInt
             }
 
             type MovieAggregateSelection {
@@ -148,15 +156,21 @@ describe("Comments", () => {
               averageRating: FloatAggregateSelection!
               count: Int!
               id: IDAggregateSelection!
+              title: StringAggregateSelection!
+              viewers: BigIntAggregateSelection!
             }
 
             input MovieCreateInput {
               actorCount: Int
+              alternativeTitles: [String]
               averageRating: Float
-              customScalar: CustomScalar
-              genre: Genre
+              geoLocation: CartesianPointInput
               id: ID
               isActive: Boolean
+              location: PointInput
+              released: Date
+              title: String
+              viewers: BigInt
             }
 
             type MovieEdge {
@@ -179,25 +193,36 @@ describe("Comments", () => {
             input MovieSort {
               actorCount: SortDirection
               averageRating: SortDirection
-              customScalar: SortDirection
-              genre: SortDirection
+              geoLocation: SortDirection
               id: SortDirection
               isActive: SortDirection
+              location: SortDirection
+              released: SortDirection
+              title: SortDirection
+              viewers: SortDirection
             }
 
             input MovieUpdateInput {
               actorCount: Int
               actorCount_DECREMENT: Int
               actorCount_INCREMENT: Int
+              alternativeTitles: [String]
+              alternativeTitles_POP: Int
+              alternativeTitles_PUSH: [String]
               averageRating: Float
               averageRating_ADD: Float
               averageRating_DIVIDE: Float
               averageRating_MULTIPLY: Float
               averageRating_SUBTRACT: Float
-              customScalar: CustomScalar
-              genre: Genre
+              geoLocation: CartesianPointInput
               id: ID
               isActive: Boolean
+              location: PointInput
+              released: Date
+              title: String
+              viewers: BigInt
+              viewers_DECREMENT: BigInt
+              viewers_INCREMENT: BigInt
             }
 
             input MovieWhere {
@@ -211,6 +236,9 @@ describe("Comments", () => {
               actorCount_IN: [Int]
               actorCount_LT: Int
               actorCount_LTE: Int
+              alternativeTitles: [String] @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              alternativeTitles_EQ: [String]
+              alternativeTitles_INCLUDES: String
               averageRating: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
               averageRating_EQ: Float
               averageRating_GT: Float
@@ -218,12 +246,14 @@ describe("Comments", () => {
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
-              customScalar: CustomScalar @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              customScalar_EQ: CustomScalar
-              customScalar_IN: [CustomScalar]
-              genre: Genre @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              genre_EQ: Genre
-              genre_IN: [Genre]
+              geoLocation: CartesianPointInput @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              geoLocation_DISTANCE: CartesianPointDistance
+              geoLocation_EQ: CartesianPointInput
+              geoLocation_GT: CartesianPointDistance
+              geoLocation_GTE: CartesianPointDistance
+              geoLocation_IN: [CartesianPointInput]
+              geoLocation_LT: CartesianPointDistance
+              geoLocation_LTE: CartesianPointDistance
               id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
@@ -232,6 +262,34 @@ describe("Comments", () => {
               id_STARTS_WITH: ID
               isActive: Boolean @deprecated(reason: \\"Please use the explicit _EQ version\\")
               isActive_EQ: Boolean
+              location: PointInput @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              location_DISTANCE: PointDistance
+              location_EQ: PointInput
+              location_GT: PointDistance
+              location_GTE: PointDistance
+              location_IN: [PointInput]
+              location_LT: PointDistance
+              location_LTE: PointDistance
+              released: Date @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              released_EQ: Date
+              released_GT: Date
+              released_GTE: Date
+              released_IN: [Date]
+              released_LT: Date
+              released_LTE: Date
+              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              title_CONTAINS: String
+              title_ENDS_WITH: String
+              title_EQ: String
+              title_IN: [String]
+              title_STARTS_WITH: String
+              viewers: BigInt @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              viewers_EQ: BigInt
+              viewers_GT: BigInt
+              viewers_GTE: BigInt
+              viewers_IN: [BigInt]
+              viewers_LT: BigInt
+              viewers_LTE: BigInt
             }
 
             type MoviesConnection {
@@ -254,6 +312,31 @@ describe("Comments", () => {
               startCursor: String
             }
 
+            \\"\\"\\"
+            A point in a coordinate system. For more information, see https://neo4j.com/docs/graphql/4/type-definitions/types/spatial/#point
+            \\"\\"\\"
+            type Point {
+              crs: String!
+              height: Float
+              latitude: Float!
+              longitude: Float!
+              srid: Int!
+            }
+
+            \\"\\"\\"Input type for a point with a distance\\"\\"\\"
+            input PointDistance {
+              \\"\\"\\"The distance in metres to be used when comparing two points\\"\\"\\"
+              distance: Float!
+              point: PointInput!
+            }
+
+            \\"\\"\\"Input type for a point\\"\\"\\"
+            input PointInput {
+              height: Float
+              latitude: Float!
+              longitude: Float!
+            }
+
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
@@ -266,6 +349,11 @@ describe("Comments", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
             }
 
             \\"\\"\\"

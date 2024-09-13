@@ -245,67 +245,78 @@ describe("Remove deprecated fields for aggregations", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              createdAt: DateTime
+              createdAt: DateTime @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              createdAt_EQ: DateTime
               createdAt_GT: DateTime
               createdAt_GTE: DateTime
               createdAt_IN: [DateTime]
               createdAt_LT: DateTime
               createdAt_LTE: DateTime
-              id: ID
+              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
+              id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
-              imdbRating: Float
+              imdbRating: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              imdbRating_EQ: Float
               imdbRating_GT: Float
               imdbRating_GTE: Float
               imdbRating_IN: [Float]
               imdbRating_LT: Float
               imdbRating_LTE: Float
-              isbn: String
+              isbn: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               isbn_CONTAINS: String
               isbn_ENDS_WITH: String
+              isbn_EQ: String
               isbn_IN: [String!]
               isbn_STARTS_WITH: String
-              screenTime: Duration
+              screenTime: Duration @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              screenTime_EQ: Duration
               screenTime_GT: Duration
               screenTime_GTE: Duration
               screenTime_IN: [Duration]
               screenTime_LT: Duration
               screenTime_LTE: Duration
-              someBigInt: BigInt
+              someBigInt: BigInt @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              someBigInt_EQ: BigInt
               someBigInt_GT: BigInt
               someBigInt_GTE: BigInt
               someBigInt_IN: [BigInt]
               someBigInt_LT: BigInt
               someBigInt_LTE: BigInt
-              someInt: Int
+              someInt: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              someInt_EQ: Int
               someInt_GT: Int
               someInt_GTE: Int
               someInt_IN: [Int]
               someInt_LT: Int
               someInt_LTE: Int
-              someLocalDateTime: LocalDateTime
+              someLocalDateTime: LocalDateTime @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              someLocalDateTime_EQ: LocalDateTime
               someLocalDateTime_GT: LocalDateTime
               someLocalDateTime_GTE: LocalDateTime
               someLocalDateTime_IN: [LocalDateTime]
               someLocalDateTime_LT: LocalDateTime
               someLocalDateTime_LTE: LocalDateTime
-              someLocalTime: LocalTime
+              someLocalTime: LocalTime @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              someLocalTime_EQ: LocalTime
               someLocalTime_GT: LocalTime
               someLocalTime_GTE: LocalTime
               someLocalTime_IN: [LocalTime]
               someLocalTime_LT: LocalTime
               someLocalTime_LTE: LocalTime
-              someTime: Time
+              someTime: Time @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              someTime_EQ: Time
               someTime_GT: Time
               someTime_GTE: Time
               someTime_IN: [Time]
               someTime_LT: Time
               someTime_LTE: Time
-              title: String
+              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
+              title_EQ: String
               title_IN: [String]
               title_STARTS_WITH: String
             }
@@ -704,59 +715,69 @@ describe("Remove deprecated fields for aggregations", () => {
               AND: [LikesWhere!]
               NOT: LikesWhere
               OR: [LikesWhere!]
-              someBigInt: BigInt
+              someBigInt: BigInt @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              someBigInt_EQ: BigInt
               someBigInt_GT: BigInt
               someBigInt_GTE: BigInt
               someBigInt_IN: [BigInt]
               someBigInt_LT: BigInt
               someBigInt_LTE: BigInt
-              someDateTime: DateTime
+              someDateTime: DateTime @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              someDateTime_EQ: DateTime
               someDateTime_GT: DateTime
               someDateTime_GTE: DateTime
               someDateTime_IN: [DateTime]
               someDateTime_LT: DateTime
               someDateTime_LTE: DateTime
-              someDuration: Duration
+              someDuration: Duration @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              someDuration_EQ: Duration
               someDuration_GT: Duration
               someDuration_GTE: Duration
               someDuration_IN: [Duration]
               someDuration_LT: Duration
               someDuration_LTE: Duration
-              someFloat: Float
+              someFloat: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              someFloat_EQ: Float
               someFloat_GT: Float
               someFloat_GTE: Float
               someFloat_IN: [Float]
               someFloat_LT: Float
               someFloat_LTE: Float
-              someId: ID
+              someId: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               someId_CONTAINS: ID
               someId_ENDS_WITH: ID
+              someId_EQ: ID
               someId_IN: [ID]
               someId_STARTS_WITH: ID
-              someInt: Int
+              someInt: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              someInt_EQ: Int
               someInt_GT: Int
               someInt_GTE: Int
               someInt_IN: [Int]
               someInt_LT: Int
               someInt_LTE: Int
-              someLocalDateTime: LocalDateTime
+              someLocalDateTime: LocalDateTime @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              someLocalDateTime_EQ: LocalDateTime
               someLocalDateTime_GT: LocalDateTime
               someLocalDateTime_GTE: LocalDateTime
               someLocalDateTime_IN: [LocalDateTime]
               someLocalDateTime_LT: LocalDateTime
               someLocalDateTime_LTE: LocalDateTime
-              someLocalTime: LocalTime
+              someLocalTime: LocalTime @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              someLocalTime_EQ: LocalTime
               someLocalTime_GT: LocalTime
               someLocalTime_GTE: LocalTime
               someLocalTime_IN: [LocalTime]
               someLocalTime_LT: LocalTime
               someLocalTime_LTE: LocalTime
-              someString: String
+              someString: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               someString_CONTAINS: String
               someString_ENDS_WITH: String
+              someString_EQ: String
               someString_IN: [String]
               someString_STARTS_WITH: String
-              someTime: Time
+              someTime: Time @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              someTime_EQ: Time
               someTime_GT: Time
               someTime_GTE: Time
               someTime_IN: [Time]
@@ -1134,9 +1155,10 @@ describe("Remove deprecated fields for aggregations", () => {
               likes_SINGLE: UserWhere
               \\"\\"\\"Return Posts where some of the related Users match this filter\\"\\"\\"
               likes_SOME: UserWhere
-              title: String
+              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
+              title_EQ: String
               title_IN: [String]
               title_STARTS_WITH: String
             }
@@ -1296,59 +1318,69 @@ describe("Remove deprecated fields for aggregations", () => {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
-              someBigInt: BigInt
+              someBigInt: BigInt @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              someBigInt_EQ: BigInt
               someBigInt_GT: BigInt
               someBigInt_GTE: BigInt
               someBigInt_IN: [BigInt]
               someBigInt_LT: BigInt
               someBigInt_LTE: BigInt
-              someDateTime: DateTime
+              someDateTime: DateTime @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              someDateTime_EQ: DateTime
               someDateTime_GT: DateTime
               someDateTime_GTE: DateTime
               someDateTime_IN: [DateTime]
               someDateTime_LT: DateTime
               someDateTime_LTE: DateTime
-              someDuration: Duration
+              someDuration: Duration @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              someDuration_EQ: Duration
               someDuration_GT: Duration
               someDuration_GTE: Duration
               someDuration_IN: [Duration]
               someDuration_LT: Duration
               someDuration_LTE: Duration
-              someFloat: Float
+              someFloat: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              someFloat_EQ: Float
               someFloat_GT: Float
               someFloat_GTE: Float
               someFloat_IN: [Float]
               someFloat_LT: Float
               someFloat_LTE: Float
-              someId: ID
+              someId: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               someId_CONTAINS: ID
               someId_ENDS_WITH: ID
+              someId_EQ: ID
               someId_IN: [ID]
               someId_STARTS_WITH: ID
-              someInt: Int
+              someInt: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              someInt_EQ: Int
               someInt_GT: Int
               someInt_GTE: Int
               someInt_IN: [Int]
               someInt_LT: Int
               someInt_LTE: Int
-              someLocalDateTime: LocalDateTime
+              someLocalDateTime: LocalDateTime @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              someLocalDateTime_EQ: LocalDateTime
               someLocalDateTime_GT: LocalDateTime
               someLocalDateTime_GTE: LocalDateTime
               someLocalDateTime_IN: [LocalDateTime]
               someLocalDateTime_LT: LocalDateTime
               someLocalDateTime_LTE: LocalDateTime
-              someLocalTime: LocalTime
+              someLocalTime: LocalTime @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              someLocalTime_EQ: LocalTime
               someLocalTime_GT: LocalTime
               someLocalTime_GTE: LocalTime
               someLocalTime_IN: [LocalTime]
               someLocalTime_LT: LocalTime
               someLocalTime_LTE: LocalTime
-              someString: String
+              someString: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               someString_CONTAINS: String
               someString_ENDS_WITH: String
+              someString_EQ: String
               someString_IN: [String]
               someString_STARTS_WITH: String
-              someTime: Time
+              someTime: Time @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              someTime_EQ: Time
               someTime_GT: Time
               someTime_GTE: Time
               someTime_IN: [Time]

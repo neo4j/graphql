@@ -366,9 +366,10 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               bookConnection: BookTitle_ENBookConnectionWhere
               bookConnection_NOT: BookTitle_ENBookConnectionWhere
               book_NOT: BookWhere
-              value: String
+              value: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               value_CONTAINS: String
               value_ENDS_WITH: String
+              value_EQ: String
               value_IN: [String!]
               value_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               value_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -612,9 +613,10 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               bookConnection: BookTitle_SVBookConnectionWhere
               bookConnection_NOT: BookTitle_SVBookConnectionWhere
               book_NOT: BookWhere
-              value: String
+              value: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               value_CONTAINS: String
               value_ENDS_WITH: String
+              value_EQ: String
               value_IN: [String!]
               value_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               value_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -770,9 +772,10 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               AND: [BookWhere!]
               NOT: BookWhere
               OR: [BookWhere!]
-              isbn: String
+              isbn: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               isbn_CONTAINS: String
               isbn_ENDS_WITH: String
+              isbn_EQ: String
               isbn_IN: [String!]
               isbn_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               isbn_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -780,9 +783,10 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               isbn_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               isbn_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               isbn_STARTS_WITH: String
-              originalTitle: String
+              originalTitle: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               originalTitle_CONTAINS: String
               originalTitle_ENDS_WITH: String
+              originalTitle_EQ: String
               originalTitle_IN: [String!]
               originalTitle_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               originalTitle_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")

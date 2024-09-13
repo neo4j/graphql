@@ -195,7 +195,8 @@ describe("Comments", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              actorCount: Int
+              actorCount: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              actorCount_EQ: Int
               actorCount_GT: Int
               actorCount_GTE: Int
               actorCount_IN: [Int]
@@ -203,7 +204,8 @@ describe("Comments", () => {
               actorCount_LTE: Int
               actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              averageRating: Float
+              averageRating: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              averageRating_EQ: Float
               averageRating_GT: Float
               averageRating_GTE: Float
               averageRating_IN: [Float]
@@ -211,17 +213,20 @@ describe("Comments", () => {
               averageRating_LTE: Float
               averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              customScalar: CustomScalar
+              customScalar: CustomScalar @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              customScalar_EQ: CustomScalar
               customScalar_IN: [CustomScalar]
               customScalar_NOT: CustomScalar @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               customScalar_NOT_IN: [CustomScalar] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              genre: Genre
+              genre: Genre @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              genre_EQ: Genre
               genre_IN: [Genre]
               genre_NOT: Genre @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               genre_NOT_IN: [Genre] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id: ID
+              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
+              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -229,7 +234,8 @@ describe("Comments", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
-              isActive: Boolean
+              isActive: Boolean @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              isActive_EQ: Boolean
               isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
@@ -353,9 +359,10 @@ describe("Comments", () => {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
-                  name: String
+                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   name_CONTAINS: String
                   name_ENDS_WITH: String
+                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -620,9 +627,10 @@ describe("Comments", () => {
                   actors_SINGLE: ActorWhere
                   \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
                   actors_SOME: ActorWhere
-                  id: ID
+                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
+                  id_EQ: ID
                   id_IN: [ID]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -792,7 +800,8 @@ describe("Comments", () => {
                   AND: [ActedInWhere!]
                   NOT: ActedInWhere
                   OR: [ActedInWhere!]
-                  screenTime: Int
+                  screenTime: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  screenTime_EQ: Int
                   screenTime_GT: Int
                   screenTime_GTE: Int
                   screenTime_IN: [Int!]
@@ -1027,9 +1036,10 @@ describe("Comments", () => {
                   actedIn_SINGLE: ProductionWhere
                   \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
                   actedIn_SOME: ProductionWhere
-                  name: String
+                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   name_CONTAINS: String
                   name_ENDS_WITH: String
+                  name_EQ: String
                   name_IN: [String!]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1134,7 +1144,8 @@ describe("Comments", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  runtime: Int
+                  runtime: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  runtime_EQ: Int
                   runtime_GT: Int
                   runtime_GTE: Int
                   runtime_IN: [Int!]
@@ -1142,9 +1153,10 @@ describe("Comments", () => {
                   runtime_LTE: Int
                   runtime_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   runtime_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  title: String
+                  title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   title_CONTAINS: String
                   title_ENDS_WITH: String
+                  title_EQ: String
                   title_IN: [String!]
                   title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1232,9 +1244,10 @@ describe("Comments", () => {
                   AND: [ProductionWhere!]
                   NOT: ProductionWhere
                   OR: [ProductionWhere!]
-                  title: String
+                  title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   title_CONTAINS: String
                   title_ENDS_WITH: String
+                  title_EQ: String
                   title_IN: [String!]
                   title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1321,7 +1334,8 @@ describe("Comments", () => {
                   AND: [SeriesWhere!]
                   NOT: SeriesWhere
                   OR: [SeriesWhere!]
-                  episodes: Int
+                  episodes: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  episodes_EQ: Int
                   episodes_GT: Int
                   episodes_GTE: Int
                   episodes_IN: [Int!]
@@ -1329,9 +1343,10 @@ describe("Comments", () => {
                   episodes_LTE: Int
                   episodes_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   episodes_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  title: String
+                  title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   title_CONTAINS: String
                   title_ENDS_WITH: String
+                  title_EQ: String
                   title_IN: [String!]
                   title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1479,9 +1494,10 @@ describe("Comments", () => {
                   AND: [GenreWhere!]
                   NOT: GenreWhere
                   OR: [GenreWhere!]
-                  id: ID
+                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
+                  id_EQ: ID
                   id_IN: [ID]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1702,9 +1718,10 @@ describe("Comments", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  id: ID
+                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
+                  id_EQ: ID
                   id_IN: [ID]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")

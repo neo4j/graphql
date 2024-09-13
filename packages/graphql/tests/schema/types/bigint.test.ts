@@ -123,9 +123,10 @@ describe("Bigint", () => {
               AND: [FileWhere!]
               NOT: FileWhere
               OR: [FileWhere!]
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -133,7 +134,8 @@ describe("Bigint", () => {
               name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
-              size: BigInt
+              size: BigInt @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              size_EQ: BigInt
               size_GT: BigInt
               size_GTE: BigInt
               size_IN: [BigInt!]

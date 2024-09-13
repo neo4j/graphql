@@ -357,9 +357,10 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               movies_SINGLE: MovieWhere
               \\"\\"\\"Return Genres where some of the related Movies match this filter\\"\\"\\"
               movies_SOME: MovieWhere
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -620,7 +621,8 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               genres_SINGLE: GenreWhere @deprecated(reason: \\"Do not use genre\\")
               \\"\\"\\"Return Movies where some of the related Genres match this filter\\"\\"\\"
               genres_SOME: GenreWhere @deprecated(reason: \\"Do not use genre\\")
-              imdbRating: Float
+              imdbRating: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              imdbRating_EQ: Float
               imdbRating_GT: Float
               imdbRating_GTE: Float
               imdbRating_IN: [Float]
@@ -631,6 +633,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               title: String @deprecated(reason: \\"Do not use title\\")
               title_CONTAINS: String @deprecated(reason: \\"Do not use title\\")
               title_ENDS_WITH: String @deprecated(reason: \\"Do not use title\\")
+              title_EQ: String @deprecated(reason: \\"Do not use title\\")
               title_IN: [String] @deprecated(reason: \\"Do not use title\\")
               title_NOT: String @deprecated(reason: \\"Do not use title\\")
               title_NOT_CONTAINS: String @deprecated(reason: \\"Do not use title\\")
@@ -638,7 +641,8 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               title_NOT_IN: [String] @deprecated(reason: \\"Do not use title\\")
               title_NOT_STARTS_WITH: String @deprecated(reason: \\"Do not use title\\")
               title_STARTS_WITH: String @deprecated(reason: \\"Do not use title\\")
-              year: Int
+              year: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              year_EQ: Int
               year_GT: Int
               year_GTE: Int
               year_IN: [Int]

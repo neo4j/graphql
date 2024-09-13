@@ -29,7 +29,7 @@ import type {
     PrimitiveField,
     TemporalField,
 } from "../types";
-import { DEPRECATE_NOT } from "./constants";
+import { DEPRECATE_EQUAL_FILTERS, DEPRECATE_NOT } from "./constants";
 import { shouldAddDeprecatedFields } from "./generation/utils";
 import { graphqlDirectivesToCompose } from "./to-compose";
 
@@ -208,8 +208,13 @@ export function getWhereFieldsForAttributes({
         const deprecatedDirectives = graphqlDirectivesToCompose(
             (userDefinedDirectivesOnField ?? []).filter((directive) => directive.name.value === DEPRECATED)
         );
-
-        result[field.name] = {
+        if (shouldAddDeprecatedFields(features, "implicitEqualFilters") && !field.isCypher()) {
+            result[field.name] = {
+                type: field.getInputTypeNames().where.pretty,
+                directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_EQUAL_FILTERS],
+            };
+        }
+        result[`${field.name}_EQ`] = {
             type: field.getInputTypeNames().where.pretty,
             directives: deprecatedDirectives,
         };
