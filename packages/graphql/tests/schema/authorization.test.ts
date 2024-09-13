@@ -18,20 +18,20 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Authorization", () => {
     test("Authorization", async () => {
         const typeDefs = gql`
-            type User @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) @node {
+            type User @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
                 id: ID!
                 name: String!
                 posts: [User!]! @relationship(type: "HAS_AUTHOR", direction: OUT)
             }
 
-            type Post @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) @node {
+            type Post @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
                 id: ID!
                 name: String!
                 author: User! @relationship(type: "HAS_AUTHOR", direction: IN)

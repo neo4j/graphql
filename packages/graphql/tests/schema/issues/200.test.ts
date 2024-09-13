@@ -18,14 +18,14 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("200", () => {
     test("Preserve schema array non null", async () => {
         const typeDefs = gql`
-            type Category @node {
+            type Category {
                 categoryId: ID! @id @unique
                 name: String!
                 description: String! @default(value: "")

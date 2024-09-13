@@ -25,12 +25,12 @@ import { Neo4jGraphQL } from "../../../src";
 describe("Relationship-properties", () => {
     test("Relationship Properties", async () => {
         const typeDefs = gql`
-            type Actor @node {
+            type Actor {
                 name: String!
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
-            type Movie @node {
+            type Movie {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
@@ -744,12 +744,12 @@ describe("Relationship-properties", () => {
 
     test("should filter out generated fields", async () => {
         const typeDefs = gql`
-            type Actor @node {
+            type Actor {
                 name: String!
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
-            type Movie @node {
+            type Movie {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
@@ -1497,12 +1497,12 @@ describe("Relationship-properties", () => {
 
     test("should not create or use <RelationshipProperties>{Create,Update}Input if only generated fields", async () => {
         const typeDefs = gql`
-            type Actor @node {
+            type Actor {
                 name: String!
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
-            type Movie @node {
+            type Movie {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }

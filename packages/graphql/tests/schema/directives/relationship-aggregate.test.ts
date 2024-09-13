@@ -17,21 +17,21 @@
  * limitations under the License.
  */
 
-import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import type { GraphQLFieldMap, GraphQLObjectType } from "graphql";
-import { lexicographicSortSchema } from "graphql";
 import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
+import type { GraphQLFieldMap, GraphQLObjectType } from "graphql";
+import { lexicographicSortSchema } from "graphql";
+import { printSchemaWithDirectives } from "@graphql-tools/utils";
 
 describe("@relationship directive, aggregate argument", () => {
     test("the default behavior should enable nested aggregation (this will change in 4.0)", async () => {
         const typeDefs = gql`
-            type Actor @node {
+            type Actor {
                 username: String!
                 password: String!
             }
 
-            type Movie @node {
+            type Movie {
                 title: String
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
@@ -54,12 +54,12 @@ describe("@relationship directive, aggregate argument", () => {
 
     test("should disable nested aggregation", async () => {
         const typeDefs = gql`
-            type Actor @node {
+            type Actor {
                 username: String!
                 password: String!
             }
 
-            type Movie @node {
+            type Movie {
                 title: String
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, aggregate: false)
             }
@@ -82,12 +82,12 @@ describe("@relationship directive, aggregate argument", () => {
 
     test("should enable nested aggregation", async () => {
         const typeDefs = gql`
-            type Actor @node {
+            type Actor {
                 username: String!
                 password: String!
             }
 
-            type Movie @node {
+            type Movie {
                 title: String
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, aggregate: true)
             }
@@ -110,12 +110,12 @@ describe("@relationship directive, aggregate argument", () => {
 
     test("should work in conjunction with @query aggregate:false and @relationship aggregate:true", async () => {
         const typeDefs = gql`
-            type Actor @query(aggregate: false) @node {
+            type Actor @query(aggregate: false) {
                 username: String!
                 password: String!
             }
 
-            type Movie @node {
+            type Movie {
                 title: String
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, aggregate: true)
             }
@@ -158,12 +158,12 @@ describe("@relationship directive, aggregate argument", () => {
 
     test("should work in conjunction with @query aggregate:true and @relationship aggregate:false", async () => {
         const typeDefs = gql`
-            type Actor @query(aggregate: true) @node {
+            type Actor @query(aggregate: true) {
                 username: String!
                 password: String!
             }
 
-            type Movie @node {
+            type Movie {
                 title: String
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, aggregate: false)
             }
@@ -207,12 +207,12 @@ describe("@relationship directive, aggregate argument", () => {
     describe("snapshot tests", () => {
         test("aggregate argument set as false", async () => {
             const typeDefs = gql`
-                type Actor @node {
+                type Actor {
                     username: String!
                     password: String!
                 }
 
-                type Movie @node {
+                type Movie {
                     title: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, aggregate: false)
                 }
@@ -656,12 +656,12 @@ describe("@relationship directive, aggregate argument", () => {
 
         test("argument set as true", async () => {
             const typeDefs = gql`
-                type Actor @node {
+                type Actor {
                     username: String!
                     password: String!
                 }
 
-                type Movie @node {
+                type Movie {
                     title: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, aggregate: true)
                 }
@@ -1117,7 +1117,7 @@ describe("@relationship directive, aggregate argument", () => {
         describe("on INTERFACE", () => {
             test("aggregate argument set as false, (no-op as abstract does not support aggregation)", async () => {
                 const typeDefs = gql`
-                    type Actor implements Person @node {
+                    type Actor implements Person {
                         username: String!
                         password: String!
                     }
@@ -1127,7 +1127,7 @@ describe("@relationship directive, aggregate argument", () => {
                         password: String!
                     }
 
-                    type Movie @node {
+                    type Movie {
                         title: String
                         actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, aggregate: false)
                     }
@@ -1648,7 +1648,7 @@ describe("@relationship directive, aggregate argument", () => {
             });
             test("aggregate argument set as true, (no-op as abstract does not support aggregation)", async () => {
                 const typeDefs = gql`
-                    type Actor implements Person @node {
+                    type Actor implements Person {
                         username: String!
                         password: String!
                     }
@@ -1658,7 +1658,7 @@ describe("@relationship directive, aggregate argument", () => {
                         password: String!
                     }
 
-                    type Movie @node {
+                    type Movie {
                         title: String
                         actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, aggregate: true)
                     }
@@ -2193,18 +2193,18 @@ describe("@relationship directive, aggregate argument", () => {
         describe("on UNION", () => {
             test("aggregate argument set as false, (no-op as abstract does not support aggregation)", async () => {
                 const typeDefs = gql`
-                    type Actor @node {
+                    type Actor {
                         username: String!
                         password: String!
                     }
 
-                    type Person @node {
+                    type Person {
                         name: String!
                     }
 
                     union CastMember = Actor | Person
 
-                    type Movie @node {
+                    type Movie {
                         title: String
                         actors: [CastMember!]! @relationship(type: "ACTED_IN", direction: IN, aggregate: false)
                     }
@@ -2721,18 +2721,18 @@ describe("@relationship directive, aggregate argument", () => {
             });
             test("aggregate argument set as true, (no-op as abstract does not support aggregation)", async () => {
                 const typeDefs = gql`
-                    type Actor @node {
+                    type Actor {
                         username: String!
                         password: String!
                     }
 
-                    type Person @node {
+                    type Person {
                         name: String!
                     }
 
                     union CastMember = Actor | Person
 
-                    type Movie @node {
+                    type Movie {
                         title: String
                         actors: [CastMember!]! @relationship(type: "ACTED_IN", direction: IN, aggregate: true)
                     }

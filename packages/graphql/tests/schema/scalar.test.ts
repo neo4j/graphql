@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Scalar", () => {
@@ -27,7 +27,7 @@ describe("Scalar", () => {
         const typeDefs = gql`
             scalar CustomScalar
 
-            type Movie @node {
+            type Movie {
                 id: ID
                 myCustomArrayScalar: [CustomScalar!]
                 myCustomScalar: CustomScalar

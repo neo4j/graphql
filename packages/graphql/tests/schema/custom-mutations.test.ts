@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Custom-mutations", () => {
@@ -29,7 +29,7 @@ describe("Custom-mutations", () => {
                 id: ID
             }
 
-            type Movie @node {
+            type Movie {
                 id: ID
             }
 

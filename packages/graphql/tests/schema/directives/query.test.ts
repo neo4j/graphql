@@ -17,21 +17,21 @@
  * limitations under the License.
  */
 
-import type { GraphQLFieldMap } from "graphql";
-import { GraphQLError } from "graphql";
 import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
+import type { GraphQLFieldMap } from "graphql";
+import { GraphQLError } from "graphql";
 
 describe("@query directive", () => {
     describe("on OBJECT", () => {
         test("default arguments should disable aggregation", async () => {
             const typeDefs = gql`
-                type Actor @node {
+                type Actor {
                     username: String!
                     password: String!
                 }
 
-                type Movie @query @node {
+                type Movie @query {
                     title: String
                 }
             `;
@@ -61,12 +61,12 @@ describe("@query directive", () => {
 
         test("should enable aggregation", async () => {
             const typeDefs = gql`
-                type Actor @query(aggregate: true) @node {
+                type Actor @query(aggregate: true) {
                     username: String!
                     password: String!
                 }
 
-                type Movie @node {
+                type Movie {
                     title: String
                 }
             `;
@@ -97,11 +97,11 @@ describe("@query directive", () => {
 
         test("should disable read and aggregate for Actor", async () => {
             const typeDefs = gql`
-                type Actor @query(read: false, aggregate: false) @node {
+                type Actor @query(read: false, aggregate: false) {
                     name: String
                 }
 
-                type Movie @node {
+                type Movie {
                     title: String
                 }
             `;
@@ -131,11 +131,11 @@ describe("@query directive", () => {
 
         test("should disable read and enable aggregate for Actor", async () => {
             const typeDefs = gql`
-                type Actor @query(read: false, aggregate: true) @node {
+                type Actor @query(read: false, aggregate: true) {
                     name: String
                 }
 
-                type Movie @node {
+                type Movie {
                     title: String
                 }
             `;
@@ -167,12 +167,12 @@ describe("@query directive", () => {
     describe("on SCHEMA", () => {
         test("default arguments should disable aggregation", async () => {
             const typeDefs = gql`
-                type Actor @node {
+                type Actor {
                     username: String!
                     password: String!
                 }
 
-                type Movie @node {
+                type Movie {
                     title: String
                 }
                 extend schema @query
@@ -203,12 +203,12 @@ describe("@query directive", () => {
 
         test("should enable aggregation", async () => {
             const typeDefs = gql`
-                type Actor @node {
+                type Actor {
                     username: String!
                     password: String!
                 }
 
-                type Movie @node {
+                type Movie {
                     title: String
                 }
 
@@ -241,11 +241,11 @@ describe("@query directive", () => {
 
         test("should disable read and aggregate", async () => {
             const typeDefs = gql`
-                type Actor @node {
+                type Actor {
                     name: String
                 }
 
-                type Movie @node {
+                type Movie {
                     title: String
                 }
                 extend schema @query(read: false, aggregate: false)
@@ -276,11 +276,11 @@ describe("@query directive", () => {
 
         test("should disable read and enable aggregate", async () => {
             const typeDefs = gql`
-                type Actor @node {
+                type Actor {
                     name: String
                 }
 
-                type Movie @node {
+                type Movie {
                     title: String
                 }
 
@@ -312,11 +312,11 @@ describe("@query directive", () => {
 
         test("should throw an Error when is used in both schema on object", async () => {
             const typeDefs = gql`
-                type Actor @query(read: true, aggregate: true) @node {
+                type Actor @query(read: true, aggregate: true) {
                     name: String
                 }
 
-                type Movie @node {
+                type Movie {
                     title: String
                 }
 

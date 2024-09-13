@@ -38,21 +38,21 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
                 genre: Genre!
             }
 
-            type Movie implements INode & IProduct @node {
+            type Movie implements INode & IProduct {
                 id: String!
 
                 name: String!
                 genre: Genre! @relationship(type: "HAS_GENRE", direction: OUT)
             }
 
-            type Series implements INode & IProduct @node {
+            type Series implements INode & IProduct {
                 id: String!
 
                 name: String!
                 genre: Genre! @relationship(type: "HAS_GENRE", direction: OUT)
             }
 
-            type Genre @node {
+            type Genre {
                 name: String! @unique
                 product: [IProduct!]! @relationship(type: "HAS_GENRE", direction: IN)
             }
@@ -1445,21 +1445,21 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
                 genre: Genre!
             }
 
-            type Movie implements IProduct @node {
+            type Movie implements IProduct {
                 id: String!
 
                 name: String!
                 genre: Genre! @relationship(type: "HAS_GENRE", direction: OUT)
             }
 
-            type Series implements IProduct @node {
+            type Series implements IProduct {
                 id: String!
 
                 name: String!
                 genre: Genre! @relationship(type: "HAS_GENRE", direction: OUT)
             }
 
-            type Genre @node {
+            type Genre {
                 name: String! @unique
                 product: [IProduct!]! @relationship(type: "HAS_GENRE", direction: IN)
             }
@@ -2791,14 +2791,14 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
                 genre: Genre! @declareRelationship
             }
 
-            type Movie implements IProduct @node {
+            type Movie implements IProduct {
                 id: String!
 
                 name: String!
                 genre: Genre! @relationship(type: "HAS_GENRE", direction: OUT, properties: "MovieProps")
             }
 
-            type Series implements IProduct @node {
+            type Series implements IProduct {
                 id: String!
 
                 name: String!
@@ -2813,7 +2813,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
                 episodes: Int
             }
 
-            type Genre @node {
+            type Genre {
                 name: String! @unique
                 product: [IProduct!]! @relationship(type: "HAS_GENRE", direction: IN)
             }
@@ -4492,14 +4492,14 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
                 genre: UGenre! @declareRelationship
             }
 
-            type Movie implements IProduct @node {
+            type Movie implements IProduct {
                 id: String!
 
                 name: String!
                 genre: UGenre! @relationship(type: "HAS_GENRE", direction: OUT, properties: "MovieProps")
             }
 
-            type Series implements IProduct @node {
+            type Series implements IProduct {
                 id: String!
 
                 name: String!
@@ -4516,12 +4516,12 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             union UGenre = Genre | Rating
 
-            type Genre @node {
+            type Genre {
                 name: String! @unique
                 product: [IProduct!]! @relationship(type: "HAS_GENRE", direction: IN)
             }
 
-            type Rating @node {
+            type Rating {
                 number: Int! @unique
                 product: [IProduct!]! @relationship(type: "HAS_RATING", direction: IN)
             }

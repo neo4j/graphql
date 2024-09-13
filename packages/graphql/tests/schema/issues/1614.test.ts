@@ -25,7 +25,7 @@ import { Neo4jGraphQL } from "../../../src/classes";
 describe("https://github.com/neo4j/graphql/issues/1614", () => {
     test("should include enumFields on relationships", async () => {
         const typeDefs = gql`
-            enum CrewPositionType  {
+            enum CrewPositionType {
                 BoomOperator
                 Gaffer
                 KeyGrip
@@ -35,11 +35,11 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
                 position: CrewPositionType
             }
 
-            type Movie @node {
+            type Movie {
                 name: String!
             }
 
-            type CrewMember @node {
+            type CrewMember {
                 movies: Movie! @relationship(type: "WORKED_ON", direction: OUT, properties: "CrewPosition")
             }
         `;

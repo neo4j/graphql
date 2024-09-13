@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
 
@@ -32,7 +32,7 @@ describe("@selectable", () => {
 
     test("Disable read fields", async () => {
         const typeDefs = gql`
-            type Movie @query(aggregate: true) @node {
+            type Movie @query(aggregate: true) {
                 title: String!
                 description: String @selectable(onRead: false, onAggregate: true)
             }
@@ -195,7 +195,7 @@ describe("@selectable", () => {
 
     test("Disable aggregation fields", async () => {
         const typeDefs = gql`
-            type Movie @query(aggregate: true) @node {
+            type Movie @query(aggregate: true) {
                 title: String!
                 description: String @selectable(onRead: true, onAggregate: false)
             }
@@ -358,7 +358,7 @@ describe("@selectable", () => {
 
     test("Disable read and aggregate fields", async () => {
         const typeDefs = gql`
-            type Movie @query(aggregate: true) @node {
+            type Movie @query(aggregate: true) {
                 title: String!
                 description: String @selectable(onRead: false, onAggregate: false)
             }
@@ -520,7 +520,7 @@ describe("@selectable", () => {
 
     test("Disable read fields on subscriptions", async () => {
         const typeDefs = gql`
-            type Movie @query(aggregate: true) @node {
+            type Movie @query(aggregate: true) {
                 title: String!
                 description: String @selectable(onRead: false, onAggregate: true)
             }
@@ -748,12 +748,12 @@ describe("@selectable", () => {
     describe("relationships fields to a concrete type", () => {
         test("Disable read on relationship field", async () => {
             const typeDefs = gql`
-                type Movie @query(aggregate: true) @node {
+                type Movie @query(aggregate: true) {
                     title: String!
                     description: String
                 }
 
-                type Actor @query(aggregate: true) @node {
+                type Actor @query(aggregate: true) {
                     name: String!
                     actedIn: [Movie!]!
                         @relationship(type: "ACTED_IN", direction: OUT)
@@ -1190,12 +1190,12 @@ describe("@selectable", () => {
         });
         test("Disable aggregation on relationship field (no-op as controlled by @relationship(aggregate: false))", async () => {
             const typeDefs = gql`
-                type Movie @query(aggregate: true) @node {
+                type Movie @query(aggregate: true) {
                     title: String!
                     description: String
                 }
 
-                type Actor @query(aggregate: true) @node {
+                type Actor @query(aggregate: true) {
                     name: String!
                     actedIn: [Movie!]!
                         @relationship(type: "ACTED_IN", direction: OUT)
@@ -1652,19 +1652,19 @@ describe("@selectable", () => {
     describe("relationships fields to a union type", () => {
         test("Disable read on relationship field", async () => {
             const typeDefs = gql`
-                type Movie @query(aggregate: true) @node {
+                type Movie @query(aggregate: true) {
                     title: String!
                     description: String
                 }
 
-                type Series @query(aggregate: true) @node {
+                type Series @query(aggregate: true) {
                     name: String!
                     description: String
                 }
 
                 union Production = Movie | Series
 
-                type Actor @query(aggregate: true) @node {
+                type Actor @query(aggregate: true) {
                     name: String!
                     actedIn: [Production!]!
                         @relationship(type: "ACTED_IN", direction: OUT)
@@ -2183,19 +2183,19 @@ describe("@selectable", () => {
         });
         test("Disable aggregation on relationship field (no-op as controlled by @relationship(aggregate: false))", async () => {
             const typeDefs = gql`
-                type Movie @query(aggregate: true) @node {
+                type Movie @query(aggregate: true) {
                     title: String!
                     description: String
                 }
 
-                type Series @query(aggregate: true) @node {
+                type Series @query(aggregate: true) {
                     name: String!
                     description: String
                 }
 
                 union Production = Movie | Series
 
-                type Actor @query(aggregate: true) @node {
+                type Actor @query(aggregate: true) {
                     name: String!
                     actedIn: [Production!]!
                         @relationship(type: "ACTED_IN", direction: OUT)
@@ -2735,17 +2735,17 @@ describe("@selectable", () => {
                     description: String
                 }
 
-                type Movie implements Production @query(aggregate: true) @node {
+                type Movie implements Production @query(aggregate: true) {
                     title: String!
                     description: String
                 }
 
-                type Series implements Production @query(aggregate: true) @node {
+                type Series implements Production @query(aggregate: true) {
                     title: String!
                     description: String
                 }
 
-                type Actor @query(aggregate: true) @node {
+                type Actor @query(aggregate: true) {
                     name: String!
                     actedIn: [Production!]!
                         @relationship(type: "ACTED_IN", direction: OUT)
@@ -3358,17 +3358,17 @@ describe("@selectable", () => {
                     description: String
                 }
 
-                type Movie implements Production @query(aggregate: true) @node {
+                type Movie implements Production @query(aggregate: true) {
                     title: String!
                     description: String
                 }
 
-                type Series implements Production @query(aggregate: true) @node {
+                type Series implements Production @query(aggregate: true) {
                     title: String!
                     description: String
                 }
 
-                type Actor @query(aggregate: true) @node {
+                type Actor @query(aggregate: true) {
                     name: String!
                     actedIn: [Production!]!
                         @relationship(type: "ACTED_IN", direction: OUT)

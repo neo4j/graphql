@@ -38,7 +38,7 @@ describe("Comments", () => {
             """
             A type describing a movie.
             """
-            type Movie @node {
+            type Movie {
                 id: ID
                 "The number of actors who acted in the movie."
                 actorCount: Int
@@ -288,11 +288,11 @@ describe("Comments", () => {
     describe("Relationship", () => {
         test("Simple", async () => {
             const typeDefs = gql`
-                type Actor @node {
+                type Actor {
                     name: String
                 }
 
-                type Movie @node {
+                type Movie {
                     id: ID
                     "Actors in Movie"
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
@@ -706,12 +706,12 @@ describe("Comments", () => {
                     title: String!
                 }
 
-                type Movie implements Production @node {
+                type Movie implements Production {
                     title: String!
                     runtime: Int!
                 }
 
-                type Series implements Production @node {
+                type Series implements Production {
                     title: String!
                     episodes: Int!
                 }
@@ -720,7 +720,7 @@ describe("Comments", () => {
                     screenTime: Int!
                 }
 
-                type Actor @node {
+                type Actor {
                     name: String!
                     "Acted in Production"
                     actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
@@ -1386,11 +1386,11 @@ describe("Comments", () => {
             const typeDefs = gql`
                 union Search = Movie | Genre
 
-                type Genre @node {
+                type Genre {
                     id: ID
                 }
 
-                type Movie @node {
+                type Movie {
                     id: ID
                     search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
                     searchNoDirective: Search

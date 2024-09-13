@@ -27,12 +27,12 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
         const typeDefs = gql`
             extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
 
-            type Movie @mutation(operations: []) @shareable @key(fields: "title") @node {
+            type Movie @mutation(operations: []) @shareable @key(fields: "title") {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor @mutation(operations: []) @node {
+            type Actor @mutation(operations: []) {
                 name: String!
             }
         `;
@@ -347,13 +347,13 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
         const typeDefs = gql`
             extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
 
-            type Movie @query(read: false) @shareable @key(fields: "title") @key(fields: "id") @node {
+            type Movie @query(read: false) @shareable @key(fields: "title") @key(fields: "id") {
                 title: String!
                 id: ID!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor @node {
+            type Actor {
                 name: String!
             }
         `;

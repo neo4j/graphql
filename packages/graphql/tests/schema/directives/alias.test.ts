@@ -25,13 +25,13 @@ import { Neo4jGraphQL } from "../../../src";
 describe("Alias", () => {
     test("Custom Directive Simple", async () => {
         const typeDefs = gql`
-            type Actor @node {
+            type Actor {
                 name: String!
                 city: String @alias(property: "cityPropInDb")
                 actedIn: [Movie!]! @relationship(direction: OUT, type: "ACTED_IN", properties: "ActorActedInProps")
             }
 
-            type Movie @node {
+            type Movie {
                 title: String!
                 rating: Float @alias(property: "ratingPropInDb")
             }

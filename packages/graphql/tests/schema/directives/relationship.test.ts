@@ -18,18 +18,18 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Relationship", () => {
     test("Single Relationship", async () => {
         const typeDefs = gql`
-            type Actor @node {
+            type Actor {
                 name: String
             }
 
-            type Movie @node {
+            type Movie {
                 id: ID
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
@@ -437,12 +437,12 @@ describe("Relationship", () => {
 
     test("Multi Relationship", async () => {
         const typeDefs = gql`
-            type Actor @node {
+            type Actor {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type Movie @node {
+            type Movie {
                 id: ID
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }

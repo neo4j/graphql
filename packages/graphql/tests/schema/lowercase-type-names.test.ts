@@ -25,7 +25,7 @@ import { Neo4jGraphQL } from "../../src";
 describe("lower case type names", () => {
     test("should generate a valid schema", async () => {
         const typeDefs = gql`
-            type movie @node {
+            type movie {
                 name: String
                 year: Int
                 createdAt: DateTime
@@ -33,7 +33,7 @@ describe("lower case type names", () => {
                 actors: [actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type actor @node {
+            type actor {
                 name: String
                 year: Int
                 createdAt: DateTime

@@ -27,17 +27,17 @@ describe("Unions", () => {
         const typeDefs = gql`
             union Publication = Book | Journal
 
-            type Author @node {
+            type Author {
                 name: String!
                 publications: [Publication!]! @relationship(type: "WROTE", direction: OUT, properties: "Wrote")
             }
 
-            type Book @node {
+            type Book {
                 title: String!
                 author: [Author!]! @relationship(type: "WROTE", direction: IN, properties: "Wrote")
             }
 
-            type Journal @node {
+            type Journal {
                 subject: String!
                 author: [Author!]! @relationship(type: "WROTE", direction: IN, properties: "Wrote")
             }

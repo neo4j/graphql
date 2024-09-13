@@ -36,11 +36,11 @@ describe("https://github.com/neo4j/graphql/issues/3905", () => {
                     )
             }
 
-            type pathList @query(read: false, aggregate: false) @mutation(operations: []) @subscription(events: []) @node {
+            type pathList @query(read: false, aggregate: false) @mutation(operations: []) @subscription(events: []) {
                 paths: [[pathLink]]
             }
 
-            type pathLink @query(read: false, aggregate: false) @mutation(operations: []) @subscription(events: []) @node {
+            type pathLink @query(read: false, aggregate: false) @mutation(operations: []) @subscription(events: []) {
                 entity_id: Int
                 other_entity_id: Int
             }

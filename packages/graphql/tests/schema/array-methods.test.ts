@@ -25,12 +25,12 @@ import { Neo4jGraphQL } from "../../src";
 describe("Arrays Methods", () => {
     test("Array of Float and Array of Actor relationships", async () => {
         const typeDefs = gql`
-            type Actor @node {
+            type Actor {
                 name: String
                 actedIn: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            type Movie @node {
+            type Movie {
                 id: ID!
                 ratings: [Float!]!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)

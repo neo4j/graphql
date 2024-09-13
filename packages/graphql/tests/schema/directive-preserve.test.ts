@@ -29,7 +29,7 @@ describe("Directive-preserve", () => {
             directive @preservedTopLevel(string: String, int: Int, float: Float, boolean: Boolean) on OBJECT
             directive @preservedFieldLevel(string: String, int: Int, float: Float, boolean: Boolean) on FIELD_DEFINITION
 
-            type Movie @preservedTopLevel @node {
+            type Movie @preservedTopLevel {
                 id: ID @preservedFieldLevel(string: "str", int: 12, float: 1.2, boolean: true)
             }
         `;
@@ -182,14 +182,14 @@ describe("Directive-preserve", () => {
 
     test("Directives on relations preserved", async () => {
         const typeDefs = gql`
-            type Movie @node {
+            type Movie {
                 title: String
                 year: Int
                 imdbRating: Float
                 genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT) @deprecated(reason: "Do not use")
             }
 
-            type Genre @node {
+            type Genre {
                 name: String
                 movies: [Movie!]! @relationship(type: "IN_GENRE", direction: IN)
             }
@@ -878,7 +878,7 @@ describe("Directive-preserve", () => {
                 actors: [Actor!]! @declareRelationship
             }
 
-            type Movie implements Production @node {
+            type Movie implements Production {
                 title: String!
                 actors: [Actor!]!
                     @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
@@ -886,7 +886,7 @@ describe("Directive-preserve", () => {
                 runtime: Int!
             }
 
-            type Series implements Production @node {
+            type Series implements Production {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
                 episodes: Int!
@@ -896,7 +896,7 @@ describe("Directive-preserve", () => {
                 role: String!
             }
 
-            type Actor @node {
+            type Actor {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
@@ -2106,7 +2106,7 @@ describe("Directive-preserve", () => {
                 actors: [Actor!]!
             }
 
-            type Movie implements Production @node {
+            type Movie implements Production {
                 title: String!
                 actors: [Actor!]!
                     @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
@@ -2114,7 +2114,7 @@ describe("Directive-preserve", () => {
                 runtime: Int!
             }
 
-            type Series implements Production @node {
+            type Series implements Production {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
                 episodes: Int!
@@ -2124,7 +2124,7 @@ describe("Directive-preserve", () => {
                 role: String!
             }
 
-            type Actor @node {
+            type Actor {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
@@ -3196,13 +3196,13 @@ describe("Directive-preserve", () => {
                 actors: [Actor!]! @deprecated(reason: "Do not use")
             }
 
-            type Movie implements Production @node {
+            type Movie implements Production {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
                 runtime: Int!
             }
 
-            type Series implements Production @node {
+            type Series implements Production {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
                 episodes: Int!
@@ -3212,7 +3212,7 @@ describe("Directive-preserve", () => {
                 role: String!
             }
 
-            type Actor @node {
+            type Actor {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
@@ -4272,16 +4272,16 @@ describe("Directive-preserve", () => {
         const typeDefs = gql`
             union Content = Blog | Post
 
-            type Blog @node {
+            type Blog {
                 title: String
                 posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
             }
 
-            type Post @node {
+            type Post {
                 content: String @deprecated(reason: "Do not use post.content")
             }
 
-            type User @node {
+            type User {
                 name: String
                 content: [Content!]!
                     @relationship(type: "HAS_CONTENT", direction: OUT)

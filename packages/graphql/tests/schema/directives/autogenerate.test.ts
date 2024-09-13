@@ -18,14 +18,14 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Autogenerate", () => {
     test("Simple", async () => {
         const typeDefs = gql`
-            type Movie @node {
+            type Movie {
                 id: ID! @id @unique
                 name: String!
             }

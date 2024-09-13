@@ -25,7 +25,7 @@ import { Neo4jGraphQL } from "../../../src";
 describe("https://github.com/neo4j/graphql/issues/5428", () => {
     test("Non plural value in should not be pluralized", async () => {
         const typeDefs = gql`
-            type Test @plural(value: "Test") @node {
+            type Test @plural(value: "Test") {
                 Name: String
             }
         `;

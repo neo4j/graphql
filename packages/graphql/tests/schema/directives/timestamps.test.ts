@@ -18,14 +18,14 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Timestamps", () => {
     test("TimeStamp", async () => {
         const typeDefs = gql`
-            type Movie @node {
+            type Movie {
                 id: ID
                 createdAt: DateTime! @timestamp(operations: [CREATE])
                 updatedAt: DateTime! @timestamp(operations: [UPDATE])

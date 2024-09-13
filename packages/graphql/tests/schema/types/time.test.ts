@@ -25,7 +25,7 @@ import { Neo4jGraphQL } from "../../../src";
 describe("Time", () => {
     test("Time", async () => {
         const typeDefs = gql`
-            type Movie @node {
+            type Movie {
                 id: ID
                 time: Time
             }

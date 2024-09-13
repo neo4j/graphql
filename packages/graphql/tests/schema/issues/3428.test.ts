@@ -25,12 +25,12 @@ import { Neo4jGraphQL } from "../../../src";
 describe("Relationship nested operations", () => {
     test("Single relationship to type with unique field with no nested operation specified", async () => {
         const typeDefs = gql`
-            type Person @node {
+            type Person {
                 id: ID! @id @unique
                 name: String
             }
 
-            type Movie @node {
+            type Movie {
                 id: ID
                 actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [])
             }
@@ -393,17 +393,17 @@ describe("Relationship nested operations", () => {
 
     test("Single relationship to union with unique fields with no nested operation specified", async () => {
         const typeDefs = gql`
-            type PersonOne @node {
+            type PersonOne {
                 name: String @unique
             }
 
-            type PersonTwo @node {
+            type PersonTwo {
                 nameTwo: String @unique
             }
 
             union Person = PersonOne | PersonTwo
 
-            type Movie @node {
+            type Movie {
                 id: ID
                 actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [])
             }

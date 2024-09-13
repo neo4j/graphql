@@ -18,14 +18,14 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Node Interface Types", () => {
     test("nodes should implement the Node Interface and generate a top-level node query", async () => {
         const typeDefs = gql`
-            type Movie @node {
+            type Movie {
                 title: String!
                 imdb: ID! @relayId
             }

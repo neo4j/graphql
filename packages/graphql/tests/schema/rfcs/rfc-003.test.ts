@@ -27,21 +27,21 @@ describe("schema/rfc/003", () => {
     describe("ObjectType", () => {
         test("should not throw when using valid relationship", async () => {
             const typeDefs = gql`
-                type Source @node {
+                type Source {
                     targets: [Target!]! @relationship(type: "HAS_TARGET", direction: OUT)
                     target1: SecondTarget! @relationship(type: "HAS_TARGET", direction: OUT)
                     target2: ThirdTarget @relationship(type: "HAS_TARGET", direction: OUT)
                 }
 
-                type Target @node {
+                type Target {
                     id: ID @id @unique
                 }
 
-                type SecondTarget @node {
+                type SecondTarget {
                     id: ID @id @unique
                 }
 
-                type ThirdTarget @node {
+                type ThirdTarget {
                     id: ID @id @unique
                 }
             `;
@@ -53,11 +53,11 @@ describe("schema/rfc/003", () => {
 
         test("If there are no relationships, then should always be empty array and not null", async () => {
             const typeDefs = gql`
-                type Source @node {
+                type Source {
                     targets: [Target!] @relationship(type: "HAS_TARGET", direction: OUT)
                 }
 
-                type Target @node {
+                type Target {
                     id: ID @id @unique
                 }
             `;
@@ -69,11 +69,11 @@ describe("schema/rfc/003", () => {
 
         test("This suggests a relationship with no target node", async () => {
             const typeDefs = gql`
-                type Source @node {
+                type Source {
                     targets: [Target]! @relationship(type: "HAS_TARGET", direction: OUT)
                 }
 
-                type Target @node {
+                type Target {
                     id: ID @id @unique
                 }
             `;
@@ -84,11 +84,11 @@ describe("schema/rfc/003", () => {
 
         test("should throw when ListType and not NonNullNamedType inside it", async () => {
             const typeDefs = gql`
-                type Source @node {
+                type Source {
                     targets: [Target] @relationship(type: "HAS_TARGET", direction: OUT)
                 }
 
-                type Target @node {
+                type Target {
                     id: ID @id @unique
                 }
             `;
@@ -108,14 +108,14 @@ describe("schema/rfc/003", () => {
                     target2: Target @declareRelationship
                 }
 
-                type Source implements SourceInterface @node {
+                type Source implements SourceInterface {
                     id: ID @id @unique
                     targets: [Target!]! @relationship(type: "HAS_TARGET", direction: OUT)
                     target1: Target! @relationship(type: "HAS_TARGET", direction: OUT)
                     target2: Target @relationship(type: "HAS_TARGET", direction: OUT)
                 }
 
-                type Target @node {
+                type Target {
                     id: ID @id @unique
                 }
             `;
@@ -131,12 +131,12 @@ describe("schema/rfc/003", () => {
                     targets: [Target!] @declareRelationship
                 }
 
-                type Source implements SourceInterface @node {
+                type Source implements SourceInterface {
                     id: ID @id @unique
                     targets: [Target!] @relationship(type: "HAS_TARGET", direction: OUT)
                 }
 
-                type Target @node {
+                type Target {
                     id: ID @id @unique
                 }
             `;
@@ -155,12 +155,12 @@ describe("schema/rfc/003", () => {
                     targets: [Target]! @declareRelationship
                 }
 
-                type Source implements SourceInterface @node {
+                type Source implements SourceInterface {
                     id: ID @id @unique
                     targets: [Target]! @relationship(type: "HAS_TARGET", direction: OUT)
                 }
 
-                type Target @node {
+                type Target {
                     id: ID @id @unique
                 }
             `;
@@ -179,12 +179,12 @@ describe("schema/rfc/003", () => {
                     targets: [Target] @declareRelationship
                 }
 
-                type Source implements SourceInterface @node {
+                type Source implements SourceInterface {
                     id: ID @id @unique
                     targets: [Target] @relationship(type: "HAS_TARGET", direction: OUT)
                 }
 
-                type Target @node {
+                type Target {
                     id: ID @id @unique
                 }
             `;

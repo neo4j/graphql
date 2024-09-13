@@ -5,7 +5,7 @@ import { Neo4jGraphQL } from "../../src";
 describe("nested aggregation on interface", () => {
     test("should generate the correct schema", async () => {
         const typeDefs = `
-            type Movie @node {
+            type Movie {
                 title: String!
                 cost: Float!
                 runtime: Int!
@@ -15,7 +15,7 @@ describe("nested aggregation on interface", () => {
                 screenTime: Int!
             }
 
-            type Actor @node {
+            type Actor {
                 name: String!
                 actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }

@@ -29,7 +29,7 @@ describe("@customResolver directive", () => {
                 customResolver: String
             }
 
-            type User implements UserInterface @node {
+            type User implements UserInterface {
                 id: ID!
                 username: String!
                 password: String!

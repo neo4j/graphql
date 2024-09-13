@@ -25,12 +25,12 @@ import { Neo4jGraphQL } from "../../../src";
 describe("https://github.com/neo4j/graphql/issues/4511", () => {
     test("EventPayload does not generate related nodes Connections", async () => {
         const typeDefs = gql`
-            type Movie implements Production @subscription(events: []) @node {
+            type Movie implements Production @subscription(events: []) {
                 title: String!
                 id: ID @unique
                 director: Creature! @relationship(type: "DIRECTED", direction: IN)
             }
-            type Series implements Production @node {
+            type Series implements Production {
                 title: String!
                 episode: Int!
                 id: ID @unique
@@ -40,7 +40,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
                 id: ID
                 director: Creature! @declareRelationship
             }
-            type Person implements Creature @node {
+            type Person implements Creature {
                 movies: Production! @relationship(type: "DIRECTED", direction: OUT)
             }
             interface Creature {

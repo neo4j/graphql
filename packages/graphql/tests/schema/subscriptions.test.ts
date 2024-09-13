@@ -32,7 +32,7 @@ describe("Subscriptions", () => {
 
     test("Subscriptions", async () => {
         const typeDefs = gql`
-            type Movie @node {
+            type Movie {
                 id: ID
                 actorCount: Int
                 averageRating: Float
@@ -40,7 +40,7 @@ describe("Subscriptions", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor @node {
+            type Actor {
                 name: String!
             }
         `;
@@ -671,7 +671,7 @@ describe("Subscriptions", () => {
 
     test("Empty EventPayload type", async () => {
         const typeDefs = gql`
-            type Movie @node {
+            type Movie {
                 id: ID
                 actorCount: Int
                 averageRating: Float
@@ -679,7 +679,7 @@ describe("Subscriptions", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor @node {
+            type Actor {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
@@ -1432,7 +1432,7 @@ describe("Subscriptions", () => {
 
     test("Empty EventPayload type on Union type", async () => {
         const typeDefs = gql`
-            type Movie @node {
+            type Movie {
                 id: ID
                 actorCount: Int
                 averageRating: Float
@@ -1442,10 +1442,10 @@ describe("Subscriptions", () => {
 
             union Actor = Star | Person
 
-            type Star @node {
+            type Star {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
-            type Person @node {
+            type Person {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
@@ -2582,7 +2582,7 @@ describe("Subscriptions", () => {
 
     test("Empty EventPayload type, but @relationshipProperty exists", async () => {
         const typeDefs = gql`
-            type Movie @node {
+            type Movie {
                 id: ID
                 actorCount: Int
                 averageRating: Float
@@ -2594,7 +2594,7 @@ describe("Subscriptions", () => {
                 screenTime: Int!
             }
 
-            type Actor @node {
+            type Actor {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
@@ -3464,7 +3464,7 @@ describe("Subscriptions", () => {
 
     test("Subscriptions excluded", async () => {
         const typeDefs = gql`
-            type Movie @subscription(events: []) @node {
+            type Movie @subscription(events: []) {
                 id: ID
                 actorCount: Int
                 averageRating: Float
@@ -3472,7 +3472,7 @@ describe("Subscriptions", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor @node {
+            type Actor {
                 name: String!
             }
         `;
@@ -3990,11 +3990,11 @@ describe("Subscriptions", () => {
 
     test("Type with relationship to a subscriptions excluded type", async () => {
         const typeDefs = gql`
-            type User @mutation(operations: []) @subscription(events: []) @node {
+            type User @mutation(operations: []) @subscription(events: []) {
                 username: String!
                 name: String
             }
-            type Agreement @node {
+            type Agreement {
                 id: Int!
                 name: String
                 owner: User @relationship(type: "OWNED_BY", direction: OUT)
@@ -4583,7 +4583,7 @@ describe("Subscriptions", () => {
 
     test("Type with relationship to a subscriptions excluded type + Union type", async () => {
         const typeDefs = gql`
-            type Movie @node {
+            type Movie {
                 id: ID
                 actorCount: Int
                 averageRating: Float
@@ -4593,10 +4593,10 @@ describe("Subscriptions", () => {
 
             union Actor = Star | Person
 
-            type Star @subscription(events: []) @node {
+            type Star @subscription(events: []) {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
-            type Person @node {
+            type Person {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
@@ -5671,13 +5671,13 @@ describe("Subscriptions", () => {
 
     test("Type with relationship to a subscriptions excluded type + Interface type", async () => {
         const typeDefs = gql`
-            type Movie implements Production @subscription(events: []) @node {
+            type Movie implements Production @subscription(events: []) {
                 title: String!
                 id: ID @unique
                 director: Creature! @relationship(type: "DIRECTED", direction: IN)
             }
 
-            type Series implements Production @node {
+            type Series implements Production {
                 title: String!
                 episode: Int!
                 id: ID @unique
@@ -5689,7 +5689,7 @@ describe("Subscriptions", () => {
                 director: Creature! @declareRelationship
             }
 
-            type Person implements Creature @node {
+            type Person implements Creature {
                 movies: Production! @relationship(type: "DIRECTED", direction: OUT)
             }
 

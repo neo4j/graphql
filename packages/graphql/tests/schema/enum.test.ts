@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Enum", () => {
@@ -31,7 +31,7 @@ describe("Enum", () => {
                 PENDING
             }
 
-            type Movie @node {
+            type Movie {
                 status: Status
             }
         `;

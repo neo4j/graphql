@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Apollo Federation", () => {
@@ -27,12 +27,12 @@ describe("Apollo Federation", () => {
         const typeDefs = gql`
             extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@shareable"])
 
-            type User @shareable @node {
+            type User @shareable {
                 name: String!
                 posts: [Post!]! @relationship(type: "HAS_AUTHOR", direction: IN)
             }
 
-            type Post @node {
+            type Post {
                 content: String!
                 author: User! @relationship(type: "HAS_AUTHOR", direction: OUT)
             }
@@ -641,11 +641,11 @@ describe("Apollo Federation", () => {
         const typeDefs = gql`
             extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key"])
 
-            type User @key(fields: "name", resolvable: false) @node {
+            type User @key(fields: "name", resolvable: false) {
                 name: String!
             }
 
-            type Post @node {
+            type Post {
                 content: String!
                 author: User! @relationship(type: "HAS_AUTHOR", direction: OUT)
             }
