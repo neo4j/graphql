@@ -30,6 +30,6 @@ export class NodeDirective implements Directive {
     }
 
     toString(): string {
-        return this.labels.length ? `@node(labels: ["${this.labels.join('", "')}"])` : "@node";
+        return this.labels.length ? `@node(labels: ["${this.labels.join('", "')}"])` : "";
     }
 }
