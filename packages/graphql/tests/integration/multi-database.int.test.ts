@@ -79,7 +79,7 @@ describe("multi-database", () => {
         }
 
         const typeDefs = `
-            type ${Movie} @node {
+            type ${Movie} {
                 id: ID!
             }
         `;
@@ -108,7 +108,7 @@ describe("multi-database", () => {
         }
 
         const typeDefs = `
-            type ${Movie} @node {
+            type ${Movie} {
                 id: ID!
             }
         `;
@@ -138,7 +138,7 @@ describe("multi-database", () => {
         }
 
         const typeDefs = `
-            type ${Movie} @node {
+            type ${Movie} {
                 id: ID!
             }
         `;
@@ -171,7 +171,7 @@ describe("multi-database", () => {
         }
 
         const typeDefs = `
-            type ${Movie} @node {
+            type ${Movie} {
                 id: ID!
             }
         `;

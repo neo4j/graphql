@@ -31,7 +31,7 @@ describe("LocalDateTime", () => {
         Movie = testHelper.createUniqueType("Movie");
 
         const typeDefs = /* GraphQL */ `
-        type ${Movie} @node {
+        type ${Movie} {
             id: ID!
             localDT: LocalDateTime
             localDTs: [LocalDateTime!]

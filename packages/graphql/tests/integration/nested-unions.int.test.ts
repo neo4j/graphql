@@ -34,24 +34,24 @@ describe("Nested unions", () => {
         LeadActor = testHelper.createUniqueType("LeadActor");
         Extra = testHelper.createUniqueType("Extra");
         const typeDefs = /* GraphQL */ `
-            type ${Movie} @node {
+            type ${Movie} {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type ${Series} @node {
+            type ${Series} {
                 name: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
             union Production = ${Movie} | ${Series}
 
-            type ${LeadActor} @node {
+            type ${LeadActor} {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type ${Extra} @node {
+            type ${Extra} {
                 name: String
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT)
             }

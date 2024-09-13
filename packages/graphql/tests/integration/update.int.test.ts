@@ -48,7 +48,7 @@ describe("update", () => {
 
     test("should update no movies where predicate yields false", async () => {
         const typeDefs = `
-            type ${Movie} @node {
+            type ${Movie} {
                 id: ID!
                 name: String
             }
@@ -86,7 +86,7 @@ describe("update", () => {
 
     test("should update a single movie", async () => {
         const typeDefs = `
-            type ${Movie} @node {
+            type ${Movie} {
                 id: ID!
                 name: String
             }
@@ -137,13 +137,13 @@ describe("update", () => {
     });
     test("should connect through interface relationship", async () => {
         const typeDefs = gql`
-            type ${Movie} implements Production @subscription(events: []) @node {
+            type ${Movie} implements Production @subscription(events: []) {
                 title: String!
                 id: ID @unique
                 director: [Creature!]! @relationship(type: "DIRECTED", direction: IN)
             }
 
-            type ${Series} implements Production @node {
+            type ${Series} implements Production {
                 title: String!
                 episode: Int!
                 id: ID @unique
@@ -155,7 +155,7 @@ describe("update", () => {
                 director: [Creature!]! @declareRelationship
             }
 
-            type ${Person} implements Creature @node {
+            type ${Person} implements Creature {
                 id: ID
                 movies: Production! @relationship(type: "DIRECTED", direction: OUT)
             }
@@ -228,12 +228,12 @@ describe("update", () => {
 
     test("should update a movie when matching on relationship property", async () => {
         const typeDefs = `
-            type ${Actor} @node {
+            type ${Actor} {
                 name: String
                 movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type ${Movie} @node {
+            type ${Movie} {
                 id: ID
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
@@ -294,7 +294,7 @@ describe("update", () => {
 
     test("should update 2 movies", async () => {
         const typeDefs = `
-            type ${Movie} @node {
+            type ${Movie} {
                 id: ID!
                 name: String
             }
@@ -350,12 +350,12 @@ describe("update", () => {
 
     test("should update nested actors from a movie", async () => {
         const typeDefs = `
-            type ${Actor} @node {
+            type ${Actor} {
                 name: String
                 movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type ${Movie} @node {
+            type ${Movie} {
                 id: ID
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
@@ -421,12 +421,12 @@ describe("update", () => {
 
     test("should delete a nested actor from a movie abc", async () => {
         const typeDefs = gql`
-            type ${Actor} @node {
+            type ${Actor} {
                 name: String
                 movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type ${Movie} @node {
+            type ${Movie} {
                 id: ID
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
@@ -486,12 +486,12 @@ describe("update", () => {
 
     test("should delete a nested actor from a movie within an update block", async () => {
         const typeDefs = gql`
-            type ${Actor} @node {
+            type ${Actor} {
                 name: String
                 movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type ${Movie} @node {
+            type ${Movie} {
                 id: ID
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
@@ -551,12 +551,12 @@ describe("update", () => {
 
     test("should delete a nested actor and one of their nested movies, within an update block abc", async () => {
         const typeDefs = gql`
-            type ${Actor} @node {
+            type ${Actor} {
                 name: String
                 movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type ${Movie} @node {
+            type ${Movie} {
                 id: ID
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
@@ -643,12 +643,12 @@ describe("update", () => {
 
     test("should delete multiple nested actors from a movie", async () => {
         const typeDefs = gql`
-            type ${Actor} @node {
+            type ${Actor} {
                 name: String
                 movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type ${Movie} @node {
+            type ${Movie} {
                 id: ID
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
@@ -719,12 +719,12 @@ describe("update", () => {
 
     test("should update nested actors from a move then update the movie from the nested actors", async () => {
         const typeDefs = `
-            type ${Actor} @node {
+            type ${Actor} {
               name: String
               movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type ${Movie} @node {
+            type ${Movie} {
               id: ID
               title: String
               actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
@@ -787,12 +787,12 @@ describe("update", () => {
 
     test("should connect a single movie to a actor", async () => {
         const typeDefs = `
-            type ${Actor} @node {
+            type ${Actor} {
                 id: ID
                 movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type ${Movie} @node {
+            type ${Movie} {
                 id: ID
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
@@ -843,18 +843,18 @@ describe("update", () => {
 
     test("should connect a single movie to a actor based on a connection predicate", async () => {
         const typeDefs = `
-            type ${Actor} @node {
+            type ${Actor} {
                 id: ID
                 movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
                 series: [${Series}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type ${Movie} @node {
+            type ${Movie} {
                 id: ID
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type ${Series} @node {
+            type ${Series} {
                 id: ID
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
@@ -915,12 +915,12 @@ describe("update", () => {
 
     test("should disconnect an actor from a movie", async () => {
         const typeDefs = `
-            type ${Actor} @node {
+            type ${Actor} {
                 id: ID
                 movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type ${Movie} @node {
+            type ${Movie} {
                 id: ID
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
@@ -978,16 +978,16 @@ describe("update", () => {
 
     test("should disconnect a color from a photo through a product", async () => {
         const typeDefs = `
-            type ${Product} @node {
+            type ${Product} {
                 id: ID
                 photos: [${Photo}!]! @relationship(type: "HAS_PHOTO", direction: OUT)
             }
 
-            type ${Color} @node {
+            type ${Color} {
                 id: ID
             }
 
-            type ${Photo} @node {
+            type ${Photo} {
                 id: ID
                 color: ${Color} @relationship(type: "OF_COLOR", direction: OUT)
             }
@@ -1061,19 +1061,19 @@ describe("update", () => {
 
     test("should update the colors of a product to light versions", async () => {
         const typeDefs = `
-          type ${Product} @node {
+          type ${Product} {
              id: ID
              name: String
              photos: [${Photo}!]! @relationship(type: "HAS_PHOTO", direction: OUT)
            }
 
 
-           type ${Color} @node {
+           type ${Color} {
              name: String
              id: ID
            }
 
-           type ${Photo} @node {
+           type ${Photo} {
              id: ID
              name: String
              color: ${Color}! @relationship(type: "OF_COLOR", direction: OUT)
@@ -1212,19 +1212,19 @@ describe("update", () => {
 
     test("should update a Product via creating a new Photo and creating a new Color (via field level update)", async () => {
         const typeDefs = `
-          type ${Product} @node {
+          type ${Product} {
              id: ID
              name: String
              photos: [${Photo}!]! @relationship(type: "HAS_PHOTO", direction: OUT)
            }
 
 
-           type ${Color} @node {
+           type ${Color} {
              name: String
              id: ID
            }
 
-           type ${Photo} @node {
+           type ${Photo} {
              id: ID
              name: String
              color: ${Color}! @relationship(type: "OF_COLOR", direction: OUT)
@@ -1304,19 +1304,19 @@ describe("update", () => {
 
     test("should update a Product via creating a new Photo and creating a new Color (via top level create)", async () => {
         const typeDefs = `
-          type ${Product} @node {
+          type ${Product} {
              id: ID
              name: String
              photos: [${Photo}!]! @relationship(type: "HAS_PHOTO", direction: OUT)
            }
 
 
-           type ${Color} @node {
+           type ${Color} {
              name: String
              id: ID
            }
 
-           type ${Photo} @node {
+           type ${Photo} {
              id: ID
              name: String
              color: ${Color}! @relationship(type: "OF_COLOR", direction: OUT)

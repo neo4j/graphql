@@ -32,12 +32,12 @@ describe("root-connections", () => {
         aircraftType = testHelper.createUniqueType("Aircraft");
 
         const typeDefs = `
-            type ${pilotType.name} @node {
+            type ${pilotType.name} {
               name: String
               aircraft: [${aircraftType.name}!]! @relationship(type: "FLIES_IN", direction: IN)
             }
   
-            type ${aircraftType.name} @node {
+            type ${aircraftType.name} {
               id: ID!
               name: String!
               pilots: [${pilotType.name}!]! @relationship(type: "FLIES_IN", direction: OUT)

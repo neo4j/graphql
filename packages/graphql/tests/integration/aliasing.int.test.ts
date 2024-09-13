@@ -33,7 +33,7 @@ describe("Aliasing", () => {
         Movie = testHelper.createUniqueType("Movie");
 
         const typeDefs = `
-        type ${Movie} @node {
+        type ${Movie} {
             id: ID!
             budget: Int!
             boxOffice: Float!

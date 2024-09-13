@@ -47,26 +47,26 @@ describe("delete union relationships", () => {
 
     beforeEach(async () => {
         const typeDefs = gql`
-            type ${episodeType.name} @node {
+            type ${episodeType.name} {
                 runtime: Int!
                 series: ${seriesType.name} ! @relationship(type: "HAS_EPISODE", direction: IN)
             }
 
             union Production = ${movieType.name} | ${seriesType.name}
 
-            type ${movieType.name} @node {
+            type ${movieType.name} {
                 title: String!
                 runtime: Int!
                 actors: [${actorType.name}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type ${seriesType.name} @node {
+            type ${seriesType.name} {
                 title: String!
                 episodes: [${episodeType.name}!]! @relationship(type: "HAS_EPISODE", direction: OUT)
                 actors: [${actorType.name}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type ${actorType.name} @node {
+            type ${actorType.name} {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }

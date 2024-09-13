@@ -29,7 +29,7 @@ describe("CartesianPoint", () => {
     beforeEach(async () => {
         Part = testHelper.createUniqueType("Part");
         const typeDefs = /* GraphQL */ `
-            type ${Part} @node {
+            type ${Part} {
                 serial: String!
                 location: CartesianPoint!
             }

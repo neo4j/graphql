@@ -34,11 +34,11 @@ describe("Top-level union query fields", () => {
         typeDefs = `
         union Search = ${GenreType} | ${MovieType}
 
-        type ${GenreType} @node {
+        type ${GenreType} {
             name: String
         }
 
-        type ${MovieType} @node {
+        type ${MovieType} {
             title: String
             search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
         }
@@ -213,11 +213,11 @@ describe("add authorization", () => {
         typeDefs = `
         union Search = ${GenreType} | ${MovieType}
 
-        type ${GenreType} @node {
+        type ${GenreType} {
             name: String
         }
 
-        type ${MovieType} @node {
+        type ${MovieType} {
             title: String
             search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
         }
@@ -412,11 +412,11 @@ describe("add schema configuration", () => {
         typeDefs = `
         union Search = ${GenreType} | ${MovieType}
 
-        type ${GenreType} @node {
+        type ${GenreType} {
             name: String
         }
 
-        type ${MovieType} @node {
+        type ${MovieType} {
             title: String
             search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
         }

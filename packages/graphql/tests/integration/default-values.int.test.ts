@@ -35,7 +35,7 @@ describe("Default values", () => {
 
     test("should allow default value on custom @cypher node field", async () => {
         const typeDefs = `
-            type ${Movie} @node {
+            type ${Movie} {
               id: ID
               field(skip: Int = 100): Int
                 @cypher(
@@ -80,7 +80,7 @@ describe("Default values", () => {
 
     test("should allow default value on custom @cypher custom resolver field", async () => {
         const typeDefs = `
-            type ${Movie} @node {
+            type ${Movie} {
                 id: ID
             }
 
