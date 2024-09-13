@@ -49,7 +49,7 @@ describe("https://github.com/neo4j/graphql/issues/2357", () => {
         indexName = `${enterpriseType.name}_fulltext_index`;
 
         typeDefs = `
-            type ${enterpriseType.name} @fulltext(indexes: [{ indexName: "${indexName}", fields: ["full_name", "tags"] }])@node {
+            type ${enterpriseType.name} @fulltext(indexes: [{ indexName: "${indexName}", fields: ["full_name", "tags"] }]){
                 id: ID! @id
                 full_name: String!
                 tags: String

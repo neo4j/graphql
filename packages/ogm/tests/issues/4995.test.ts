@@ -50,11 +50,11 @@ describe("https://github.com/neo4j/graphql/issues/4995", () => {
 
     test("should not raise an error when schema configuration is used on union types", async () => {
         const typeDefs = /* GraphQL */ `
-            type ${A} @node {
+            type ${A} {
                 a: String
             }
 
-            type ${B} @node {
+            type ${B} {
                 b: String
             }
 

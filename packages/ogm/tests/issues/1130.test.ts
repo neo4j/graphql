@@ -22,13 +22,13 @@ import { generate, OGM } from "../../src";
 describe("issues/1130", () => {
     test("should re-create issue and return types without throwing", async () => {
         const typeDefs = `
-            type Company @node {
+            type Company {
               name: String!
               industries: [SICIndustry!]! @relationship(type: "CONDUCTS_BUSINESS_IN", direction: OUT)
             }
             
             # <-- Changing the name to "SicIndustry" works
-            type SICIndustry @node {
+            type SICIndustry {
               code: ID! @unique
               title: String!
               companies: [Company!]! @relationship(type: "CONDUCTS_BUSINESS_IN", direction: IN)
