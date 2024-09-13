@@ -18,13 +18,13 @@
  */
 
 import supertest from "supertest";
-import { createBearerToken } from "../../utils/create-bearer-token";
 import { UniqueType } from "../../utils/graphql-types";
 import { GatewayServer } from "./setup/gateway-server";
 import { Neo4j } from "./setup/neo4j";
 import type { Server } from "./setup/server";
 import { TestSubgraph } from "./setup/subgraph";
 import { SubgraphServer } from "./setup/subgraph-server";
+import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("Federation 2 Authorization", () => {
     describe("type authorization", () => {
@@ -46,7 +46,7 @@ describe("Federation 2 Authorization", () => {
             const users = `
                 extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
     
-                type ${User} @authorization(validate: [{ where: { node: { id: "$jwt.sub" } } }]) @key(fields: "id") @shareable @node {
+                type ${User} @authorization(validate: [{ where: { node: { id: "$jwt.sub" } } }]) @key(fields: "id") @shareable {
                     id: ID!
                     name: String
                     password: String 
@@ -56,11 +56,11 @@ describe("Federation 2 Authorization", () => {
             const reviews = `
                 extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
     
-                type ${User} @key(fields: "id", resolvable: false) @shareable @node {
+                type ${User} @key(fields: "id", resolvable: false) @shareable {
                     id: ID!
                 }
     
-                type ${Review} @node {
+                type ${Review} {
                     score: Int!
                     description: String!
                     author: ${User}! @relationship(type: "AUTHORED", direction: IN)
@@ -181,7 +181,7 @@ describe("Federation 2 Authorization", () => {
             const users = `
                 extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
     
-                type ${User} @key(fields: "id") @shareable @node {
+                type ${User} @key(fields: "id") @shareable {
                     id: ID!
                     name: String
                     password: String @authorization(validate: [{ where: { node: { id: "$jwt.sub" } } }])
@@ -191,11 +191,11 @@ describe("Federation 2 Authorization", () => {
             const reviews = `
                 extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
     
-                type ${User} @key(fields: "id", resolvable: false) @shareable @node {
+                type ${User} @key(fields: "id", resolvable: false) @shareable {
                     id: ID!
                 }
     
-                type ${Review} @node {
+                type ${Review} {
                     score: Int!
                     description: String!
                     author: ${User}! @relationship(type: "AUTHORED", direction: IN)

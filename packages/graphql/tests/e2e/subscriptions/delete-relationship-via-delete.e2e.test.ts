@@ -44,14 +44,14 @@ describe("Delete Subscriptions when only nodes are targeted - with interfaces, u
         typeInfluencer = testHelper.createUniqueType("Influencer");
 
         typeDefs = `
-            type ${typeMovie} @node {
+            type ${typeMovie} {
                 title: String!
                 actors: [${typeActor}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
                 directors: [Director!]! @relationship(type: "DIRECTED", properties: "Directed", direction: IN)
                 reviewers: [Reviewer!]! @relationship(type: "REVIEWED", properties: "Review", direction: IN)
             }
             
-            type ${typeActor} @node {
+            type ${typeActor} {
                 name: String!
                 movies: [${typeMovie}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
@@ -68,13 +68,13 @@ describe("Delete Subscriptions when only nodes are targeted - with interfaces, u
                 score: Int!
             }
         
-            type ${typePerson} implements Reviewer @node {
+            type ${typePerson} implements Reviewer {
                 name: String!
                 reputation: Int!
                 movies: [${typeMovie}!]! @relationship(type: "REVIEWED", direction: OUT, properties: "Review")
             }
             
-            type ${typeInfluencer} implements Reviewer @node {
+            type ${typeInfluencer} implements Reviewer {
                 reputation: Int!
                 url: String!
             }

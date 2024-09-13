@@ -45,7 +45,6 @@ describe("Subscriptions authorization with create events", () => {
             }
 
             type ${User}
-                @node
                 @subscriptionsAuthorization(
                     filter: [
                         { where: { node: { id: "$jwt.sub" }, jwt: { roles_INCLUDES: "user" } } }
@@ -201,7 +200,6 @@ describe("Subscriptions authentication with create events", () => {
             }
 
             type ${User}
-                @node
                 @authentication(jwt: { roles_INCLUDES: "admin" }) {
                 id: ID!
             }

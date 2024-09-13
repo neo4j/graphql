@@ -44,7 +44,7 @@ describe("Federation 2 Entities Basics (https://www.apollographql.com/docs/feder
         const products = `
             extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
 
-            type ${Product} @key(fields: "id") @shareable @node {
+            type ${Product} @key(fields: "id") @shareable {
                 id: ID!
                 name: String
                 price: Int
@@ -54,11 +54,11 @@ describe("Federation 2 Entities Basics (https://www.apollographql.com/docs/feder
         const reviews = `
             extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
 
-            type ${Product} @key(fields: "id", resolvable: false) @shareable @node {
+            type ${Product} @key(fields: "id", resolvable: false) @shareable {
                 id: ID!
             }
 
-            type ${Review} @node {
+            type ${Review} {
                 score: Int!
                 description: String!
                 product: ${Product}! @relationship(type: "HAS_REVIEW", direction: IN)

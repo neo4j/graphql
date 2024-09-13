@@ -65,7 +65,7 @@ describe.each([
             roles: [String!]!
         }
         
-        type ${typeMovie} @node {
+        type ${typeMovie} {
             title: String!
         }
     
