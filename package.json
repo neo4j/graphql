@@ -28,7 +28,7 @@
         "@typescript-eslint/parser": "7.18.0",
         "concurrently": "8.2.2",
         "dotenv": "16.4.5",
-        "eslint": "8.57.0",
+        "eslint": "8.57.1",
         "eslint-config-prettier": "9.1.0",
         "eslint-formatter-summary": "1.1.0",
         "eslint-import-resolver-typescript": "3.6.3",
