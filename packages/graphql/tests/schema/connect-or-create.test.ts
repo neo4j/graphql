@@ -409,7 +409,8 @@ describe("Connect Or Create", () => {
             }
 
             input MovieUniqueWhere {
-              isan: String
+              isan: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              isan_EQ: String
             }
 
             input MovieUpdateInput {
@@ -1044,7 +1045,8 @@ describe("Connect Or Create", () => {
             }
 
             input MovieUniqueWhere {
-              isan: String
+              isan: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              isan_EQ: String
             }
 
             input MovieUpdateInput {

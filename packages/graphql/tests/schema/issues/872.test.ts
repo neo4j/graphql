@@ -639,7 +639,8 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             }
 
             input MovieUniqueWhere {
-              id: ID
+              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id_EQ: ID
             }
 
             input MovieUpdateInput {

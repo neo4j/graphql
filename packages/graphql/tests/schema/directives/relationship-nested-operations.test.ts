@@ -2921,7 +2921,8 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonUniqueWhere {
-                  id: ID
+                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id_EQ: ID
                 }
 
                 input PersonUpdateInput {
@@ -7336,7 +7337,8 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonOneUniqueWhere {
-                  id: ID
+                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id_EQ: ID
                 }
 
                 input PersonOneUpdateInput {
@@ -7423,7 +7425,8 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonTwoUniqueWhere {
-                  id: ID
+                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id_EQ: ID
                 }
 
                 input PersonTwoUpdateInput {

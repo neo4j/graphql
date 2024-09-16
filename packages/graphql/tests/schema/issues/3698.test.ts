@@ -447,7 +447,8 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
 
             input GenreUniqueWhere {
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              name_EQ: String
             }
 
             input GenreUpdateInput {
@@ -1508,7 +1509,8 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
 
             input GenreUniqueWhere {
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              name_EQ: String
             }
 
             input GenreUpdateInput {
@@ -2690,7 +2692,8 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
 
             input GenreUniqueWhere {
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              name_EQ: String
             }
 
             input GenreUpdateInput {

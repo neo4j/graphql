@@ -106,7 +106,8 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
             }
 
             input ActorUniqueWhere {
-              id: ID
+              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id_EQ: ID
             }
 
             input ActorUpdateInput {

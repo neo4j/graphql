@@ -402,7 +402,8 @@ describe("Union Interface Relationships", () => {
             }
 
             input ActorUniqueWhere {
-              id: Int
+              id: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id_EQ: Int
             }
 
             input ActorUpdateInput {
@@ -1253,7 +1254,8 @@ describe("Union Interface Relationships", () => {
             }
 
             input MovieUniqueWhere {
-              imdbId: Int
+              imdbId: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              imdbId_EQ: Int
             }
 
             input MovieUpdateInput {
@@ -1676,8 +1678,10 @@ describe("Union Interface Relationships", () => {
             }
 
             input PersonUniqueWhere {
-              id: Int
-              reviewerId: Int
+              id: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id_EQ: Int
+              reviewerId: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              reviewerId_EQ: Int
             }
 
             input PersonUpdateInput {
