@@ -28,7 +28,7 @@ describe("Cypher Auth isAuthenticated", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type History @node {
+            type History {
                 url: String @authentication(operations: [READ])
             }
 
@@ -37,17 +37,17 @@ describe("Cypher Auth isAuthenticated", () => {
                 content: String
             }
 
-            type Comment implements Content @node {
+            type Comment implements Content {
                 id: String
                 content: String
             }
 
-            type Post implements Content @authentication @node {
+            type Post implements Content @authentication {
                 id: String
                 content: String
             }
 
-            type User @node {
+            type User {
                 id: ID
                 name: String
                 password: String

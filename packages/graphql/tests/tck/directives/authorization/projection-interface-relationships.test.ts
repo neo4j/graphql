@@ -32,12 +32,12 @@ describe("Auth projections for interface relationship fields", () => {
                 title: String!
             }
 
-            type Movie implements Production @node {
+            type Movie implements Production {
                 title: String!
                 runtime: Int!
             }
 
-            type Series implements Production @node {
+            type Series implements Production {
                 title: String!
                 episodes: String!
             }
@@ -48,7 +48,7 @@ describe("Auth projections for interface relationship fields", () => {
                 screenTime: Int!
             }
 
-            type Actor @node {
+            type Actor {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }

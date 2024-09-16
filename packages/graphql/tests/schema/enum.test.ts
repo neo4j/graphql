@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Enum", () => {
@@ -31,7 +31,7 @@ describe("Enum", () => {
                 PENDING
             }
 
-            type Movie @node {
+            type Movie {
                 status: Status
             }
         `;
@@ -108,8 +108,7 @@ describe("Enum", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              status: Status @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              status_EQ: Status
+              status: Status
               status_IN: [Status]
               status_NOT: Status @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               status_NOT_IN: [Status] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")

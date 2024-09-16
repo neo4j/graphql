@@ -34,19 +34,19 @@ describe("RelayId projection with GraphQL field alias", () => {
 
     beforeAll(async () => {
         const typeDefs = `
-            type ${Movie} @node {
+            type ${Movie} {
                 dbId: ID! @id @unique @relayId
                 title: String!
                 genre: ${Genre}! @relationship(type: "HAS_GENRE", direction: OUT)
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type ${Genre} @node {
+            type ${Genre} {
                 dbId: ID! @id @unique @relayId
                 name: String!
             }
 
-            type ${Actor} @node {
+            type ${Actor} {
                 dbId: ID! @id @unique @relayId
                 name: String!
             }

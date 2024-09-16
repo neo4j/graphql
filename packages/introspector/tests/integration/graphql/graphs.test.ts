@@ -101,12 +101,12 @@ describe("GraphQL - Infer Schema on graphs", () => {
         const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm));
 
         expect(typeDefs).toMatchInlineSnapshot(`
-            "type Actor @node {
+            "type Actor {
             	actedInMovies: [Movie!]! @relationship(type: \\"ACTED_IN\\", direction: OUT)
             	name: String!
             }
 
-            type Movie @node {
+            type Movie {
             	actorsActedIn: [Actor!]! @relationship(type: \\"ACTED_IN\\", direction: IN)
             	title: String!
             }"
@@ -156,7 +156,7 @@ describe("GraphQL - Infer Schema on graphs", () => {
             	name: String!
             }
 
-            type Movie @node {
+            type Movie {
             	actorsActedIn: [Actor!]! @relationship(type: \\"ACTED_IN\\", direction: IN)
             	actorsDirected: [Actor!]! @relationship(type: \\"DIRECTED\\", direction: IN)
             	dogsActedIn: [Dog!]! @relationship(type: \\"ACTED_IN\\", direction: IN)
@@ -216,7 +216,7 @@ describe("GraphQL - Infer Schema on graphs", () => {
             	roles: [String]!
             }
 
-            type Actor @node {
+            type Actor {
             	actedInMovies: [Movie!]! @relationship(type: \\"ACTED_IN\\", direction: OUT, properties: \\"ActedInProperties\\")
             	directedMovies: [Movie!]! @relationship(type: \\"DIRECTED\\", direction: OUT, properties: \\"DirectedProperties\\")
             	moviesWonPrizeFor: [Movie!]! @relationship(type: \\"WON_PRIZE_FOR\\", direction: IN)
@@ -227,7 +227,7 @@ describe("GraphQL - Infer Schema on graphs", () => {
             	skill: BigInt!
             }
 
-            type Movie @node {
+            type Movie {
             	actorsActedIn: [Actor!]! @relationship(type: \\"ACTED_IN\\", direction: IN, properties: \\"ActedInProperties\\")
             	actorsDirected: [Actor!]! @relationship(type: \\"DIRECTED\\", direction: IN, properties: \\"DirectedProperties\\")
             	screenTime: Duration!

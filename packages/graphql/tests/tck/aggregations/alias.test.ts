@@ -26,7 +26,7 @@ describe("Cypher Aggregations Many while Alias fields", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Movie @node {
+            type Movie {
                 id: ID!
                 title: String!
                 imdbRating: Int!

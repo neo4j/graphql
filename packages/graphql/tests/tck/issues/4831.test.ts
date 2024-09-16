@@ -26,7 +26,7 @@ describe("https://github.com/neo4j/graphql/issues/4831", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Test @node {
+            type Test {
                 testBoolean(value: Boolean): Boolean @cypher(statement: "RETURN $value as value", columnName: "value")
                 testString(value: String): String @cypher(statement: "RETURN $value as value", columnName: "value")
             }

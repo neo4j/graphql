@@ -34,13 +34,13 @@ describe("Mass Delete", () => {
         movieType = testHelper.createUniqueType("Movie");
 
         typeDefs = gql`
-            type ${personType.name} @node {
+            type ${personType.name} {
                 name: String!
                 born: Int!
                 movies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type ${movieType.name} @node {
+            type ${movieType.name} {
                 title: String!
                 released: Int
                 actors: [${personType.name}!]! @relationship(type: "ACTED_IN", direction: IN)

@@ -31,12 +31,12 @@ describe("fragments", () => {
             runtime: Int!
         }
 
-        type ${Movie} implements Production @node {
+        type ${Movie} implements Production {
             title: String!
             runtime: Int!
         }
 
-        type ${Series} implements Production @node {
+        type ${Series} implements Production {
             title: String!
             runtime: Int!
             episodes: Int!
@@ -50,7 +50,7 @@ describe("fragments", () => {
             actedIn: [Production!]! @declareRelationship
         }
 
-        type ${Actor} implements InterfaceA @node {
+        type ${Actor} implements InterfaceA {
             name: String!
             actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
         }

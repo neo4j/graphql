@@ -31,7 +31,7 @@ describe("undirected relationships", () => {
     test("query for an undirected relationship", async () => {
         const userType = new UniqueType("User");
         const typeDefs = gql`
-            type ${userType.name} @node {
+            type ${userType.name} {
                 name: String!
                 friends: [${userType.name}!]! @relationship(type: "FRIENDS_WITH", direction: OUT)
             }
@@ -80,7 +80,7 @@ describe("undirected relationships", () => {
     test("query for an undirected relationship on single relationship", async () => {
         const userType = new UniqueType("User");
         const typeDefs = gql`
-            type ${userType.name} @node {
+            type ${userType.name} {
                 name: String!
                 friend: ${userType.name} @relationship(type: "FRIENDS_WITH", direction: OUT)
             }

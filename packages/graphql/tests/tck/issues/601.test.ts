@@ -36,7 +36,7 @@ describe("#601", () => {
                 uploadedAt: DateTime!
             }
 
-            type Document @mutation(operations: []) @node {
+            type Document @mutation(operations: []) {
                 id: ID! @id @unique
                 stakeholder: Stakeholder! @relationship(type: "REQUIRES", direction: OUT)
 
@@ -46,7 +46,7 @@ describe("#601", () => {
 
             extend type Document @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "view" } } }])
 
-            type CustomerContact @mutation(operations: []) @node {
+            type CustomerContact @mutation(operations: []) {
                 email: String!
                 firstname: String!
                 lastname: String!
@@ -55,7 +55,7 @@ describe("#601", () => {
 
             extend type CustomerContact @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "view" } } }])
 
-            type Stakeholder @mutation(operations: []) @node {
+            type Stakeholder @mutation(operations: []) {
                 id: ID!
                 fields: String!
                 documents: [Document!]! @relationship(type: "REQUIRES", direction: OUT)

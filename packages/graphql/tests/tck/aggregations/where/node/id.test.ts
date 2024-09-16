@@ -26,13 +26,13 @@ describe("Cypher Aggregations where node with ID", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type User @node {
+            type User {
                 id: ID
                 someIdAlias: ID @alias(property: "_someIdAlias")
                 name: String!
             }
 
-            type Post @node {
+            type Post {
                 content: String!
                 likes: [User!]! @relationship(type: "LIKES", direction: IN)
             }

@@ -45,7 +45,7 @@ describe("Subscription authentication", () => {
             typeMovie = testHelper.createUniqueType("Movie");
 
             const typeDefs = `
-            type ${typeMovie} @node {
+            type ${typeMovie} {
                 title: String!
             }
 
@@ -171,7 +171,7 @@ describe("Subscription authentication", () => {
             typeMovie = testHelper.createUniqueType("Movie");
 
             const typeDefs = `
-            type ${typeMovie} @node {
+            type ${typeMovie} {
                 title: String!
             }
 
@@ -266,7 +266,7 @@ describe("Subscription authentication", () => {
                 permissions: [String!]!
             }
 
-            type ${typeMovie} @authentication(operations: [SUBSCRIBE]) @node {
+            type ${typeMovie} @authentication(operations: [SUBSCRIBE]) {
                 title: String! @authentication(operations: [READ], jwt: { permissions_INCLUDES: "r" })
             }
             `;
@@ -374,7 +374,7 @@ describe("Subscription authentication", () => {
         beforeAll(async () => {
             typeMovie = testHelper.createUniqueType("Movie");
             const typeDefs = `
-            type ${typeMovie} @node {
+            type ${typeMovie} {
                 title: String! 
                 name: String @authentication(operations: [READ])
             }
@@ -484,7 +484,7 @@ describe("Subscription authentication", () => {
             beforeAll(async () => {
                 typeMovie = testHelper.createUniqueType("Movie");
                 const typeDefs = `
-                type ${typeMovie} @node {
+                type ${typeMovie} {
                     title: String! 
                     name: String 
                 }
@@ -575,7 +575,7 @@ describe("Subscription authentication", () => {
                 typeMovie = testHelper.createUniqueType("Movie");
 
                 const typeDefs = `
-                type ${typeMovie} @node {
+                type ${typeMovie} {
                     title: String!
                 }
     
@@ -675,7 +675,7 @@ describe("Subscription authentication", () => {
             typePerson = testHelper.createUniqueType("Person");
             typeInfluencer = testHelper.createUniqueType("Influencer");
             typeDefs = `
-            type ${typeMovie} @node {
+            type ${typeMovie} {
                 title: String! @authentication(operations: [READ])
                 actors: [${typeActor}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
                 directors: [Director!]! @relationship(type: "DIRECTED", properties: "Directed", direction: IN)
@@ -683,7 +683,7 @@ describe("Subscription authentication", () => {
                 imdbId: Int @unique
             } 
             
-            type ${typeActor} @authentication(operations: [READ]) @node {
+            type ${typeActor} @authentication(operations: [READ]) {
                 name: String!
                 id: Int @unique
                 movies: [${typeMovie}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
@@ -701,7 +701,7 @@ describe("Subscription authentication", () => {
                 score: Int!
             }
         
-            type ${typePerson} implements Reviewer  @node {
+            type ${typePerson} implements Reviewer  {
                 name: String! 
                 reputation: Int! @authentication(operations: [READ])
                 id: Int @unique 
@@ -709,7 +709,7 @@ describe("Subscription authentication", () => {
                 movies: [${typeMovie}!]! @relationship(type: "REVIEWED", direction: OUT, properties: "Review")
             }
             
-            type ${typeInfluencer} implements Reviewer @authentication(operations: [READ]) @node {
+            type ${typeInfluencer} implements Reviewer @authentication(operations: [READ]) {
                 reputation: Int! @authentication(operations: [READ])
                 url: String!
                 reviewerId: Int
@@ -4960,7 +4960,7 @@ describe("Subscription authentication", () => {
             typePerson = testHelper.createUniqueType("Person");
             typeInfluencer = testHelper.createUniqueType("Influencer");
             typeDefs = `
-            type ${typeMovie} @node {
+            type ${typeMovie} {
                 title: String!
                 actors: [${typeActor}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
                 directors: [Director!]! @relationship(type: "DIRECTED", properties: "Directed", direction: IN)
@@ -4969,7 +4969,7 @@ describe("Subscription authentication", () => {
             }
             extend type ${typeMovie} @authentication(operations: [SUBSCRIBE])
             
-            type ${typeActor} @node {
+            type ${typeActor} {
                 name: String!
                 id: Int @unique
                 movies: [${typeMovie}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
@@ -4987,7 +4987,7 @@ describe("Subscription authentication", () => {
                 score: Int!
             }
         
-            type ${typePerson} implements Reviewer @node {
+            type ${typePerson} implements Reviewer {
                 name: String!
                 reputation: Int!
                 id: Int @unique
@@ -4995,7 +4995,7 @@ describe("Subscription authentication", () => {
                 movies: [${typeMovie}!]! @relationship(type: "REVIEWED", direction: OUT, properties: "Review")
             }
             
-            type ${typeInfluencer} implements Reviewer @node {
+            type ${typeInfluencer} implements Reviewer {
                 reputation: Int!
                 url: String!
                 reviewerId: Int
@@ -5349,7 +5349,7 @@ describe("Subscription authentication", () => {
         beforeAll(async () => {
             typeMovie = testHelper.createUniqueType("Movie");
             const typeDefs = `
-            type ${typeMovie} @node {
+            type ${typeMovie} {
                 title: String!
             }
 
@@ -5441,7 +5441,7 @@ describe("Subscription authentication", () => {
         beforeAll(async () => {
             typeMovie = testHelper.createUniqueType("Movie");
             const typeDefs = `
-            type ${typeMovie} @node {
+            type ${typeMovie} {
                 title: String!
             }
 

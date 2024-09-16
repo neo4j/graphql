@@ -32,7 +32,7 @@ describe("https://github.com/neo4j/graphql/issues/360", () => {
         const type = testHelper.createUniqueType("Event");
 
         const typeDefs = `
-            type ${type.name} @node {
+            type ${type.name} {
                 id: ID!
                 name: String
                 start: DateTime
@@ -71,7 +71,7 @@ describe("https://github.com/neo4j/graphql/issues/360", () => {
         const type = testHelper.createUniqueType("Event");
 
         const typeDefs = `
-            type ${type.name} @node {
+            type ${type.name} {
                 id: ID!
                 name: String
                 start: DateTime
@@ -110,7 +110,7 @@ describe("https://github.com/neo4j/graphql/issues/360", () => {
         const type = testHelper.createUniqueType("Event");
 
         const typeDefs = `
-            type ${type.name} @node {
+            type ${type.name} {
                 id: ID!
                 name: String
                 start: DateTime

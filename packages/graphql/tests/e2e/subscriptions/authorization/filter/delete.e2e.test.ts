@@ -44,7 +44,7 @@ describe("Subscriptions authorization with delete events", () => {
                 roles: [String!]!
             }
 
-            type ${User} @node
+            type ${User}
                 @subscriptionsAuthorization(
                     filter: [
                         { where: { node: { id: "$jwt.sub" }, jwt: { roles_INCLUDES: "user" } } }

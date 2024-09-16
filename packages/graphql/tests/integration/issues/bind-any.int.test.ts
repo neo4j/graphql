@@ -46,16 +46,16 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
 
     test("should allow the operation when predicate is any", async () => {
         const typeDefs = `
-            type ${User} @node {
+            type ${User} {
                 id: String!
             }
 
-            type ${Organization} @node {
+            type ${Organization} {
                 id: String!
                 users: [${User}!]! @relationship(type: "IS_MEMBER_OF", direction: IN)
             }
 
-            type ${Group} @authorization(validate: [{ operations: [CREATE], when: [AFTER], where: { node: { organization: { users_SOME: { id: "$jwt.sub" } } } } }]) @node {
+            type ${Group} @authorization(validate: [{ operations: [CREATE], when: [AFTER], where: { node: { organization: { users_SOME: { id: "$jwt.sub" } } } } }]) {
                 id: String!
                 name: String
                 organization: ${Organization}! @relationship(type: "HAS_GROUP", direction: IN)
@@ -105,16 +105,16 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
 
     test("should disallow the operation when predicate is all (default behaviour)", async () => {
         const typeDefs = `
-            type ${User} @node {
+            type ${User} {
                 id: String!
             }
 
-            type ${Organization} @node {
+            type ${Organization} {
                 id: String!
                 users: [${User}!]! @relationship(type: "IS_MEMBER_OF", direction: IN)
             }
 
-            type ${Group} @authorization(validate: [{ operations: [CREATE], when: [AFTER], where: { node: { organization: { users_ALL: { id: "$jwt.sub" } } } } }]) @node {
+            type ${Group} @authorization(validate: [{ operations: [CREATE], when: [AFTER], where: { node: { organization: { users_ALL: { id: "$jwt.sub" } } } } }]) {
                 id: String!
                 name: String
                 organization: ${Organization}! @relationship(type: "HAS_GROUP", direction: IN)

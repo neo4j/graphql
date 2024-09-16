@@ -18,19 +18,19 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Pluralize consistency", () => {
     test("Schema with underscore types", async () => {
         const typeDefs = gql`
-            type super_user @node {
+            type super_user {
                 name: String!
                 my_friend: [super_friend!]! @relationship(type: "FRIEND", direction: OUT)
             }
 
-            type super_friend @node {
+            type super_friend {
                 name: String!
             }
         `;
@@ -189,10 +189,9 @@ describe("Pluralize consistency", () => {
               AND: [super_friendWhere!]
               NOT: super_friendWhere
               OR: [super_friendWhere!]
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -416,10 +415,9 @@ describe("Pluralize consistency", () => {
               Return super_users where some of the related super_friends match this filter
               \\"\\"\\"
               my_friend_SOME: super_friendWhere
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")

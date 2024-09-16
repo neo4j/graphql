@@ -31,11 +31,11 @@ describe("https://github.com/neo4j/graphql/issues/1683", () => {
         governedDataTest = testHelper.createUniqueType("GovernedData");
 
         const typeDefs = `
-            type ${systemType} @node {
+            type ${systemType} {
                 code: String!
                 updatesData: [${governedDataTest}!]! @relationship(type: "UPDATED_BY", direction: IN)
             }
-            type ${governedDataTest} @node {
+            type ${governedDataTest} {
                 code: String!
                 updatedBy: [${systemType}!]! @relationship(type: "UPDATED_BY", direction: OUT)
             }

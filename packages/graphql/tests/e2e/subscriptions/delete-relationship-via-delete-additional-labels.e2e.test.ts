@@ -60,7 +60,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                 movies: [${typeMovie}!]! @relationship(type: "DIRECTED", direction: OUT)
             }
 
-            type ${typePerson} @node {
+            type ${typePerson} {
                 name: String
                 movies: [${typeMovie}!]! @relationship(type: "DIRECTED", direction: OUT)
             }

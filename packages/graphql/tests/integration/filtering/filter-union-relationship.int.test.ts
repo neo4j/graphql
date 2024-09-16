@@ -34,12 +34,12 @@ describe("union relationships", () => {
         typeActor = testHelper.createUniqueType("Actor");
 
         const typeDefs = /* GraphQL */ `
-        type ${typeMovie}  @node {
+        type ${typeMovie}  {
             title: String!
             runtime: Int!
         }
         
-        type ${typeSeries}  @node {
+        type ${typeSeries}  {
             title: String!
             episodes: Int!
         }
@@ -50,7 +50,7 @@ describe("union relationships", () => {
                 screenTime: Int!
             }
 
-            type ${typeActor} @node {
+            type ${typeActor} {
                 name: String!
                 currentlyActingIn: Production @relationship(type: "CURRENTLY_ACTING_IN", direction: OUT)
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")

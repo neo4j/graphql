@@ -31,12 +31,12 @@ describe("https://github.com/neo4j/graphql/issues/2669", () => {
         typeActor = testHelper.createUniqueType("Actor");
 
         const typeDefs = `
-        type ${typeMovie.name} @node {
+        type ${typeMovie.name} {
             title: String
             actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
         }
 
-        type ${typeActor.name} @node {
+        type ${typeActor.name} {
             myName: String @alias(property: "name")
             age: Int
             movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")

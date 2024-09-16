@@ -31,12 +31,12 @@ describe("aggregations-where-node-datetime - connections", () => {
         User = testHelper.createUniqueType("User");
         Post = testHelper.createUniqueType("Post");
         const typeDefs = `
-            type ${User} @node {
+            type ${User} {
                 testString: String!
                 someDateTime: DateTime!
             }
     
-            type ${Post} @node {
+            type ${Post} {
               testString: String!
               likes: [${User}!]! @relationship(type: "LIKES", direction: IN)
             }
@@ -333,17 +333,17 @@ describe("aggregations-where-node-datetime - connections - interface relationshi
             someDateTime: DateTime!
         }
 
-        type ${Person} implements Human @node {
+        type ${Person} implements Human {
             testString: String!
             someDateTime: DateTime!
         }
 
-            type ${User} implements Human @node {
+            type ${User} implements Human {
                 testString: String!
                 someDateTime: DateTime!
             }
     
-            type ${Post} @node {
+            type ${Post} {
               testString: String!
               likes: [Human!]! @relationship(type: "LIKES", direction: IN)
             }

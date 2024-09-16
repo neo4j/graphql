@@ -43,11 +43,11 @@ describe("Delete using top level aggregate where", () => {
         postType = testHelper.createUniqueType("Post");
 
         const typeDefs = `
-            type ${userType.name} @node {
+            type ${userType.name} {
                 testString: String!
             }
 
-            type ${postType.name} @node {
+            type ${postType.name} {
                 id: ID!
                 content: String!
                 likes: [${userType.name}!]! @relationship(type: "LIKES", direction: IN)

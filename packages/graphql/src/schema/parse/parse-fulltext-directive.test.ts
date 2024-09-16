@@ -57,7 +57,7 @@ describe("parseFulltextDirective", () => {
 
     test("should throw error when directive field is missing", () => {
         const typeDefs = gql`
-            type Movie @fulltext(indexes: [{ indexName: "MyIndex", fields: ["title"] }]) @node {
+            type Movie @fulltext(indexes: [{ indexName: "MyIndex", fields: ["title"] }]) {
                 description: String
                 imdbRating: Int
             }

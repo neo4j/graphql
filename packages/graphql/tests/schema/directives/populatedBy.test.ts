@@ -28,7 +28,7 @@ describe("@populatedBy tests", () => {
         describe("Directive combinations", () => {
             test("PopulatedBy and default directives", async () => {
                 const typeDefs = gql`
-                    type Movie @node {
+                    type Movie {
                         id: ID
                         callback1: String!
                             @populatedBy(operations: [CREATE], callback: "callback1")
@@ -66,7 +66,7 @@ describe("@populatedBy tests", () => {
 
             test("PopulatedBy and id directives", async () => {
                 const typeDefs = gql`
-                    type Movie @node {
+                    type Movie {
                         id: ID
                         callback1: ID! @populatedBy(operations: [CREATE], callback: "callback1") @id
                     }
@@ -103,7 +103,7 @@ describe("@populatedBy tests", () => {
 
         test("PopulatedBy - existence", async () => {
             const typeDefs = gql`
-                type Movie @node {
+                type Movie {
                     id: ID
                     callback1: String! @populatedBy(operations: [CREATE], callback: "callback1")
                 }
@@ -133,7 +133,7 @@ describe("@populatedBy tests", () => {
             const callback3 = () => "random-string";
 
             const typeDefs = gql`
-                type Movie @node {
+                type Movie {
                     id: ID
                     callback1: String! @populatedBy(operations: [CREATE], callback: "callback1")
                     callback2: String! @populatedBy(operations: [UPDATE], callback: "callback2")
@@ -243,10 +243,9 @@ describe("@populatedBy tests", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  callback1: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  callback1: String
                   callback1_CONTAINS: String
                   callback1_ENDS_WITH: String
-                  callback1_EQ: String
                   callback1_IN: [String!]
                   callback1_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   callback1_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -254,10 +253,9 @@ describe("@populatedBy tests", () => {
                   callback1_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   callback1_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   callback1_STARTS_WITH: String
-                  callback2: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  callback2: String
                   callback2_CONTAINS: String
                   callback2_ENDS_WITH: String
-                  callback2_EQ: String
                   callback2_IN: [String!]
                   callback2_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   callback2_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -265,10 +263,9 @@ describe("@populatedBy tests", () => {
                   callback2_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   callback2_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   callback2_STARTS_WITH: String
-                  callback3: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  callback3: String
                   callback3_CONTAINS: String
                   callback3_ENDS_WITH: String
-                  callback3_EQ: String
                   callback3_IN: [String!]
                   callback3_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   callback3_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -276,10 +273,9 @@ describe("@populatedBy tests", () => {
                   callback3_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   callback3_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   callback3_STARTS_WITH: String
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -352,7 +348,7 @@ describe("@populatedBy tests", () => {
             const callback3 = () => "random-int";
 
             const typeDefs = gql`
-                type Movie @node {
+                type Movie {
                     id: ID
                     callback1: Int! @populatedBy(operations: [CREATE], callback: "callback1")
                     callback2: Int! @populatedBy(operations: [UPDATE], callback: "callback2")
@@ -471,8 +467,7 @@ describe("@populatedBy tests", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  callback1: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  callback1_EQ: Int
+                  callback1: Int
                   callback1_GT: Int
                   callback1_GTE: Int
                   callback1_IN: [Int!]
@@ -480,8 +475,7 @@ describe("@populatedBy tests", () => {
                   callback1_LTE: Int
                   callback1_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   callback1_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  callback2: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  callback2_EQ: Int
+                  callback2: Int
                   callback2_GT: Int
                   callback2_GTE: Int
                   callback2_IN: [Int!]
@@ -489,8 +483,7 @@ describe("@populatedBy tests", () => {
                   callback2_LTE: Int
                   callback2_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   callback2_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  callback3: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  callback3_EQ: Int
+                  callback3: Int
                   callback3_GT: Int
                   callback3_GTE: Int
                   callback3_IN: [Int!]
@@ -498,10 +491,9 @@ describe("@populatedBy tests", () => {
                   callback3_LTE: Int
                   callback3_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   callback3_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -567,7 +559,7 @@ describe("@populatedBy tests", () => {
         describe("Directive combinations", () => {
             test("PopulatedBy and default directives", async () => {
                 const typeDefs = gql`
-                    type Movie @node {
+                    type Movie {
                         id: ID
                         genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "RelProperties")
                     }
@@ -579,7 +571,7 @@ describe("@populatedBy tests", () => {
                             @default(value: "Test")
                     }
 
-                    type Genre @node {
+                    type Genre {
                         id: ID!
                     }
                 `;
@@ -614,7 +606,7 @@ describe("@populatedBy tests", () => {
 
             test("PopulatedBy and id directives", async () => {
                 const typeDefs = gql`
-                    type Movie @node {
+                    type Movie {
                         id: ID
                         genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "RelProperties")
                     }
@@ -624,7 +616,7 @@ describe("@populatedBy tests", () => {
                         callback1: ID! @populatedBy(operations: [CREATE], callback: "callback4") @id
                     }
 
-                    type Genre @node {
+                    type Genre {
                         id: ID!
                     }
                 `;
@@ -660,7 +652,7 @@ describe("@populatedBy tests", () => {
 
         test("PopulatedBy - existence", async () => {
             const typeDefs = gql`
-                type Movie @node {
+                type Movie {
                     id: ID
                     genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "RelProperties")
                 }
@@ -670,7 +662,7 @@ describe("@populatedBy tests", () => {
                     callback1: String! @populatedBy(operations: [CREATE], callback: "callback4")
                 }
 
-                type Genre @node {
+                type Genre {
                     id: ID!
                 }
             `;
@@ -704,7 +696,7 @@ describe("@populatedBy tests", () => {
             const callback3 = () => "random-string";
 
             const typeDefs = gql`
-                type Movie @node {
+                type Movie {
                     id: ID
                     genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "RelProperties")
                 }
@@ -716,7 +708,7 @@ describe("@populatedBy tests", () => {
                     callback3: String! @populatedBy(operations: [CREATE, UPDATE], callback: "callback3")
                 }
 
-                type Genre @node {
+                type Genre {
                     id: ID!
                 }
             `;
@@ -816,10 +808,9 @@ describe("@populatedBy tests", () => {
                   AND: [GenreWhere!]
                   NOT: GenreWhere
                   OR: [GenreWhere!]
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID!]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1037,10 +1028,9 @@ describe("@populatedBy tests", () => {
                   genres_SINGLE: GenreWhere
                   \\"\\"\\"Return Movies where some of the related Genres match this filter\\"\\"\\"
                   genres_SOME: GenreWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1226,10 +1216,9 @@ describe("@populatedBy tests", () => {
                   AND: [RelPropertiesWhere!]
                   NOT: RelPropertiesWhere
                   OR: [RelPropertiesWhere!]
-                  callback1: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  callback1: String
                   callback1_CONTAINS: String
                   callback1_ENDS_WITH: String
-                  callback1_EQ: String
                   callback1_IN: [String!]
                   callback1_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   callback1_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1237,10 +1226,9 @@ describe("@populatedBy tests", () => {
                   callback1_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   callback1_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   callback1_STARTS_WITH: String
-                  callback2: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  callback2: String
                   callback2_CONTAINS: String
                   callback2_ENDS_WITH: String
-                  callback2_EQ: String
                   callback2_IN: [String!]
                   callback2_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   callback2_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1248,10 +1236,9 @@ describe("@populatedBy tests", () => {
                   callback2_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   callback2_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   callback2_STARTS_WITH: String
-                  callback3: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  callback3: String
                   callback3_CONTAINS: String
                   callback3_ENDS_WITH: String
-                  callback3_EQ: String
                   callback3_IN: [String!]
                   callback3_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   callback3_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1259,10 +1246,9 @@ describe("@populatedBy tests", () => {
                   callback3_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   callback3_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   callback3_STARTS_WITH: String
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID!]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1314,7 +1300,7 @@ describe("@populatedBy tests", () => {
             const callback3 = () => "random-int";
 
             const typeDefs = gql`
-                type Movie @node {
+                type Movie {
                     id: ID
                     genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "RelProperties")
                 }
@@ -1326,7 +1312,7 @@ describe("@populatedBy tests", () => {
                     callback3: Int! @populatedBy(operations: [CREATE, UPDATE], callback: "callback3")
                 }
 
-                type Genre @node {
+                type Genre {
                     id: ID!
                 }
             `;
@@ -1426,10 +1412,9 @@ describe("@populatedBy tests", () => {
                   AND: [GenreWhere!]
                   NOT: GenreWhere
                   OR: [GenreWhere!]
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID!]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1654,10 +1639,9 @@ describe("@populatedBy tests", () => {
                   genres_SINGLE: GenreWhere
                   \\"\\"\\"Return Movies where some of the related Genres match this filter\\"\\"\\"
                   genres_SOME: GenreWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1815,8 +1799,7 @@ describe("@populatedBy tests", () => {
                   AND: [RelPropertiesWhere!]
                   NOT: RelPropertiesWhere
                   OR: [RelPropertiesWhere!]
-                  callback1: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  callback1_EQ: Int
+                  callback1: Int
                   callback1_GT: Int
                   callback1_GTE: Int
                   callback1_IN: [Int!]
@@ -1824,8 +1807,7 @@ describe("@populatedBy tests", () => {
                   callback1_LTE: Int
                   callback1_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   callback1_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  callback2: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  callback2_EQ: Int
+                  callback2: Int
                   callback2_GT: Int
                   callback2_GTE: Int
                   callback2_IN: [Int!]
@@ -1833,8 +1815,7 @@ describe("@populatedBy tests", () => {
                   callback2_LTE: Int
                   callback2_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   callback2_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  callback3: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  callback3_EQ: Int
+                  callback3: Int
                   callback3_GT: Int
                   callback3_GTE: Int
                   callback3_IN: [Int!]
@@ -1842,10 +1823,9 @@ describe("@populatedBy tests", () => {
                   callback3_LTE: Int
                   callback3_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   callback3_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID!]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")

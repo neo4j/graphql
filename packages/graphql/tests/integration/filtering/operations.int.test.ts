@@ -30,13 +30,13 @@ describe("Filtering Operations", () => {
         movieType = testHelper.createUniqueType("Movie");
 
         const typeDefs = `
-        type ${personType} @node {
+        type ${personType} {
             name: String!
             age: Int!
             movies: [${movieType}!]! @relationship(type: "ACTED_IN", direction: IN)
         }
 
-        type ${movieType} @node {
+        type ${movieType} {
             title: String!
             released: Int!
             actors: [${personType}!]! @relationship(type: "ACTED_IN", direction: OUT)

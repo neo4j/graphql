@@ -38,7 +38,7 @@ describe("https://github.com/neo4j/graphql/issues/2388", () => {
             roles: [String!]!
         }
 
-        type ${PartAddress} @node
+        type ${PartAddress}
             @authorization(validate: [
                 { operations: [READ, CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP], where: { jwt: { roles_INCLUDES: "upstream" } } }
                 { operations: [READ], where: { jwt: { roles_INCLUDES: "downstream" } } }
@@ -47,7 +47,7 @@ describe("https://github.com/neo4j/graphql/issues/2388", () => {
             id: ID! @id @unique
         }
 
-        type ${PartUsage} @node
+        type ${PartUsage}
             @authorization(validate: [
                 { operations: [READ, CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP], where: { jwt: { roles_INCLUDES: "upstream" } } }
                 { operations: [READ], where: { jwt: { roles_INCLUDES: "downstream" } } }
@@ -57,7 +57,7 @@ describe("https://github.com/neo4j/graphql/issues/2388", () => {
             @relationship(type: "BELONGS_TO", direction: OUT)
         }
 
-        type ${Part} @node
+        type ${Part}
             @authorization(validate: [
                 { operations: [READ, CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP], where: { jwt: { roles_INCLUDES: "upstream" } } }
                 { operations: [READ], where: { jwt: { roles_INCLUDES: "downstream" } } }

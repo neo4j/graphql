@@ -36,7 +36,7 @@ describe("https://github.com/neo4j/graphql/issues/369", () => {
 
     test("should recreate issue and return correct data", async () => {
         const typeDefs = gql`
-            type ${Dato} @node {
+            type ${Dato} {
                 uuid: ID
                 dependeTo: [${Dato}!]! @relationship(type: "DEPENDE", direction: OUT, properties: "Depende")
                 dependeFrom: [${Dato}!]! @relationship(type: "DEPENDE", direction: IN, properties: "Depende")
@@ -111,7 +111,7 @@ describe("https://github.com/neo4j/graphql/issues/369", () => {
 
     test("should recreate issue and return correct data using a where argument on the connection", async () => {
         const typeDefs = gql`
-            type ${Dato} @node {
+            type ${Dato} {
                 uuid: ID
                 dependeTo: [${Dato}!]! @relationship(type: "DEPENDE", direction: OUT, properties: "Depende")
                 dependeFrom: [${Dato}!]! @relationship(type: "DEPENDE", direction: IN, properties: "Depende")

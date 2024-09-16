@@ -20,7 +20,7 @@
 import Neo4jGraphQL from "../../../src/classes/Neo4jGraphQL";
 
 const basicTypeDefs = `
-    type Journalist @node {
+    type Journalist {
         articles: [Article!]! @relationship(type: "HAS_ARTICLE", direction: OUT, properties: "HasArticle")
     }
 
@@ -28,13 +28,13 @@ const basicTypeDefs = `
         createdAt: DateTime! @timestamp
     }
 
-    type Article @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) @node {
+    type Article @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
         id: ID! @id @unique @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
         blocks: [Block!]! @relationship(type: "HAS_BLOCK", direction: OUT, properties: "HasBlock")
         images: [Image!]! @relationship(type: "HAS_IMAGE", direction: OUT)
     }
 
-    type HasBlock @relationshipProperties @node {
+    type HasBlock @relationshipProperties {
         order: Int!
     }
 
@@ -42,16 +42,16 @@ const basicTypeDefs = `
         id: ID
     }
 
-    type TextBlock implements Block @node {
+    type TextBlock implements Block {
         id: ID @id @unique
         text: String
     }
 
-    type DividerBlock implements Block @node {
+    type DividerBlock implements Block {
         id: ID @id @unique
     }
 
-    type ImageBlock implements Block @node {
+    type ImageBlock implements Block {
         id: ID @id @unique
         images: [Image!]! @relationship(type: "HAS_IMAGE", direction: OUT)
     }
@@ -60,7 +60,7 @@ const basicTypeDefs = `
         featuredIn: [Article!]
     }
 
-    type PDFImage implements Image @node {
+    type PDFImage implements Image {
         featuredIn: [Article!]! @relationship(type: "HAS_IMAGE", direction: IN)
         url: String!
     }

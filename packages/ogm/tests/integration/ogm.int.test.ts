@@ -62,7 +62,7 @@ describe("OGM", () => {
         const session = driver.session();
 
         const typeDefs = /* GraphQL */ `
-            type ${typeMovie} @node {
+            type ${typeMovie} {
                 id: ID!
             }
         `;
@@ -80,7 +80,7 @@ describe("OGM", () => {
         const session = driver.session();
 
         const typeDefs = /* GraphQL */ `
-            type ${typeMovie} @authentication @node {
+            type ${typeMovie} @authentication {
                 id: ID
             }
         `;
@@ -116,7 +116,7 @@ describe("OGM", () => {
             const session = driver.session();
 
             const typeDefs = /* GraphQL */ `
-                type ${typeMovie} @node {
+                type ${typeMovie} {
                     id: ID
                 }
             `;
@@ -150,7 +150,7 @@ describe("OGM", () => {
             const session = driver.session();
 
             const typeDefs = /* GraphQL */ `
-                type ${typeMovie} @node {
+                type ${typeMovie} {
                     id: ID
                 }
             `;
@@ -186,11 +186,11 @@ describe("OGM", () => {
             const session = driver.session();
 
             const typeDefs = /* GraphQL */ `
-                type ${typeGenre} @node {
+                type ${typeGenre} {
                     id: ID
                 }
 
-                type ${typeMovie} @node {
+                type ${typeMovie} {
                     id: ID
                     ${typeGenre.plural}: [${typeGenre}!]! @relationship(type: "HAS_GENRE", direction: OUT)
                 }
@@ -236,7 +236,7 @@ describe("OGM", () => {
             const session = driver.session();
 
             const typeDefs = /* GraphQL */ `
-                type ${typeMovie} @node {
+                type ${typeMovie} {
                     id: ID
                 }
             `;
@@ -274,7 +274,7 @@ describe("OGM", () => {
             const session = driver.session();
 
             const typeDefs = `
-                type ${typeMovie} @node {
+                type ${typeMovie} {
                     id: ID!
                 }
             `;
@@ -305,7 +305,7 @@ describe("OGM", () => {
             const session = driver.session();
 
             const typeDefs = `
-                type ${typeProduct} @node {
+                type ${typeProduct} {
                     id: ID!
                     name: String!
                     ${typeSize.plural}: [${typeSize}!]! @relationship(type: "HAS_SIZE", direction: OUT)
@@ -313,18 +313,18 @@ describe("OGM", () => {
                     ${typePhoto.plural}: [${typePhoto}!]! @relationship(type: "HAS_PHOTO", direction: OUT)
                 }
 
-                type ${typeSize} @node {
+                type ${typeSize} {
                     id: ID!
                     name: String!
                 }
 
-                type ${typeColor} @node {
+                type ${typeColor} {
                     id: ID!
                     name: String!
                     ${typePhoto.plural}: [${typePhoto}!]! @relationship(type: "OF_COLOR", direction: IN)
                 }
 
-                type ${typePhoto} @node {
+                type ${typePhoto} {
                     id: ID!
                     description: String!
                     url: String!
@@ -466,7 +466,7 @@ describe("OGM", () => {
             const session = driver.session();
 
             const typeDefs = `
-                type ${typeMovie} @node {
+                type ${typeMovie} {
                     id: ID!
                     name: String
                 }
@@ -513,7 +513,7 @@ describe("OGM", () => {
             const session = driver.session();
 
             const typeDefs = `
-                type ${typeMovie} @node {
+                type ${typeMovie} {
                     id: ID!
                     name: String
                 }
@@ -573,12 +573,12 @@ describe("OGM", () => {
             const session = driver.session();
 
             const typeDefs = `
-                type ${typeActor} @node {
+                type ${typeActor} {
                     id: ID
                     ${typeMovie.plural}: [${typeMovie}!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
 
-                type ${typeMovie} @node {
+                type ${typeMovie} {
                     id: ID
                     ${typeActor.plural}: [${typeActor}!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
@@ -637,12 +637,12 @@ describe("OGM", () => {
             const session = driver.session();
 
             const typeDefs = `
-                type ${typeActor} @node {
+                type ${typeActor} {
                     id: ID
                     ${typeMovie.plural}: [${typeMovie}!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
 
-                type ${typeMovie} @node {
+                type ${typeMovie} {
                     id: ID
                     ${typeActor.plural}: [${typeActor}!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
@@ -699,12 +699,12 @@ describe("OGM", () => {
             const session = driver.session();
 
             const typeDefs = `
-                type ${typeActor} @node {
+                type ${typeActor} {
                     id: ID
                     ${typeMovie.plural}: [${typeMovie}!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
 
-                type ${typeMovie} @node {
+                type ${typeMovie} {
                     id: ID
                     ${typeActor.plural}: [${typeActor}!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
@@ -764,7 +764,7 @@ describe("OGM", () => {
             const session = driver.session();
 
             const typeDefs = /* GraphQL */ `
-                type ${typeMovie} @node {
+                type ${typeMovie} {
                     id: ID
                     name: String
                 }
@@ -797,12 +797,12 @@ describe("OGM", () => {
             const session = driver.session();
 
             const typeDefs = /* GraphQL */ `
-                type ${typeMovie} @node {
+                type ${typeMovie} {
                     id: ID
                     ${typeGenre.plural}: [${typeGenre}!]! @relationship(type: "IN_GENRE", direction: OUT)
                 }
 
-                type ${typeGenre} @node {
+                type ${typeGenre} {
                     id: ID
                 }
             `;
@@ -842,7 +842,7 @@ describe("OGM", () => {
             const session = driver.session();
 
             const typeDefs = /* GraphQL */ `
-                type User @node {
+                type User {
                     id: ID
                     password: String @private
                 }
@@ -877,7 +877,7 @@ describe("OGM", () => {
             const session = driver.session();
 
             const typeDefs = /* GraphQL */ `
-                type ${typeMovie} @node {
+                type ${typeMovie} {
                     testId: ID
                     title: String
                     imdbRating: Int
@@ -921,7 +921,7 @@ describe("OGM", () => {
             const session = driver.session();
 
             const typeDefs = /* GraphQL */ `
-                type ${typeMovie} @node {
+                type ${typeMovie} {
                     testId: ID
                     title: String
                     imdbRating: Int
@@ -976,7 +976,7 @@ describe("OGM", () => {
             const session = driver.session();
 
             const typeDefs = /* GraphQL */ `
-                type Book @node {
+                type Book {
                     isbn: String! @unique
                     title: String
                 }
@@ -1023,7 +1023,7 @@ describe("OGM", () => {
             const session = driver.session();
 
             const typeDefs = /* GraphQL */ `
-                type User @authentication @node {
+                type User @authentication {
                     id: ID
                     password: String
                 }

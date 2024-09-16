@@ -25,7 +25,7 @@ import { Neo4jGraphQL } from "../../../src";
 describe("Remove deprecated fields for aggregations", () => {
     test("Top Level Aggregations", async () => {
         const typeDefs = gql`
-            type Movie @node {
+            type Movie {
                 id: ID
                 isbn: String!
                 title: String
@@ -245,78 +245,67 @@ describe("Remove deprecated fields for aggregations", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              createdAt: DateTime @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              createdAt_EQ: DateTime
+              createdAt: DateTime
               createdAt_GT: DateTime
               createdAt_GTE: DateTime
               createdAt_IN: [DateTime]
               createdAt_LT: DateTime
               createdAt_LTE: DateTime
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
-              imdbRating: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              imdbRating_EQ: Float
+              imdbRating: Float
               imdbRating_GT: Float
               imdbRating_GTE: Float
               imdbRating_IN: [Float]
               imdbRating_LT: Float
               imdbRating_LTE: Float
-              isbn: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              isbn: String
               isbn_CONTAINS: String
               isbn_ENDS_WITH: String
-              isbn_EQ: String
               isbn_IN: [String!]
               isbn_STARTS_WITH: String
-              screenTime: Duration @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              screenTime_EQ: Duration
+              screenTime: Duration
               screenTime_GT: Duration
               screenTime_GTE: Duration
               screenTime_IN: [Duration]
               screenTime_LT: Duration
               screenTime_LTE: Duration
-              someBigInt: BigInt @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              someBigInt_EQ: BigInt
+              someBigInt: BigInt
               someBigInt_GT: BigInt
               someBigInt_GTE: BigInt
               someBigInt_IN: [BigInt]
               someBigInt_LT: BigInt
               someBigInt_LTE: BigInt
-              someInt: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              someInt_EQ: Int
+              someInt: Int
               someInt_GT: Int
               someInt_GTE: Int
               someInt_IN: [Int]
               someInt_LT: Int
               someInt_LTE: Int
-              someLocalDateTime: LocalDateTime @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              someLocalDateTime_EQ: LocalDateTime
+              someLocalDateTime: LocalDateTime
               someLocalDateTime_GT: LocalDateTime
               someLocalDateTime_GTE: LocalDateTime
               someLocalDateTime_IN: [LocalDateTime]
               someLocalDateTime_LT: LocalDateTime
               someLocalDateTime_LTE: LocalDateTime
-              someLocalTime: LocalTime @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              someLocalTime_EQ: LocalTime
+              someLocalTime: LocalTime
               someLocalTime_GT: LocalTime
               someLocalTime_GTE: LocalTime
               someLocalTime_IN: [LocalTime]
               someLocalTime_LT: LocalTime
               someLocalTime_LTE: LocalTime
-              someTime: Time @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              someTime_EQ: Time
+              someTime: Time
               someTime_GT: Time
               someTime_GTE: Time
               someTime_IN: [Time]
               someTime_LT: Time
               someTime_LTE: Time
-              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_EQ: String
               title_IN: [String]
               title_STARTS_WITH: String
             }
@@ -387,7 +376,7 @@ describe("Remove deprecated fields for aggregations", () => {
 
     test("Where Level Aggregations", async () => {
         const typeDefs = gql`
-            type User @node {
+            type User {
                 someId: ID
                 someString: String
                 someFloat: Float
@@ -400,7 +389,7 @@ describe("Remove deprecated fields for aggregations", () => {
                 someDuration: Duration
             }
 
-            type Post @node {
+            type Post {
                 title: String
                 likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
@@ -715,69 +704,59 @@ describe("Remove deprecated fields for aggregations", () => {
               AND: [LikesWhere!]
               NOT: LikesWhere
               OR: [LikesWhere!]
-              someBigInt: BigInt @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              someBigInt_EQ: BigInt
+              someBigInt: BigInt
               someBigInt_GT: BigInt
               someBigInt_GTE: BigInt
               someBigInt_IN: [BigInt]
               someBigInt_LT: BigInt
               someBigInt_LTE: BigInt
-              someDateTime: DateTime @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              someDateTime_EQ: DateTime
+              someDateTime: DateTime
               someDateTime_GT: DateTime
               someDateTime_GTE: DateTime
               someDateTime_IN: [DateTime]
               someDateTime_LT: DateTime
               someDateTime_LTE: DateTime
-              someDuration: Duration @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              someDuration_EQ: Duration
+              someDuration: Duration
               someDuration_GT: Duration
               someDuration_GTE: Duration
               someDuration_IN: [Duration]
               someDuration_LT: Duration
               someDuration_LTE: Duration
-              someFloat: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              someFloat_EQ: Float
+              someFloat: Float
               someFloat_GT: Float
               someFloat_GTE: Float
               someFloat_IN: [Float]
               someFloat_LT: Float
               someFloat_LTE: Float
-              someId: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              someId: ID
               someId_CONTAINS: ID
               someId_ENDS_WITH: ID
-              someId_EQ: ID
               someId_IN: [ID]
               someId_STARTS_WITH: ID
-              someInt: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              someInt_EQ: Int
+              someInt: Int
               someInt_GT: Int
               someInt_GTE: Int
               someInt_IN: [Int]
               someInt_LT: Int
               someInt_LTE: Int
-              someLocalDateTime: LocalDateTime @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              someLocalDateTime_EQ: LocalDateTime
+              someLocalDateTime: LocalDateTime
               someLocalDateTime_GT: LocalDateTime
               someLocalDateTime_GTE: LocalDateTime
               someLocalDateTime_IN: [LocalDateTime]
               someLocalDateTime_LT: LocalDateTime
               someLocalDateTime_LTE: LocalDateTime
-              someLocalTime: LocalTime @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              someLocalTime_EQ: LocalTime
+              someLocalTime: LocalTime
               someLocalTime_GT: LocalTime
               someLocalTime_GTE: LocalTime
               someLocalTime_IN: [LocalTime]
               someLocalTime_LT: LocalTime
               someLocalTime_LTE: LocalTime
-              someString: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              someString: String
               someString_CONTAINS: String
               someString_ENDS_WITH: String
-              someString_EQ: String
               someString_IN: [String]
               someString_STARTS_WITH: String
-              someTime: Time @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              someTime_EQ: Time
+              someTime: Time
               someTime_GT: Time
               someTime_GTE: Time
               someTime_IN: [Time]
@@ -1155,10 +1134,9 @@ describe("Remove deprecated fields for aggregations", () => {
               likes_SINGLE: UserWhere
               \\"\\"\\"Return Posts where some of the related Users match this filter\\"\\"\\"
               likes_SOME: UserWhere
-              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_EQ: String
               title_IN: [String]
               title_STARTS_WITH: String
             }
@@ -1318,69 +1296,59 @@ describe("Remove deprecated fields for aggregations", () => {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
-              someBigInt: BigInt @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              someBigInt_EQ: BigInt
+              someBigInt: BigInt
               someBigInt_GT: BigInt
               someBigInt_GTE: BigInt
               someBigInt_IN: [BigInt]
               someBigInt_LT: BigInt
               someBigInt_LTE: BigInt
-              someDateTime: DateTime @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              someDateTime_EQ: DateTime
+              someDateTime: DateTime
               someDateTime_GT: DateTime
               someDateTime_GTE: DateTime
               someDateTime_IN: [DateTime]
               someDateTime_LT: DateTime
               someDateTime_LTE: DateTime
-              someDuration: Duration @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              someDuration_EQ: Duration
+              someDuration: Duration
               someDuration_GT: Duration
               someDuration_GTE: Duration
               someDuration_IN: [Duration]
               someDuration_LT: Duration
               someDuration_LTE: Duration
-              someFloat: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              someFloat_EQ: Float
+              someFloat: Float
               someFloat_GT: Float
               someFloat_GTE: Float
               someFloat_IN: [Float]
               someFloat_LT: Float
               someFloat_LTE: Float
-              someId: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              someId: ID
               someId_CONTAINS: ID
               someId_ENDS_WITH: ID
-              someId_EQ: ID
               someId_IN: [ID]
               someId_STARTS_WITH: ID
-              someInt: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              someInt_EQ: Int
+              someInt: Int
               someInt_GT: Int
               someInt_GTE: Int
               someInt_IN: [Int]
               someInt_LT: Int
               someInt_LTE: Int
-              someLocalDateTime: LocalDateTime @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              someLocalDateTime_EQ: LocalDateTime
+              someLocalDateTime: LocalDateTime
               someLocalDateTime_GT: LocalDateTime
               someLocalDateTime_GTE: LocalDateTime
               someLocalDateTime_IN: [LocalDateTime]
               someLocalDateTime_LT: LocalDateTime
               someLocalDateTime_LTE: LocalDateTime
-              someLocalTime: LocalTime @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              someLocalTime_EQ: LocalTime
+              someLocalTime: LocalTime
               someLocalTime_GT: LocalTime
               someLocalTime_GTE: LocalTime
               someLocalTime_IN: [LocalTime]
               someLocalTime_LT: LocalTime
               someLocalTime_LTE: LocalTime
-              someString: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              someString: String
               someString_CONTAINS: String
               someString_ENDS_WITH: String
-              someString_EQ: String
               someString_IN: [String]
               someString_STARTS_WITH: String
-              someTime: Time @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              someTime_EQ: Time
+              someTime: Time
               someTime_GT: Time
               someTime_GTE: Time
               someTime_IN: [Time]

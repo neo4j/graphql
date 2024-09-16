@@ -35,7 +35,7 @@ describe("https://github.com/neo4j/graphql/issues/5345", () => {
         session = driver.session();
 
         typeDefs = /* GraphQL */ `
-            type TestNode @fulltext(indexes: [{ name: "simpleTestIndex", fields: ["name"] }]) @node {
+            type TestNode @fulltext(indexes: [{ name: "simpleTestIndex", fields: ["name"] }]) {
                 name: String
             }
         `;

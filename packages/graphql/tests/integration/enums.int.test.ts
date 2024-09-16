@@ -39,7 +39,7 @@ describe("enums", () => {
                 ACTIVE
             }
 
-            type ${Movie} @node {
+            type ${Movie} {
               id: ID
               status: Status
             }
@@ -81,7 +81,7 @@ describe("enums", () => {
                 EATING
             }
 
-            type ${Movie} @node {
+            type ${Movie} {
               id: ID
               status: Status @default(value: ACTIVE)
             }
@@ -125,7 +125,7 @@ describe("enums", () => {
                 ACTIVE
             }
 
-            type ${Movie} @node {
+            type ${Movie} {
               id: ID
               status: Status
             }
@@ -171,7 +171,7 @@ describe("enums", () => {
                 EATING
             }
 
-            type ${Movie} @node {
+            type ${Movie} {
               id: ID
               status: Status @default(value: ACTIVE)
             }

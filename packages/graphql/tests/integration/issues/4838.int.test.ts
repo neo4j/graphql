@@ -31,11 +31,11 @@ describe("https://github.com/neo4j/graphql/issues/4838", () => {
         ParentTest = testHelper.createUniqueType("ParentTest");
 
         const typeDefs = /* GraphQL */ `
-            type ${TestType} @node {
+            type ${TestType} {
                 test: Boolean! @cypher(statement: "RETURN true AS value", columnName: "value")
             }
 
-            type ${ParentTest} @node {
+            type ${ParentTest} {
                 tests: [${TestType}!]! @relationship(type: "REL", direction: OUT,)
             }
         `;

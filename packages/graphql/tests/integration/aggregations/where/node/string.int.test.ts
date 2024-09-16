@@ -32,11 +32,11 @@ describe("aggregations-where-node-string", () => {
         Post = testHelper.createUniqueType("Post");
 
         const typeDefs = /* GraphQL */ `
-            type ${User} @node {
+            type ${User} {
                 testString: String!
             }
 
-            type ${Post} @node {
+            type ${Post} {
                 testString: String!
                 likes: [${User}!]! @relationship(type: "LIKES", direction: IN)
             }
@@ -717,15 +717,15 @@ describe("aggregations-where-node-string interface relationships of concrete typ
                 testString: String!
             }
 
-            type ${User} implements Human @node {
+            type ${User} implements Human {
                 testString: String!
             }
 
-            type ${Person} implements Human @node {
+            type ${Person} implements Human {
                 testString: String!
             }
 
-            type ${Post} @node {
+            type ${Post} {
                 testString: String!
                 likes: [Human!]! @relationship(type: "LIKES", direction: IN)
             }
@@ -1409,10 +1409,10 @@ describe("EQUAL with alias", () => {
 
     test("aggregations-where-node-string", async () => {
         const typeDefs = /* GraphQL */ `
-            type ${User} @node {
+            type ${User} {
                 name: String! @alias(property: "_name")
             }
-            type ${Post} @node {
+            type ${Post} {
                 content: String
                 likes: [${User}!]! @relationship(type: "LIKES", direction: IN)
             }
@@ -1455,15 +1455,15 @@ describe("EQUAL with alias", () => {
                 name: String!
                 other: String
             }
-            type ${User} implements Human @node {
+            type ${User} implements Human {
                 name: String! @alias(property: "_name")
                 other: String @alias(property: "_other")
             }
-            type ${Person} implements Human @node {
+            type ${Person} implements Human {
                 name: String!
                 other: String @alias(property: "_other_person")
             }
-            type ${Post} @node {
+            type ${Post} {
                 content: String
                 likes: [Human!]! @relationship(type: "LIKES", direction: IN)
             }
@@ -1526,11 +1526,11 @@ describe("aggregations-where-node-string relationships of interface types", () =
                 likes: [${User}!]! @declareRelationship
             }
 
-            type ${User} @node {
+            type ${User} {
                 testString: String!
             }
 
-            type ${Post} implements Thing @node {
+            type ${Post} implements Thing {
                 testString: String!
                 likes: [${User}!]! @relationship(type: "LIKES", direction: IN)
             }
@@ -1584,12 +1584,12 @@ describe("aggregations-where-node-string relationships of interface types", () =
                 likes: [${User}!]! @declareRelationship
             }
 
-            type ${User} @node {
+            type ${User} {
                 testString: String!
                 things: [Thing!]! @relationship(type: "LIKES", direction: OUT)
             }
 
-            type ${Post} implements Thing @node {
+            type ${Post} implements Thing {
                 testString: String!
                 likes: [${User}!]! @relationship(type: "LIKES", direction: IN)
             }
@@ -1665,15 +1665,15 @@ describe("aggregations-where-node-string relationships of interface types", () =
                 testString: String!
             }
 
-            type ${User} implements Human @node {
+            type ${User} implements Human {
                 testString: String!
             }
 
-            type ${Person} implements Human @node {
+            type ${Person} implements Human {
                 testString: String!
             }
 
-            type ${Post} implements Thing @node {
+            type ${Post} implements Thing {
                 testString: String!
                 likes: [Human!]! @relationship(type: "LIKES", direction: IN)
             }
@@ -1726,11 +1726,11 @@ describe("aggregations-where-node-string relationships of interface types", () =
                 name: String!
                 other: String
             }
-            type ${User} implements Human @node {
+            type ${User} implements Human {
                 name: String! @alias(property: "_name")
                 other: String @alias(property: "_other")
             }
-            type ${Person} implements Human @node {
+            type ${Person} implements Human {
                 name: String!
                 other: String @alias(property: "_other_person")
             }
@@ -1738,7 +1738,7 @@ describe("aggregations-where-node-string relationships of interface types", () =
                 content: String
                 likes: [Human!]! @declareRelationship
             }
-            type ${Post} implements Thing @node {
+            type ${Post} implements Thing {
                 content: String
                 likes: [Human!]! @relationship(type: "LIKES", direction: IN)
             }
@@ -1790,15 +1790,15 @@ describe("aggregations-where-node-string relationships of interface types", () =
                         testString: String!
                     }
 
-                    type ${User} implements Human @node {
+                    type ${User} implements Human {
                         testString: String! @alias(property: "user_testString")
                     }
 
-                    type ${Person} implements Human @node {
+                    type ${Person} implements Human {
                         testString: String! @alias(property: "person_testString")
                     }
 
-                    type ${Post} implements Thing @node {
+                    type ${Post} implements Thing {
                         testString: String!
                         likes: [Human!]! @relationship(type: "LIKES", direction: IN)
                     }

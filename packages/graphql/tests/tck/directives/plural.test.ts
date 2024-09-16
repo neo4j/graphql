@@ -26,7 +26,7 @@ describe("Plural directive", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Tech @plural(value: "Techs") @node {
+            type Tech @plural(value: "Techs") {
                 name: String
             }
         `;

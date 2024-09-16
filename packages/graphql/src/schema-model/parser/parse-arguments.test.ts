@@ -29,8 +29,8 @@ import {
     Kind,
     parse,
 } from "graphql";
-import { ScalarOrEnumType } from "../../graphql/directives/arguments/scalars/ScalarOrEnum";
 import { parseArguments, parseArgumentsFromUnknownDirective } from "./parse-arguments";
+import { ScalarOrEnumType } from "../../graphql/directives/arguments/scalars/ScalarOrEnum";
 
 describe("parseArguments", () => {
     let testDirectiveDefinition: GraphQLDirective;
@@ -67,7 +67,7 @@ describe("parseArguments", () => {
     test("should parse arguments", () => {
         const typeDefs = `
      
-            type User @node {
+            type User {
                 name: String @testDirective(booleanArgument: false, intArgument: 2, floatArgument: 4.0, customScalar: "123", customListScalar: ["123"])
             }
         `;
@@ -87,18 +87,12 @@ describe("parseArguments", () => {
 
         const args = parseArguments(testDirectiveDefinition, nameCoalesceUsage);
 
-        expect(args).toEqual({
-            booleanArgument: false,
-            intArgument: 2,
-            floatArgument: 4.0,
-            customScalar: "123",
-            customListScalar: ["123"],
-        });
+        expect(args).toEqual({ booleanArgument: false, intArgument: 2, floatArgument: 4.0, customScalar: "123", customListScalar: ["123"] });
     });
 
     test("should use default values", () => {
         const typeDefs = `
-            type User @node {
+            type User {
                 name: String @testDirective(booleanArgument: false, intArgument: 2)
             }
         `;
@@ -118,18 +112,12 @@ describe("parseArguments", () => {
 
         const args = parseArguments(testDirectiveDefinition, nameCoalesceUsage);
 
-        expect(args).toEqual({
-            booleanArgument: false,
-            intArgument: 2,
-            floatArgument: 3.0,
-            customScalar: "test",
-            customListScalar: ["test"],
-        });
+        expect(args).toEqual({ booleanArgument: false, intArgument: 2, floatArgument: 3.0, customScalar: "test", customListScalar: ["test"] });
     });
 
     test("parseArgumentsFromUnknownDirective", () => {
         const typeDefs = `
-            type User @node {
+            type User {
                 name: String @testDirective(booleanArgument: false, intArgument: 2)
             }
         `;
@@ -149,6 +137,7 @@ describe("parseArguments", () => {
 
         const args = parseArgumentsFromUnknownDirective(nameCoalesceUsage);
 
-        expect(args).toEqual({ booleanArgument: false, intArgument: 2 });
+        expect(args).toEqual({ booleanArgument: false, intArgument: 2});
     });
+
 });

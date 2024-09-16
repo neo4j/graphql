@@ -40,12 +40,12 @@ describe("makeAugmentedSchema", () => {
 
     test("should return the correct schema", () => {
         const typeDefs = gql`
-            type Actor @node {
+            type Actor {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type Movie @node {
+            type Movie {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
@@ -96,7 +96,7 @@ describe("makeAugmentedSchema", () => {
     describe("REGEX", () => {
         test("should remove the MATCHES filter by default", () => {
             const typeDefs = gql`
-                type Movie @node {
+                type Movie {
                     name: String
                 }
             `;
@@ -117,7 +117,7 @@ describe("makeAugmentedSchema", () => {
 
         test("should add the name_MATCHES filter when Features.Filters.String.MATCHES is set", () => {
             const typeDefs = gql`
-                type User @node {
+                type User {
                     name: String
                 }
             `;
@@ -148,7 +148,7 @@ describe("makeAugmentedSchema", () => {
 
         test("should add the id_MATCHES filter when Features.Filters.ID.MATCHES is set", () => {
             const typeDefs = gql`
-                type User @node {
+                type User {
                     id: ID
                     name: String
                 }
@@ -180,7 +180,7 @@ describe("makeAugmentedSchema", () => {
 
         test("should not add the id_MATCHES filter when Features.Filters.String.MATCHES is set but Features.Filters.ID.MATCHES is not set", () => {
             const typeDefs = gql`
-                type User @node {
+                type User {
                     id: ID
                     name: String
                 }
@@ -219,7 +219,7 @@ describe("makeAugmentedSchema", () => {
 
         test("should not add the name_MATCHES filter when Features.Filters.ID.MATCHES is set but Features.Filters.Name.MATCHES is not set", () => {
             const typeDefs = gql`
-                type User @node {
+                type User {
                     id: ID
                     name: String
                 }
@@ -262,7 +262,7 @@ describe("makeAugmentedSchema", () => {
             // https://github.com/neo4j/graphql/issues/158
 
             const typeDefs = gql`
-                type Movie @node {
+                type Movie {
                     createdAt: DateTime
                 }
 
@@ -286,7 +286,7 @@ describe("makeAugmentedSchema", () => {
                 input ActionMapping {
                     action: [String!]
                 }
-                type TestType @node {
+                type TestType {
                     someField: String
                 }
             `;

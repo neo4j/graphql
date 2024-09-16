@@ -73,8 +73,8 @@ describe("cypher directive filtering", () => {
                                     {
                                         where: {
                                             node: {
-                                                name_EQ: "Keanu Reeves",
-                                                custom_field_EQ: "hello world!"
+                                                name: "Keanu Reeves",
+                                                custom_field: "hello world!"
                                             }
                                         }
                                     }

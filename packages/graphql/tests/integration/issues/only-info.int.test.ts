@@ -30,7 +30,7 @@ describe("https://github.com/neo4j/graphql/issues/567", () => {
         Movie = testHelper.createUniqueType("Movie");
 
         typeDefs = `
-        type ${Movie} @node {
+        type ${Movie} {
             id: ID!
             title: String!
         }

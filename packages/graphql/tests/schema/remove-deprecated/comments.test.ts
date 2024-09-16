@@ -38,7 +38,7 @@ describe("Comments", () => {
             """
             A type describing a movie.
             """
-            type Movie @node {
+            type Movie {
                 id: ID
                 "The number of actors who acted in the movie."
                 actorCount: Int
@@ -204,34 +204,28 @@ describe("Comments", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              actorCount: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              actorCount_EQ: Int
+              actorCount: Int
               actorCount_GT: Int
               actorCount_GTE: Int
               actorCount_IN: [Int]
               actorCount_LT: Int
               actorCount_LTE: Int
-              averageRating: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              averageRating_EQ: Float
+              averageRating: Float
               averageRating_GT: Float
               averageRating_GTE: Float
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
-              customScalar: CustomScalar @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              customScalar_EQ: CustomScalar
+              customScalar: CustomScalar
               customScalar_IN: [CustomScalar]
-              genre: Genre @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              genre_EQ: Genre
+              genre: Genre
               genre_IN: [Genre]
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
-              isActive: Boolean @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              isActive_EQ: Boolean
+              isActive: Boolean
             }
 
             type MoviesConnection {
@@ -288,11 +282,11 @@ describe("Comments", () => {
     describe("Relationship", () => {
         test("Simple", async () => {
             const typeDefs = gql`
-                type Actor @node {
+                type Actor {
                     name: String
                 }
 
-                type Movie @node {
+                type Movie {
                     id: ID
                     "Actors in Movie"
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
@@ -364,10 +358,9 @@ describe("Comments", () => {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_STARTS_WITH: String
                 }
@@ -600,10 +593,9 @@ describe("Comments", () => {
                   actors_SINGLE: ActorWhere
                   \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
                   actors_SOME: ActorWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID]
                   id_STARTS_WITH: ID
                 }
@@ -681,12 +673,12 @@ describe("Comments", () => {
                     title: String!
                 }
 
-                type Movie implements Production @node {
+                type Movie implements Production {
                     title: String!
                     runtime: Int!
                 }
 
-                type Series implements Production @node {
+                type Series implements Production {
                     title: String!
                     episodes: Int!
                 }
@@ -695,7 +687,7 @@ describe("Comments", () => {
                     screenTime: Int!
                 }
 
-                type Actor @node {
+                type Actor {
                     name: String!
                     "Acted in Production"
                     actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
@@ -773,8 +765,7 @@ describe("Comments", () => {
                   AND: [ActedInWhere!]
                   NOT: ActedInWhere
                   OR: [ActedInWhere!]
-                  screenTime: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  screenTime_EQ: Int
+                  screenTime: Int
                   screenTime_GT: Int
                   screenTime_GTE: Int
                   screenTime_IN: [Int!]
@@ -981,10 +972,9 @@ describe("Comments", () => {
                   actedIn_SINGLE: ProductionWhere
                   \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
                   actedIn_SOME: ProductionWhere
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String!]
                   name_STARTS_WITH: String
                 }
@@ -1082,17 +1072,15 @@ describe("Comments", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  runtime: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  runtime_EQ: Int
+                  runtime: Int
                   runtime_GT: Int
                   runtime_GTE: Int
                   runtime_IN: [Int!]
                   runtime_LT: Int
                   runtime_LTE: Int
-                  title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  title: String
                   title_CONTAINS: String
                   title_ENDS_WITH: String
-                  title_EQ: String
                   title_IN: [String!]
                   title_STARTS_WITH: String
                 }
@@ -1175,10 +1163,9 @@ describe("Comments", () => {
                   AND: [ProductionWhere!]
                   NOT: ProductionWhere
                   OR: [ProductionWhere!]
-                  title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  title: String
                   title_CONTAINS: String
                   title_ENDS_WITH: String
-                  title_EQ: String
                   title_IN: [String!]
                   title_STARTS_WITH: String
                   typename_IN: [ProductionImplementation!]
@@ -1260,17 +1247,15 @@ describe("Comments", () => {
                   AND: [SeriesWhere!]
                   NOT: SeriesWhere
                   OR: [SeriesWhere!]
-                  episodes: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  episodes_EQ: Int
+                  episodes: Int
                   episodes_GT: Int
                   episodes_GTE: Int
                   episodes_IN: [Int!]
                   episodes_LT: Int
                   episodes_LTE: Int
-                  title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  title: String
                   title_CONTAINS: String
                   title_ENDS_WITH: String
-                  title_EQ: String
                   title_IN: [String!]
                   title_STARTS_WITH: String
                 }
@@ -1319,11 +1304,11 @@ describe("Comments", () => {
             const typeDefs = gql`
                 union Search = Movie | Genre
 
-                type Genre @node {
+                type Genre {
                     id: ID
                 }
 
-                type Movie @node {
+                type Movie {
                     id: ID
                     search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
                     searchNoDirective: Search
@@ -1421,10 +1406,9 @@ describe("Comments", () => {
                   AND: [GenreWhere!]
                   NOT: GenreWhere
                   OR: [GenreWhere!]
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID]
                   id_STARTS_WITH: ID
                 }
@@ -1638,10 +1622,9 @@ describe("Comments", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID]
                   id_STARTS_WITH: ID
                   \\"\\"\\"

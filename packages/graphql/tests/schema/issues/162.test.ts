@@ -18,23 +18,23 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("162", () => {
     test("2 instances of DeleteInput type created", async () => {
         const typeDefs = gql`
-            type Tiger @node {
+            type Tiger {
                 x: Int
             }
 
-            type TigerJawLevel2 @node {
+            type TigerJawLevel2 {
                 id: ID
                 part1: TigerJawLevel2Part1! @relationship(type: "REL1", direction: OUT)
             }
 
-            type TigerJawLevel2Part1 @node {
+            type TigerJawLevel2Part1 {
                 id: ID
                 tiger: Tiger! @relationship(type: "REL2", direction: OUT)
             }
@@ -461,10 +461,9 @@ describe("162", () => {
               AND: [TigerJawLevel2Part1Where!]
               NOT: TigerJawLevel2Part1Where
               OR: [TigerJawLevel2Part1Where!]
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -514,10 +513,9 @@ describe("162", () => {
               AND: [TigerJawLevel2Where!]
               NOT: TigerJawLevel2Where
               OR: [TigerJawLevel2Where!]
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -564,8 +562,7 @@ describe("162", () => {
               AND: [TigerWhere!]
               NOT: TigerWhere
               OR: [TigerWhere!]
-              x: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              x_EQ: Int
+              x: Int
               x_GT: Int
               x_GTE: Int
               x_IN: [Int]

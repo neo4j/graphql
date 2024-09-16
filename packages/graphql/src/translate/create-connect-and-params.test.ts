@@ -17,18 +17,18 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { Node } from "../../src/classes";
 import { ContextBuilder } from "../../tests/utils/builders/context-builder";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
-import { SchemaModelBuilder } from "../../tests/utils/builders/schema-model-builder";
 import { CallbackBucket } from "../classes/CallbackBucket";
 import { Neo4jDatabaseInfo } from "../classes/Neo4jDatabaseInfo";
 import { RelationshipQueryDirectionOption } from "../constants";
 import { defaultNestedOperations } from "../graphql/directives/relationship";
 import type { RelationField } from "../types";
-import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import createConnectAndParams from "./create-connect-and-params";
+import type { Node } from "../../src/classes";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+import { SchemaModelBuilder } from "../../tests/utils/builders/schema-model-builder";
+import { gql } from "graphql-tag";
 
 describe("createConnectAndParams", () => {
     let node: Node;
@@ -93,7 +93,7 @@ describe("createConnectAndParams", () => {
             objectFields: [],
         }).instance();
         const types = gql`
-            type Movie @node {
+            type Movie {
                 title: String!
                 similarMovies: [Movie!]! @relationship(type: "SIMILAR", direction: OUT)
             }

@@ -25,7 +25,7 @@ export const typeDefs = `#graphql
         released: Int
     }
 
-    type Person @node {
+    type Person {
         name: String!
         born: Int!
         movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
@@ -36,7 +36,6 @@ export const typeDefs = `#graphql
     }
 
     type Movie implements MovieLike
-        @node
         @fulltext(
             indexes: [
                 { queryName: "movieTaglineFulltextQuery", name: "MovieTaglineFulltextIndex", fields: ["tagline"] }
@@ -63,17 +62,17 @@ export const typeDefs = `#graphql
         favouriteActor: Person @relationship(type: "FAV", direction: OUT)
     }
 
-    type MovieClone implements MovieLike @node {
+    type MovieClone implements MovieLike {
         title: String!
         released: Int
         favouriteActor: Person! @relationship(type: "FAV", direction: OUT)
     }
-    type PersonClone @node {
+    type PersonClone {
         name: String!
         movies: [MovieClone!]! @relationship(type: "FAV", direction: IN)
     }
 
-    type User @node {
+    type User {
         name: String!
         likes: [Likable!]! @relationship(type: "LIKES", direction: OUT)
     }

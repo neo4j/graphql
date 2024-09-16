@@ -41,7 +41,7 @@ describe("unwind-create field-level auth rules", () => {
             const User = testHelper.createUniqueType("User");
 
             const typeDefs = `
-                type ${User} @node {
+                type ${User} {
                     id: ID
                 }
                 extend type ${User} {
@@ -89,7 +89,7 @@ describe("unwind-create field-level auth rules", () => {
             const User = testHelper.createUniqueType("User");
 
             const typeDefs = `
-            type ${User} @node {
+            type ${User} {
                 id: ID
                 name: String
             }
@@ -139,11 +139,11 @@ describe("unwind-create field-level auth rules", () => {
             const Post = testHelper.createUniqueType("Post");
 
             const typeDefs = `
-            type ${User} @node {
+            type ${User} {
                 id: ID
                 name: String
             }
-            type ${Post} @node {
+            type ${Post} {
                 title: String
                 creator: ${User} @relationship(type: "HAS_POST", direction: IN)
             }
@@ -207,7 +207,7 @@ describe("unwind-create field-level auth rules", () => {
                 roles: [String!]!
             }
 
-            type ${User} @node {
+            type ${User} {
                 id: ID
                 name: String
             }
@@ -260,7 +260,7 @@ describe("unwind-create field-level auth rules", () => {
                 roles: [String!]!
             }
 
-            type ${User} @node {
+            type ${User} {
                 id: ID
                 name: String
             }

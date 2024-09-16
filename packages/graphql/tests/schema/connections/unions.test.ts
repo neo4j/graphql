@@ -27,17 +27,17 @@ describe("Unions", () => {
         const typeDefs = gql`
             union Publication = Book | Journal
 
-            type Author @node {
+            type Author {
                 name: String!
                 publications: [Publication!]! @relationship(type: "WROTE", direction: OUT, properties: "Wrote")
             }
 
-            type Book @node {
+            type Book {
                 title: String!
                 author: [Author!]! @relationship(type: "WROTE", direction: IN, properties: "Wrote")
             }
 
-            type Journal @node {
+            type Journal {
                 subject: String!
                 author: [Author!]! @relationship(type: "WROTE", direction: IN, properties: "Wrote")
             }
@@ -272,10 +272,9 @@ describe("Unions", () => {
               AND: [AuthorWhere!]
               NOT: AuthorWhere
               OR: [AuthorWhere!]
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -558,10 +557,9 @@ describe("Unions", () => {
               author_SINGLE: AuthorWhere
               \\"\\"\\"Return Books where some of the related Authors match this filter\\"\\"\\"
               author_SOME: AuthorWhere
-              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
-              title_EQ: String
               title_IN: [String!]
               title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -852,10 +850,9 @@ describe("Unions", () => {
               author_SINGLE: AuthorWhere
               \\"\\"\\"Return Journals where some of the related Authors match this filter\\"\\"\\"
               author_SOME: AuthorWhere
-              subject: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              subject: String
               subject_CONTAINS: String
               subject_ENDS_WITH: String
-              subject_EQ: String
               subject_IN: [String!]
               subject_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               subject_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1015,8 +1012,7 @@ describe("Unions", () => {
               AND: [WroteWhere!]
               NOT: WroteWhere
               OR: [WroteWhere!]
-              words: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              words_EQ: Int
+              words: Int
               words_GT: Int
               words_GTE: Int
               words_IN: [Int!]

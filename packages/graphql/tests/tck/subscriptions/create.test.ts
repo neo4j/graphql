@@ -29,12 +29,12 @@ describe("Subscriptions metadata on create", () => {
     beforeAll(() => {
         plugin = new TestSubscriptionsEngine();
         typeDefs = /* GraphQL */ `
-            type Actor @node {
+            type Actor {
                 name: String!
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type Movie @node {
+            type Movie {
                 id: ID!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
@@ -50,12 +50,12 @@ describe("Subscriptions metadata on create", () => {
 
     test("Create with create relation: connect event", async () => {
         const typeDefs = /* GraphQL */ `
-            type Movie @node {
+            type Movie {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
             }
 
-            type Actor @node {
+            type Actor {
                 name: String!
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
@@ -151,12 +151,12 @@ describe("Subscriptions metadata on create", () => {
 
     test("Create with create relation without properties: connect event", async () => {
         const typeDefs = /* GraphQL */ `
-            type Movie @node {
+            type Movie {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor @node {
+            type Actor {
                 name: String!
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -235,12 +235,12 @@ describe("Subscriptions metadata on create", () => {
 
     test("Create with nested create relation: connect event", async () => {
         const typeDefs = /* GraphQL */ `
-            type Movie @node {
+            type Movie {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
             }
 
-            type Actor @node {
+            type Actor {
                 name: String!
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
@@ -359,13 +359,13 @@ describe("Subscriptions metadata on create", () => {
 
     test("Create with create relation to union field: connect event", async () => {
         const typeDefs = /* GraphQL */ `
-            type Movie @node {
+            type Movie {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
                 directors: [Director!]! @relationship(type: "DIRECTED", properties: "Directed", direction: IN)
             }
 
-            type Actor @node {
+            type Actor {
                 name: String!
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
@@ -378,7 +378,7 @@ describe("Subscriptions metadata on create", () => {
                 year: Int!
             }
 
-            type Person @node {
+            type Person {
                 name: String!
             }
 
@@ -486,13 +486,13 @@ describe("Subscriptions metadata on create", () => {
 
     test("Create with nested create relation to union field: connect event", async () => {
         const typeDefs = /* GraphQL */ `
-            type Movie @node {
+            type Movie {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
                 directors: [Director!]! @relationship(type: "DIRECTED", properties: "Directed", direction: IN)
             }
 
-            type Actor @node {
+            type Actor {
                 name: String!
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
@@ -505,7 +505,7 @@ describe("Subscriptions metadata on create", () => {
                 year: Int!
             }
 
-            type Person @node {
+            type Person {
                 name: String!
             }
 

@@ -36,7 +36,7 @@ describe("@populatedBy directive - Relationship properties", () => {
             const callback = () => Promise.resolve(string1);
 
             const typeDefs = /* GraphQL */ `
-                    type ${testMovie.name} @node {
+                    type ${testMovie.name} {
                         id: ID
                         genres: [${testGenre.name}!]! @relationship(
                             type: "IN_GENRE",
@@ -50,7 +50,7 @@ describe("@populatedBy directive - Relationship properties", () => {
                         callback: String! @populatedBy(operations: [CREATE], callback: "callback")
                     }
 
-                    type ${testGenre.name} @node {
+                    type ${testGenre.name} {
                         id: ID!
                     }
                 `;
@@ -137,7 +137,7 @@ describe("@populatedBy directive - Relationship properties", () => {
             const callback = () => Promise.resolve(string1);
 
             const typeDefs = /* GraphQL */ `
-                    type ${testMovie.name} @node {
+                    type ${testMovie.name} {
                         id: ID
                         genres: [${testGenre.name}!]! @relationship(
                             type: "IN_GENRE", 
@@ -151,7 +151,7 @@ describe("@populatedBy directive - Relationship properties", () => {
                         callback: String! @populatedBy(operations: [UPDATE], callback: "callback")
                     }
 
-                    type ${testGenre.name} @node {
+                    type ${testGenre.name} {
                         id: ID!
                     }
                 `;
@@ -250,7 +250,7 @@ describe("@populatedBy directive - Relationship properties", () => {
             };
 
             const typeDefs = /* GraphQL */ `
-                    type ${testMovie.name} @node {
+                    type ${testMovie.name} {
                         id: ID
                         genres: [${testGenre.name}!]! @relationship(
                             type: "IN_GENRE", 
@@ -264,7 +264,7 @@ describe("@populatedBy directive - Relationship properties", () => {
                         callback: String! @populatedBy(operations: [CREATE, UPDATE], callback: "callback")
                     }
 
-                    type ${testGenre.name} @node {
+                    type ${testGenre.name} {
                         id: ID!
                     }
                 `;
@@ -401,7 +401,7 @@ describe("@populatedBy directive - Relationship properties", () => {
             const callback = () => Promise.resolve(int1);
 
             const typeDefs = /* GraphQL */ `
-                    type ${testMovie.name} @node {
+                    type ${testMovie.name} {
                         id: ID
                         genres: [${testGenre.name}!]! @relationship(
                             type: "IN_GENRE",
@@ -415,7 +415,7 @@ describe("@populatedBy directive - Relationship properties", () => {
                         callback: Int! @populatedBy(operations: [CREATE], callback: "callback")
                     }
 
-                    type ${testGenre.name} @node {
+                    type ${testGenre.name} {
                         id: ID!
                     }
                 `;
@@ -507,7 +507,7 @@ describe("@populatedBy directive - Relationship properties", () => {
             const callback = () => Promise.resolve(int1);
 
             const typeDefs = /* GraphQL */ `
-                    type ${testMovie.name} @node {
+                    type ${testMovie.name} {
                         id: ID
                         genres: [${testGenre.name}!]! @relationship(
                             type: "IN_GENRE", 
@@ -521,7 +521,7 @@ describe("@populatedBy directive - Relationship properties", () => {
                         callback: Int! @populatedBy(operations: [UPDATE], callback: "callback")
                     }
 
-                    type ${testGenre.name} @node {
+                    type ${testGenre.name} {
                         id: ID!
                     }
                 `;
@@ -628,7 +628,7 @@ describe("@populatedBy directive - Relationship properties", () => {
             };
 
             const typeDefs = /* GraphQL */ `
-                    type ${testMovie.name} @node {
+                    type ${testMovie.name} {
                         id: ID
                         genres: [${testGenre.name}!]! @relationship(
                             type: "IN_GENRE", 
@@ -642,7 +642,7 @@ describe("@populatedBy directive - Relationship properties", () => {
                         callback: Int! @populatedBy(operations: [CREATE, UPDATE], callback: "callback")
                     }
 
-                    type ${testGenre.name} @node {
+                    type ${testGenre.name} {
                         id: ID!
                     }
                 `;
@@ -779,7 +779,7 @@ describe("@populatedBy directive - Relationship properties", () => {
             const callback = () => Promise.resolve(float1);
 
             const typeDefs = /* GraphQL */ `
-                    type ${testMovie.name} @node {
+                    type ${testMovie.name} {
                         id: ID
                         genres: [${testGenre.name}!]! @relationship(
                             type: "IN_GENRE",
@@ -793,7 +793,7 @@ describe("@populatedBy directive - Relationship properties", () => {
                         callback: Float! @populatedBy(operations: [CREATE], callback: "callback")
                     }
 
-                    type ${testGenre.name} @node {
+                    type ${testGenre.name} {
                         id: ID!
                     }
                 `;
@@ -885,7 +885,7 @@ describe("@populatedBy directive - Relationship properties", () => {
             const callback = () => Promise.resolve(float1);
 
             const typeDefs = /* GraphQL */ `
-                    type ${testMovie.name} @node {
+                    type ${testMovie.name} {
                         id: ID
                         genres: [${testGenre.name}!]! @relationship(
                             type: "IN_GENRE", 
@@ -899,7 +899,7 @@ describe("@populatedBy directive - Relationship properties", () => {
                         callback: Int! @populatedBy(operations: [UPDATE], callback: "callback")
                     }
 
-                    type ${testGenre.name} @node {
+                    type ${testGenre.name} {
                         id: ID!
                     }
                 `;
@@ -1006,7 +1006,7 @@ describe("@populatedBy directive - Relationship properties", () => {
             };
 
             const typeDefs = /* GraphQL */ `
-                    type ${testMovie.name} @node {
+                    type ${testMovie.name} {
                         id: ID
                         genres: [${testGenre.name}!]! @relationship(
                             type: "IN_GENRE", 
@@ -1020,7 +1020,7 @@ describe("@populatedBy directive - Relationship properties", () => {
                         callback: Int! @populatedBy(operations: [CREATE, UPDATE], callback: "callback")
                     }
 
-                    type ${testGenre.name} @node {
+                    type ${testGenre.name} {
                         id: ID!
                     }
                 `;
@@ -1151,7 +1151,7 @@ describe("@populatedBy directive - Relationship properties", () => {
             const callback = () => Promise.resolve(true);
 
             const typeDefs = /* GraphQL */ `
-                    type ${testMovie.name} @node {
+                    type ${testMovie.name} {
                         id: ID
                         genres: [${testGenre.name}!]! @relationship(
                             type: "IN_GENRE",
@@ -1165,7 +1165,7 @@ describe("@populatedBy directive - Relationship properties", () => {
                         callback: Boolean! @populatedBy(operations: [CREATE], callback: "callback")
                     }
 
-                    type ${testGenre.name} @node {
+                    type ${testGenre.name} {
                         id: ID!
                     }
                 `;
@@ -1251,7 +1251,7 @@ describe("@populatedBy directive - Relationship properties", () => {
             const callback = () => Promise.resolve(true);
 
             const typeDefs = /* GraphQL */ `
-                    type ${testMovie.name} @node {
+                    type ${testMovie.name} {
                         id: ID
                         genres: [${testGenre.name}!]! @relationship(
                             type: "IN_GENRE", 
@@ -1265,7 +1265,7 @@ describe("@populatedBy directive - Relationship properties", () => {
                         callback: Boolean! @populatedBy(operations: [UPDATE], callback: "callback")
                     }
 
-                    type ${testGenre.name} @node {
+                    type ${testGenre.name} {
                         id: ID!
                     }
                 `;
@@ -1360,7 +1360,7 @@ describe("@populatedBy directive - Relationship properties", () => {
             };
 
             const typeDefs = /* GraphQL */ `
-                    type ${testMovie.name} @node {
+                    type ${testMovie.name} {
                         id: ID
                         genres: [${testGenre.name}!]! @relationship(
                             type: "IN_GENRE", 
@@ -1374,7 +1374,7 @@ describe("@populatedBy directive - Relationship properties", () => {
                         callback: Boolean! @populatedBy(operations: [CREATE, UPDATE], callback: "callback")
                     }
 
-                    type ${testGenre.name} @node {
+                    type ${testGenre.name} {
                         id: ID!
                     }
                 `;
@@ -1505,7 +1505,7 @@ describe("@populatedBy directive - Relationship properties", () => {
             const callback = () => Promise.resolve("12345");
 
             const typeDefs = /* GraphQL */ `
-                    type ${testMovie.name} @node {
+                    type ${testMovie.name} {
                         id: ID
                         genres: [${testGenre.name}!]! @relationship(
                             type: "IN_GENRE",
@@ -1519,7 +1519,7 @@ describe("@populatedBy directive - Relationship properties", () => {
                         callback: ID! @populatedBy(operations: [CREATE], callback: "callback")
                     }
 
-                    type ${testGenre.name} @node {
+                    type ${testGenre.name} {
                         id: ID!
                     }
                 `;
@@ -1605,7 +1605,7 @@ describe("@populatedBy directive - Relationship properties", () => {
             const callback = () => Promise.resolve("12345");
 
             const typeDefs = /* GraphQL */ `
-                    type ${testMovie.name} @node {
+                    type ${testMovie.name} {
                         id: ID
                         genres: [${testGenre.name}!]! @relationship(
                             type: "IN_GENRE", 
@@ -1619,7 +1619,7 @@ describe("@populatedBy directive - Relationship properties", () => {
                         callback: ID! @populatedBy(operations: [UPDATE], callback: "callback")
                     }
 
-                    type ${testGenre.name} @node {
+                    type ${testGenre.name} {
                         id: ID!
                     }
                 `;
@@ -1714,7 +1714,7 @@ describe("@populatedBy directive - Relationship properties", () => {
             };
 
             const typeDefs = /* GraphQL */ `
-                    type ${testMovie.name} @node {
+                    type ${testMovie.name} {
                         id: ID
                         genres: [${testGenre.name}!]! @relationship(
                             type: "IN_GENRE", 
@@ -1728,7 +1728,7 @@ describe("@populatedBy directive - Relationship properties", () => {
                         callback: ID! @populatedBy(operations: [CREATE, UPDATE], callback: "callback")
                     }
 
-                    type ${testGenre.name} @node {
+                    type ${testGenre.name} {
                         id: ID!
                     }
                 `;
@@ -1857,7 +1857,7 @@ describe("@populatedBy directive - Relationship properties", () => {
             const callback = () => Promise.resolve(true);
 
             const typeDefs = /* GraphQL */ `
-                    type ${testMovie.name} @node {
+                    type ${testMovie.name} {
                         id: ID
                         genres: [${testGenre.name}!]! @relationship(
                             type: "IN_GENRE", 
@@ -1871,7 +1871,7 @@ describe("@populatedBy directive - Relationship properties", () => {
                         callback: ID! @populatedBy(operations: [CREATE, UPDATE], callback: "callback")
                     }
 
-                    type ${testGenre.name} @node {
+                    type ${testGenre.name} {
                         id: ID!
                     }
                 `;
@@ -1970,7 +1970,7 @@ describe("@populatedBy directive - Relationship properties", () => {
             const callback = () => Promise.resolve("12345");
 
             const typeDefs = /* GraphQL */ `
-                    type ${testMovie.name} @node {
+                    type ${testMovie.name} {
                         id: ID
                         genres: [${testGenre.name}!]! @relationship(
                             type: "IN_GENRE",
@@ -1984,7 +1984,7 @@ describe("@populatedBy directive - Relationship properties", () => {
                         callback: BigInt! @populatedBy(operations: [CREATE], callback: "callback")
                     }
 
-                    type ${testGenre.name} @node {
+                    type ${testGenre.name} {
                         id: ID!
                     }
                 `;
@@ -2070,7 +2070,7 @@ describe("@populatedBy directive - Relationship properties", () => {
             const callback = () => Promise.resolve("12345");
 
             const typeDefs = /* GraphQL */ `
-                    type ${testMovie.name} @node {
+                    type ${testMovie.name} {
                         id: ID
                         genres: [${testGenre.name}!]! @relationship(
                             type: "IN_GENRE", 
@@ -2084,7 +2084,7 @@ describe("@populatedBy directive - Relationship properties", () => {
                         callback: BigInt! @populatedBy(operations: [UPDATE], callback: "callback")
                     }
 
-                    type ${testGenre.name} @node {
+                    type ${testGenre.name} {
                         id: ID!
                     }
                 `;
@@ -2179,7 +2179,7 @@ describe("@populatedBy directive - Relationship properties", () => {
             };
 
             const typeDefs = /* GraphQL */ `
-                    type ${testMovie.name} @node {
+                    type ${testMovie.name} {
                         id: ID
                         genres: [${testGenre.name}!]! @relationship(
                             type: "IN_GENRE", 
@@ -2193,7 +2193,7 @@ describe("@populatedBy directive - Relationship properties", () => {
                         callback: BigInt! @populatedBy(operations: [CREATE, UPDATE], callback: "callback")
                     }
 
-                    type ${testGenre.name} @node {
+                    type ${testGenre.name} {
                         id: ID!
                     }
                 `;
@@ -2322,7 +2322,7 @@ describe("@populatedBy directive - Relationship properties", () => {
             const callback = () => Promise.resolve("banana");
 
             const typeDefs = /* GraphQL */ `
-                    type ${testMovie.name} @node {
+                    type ${testMovie.name} {
                         id: ID
                         genres: [${testGenre.name}!]! @relationship(
                             type: "IN_GENRE", 
@@ -2336,7 +2336,7 @@ describe("@populatedBy directive - Relationship properties", () => {
                         callback: BigInt! @populatedBy(operations: [CREATE, UPDATE], callback: "callback")
                     }
 
-                    type ${testGenre.name} @node {
+                    type ${testGenre.name} {
                         id: ID!
                     }
                 `;
@@ -2465,7 +2465,7 @@ describe("@populatedBy directive - Relationship properties", () => {
             const testGenre = testHelper.createUniqueType("Genre");
 
             const typeDefs = /* GraphQL */ `
-                    type ${testMovie.name} @node {
+                    type ${testMovie.name} {
                         id: ID
                         genres: [${testGenre.name}!]! @relationship(
                             type: "IN_GENRE",
@@ -2479,7 +2479,7 @@ describe("@populatedBy directive - Relationship properties", () => {
                         callback: ${type}! @populatedBy(operations: [CREATE], callback: "callback")
                     }
     
-                    type ${testGenre.name} @node {
+                    type ${testGenre.name} {
                         id: ID!
                     }
                 `;
@@ -2563,7 +2563,7 @@ describe("@populatedBy directive - Relationship properties", () => {
             const testGenre = testHelper.createUniqueType("Genre");
 
             const typeDefs = /* GraphQL */ `
-                    type ${testMovie.name} @node {
+                    type ${testMovie.name} {
                         id: ID
                         genres: [${testGenre.name}!]! @relationship(
                             type: "IN_GENRE", 
@@ -2577,7 +2577,7 @@ describe("@populatedBy directive - Relationship properties", () => {
                         callback: ${type}! @populatedBy(operations: [UPDATE], callback: "callback")
                     }
     
-                    type ${testGenre.name} @node {
+                    type ${testGenre.name} {
                         id: ID!
                     }
                 `;
@@ -2663,7 +2663,7 @@ describe("@populatedBy directive - Relationship properties", () => {
             const callback = () => Promise.resolve("banana");
 
             const typeDefs = /* GraphQL */ `
-                    type ${testMovie.name} @node {
+                    type ${testMovie.name} {
                         id: ID
                         genres: [${testGenre.name}!]! @relationship(
                             type: "IN_GENRE", 
@@ -2677,7 +2677,7 @@ describe("@populatedBy directive - Relationship properties", () => {
                         callback: ${type}! @populatedBy(operations: [CREATE, UPDATE], callback: "callback")
                     }
     
-                    type ${testGenre.name} @node {
+                    type ${testGenre.name} {
                         id: ID!
                     }
                 `;
@@ -2792,7 +2792,7 @@ describe("@populatedBy directive - Relationship properties", () => {
             const testGenre = testHelper.createUniqueType("Genre");
 
             const typeDefs = /* GraphQL */ `
-                    type ${testMovie.name} @node {
+                    type ${testMovie.name} {
                         id: ID
                         genres: [${testGenre.name}!]! @relationship(
                             type: "IN_GENRE",
@@ -2806,7 +2806,7 @@ describe("@populatedBy directive - Relationship properties", () => {
                         callback: ${type}! @populatedBy(operations: [CREATE], callback: "callback")
                     }
     
-                    type ${testGenre.name} @node {
+                    type ${testGenre.name} {
                         id: ID!
                     }
                 `;
@@ -2890,7 +2890,7 @@ describe("@populatedBy directive - Relationship properties", () => {
             const testGenre = testHelper.createUniqueType("Genre");
 
             const typeDefs = /* GraphQL */ `
-                    type ${testMovie.name} @node {
+                    type ${testMovie.name} {
                         id: ID
                         genres: [${testGenre.name}!]! @relationship(
                             type: "IN_GENRE", 
@@ -2904,7 +2904,7 @@ describe("@populatedBy directive - Relationship properties", () => {
                         callback: ${type}! @populatedBy(operations: [UPDATE], callback: "callback")
                     }
     
-                    type ${testGenre.name} @node {
+                    type ${testGenre.name} {
                         id: ID!
                     }
                 `;
@@ -2990,7 +2990,7 @@ describe("@populatedBy directive - Relationship properties", () => {
             const callback = () => Promise.resolve("banana");
 
             const typeDefs = /* GraphQL */ `
-                    type ${testMovie.name} @node {
+                    type ${testMovie.name} {
                         id: ID
                         genres: [${testGenre.name}!]! @relationship(
                             type: "IN_GENRE", 
@@ -3004,7 +3004,7 @@ describe("@populatedBy directive - Relationship properties", () => {
                         callback: ${type}! @populatedBy(operations: [CREATE, UPDATE], callback: "callback")
                     }
     
-                    type ${testGenre.name} @node {
+                    type ${testGenre.name} {
                         id: ID!
                     }
                 `;
@@ -3102,7 +3102,7 @@ describe("@populatedBy directive - Relationship properties", () => {
             const callback = (parent) => `${parent.title}-slug`;
 
             const typeDefs = /* GraphQL */ `
-                    type ${testMovie.name} @node {
+                    type ${testMovie.name} {
                         id: ID
                         genres: [${testGenre.name}!]! @relationship(
                             type: "IN_GENRE",
@@ -3117,7 +3117,7 @@ describe("@populatedBy directive - Relationship properties", () => {
                         slug: String! @populatedBy(operations: [CREATE], callback: "callback")
                     }
 
-                    type ${testGenre.name} @node {
+                    type ${testGenre.name} {
                         id: ID!
                     }
                 `;
@@ -3208,7 +3208,7 @@ describe("@populatedBy directive - Relationship properties", () => {
             const callback = (parent) => `${parent.title}-slug`;
 
             const typeDefs = /* GraphQL */ `
-                    type ${testMovie.name} @node {
+                    type ${testMovie.name} {
                         id: ID
                         genres: [${testGenre.name}!]! @relationship(
                             type: "IN_GENRE",
@@ -3223,7 +3223,7 @@ describe("@populatedBy directive - Relationship properties", () => {
                         slug: String! @populatedBy(operations: [UPDATE], callback: "callback")
                     }
 
-                    type ${testGenre.name} @node {
+                    type ${testGenre.name} {
                         id: ID!
                     }
                 `;

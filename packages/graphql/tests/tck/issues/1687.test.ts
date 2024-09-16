@@ -31,14 +31,14 @@ describe("https://github.com/neo4j/graphql/issues/1687", () => {
                 title: String
             }
 
-            type Movie implements Production @node {
+            type Movie implements Production {
                 id: ID
                 title: String
                 actorCount: Int
                 genres: [Genre!]! @relationship(type: "HAS_GENRE", direction: OUT)
             }
 
-            type Genre @node {
+            type Genre {
                 name: String
                 movies: [Production!]! @relationship(type: "HAS_GENRE", direction: IN)
             }

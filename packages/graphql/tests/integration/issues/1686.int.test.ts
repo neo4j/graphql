@@ -38,13 +38,13 @@ describe("https://github.com/neo4j/graphql/issues/1686", () => {
                 title: String
             }
 
-            type ${movieType.name} implements ${productionType.name} @node {
+            type ${movieType.name} implements ${productionType.name} {
                 id: ID
                 title: String
                 ${genreType.plural}: [${genreType.name}!]! @relationship(type: "HAS_GENRE", direction: OUT)
             }
             
-            type ${genreType.name} @node {
+            type ${genreType.name} {
                 name: String
                 ${movieType.plural}: [${productionType.name}!]! @relationship(type: "HAS_GENRE", direction: IN)
             }

@@ -30,7 +30,7 @@ describe("Cypher sort tests", () => {
                 id: ID!
                 title: String!
             }
-            type Movie implements Production @node {
+            type Movie implements Production {
                 id: ID!
                 title: String!
                 runtime: Int!
@@ -51,7 +51,7 @@ describe("Cypher sort tests", () => {
                 )
             }
 
-            type Genre @node {
+            type Genre {
                 id: ID
                 name: String
                 totalMovies: Int!
@@ -64,12 +64,12 @@ describe("Cypher sort tests", () => {
                     )
             }
 
-            type Series implements Production @node {
+            type Series implements Production {
                 id: ID!
                 title: String!
                 episodes: Int!
             }
-            type Actor @node {
+            type Actor {
                 id: ID!
                 name: String!
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")

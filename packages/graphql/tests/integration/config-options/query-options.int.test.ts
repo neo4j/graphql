@@ -34,13 +34,13 @@ describe("query options", () => {
         Actor = testHelper.createUniqueType("Actor");
         Movie = testHelper.createUniqueType("Movie");
 
-        const typeDefs = /* GraphQL */ `
-            type ${Actor} @node {
+        const typeDefs = `
+            type ${Actor} {
                 name: String
                 movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
     
-            type ${Movie} @node {
+            type ${Movie} {
                 id: ID!
                 title: String!
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: OUT)

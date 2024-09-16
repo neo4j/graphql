@@ -24,18 +24,18 @@ describe("https://github.com/neo4j/graphql/issues/2713", () => {
     let neoSchema: Neo4jGraphQL;
 
     const typeDefs = /* GraphQL */ `
-        type Movie @node {
+        type Movie {
             title: String
             genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "InGenre")
         }
 
-        type Genre @node {
+        type Genre {
             name: String
             movies: [Movie!]! @relationship(type: "IN_GENRE", direction: IN, properties: "InGenre")
             series: [Series!]! @relationship(type: "IN_GENRE", direction: IN, properties: "InGenre")
         }
 
-        type Series @node {
+        type Series {
             name: String!
             genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "InGenre")
         }

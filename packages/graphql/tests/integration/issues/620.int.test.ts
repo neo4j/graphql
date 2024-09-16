@@ -32,11 +32,11 @@ describe("https://github.com/neo4j/graphql/issues/620", () => {
         typeBusiness = testHelper.createUniqueType("Business");
 
         const typeDefs = gql`
-            type ${typeUser.name} @node {
+            type ${typeUser.name} {
                 id: String
                 name: String
             }
-            type ${typeBusiness.name} @node {
+            type ${typeBusiness.name} {
                 id: String
                 name: String
             }

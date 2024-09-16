@@ -171,12 +171,12 @@ describe("https://github.com/neo4j/graphql/issues/3428", () => {
         });
         test("Should not error and should only be able to perform the disconnect nested op when only the DISCONNECT nestedOperation is specified on rel to a type with a unique field", async () => {
             const typeDefs = `#graphql
-                type ${Person} @node {
+                type ${Person} {
                     id: ID! @id @unique
                     name: String
                 }
 
-                type ${Movie} @node {
+                type ${Movie} {
                     id: ID
                     actors: [${Person}!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [DISCONNECT])
                 }
@@ -241,12 +241,12 @@ describe("https://github.com/neo4j/graphql/issues/3428", () => {
 
         test("Should only be able to perform the disconnect and connectOrCreate nested ops when DISCONNECT and CONNECT_OR_CREATE are the only nestedOperations specified", async () => {
             const typeDefs = `#graphql
-                type ${Person} @node {
+                type ${Person} {
                     id: ID! @id @unique
                     name: String
                 }
 
-                type ${Movie} @node {
+                type ${Movie} {
                     id: ID
                     actors: [${Person}!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [DISCONNECT, CONNECT_OR_CREATE])
                 }
@@ -450,17 +450,17 @@ describe("https://github.com/neo4j/graphql/issues/3428", () => {
 
         test("Should not error and should only be able to perform the disconnect nested op when only the DISCONNECT nestedOperation is specified on rel to a type with a unique field", async () => {
             const typeDefs = `#graphql
-                type ${PersonOne} @node {
+                type ${PersonOne} {
                     name: String @unique
                 }
 
-                type ${PersonTwo} @node {
+                type ${PersonTwo} {
                     nameTwo: String
                 }
 
                 union ${Person} = ${PersonOne} | ${PersonTwo}
 
-                type ${Movie} @node {
+                type ${Movie} {
                     id: ID
                     actors: [${Person}!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [DISCONNECT])
                 }
@@ -525,17 +525,17 @@ describe("https://github.com/neo4j/graphql/issues/3428", () => {
 
         test("Should only be able to perform the disconnect and connectOrCreate nested ops when DISCONNECT and CONNECT_OR_CREATE are the only nestedOperations specified", async () => {
             const typeDefs = `#graphql
-                type ${PersonOne} @node {
+                type ${PersonOne} {
                     name: String @unique
                 }
 
-                type ${PersonTwo} @node {
+                type ${PersonTwo} {
                     nameTwo: String
                 }
 
                 union ${Person} = ${PersonOne} | ${PersonTwo}
 
-                type ${Movie} @node {
+                type ${Movie} {
                     id: ID
                     actors: [${Person}!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [DISCONNECT, CONNECT_OR_CREATE])
                 }

@@ -31,12 +31,12 @@ describe("aggregations-where-node-id", () => {
         Post = testHelper.createUniqueType("Post");
 
         const typeDefs = `
-            type ${User} @node {
+            type ${User} {
                 id: ID
                 testString: String!
             }
     
-            type ${Post} @node {
+            type ${Post} {
                 testString: String!
                 likes: [${User}!]! @relationship(type: "LIKES", direction: IN)
             }
@@ -113,17 +113,17 @@ describe("aggregations-where-node-id interface relationships of concrete types",
             testString: String!
         }
 
-        type ${Person} implements Human @node {
+        type ${Person} implements Human {
             id: ID
             testString: String!
         }
 
-            type ${User} implements Human @node {
+            type ${User} implements Human {
                 id: ID
                 testString: String!
             }
     
-            type ${Post} @node {
+            type ${Post} {
                 testString: String!
                 likes: [Human!]! @relationship(type: "LIKES", direction: IN)
             }

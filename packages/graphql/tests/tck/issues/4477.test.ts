@@ -23,16 +23,16 @@ import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-ut
 describe("https://github.com/neo4j/graphql/issues/4477", () => {
     test("filtering by count on an aggregate should work", async () => {
         const typeDefs = /* GraphQL */ `
-            type Brand @node {
+            type Brand {
                 services: [Service!]! @relationship(type: "HAS_SERVICE", direction: OUT)
                 name: String!
             }
 
-            type Collection @node {
+            type Collection {
                 services: [Service!]! @relationship(type: "HAS_SERVICE", direction: OUT)
             }
 
-            type Service @node {
+            type Service {
                 collection: Collection @relationship(type: "HAS_SERVICE", direction: IN)
             }
         `;

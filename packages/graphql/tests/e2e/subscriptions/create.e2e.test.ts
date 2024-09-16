@@ -59,11 +59,11 @@ describe.each([
         typeActor = testHelper.createUniqueType("Actor");
 
         const typeDefs = `
-         type ${typeMovie} @node {
+         type ${typeMovie} {
              title: String
              actors: [${typeActor}]
          }
-         type ${typeActor} @subscription(events: []) @node {
+         type ${typeActor} @subscription(events: []) {
             name: String
          }
          `;

@@ -26,7 +26,7 @@ describe("https://github.com/neo4j/graphql/issues/2267", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Place @node {
+            type Place {
                 displayName: String!
                 activity: [Publication!]! @relationship(type: "ACTIVITY", direction: IN)
             }
@@ -36,12 +36,12 @@ describe("https://github.com/neo4j/graphql/issues/2267", () => {
                 activity: [Place!]! @declareRelationship
             }
 
-            type Post implements Publication @node {
+            type Post implements Publication {
                 name: String
                 activity: [Place!]! @relationship(type: "ACTIVITY", direction: OUT)
             }
 
-            type Story implements Publication @node {
+            type Story implements Publication {
                 name: String
                 activity: [Place!]! @relationship(type: "ACTIVITY", direction: OUT)
             }

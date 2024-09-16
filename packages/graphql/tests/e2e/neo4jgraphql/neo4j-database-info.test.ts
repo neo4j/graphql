@@ -33,7 +33,7 @@ describe("Create with specific neo4jDatabaseInfo set correctly", () => {
 
     beforeAll(async () => {
         const typeDefs = `
-         type ${typeMovie} @node {
+         type ${typeMovie} {
              title: String
          }
          `;

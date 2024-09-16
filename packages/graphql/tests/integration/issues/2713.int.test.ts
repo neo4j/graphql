@@ -45,11 +45,11 @@ describe("https://github.com/neo4j/graphql/issues/2713", () => {
         inGenreInterface = testHelper.createUniqueType("InGenre");
 
         const typeDefs = `
-            type ${movieType.name} @node {
+            type ${movieType.name} {
                 title: String
                 genres: [${genreType.name}!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "${inGenreInterface.name}")
             }
-            type ${genreType.name} @node {
+            type ${genreType.name} {
                 name: String
                 movies: [${movieType.name}!]! @relationship(type: "IN_GENRE", direction: IN, properties: "${inGenreInterface.name}")
             }

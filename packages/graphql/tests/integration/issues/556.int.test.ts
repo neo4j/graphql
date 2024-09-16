@@ -31,12 +31,12 @@ describe("https://github.com/neo4j/graphql/issues/556 - Input Object type Articl
         Thing = testHelper.createUniqueType("Thing");
 
         typeDefs = `
-            type ${User} @node {
+            type ${User} {
                 name: String!
                 things: [${Thing}!]! @relationship(type: "HAS_THINGS", direction: OUT)
             }
 
-            type ${Thing} @node {
+            type ${Thing} {
                 id: ID! @id @unique
             }
         `;

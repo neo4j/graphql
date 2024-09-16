@@ -30,14 +30,14 @@ describe("https://github.com/neo4j/graphql/issues/619", () => {
         FooIsARandomName = testHelper.createUniqueType("FooIsARandomName");
         BarIsACoolName = testHelper.createUniqueType("BarIsACoolName");
         typeDefs = `
-            type ${FooIsARandomName} @node {
+            type ${FooIsARandomName} {
                 id: ID @unique
                 Name: String
                 Age: Int
                 DrinksAt: ${BarIsACoolName} @relationship(type: "DRINKS_AT", direction: OUT)
             }
 
-            type ${BarIsACoolName} @node {
+            type ${BarIsACoolName} {
                 id: ID @unique
                 Adress: String
                 Customers: [${FooIsARandomName}!]! @relationship(type: "DRINKS_AT", direction: IN)

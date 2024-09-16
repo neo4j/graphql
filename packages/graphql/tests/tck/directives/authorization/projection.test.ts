@@ -28,7 +28,7 @@ describe("Cypher Auth Projection", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type User @node {
+            type User {
                 id: ID
                 name: String
             }

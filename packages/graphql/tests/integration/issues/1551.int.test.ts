@@ -30,7 +30,7 @@ describe("https://github.com/neo4j/graphql/issues/1551", () => {
         testType = testHelper.createUniqueType("AttribValue");
 
         const typeDefs = `
-            type ${testType} @node {
+            type ${testType} {
                 prodid: Int!
                 attribid: Int!
                 level: Int!

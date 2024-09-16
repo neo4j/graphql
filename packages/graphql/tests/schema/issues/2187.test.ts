@@ -18,14 +18,14 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("https://github.com/neo4j/graphql/issues/2187", () => {
     test("Deprecated directive should be present on genres in generated schema", async () => {
         const typeDefs = gql`
-            type Movie @node {
+            type Movie {
                 title: String @deprecated(reason: "Do not use title")
                 year: Int
                 imdbRating: Float
@@ -34,7 +34,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
                     @deprecated(reason: "Do not use genre")
             }
 
-            type Genre @node {
+            type Genre {
                 name: String
                 movies: [Movie!]! @relationship(type: "IN_GENRE", direction: IN)
             }
@@ -357,10 +357,9 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               movies_SINGLE: MovieWhere
               \\"\\"\\"Return Genres where some of the related Movies match this filter\\"\\"\\"
               movies_SOME: MovieWhere
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_EQ: String
               name_IN: [String]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -621,8 +620,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               genres_SINGLE: GenreWhere @deprecated(reason: \\"Do not use genre\\")
               \\"\\"\\"Return Movies where some of the related Genres match this filter\\"\\"\\"
               genres_SOME: GenreWhere @deprecated(reason: \\"Do not use genre\\")
-              imdbRating: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              imdbRating_EQ: Float
+              imdbRating: Float
               imdbRating_GT: Float
               imdbRating_GTE: Float
               imdbRating_IN: [Float]
@@ -633,7 +631,6 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               title: String @deprecated(reason: \\"Do not use title\\")
               title_CONTAINS: String @deprecated(reason: \\"Do not use title\\")
               title_ENDS_WITH: String @deprecated(reason: \\"Do not use title\\")
-              title_EQ: String @deprecated(reason: \\"Do not use title\\")
               title_IN: [String] @deprecated(reason: \\"Do not use title\\")
               title_NOT: String @deprecated(reason: \\"Do not use title\\")
               title_NOT_CONTAINS: String @deprecated(reason: \\"Do not use title\\")
@@ -641,8 +638,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               title_NOT_IN: [String] @deprecated(reason: \\"Do not use title\\")
               title_NOT_STARTS_WITH: String @deprecated(reason: \\"Do not use title\\")
               title_STARTS_WITH: String @deprecated(reason: \\"Do not use title\\")
-              year: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              year_EQ: Int
+              year: Int
               year_GT: Int
               year_GTE: Int
               year_IN: [Int]

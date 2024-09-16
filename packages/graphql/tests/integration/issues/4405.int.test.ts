@@ -31,11 +31,11 @@ describe("https://github.com/neo4j/graphql/issues/4405", () => {
         Actor = testHelper.createUniqueType("Actor");
 
         const typeDefs = /* GraphQL */ `
-            type ${Movie.name} @node {
+            type ${Movie.name} {
                 title: String
             }
 
-            type ${Actor.name} @node
+            type ${Actor.name}
                 @authorization(
                     validate: [
                         {

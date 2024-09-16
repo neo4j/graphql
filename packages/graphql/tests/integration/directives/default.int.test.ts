@@ -29,9 +29,8 @@ describe("@default directive", () => {
 
     describe("with primitive fields", () => {
         test("on non-primitive field should throw an error", async () => {
-            const userType = testHelper.createUniqueType("User");
             const typeDefs = `
-                type ${userType} @node {
+                type User {
                     name: String!
                     location: Point! @default(value: "default")
                 }
@@ -47,9 +46,8 @@ describe("@default directive", () => {
         });
 
         test("with an argument with a type which doesn't match the field should throw an error", async () => {
-            const userType = testHelper.createUniqueType("User");
             const typeDefs = `
-                type ${userType} @node {
+                type User {
                     name: String! @default(value: 2)
                 }
             `;
@@ -64,9 +62,8 @@ describe("@default directive", () => {
         });
 
         test("on a DateTime with an invalid value should throw an error", async () => {
-            const userType = testHelper.createUniqueType("User");
             const typeDefs = `
-                type ${userType} @node {
+                type User {
                     verifiedAt: DateTime! @default(value: "Not a date")
                 }
             `;
@@ -81,9 +78,8 @@ describe("@default directive", () => {
         });
 
         test("on primitive field should not throw an error", async () => {
-            const userType = testHelper.createUniqueType("User");
             const typeDefs = `
-                type ${userType} @node {
+                type User {
                     name: String!
                     location: String! @default(value: "somewhere")
                 }
@@ -99,9 +95,8 @@ describe("@default directive", () => {
 
     describe("with enum fields", () => {
         test("on enum field with incorrect value should throw an error", async () => {
-            const userType = testHelper.createUniqueType("User");
             const typeDefs = `
-                type ${userType} @node {
+                type User {
                     name: String!
                     location: Location! @default(value: DIFFERENT)
                 }
@@ -123,9 +118,8 @@ describe("@default directive", () => {
         });
 
         test("on enum field with incorrect type should throw an error", async () => {
-            const userType = testHelper.createUniqueType("User");
             const typeDefs = `
-                type ${userType} @node {
+                type User {
                     name: String!
                     location: Location! @default(value: 2)
                 }
@@ -147,9 +141,8 @@ describe("@default directive", () => {
         });
 
         test("on enum field should not throw an error", async () => {
-            const userType = testHelper.createUniqueType("User");
             const typeDefs = `
-                type ${userType} @node {
+                type User {
                     name: String!
                     location: Location! @default(value: HERE)
                 }

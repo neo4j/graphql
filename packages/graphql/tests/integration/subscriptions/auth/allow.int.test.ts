@@ -47,11 +47,11 @@ describe("auth/allow", () => {
     describe("read", () => {
         test("should throw forbidden when reading a node with invalid allow", async () => {
             const typeDefs = `
-                type ${userType.name} @node {
+                type ${userType.name} {
                     id: ID
                 }
 
-                extend type ${userType.name} @node @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
+                extend type ${userType.name} @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -89,7 +89,7 @@ describe("auth/allow", () => {
 
         test("should throw forbidden when reading a property with invalid allow", async () => {
             const typeDefs = `
-                type ${userType.name} @node {
+                type ${userType.name} {
                     id: ID
                 }
 
@@ -133,12 +133,12 @@ describe("auth/allow", () => {
 
         test("should throw forbidden when reading a nested property with invalid allow", async () => {
             const typeDefs = `
-                type ${postType.name} @node {
+                type ${postType.name} {
                     id: ID
                     creator: ${userType.name}! @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                type ${userType.name} @node {
+                type ${userType.name} {
                     id: ID
                 }
 
@@ -188,12 +188,12 @@ describe("auth/allow", () => {
 
         test("should throw forbidden when reading a nested property with invalid allow (using connections)", async () => {
             const typeDefs = `
-                type ${postType.name} @node {
+                type ${postType.name} {
                     id: ID
                     creator: ${userType.name}! @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                type ${userType.name} @node {
+                type ${userType.name} {
                     id: ID
                 }
 
@@ -247,12 +247,12 @@ describe("auth/allow", () => {
 
         test("should throw forbidden when reading a node with invalid allow (across a single relationship)", async () => {
             const typeDefs = `
-                type ${postType.name} @node {
+                type ${postType.name} {
                     content: String
                     creator: ${userType.name}! @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                type ${userType.name} @node {
+                type ${userType.name} {
                     id: ID
                     name: String
                     posts: [${postType.name}!]! @relationship(type: "HAS_POST", direction: OUT)
@@ -304,12 +304,12 @@ describe("auth/allow", () => {
 
         test("should throw forbidden when reading a node with invalid allow (across a single relationship)(using connections)", async () => {
             const typeDefs = `
-                type ${postType.name} @node {
+                type ${postType.name} {
                     content: String
                     creator: ${userType.name}! @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                type ${userType.name} @node {
+                type ${userType.name} {
                     id: ID
                     name: String
                     posts: [${postType.name}!]! @relationship(type: "HAS_POST", direction: OUT)
@@ -365,20 +365,20 @@ describe("auth/allow", () => {
 
         test("should throw forbidden when reading a node with invalid allow (across multi relationship)", async () => {
             const typeDefs = `
-                type ${commentType.name}  @node {
+                type ${commentType.name}  {
                     id: ID
                     content: String
                     creator: ${userType.name}! @relationship(type: "HAS_COMMENT", direction: IN)
                 }
 
-                type ${postType.name} @node {
+                type ${postType.name} {
                     id: ID
                     content: String
                     creator: ${userType.name}! @relationship(type: "HAS_POST", direction: IN)
                     comments: [${commentType.name}!]! @relationship(type: "HAS_COMMENT", direction: OUT)
                 }
 
-                type ${userType.name} @node {
+                type ${userType.name} {
                     id: ID
                     name: String
                     posts: [${postType.name}!]! @relationship(type: "HAS_POST", direction: OUT)
@@ -438,7 +438,7 @@ describe("auth/allow", () => {
     describe("update", () => {
         test("should throw Forbidden when editing a node with invalid allow", async () => {
             const typeDefs = `
-                type ${userType.name}  @node {
+                type ${userType.name}  {
                     id: ID
                 }
 
@@ -483,7 +483,7 @@ describe("auth/allow", () => {
 
         test("should throw Forbidden when editing a property with invalid allow", async () => {
             const typeDefs = `
-                type ${userType.name} @node {
+                type ${userType.name} {
                     id: ID
                 }
 
@@ -530,13 +530,13 @@ describe("auth/allow", () => {
 
         test("should throw Forbidden when editing a nested node with invalid allow", async () => {
             const typeDefs = `
-                type ${postType.name} @node {
+                type ${postType.name} {
                     id: ID
                     content: String
                     creator: ${userType.name}! @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                type ${userType.name} @node {
+                type ${userType.name} {
                     id: ID
                 }
 
@@ -587,13 +587,13 @@ describe("auth/allow", () => {
 
         test("should throw Forbidden when editing a nested node property with invalid allow", async () => {
             const typeDefs = `
-                type ${postType.name} @node {
+                type ${postType.name} {
                     id: ID
                     content: String
                     creator: ${userType.name}! @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                type ${userType.name} @node {
+                type ${userType.name} {
                     id: ID
                 }
 
@@ -648,7 +648,7 @@ describe("auth/allow", () => {
     describe("delete", () => {
         test("should throw Forbidden when deleting a node with invalid allow", async () => {
             const typeDefs = `
-                type ${userType.name} @node {
+                type ${userType.name} {
                     id: ID
                 }
 
@@ -692,12 +692,12 @@ describe("auth/allow", () => {
 
         test("should throw Forbidden when deleting a nested node with invalid allow", async () => {
             const typeDefs = `
-                type ${userType.name} @node {
+                type ${userType.name} {
                     id: ID
                     posts: [${postType.name}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                type ${postType.name} @node {
+                type ${postType.name} {
                     id: ID
                     name: String
                     creator: ${userType.name}! @relationship(type: "HAS_POST", direction: IN)
@@ -758,12 +758,12 @@ describe("auth/allow", () => {
     describe("disconnect", () => {
         test("should throw Forbidden when disconnecting a node with invalid allow", async () => {
             const typeDefs = `
-                type ${postType.name} @node {
+                type ${postType.name} {
                     id: ID
                     creator: ${userType.name}! @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                type ${userType.name} @node {
+                type ${userType.name} {
                     id: ID
                     posts: [${postType.name}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
@@ -815,19 +815,19 @@ describe("auth/allow", () => {
 
         test("should throw Forbidden when disconnecting a nested node with invalid allow", async () => {
             const typeDefs = `
-                type ${commentType.name} @node {
+                type ${commentType.name} {
                     id: ID
                     content: String
                     post: ${postType.name}! @relationship(type: "HAS_COMMENT", direction: IN)
                 }
 
-                type ${postType.name} @node {
+                type ${postType.name} {
                     id: ID
                     creator: ${userType.name}! @relationship(type: "HAS_POST", direction: IN)
                     comments: ${commentType.name}! @relationship(type: "HAS_COMMENT", direction: OUT)
                 }
 
-                type ${userType.name} @node {
+                type ${userType.name} {
                     id: ID
                     posts: [${postType.name}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
@@ -897,12 +897,12 @@ describe("auth/allow", () => {
     describe("connect", () => {
         test("should throw Forbidden when connecting a node with invalid allow", async () => {
             const typeDefs = `
-                type ${postType.name} @node {
+                type ${postType.name} {
                     id: ID
                     creator: ${userType.name}! @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                type ${userType.name} @node {
+                type ${userType.name} {
                     id: ID
                     posts: [${postType.name}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
@@ -955,19 +955,19 @@ describe("auth/allow", () => {
 
         test("should throw Forbidden when connecting a nested node with invalid allow", async () => {
             const typeDefs = `
-                type ${commentType.name} @node {
+                type ${commentType.name} {
                     id: ID
                     content: String
                     post: ${postType.name}! @relationship(type: "HAS_COMMENT", direction: IN)
                 }
 
-                type ${postType.name} @node {
+                type ${postType.name} {
                     id: ID
                     creator: ${userType.name}! @relationship(type: "HAS_POST", direction: IN)
                     comments: ${commentType.name}! @relationship(type: "HAS_COMMENT", direction: OUT)
                 }
 
-                type ${userType.name} @node {
+                type ${userType.name} {
                     id: ID
                     posts: [${postType.name}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }

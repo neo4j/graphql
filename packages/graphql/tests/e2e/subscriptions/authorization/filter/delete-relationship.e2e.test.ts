@@ -45,7 +45,6 @@ describe("Subscriptions authorization with relationship deletion events", () => 
             }
 
             type ${User}
-                @node
                 @subscriptionsAuthorization(
                     filter: [
                         { where: { relationship: { follows: { node: { id: "$jwt.sub" } } }, jwt: { roles_INCLUDES: "user" } } }

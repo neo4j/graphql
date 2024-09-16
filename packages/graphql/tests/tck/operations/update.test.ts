@@ -26,12 +26,12 @@ describe("Cypher Update", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Actor @node {
+            type Actor {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            type Movie @node {
+            type Movie {
                 id: ID
                 title: String
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)

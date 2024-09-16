@@ -42,11 +42,11 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
         Member = testHelper.createUniqueType("Member");
 
         typeDefs = `
-            type ${ServiceLogType} @node {
+            type ${ServiceLogType} {
                 id: ID
                 records: [Record!]! @relationship(type: "HAS_BUSSING", direction: OUT)
             }
-            type ${BussingRecordType} implements Record @node {
+            type ${BussingRecordType} implements Record {
                 id: ID!
                 attendance: Int
                 markedAttendance: Boolean!
@@ -66,7 +66,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                 serviceLogs: [${ServiceLogType}!]! @declareRelationship
             }
     
-            type ${BacentaType} implements Church @authentication @node {
+            type ${BacentaType} implements Church @authentication {
                 id: ID @id @unique
                 name: String!
                 serviceLogs: [${ServiceLogType}!]! @relationship(type: "HAS_HISTORY", direction: OUT)
@@ -81,7 +81,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                     )
             }
     
-            type ${TimeGraphType} @authentication @node {
+            type ${TimeGraphType} @authentication {
                 date: Date
             }
     

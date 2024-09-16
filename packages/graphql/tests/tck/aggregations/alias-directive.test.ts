@@ -26,7 +26,7 @@ describe("Cypher Aggregations Many with Alias directive", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Movie @node {
+            type Movie {
                 id: ID! @alias(property: "_id")
                 title: String! @alias(property: "_title")
                 imdbRating: Int! @alias(property: "_imdb Rating")

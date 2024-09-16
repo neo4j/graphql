@@ -27,7 +27,7 @@ describe("@customResolver directive", () => {
     describe("Require fields on same type", () => {
         beforeAll(() => {
             typeDefs = /* GraphQL */ `
-                type User @node {
+                type User {
                     firstName: String!
                     lastName: String!
                     fullName: String! @customResolver(requires: "firstName lastName")
@@ -129,7 +129,7 @@ describe("@customResolver directive", () => {
     describe("No required fields", () => {
         beforeAll(() => {
             typeDefs = /* GraphQL */ `
-                type User @node {
+                type User {
                     firstName: String!
                     lastName: String!
                     fullName: String! @customResolver
@@ -191,17 +191,17 @@ describe("@customResolver directive", () => {
     describe("Require fields on nested types", () => {
         beforeAll(() => {
             typeDefs = /* GraphQL */ `
-                type City @node {
+                type City {
                     name: String!
                     population: Int
                 }
 
-                type Address @node {
+                type Address {
                     street: String!
                     city: City! @relationship(type: "IN_CITY", direction: OUT)
                 }
 
-                type User @node {
+                type User {
                     id: ID!
                     firstName: String!
                     lastName: String!
@@ -355,7 +355,7 @@ describe("@customResolver directive", () => {
             typeDefs = /* GraphQL */ `
                 union Publication = Book | Journal
 
-                type Author @node {
+                type Author {
                     name: String!
                     publications: [Publication!]! @relationship(type: "WROTE", direction: OUT)
                     publicationsWithAuthor: [String!]!
@@ -364,12 +364,12 @@ describe("@customResolver directive", () => {
                         )
                 }
 
-                type Book @node {
+                type Book {
                     title: String!
                     author: Author! @relationship(type: "WROTE", direction: IN)
                 }
 
-                type Journal @node {
+                type Journal {
                     subject: String!
                     author: Author! @relationship(type: "WROTE", direction: IN)
                 }
@@ -533,7 +533,7 @@ describe("@customResolver directive", () => {
                     publicationYear: Int!
                 }
 
-                type Author @node {
+                type Author {
                     name: String!
                     publications: [Publication!]! @relationship(type: "WROTE", direction: OUT)
                     publicationsWithAuthor: [String!]!
@@ -542,13 +542,13 @@ describe("@customResolver directive", () => {
                         )
                 }
 
-                type Book implements Publication @node {
+                type Book implements Publication {
                     title: String!
                     publicationYear: Int!
                     author: [Author!]! @relationship(type: "WROTE", direction: IN)
                 }
 
-                type Journal implements Publication @node {
+                type Journal implements Publication {
                     subject: String!
                     publicationYear: Int!
                     author: [Author!]! @relationship(type: "WROTE", direction: IN)

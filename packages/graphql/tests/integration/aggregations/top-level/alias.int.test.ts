@@ -35,7 +35,7 @@ describe("aggregations-top_level-alias", () => {
 
     test("should perform many aggregations while aliasing each field and return correct data", async () => {
         const typeDefs = `
-            type ${typeMovie} @node {
+            type ${typeMovie} {
                 testString: ID!
                 id: ID!
                 title: String!

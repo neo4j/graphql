@@ -221,7 +221,7 @@ describe("array-push", () => {
             const typeMovie = testHelper.createUniqueType("Movie");
 
             const typeDefs = gql`
-            type ${typeMovie} @node {
+            type ${typeMovie} {
                 title: String
                 tags: [${inputType}]
             }
@@ -295,7 +295,7 @@ describe("array-push", () => {
             const typeMovie = testHelper.createUniqueType("Movie");
 
             const typeDefs = gql`
-            type ${typeMovie} @node {
+            type ${typeMovie} {
                 title: String
                 tags: [${inputType}]
             }
@@ -371,7 +371,7 @@ describe("array-push", () => {
             const typeMovie = testHelper.createUniqueType("Movie");
 
             const typeDefs = gql`
-            type ${typeMovie} @node {
+            type ${typeMovie} {
                 title: String
                 tags: [${inputType}]
             }
@@ -423,7 +423,7 @@ describe("array-push", () => {
         const typeMovie = testHelper.createUniqueType("Movie");
 
         const typeDefs = gql`
-            type ${typeMovie} @node {
+            type ${typeMovie} {
                 title: String
                 tags: [String]
                 moreTags: [String]
@@ -472,11 +472,11 @@ describe("array-push", () => {
         const movie = testHelper.createUniqueType("Movie");
         const actor = testHelper.createUniqueType("Actor");
         const typeDefs = `
-            type ${movie.name} @node {
+            type ${movie.name} {
                 viewers: [Int]!
                 workers: [${actor.name}!]! @relationship(type: "WORKED_IN", direction: IN)
             }
-            type ${actor.name} @node {
+            type ${actor.name} {
                 id: ID!
                 name: String!
                 worksInMovies: [${movie.name}!]! @relationship(type: "WORKED_IN", direction: OUT)
@@ -541,12 +541,12 @@ describe("array-push", () => {
         const movie = testHelper.createUniqueType("Movie");
         const actor = testHelper.createUniqueType("Actor");
         const typeDefs = `
-            type ${movie.name} @node {
+            type ${movie.name} {
                 title: String
                 actors: [${actor.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
             }
 
-            type ${actor.name} @node {
+            type ${actor.name} {
                 id: ID!
                 name: String!
                 actedIn: [${movie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
@@ -624,12 +624,12 @@ describe("array-push", () => {
         const movie = testHelper.createUniqueType("Movie");
         const actor = testHelper.createUniqueType("Actor");
         const typeDefs = `
-            type ${movie.name} @node {
+            type ${movie.name} {
                 title: String
                 actors: [${actor.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
             }
 
-            type ${actor.name} @node {
+            type ${actor.name} {
                 id: ID!
                 name: String!
                 actedIn: [${movie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
@@ -713,7 +713,7 @@ describe("array-push", () => {
         const typeMovie = testHelper.createUniqueType("Movie");
 
         const typeDefs = gql`
-        type ${typeMovie} @node {
+        type ${typeMovie} {
             title: String
             tags: [LocalTime]
         }

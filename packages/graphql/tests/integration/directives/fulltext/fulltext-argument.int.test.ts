@@ -77,7 +77,7 @@ describe("@fulltext directive", () => {
         const type = testHelper.createUniqueType("Movie");
 
         const typeDefs = /* GraphQL */ `
-            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) @node {
+            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) {
                 title: String!
             }
         `;
@@ -160,7 +160,7 @@ describe("@fulltext directive", () => {
         const type = testHelper.createUniqueType("Movie");
 
         const typeDefs = /* GraphQL */ `
-            type ${type.name} @fulltext(indexes: [{ name: "${indexName1}", fields: ["title"] }, { name: "${indexName2}", fields: ["description"] }]) @node {
+            type ${type.name} @fulltext(indexes: [{ name: "${indexName1}", fields: ["title"] }, { name: "${indexName2}", fields: ["description"] }]) {
                 title: String!
                 description: String!
             }
@@ -203,6 +203,7 @@ describe("@fulltext directive", () => {
         const type = testHelper.createUniqueType("Movie");
 
         const typeDefs = /* GraphQL */ `
+            #type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) @node(label: "${label}") {
             type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) @node(labels: ["${label}"]) {
                 title: String!
             }
@@ -286,6 +287,7 @@ describe("@fulltext directive", () => {
         const type = testHelper.createUniqueType("Movie");
 
         const typeDefs = /* GraphQL */ `
+            #type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) @node(label: "${label}") {
             type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) @node(labels: ["${label}"]) {
                 title: String! @alias(property: "newTitle")
             }
@@ -367,7 +369,7 @@ describe("@fulltext directive", () => {
         const type = testHelper.createUniqueType("Movie");
 
         const typeDefs = /* GraphQL */ `
-            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) @node {
+            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) {
                 title: String!
             }
         `;
@@ -394,7 +396,7 @@ describe("@fulltext directive", () => {
         const type = testHelper.createUniqueType("Movie");
 
         const typeDefs = /* GraphQL */ `
-            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title", "description"] }]) @node {
+            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title", "description"] }]) {
                 title: String!
                 description: String!
             }
@@ -427,7 +429,7 @@ describe("@fulltext directive", () => {
         const type = testHelper.createUniqueType("Movie");
 
         const typeDefs = /* GraphQL */ `
-            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title", "description"] }]) @node {
+            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title", "description"] }]) {
                 title: String!
                 description: String! @alias(property: "${alias}")
             }
@@ -466,7 +468,7 @@ describe("@fulltext directive", () => {
         const type = testHelper.createUniqueType("Movie");
 
         const typeDefs = /* GraphQL */ `
-            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) @node {
+            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) {
                 title: String!
             }
         `;
@@ -540,7 +542,7 @@ describe("@fulltext directive", () => {
         const type = testHelper.createUniqueType("Movie");
 
         const typeDefs = /* GraphQL */ `
-            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title", "description"] }]) @node {
+            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title", "description"] }]) {
                 title: String!
                 description: String!
             }
@@ -576,7 +578,7 @@ describe("@fulltext directive", () => {
         const type = testHelper.createUniqueType("Movie");
 
         const typeDefs = /* GraphQL */ `
-            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["id"] }]) @node {
+            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["id"] }]) {
                 id: ID!
             }
         `;

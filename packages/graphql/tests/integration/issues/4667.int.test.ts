@@ -42,12 +42,12 @@ describe("https://github.com/neo4j/graphql/issues/4667", () => {
 
     test("when passed null as an argument of a relationship filter should check that a relationship does not exist", async () => {
         const typeDefs = /* GraphQL */ `
-            type ${MyThing} @node {
+            type ${MyThing} {
                 id: ID! @id
                 stuff: ${MyStuff} @relationship(type: "THE_STUFF", direction: OUT)
             }
 
-            type ${MyStuff} @node {
+            type ${MyStuff} {
                 id: ID! @id
                 thing: ${MyThing} @relationship(type: "THE_STUFF", direction: IN)
             }

@@ -46,14 +46,14 @@ describe("@alias directive", () => {
                 name: String! 
             }
 
-            type ${AliasDirectiveTestUser} implements AliasInterface @node {
+            type ${AliasDirectiveTestUser} implements AliasInterface {
                 id: ID! @id @unique  @alias(property: "dbId")
                 name: String! @alias(property: "dbName")
                 likes: [${AliasDirectiveTestMovie}!]! @relationship(direction: OUT, type: "LIKES", properties: "AliasDirectiveTestLikesProps")
                 createdAt: DateTime! @timestamp(operations: [CREATE]) @alias(property: "dbCreatedAt")
             }
 
-            type ${AliasDirectiveTestMovie} @node {
+            type ${AliasDirectiveTestMovie} {
                 title: String! @alias(property: "dbTitle")
                 titleAuth: String @alias(property: "dbTitle") @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "reader" } } }])
                 year: Int
@@ -65,7 +65,7 @@ describe("@alias directive", () => {
                 relationshipCreatedAt: DateTime! @timestamp(operations: [CREATE]) @alias(property: "dbCreatedAt")
             }
 
-            type ${ProtectedUser} @node @authorization(validate: [{ when: [BEFORE], where: { node: { name: "$jwt.sub" } } }]) {
+            type ${ProtectedUser} @authorization(validate: [{ when: [BEFORE], where: { node: { name: "$jwt.sub" } } }]) {
                 name: String! @alias(property: "dbName")
             }
         `;

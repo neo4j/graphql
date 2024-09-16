@@ -30,13 +30,13 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
         testOrganization = testHelper.createUniqueType("Organization");
 
         const typeDefs = `
-        type ${testUser.name} @node {
+        type ${testUser.name} {
             id: ID! @id @unique @alias(property: "_id")
             name: String!
             activeOrganization: ${testOrganization.name} @relationship(type: "ACTIVELY_MANAGING", direction: OUT)
         }
 
-        type ${testOrganization.name} @node {
+        type ${testOrganization.name} {
             id: ID! @id @unique @alias(property: "_id")
             name: String!
         }

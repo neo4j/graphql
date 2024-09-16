@@ -26,23 +26,23 @@ describe("#324", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Person @node {
+            type Person {
                 identifier: ID!
                 car: Car! @relationship(type: "CAR", direction: OUT)
             }
 
-            type Car @node {
+            type Car {
                 identifier: ID!
                 manufacturer: Manufacturer! @relationship(type: "MANUFACTURER", direction: OUT)
             }
 
-            type Manufacturer @node {
+            type Manufacturer {
                 identifier: ID!
                 logo: Logo! @relationship(type: "LOGO", direction: OUT)
                 name: String
             }
 
-            type Logo @node {
+            type Logo {
                 identifier: ID!
                 name: String
             }

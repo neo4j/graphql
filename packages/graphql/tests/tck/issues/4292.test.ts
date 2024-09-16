@@ -24,7 +24,7 @@ import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-ut
 describe("https://github.com/neo4j/graphql/issues/4292", () => {
     test("authorization subqueries should be wrapped in a Cypher.CALL", async () => {
         const typeDefs = /* GraphQL */ `
-            type User @node {
+            type User {
                 id: ID! @unique
                 email: String! @unique
                 name: String
@@ -35,7 +35,7 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                 roles: [String!]!
             }
 
-            type Group @node {
+            type Group {
                 id: ID! @id @unique
                 name: String
                 members: [Person!]! @relationship(type: "MEMBER_OF", direction: IN)
@@ -48,7 +48,6 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
             }
 
             type Person
-                @node
                 @authorization(
                     validate: [
                         {
@@ -114,7 +113,7 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                 role: InviteeRole!
             }
 
-            type Admin implements Invitee @node {
+            type Admin implements Invitee {
                 id: ID! @unique @id
                 group: Group! @relationship(type: "ADMIN_OF", direction: OUT)
                 creator: User! @relationship(type: "CREATOR_OF", direction: IN)
@@ -125,7 +124,7 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                 role: InviteeRole! @default(value: ADMIN)
             }
 
-            type Contributor implements Invitee @node {
+            type Contributor implements Invitee {
                 id: ID! @unique @id
                 group: Group! @relationship(type: "CONTRIBUTOR_TO", direction: OUT)
                 creator: User! @relationship(type: "CREATOR_OF", direction: IN)

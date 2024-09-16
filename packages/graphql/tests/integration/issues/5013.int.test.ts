@@ -45,12 +45,12 @@ describe("https://github.com/neo4j/graphql/issues/5013", () => {
                 someStringAlias: String @alias(property: "_someStringAlias")
             }
 
-            type ${Person} implements Human @node {
+            type ${Person} implements Human {
                 name: String!
                 someStringAlias: String
             }
 
-            type ${Post} @node {
+            type ${Post} {
                 content: String!
                 likes: [Human!]! @relationship(type: "LIKES", direction: IN)
             }

@@ -33,7 +33,7 @@ describe("Revert https://github.com/neo4j/graphql/pull/572", () => {
         const user = testHelper.createUniqueType("User");
 
         const typeDefs = gql`
-            type ${user.name} @node {
+            type ${user.name} {
                 name: String!
                 friends: [${user.name}!]! @relationship(type: "FRIENDS_WITH", direction: OUT)
             }

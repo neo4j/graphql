@@ -38,7 +38,7 @@ describe("Comments", () => {
             """
             A type describing a movie.
             """
-            type Movie @node {
+            type Movie {
                 id: ID
                 "The number of actors who acted in the movie."
                 actorCount: Int
@@ -195,8 +195,7 @@ describe("Comments", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              actorCount: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              actorCount_EQ: Int
+              actorCount: Int
               actorCount_GT: Int
               actorCount_GTE: Int
               actorCount_IN: [Int]
@@ -204,8 +203,7 @@ describe("Comments", () => {
               actorCount_LTE: Int
               actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              averageRating: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              averageRating_EQ: Float
+              averageRating: Float
               averageRating_GT: Float
               averageRating_GTE: Float
               averageRating_IN: [Float]
@@ -213,20 +211,17 @@ describe("Comments", () => {
               averageRating_LTE: Float
               averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              customScalar: CustomScalar @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              customScalar_EQ: CustomScalar
+              customScalar: CustomScalar
               customScalar_IN: [CustomScalar]
               customScalar_NOT: CustomScalar @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               customScalar_NOT_IN: [CustomScalar] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              genre: Genre @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              genre_EQ: Genre
+              genre: Genre
               genre_IN: [Genre]
               genre_NOT: Genre @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               genre_NOT_IN: [Genre] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -234,8 +229,7 @@ describe("Comments", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
-              isActive: Boolean @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              isActive_EQ: Boolean
+              isActive: Boolean
               isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
@@ -294,11 +288,11 @@ describe("Comments", () => {
     describe("Relationship", () => {
         test("Simple", async () => {
             const typeDefs = gql`
-                type Actor @node {
+                type Actor {
                     name: String
                 }
 
-                type Movie @node {
+                type Movie {
                     id: ID
                     "Actors in Movie"
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
@@ -359,10 +353,9 @@ describe("Comments", () => {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -627,10 +620,9 @@ describe("Comments", () => {
                   actors_SINGLE: ActorWhere
                   \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
                   actors_SOME: ActorWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -714,12 +706,12 @@ describe("Comments", () => {
                     title: String!
                 }
 
-                type Movie implements Production @node {
+                type Movie implements Production {
                     title: String!
                     runtime: Int!
                 }
 
-                type Series implements Production @node {
+                type Series implements Production {
                     title: String!
                     episodes: Int!
                 }
@@ -728,7 +720,7 @@ describe("Comments", () => {
                     screenTime: Int!
                 }
 
-                type Actor @node {
+                type Actor {
                     name: String!
                     "Acted in Production"
                     actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
@@ -800,8 +792,7 @@ describe("Comments", () => {
                   AND: [ActedInWhere!]
                   NOT: ActedInWhere
                   OR: [ActedInWhere!]
-                  screenTime: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  screenTime_EQ: Int
+                  screenTime: Int
                   screenTime_GT: Int
                   screenTime_GTE: Int
                   screenTime_IN: [Int!]
@@ -1036,10 +1027,9 @@ describe("Comments", () => {
                   actedIn_SINGLE: ProductionWhere
                   \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
                   actedIn_SOME: ProductionWhere
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String!]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1144,8 +1134,7 @@ describe("Comments", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  runtime: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  runtime_EQ: Int
+                  runtime: Int
                   runtime_GT: Int
                   runtime_GTE: Int
                   runtime_IN: [Int!]
@@ -1153,10 +1142,9 @@ describe("Comments", () => {
                   runtime_LTE: Int
                   runtime_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   runtime_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  title: String
                   title_CONTAINS: String
                   title_ENDS_WITH: String
-                  title_EQ: String
                   title_IN: [String!]
                   title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1244,10 +1232,9 @@ describe("Comments", () => {
                   AND: [ProductionWhere!]
                   NOT: ProductionWhere
                   OR: [ProductionWhere!]
-                  title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  title: String
                   title_CONTAINS: String
                   title_ENDS_WITH: String
-                  title_EQ: String
                   title_IN: [String!]
                   title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1334,8 +1321,7 @@ describe("Comments", () => {
                   AND: [SeriesWhere!]
                   NOT: SeriesWhere
                   OR: [SeriesWhere!]
-                  episodes: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  episodes_EQ: Int
+                  episodes: Int
                   episodes_GT: Int
                   episodes_GTE: Int
                   episodes_IN: [Int!]
@@ -1343,10 +1329,9 @@ describe("Comments", () => {
                   episodes_LTE: Int
                   episodes_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   episodes_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  title: String
                   title_CONTAINS: String
                   title_ENDS_WITH: String
-                  title_EQ: String
                   title_IN: [String!]
                   title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1401,11 +1386,11 @@ describe("Comments", () => {
             const typeDefs = gql`
                 union Search = Movie | Genre
 
-                type Genre @node {
+                type Genre {
                     id: ID
                 }
 
-                type Movie @node {
+                type Movie {
                     id: ID
                     search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
                     searchNoDirective: Search
@@ -1494,10 +1479,9 @@ describe("Comments", () => {
                   AND: [GenreWhere!]
                   NOT: GenreWhere
                   OR: [GenreWhere!]
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1718,10 +1702,9 @@ describe("Comments", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")

@@ -32,13 +32,13 @@ describe("@subscription directive", () => {
     describe("on OBJECT", () => {
         test("default arguments should enable subscription for CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP", async () => {
             const typeDefs = gql`
-                type Actor @node {
+                type Actor {
                     username: String!
                     password: String!
                     actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type Movie @subscription @node {
+                type Movie @subscription {
                     title: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
@@ -85,13 +85,13 @@ describe("@subscription directive", () => {
 
         test("should disable subscription for CREATE", async () => {
             const typeDefs = gql`
-                type Actor @node {
+                type Actor {
                     username: String!
                     password: String!
                     actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type Movie @subscription(events: [UPDATED, DELETED, RELATIONSHIP_CREATED, RELATIONSHIP_DELETED]) @node {
+                type Movie @subscription(events: [UPDATED, DELETED, RELATIONSHIP_CREATED, RELATIONSHIP_DELETED]) {
                     title: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
@@ -134,13 +134,13 @@ describe("@subscription directive", () => {
 
         test("should disable subscription for UPDATE", async () => {
             const typeDefs = gql`
-                type Actor @node {
+                type Actor {
                     username: String!
                     password: String!
                     actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type Movie @subscription(events: [CREATED, DELETED, RELATIONSHIP_CREATED, RELATIONSHIP_DELETED]) @node {
+                type Movie @subscription(events: [CREATED, DELETED, RELATIONSHIP_CREATED, RELATIONSHIP_DELETED]) {
                     title: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
@@ -183,13 +183,13 @@ describe("@subscription directive", () => {
 
         test("should disable subscription for DELETE", async () => {
             const typeDefs = gql`
-                type Actor @node {
+                type Actor {
                     username: String!
                     password: String!
                     actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type Movie @subscription(events: [CREATED, UPDATED, RELATIONSHIP_CREATED, RELATIONSHIP_DELETED]) @node {
+                type Movie @subscription(events: [CREATED, UPDATED, RELATIONSHIP_CREATED, RELATIONSHIP_DELETED]) {
                     title: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
@@ -232,13 +232,13 @@ describe("@subscription directive", () => {
 
         test("should disable subscription for CREATE_RELATIONSHIP", async () => {
             const typeDefs = gql`
-                type Actor @node {
+                type Actor {
                     username: String!
                     password: String!
                     actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type Movie @subscription(events: [CREATED, UPDATED, DELETED, RELATIONSHIP_DELETED]) @node {
+                type Movie @subscription(events: [CREATED, UPDATED, DELETED, RELATIONSHIP_DELETED]) {
                     title: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
@@ -281,13 +281,13 @@ describe("@subscription directive", () => {
 
         test("should disable subscription for DELETE_RELATIONSHIP", async () => {
             const typeDefs = gql`
-                type Actor @node {
+                type Actor {
                     username: String!
                     password: String!
                     actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type Movie @subscription(events: [CREATED, UPDATED, DELETED, RELATIONSHIP_CREATED]) @node {
+                type Movie @subscription(events: [CREATED, UPDATED, DELETED, RELATIONSHIP_CREATED]) {
                     title: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
@@ -330,13 +330,13 @@ describe("@subscription directive", () => {
 
         test("should disable subscription for CREATE, DELETE, UPDATE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP", async () => {
             const typeDefs = gql`
-                type Actor @node {
+                type Actor {
                     username: String!
                     password: String!
                     actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type Movie @subscription(events: []) @node {
+                type Movie @subscription(events: []) {
                     title: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
@@ -379,13 +379,13 @@ describe("@subscription directive", () => {
 
         test("should not throw an Error when is mixed with @query", async () => {
             const typeDefs = gql`
-                type Actor @node {
+                type Actor {
                     username: String!
                     password: String!
                     actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type Movie @query(read: true) @subscription(events: []) @node {
+                type Movie @query(read: true) @subscription(events: []) {
                     title: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
@@ -400,13 +400,13 @@ describe("@subscription directive", () => {
     describe("on SCHEMA", () => {
         test("default arguments should enable subscription for CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP", async () => {
             const typeDefs = gql`
-                type Actor @node {
+                type Actor {
                     username: String!
                     password: String!
                     actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type Movie @node {
+                type Movie {
                     title: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
@@ -451,13 +451,13 @@ describe("@subscription directive", () => {
 
         test("should disable subscription for CREATE", async () => {
             const typeDefs = gql`
-                type Actor @node {
+                type Actor {
                     username: String!
                     password: String!
                     actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type Movie @node {
+                type Movie {
                     title: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
@@ -501,13 +501,13 @@ describe("@subscription directive", () => {
 
         test("should disable subscription for UPDATE", async () => {
             const typeDefs = gql`
-                type Actor @node {
+                type Actor {
                     username: String!
                     password: String!
                     actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type Movie @node {
+                type Movie {
                     title: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
@@ -551,13 +551,13 @@ describe("@subscription directive", () => {
 
         test("should disable subscription for DELETE", async () => {
             const typeDefs = gql`
-                type Actor @node {
+                type Actor {
                     username: String!
                     password: String!
                     actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type Movie @node {
+                type Movie {
                     title: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
@@ -601,13 +601,13 @@ describe("@subscription directive", () => {
 
         test("should disable subscription for CREATE_RELATIONSHIP", async () => {
             const typeDefs = gql`
-                type Actor @node {
+                type Actor {
                     username: String!
                     password: String!
                     actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type Movie @node {
+                type Movie {
                     title: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
@@ -651,13 +651,13 @@ describe("@subscription directive", () => {
 
         test("should disable subscription for DELETE_RELATIONSHIP", async () => {
             const typeDefs = gql`
-                type Actor @node {
+                type Actor {
                     username: String!
                     password: String!
                     actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type Movie @node {
+                type Movie {
                     title: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
@@ -701,13 +701,13 @@ describe("@subscription directive", () => {
 
         test("should disable subscription for CREATE, DELETE, UPDATE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP", async () => {
             const typeDefs = gql`
-                type Actor @node {
+                type Actor {
                     username: String!
                     password: String!
                     actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type Movie @node {
+                type Movie {
                     title: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
@@ -722,13 +722,13 @@ describe("@subscription directive", () => {
 
         test("should not throw an Error when is mixed with @query", async () => {
             const typeDefs = gql`
-                type Actor @node {
+                type Actor {
                     username: String!
                     password: String!
                     actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type Movie @node {
+                type Movie {
                     title: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }

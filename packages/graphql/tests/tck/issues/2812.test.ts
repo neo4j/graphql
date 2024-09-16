@@ -18,8 +18,8 @@
  */
 
 import { Neo4jGraphQL } from "../../../src";
+import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 import { createBearerToken } from "../../utils/create-bearer-token";
-import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/2812", () => {
     const secret = "secret";
@@ -28,9 +28,7 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
             roles: [String!]!
         }
 
-        type Actor
-            @authorization(validate: [{ when: [BEFORE], where: { node: { nodeCreatedBy: "$jwt.sub" } } }])
-            @node {
+        type Actor @authorization(validate: [{ when: [BEFORE], where: { node: { nodeCreatedBy: "$jwt.sub" } } }]) {
             id: ID! @id @unique
             name: String
             nodeCreatedBy: String
@@ -45,7 +43,6 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
             movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
         }
         type Movie
-            @node
             @authorization(validate: [{ operations: [CREATE, UPDATE], where: { jwt: { roles_INCLUDES: "admin" } } }]) {
             id: ID
             actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)

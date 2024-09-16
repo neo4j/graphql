@@ -38,7 +38,7 @@ describe("delete", () => {
 
     test("should delete a single movie", async () => {
         const typeDefs = `
-            type ${Movie} @node {
+            type ${Movie} {
                 id: ID!
             }
         `;
@@ -86,7 +86,7 @@ describe("delete", () => {
 
     test("should not delete a movie if predicate does not yield true", async () => {
         const typeDefs = `
-            type ${Movie} @node {
+            type ${Movie} {
                 id: ID!
             }
         `;
@@ -134,12 +134,12 @@ describe("delete", () => {
 
     test("should delete a single movie and a single nested actor", async () => {
         const typeDefs = gql`
-            type ${Actor} @node {
+            type ${Actor} {
                 name: String
                 movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type ${Movie} @node {
+            type ${Movie} {
                 id: ID
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
@@ -207,12 +207,12 @@ describe("delete", () => {
 
     test("should delete a movie, a single nested actor and another movie they act in", async () => {
         const typeDefs = gql`
-            type ${Actor} @node {
+            type ${Actor} {
                 name: String
                 movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type ${Movie} @node {
+            type ${Movie} {
                 id: ID
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
@@ -300,12 +300,12 @@ describe("delete", () => {
 
     test("should delete a movie using a connection where filter", async () => {
         const typeDefs = gql`
-            type ${Actor} @node {
+            type ${Actor} {
                 name: String
                 movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type ${Movie} @node {
+            type ${Movie} {
                 id: ID
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }

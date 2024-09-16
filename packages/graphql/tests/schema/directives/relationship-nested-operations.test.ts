@@ -27,11 +27,11 @@ describe("Relationship nested operations", () => {
     describe("Related to a concrete type", () => {
         test("Should not generate UpdateFieldInput input with no nested operations", async () => {
             const typeDefs = gql`
-                type Person @node {
+                type Person {
                     name: String
                 }
 
-                type Movie @node {
+                type Movie {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [])
                 }
@@ -242,10 +242,9 @@ describe("Relationship nested operations", () => {
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -326,10 +325,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonWhere!]
                   NOT: PersonWhere
                   OR: [PersonWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -386,11 +384,11 @@ describe("Relationship nested operations", () => {
 
         test("Single relationship with nested operation CREATE specified", async () => {
             const typeDefs = gql`
-                type Person @node {
+                type Person {
                     name: String
                 }
 
-                type Movie @node {
+                type Movie {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CREATE])
                 }
@@ -615,10 +613,9 @@ describe("Relationship nested operations", () => {
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -699,10 +696,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonWhere!]
                   NOT: PersonWhere
                   OR: [PersonWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -759,11 +755,11 @@ describe("Relationship nested operations", () => {
 
         test("Single relationship with nested operation CONNECT specified", async () => {
             const typeDefs = gql`
-                type Person @node {
+                type Person {
                     name: String
                 }
 
-                type Movie @node {
+                type Movie {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CONNECT])
                 }
@@ -992,10 +988,9 @@ describe("Relationship nested operations", () => {
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1080,10 +1075,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonWhere!]
                   NOT: PersonWhere
                   OR: [PersonWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1140,11 +1134,11 @@ describe("Relationship nested operations", () => {
 
         test("Single relationship with nested operation UPDATE specified", async () => {
             const typeDefs = gql`
-                type Person @node {
+                type Person {
                     name: String
                 }
 
-                type Movie @node {
+                type Movie {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [UPDATE])
                 }
@@ -1360,10 +1354,9 @@ describe("Relationship nested operations", () => {
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1444,10 +1437,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonWhere!]
                   NOT: PersonWhere
                   OR: [PersonWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1504,11 +1496,11 @@ describe("Relationship nested operations", () => {
 
         test("Single relationship with nested operation DELETE specified", async () => {
             const typeDefs = gql`
-                type Person @node {
+                type Person {
                     name: String
                 }
 
-                type Movie @node {
+                type Movie {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [DELETE])
                 }
@@ -1728,10 +1720,9 @@ describe("Relationship nested operations", () => {
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1812,10 +1803,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonWhere!]
                   NOT: PersonWhere
                   OR: [PersonWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1872,11 +1862,11 @@ describe("Relationship nested operations", () => {
 
         test("Single relationship with nested operation DISCONNECT specified", async () => {
             const typeDefs = gql`
-                type Person @node {
+                type Person {
                     name: String
                 }
 
-                type Movie @node {
+                type Movie {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [DISCONNECT])
                 }
@@ -2096,10 +2086,9 @@ describe("Relationship nested operations", () => {
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -2180,10 +2169,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonWhere!]
                   NOT: PersonWhere
                   OR: [PersonWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -2240,11 +2228,11 @@ describe("Relationship nested operations", () => {
 
         test("Should not generate any nested operations if only CONNECT_OR_CREATE is specified and the related type does not have a unique field", async () => {
             const typeDefs = gql`
-                type Person @node {
+                type Person {
                     name: String
                 }
 
-                type Movie @node {
+                type Movie {
                     id: ID
                     actors: [Person!]!
                         @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CONNECT_OR_CREATE])
@@ -2451,10 +2439,9 @@ describe("Relationship nested operations", () => {
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -2535,10 +2522,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonWhere!]
                   NOT: PersonWhere
                   OR: [PersonWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -2595,12 +2581,12 @@ describe("Relationship nested operations", () => {
 
         test("Single relationship to type with unique field with nested operation CONNECT_OR_CREATE specified", async () => {
             const typeDefs = gql`
-                type Person @node {
+                type Person {
                     id: ID! @id @unique
                     name: String
                 }
 
-                type Movie @node {
+                type Movie {
                     id: ID
                     actors: [Person!]!
                         @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CONNECT_OR_CREATE])
@@ -2833,10 +2819,9 @@ describe("Relationship nested operations", () => {
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -2932,10 +2917,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonWhere!]
                   NOT: PersonWhere
                   OR: [PersonWhere!]
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID!]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -2943,10 +2927,9 @@ describe("Relationship nested operations", () => {
                   id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -3003,11 +2986,11 @@ describe("Relationship nested operations", () => {
 
         test("Two relationships with nested operations specified on one", async () => {
             const typeDefs = gql`
-                type Person @node {
+                type Person {
                     name: String
                 }
 
-                type Movie @node {
+                type Movie {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN)
                     producers: [Person!]! @relationship(type: "PRODUCED", direction: IN, nestedOperations: [DISCONNECT])
@@ -3369,10 +3352,9 @@ describe("Relationship nested operations", () => {
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -3486,10 +3468,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonWhere!]
                   NOT: PersonWhere
                   OR: [PersonWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -3546,11 +3527,11 @@ describe("Relationship nested operations", () => {
 
         test("Two relationships with nested operations specified on both", async () => {
             const typeDefs = gql`
-                type Person @node {
+                type Person {
                     name: String
                 }
 
-                type Movie @node {
+                type Movie {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CREATE])
                     producers: [Person!]! @relationship(type: "PRODUCED", direction: IN, nestedOperations: [DISCONNECT])
@@ -3878,10 +3859,9 @@ describe("Relationship nested operations", () => {
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -3991,10 +3971,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonWhere!]
                   NOT: PersonWhere
                   OR: [PersonWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -4053,17 +4032,17 @@ describe("Relationship nested operations", () => {
     describe("Related to a union type", () => {
         test("Should not generate UpdateFieldInput input with no nested operations", async () => {
             const typeDefs = gql`
-                type PersonOne @node {
+                type PersonOne {
                     name: String
                 }
 
-                type PersonTwo @node {
+                type PersonTwo {
                     nameTwo: String
                 }
 
                 union Person = PersonOne | PersonTwo
 
-                type Movie @node {
+                type Movie {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [])
                 }
@@ -4224,10 +4203,9 @@ describe("Relationship nested operations", () => {
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -4307,10 +4285,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonOneWhere!]
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -4368,10 +4345,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonTwoWhere!]
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
-                  nameTwo: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  nameTwo: String
                   nameTwo_CONTAINS: String
                   nameTwo_ENDS_WITH: String
-                  nameTwo_EQ: String
                   nameTwo_IN: [String]
                   nameTwo_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   nameTwo_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -4454,17 +4430,17 @@ describe("Relationship nested operations", () => {
 
         test("Single relationship with nested operation CREATE specified", async () => {
             const typeDefs = gql`
-                type PersonOne @node {
+                type PersonOne {
                     name: String
                 }
 
-                type PersonTwo @node {
+                type PersonTwo {
                     nameTwo: String
                 }
 
                 union Person = PersonOne | PersonTwo
 
-                type Movie @node {
+                type Movie {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CREATE])
                 }
@@ -4667,10 +4643,9 @@ describe("Relationship nested operations", () => {
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -4750,10 +4725,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonOneWhere!]
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -4811,10 +4785,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonTwoWhere!]
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
-                  nameTwo: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  nameTwo: String
                   nameTwo_CONTAINS: String
                   nameTwo_ENDS_WITH: String
-                  nameTwo_EQ: String
                   nameTwo_IN: [String]
                   nameTwo_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   nameTwo_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -4897,17 +4870,17 @@ describe("Relationship nested operations", () => {
 
         test("Single relationship with nested operation CONNECT specified", async () => {
             const typeDefs = gql`
-                type PersonOne @node {
+                type PersonOne {
                     name: String
                 }
 
-                type PersonTwo @node {
+                type PersonTwo {
                     nameTwo: String
                 }
 
                 union Person = PersonOne | PersonTwo
 
-                type Movie @node {
+                type Movie {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CONNECT])
                 }
@@ -5110,10 +5083,9 @@ describe("Relationship nested operations", () => {
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -5197,10 +5169,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonOneWhere!]
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -5262,10 +5233,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonTwoWhere!]
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
-                  nameTwo: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  nameTwo: String
                   nameTwo_CONTAINS: String
                   nameTwo_ENDS_WITH: String
-                  nameTwo_EQ: String
                   nameTwo_IN: [String]
                   nameTwo_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   nameTwo_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -5348,17 +5318,17 @@ describe("Relationship nested operations", () => {
 
         test("Single relationship with nested operation UPDATE specified", async () => {
             const typeDefs = gql`
-                type PersonOne @node {
+                type PersonOne {
                     name: String
                 }
 
-                type PersonTwo @node {
+                type PersonTwo {
                     nameTwo: String
                 }
 
                 union Person = PersonOne | PersonTwo
 
-                type Movie @node {
+                type Movie {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [UPDATE])
                 }
@@ -5538,10 +5508,9 @@ describe("Relationship nested operations", () => {
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -5621,10 +5590,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonOneWhere!]
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -5682,10 +5650,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonTwoWhere!]
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
-                  nameTwo: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  nameTwo: String
                   nameTwo_CONTAINS: String
                   nameTwo_ENDS_WITH: String
-                  nameTwo_EQ: String
                   nameTwo_IN: [String]
                   nameTwo_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   nameTwo_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -5768,17 +5735,17 @@ describe("Relationship nested operations", () => {
 
         test("Single relationship with nested operation DELETE specified", async () => {
             const typeDefs = gql`
-                type PersonOne @node {
+                type PersonOne {
                     name: String
                 }
 
-                type PersonTwo @node {
+                type PersonTwo {
                     nameTwo: String
                 }
 
                 union Person = PersonOne | PersonTwo
 
-                type Movie @node {
+                type Movie {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [DELETE])
                 }
@@ -5967,10 +5934,9 @@ describe("Relationship nested operations", () => {
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -6050,10 +6016,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonOneWhere!]
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -6111,10 +6076,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonTwoWhere!]
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
-                  nameTwo: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  nameTwo: String
                   nameTwo_CONTAINS: String
                   nameTwo_ENDS_WITH: String
-                  nameTwo_EQ: String
                   nameTwo_IN: [String]
                   nameTwo_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   nameTwo_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -6197,17 +6161,17 @@ describe("Relationship nested operations", () => {
 
         test("Single relationship with nested operation DISCONNECT specified", async () => {
             const typeDefs = gql`
-                type PersonOne @node {
+                type PersonOne {
                     name: String
                 }
 
-                type PersonTwo @node {
+                type PersonTwo {
                     nameTwo: String
                 }
 
                 union Person = PersonOne | PersonTwo
 
-                type Movie @node {
+                type Movie {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [DISCONNECT])
                 }
@@ -6396,10 +6360,9 @@ describe("Relationship nested operations", () => {
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -6479,10 +6442,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonOneWhere!]
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -6540,10 +6502,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonTwoWhere!]
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
-                  nameTwo: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  nameTwo: String
                   nameTwo_CONTAINS: String
                   nameTwo_ENDS_WITH: String
-                  nameTwo_EQ: String
                   nameTwo_IN: [String]
                   nameTwo_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   nameTwo_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -6626,17 +6587,17 @@ describe("Relationship nested operations", () => {
 
         test("Should not generate any nested operations if only CONNECT_OR_CREATE is specified and the related type does not have a unique field", async () => {
             const typeDefs = gql`
-                type PersonOne @node {
+                type PersonOne {
                     name: String
                 }
 
-                type PersonTwo @node {
+                type PersonTwo {
                     nameTwo: String
                 }
 
                 union Person = PersonOne | PersonTwo
 
-                type Movie @node {
+                type Movie {
                     id: ID
                     actors: [Person!]!
                         @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CONNECT_OR_CREATE])
@@ -6793,10 +6754,9 @@ describe("Relationship nested operations", () => {
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -6876,10 +6836,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonOneWhere!]
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -6937,10 +6896,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonTwoWhere!]
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
-                  nameTwo: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  nameTwo: String
                   nameTwo_CONTAINS: String
                   nameTwo_ENDS_WITH: String
-                  nameTwo_EQ: String
                   nameTwo_IN: [String]
                   nameTwo_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   nameTwo_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -7023,19 +6981,19 @@ describe("Relationship nested operations", () => {
 
         test("Single relationship to type with unique field with nested operation CONNECT_OR_CREATE specified", async () => {
             const typeDefs = gql`
-                type PersonOne @node {
+                type PersonOne {
                     id: ID! @id @unique
                     name: String
                 }
 
-                type PersonTwo @node {
+                type PersonTwo {
                     id: ID! @id @unique
                     nameTwo: String
                 }
 
                 union Person = PersonOne | PersonTwo
 
-                type Movie @node {
+                type Movie {
                     id: ID
                     actors: [Person!]!
                         @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CONNECT_OR_CREATE])
@@ -7249,10 +7207,9 @@ describe("Relationship nested operations", () => {
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -7347,10 +7304,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonOneWhere!]
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID!]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -7358,10 +7314,9 @@ describe("Relationship nested operations", () => {
                   id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -7434,10 +7389,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonTwoWhere!]
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID!]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -7445,10 +7399,9 @@ describe("Relationship nested operations", () => {
                   id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
-                  nameTwo: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  nameTwo: String
                   nameTwo_CONTAINS: String
                   nameTwo_ENDS_WITH: String
-                  nameTwo_EQ: String
                   nameTwo_IN: [String]
                   nameTwo_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   nameTwo_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -7531,17 +7484,17 @@ describe("Relationship nested operations", () => {
 
         test("Two relationships with nested operations specified on one", async () => {
             const typeDefs = gql`
-                type PersonOne @node {
+                type PersonOne {
                     name: String
                 }
 
-                type PersonTwo @node {
+                type PersonTwo {
                     nameTwo: String
                 }
 
                 union Person = PersonOne | PersonTwo
 
-                type Movie @node {
+                type Movie {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN)
                     producers: [Person!]! @relationship(type: "PRODUCED", direction: IN, nestedOperations: [DISCONNECT])
@@ -7878,10 +7831,9 @@ describe("Relationship nested operations", () => {
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -7993,10 +7945,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonOneWhere!]
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -8058,10 +8009,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonTwoWhere!]
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
-                  nameTwo: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  nameTwo: String
                   nameTwo_CONTAINS: String
                   nameTwo_ENDS_WITH: String
-                  nameTwo_EQ: String
                   nameTwo_IN: [String]
                   nameTwo_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   nameTwo_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -8144,17 +8094,17 @@ describe("Relationship nested operations", () => {
 
         test("Two relationships with nested operations specified on both", async () => {
             const typeDefs = gql`
-                type PersonOne @node {
+                type PersonOne {
                     name: String
                 }
 
-                type PersonTwo @node {
+                type PersonTwo {
                     nameTwo: String
                 }
 
                 union Person = PersonOne | PersonTwo
 
-                type Movie @node {
+                type Movie {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CREATE])
                     producers: [Person!]! @relationship(type: "PRODUCED", direction: IN, nestedOperations: [DISCONNECT])
@@ -8425,10 +8375,9 @@ describe("Relationship nested operations", () => {
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -8536,10 +8485,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonOneWhere!]
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -8597,10 +8545,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonTwoWhere!]
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
-                  nameTwo: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  nameTwo: String
                   nameTwo_CONTAINS: String
                   nameTwo_ENDS_WITH: String
-                  nameTwo_EQ: String
                   nameTwo_IN: [String]
                   nameTwo_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   nameTwo_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -8689,16 +8636,16 @@ describe("Relationship nested operations", () => {
                     name: String
                 }
 
-                type PersonOne implements Person @node {
+                type PersonOne implements Person {
                     name: String
                     someExtraProp: [Int!]!
                 }
 
-                type PersonTwo implements Person @node {
+                type PersonTwo implements Person {
                     name: String
                 }
 
-                type Movie @node {
+                type Movie {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [])
                 }
@@ -8914,10 +8861,9 @@ describe("Relationship nested operations", () => {
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -9025,10 +8971,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonOneWhere!]
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -9036,8 +8981,7 @@ describe("Relationship nested operations", () => {
                   name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
-                  someExtraProp: [Int!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  someExtraProp_EQ: [Int!]
+                  someExtraProp: [Int!]
                   someExtraProp_INCLUDES: Int
                   someExtraProp_NOT: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   someExtraProp_NOT_INCLUDES: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -9107,10 +9051,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonTwoWhere!]
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -9130,10 +9073,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonWhere!]
                   NOT: PersonWhere
                   OR: [PersonWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -9206,16 +9148,16 @@ describe("Relationship nested operations", () => {
                     name: String
                 }
 
-                type PersonOne implements Person @node {
+                type PersonOne implements Person {
                     name: String
                     someExtraProp: [Int!]!
                 }
 
-                type PersonTwo implements Person @node {
+                type PersonTwo implements Person {
                     name: String
                 }
 
-                type Movie @node {
+                type Movie {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CREATE])
                 }
@@ -9445,10 +9387,9 @@ describe("Relationship nested operations", () => {
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -9561,10 +9502,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonOneWhere!]
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -9572,8 +9512,7 @@ describe("Relationship nested operations", () => {
                   name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
-                  someExtraProp: [Int!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  someExtraProp_EQ: [Int!]
+                  someExtraProp: [Int!]
                   someExtraProp_INCLUDES: Int
                   someExtraProp_NOT: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   someExtraProp_NOT_INCLUDES: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -9643,10 +9582,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonTwoWhere!]
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -9666,10 +9604,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonWhere!]
                   NOT: PersonWhere
                   OR: [PersonWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -9742,16 +9679,16 @@ describe("Relationship nested operations", () => {
                     name: String
                 }
 
-                type PersonOne implements Person @node {
+                type PersonOne implements Person {
                     name: String
                     someExtraProp: [Int!]!
                 }
 
-                type PersonTwo implements Person @node {
+                type PersonTwo implements Person {
                     name: String
                 }
 
-                type Movie @node {
+                type Movie {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CONNECT])
                 }
@@ -9981,10 +9918,9 @@ describe("Relationship nested operations", () => {
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -10096,10 +10032,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonOneWhere!]
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -10107,8 +10042,7 @@ describe("Relationship nested operations", () => {
                   name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
-                  someExtraProp: [Int!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  someExtraProp_EQ: [Int!]
+                  someExtraProp: [Int!]
                   someExtraProp_INCLUDES: Int
                   someExtraProp_NOT: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   someExtraProp_NOT_INCLUDES: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -10178,10 +10112,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonTwoWhere!]
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -10201,10 +10134,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonWhere!]
                   NOT: PersonWhere
                   OR: [PersonWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -10277,16 +10209,16 @@ describe("Relationship nested operations", () => {
                     name: String
                 }
 
-                type PersonOne implements Person @node {
+                type PersonOne implements Person {
                     name: String
                     someExtraProp: [Int!]!
                 }
 
-                type PersonTwo implements Person @node {
+                type PersonTwo implements Person {
                     name: String
                 }
 
-                type Movie @node {
+                type Movie {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [UPDATE])
                 }
@@ -10507,10 +10439,9 @@ describe("Relationship nested operations", () => {
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -10618,10 +10549,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonOneWhere!]
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -10629,8 +10559,7 @@ describe("Relationship nested operations", () => {
                   name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
-                  someExtraProp: [Int!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  someExtraProp_EQ: [Int!]
+                  someExtraProp: [Int!]
                   someExtraProp_INCLUDES: Int
                   someExtraProp_NOT: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   someExtraProp_NOT_INCLUDES: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -10700,10 +10629,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonTwoWhere!]
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -10727,10 +10655,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonWhere!]
                   NOT: PersonWhere
                   OR: [PersonWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -10803,16 +10730,16 @@ describe("Relationship nested operations", () => {
                     name: String
                 }
 
-                type PersonOne implements Person @node {
+                type PersonOne implements Person {
                     name: String
                     someExtraProp: [Int!]!
                 }
 
-                type PersonTwo implements Person @node {
+                type PersonTwo implements Person {
                     name: String
                 }
 
-                type Movie @node {
+                type Movie {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [DELETE])
                 }
@@ -11037,10 +10964,9 @@ describe("Relationship nested operations", () => {
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -11148,10 +11074,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonOneWhere!]
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -11159,8 +11084,7 @@ describe("Relationship nested operations", () => {
                   name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
-                  someExtraProp: [Int!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  someExtraProp_EQ: [Int!]
+                  someExtraProp: [Int!]
                   someExtraProp_INCLUDES: Int
                   someExtraProp_NOT: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   someExtraProp_NOT_INCLUDES: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -11230,10 +11154,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonTwoWhere!]
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -11253,10 +11176,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonWhere!]
                   NOT: PersonWhere
                   OR: [PersonWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -11329,16 +11251,16 @@ describe("Relationship nested operations", () => {
                     name: String
                 }
 
-                type PersonOne implements Person @node {
+                type PersonOne implements Person {
                     name: String
                     someExtraProp: [Int!]!
                 }
 
-                type PersonTwo implements Person @node {
+                type PersonTwo implements Person {
                     name: String
                 }
 
-                type Movie @node {
+                type Movie {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [DISCONNECT])
                 }
@@ -11563,10 +11485,9 @@ describe("Relationship nested operations", () => {
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -11674,10 +11595,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonOneWhere!]
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -11685,8 +11605,7 @@ describe("Relationship nested operations", () => {
                   name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
-                  someExtraProp: [Int!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  someExtraProp_EQ: [Int!]
+                  someExtraProp: [Int!]
                   someExtraProp_INCLUDES: Int
                   someExtraProp_NOT: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   someExtraProp_NOT_INCLUDES: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -11756,10 +11675,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonTwoWhere!]
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -11779,10 +11697,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonWhere!]
                   NOT: PersonWhere
                   OR: [PersonWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -11855,16 +11772,16 @@ describe("Relationship nested operations", () => {
                     name: String
                 }
 
-                type PersonOne implements Person @node {
+                type PersonOne implements Person {
                     name: String
                     someExtraProp: [Int!]!
                 }
 
-                type PersonTwo implements Person @node {
+                type PersonTwo implements Person {
                     name: String
                 }
 
-                type Movie @node {
+                type Movie {
                     id: ID
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN)
                     producers: [Person!]! @relationship(type: "PRODUCED", direction: IN, nestedOperations: [DISCONNECT])
@@ -12227,10 +12144,9 @@ describe("Relationship nested operations", () => {
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -12376,10 +12292,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonOneWhere!]
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -12387,8 +12302,7 @@ describe("Relationship nested operations", () => {
                   name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
-                  someExtraProp: [Int!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  someExtraProp_EQ: [Int!]
+                  someExtraProp: [Int!]
                   someExtraProp_INCLUDES: Int
                   someExtraProp_NOT: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   someExtraProp_NOT_INCLUDES: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -12458,10 +12372,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonTwoWhere!]
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -12485,10 +12398,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonWhere!]
                   NOT: PersonWhere
                   OR: [PersonWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -12561,16 +12473,16 @@ describe("Relationship nested operations", () => {
                     name: String
                 }
 
-                type PersonOne implements Person @node {
+                type PersonOne implements Person {
                     name: String
                     someExtraProp: [Int!]!
                 }
 
-                type PersonTwo implements Person @node {
+                type PersonTwo implements Person {
                     name: String
                 }
 
-                type Movie @node {
+                type Movie {
                     id: ID
                     actors: [Person!]!
                         @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CREATE, DELETE])
@@ -12913,10 +12825,9 @@ describe("Relationship nested operations", () => {
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  id: ID
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
-                  id_EQ: ID
                   id_IN: [ID]
                   id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -13058,10 +12969,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonOneWhere!]
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -13069,8 +12979,7 @@ describe("Relationship nested operations", () => {
                   name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
-                  someExtraProp: [Int!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  someExtraProp_EQ: [Int!]
+                  someExtraProp: [Int!]
                   someExtraProp_INCLUDES: Int
                   someExtraProp_NOT: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   someExtraProp_NOT_INCLUDES: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -13140,10 +13049,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonTwoWhere!]
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -13163,10 +13071,9 @@ describe("Relationship nested operations", () => {
                   AND: [PersonWhere!]
                   NOT: PersonWhere
                   OR: [PersonWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
-                  name_EQ: String
                   name_IN: [String]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")

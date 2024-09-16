@@ -34,12 +34,12 @@ describe("aggregations-where-node-bigint - connections", () => {
         Post = testHelper.createUniqueType("Post");
 
         const typeDefs = `
-            type ${User} @node {
+            type ${User} {
                 testString: String!
                 someBigInt: BigInt
             }
     
-            type ${Post} @node {
+            type ${Post} {
               testString: String!
               likes: [${User}!]! @relationship(type: "LIKES", direction: IN)
             }
@@ -321,18 +321,18 @@ describe("aggregations-where-node-bigint - connections - interface relationships
             someBigInt: BigInt
         }
 
-        type ${Person} implements Human @node{
+        type ${Person} implements Human {
             testString: String!
             someBigInt: BigInt
         }
 
 
-            type ${User} implements Human @node {
+            type ${User} implements Human {
                 testString: String!
                 someBigInt: BigInt
             }
     
-            type ${Post} @node {
+            type ${Post} {
               testString: String!
               likes: [Human!]! @relationship(type: "LIKES", direction: IN)
             }

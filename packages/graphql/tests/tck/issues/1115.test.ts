@@ -31,11 +31,11 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
                 roles: [String!]!
             }
 
-            type Parent @node {
+            type Parent {
                 children: [Child!]! @relationship(type: "HAS", direction: IN)
             }
 
-            type Child @node {
+            type Child {
                 tcId: String @unique
             }
 

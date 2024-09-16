@@ -18,25 +18,25 @@
  */
 
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
+import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/487", () => {
     test("related fields should resolve on custom queries (union)", async () => {
         const typeDefs = /* GraphQL */ `
-            type Author @node {
+            type Author {
                 id: ID!
             }
 
-            type Director @node {
+            type Director {
                 id: ID!
             }
 
-            type Book @node {
+            type Book {
                 id: ID!
                 author: Author! @relationship(type: "WROTE", direction: IN)
             }
 
-            type Movie @node {
+            type Movie {
                 id: ID!
                 director: Director! @relationship(type: "DIRECTED", direction: IN)
             }
@@ -131,20 +131,20 @@ describe("https://github.com/neo4j/graphql/issues/487", () => {
 
     test("related fields should resolve on custom queries (interface)", async () => {
         const typeDefs = /* GraphQL */ `
-            type Author @node {
+            type Author {
                 id: ID!
             }
 
-            type Director @node {
+            type Director {
                 id: ID!
             }
 
-            type Book implements Thing @node {
+            type Book implements Thing {
                 id: ID!
                 author: Author! @relationship(type: "WROTE", direction: IN)
             }
 
-            type Movie implements Thing @node {
+            type Movie implements Thing {
                 id: ID!
                 director: Director! @relationship(type: "DIRECTED", direction: IN)
             }

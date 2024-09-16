@@ -36,7 +36,7 @@ describe("https://github.com/neo4j/graphql/issues/2560", () => {
         User = testHelper.createUniqueType("User");
 
         const typeDefs = `
-            type ${User} @node {
+            type ${User} {
                 firstName: String!
                 lastName: String!
                 fullName: String! @customResolver(requires: "firstName lastName")
@@ -92,13 +92,13 @@ describe("https://github.com/neo4j/graphql/issues/2560", () => {
         Person = testHelper.createUniqueType("Person");
 
         const typeDefs = `
-            type ${User} @node {
+            type ${User} {
                 firstName: String!
                 lastName: String!
                 fullName: String! @customResolver(requires: "firstName lastName")
             }
 
-            type ${Person} @node {
+            type ${Person} {
                 firstName: String!
                 secondName: String! @customResolver(requires: "firstName")
             }

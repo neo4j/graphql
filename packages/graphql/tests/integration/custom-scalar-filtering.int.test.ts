@@ -33,7 +33,7 @@ describe("Custom Scalar Filtering", () => {
             const typeDefs = `
                 scalar CustomScalar
 
-                type ${randomType.name} @node {
+                type ${randomType.name} {
                     property: CustomScalar
                 }
             `;
@@ -71,7 +71,7 @@ describe("Custom Scalar Filtering", () => {
             const typeDefs = `
                 scalar CustomScalar
 
-                type ${randomType.name} @node {
+                type ${randomType.name} {
                     property: CustomScalar
                 }
             `;
@@ -118,7 +118,7 @@ describe("Custom Scalar Filtering", () => {
             const typeDefs = `
                 scalar CustomScalar
 
-                type ${randomType.name} @node {
+                type ${randomType.name} {
                     property: CustomScalar
                 }
             `;
@@ -153,7 +153,7 @@ describe("Custom Scalar Filtering", () => {
             const typeDefs = `
                 scalar CustomScalar
 
-                type ${randomType.name} @node {
+                type ${randomType.name} {
                     property: CustomScalar
                 }
             `;
@@ -193,7 +193,7 @@ describe("Custom Scalar Filtering", () => {
             const typeDefs = `
                 scalar CustomScalar
 
-                type ${randomType.name} @node {
+                type ${randomType.name} {
                     property: CustomScalar
                 }
             `;
@@ -242,7 +242,7 @@ describe("Custom Scalar Filtering", () => {
             const typeDefs = `
                 scalar CustomScalar
 
-                type ${randomType.name} @node {
+                type ${randomType.name} {
                     property: CustomScalar
                 }
             `;
@@ -278,7 +278,7 @@ describe("Custom Scalar Filtering", () => {
             const typeDefs = `
                 scalar CustomScalar
 
-                type ${randomType.name} @node {
+                type ${randomType.name} {
                     property: CustomScalar
                 }
             `;
@@ -318,7 +318,7 @@ describe("Custom Scalar Filtering", () => {
             const typeDefs = `
                 scalar CustomScalar
 
-                type ${randomType.name} @node {
+                type ${randomType.name} {
                     property: CustomScalar
                 }
             `;
@@ -365,7 +365,7 @@ describe("Custom Scalar Filtering", () => {
             const typeDefs = `
                 scalar CustomScalar
 
-                type ${randomType.name} @node {
+                type ${randomType.name} {
                     property: CustomScalar
                 }
             `;
@@ -402,7 +402,7 @@ describe("Custom Scalar Filtering", () => {
             const typeDefs = `
                 scalar CustomListScalar
 
-                type ${randomType.name} @node {
+                type ${randomType.name} {
                     property: [CustomListScalar!]
                 }
             `;
@@ -442,7 +442,7 @@ describe("Custom Scalar Filtering", () => {
             const typeDefs = `
                 scalar CustomListScalar
 
-                type ${randomType.name} @node {
+                type ${randomType.name} {
                     property: [CustomListScalar!]
                 }
             `;
@@ -491,7 +491,7 @@ describe("Custom Scalar Filtering", () => {
             const typeDefs = `
                 scalar CustomListScalar
 
-                type ${randomType.name} @node {
+                type ${randomType.name} {
                     property: [CustomListScalar!]
                 }
             `;
@@ -528,7 +528,7 @@ describe("Custom Scalar Filtering", () => {
             const typeDefs = `
                 scalar CustomListScalar
 
-                type ${randomType.name} @node {
+                type ${randomType.name} {
                     property: [CustomListScalar!]
                 }
             `;
@@ -566,7 +566,7 @@ describe("Custom Scalar Filtering", () => {
             const typeDefs = `
                 scalar CustomListScalar
 
-                type ${randomType.name} @node {
+                type ${randomType.name} {
                     property: [CustomListScalar!]
                 }
             `;
@@ -613,7 +613,7 @@ describe("Custom Scalar Filtering", () => {
             const typeDefs = `
                 scalar CustomListScalar
 
-                type ${randomType.name} @node {
+                type ${randomType.name} {
                     property: [CustomListScalar!]
                 }
             `;
@@ -649,7 +649,7 @@ describe("Custom Scalar Filtering", () => {
             const typeDefs = `
                 scalar CustomListScalar
 
-                type ${randomType.name} @node {
+                type ${randomType.name} {
                     property: [CustomListScalar!]
                 }
             `;
@@ -687,7 +687,7 @@ describe("Custom Scalar Filtering", () => {
             const typeDefs = `
                 scalar CustomListScalar
 
-                type ${randomType.name} @node {
+                type ${randomType.name} {
                     property: [CustomListScalar!]
                 }
             `;
@@ -734,7 +734,7 @@ describe("Custom Scalar Filtering", () => {
             const typeDefs = `
                 scalar CustomListScalar
 
-                type ${randomType.name} @node {
+                type ${randomType.name} {
                     property: [CustomListScalar!]
                 }
             `;

@@ -26,11 +26,11 @@ describe("Cypher Alias", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Actor @node {
+            type Actor {
                 name: String!
             }
 
-            type Movie @node {
+            type Movie {
                 id: ID
                 releaseDate: DateTime!
                 location: Point!

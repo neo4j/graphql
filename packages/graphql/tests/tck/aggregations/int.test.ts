@@ -26,7 +26,7 @@ describe("Cypher Aggregations Int", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Movie @node {
+            type Movie {
                 imdbRating: Int!
             }
         `;

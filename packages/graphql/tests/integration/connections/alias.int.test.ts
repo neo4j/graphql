@@ -40,12 +40,12 @@ describe("Connections Alias", () => {
     // using totalCount as the bear minimal selection
     test("should alias top level connection field and return correct totalCount", async () => {
         const typeDefs = gql`
-            type ${typeMovie.name} @node {
+            type ${typeMovie.name} {
                 title: String!
                 actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type ${typeActor.name} @node {
+            type ${typeActor.name} {
                 name: String!
                 movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -90,12 +90,12 @@ describe("Connections Alias", () => {
 
     test("should alias totalCount", async () => {
         const typeDefs = gql`
-            type ${typeMovie.name} @node {
+            type ${typeMovie.name} {
                 title: String!
                 actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type ${typeActor.name} @node {
+            type ${typeActor.name} {
                 name: String!
                 movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -141,12 +141,12 @@ describe("Connections Alias", () => {
     // using hasNextPage as the bear minimal selection
     test("should alias pageInfo top level key", async () => {
         const typeDefs = gql`
-            type ${typeMovie.name} @node {
+            type ${typeMovie.name} {
                 title: String!
                 actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type ${typeActor.name} @node {
+            type ${typeActor.name} {
                 name: String!
                 movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -193,12 +193,12 @@ describe("Connections Alias", () => {
 
     test("should alias startCursor", async () => {
         const typeDefs = gql`
-            type ${typeMovie.name} @node {
+            type ${typeMovie.name} {
                 title: String!
                 actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type ${typeActor.name} @node {
+            type ${typeActor.name} {
                 name: String!
                 movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -243,12 +243,12 @@ describe("Connections Alias", () => {
 
     test("should alias endCursor", async () => {
         const typeDefs = gql`
-            type ${typeMovie.name} @node {
+            type ${typeMovie.name} {
                 title: String!
                 actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type ${typeActor.name} @node {
+            type ${typeActor.name} {
                 name: String!
                 movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -293,12 +293,12 @@ describe("Connections Alias", () => {
 
     test("should alias hasPreviousPage", async () => {
         const typeDefs = gql`
-            type ${typeMovie.name} @node {
+            type ${typeMovie.name} {
                 title: String!
                 actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type ${typeActor.name} @node {
+            type ${typeActor.name} {
                 name: String!
                 movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -343,12 +343,12 @@ describe("Connections Alias", () => {
 
     test("should alias hasNextPage", async () => {
         const typeDefs = gql`
-            type ${typeMovie.name} @node {
+            type ${typeMovie.name} {
                 title: String!
                 actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type ${typeActor.name} @node {
+            type ${typeActor.name} {
                 name: String!
                 movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -393,12 +393,12 @@ describe("Connections Alias", () => {
 
     test("should alias the top level edges key", async () => {
         const typeDefs = gql`
-            type ${typeMovie.name} @node {
+            type ${typeMovie.name} {
                 title: String!
                 actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type ${typeActor.name} @node {
+            type ${typeActor.name} {
                 name: String!
                 movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -443,12 +443,12 @@ describe("Connections Alias", () => {
 
     test("should alias cursor", async () => {
         const typeDefs = gql`
-            type ${typeMovie.name} @node {
+            type ${typeMovie.name} {
                 title: String!
                 actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type ${typeActor.name} @node {
+            type ${typeActor.name} {
                 name: String!
                 movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -493,12 +493,12 @@ describe("Connections Alias", () => {
 
     test("should alias the top level node key", async () => {
         const typeDefs = gql`
-            type ${typeMovie.name} @node {
+            type ${typeMovie.name} {
                 title: String!
                 actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type ${typeActor.name} @node {
+            type ${typeActor.name} {
                 name: String!
                 movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -545,12 +545,12 @@ describe("Connections Alias", () => {
 
     test("should alias a property on the node", async () => {
         const typeDefs = gql`
-            type ${typeMovie.name} @node {
+            type ${typeMovie.name} {
                 title: String!
                 actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type ${typeActor.name} @node {
+            type ${typeActor.name} {
                 name: String!
                 movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -597,12 +597,12 @@ describe("Connections Alias", () => {
 
     test("should alias a property on the relationship", async () => {
         const typeDefs = gql`
-            type ${typeMovie.name} @node {
+            type ${typeMovie.name} {
                 title: String!
                 actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type ${typeActor.name} @node {
+            type ${typeActor.name} {
                 name: String!
                 movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
@@ -653,12 +653,12 @@ describe("Connections Alias", () => {
 
     test("should alias many keys on a connection", async () => {
         const typeDefs = gql`
-            type ${typeMovie.name} @node {
+            type ${typeMovie.name} {
                 title: String!
                 actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type ${typeActor.name} @node {
+            type ${typeActor.name} {
                 name: String!
             }
 
@@ -737,11 +737,11 @@ describe("Connections Alias", () => {
 
     test("should allow multiple aliases on the same connection", async () => {
         const typeDefs = gql`
-            type Post @node {
+            type Post {
                 title: String!
                 comments: [Comment!]! @relationship(type: "HAS_COMMENT", direction: OUT)
             }
-            type Comment @node {
+            type Comment {
                 flag: Boolean!
                 post: Post! @relationship(type: "HAS_COMMENT", direction: IN)
             }
@@ -806,12 +806,12 @@ describe("Connections Alias", () => {
         const screenTime = 120;
 
         const typeDefs = gql`
-            type ${typeMovie.name} @node {
+            type ${typeMovie.name} {
                 title: String!
                 actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
             }
 
-            type ${typeActor.name} @node {
+            type ${typeActor.name} {
                 name: String!
                 movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }

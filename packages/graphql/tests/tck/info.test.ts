@@ -26,11 +26,11 @@ describe("info", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Actor @node {
+            type Actor {
                 name: String!
             }
 
-            type Movie @node {
+            type Movie {
                 id: ID
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)

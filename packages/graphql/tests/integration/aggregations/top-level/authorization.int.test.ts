@@ -32,8 +32,8 @@ describe("aggregations-top_level authorization", () => {
     test("should throw forbidden when incorrect allow on aggregate count", async () => {
         const randomType = testHelper.createUniqueType("Movie");
 
-        const typeDefs = /* GraphQL */ `
-            type ${randomType.name} @node {
+        const typeDefs = `
+            type ${randomType.name} {
                 id: ID
             }
 
@@ -73,19 +73,18 @@ describe("aggregations-top_level authorization", () => {
     });
 
     test("should append auth where to predicate and return post count for this user", async () => {
-        const typeDefs = /* GraphQL */ `
-            type User @node {
+        const typeDefs = `
+            type User {
                 id: ID
                 posts: [Post!]! @relationship(type: "POSTED", direction: OUT)
             }
 
-            type Post @node {
+            type Post {
                 content: String
                 creator: User! @relationship(type: "POSTED", direction: IN)
             }
 
-            extend type Post
-                @authorization(filter: [{ operations: [AGGREGATE], where: { node: { creator: { id: "$jwt.sub" } } } }])
+            extend type Post @authorization(filter: [{ operations: [AGGREGATE], where: { node: { creator: { id: "$jwt.sub" } } } }])
         `;
 
         const userId = generate({
@@ -127,15 +126,14 @@ describe("aggregations-top_level authorization", () => {
     });
 
     test("should throw when invalid allow when aggregating a Int field", async () => {
-        const typeDefs = /* GraphQL */ `
-            type Movie @node {
+        const typeDefs = `
+            type Movie {
                 id: ID
                 director: Person! @relationship(type: "DIRECTED", direction: IN)
-                imdbRatingInt: Int
-                    @authorization(validate: [{ when: BEFORE, where: { node: { director: { id: "$jwt.sub" } } } }])
+                imdbRatingInt: Int  @authorization(validate: [ { when: BEFORE, where: { node: { director: { id: "$jwt.sub" } } } }])
             }
 
-            type Person @node {
+            type Person {
                 id: ID
             }
         `;
@@ -180,15 +178,14 @@ describe("aggregations-top_level authorization", () => {
     });
 
     test("should throw when invalid allow when aggregating a ID field", async () => {
-        const typeDefs = /* GraphQL */ `
-            type Movie @node {
+        const typeDefs = `
+            type Movie {
                 id: ID
                 director: Person! @relationship(type: "DIRECTED", direction: IN)
-                someId: ID
-                    @authorization(validate: [{ when: BEFORE, where: { node: { director: { id: "$jwt.sub" } } } }])
+                someId: ID  @authorization(validate: [ { when: BEFORE, where: { node: { director: { id: "$jwt.sub" } } } }])
             }
 
-            type Person @node {
+            type Person {
                 id: ID
             }
         `;
@@ -233,15 +230,14 @@ describe("aggregations-top_level authorization", () => {
     });
 
     test("should throw when invalid allow when aggregating a String field", async () => {
-        const typeDefs = /* GraphQL */ `
-            type Movie @node {
+        const typeDefs = `
+            type Movie {
                 id: ID
                 director: Person! @relationship(type: "DIRECTED", direction: IN)
-                someString: String
-                    @authorization(validate: [{ when: BEFORE, where: { node: { director: { id: "$jwt.sub" } } } }])
+                someString: String  @authorization(validate: [ { when: BEFORE, where: { node: { director: { id: "$jwt.sub" } } } }])
             }
 
-            type Person @node {
+            type Person {
                 id: ID
             }
         `;
@@ -286,15 +282,14 @@ describe("aggregations-top_level authorization", () => {
     });
 
     test("should throw when invalid allow when aggregating a Float field", async () => {
-        const typeDefs = /* GraphQL */ `
-            type Movie @node {
+        const typeDefs = `
+            type Movie {
                 id: ID
                 director: Person! @relationship(type: "DIRECTED", direction: IN)
-                imdbRatingFloat: Float
-                    @authorization(validate: [{ when: BEFORE, where: { node: { director: { id: "$jwt.sub" } } } }])
+                imdbRatingFloat: Float  @authorization(validate: [ {  when: BEFORE, where: { node: { director: { id: "$jwt.sub" } } } }])              
             }
 
-            type Person @node {
+            type Person {
                 id: ID
             }
         `;
@@ -339,15 +334,14 @@ describe("aggregations-top_level authorization", () => {
     });
 
     test("should throw when invalid allow when aggregating a BigInt field", async () => {
-        const typeDefs = /* GraphQL */ `
-            type Movie @node {
+        const typeDefs = `
+            type Movie {
                 id: ID
                 director: Person! @relationship(type: "DIRECTED", direction: IN)
-                imdbRatingBigInt: BigInt
-                    @authorization(validate: [{ when: BEFORE, where: { node: { director: { id: "$jwt.sub" } } } }])
+                imdbRatingBigInt: BigInt @authorization(validate: [ {  when: BEFORE, where: { node: { director: { id: "$jwt.sub" } } } }])
             }
 
-            type Person @node {
+            type Person {
                 id: ID
             }
         `;
@@ -392,15 +386,14 @@ describe("aggregations-top_level authorization", () => {
     });
 
     test("should throw when invalid allow when aggregating a DateTime field", async () => {
-        const typeDefs = /* GraphQL */ `
-            type Movie @node {
+        const typeDefs = `
+            type Movie {
                 id: ID
                 director: Person! @relationship(type: "DIRECTED", direction: IN)
-                createdAt: DateTime
-                    @authorization(validate: [{ when: BEFORE, where: { node: { director: { id: "$jwt.sub" } } } }])
+                createdAt: DateTime  @authorization(validate: [ { when: BEFORE, where: { node: { director: { id: "$jwt.sub" } } } }])
             }
 
-            type Person @node {
+            type Person {
                 id: ID
             }
         `;
@@ -445,15 +438,14 @@ describe("aggregations-top_level authorization", () => {
     });
 
     test("should throw when invalid allow when aggregating a Duration field", async () => {
-        const typeDefs = /* GraphQL */ `
-            type Movie @node {
+        const typeDefs = `
+            type Movie {
                 id: ID
                 director: Person! @relationship(type: "DIRECTED", direction: IN)
-                screenTime: Duration
-                    @authorization(validate: [{ when: BEFORE, where: { node: { director: { id: "$jwt.sub" } } } }])
+                screenTime: Duration  @authorization(validate: [ { when: BEFORE, where: { node: { director: { id: "$jwt.sub" } } } }])
             }
 
-            type Person @node {
+            type Person {
                 id: ID
             }
         `;

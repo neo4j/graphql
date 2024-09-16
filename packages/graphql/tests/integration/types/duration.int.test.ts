@@ -37,7 +37,7 @@ describe("Duration", () => {
     describe("create", () => {
         test("should create a movie (with a Duration)", async () => {
             const typeDefs = /* GraphQL */ `
-                type ${Movie} @node {
+                type ${Movie} {
                     id: ID!
                     duration: Duration!
                 }
@@ -96,7 +96,7 @@ describe("Duration", () => {
 
         test("should create a movie (with many Durations)", async () => {
             const typeDefs = /* GraphQL */ `
-                type ${Movie} @node {
+                type ${Movie} {
                     id: ID!
                     durations: [Duration!]!
                 }
@@ -167,7 +167,7 @@ describe("Duration", () => {
     describe("update", () => {
         test("should update a movie (with a Duration)", async () => {
             const typeDefs = /* GraphQL */ `
-                type ${Movie} @node {
+                type ${Movie} {
                     id: ID!
                     duration: Duration
                 }
@@ -231,7 +231,7 @@ describe("Duration", () => {
     describe("filter", () => {
         test("should filter based on duration equality", async () => {
             const typeDefs = /* GraphQL */ `
-                type ${Movie} @node {
+                type ${Movie} {
                     id: ID!
                     duration: Duration!
                 }
@@ -278,7 +278,7 @@ describe("Duration", () => {
             "should filter based on duration comparison, for filter: %s",
             async (filter) => {
                 const typeDefs = `
-                        type ${Movie} @node {
+                        type ${Movie} {
                             id: ID!
                             duration: Duration!
                         }

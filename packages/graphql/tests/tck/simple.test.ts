@@ -26,7 +26,7 @@ describe("Simple Cypher tests", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Movie @node {
+            type Movie {
                 id: ID
                 title: String
             }

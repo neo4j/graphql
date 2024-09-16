@@ -25,7 +25,7 @@ describe("https://github.com/neo4j/graphql/issues/3215", () => {
         let neoSchema: Neo4jGraphQL;
 
         const typeDefs = `#graphql
-            type Actor @node {
+            type Actor {
                 name: String!
                 age: Int!
             }

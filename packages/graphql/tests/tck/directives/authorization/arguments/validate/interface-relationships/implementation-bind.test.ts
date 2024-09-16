@@ -33,13 +33,12 @@ describe("Cypher Auth Allow", () => {
                 creator: User! @declareRelationship
             }
 
-            type Comment implements Content @node {
+            type Comment implements Content {
                 id: ID
                 creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
             }
 
             type Post implements Content
-                @node
                 @authorization(
                     validate: [
                         {
@@ -53,7 +52,7 @@ describe("Cypher Auth Allow", () => {
                 creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
             }
 
-            type User @node {
+            type User {
                 id: ID
                 name: String
                 content: [Content!]! @relationship(type: "HAS_CONTENT", direction: OUT)

@@ -50,7 +50,7 @@ describe("Single instance Subscription", () => {
     beforeAll(async () => {
         engine = new Neo4jGraphQLSubscriptionsDefaultEngine();
         const typeDefs = `
-         type ${typeMovie} @node {
+         type ${typeMovie} {
              title: String
          }
          `;

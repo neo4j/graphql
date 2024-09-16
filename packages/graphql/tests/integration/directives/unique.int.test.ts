@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { gql } from "graphql-tag";
 import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import type { Neo4jDatabaseInfo } from "../../../src/classes/Neo4jDatabaseInfo";
@@ -79,10 +80,8 @@ describe("assertIndexesAndConstraints/unique", () => {
         const isbn = generate({ readable: true });
         const title = generate({ readable: true });
 
-        const type = testHelper.createUniqueType("Book");
-
-        const typeDefs = `
-                type ${type.name} @node {
+        const typeDefs = gql`
+            type Book {
                 isbn: String! @unique
                 title: String!
             }
@@ -108,13 +107,13 @@ describe("assertIndexesAndConstraints/unique", () => {
                 .map((record) => {
                     return record.toObject();
                 })
-                .filter((record) => record.labelsOrTypes.includes(type.name))
+                .filter((record) => record.labelsOrTypes.includes("Book"))
         ).toHaveLength(1);
 
         const mutation = `
             mutation CreateBooks($isbn: String!, $title: String!) {
-                ${type.operations.create}(input: [{ isbn: $isbn, title: $title }]) {
-                    ${type.plural} {
+                createBooks(input: [{ isbn: $isbn, title: $title }]) {
+                    books {
                         isbn
                         title
                     }
@@ -132,7 +131,7 @@ describe("assertIndexesAndConstraints/unique", () => {
         expect(createResult.errors).toBeFalsy();
 
         expect(createResult.data).toEqual({
-            [type.operations.create]: { [type.plural]: [{ isbn, title }] },
+            createBooks: { books: [{ isbn, title }] },
         });
 
         const errorResult = await testHelper.executeGraphQL(mutation, {
@@ -157,7 +156,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             const type = testHelper.createUniqueType("Book");
 
             const typeDefs = `
-                type ${type.name} @node {
+                type ${type.name} {
                     isbn: String! @unique
                     title: String!
                 }
@@ -181,7 +180,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             const type = testHelper.createUniqueType("Book");
 
             const typeDefs = `
-                type ${type.name} @node {
+                type ${type.name} {
                     isbn: String! @unique @alias(property: "internationalStandardBookNumber")
                     title: String!
                 }
@@ -205,7 +204,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             const type = testHelper.createUniqueType("Book");
 
             const typeDefs = `
-                type ${type.name} @node {
+                type ${type.name} {
                     isbn: String! @unique
                     title: String!
                 }
@@ -235,7 +234,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             const type = testHelper.createUniqueType("Book");
 
             const typeDefs = `
-                type ${type.name} @node {
+                type ${type.name} {
                     isbn: String! @unique @alias(property: "internationalStandardBookNumber")
                     title: String!
                 }
@@ -265,7 +264,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             const type = testHelper.createUniqueType("Book");
 
             const typeDefs = `
-                type ${type.name} @node {
+                type ${type.name} {
                     isbn: String! @unique
                     title: String!
                 }
@@ -305,7 +304,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             const type = testHelper.createUniqueType("Book");
 
             const typeDefs = `
-                type ${type.name} @node {
+                type ${type.name} {
                     isbn: String! @unique @alias(property: "internationalStandardBookNumber")
                     title: String!
                 }
@@ -597,7 +596,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             const type = testHelper.createUniqueType("User");
 
             const typeDefs = `
-                type ${type.name} @node {
+                type ${type.name} {
                     id: ID! @id @unique
                     name: String!
                 }
@@ -621,7 +620,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             const type = testHelper.createUniqueType("User");
 
             const typeDefs = `
-                type ${type.name} @node {
+                type ${type.name} {
                     id: ID! @id @unique @alias(property: "identifier")
                     name: String!
                 }
@@ -645,7 +644,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             const type = testHelper.createUniqueType("User");
 
             const typeDefs = `
-                type ${type.name} @node {
+                type ${type.name} {
                     id: ID! @id @unique
                     name: String!
                 }
@@ -675,7 +674,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             const type = testHelper.createUniqueType("User");
 
             const typeDefs = `
-                type ${type.name} @node {
+                type ${type.name} {
                     id: ID! @id @unique @alias(property: "identifier")
                     name: String!
                 }
@@ -705,7 +704,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             const type = testHelper.createUniqueType("User");
 
             const typeDefs = `
-                type ${type.name} @node {
+                type ${type.name} {
                     id: ID! @id @unique
                     name: String!
                 }
@@ -745,7 +744,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             const type = testHelper.createUniqueType("User");
 
             const typeDefs = `
-                type ${type.name} @node {
+                type ${type.name} {
                     id: ID! @id @unique @alias(property: "identifier")
                     name: String!
                 }

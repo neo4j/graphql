@@ -123,7 +123,7 @@ describe("https://github.com/neo4j/graphql/issues/915", () => {
 
         const typeDefs = gql`
             scalar PositiveInt
-            type ${Order} @node {
+            type ${Order} {
                 orderNo: PositiveInt! @unique
                 name: String!
             }

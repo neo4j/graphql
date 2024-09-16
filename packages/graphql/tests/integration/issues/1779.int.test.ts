@@ -31,13 +31,13 @@ describe("https://github.com/neo4j/graphql/issues/1779", () => {
         schoolType = testHelper.createUniqueType("School");
 
         const typeDefs = `
-            type ${personType.name} @node {
+            type ${personType.name} {
                 name: String
                 age: Int
                 attends: [${schoolType.name}!]! @relationship(type: "ATTENDS", direction: OUT)
             }
 
-            type ${schoolType.name} @node {
+            type ${schoolType.name} {
                 name: String
                 students: [${personType.name}!]! @relationship(type: "ATTENDS", direction: IN)
             }

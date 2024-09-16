@@ -35,7 +35,7 @@ describe("unwind-create", () => {
         const Movie = new UniqueType("Movie");
 
         const typeDefs = `
-            type ${Movie} @node {
+            type ${Movie} {
                 id: ID!
             }
         `;
@@ -91,10 +91,10 @@ describe("unwind-create", () => {
         const Actor = new UniqueType("Actor");
 
         const typeDefs = `
-            type ${Actor} @node {
+            type ${Actor} {
                 name: String!
             }
-            type ${Movie} @node {
+            type ${Movie} {
                 id: ID!
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
@@ -175,11 +175,11 @@ describe("unwind-create", () => {
         const Actor = new UniqueType("Actor");
 
         const typeDefs = `
-            type ${Actor} @node {
+            type ${Actor} {
                 name: String!
                 movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
-            type ${Movie} @node {
+            type ${Movie} {
                 id: ID!
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
@@ -300,10 +300,10 @@ describe("unwind-create", () => {
         const Actor = new UniqueType("Actor");
 
         const typeDefs = `
-            type ${Actor} @node {
+            type ${Actor} {
                 name: String!
             }
-            type ${Movie} @node {
+            type ${Movie} {
                 id: ID!
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
@@ -400,15 +400,15 @@ describe("unwind-create", () => {
                 name: String
             }
 
-            type ${Modeler} implements ${Person} @node {
+            type ${Modeler} implements ${Person} {
                 name: String
             }
 
-            type ${Actor} implements ${Person} @node {
+            type ${Actor} implements ${Person} {
                 name: String!
             }
 
-            type ${Movie} @node {
+            type ${Movie} {
                 id: ID!
                 workers: [${Person}!]! @relationship(type: "${workedIn}", direction: IN, properties: "WorkedIn")
             }
@@ -500,12 +500,12 @@ describe("unwind-create", () => {
 
         const typeDefs = `
  
-            type ${Actor}  @node {
+            type ${Actor}  {
                 name: String!
                 nickname: String @alias(property: "alternativeName")
             }
 
-            type ${Movie} @node {
+            type ${Movie} {
                 id: ID!
                 name: String @alias(property: "title")
                 actors: [${Actor}!]! @relationship(type: "${actedIn}", direction: IN, properties: "ActedIn")
@@ -648,12 +648,12 @@ describe("unwind-create", () => {
         const Actor = new UniqueType("Actor");
 
         const typeDefs = `
-            type ${Actor} @node {
+            type ${Actor} {
                 name: String!
                 movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type ${Movie} @node {
+            type ${Movie} {
                 title: String!
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
@@ -744,11 +744,11 @@ describe("unwind-create", () => {
         const Actor = new UniqueType("Actor");
 
         const typeDefs = /* GraphQL */ `
-            type ${Actor} @node {
+            type ${Actor} {
                 name: String!
                 movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
-            type ${Movie} @node {
+            type ${Movie} {
                 id: ID!
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
@@ -906,24 +906,24 @@ describe("unwind-create", () => {
         const Producer = new UniqueType("Producer");
 
         const typeDefs = /* GraphQL */ `
-            type ${Actor} @node {
+            type ${Actor} {
                 name: String!
                 movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
                 theatricalWorks: [${TheatricalWork}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
         
-            type ${Movie} @node {
+            type ${Movie} {
                 id: ID!
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
                 producers: [${Producer}!]! @relationship(type: "PRODUCED", direction: IN)
             }
 
-            type ${TheatricalWork} @node {
+            type ${TheatricalWork} {
                 id: ID! @id
                 title: String
             }
 
-            type ${Producer} @node {
+            type ${Producer} {
                 id: ID! @id
                 name: String!
             }

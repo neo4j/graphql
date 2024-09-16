@@ -34,15 +34,15 @@ describe("Relationship properties - connect on union", () => {
         Show = testHelper.createUniqueType("Show");
 
         const typeDefs = /* GraphQL */ `
-            type ${Movie} @node {
+            type ${Movie} {
                 title: String!
             }
 
-            type ${Show} @node {
+            type ${Show} {
                 name: String!
             }
 
-            type ${Actor} @node {
+            type ${Actor} {
                 name: String!
                 actedIn: [ActedInUnion!]!
                     @relationship(type: "ACTED_IN", properties: "ActedInInterface", direction: OUT)

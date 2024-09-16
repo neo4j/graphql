@@ -35,14 +35,14 @@ describe("https://github.com/neo4j/graphql/issues/1782", () => {
         testMasterData = testHelper.createUniqueType("MasterData");
 
         const typeDefs = `
-            type ${testSeries} @node {
+            type ${testSeries} {
                 id: ID! @unique
                 current: Boolean!
                 architecture: [${testMasterData}!]!
                     @relationship(type: "ARCHITECTURE", properties: "RelationProps", direction: OUT)
             }
     
-            type ${testNameDetails} @mutation(operations: []) @query(read: false, aggregate: false) @node {
+            type ${testNameDetails} @mutation(operations: []) @query(read: false, aggregate: false) {
                 fullName: String!
             }
     
@@ -50,7 +50,7 @@ describe("https://github.com/neo4j/graphql/issues/1782", () => {
                 current: Boolean!
             }
     
-            type ${testMasterData} @node {
+            type ${testMasterData} {
                 id: ID! @unique
                 current: Boolean!
                 nameDetails: ${testNameDetails} @relationship(type: "HAS_NAME", properties: "RelationProps", direction: OUT)
@@ -58,7 +58,7 @@ describe("https://github.com/neo4j/graphql/issues/1782", () => {
         `;
 
         const extendedTypeDefs = `
-            type ${testMain} @node {
+            type ${testMain} {
                 id: ID! @unique
                 current: Boolean!
                 main: [${testSeries}!]! @relationship(type: "MAIN", properties: "RelationProps", direction: OUT)

@@ -40,7 +40,7 @@ describe("auth/where", () => {
     describe("read", () => {
         test("should add $jwt.id to where and return user", async () => {
             const typeDefs = `
-                type ${User} @node {
+                type ${User} {
                     id: ID
                 }
 
@@ -85,12 +85,12 @@ describe("auth/where", () => {
 
         test("should add $jwt.id to where on a relationship", async () => {
             const typeDefs = `
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                type ${Post} @node {
+                type ${Post} {
                     id: ID
                     creator: ${User}! @relationship(type: "HAS_POST", direction: IN)
                 }
@@ -150,12 +150,12 @@ describe("auth/where", () => {
 
         test("should add $jwt.id to where on a relationship(using connection)", async () => {
             const typeDefs = `
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                type ${Post} @node {
+                type ${Post} {
                     id: ID
                     creator: ${User}! @relationship(type: "HAS_POST", direction: IN)
                 }
@@ -230,12 +230,12 @@ describe("auth/where", () => {
                 const typeDefs = `
                     union Content = ${Post}
 
-                    type ${User} @node {
+                    type ${User} {
                         id: ID
                         content: [Content!]! @relationship(type: "HAS_CONTENT", direction: OUT)
                     }
 
-                    type ${Post} @node {
+                    type ${Post} {
                         id: ID
                         creator: ${User}! @relationship(type: "HAS_CONTENT", direction: IN)
                     }
@@ -301,12 +301,12 @@ describe("auth/where", () => {
             const typeDefs = `
                 union Content = ${Post}
 
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     content: [Content!]! @relationship(type: "HAS_CONTENT", direction: OUT)
                 }
 
-                type ${Post} @node {
+                type ${Post} {
                     id: ID
                     creator: ${User}! @relationship(type: "HAS_CONTENT", direction: IN)
                 }
@@ -378,7 +378,7 @@ describe("auth/where", () => {
     describe("update", () => {
         test("should add $jwt.id to where", async () => {
             const typeDefs = `
-                type ${User} @node {
+                type ${User} {
                     id: ID
                 }
 
@@ -429,7 +429,7 @@ describe("auth/where", () => {
     describe("delete", () => {
         test("should add $jwt.id to where", async () => {
             const typeDefs = `
-                type ${User} @node {
+                type ${User} {
                     id: ID
                 }
 
@@ -480,12 +480,12 @@ describe("auth/where", () => {
     describe("connect", () => {
         test("should add jwt.id to where - update update", async () => {
             const typeDefs = `
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                type ${Post} @node {
+                type ${Post} {
                     id: ID
                     creator: ${User}! @relationship(type: "HAS_POST", direction: OUT)
                 }
@@ -538,12 +538,12 @@ describe("auth/where", () => {
 
         test("should add jwt.id to where - update connect", async () => {
             const typeDefs = `
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                type ${Post} @node {
+                type ${Post} {
                     id: ID
                     creator: ${User}! @relationship(type: "HAS_POST", direction: OUT)
                 }
@@ -598,12 +598,12 @@ describe("auth/where", () => {
     describe("disconnect", () => {
         test("should add $jwt.id to where (update update)", async () => {
             const typeDefs = `
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                type ${Post} @node {
+                type ${Post} {
                     id: ID
                     creator: ${User}! @relationship(type: "HAS_POST", direction: OUT)
                 }
@@ -660,12 +660,12 @@ describe("auth/where", () => {
 
         test("should add $jwt.id to where (update disconnect)", async () => {
             const typeDefs = `
-                type ${User} @node {
+                type ${User} {
                     id: ID
                     posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                type ${Post} @node {
+                type ${Post} {
                     id: ID
                     creator: ${User}! @relationship(type: "HAS_POST", direction: OUT)
                 }

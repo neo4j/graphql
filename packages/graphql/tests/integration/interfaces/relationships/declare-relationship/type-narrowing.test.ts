@@ -41,13 +41,13 @@ describe("type narrowing - simple case", () => {
                 actors: [Person!]! @declareRelationship
             }
 
-            type ${Movie} implements Production @node {
+            type ${Movie} implements Production {
                 title: String!
                 runtime: Int!
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type ${AmatureProduction} implements Production @node {
+            type ${AmatureProduction} implements Production {
                 title: String!
                 episodeCount: Int!
                 actors: [${UntrainedPerson}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "AppearsIn")
@@ -66,13 +66,13 @@ describe("type narrowing - simple case", () => {
                 actedIn: [Production!]! @declareRelationship
             }
 
-            type ${Actor} implements Person @node {
+            type ${Actor} implements Person {
                 name: String!
                 moviesCnt: Int!
                 actedIn: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
-            type ${UntrainedPerson} implements Person @node {
+            type ${UntrainedPerson} implements Person {
                 name: String!
                 age: Int!
                 actedIn: [${AmatureProduction}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "AppearsIn")

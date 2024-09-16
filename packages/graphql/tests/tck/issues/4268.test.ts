@@ -19,7 +19,7 @@
 
 import { Neo4jGraphQL } from "../../../src";
 import { createBearerToken } from "../../utils/create-bearer-token";
-import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
+import { translateQuery, formatCypher, formatParams } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/4268", () => {
     test("OR operator should work correctly", async () => {
@@ -31,7 +31,6 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
             }
 
             type Movie
-                @node
                 @authorization(
                     validate: [
                         { when: [BEFORE], where: { jwt: { OR: [{ roles: "admin" }, { roles: "super-admin" }] } } }
@@ -86,7 +85,6 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
             }
 
             type Movie
-                @node
                 @authorization(
                     validate: [
                         {
@@ -106,7 +104,7 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
                 director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
             }
 
-            type Person @node {
+            type Person {
                 id: ID
             }
         `;
@@ -158,7 +156,6 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
             }
 
             type Movie
-                @node
                 @authorization(
                     validate: [
                         { when: [BEFORE], where: { jwt: { AND: [{ roles: "admin" }, { roles: "super-admin" }] } } }
@@ -168,7 +165,7 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
                 director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
             }
 
-            type Person @node {
+            type Person {
                 id: ID
             }
         `;
@@ -218,7 +215,6 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
             }
 
             type Movie
-                @node
                 @authorization(
                     validate: [
                         {
@@ -238,7 +234,7 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
                 director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
             }
 
-            type Person @node {
+            type Person {
                 id: ID
             }
         `;
@@ -289,14 +285,12 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
                 roles: [String!]!
             }
 
-            type Movie
-                @authorization(validate: [{ when: [BEFORE], where: { jwt: { NOT: { roles: "admin" } } } }])
-                @node {
+            type Movie @authorization(validate: [{ when: [BEFORE], where: { jwt: { NOT: { roles: "admin" } } } }]) {
                 title: String
                 director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
             }
 
-            type Person @node {
+            type Person {
                 id: ID
             }
         `;
@@ -345,13 +339,12 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
             }
 
             type Movie
-                @node
                 @authorization(validate: [{ when: [BEFORE], where: { jwt: { NOT: { NOT: { roles: "admin" } } } } }]) {
                 title: String
                 director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
             }
 
-            type Person @node {
+            type Person {
                 id: ID
             }
         `;

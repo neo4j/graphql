@@ -26,7 +26,7 @@ describe("https://github.com/neo4j/graphql/issues/5467", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Test @node {
+            type Test {
                 name: String!
                 groups: [String!]
             }

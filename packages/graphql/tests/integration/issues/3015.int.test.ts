@@ -39,16 +39,16 @@ describe("https://github.com/neo4j/graphql/issues/3015", () => {
 
     test("union should filter by top level match", async () => {
         const typeDefs = `
-            type ${NodeA} @node {
+            type ${NodeA} {
                 name: String!
             }
 
-            type ${NodeB} @node {
+            type ${NodeB} {
                 name: String!
             }
 
             union EitherNode = ${NodeA} | ${NodeB}
-            type ${Connected} @node {
+            type ${Connected} {
                 name: String!
                 connections: [EitherNode]
                     @cypher(

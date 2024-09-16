@@ -26,7 +26,7 @@ describe("Cypher directive on interface", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Actor @node {
+            type Actor {
                 name: String
                 year: Int
                 movies(title: String): [Movie]
@@ -70,7 +70,7 @@ describe("Cypher directive on interface", () => {
                 title: String
             }
 
-            type TVShow implements MovieOrTVShow @node {
+            type TVShow implements MovieOrTVShow {
                 id: ID
                 title: String
                 numSeasons: Int
@@ -92,7 +92,7 @@ describe("Cypher directive on interface", () => {
                     )
             }
 
-            type Movie implements MovieOrTVShow @node {
+            type Movie implements MovieOrTVShow {
                 id: ID
                 title: String
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)

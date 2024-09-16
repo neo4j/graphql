@@ -34,17 +34,17 @@ describe("field-filtering", () => {
         const Genre = testHelper.createUniqueType("Genre");
 
         const typeDefs = gql`
-            type ${Movie} @node {
+            type ${Movie} {
                 title: String!
                 genres: [${Genre}!]! @relationship(type: "IN_GENRE", direction: OUT)
             }
 
-            type ${Genre} @node {
+            type ${Genre} {
                 name: String!
                 series: [${Series}!]! @relationship(type: "IN_SERIES", direction: OUT)
             }
 
-            type ${Series} @node {
+            type ${Series} {
                 name: String!
             }
         `;

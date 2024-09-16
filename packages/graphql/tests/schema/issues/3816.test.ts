@@ -25,12 +25,12 @@ import { Neo4jGraphQL } from "../../../src";
 describe("https://github.com/neo4j/graphql/issues/3816", () => {
     test("Combination of nested operations in reported issue", async () => {
         const typeDefs = gql`
-            type Movie @node {
+            type Movie {
                 name: String!
                 genre: Genre! @relationship(type: "HAS_GENRE", direction: OUT, nestedOperations: [CONNECT, DISCONNECT])
             }
 
-            type Genre @node {
+            type Genre {
                 name: String!
                 movies: [Movie!]! @relationship(type: "HAS_GENRE", direction: IN)
             }
@@ -294,10 +294,9 @@ describe("https://github.com/neo4j/graphql/issues/3816", () => {
               movies_SINGLE: MovieWhere
               \\"\\"\\"Return Genres where some of the related Movies match this filter\\"\\"\\"
               movies_SOME: MovieWhere
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -486,10 +485,9 @@ describe("https://github.com/neo4j/graphql/issues/3816", () => {
               genreConnection: MovieGenreConnectionWhere
               genreConnection_NOT: MovieGenreConnectionWhere
               genre_NOT: GenreWhere
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -569,12 +567,12 @@ describe("https://github.com/neo4j/graphql/issues/3816", () => {
 
     test("No nested operations in one type", async () => {
         const typeDefs = gql`
-            type Movie @node {
+            type Movie {
                 name: String!
                 genre: Genre! @relationship(type: "HAS_GENRE", direction: OUT, nestedOperations: [])
             }
 
-            type Genre @node {
+            type Genre {
                 name: String!
                 movies: [Movie!]! @relationship(type: "HAS_GENRE", direction: IN)
             }
@@ -832,10 +830,9 @@ describe("https://github.com/neo4j/graphql/issues/3816", () => {
               movies_SINGLE: MovieWhere
               \\"\\"\\"Return Genres where some of the related Movies match this filter\\"\\"\\"
               movies_SOME: MovieWhere
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -990,10 +987,9 @@ describe("https://github.com/neo4j/graphql/issues/3816", () => {
               genreConnection: MovieGenreConnectionWhere
               genreConnection_NOT: MovieGenreConnectionWhere
               genre_NOT: GenreWhere
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")

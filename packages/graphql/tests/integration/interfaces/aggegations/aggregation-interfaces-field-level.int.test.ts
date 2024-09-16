@@ -35,14 +35,14 @@ describe("Interface Field Level Aggregations", () => {
                 cost: Float!
             }
 
-            type ${Movie} implements ${Production} @node {
+            type ${Movie} implements ${Production} {
                 title: String!
                 cost: Float!
                 runtime: Int!
                 ${Actor.plural}: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type ${Series} implements ${Production} @node {
+            type ${Series} implements ${Production} {
                 title: String!
                 cost: Float!
                 episodes: Int!
@@ -52,7 +52,7 @@ describe("Interface Field Level Aggregations", () => {
                 screenTime: Int!
             }
 
-            type ${Actor} @node {
+            type ${Actor} {
                 name: String!
                 actedIn: [${Production}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }

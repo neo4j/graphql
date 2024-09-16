@@ -42,19 +42,19 @@ describe("typename_IN with auth", () => {
             cost: Float!
         }
 
-        type ${Movie.name} implements Production @node {
+        type ${Movie.name} implements Production {
             title: String!
             cost: Float!
             runtime: Int!
         }
 
-        type ${Series.name} implements Production @node {
+        type ${Series.name} implements Production {
             title: String!
             cost: Float!
             episodes: Int!
         }
 
-        type ${Cartoon.name} implements Production @node {
+        type ${Cartoon.name} implements Production {
             title: String!
             cost: Float!
             cartoonist: String!
@@ -64,7 +64,7 @@ describe("typename_IN with auth", () => {
             screenTime: Int!
         }
 
-        type ${Actor.name}  @node {
+        type ${Actor.name}  {
             name: String!
             actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
         }

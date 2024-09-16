@@ -18,7 +18,7 @@
  */
 
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
+import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/4170", () => {
     let neoSchema: Neo4jGraphQL;
@@ -28,20 +28,18 @@ describe("https://github.com/neo4j/graphql/issues/4170", () => {
             id: String
             roles: [String]
         }
-        type User @authorization(validate: [{ where: { node: { userId: "$jwt.id" } }, operations: [READ] }]) @node {
+        type User @authorization(validate: [{ where: { node: { userId: "$jwt.id" } }, operations: [READ] }]) {
             userId: String! @unique
             adminAccess: [Tenant!]! @relationship(type: "ADMIN_IN", direction: OUT)
         }
 
-        type Tenant @authorization(validate: [{ where: { node: { admins: { userId: "$jwt.id" } } } }]) @node {
+        type Tenant @authorization(validate: [{ where: { node: { admins: { userId: "$jwt.id" } } } }]) {
             id: ID! @id
             settings: Settings! @relationship(type: "HAS_SETTINGS", direction: OUT)
             admins: [User!]! @relationship(type: "ADMIN_IN", direction: IN)
         }
 
-        type Settings
-            @authorization(validate: [{ where: { node: { tenant: { admins: { userId: "$jwt.id" } } } } }])
-            @node {
+        type Settings @authorization(validate: [{ where: { node: { tenant: { admins: { userId: "$jwt.id" } } } } }]) {
             id: ID! @id
             tenant: Tenant! @relationship(type: "HAS_SETTINGS", direction: IN)
             openingDays: [OpeningDay!]! @relationship(type: "VALID_OPENING_DAYS", direction: OUT)
@@ -49,7 +47,6 @@ describe("https://github.com/neo4j/graphql/issues/4170", () => {
         }
 
         type OpeningDay
-            @node
             @authorization(
                 validate: [{ where: { node: { settings: { tenant: { admins: { userId: "$jwt.id" } } } } } }]
             ) {
@@ -59,7 +56,6 @@ describe("https://github.com/neo4j/graphql/issues/4170", () => {
         }
 
         type OpeningHoursInterval
-            @node
             @authorization(
                 validate: [
                     { where: { node: { openingDay: { settings: { tenant: { admins: { userId: "$jwt.id" } } } } } } }

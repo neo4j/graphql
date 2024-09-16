@@ -37,20 +37,20 @@ describe("https://github.com/neo4j/graphql/issues/487", () => {
         const typeMovie = testHelper.createUniqueType("Movie");
 
         const typeDefs = gql`
-            type ${typeAuthor.name} @node {
+            type ${typeAuthor.name} {
                 id: ID!
             }
 
-            type ${typeDirector.name} @node {
+            type ${typeDirector.name} {
                 id: ID!
             }
 
-            type ${typeBook.name} @node {
+            type ${typeBook.name} {
                 id: ID!
                 author: ${typeAuthor.name}! @relationship(type: "WROTE", direction: IN)
             }
 
-            type ${typeMovie.name} @node {
+            type ${typeMovie.name} {
                 id: ID!
                 director: ${typeDirector.name}! @relationship(type: "DIRECTED", direction: IN)
             }
@@ -152,20 +152,20 @@ describe("https://github.com/neo4j/graphql/issues/487", () => {
         const typeMovie = testHelper.createUniqueType("Movie");
 
         const typeDefs = gql`
-            type ${typeAuthor.name} @node {
+            type ${typeAuthor.name} {
                 id: ID!
             }
 
-            type ${typeDirector.name} @node {
+            type ${typeDirector.name} {
                 id: ID!
             }
 
-            type ${typeBook.name} implements Thing @node {
+            type ${typeBook.name} implements Thing {
                 id: ID!
                 author: ${typeAuthor.name}! @relationship(type: "WROTE", direction: IN)
             }
 
-            type ${typeMovie.name} implements Thing @node {
+            type ${typeMovie.name} implements Thing {
                 id: ID!
                 director: ${typeDirector.name}! @relationship(type: "DIRECTED", direction: IN)
             }

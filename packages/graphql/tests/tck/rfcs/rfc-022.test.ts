@@ -28,14 +28,14 @@ describe("tck/rfs/022 subquery projection", () => {
     describe("no auth", () => {
         beforeAll(() => {
             typeDefs = /* GraphQL */ `
-                type Movie @node {
+                type Movie {
                     title: String!
                     released: Int
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
                     directors: [Person!]! @relationship(type: "DIRECTED", direction: IN)
                 }
 
-                type Person @node {
+                type Person {
                     name: String!
                     movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
                     directed: [Movie!]! @relationship(type: "DIRECTED", direction: OUT)
@@ -145,14 +145,13 @@ describe("tck/rfs/022 subquery projection", () => {
                     roles: [String!]!
                 }
 
-                type Movie @node {
+                type Movie {
                     title: String!
                     released: Int
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
                 }
 
                 type Person
-                    @node
                     @authorization(
                         filter: [{ where: { node: { name: "The Matrix" } } }]
                         validate: [

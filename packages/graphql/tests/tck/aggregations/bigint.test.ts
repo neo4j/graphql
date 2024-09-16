@@ -26,7 +26,7 @@ describe("Cypher Aggregations BigInt", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type File @node {
+            type File {
                 size: BigInt!
             }
         `;

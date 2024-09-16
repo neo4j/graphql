@@ -26,7 +26,7 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Employee @node {
+            type Employee {
                 employeeId: ID! @unique
                 firstName: String! @settable(onCreate: false, onUpdate: false)
                 lastName: String @settable(onCreate: false, onUpdate: false)
@@ -38,7 +38,7 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
                 allocation: Float
             }
 
-            type Project @node {
+            type Project {
                 projectId: ID! @unique
                 name: String! @settable(onCreate: false, onUpdate: false)
                 description: String

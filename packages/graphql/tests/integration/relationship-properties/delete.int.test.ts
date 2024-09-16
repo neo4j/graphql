@@ -41,12 +41,12 @@ describe("Relationship properties - delete", () => {
 
     test("should delete a related node for a relationship that has properties", async () => {
         const typeDefs = gql`
-            type ${Movie} @node {
+            type ${Movie} {
                 title: String!
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
             }
 
-            type ${Actor} @node {
+            type ${Actor} {
                 name: String!
                 movies: [${Movie}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
@@ -107,15 +107,15 @@ describe("Relationship properties - delete", () => {
 
     test("should delete a related node for a relationship that has properties (with Union)", async () => {
         const typeDefs = gql`
-            type ${Movie} @node {
+            type ${Movie} {
                 title: String!
             }
 
-            type ${Show} @node {
+            type ${Show} {
                 name: String!
             }
 
-            type ${Actor} @node {
+            type ${Actor} {
                 name: String!
                 actedIn: [ActedInUnion!]!
                     @relationship(type: "ACTED_IN", properties: "ActedInInterface", direction: OUT)

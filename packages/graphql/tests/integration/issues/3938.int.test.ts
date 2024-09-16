@@ -33,7 +33,7 @@ describe("https://github.com/neo4j/graphql/issues/3938", () => {
         Invitee = testHelper.createUniqueType("Invitee");
 
         const typeDefs = /* GraphQL */ `
-            type ${Group} @node {
+            type ${Group} {
                 id: ID! @id @unique
                 name: String!
                 invitees: [${Invitee}!]! @relationship(type: "INVITED_TO", direction: IN, aggregate: true)
@@ -44,7 +44,7 @@ describe("https://github.com/neo4j/graphql/issues/3938", () => {
                 ACCEPTED
             }
 
-            type ${Invitee} @node
+            type ${Invitee}
                 @authorization(
                     validate: [
                         { operations: [CREATE], where: { node: { group: { inviteesAggregate: { count_LT: 5 } } } } }

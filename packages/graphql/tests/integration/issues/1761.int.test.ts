@@ -34,7 +34,7 @@ describe("https://github.com/neo4j/graphql/issues/1761", () => {
                 BAR
             }
 
-            type ${myType} @node {
+            type ${myType} {
                 enumList: [MyEnum!]! @default(value: [])
                 enumList2: [MyEnum!]! @default(value: [FOO, BAR])
             }

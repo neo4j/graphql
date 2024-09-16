@@ -37,11 +37,11 @@ describe("info", () => {
 
     test("should return info from a create mutation", async () => {
         const typeDefs = `
-            type ${Actor} @node {
+            type ${Actor} {
                 name: String!
             }
 
-            type ${Movie} @node {
+            type ${Movie} {
                 title: String!
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
@@ -90,7 +90,7 @@ describe("info", () => {
 
     test("should return info from a delete mutation", async () => {
         const typeDefs = `
-            type ${Movie} @node {
+            type ${Movie} {
                 id: ID!
             }
         `;
@@ -120,7 +120,7 @@ describe("info", () => {
 
     test("should return info from an update mutation", async () => {
         const typeDefs = `
-            type ${Movie} @node {
+            type ${Movie} {
                 id: ID!
             }
         `;

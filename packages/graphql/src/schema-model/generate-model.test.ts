@@ -77,7 +77,6 @@ describe("ConcreteEntity generation", () => {
         beforeAll(() => {
             const typeDefs = gql`
                 type User
-                    @node
                     @authorization(
                         validate: [
                             { when: ["BEFORE"], where: { node: { id: { equals: "$jwt.sub" } } } }
@@ -169,7 +168,7 @@ describe("ConcreteEntity generation", () => {
 
         beforeAll(() => {
             const typeDefs = gql`
-                type User @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) @node {
+                type User @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
                     id: ID!
                     name: String!
                 }
@@ -243,11 +242,11 @@ describe("ComposeEntity generation", () => {
         const typeDefs = gql`
             union Tool = Screwdriver | Pencil
 
-            type Screwdriver @node {
+            type Screwdriver {
                 length: Int
             }
 
-            type Pencil @node {
+            type Pencil {
                 colour: String
             }
 
@@ -260,7 +259,6 @@ describe("ComposeEntity generation", () => {
             }
 
             type User implements Human & Animal
-                @node
                 @authorization(
                     validate: [
                         { when: "BEFORE", where: { node: { id: { equals: "$jwt.sub" } } } }
@@ -328,7 +326,7 @@ describe("Relationship", () => {
 
     beforeAll(() => {
         const typeDefs = gql`
-            type User @node {
+            type User {
                 id: ID!
                 name: String!
                 accounts: [Account!]! @relationship(type: "HAS_ACCOUNT", properties: "hasAccount", direction: OUT)
@@ -353,7 +351,7 @@ describe("Relationship", () => {
 
             union Show = Movie | TvShow
 
-            type Actor @node {
+            type Actor {
                 name: String
             }
 
@@ -361,18 +359,18 @@ describe("Relationship", () => {
                 actors: [Actor!]! @declareRelationship
             }
 
-            type Movie implements Production @node {
+            type Movie implements Production {
                 name: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type TvShow implements Production @node {
+            type TvShow implements Production {
                 name: String!
                 episodes: Int
                 actors: [Actor!]! @relationship(type: "STARED_IN", direction: OUT)
             }
 
-            type Account @node {
+            type Account {
                 id: ID!
                 username: String!
             }
@@ -462,7 +460,7 @@ describe("ConcreteEntity Annotations & Attributes", () => {
 
     beforeAll(() => {
         const typeDefs = gql`
-            type User @query @mutation @subscription @node {
+            type User @query @mutation @subscription {
                 id: ID!
                 name: String! @selectable(onAggregate: true) @alias(property: "dbName")
                 defaultName: String! @default(value: "John")
@@ -470,7 +468,7 @@ describe("ConcreteEntity Annotations & Attributes", () => {
                 accounts: [Account!]! @relationship(type: "HAS_ACCOUNT", direction: OUT)
             }
 
-            type Account @subscription(events: [CREATED]) @node {
+            type Account @subscription(events: [CREATED]) {
                 id: ID!
                 accountName: String! @settable(onCreate: false)
             }
@@ -539,7 +537,7 @@ describe("ConcreteEntity Annotations & Attributes", () => {
     describe("Arguments", () => {
         test("attribute argument scalar", () => {
             const typeDefs = gql`
-                type User @node {
+                type User {
                     id: ID!
                     name(something: Int): String!
                 }
@@ -561,11 +559,11 @@ describe("ConcreteEntity Annotations & Attributes", () => {
 
         test("attribute argument object", () => {
             const typeDefs = gql`
-                type User @node {
+                type User {
                     id: ID!
                     favoritePet(from: [Animal]!): String!
                 }
-                type Animal @node {
+                type Animal {
                     sound: String
                 }
             `;
@@ -594,14 +592,14 @@ describe("ComposeEntity Annotations & Attributes and Inheritance", () => {
                 aliasedProp: String! @alias(property: "dbName")
             }
 
-            type Movie implements Production @node {
+            type Movie implements Production {
                 name: String!
                 year: Int
                 defaultName: String!
                 aliasedProp: String! @alias(property: "movieDbName")
             }
 
-            type TvShow implements Production @node {
+            type TvShow implements Production {
                 name: String!
                 episodes: Int
                 year: Int @populatedBy(callback: "thisOtherCallback", operations: [CREATE])
@@ -672,7 +670,7 @@ describe("ComposeEntity Annotations & Attributes and Inheritance", () => {
                 aliasedProp: String! @alias(property: "movieDbName")
             }
 
-            type TvShow implements TvProduction & Production @node {
+            type TvShow implements TvProduction & Production {
                 name: String!
                 episodes: Int
                 year: Int @populatedBy(callback: "thisOtherCallback", operations: [CREATE])
@@ -762,7 +760,7 @@ describe("GraphQL adapters", () => {
 
     beforeAll(() => {
         const typeDefs = gql`
-            type User @node {
+            type User {
                 id: ID!
                 name: String!
                 createdAt: DateTime
@@ -777,11 +775,11 @@ describe("GraphQL adapters", () => {
                 creationTime: DateTime!
             }
 
-            type A @node {
+            type A {
                 id: ID
             }
 
-            type B @node {
+            type B {
                 age: Int
             }
 
@@ -792,7 +790,7 @@ describe("GraphQL adapters", () => {
                 DISABLED
             }
 
-            type Account @node {
+            type Account {
                 status: Status
                 point: Point
                 points: [Point!]!

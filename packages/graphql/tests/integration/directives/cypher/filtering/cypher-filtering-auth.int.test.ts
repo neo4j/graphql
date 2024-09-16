@@ -73,7 +73,7 @@ describe("cypher directive filtering", () => {
 
         const query = `
             query {
-                ${Movie.plural}(where: { custom_field_EQ: "hello world!" }) {
+                ${Movie.plural}(where: { custom_field: "hello world!" }) {
                     title
                     custom_field
                     actors {
@@ -107,7 +107,7 @@ describe("cypher directive filtering", () => {
 
         const typeDefs = `
             type ${Movie} @node {
-                title: String @authorization(filter: [{ where: { node: { title_EQ: "$jwt.title" } } }])
+                title: String @authorization(filter: [{ where: { node: { title: "$jwt.title" } } }])
                 custom_field: String
                     @cypher(
                         statement: """
@@ -146,7 +146,7 @@ describe("cypher directive filtering", () => {
 
         const query = `
             query {
-                ${Movie.plural}(where: { custom_field_EQ: "hello world!" }) {
+                ${Movie.plural}(where: { custom_field: "hello world!" }) {
                     title
                     actors {
                         name

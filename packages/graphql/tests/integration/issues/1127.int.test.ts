@@ -33,7 +33,7 @@ describe("https://github.com/neo4j/graphql/issues/1127", () => {
         postalCodeType = testHelper.createUniqueType("PostalCode");
 
         const typeDefs = `
-            type ${customerType.name} @node {
+            type ${customerType.name} {
                 uuid: ID! @id @unique
                 createdAt: DateTime! @timestamp(operations: [CREATE])
                 updatedAt: DateTime! @timestamp(operations: [CREATE, UPDATE])
@@ -41,7 +41,7 @@ describe("https://github.com/neo4j/graphql/issues/1127", () => {
                 address: ${addressType.name}! @relationship(type: "TEST_HAS_ADDRESS", direction: OUT)
             }
 
-            type ${addressType.name} @node {
+            type ${addressType.name} {
                 uuid: ID! @id @unique
                 createdAt: DateTime! @timestamp(operations: [CREATE])
                 updatedAt: DateTime! @timestamp(operations: [CREATE, UPDATE])
@@ -49,7 +49,7 @@ describe("https://github.com/neo4j/graphql/issues/1127", () => {
                 postalCode: ${postalCodeType.name}! @relationship(type: "TEST_HAS_POSTAL_CODE", direction: OUT)
             }
 
-            type ${postalCodeType.name} @node {
+            type ${postalCodeType.name} {
                 number: String! @unique
             }
         `;

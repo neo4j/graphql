@@ -32,11 +32,11 @@ describe("aggregations-where-edge-string", () => {
         Post = testHelper.createUniqueType("Post");
 
         const typeDefs = /* GraphQL */ `
-            type ${User} @node {
+            type ${User} {
                 testString: String!
             }
 
-            type ${Post} @node {
+            type ${Post} {
               testString: String!
               likes: [${User}!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
@@ -677,15 +677,15 @@ describe("aggregations-where-edge-string interface relationships of concrete typ
                 testString: String!
             }
 
-            type ${User} implements Human @node {
+            type ${User} implements Human {
                 testString: String!
             }
 
-            type ${Person} implements Human @node {
+            type ${Person} implements Human {
                 testString: String!
             }
 
-            type ${Post} @node {
+            type ${Post} {
                 testString: String!
                 likes: [Human!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
                 someStringAlias: String @alias(property: "_someStringAlias")
@@ -1369,11 +1369,11 @@ describe("EQUAL with alias", () => {
 
     test("should return posts where a edge like String is EQUAL to", async () => {
         const typeDefs = /* GraphQL */ `
-            type ${User} @node {
+            type ${User} {
                 testString: String!
             }
     
-            type ${Post} @node {
+            type ${Post} {
               testString: String!
               likes: [${User}!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
               someStringAlias: String @alias(property: "_someStringAlias")
@@ -1426,10 +1426,10 @@ describe("EQUAL with alias", () => {
 
     test("aggregations-where-edge-string", async () => {
         const typeDefs = /*GraphQL*/ `
-        type ${User} @node {
+        type ${User} {
             name: String!
         }
-        type ${Post} @node {
+        type ${Post} {
             content: String
             likes: [${User}!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
         }
@@ -1472,15 +1472,15 @@ describe("EQUAL with alias", () => {
             testString: String!
         }
 
-        type ${User} implements Human @node {
+        type ${User} implements Human {
             testString: String!
         }
 
-        type ${Person} implements Human @node {
+        type ${Person} implements Human {
             testString: String!
         }
 
-        type ${Post} @node {
+        type ${Post} {
             content: String
             likes: [Human!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
         }

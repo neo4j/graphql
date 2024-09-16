@@ -39,7 +39,7 @@ describe("Subscriptions connect with create", () => {
         typeInfluencer = testHelper.createUniqueType("Influencer");
 
         typeDefs = `
-            type ${typeMovie} @node {
+            type ${typeMovie} {
                 id: ID!
                 title: String!
                 actors: [${typeActor}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
@@ -48,7 +48,7 @@ describe("Subscriptions connect with create", () => {
                 
             }
             
-            type ${typeActor} @node {
+            type ${typeActor} {
                 id: ID!
                 name: String!
                 movies: [${typeMovie}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
@@ -66,13 +66,13 @@ describe("Subscriptions connect with create", () => {
                 score: Int!
             }
         
-            type ${typePerson} implements Reviewer @node {
+            type ${typePerson} implements Reviewer {
                 id: ID!
                 name: String!
                 reputation: Int!
             }
             
-            type ${typeInfluencer} implements Reviewer @node {
+            type ${typeInfluencer} implements Reviewer {
                 id: ID!
                 reputation: Int!
                 url: String!

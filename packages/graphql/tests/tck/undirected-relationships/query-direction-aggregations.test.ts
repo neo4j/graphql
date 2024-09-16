@@ -26,7 +26,7 @@ describe("QueryDirection in relationships aggregations", () => {
 
     test("query with directed and undirected relationships with a DEFAULT_UNDIRECTED", async () => {
         typeDefs = /* GraphQL */ `
-            type User @node {
+            type User {
                 name: String!
                 friends: [User!]!
                     @relationship(type: "FRIENDS_WITH", direction: OUT, queryDirection: DEFAULT_UNDIRECTED)
@@ -62,7 +62,7 @@ describe("QueryDirection in relationships aggregations", () => {
 
     test("query connection with a DIRECTED_ONLY relationship", async () => {
         typeDefs = /* GraphQL */ `
-            type User @node {
+            type User {
                 name: String!
                 friends: [User!]! @relationship(type: "FRIENDS_WITH", direction: OUT, queryDirection: DIRECTED_ONLY)
             }
@@ -97,7 +97,7 @@ describe("QueryDirection in relationships aggregations", () => {
 
     test("query with a UNDIRECTED_ONLY relationship", async () => {
         typeDefs = /* GraphQL */ `
-            type User @node {
+            type User {
                 name: String!
                 friends: [User!]! @relationship(type: "FRIENDS_WITH", direction: OUT, queryDirection: UNDIRECTED_ONLY)
             }

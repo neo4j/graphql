@@ -30,7 +30,7 @@ describe("Cypher -> vector -> Score", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Movie @vector(indexes: [{ indexName: "movie_index", embeddingProperty: "movieVector", queryName: "${queryName}" }]) @node {
+            type Movie @vector(indexes: [{ indexName: "movie_index", embeddingProperty: "movieVector", queryName: "${queryName}" }]) {
                 title: String!
             }
         `;

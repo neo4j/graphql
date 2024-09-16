@@ -60,7 +60,7 @@ describe.each([
         typeArticle = testHelper.createUniqueType("Article");
 
         typeDefs = `
-            type ${typePerson} @node {
+            type ${typePerson} {
                 name: String!
                 knownBy: [${typePerson}!]! @relationship(type: "KNOWN_BY", direction: IN, properties: "Knows")
             }
@@ -69,7 +69,7 @@ describe.each([
                 year: Int!
             }
             
-            type ${typeArticle} @node {
+            type ${typeArticle} {
                 title: String!
                 references: [${typeArticle}!]! @relationship(type: "REFERENCES", direction: OUT, properties: "Reference")
             }

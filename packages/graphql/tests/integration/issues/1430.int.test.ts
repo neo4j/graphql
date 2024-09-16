@@ -33,7 +33,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
         testChildTwo = testHelper.createUniqueType("ChildTwo");
 
         const typeDefs = `
-            type ${testAbce.name} @node {
+            type ${testAbce.name} {
                 id:ID @id @unique
                 name: String
                 interface: InterfaceMom @relationship(type:"HAS_INTERFACE", direction:OUT)
@@ -44,13 +44,13 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
                 name:String
             }
             
-            type ${testChildOne.name} implements InterfaceMom @node {
+            type ${testChildOne.name} implements InterfaceMom {
                 id:ID @id @unique
                 name:String
                 feathur: String
             }
             
-            type ${testChildTwo.name} implements InterfaceMom @node {
+            type ${testChildTwo.name} implements InterfaceMom {
                 id:ID @id @unique
                 name:String
                 sth: String

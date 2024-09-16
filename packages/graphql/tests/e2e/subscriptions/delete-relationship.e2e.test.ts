@@ -44,7 +44,7 @@ describe("Delete Relationship Subscription", () => {
         typeInfluencer = testHelper.createUniqueType("Influencer");
 
         typeDefs = `
-            type ${typeMovie} @node {
+            type ${typeMovie} {
                 title: String!
                 actors: [${typeActor}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
                 directors: [Director!]! @relationship(type: "DIRECTED", properties: "Directed", direction: IN)
@@ -52,7 +52,7 @@ describe("Delete Relationship Subscription", () => {
                 imdbId: Int @unique
             }
             
-            type ${typeActor} @node {
+            type ${typeActor} {
                 name: String!
                 id: Int @unique
                 movies: [${typeMovie}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
@@ -70,7 +70,7 @@ describe("Delete Relationship Subscription", () => {
                 score: Int!
             }
         
-            type ${typePerson} implements Reviewer @node {
+            type ${typePerson} implements Reviewer {
                 name: String!
                 reputation: Int!
                 id: Int @unique
@@ -78,7 +78,7 @@ describe("Delete Relationship Subscription", () => {
                 movies: [${typeMovie}!]! @relationship(type: "REVIEWED", direction: OUT, properties: "Review")
             }
             
-            type ${typeInfluencer} implements Reviewer @node {
+            type ${typeInfluencer} implements Reviewer {
                 reputation: Int!
                 url: String!
                 reviewerId: Int

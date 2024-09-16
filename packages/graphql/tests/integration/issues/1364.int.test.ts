@@ -33,11 +33,11 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
         testGenre = testHelper.createUniqueType("Genre");
 
         const typeDefs = `
-            type ${testActor.name} @node {
+            type ${testActor.name} {
                 name: String
             }
 
-            type ${testMovie.name} @node {
+            type ${testMovie.name} {
                 title: String
                 actors: [${testActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
                 genres: [${testGenre.name}!]! @relationship(type: "HAS_GENRE", direction: OUT)
@@ -59,7 +59,7 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
                     )
             }
 
-            type ${testGenre.name} @node {
+            type ${testGenre.name} {
                 name: String
             }
         `;

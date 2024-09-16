@@ -26,7 +26,7 @@ describe("Cypher relationship", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Actor @node {
+            type Actor {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -37,7 +37,7 @@ describe("Cypher relationship", () => {
                 actors: [Actor!]! @declareRelationship
             }
 
-            type Movie implements MovieInterface @node {
+            type Movie implements MovieInterface {
                 id: ID
                 title: String
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)

@@ -25,12 +25,12 @@ import { Neo4jGraphQL } from "../../../src";
 describe("Arrays Methods", () => {
     test("Array of Float and Array of Actor relationships", async () => {
         const typeDefs = gql`
-            type Actor @node {
+            type Actor {
                 name: String
                 actedIn: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            type Movie @node {
+            type Movie {
                 id: ID!
                 ratings: [Float!]!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
@@ -88,8 +88,7 @@ describe("Arrays Methods", () => {
               AND: [ActedInWhere!]
               NOT: ActedInWhere
               OR: [ActedInWhere!]
-              pay: [Float] @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              pay_EQ: [Float]
+              pay: [Float]
               pay_INCLUDES: Float
             }
 
@@ -302,10 +301,9 @@ describe("Arrays Methods", () => {
               actedIn_SINGLE: MovieWhere
               \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
               actedIn_SOME: MovieWhere
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
-              name_EQ: String
               name_IN: [String]
               name_STARTS_WITH: String
             }
@@ -571,21 +569,18 @@ describe("Arrays Methods", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
-              averageRating: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              averageRating_EQ: Float
+              averageRating: Float
               averageRating_GT: Float
               averageRating_GTE: Float
               averageRating_IN: [Float!]
               averageRating_LT: Float
               averageRating_LTE: Float
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
-              id_EQ: ID
               id_IN: [ID!]
               id_STARTS_WITH: ID
-              ratings: [Float!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              ratings_EQ: [Float!]
+              ratings: [Float!]
               ratings_INCLUDES: Float
             }
 

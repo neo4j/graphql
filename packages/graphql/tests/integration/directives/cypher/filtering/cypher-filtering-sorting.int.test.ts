@@ -69,7 +69,7 @@ describe("cypher directive filtering", () => {
         const query = `
             query {
                 ${Movie.plural}(
-                    where: { custom_field_EQ: "hello world!" }
+                    where: { custom_field: "hello world!" }
                     options: { sort: [{ title: DESC }] }
                 ) {
                     title

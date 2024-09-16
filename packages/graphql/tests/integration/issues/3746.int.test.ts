@@ -19,17 +19,11 @@
 
 import { generate } from "randomstring";
 import { createBearerToken } from "../../utils/create-bearer-token";
-import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/3746", () => {
     const testHelper = new TestHelper();
     const secret = "secret";
-    let User: UniqueType;
-
-    beforeEach(() => {
-        User = testHelper.createUniqueType("User");
-    });
 
     afterEach(async () => {
         await testHelper.close();
@@ -37,13 +31,13 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
 
     test("should apply field-level authentication to root field on Query - pass", async () => {
         const typeDefs = /* GraphQL */ `
-            type ${User} @node {
+            type User {
                 customId: ID
             }
 
             type Query {
-                me: ${User} @authentication(operations: ["READ"])
-                you: ${User} @authentication(operations: ["READ"])
+                me: User @authentication(operations: ["READ"])
+                you: User @authentication(operations: ["READ"])
             }
         `;
 
@@ -63,7 +57,7 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
             typeDefs,
             resolvers: {
                 Query: { me: () => ({}), you: () => ({}) },
-                [User.name]: { customId: (_, __, ctx) => ctx.jwt.sub },
+                User: { customId: (_, __, ctx) => ctx.jwt.sub },
             },
             features: {
                 authorization: {
@@ -82,13 +76,13 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
 
     test("should apply field-level authentication to root field on Query - throw unauthenticated", async () => {
         const typeDefs = /* GraphQL */ `
-            type ${User} @node {
+            type User {
                 customId: ID
             }
 
             type Query {
-                me: ${User} @authentication(operations: ["READ"])
-                you: ${User}
+                me: User @authentication(operations: ["READ"])
+                you: User
             }
         `;
 
@@ -104,7 +98,7 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
             typeDefs,
             resolvers: {
                 Query: { me: () => ({}), you: () => ({}) },
-                [User.name]: { customId: (_, __, ctx) => ctx.jwt.sub },
+                User: { customId: (_, __, ctx) => ctx.jwt.sub },
             },
             features: {
                 authorization: {
@@ -121,13 +115,13 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
 
     test("should apply type-level authentication to root field on Query - pass", async () => {
         const typeDefs = /* GraphQL */ `
-            type ${User} @node {
+            type User {
                 customId: ID
             }
 
             type Query @authentication(operations: ["READ"]) {
-                me: ${User}
-                you: ${User}
+                me: User
+                you: User
             }
         `;
 
@@ -147,7 +141,7 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
             typeDefs,
             resolvers: {
                 Query: { me: () => ({}), you: () => ({}) },
-                [User.name]: { customId: (_, __, ctx) => ctx.jwt.sub },
+                User: { customId: (_, __, ctx) => ctx.jwt.sub },
             },
             features: {
                 authorization: {
@@ -166,13 +160,13 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
 
     test("should apply type-level authentication to root field on Query - throw unauthenticated", async () => {
         const typeDefs = /* GraphQL */ `
-            type ${User} @node {
+            type User {
                 customId: ID
             }
 
             type Query @authentication(operations: ["READ"]) {
-                me: ${User}
-                you: ${User}
+                me: User
+                you: User
             }
         `;
 
@@ -188,7 +182,7 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
             typeDefs,
             resolvers: {
                 Query: { me: () => ({}), you: () => ({}) },
-                [User.name]: { customId: (_, __, ctx) => ctx.jwt.sub },
+                User: { customId: (_, __, ctx) => ctx.jwt.sub },
             },
             features: {
                 authorization: {
@@ -205,17 +199,17 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
 
     test("should apply field-level authentication to root field on Mutation - throw unauthenticated", async () => {
         const typeDefs = /* GraphQL */ `
-            type ${User} @node {
+            type User {
                 customId: ID
             }
 
             type Query {
-                me: ${User} @authentication(operations: ["READ"])
-                you: ${User}
+                me: User @authentication(operations: ["READ"])
+                you: User
             }
 
             type Mutation {
-                updateMe(id: ID): ${User} @authentication(operations: ["CREATE"])
+                updateMe(id: ID): User @authentication(operations: ["CREATE"])
             }
         `;
 
@@ -232,7 +226,7 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
             resolvers: {
                 Query: { me: () => ({}), you: () => ({}) },
                 Mutation: { updateMe: () => ({}) },
-                [User.name]: { customId: (_, __, ctx) => ctx.jwt.sub },
+                User: { customId: (_, __, ctx) => ctx.jwt.sub },
             },
             features: {
                 authorization: {
@@ -249,17 +243,17 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
 
     test("should apply type-level authentication to root field on Mutation - throw unauthenticated", async () => {
         const typeDefs = /* GraphQL */ `
-            type ${User} @node {
+            type User {
                 customId: ID
             }
 
             type Query {
-                me: ${User} @authentication(operations: ["READ"])
-                you: ${User}
+                me: User @authentication(operations: ["READ"])
+                you: User
             }
 
             type Mutation @authentication(operations: ["CREATE"]) {
-                updateMe(id: ID): ${User}
+                updateMe(id: ID): User
             }
         `;
 
@@ -276,7 +270,7 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
             resolvers: {
                 Query: { me: () => ({}), you: () => ({}) },
                 Mutation: { updateMe: () => ({}) },
-                [User.name]: { customId: (_, __, ctx) => ctx.jwt.sub },
+                User: { customId: (_, __, ctx) => ctx.jwt.sub },
             },
             features: {
                 authorization: {
@@ -293,13 +287,13 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
 
     test("should apply schema-level defined authentication to root field on Query - throw unauthenticated", async () => {
         const typeDefs = /* GraphQL */ `
-            type ${User} @node {
+            type User {
                 customId: ID
             }
 
             type Query {
-                me: ${User}
-                you: ${User}
+                me: User
+                you: User
             }
 
             extend schema @authentication(operations: ["READ"])
@@ -317,7 +311,7 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
             typeDefs,
             resolvers: {
                 Query: { me: () => ({}), you: () => ({}) },
-                [User.name]: { customId: (_, __, ctx) => ctx.jwt.sub },
+                User: { customId: (_, __, ctx) => ctx.jwt.sub },
             },
             features: {
                 authorization: {
@@ -334,13 +328,13 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
 
     test("should apply schema-level defined authentication to root field on Query - pass", async () => {
         const typeDefs = /* GraphQL */ `
-            type ${User} @node {
+            type User {
                 customId: ID
             }
 
             type Query {
-                me: ${User}
-                you: ${User}
+                me: User
+                you: User
             }
 
             extend schema @authentication(operations: ["READ"])
@@ -362,7 +356,7 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
             typeDefs,
             resolvers: {
                 Query: { me: () => ({}), you: () => ({}) },
-                [User.name]: { customId: (_, __, ctx) => ctx.jwt.sub },
+                User: { customId: (_, __, ctx) => ctx.jwt.sub },
             },
             features: {
                 authorization: {
@@ -380,17 +374,17 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
 
     test("should apply schema-level defined authentication to root field on Mutation - throw unauthenticated", async () => {
         const typeDefs = /* GraphQL */ `
-            type ${User} @node {
+            type User {
                 customId: ID
             }
 
             type Query {
-                me: ${User}
-                you: ${User}
+                me: User
+                you: User
             }
 
             type Mutation {
-                updateMe(id: ID): ${User}
+                updateMe(id: ID): User
             }
 
             extend schema @authentication(operations: ["UPDATE"])
@@ -408,7 +402,7 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
             typeDefs,
             resolvers: {
                 Query: { me: () => ({}), you: () => ({}) },
-                [User.name]: { customId: (_, __, ctx) => ctx.jwt.sub },
+                User: { customId: (_, __, ctx) => ctx.jwt.sub },
                 Mutation: { updateMe: () => ({}) },
             },
             features: {

@@ -33,11 +33,11 @@ describe("https://github.com/neo4j/graphql/issues/5143", () => {
         Video = testHelper.createUniqueType("Video");
 
         const typeDefs = /* GraphQL */ `
-            type ${User} @node {
+            type ${User} {
                 id: ID! @id
             }
 
-            type ${Video} @node {
+            type ${Video} {
                 id: ID! @id
                 publisher: ${User}! @relationship(type: "PUBLISHER", direction: IN)
             }

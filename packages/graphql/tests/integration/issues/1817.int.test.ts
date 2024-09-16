@@ -33,21 +33,21 @@ describe("https://github.com/neo4j/graphql/issues/1817", () => {
         TypeMaterial = testHelper.createUniqueType("Material");
 
         const typeDefs = `
-            type ${TypeContainerType} @node {
+            type ${TypeContainerType} {
                 id: ID! @id @unique
                 name: String!
                 specifiesContainers: [${TypeContainer}!]!
                     @relationship(type: "hasContainer", properties: "CoT_Co_hasContainer", direction: OUT)
             }
     
-            type ${TypeContainer} @node {
+            type ${TypeContainer} {
                 id: ID! @id @unique
                 name: String
                 containsMaterial: [${TypeMaterial}!]!
                     @relationship(type: "hasMaterial", properties: "Co_Ma_hasMaterial", direction: OUT)
             }
     
-            type ${TypeMaterial} @node {
+            type ${TypeMaterial} {
                 id: ID! @id @unique
                 name: String
             }

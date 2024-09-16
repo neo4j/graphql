@@ -38,7 +38,7 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
                 roles: [String!]!
             }
 
-            type ${Actor} @authorization(validate: [{ where: { node: { nodeCreatedBy: "$jwt.sub" } } }]) @node {
+            type ${Actor} @authorization(validate: [{ where: { node: { nodeCreatedBy: "$jwt.sub" } } }]) {
                 id: ID! @id @unique
                 name: String
                 nodeCreatedBy: String
@@ -46,7 +46,7 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
                 fieldB: String @authorization(validate: [{ operations: [CREATE, UPDATE], where: { jwt: { roles_INCLUDES: "role-B" } } }])
                 movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
-            type ${Movie} @authorization(validate: [{ operations: [CREATE, UPDATE], where: { jwt: { roles_INCLUDES: "admin" } } }]) @node {
+            type ${Movie} @authorization(validate: [{ operations: [CREATE, UPDATE], where: { jwt: { roles_INCLUDES: "admin" } } }]) {
                 id: ID
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }

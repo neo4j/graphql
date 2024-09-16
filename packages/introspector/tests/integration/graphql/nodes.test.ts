@@ -94,7 +94,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm));
 
         expect(typeDefs).toMatchInlineSnapshot(`
-            "type TestLabel @node {
+            "type TestLabel {
             	nodeProperty: String!
             }"
         `);
@@ -124,7 +124,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm));
 
         expect(typeDefs).toMatchInlineSnapshot(`
-            "type TestLabel @node {
+            "type TestLabel {
             	intProp: BigInt!
             	numberProp: Float!
             	strArrProp: [String]!
@@ -158,11 +158,11 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm));
 
         expect(typeDefs).toMatchInlineSnapshot(`
-            "type TestLabel @node {
+            "type TestLabel {
             	strProp: String!
             }
 
-            type TestLabel2 @node {
+            type TestLabel2 {
             	singleProp: BigInt!
             }"
         `);
@@ -193,7 +193,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm));
 
         expect(typeDefs).toMatchInlineSnapshot(`
-            "type TestLabel @node {
+            "type TestLabel {
             	strProp: String!
             }
 
@@ -290,7 +290,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm));
 
         expect(typeDefs).toMatchInlineSnapshot(`
-            "type FullNode @node {
+            "type FullNode {
             	str: String!
             }"
         `);
@@ -316,7 +316,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm));
 
         expect(typeDefs).toMatchInlineSnapshot(`
-            "type FullNode @node {
+            "type FullNode {
             	prop: BigInt!
             }"
         `);
@@ -340,11 +340,11 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm));
 
         expect(typeDefs).toMatchInlineSnapshot(`
-            "type EmptyNode @node {
+            "type EmptyNode {
             	relationshipFullNodes: [FullNode!]! @relationship(type: \\"RELATIONSHIP\\", direction: OUT)
             }
 
-            type FullNode @node {
+            type FullNode {
             	emptyNodesRelationship: [EmptyNode!]! @relationship(type: \\"RELATIONSHIP\\", direction: IN)
             	prop: BigInt!
             }"
@@ -376,7 +376,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm), true);
 
         expect(typeDefs).toMatchInlineSnapshot(`
-            "type TestLabel @node {
+            "type TestLabel {
             	strProp: String!
             }
 

@@ -17,21 +17,21 @@
  * limitations under the License.
  */
 
-import type { GraphQLFieldMap } from "graphql";
-import { GraphQLError } from "graphql";
 import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
+import type { GraphQLFieldMap } from "graphql";
+import { GraphQLError } from "graphql";
 
 describe("@mutation directive", () => {
     describe("on OBJECT", () => {
         test("default arguments should enable CREATE, UPDATE, DELETE", async () => {
             const typeDefs = gql`
-                type Actor @node {
+                type Actor {
                     username: String!
                     password: String!
                 }
 
-                type Movie @mutation @node {
+                type Movie @mutation {
                     title: String
                 }
             `;
@@ -61,12 +61,12 @@ describe("@mutation directive", () => {
 
         test("should disable CREATE", async () => {
             const typeDefs = gql`
-                type Actor @node {
+                type Actor {
                     username: String!
                     password: String!
                 }
 
-                type Movie @mutation(operations: [UPDATE, DELETE]) @node {
+                type Movie @mutation(operations: [UPDATE, DELETE]) {
                     title: String
                 }
             `;
@@ -96,12 +96,12 @@ describe("@mutation directive", () => {
 
         test("should disable UPDATE", async () => {
             const typeDefs = gql`
-                type Actor @node {
+                type Actor {
                     username: String!
                     password: String!
                 }
 
-                type Movie @mutation(operations: [CREATE, DELETE]) @node {
+                type Movie @mutation(operations: [CREATE, DELETE]) {
                     title: String
                 }
             `;
@@ -132,12 +132,12 @@ describe("@mutation directive", () => {
 
         test("should disable DELETE", async () => {
             const typeDefs = gql`
-                type Actor @node {
+                type Actor {
                     username: String!
                     password: String!
                 }
 
-                type Movie @mutation(operations: [CREATE, UPDATE]) @node {
+                type Movie @mutation(operations: [CREATE, UPDATE]) {
                     title: String
                 }
             `;
@@ -168,12 +168,12 @@ describe("@mutation directive", () => {
 
         test("should disable CREATE, DELETE, UPDATE", async () => {
             const typeDefs = gql`
-                type Actor @node {
+                type Actor {
                     username: String!
                     password: String!
                 }
 
-                type Movie @mutation(operations: []) @node {
+                type Movie @mutation(operations: []) {
                     title: String
                 }
             `;
@@ -204,11 +204,11 @@ describe("@mutation directive", () => {
 
         test("should not throw an Error when is mixed with @query", async () => {
             const typeDefs = gql`
-                type Actor @node {
+                type Actor {
                     name: String
                 }
 
-                type Movie @query(read: true) @mutation(operations: []) @node {
+                type Movie @query(read: true) @mutation(operations: []) {
                     title: String
                 }
             `;
@@ -222,12 +222,12 @@ describe("@mutation directive", () => {
     describe("on SCHEMA", () => {
         test("default arguments should enable CREATE, UPDATE, DELETE", async () => {
             const typeDefs = gql`
-                type Actor @node {
+                type Actor {
                     username: String!
                     password: String!
                 }
 
-                type Movie @node {
+                type Movie {
                     title: String
                 }
                 extend schema @mutation
@@ -258,12 +258,12 @@ describe("@mutation directive", () => {
 
         test("should disable CREATE", async () => {
             const typeDefs = gql`
-                type Actor @node {
+                type Actor {
                     username: String!
                     password: String!
                 }
 
-                type Movie @node {
+                type Movie {
                     title: String
                 }
                 extend schema @mutation(operations: [UPDATE, DELETE])
@@ -294,12 +294,12 @@ describe("@mutation directive", () => {
 
         test("should disable UPDATE", async () => {
             const typeDefs = gql`
-                type Actor @node {
+                type Actor {
                     username: String!
                     password: String!
                 }
 
-                type Movie @node {
+                type Movie {
                     title: String
                 }
                 extend schema @mutation(operations: [CREATE, DELETE])
@@ -331,12 +331,12 @@ describe("@mutation directive", () => {
 
         test("should disable DELETE", async () => {
             const typeDefs = gql`
-                type Actor @node {
+                type Actor {
                     username: String!
                     password: String!
                 }
 
-                type Movie @node {
+                type Movie {
                     title: String
                 }
                 extend schema @mutation(operations: [CREATE, UPDATE])
@@ -368,12 +368,12 @@ describe("@mutation directive", () => {
 
         test("should disable CREATE, DELETE, UPDATE", async () => {
             const typeDefs = gql`
-                type Actor @node {
+                type Actor {
                     username: String!
                     password: String!
                 }
 
-                type Movie @node {
+                type Movie {
                     title: String
                 }
                 extend schema @mutation(operations: [])
@@ -388,11 +388,11 @@ describe("@mutation directive", () => {
 
         test("should throw an Error when is used in both schema on object", async () => {
             const typeDefs = gql`
-                type Actor @mutation(operations: []) @node {
+                type Actor @mutation(operations: []) {
                     name: String
                 }
 
-                type Movie @node {
+                type Movie {
                     title: String
                 }
 
@@ -410,11 +410,11 @@ describe("@mutation directive", () => {
 
         test("should not throw an Error when is mixed with @query", async () => {
             const typeDefs = gql`
-                type Actor @node {
+                type Actor {
                     name: String
                 }
 
-                type Movie @node {
+                type Movie {
                     title: String
                 }
 

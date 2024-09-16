@@ -27,7 +27,7 @@ describe("Errors", () => {
         const Movie = new UniqueType("Movie");
 
         const typeDefs = `
-            type ${Movie} @node {
+            type ${Movie} {
               id: ID
             }
         `;

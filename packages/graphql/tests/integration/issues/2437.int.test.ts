@@ -36,7 +36,7 @@ describe("https://github.com/neo4j/graphql/issues/2437", () => {
                 roles: [String!]!
             }
 
-            type ${Agent} @mutation(operations: [CREATE, UPDATE]) @node {
+            type ${Agent} @mutation(operations: [CREATE, UPDATE]) {
                 uuid: ID! @id @unique
                 archivedAt: DateTime
 
@@ -46,7 +46,7 @@ describe("https://github.com/neo4j/graphql/issues/2437", () => {
             extend type ${Agent}
                 @authorization(validate: [{ operations: [CREATE], where: { jwt: { roles_INCLUDES: "Admin" } } }], filter: [{ where: { node: { archivedAt: null } } }])
 
-            type ${Valuation} @mutation(operations: [CREATE, UPDATE]) @node {
+            type ${Valuation} @mutation(operations: [CREATE, UPDATE]) {
                 uuid: ID! @id @unique
                 archivedAt: DateTime
 
