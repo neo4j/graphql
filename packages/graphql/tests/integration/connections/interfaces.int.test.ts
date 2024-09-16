@@ -53,12 +53,12 @@ describe("Connections -> Interfaces", () => {
             title: String!
         }
 
-        type ${typeMovie.name} implements Production {
+        type ${typeMovie.name} implements Production @node {
             title: String!
             runtime: Int!
         }
 
-        type ${typeSeries.name} implements Production {
+        type ${typeSeries.name} implements Production @node {
             title: String!
             episodes: Int!
         }
@@ -67,7 +67,7 @@ describe("Connections -> Interfaces", () => {
             screenTime: Int!
         }
 
-        type ${typeActor.name} {
+        type ${typeActor.name} @node {
             name: String!
             actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
         }

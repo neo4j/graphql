@@ -17,19 +17,19 @@
  * limitations under the License.
  */
 
-import { toGlobalId } from "../../src/utils/global-ids";
 import { Neo4jGraphQL } from "../../src";
+import { toGlobalId } from "../../src/utils/global-ids";
 import { formatCypher, formatParams, translateQuery } from "./utils/tck-test-utils";
 
 describe("Global nodes", () => {
     test("it should fetch the correct node and fields", async () => {
         const typeDefs = /* GraphQL */ `
-            type Actor {
+            type Actor @node {
                 name: ID! @id @unique @relayId
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type Movie {
+            type Movie @node {
                 title: ID! @id @unique @relayId
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
@@ -64,12 +64,12 @@ describe("Global nodes", () => {
     });
     test("it should project the correct node and fields when id is the idField", async () => {
         const typeDefs = /* GraphQL */ `
-            type Actor {
+            type Actor @node {
                 dbId: ID! @id @unique @relayId @alias(property: "id")
                 name: String!
                 movies: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
-            type Movie {
+            type Movie @node {
                 title: ID! @id @unique @relayId
                 actors: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
             }
@@ -107,12 +107,12 @@ describe("Global nodes", () => {
     });
     test("it should project the correct selectionSet when id is used as a where argument", async () => {
         const typeDefs = /* GraphQL */ `
-            type Actor {
+            type Actor @node {
                 dbId: ID! @id @unique @relayId @alias(property: "id")
                 name: String!
                 movies: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
-            type Movie {
+            type Movie @node {
                 title: ID! @id @unique @relayId
                 actors: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
             }
@@ -151,7 +151,7 @@ describe("Global nodes", () => {
     });
     test("it should project the param as an integer when the underlying field is a number (fixes 1560)", async () => {
         const typeDefs = /* GraphQL */ `
-            type Actor {
+            type Actor @node {
                 dbId: Int! @relayId
                 name: String!
             }

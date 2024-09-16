@@ -26,24 +26,24 @@ describe("https://github.com/neo4j/graphql/issues/488", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Journalist {
+            type Journalist @node {
                 name: String!
                 keywords: [Keyword!]! @relationship(type: "HAS_KEYWORD", direction: OUT)
             }
 
             union Keyword = Emoji | Hashtag | Text
 
-            type Emoji {
+            type Emoji @node {
                 id: ID! @id @unique
                 type: String!
             }
 
-            type Hashtag {
+            type Hashtag @node {
                 id: ID! @id @unique
                 type: String!
             }
 
-            type Text {
+            type Text @node {
                 id: ID! @id @unique
                 type: String!
             }

@@ -31,13 +31,13 @@ describe("@alias directive", () => {
         typeActor = testHelper.createUniqueType("Actor");
 
         const typeDefs = `
-            type ${typeActor} {
+            type ${typeActor} @node {
                 name: String!
                 nameAgain: String @alias(property: "name")
                 movies: [${typeMovie}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
             
-            type ${typeMovie} {
+            type ${typeMovie} @node {
                 title: String
                 titleAgain: String @alias(property: "title")
                 id: ID! @id @unique

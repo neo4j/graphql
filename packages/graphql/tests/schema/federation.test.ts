@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Apollo Federation", () => {
@@ -27,12 +27,12 @@ describe("Apollo Federation", () => {
         const typeDefs = gql`
             extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@shareable"])
 
-            type User @shareable {
+            type User @shareable @node {
                 name: String!
                 posts: [Post!]! @relationship(type: "HAS_AUTHOR", direction: IN)
             }
 
-            type Post {
+            type Post @node {
                 content: String!
                 author: User! @relationship(type: "HAS_AUTHOR", direction: OUT)
             }
@@ -312,9 +312,10 @@ describe("Apollo Federation", () => {
               authorConnection: PostAuthorConnectionWhere
               authorConnection_NOT: PostAuthorConnectionWhere
               author_NOT: UserWhere
-              content: String
+              content: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               content_CONTAINS: String
               content_ENDS_WITH: String
+              content_EQ: String
               content_IN: [String!]
               content_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               content_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -567,9 +568,10 @@ describe("Apollo Federation", () => {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -641,11 +643,11 @@ describe("Apollo Federation", () => {
         const typeDefs = gql`
             extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key"])
 
-            type User @key(fields: "name", resolvable: false) {
+            type User @key(fields: "name", resolvable: false) @node {
                 name: String!
             }
 
-            type Post {
+            type Post @node {
                 content: String!
                 author: User! @relationship(type: "HAS_AUTHOR", direction: OUT)
             }
@@ -918,9 +920,10 @@ describe("Apollo Federation", () => {
               authorConnection: PostAuthorConnectionWhere
               authorConnection_NOT: PostAuthorConnectionWhere
               author_NOT: UserWhere
-              content: String
+              content: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               content_CONTAINS: String
               content_ENDS_WITH: String
+              content_EQ: String
               content_IN: [String!]
               content_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               content_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1027,9 +1030,10 @@ describe("Apollo Federation", () => {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")

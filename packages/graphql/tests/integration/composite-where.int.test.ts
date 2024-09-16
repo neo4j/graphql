@@ -30,11 +30,11 @@ describe("composite-where", () => {
         Actor = testHelper.createUniqueType("Actor");
         Movie = testHelper.createUniqueType("Movie");
         const typeDefs = `
-            type ${Actor} {
+            type ${Actor} @node {
                 name: String
             }
     
-            type ${Movie} {
+            type ${Movie} @node {
                 id: ID!
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
             }

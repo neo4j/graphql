@@ -48,7 +48,7 @@ describe("Mathematical operations tests", () => {
             const movie = testHelper.createUniqueType("Movie");
 
             const typeDefs = `
-            type ${movie.name} {
+            type ${movie.name} @node {
                 id: ID!
                 viewers: ${type}!
             }
@@ -121,7 +121,7 @@ describe("Mathematical operations tests", () => {
         async ({ initialValue, type, value, operation, expectedError }) => {
             const movie = testHelper.createUniqueType("Movie");
             const typeDefs = `
-            type ${movie.name} {
+            type ${movie.name} @node {
                 id: ID!
                 viewers: ${type}!
             }
@@ -178,7 +178,7 @@ describe("Mathematical operations tests", () => {
         const initialViewers = int(100);
         const movie = testHelper.createUniqueType("Movie");
         const typeDefs = `
-        type ${movie.name} {
+        type ${movie.name} @node {
             id: ID!
             viewers: Int!
         }
@@ -237,7 +237,7 @@ describe("Mathematical operations tests", () => {
         const initialLength = int(100);
         const movie = testHelper.createUniqueType("Movie");
         const typeDefs = `
-        type ${movie.name} {
+        type ${movie.name} @node {
             id: ID!
             viewers: Int!
             length: Int!
@@ -297,11 +297,11 @@ describe("Mathematical operations tests", () => {
         const movie = testHelper.createUniqueType("Movie");
         const actor = testHelper.createUniqueType("Actor");
         const typeDefs = `
-        type ${movie.name} {
+        type ${movie.name} @node {
             viewers: Int!
             workers: [${actor.name}!]! @relationship(type: "WORKED_IN", direction: IN)
         }
-        type ${actor.name} {
+        type ${actor.name} @node {
             id: ID!
             name: String!
             worksInMovies: [${movie.name}!]! @relationship(type: "WORKED_IN", direction: OUT)
@@ -379,11 +379,11 @@ describe("Mathematical operations tests", () => {
         interface ${production.name} {
             viewers: Int!
         }
-        type ${movie.name} implements ${production.name} {
+        type ${movie.name} implements ${production.name} @node {
             viewers: Int!
             workers: [${actor.name}!]! @relationship(type: "WORKED_IN", direction: IN)
         }
-        type ${actor.name} {
+        type ${actor.name} @node {
             id: ID!
             name: String!
             worksInProductions: [${production.name}!]! @relationship(type: "WORKED_IN", direction: OUT)
@@ -454,7 +454,7 @@ describe("Mathematical operations tests", () => {
         const increment = 10;
         const movie = testHelper.createUniqueType("Movie");
         const typeDefs = `
-        type ${movie.name} {
+        type ${movie.name} @node {
             id: ID!
             viewers: Int
         }
@@ -514,12 +514,12 @@ describe("Mathematical operations tests", () => {
         const movie = testHelper.createUniqueType("Movie");
         const actor = testHelper.createUniqueType("Actor");
         const typeDefs = `
-        type ${movie.name} {
+        type ${movie.name} @node {
             title: String
             actors: [${actor.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
         }
         
-        type ${actor.name} {
+        type ${actor.name} @node {
             id: ID!
             name: String!
             actedIn: [${movie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
@@ -599,13 +599,13 @@ describe("Mathematical operations tests", () => {
         const movie = testHelper.createUniqueType("Movie");
         const actor = testHelper.createUniqueType("Actor");
         const typeDefs = `
-        type ${movie.name} {
+        type ${movie.name} @node {
             title: String
             viewers: Int
             actors: [${actor.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
         }
         
-        type ${actor.name} {
+        type ${actor.name} @node {
             id: ID!
             name: String!
             actedIn: [${movie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)

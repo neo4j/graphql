@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
 
@@ -32,7 +32,7 @@ describe("@selectable", () => {
 
     test("Disable read fields", async () => {
         const typeDefs = gql`
-            type Movie @query(aggregate: true) {
+            type Movie @query(aggregate: true) @node {
                 title: String!
                 description: String @selectable(onRead: false, onAggregate: true)
             }
@@ -114,9 +114,10 @@ describe("@selectable", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              description: String
+              description: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               description_CONTAINS: String
               description_ENDS_WITH: String
+              description_EQ: String
               description_IN: [String]
               description_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               description_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -124,9 +125,10 @@ describe("@selectable", () => {
               description_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               description_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               description_STARTS_WITH: String
-              title: String
+              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
+              title_EQ: String
               title_IN: [String!]
               title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -195,7 +197,7 @@ describe("@selectable", () => {
 
     test("Disable aggregation fields", async () => {
         const typeDefs = gql`
-            type Movie @query(aggregate: true) {
+            type Movie @query(aggregate: true) @node {
                 title: String!
                 description: String @selectable(onRead: true, onAggregate: false)
             }
@@ -277,9 +279,10 @@ describe("@selectable", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              description: String
+              description: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               description_CONTAINS: String
               description_ENDS_WITH: String
+              description_EQ: String
               description_IN: [String]
               description_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               description_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -287,9 +290,10 @@ describe("@selectable", () => {
               description_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               description_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               description_STARTS_WITH: String
-              title: String
+              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
+              title_EQ: String
               title_IN: [String!]
               title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -358,7 +362,7 @@ describe("@selectable", () => {
 
     test("Disable read and aggregate fields", async () => {
         const typeDefs = gql`
-            type Movie @query(aggregate: true) {
+            type Movie @query(aggregate: true) @node {
                 title: String!
                 description: String @selectable(onRead: false, onAggregate: false)
             }
@@ -439,9 +443,10 @@ describe("@selectable", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              description: String
+              description: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               description_CONTAINS: String
               description_ENDS_WITH: String
+              description_EQ: String
               description_IN: [String]
               description_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               description_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -449,9 +454,10 @@ describe("@selectable", () => {
               description_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               description_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               description_STARTS_WITH: String
-              title: String
+              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
+              title_EQ: String
               title_IN: [String!]
               title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -520,7 +526,7 @@ describe("@selectable", () => {
 
     test("Disable read fields on subscriptions", async () => {
         const typeDefs = gql`
-            type Movie @query(aggregate: true) {
+            type Movie @query(aggregate: true) @node {
                 title: String!
                 description: String @selectable(onRead: false, onAggregate: true)
             }
@@ -622,9 +628,10 @@ describe("@selectable", () => {
               AND: [MovieSubscriptionWhere!]
               NOT: MovieSubscriptionWhere
               OR: [MovieSubscriptionWhere!]
-              description: String
+              description: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               description_CONTAINS: String
               description_ENDS_WITH: String
+              description_EQ: String
               description_IN: [String]
               description_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               description_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -632,9 +639,10 @@ describe("@selectable", () => {
               description_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               description_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               description_STARTS_WITH: String
-              title: String
+              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
+              title_EQ: String
               title_IN: [String!]
               title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -660,9 +668,10 @@ describe("@selectable", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              description: String
+              description: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               description_CONTAINS: String
               description_ENDS_WITH: String
+              description_EQ: String
               description_IN: [String]
               description_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               description_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -670,9 +679,10 @@ describe("@selectable", () => {
               description_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               description_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               description_STARTS_WITH: String
-              title: String
+              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
+              title_EQ: String
               title_IN: [String!]
               title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -748,12 +758,12 @@ describe("@selectable", () => {
     describe("relationships fields to a concrete type", () => {
         test("Disable read on relationship field", async () => {
             const typeDefs = gql`
-                type Movie @query(aggregate: true) {
+                type Movie @query(aggregate: true) @node {
                     title: String!
                     description: String
                 }
 
-                type Actor @query(aggregate: true) {
+                type Actor @query(aggregate: true) @node {
                     name: String!
                     actedIn: [Movie!]!
                         @relationship(type: "ACTED_IN", direction: OUT)
@@ -1002,9 +1012,10 @@ describe("@selectable", () => {
                   actedIn_SINGLE: MovieWhere
                   \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
                   actedIn_SOME: MovieWhere
-                  name: String
+                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   name_CONTAINS: String
                   name_ENDS_WITH: String
+                  name_EQ: String
                   name_IN: [String!]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1099,9 +1110,10 @@ describe("@selectable", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  description: String
+                  description: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   description_CONTAINS: String
                   description_ENDS_WITH: String
+                  description_EQ: String
                   description_IN: [String]
                   description_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   description_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1109,9 +1121,10 @@ describe("@selectable", () => {
                   description_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   description_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   description_STARTS_WITH: String
-                  title: String
+                  title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   title_CONTAINS: String
                   title_ENDS_WITH: String
+                  title_EQ: String
                   title_IN: [String!]
                   title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1190,12 +1203,12 @@ describe("@selectable", () => {
         });
         test("Disable aggregation on relationship field (no-op as controlled by @relationship(aggregate: false))", async () => {
             const typeDefs = gql`
-                type Movie @query(aggregate: true) {
+                type Movie @query(aggregate: true) @node {
                     title: String!
                     description: String
                 }
 
-                type Actor @query(aggregate: true) {
+                type Actor @query(aggregate: true) @node {
                     name: String!
                     actedIn: [Movie!]!
                         @relationship(type: "ACTED_IN", direction: OUT)
@@ -1461,9 +1474,10 @@ describe("@selectable", () => {
                   actedIn_SINGLE: MovieWhere
                   \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
                   actedIn_SOME: MovieWhere
-                  name: String
+                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   name_CONTAINS: String
                   name_ENDS_WITH: String
+                  name_EQ: String
                   name_IN: [String!]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1558,9 +1572,10 @@ describe("@selectable", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  description: String
+                  description: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   description_CONTAINS: String
                   description_ENDS_WITH: String
+                  description_EQ: String
                   description_IN: [String]
                   description_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   description_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1568,9 +1583,10 @@ describe("@selectable", () => {
                   description_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   description_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   description_STARTS_WITH: String
-                  title: String
+                  title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   title_CONTAINS: String
                   title_ENDS_WITH: String
+                  title_EQ: String
                   title_IN: [String!]
                   title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1652,19 +1668,19 @@ describe("@selectable", () => {
     describe("relationships fields to a union type", () => {
         test("Disable read on relationship field", async () => {
             const typeDefs = gql`
-                type Movie @query(aggregate: true) {
+                type Movie @query(aggregate: true) @node {
                     title: String!
                     description: String
                 }
 
-                type Series @query(aggregate: true) {
+                type Series @query(aggregate: true) @node {
                     name: String!
                     description: String
                 }
 
                 union Production = Movie | Series
 
-                type Actor @query(aggregate: true) {
+                type Actor @query(aggregate: true) @node {
                     name: String!
                     actedIn: [Production!]!
                         @relationship(type: "ACTED_IN", direction: OUT)
@@ -1886,9 +1902,10 @@ describe("@selectable", () => {
                   actedIn_SINGLE: ProductionWhere
                   \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
                   actedIn_SOME: ProductionWhere
-                  name: String
+                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   name_CONTAINS: String
                   name_ENDS_WITH: String
+                  name_EQ: String
                   name_IN: [String!]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1988,9 +2005,10 @@ describe("@selectable", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  description: String
+                  description: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   description_CONTAINS: String
                   description_ENDS_WITH: String
+                  description_EQ: String
                   description_IN: [String]
                   description_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   description_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1998,9 +2016,10 @@ describe("@selectable", () => {
                   description_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   description_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   description_STARTS_WITH: String
-                  title: String
+                  title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   title_CONTAINS: String
                   title_ENDS_WITH: String
+                  title_EQ: String
                   title_IN: [String!]
                   title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -2119,9 +2138,10 @@ describe("@selectable", () => {
                   AND: [SeriesWhere!]
                   NOT: SeriesWhere
                   OR: [SeriesWhere!]
-                  description: String
+                  description: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   description_CONTAINS: String
                   description_ENDS_WITH: String
+                  description_EQ: String
                   description_IN: [String]
                   description_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   description_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -2129,9 +2149,10 @@ describe("@selectable", () => {
                   description_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   description_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   description_STARTS_WITH: String
-                  name: String
+                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   name_CONTAINS: String
                   name_ENDS_WITH: String
+                  name_EQ: String
                   name_IN: [String!]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -2183,19 +2204,19 @@ describe("@selectable", () => {
         });
         test("Disable aggregation on relationship field (no-op as controlled by @relationship(aggregate: false))", async () => {
             const typeDefs = gql`
-                type Movie @query(aggregate: true) {
+                type Movie @query(aggregate: true) @node {
                     title: String!
                     description: String
                 }
 
-                type Series @query(aggregate: true) {
+                type Series @query(aggregate: true) @node {
                     name: String!
                     description: String
                 }
 
                 union Production = Movie | Series
 
-                type Actor @query(aggregate: true) {
+                type Actor @query(aggregate: true) @node {
                     name: String!
                     actedIn: [Production!]!
                         @relationship(type: "ACTED_IN", direction: OUT)
@@ -2430,9 +2451,10 @@ describe("@selectable", () => {
                   actedIn_SINGLE: ProductionWhere
                   \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
                   actedIn_SOME: ProductionWhere
-                  name: String
+                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   name_CONTAINS: String
                   name_ENDS_WITH: String
+                  name_EQ: String
                   name_IN: [String!]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -2532,9 +2554,10 @@ describe("@selectable", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  description: String
+                  description: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   description_CONTAINS: String
                   description_ENDS_WITH: String
+                  description_EQ: String
                   description_IN: [String]
                   description_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   description_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -2542,9 +2565,10 @@ describe("@selectable", () => {
                   description_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   description_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   description_STARTS_WITH: String
-                  title: String
+                  title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   title_CONTAINS: String
                   title_ENDS_WITH: String
+                  title_EQ: String
                   title_IN: [String!]
                   title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -2663,9 +2687,10 @@ describe("@selectable", () => {
                   AND: [SeriesWhere!]
                   NOT: SeriesWhere
                   OR: [SeriesWhere!]
-                  description: String
+                  description: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   description_CONTAINS: String
                   description_ENDS_WITH: String
+                  description_EQ: String
                   description_IN: [String]
                   description_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   description_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -2673,9 +2698,10 @@ describe("@selectable", () => {
                   description_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   description_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   description_STARTS_WITH: String
-                  name: String
+                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   name_CONTAINS: String
                   name_ENDS_WITH: String
+                  name_EQ: String
                   name_IN: [String!]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -2735,17 +2761,17 @@ describe("@selectable", () => {
                     description: String
                 }
 
-                type Movie implements Production @query(aggregate: true) {
+                type Movie implements Production @query(aggregate: true) @node {
                     title: String!
                     description: String
                 }
 
-                type Series implements Production @query(aggregate: true) {
+                type Series implements Production @query(aggregate: true) @node {
                     title: String!
                     description: String
                 }
 
-                type Actor @query(aggregate: true) {
+                type Actor @query(aggregate: true) @node {
                     name: String!
                     actedIn: [Production!]!
                         @relationship(type: "ACTED_IN", direction: OUT)
@@ -2990,9 +3016,10 @@ describe("@selectable", () => {
                   actedIn_SINGLE: ProductionWhere
                   \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
                   actedIn_SOME: ProductionWhere
-                  name: String
+                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   name_CONTAINS: String
                   name_ENDS_WITH: String
+                  name_EQ: String
                   name_IN: [String!]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -3088,9 +3115,10 @@ describe("@selectable", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  description: String
+                  description: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   description_CONTAINS: String
                   description_ENDS_WITH: String
+                  description_EQ: String
                   description_IN: [String]
                   description_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   description_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -3098,9 +3126,10 @@ describe("@selectable", () => {
                   description_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   description_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   description_STARTS_WITH: String
-                  title: String
+                  title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   title_CONTAINS: String
                   title_ENDS_WITH: String
+                  title_EQ: String
                   title_IN: [String!]
                   title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -3192,9 +3221,10 @@ describe("@selectable", () => {
                   AND: [ProductionWhere!]
                   NOT: ProductionWhere
                   OR: [ProductionWhere!]
-                  description: String
+                  description: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   description_CONTAINS: String
                   description_ENDS_WITH: String
+                  description_EQ: String
                   description_IN: [String]
                   description_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   description_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -3202,9 +3232,10 @@ describe("@selectable", () => {
                   description_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   description_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   description_STARTS_WITH: String
-                  title: String
+                  title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   title_CONTAINS: String
                   title_ENDS_WITH: String
+                  title_EQ: String
                   title_IN: [String!]
                   title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -3289,9 +3320,10 @@ describe("@selectable", () => {
                   AND: [SeriesWhere!]
                   NOT: SeriesWhere
                   OR: [SeriesWhere!]
-                  description: String
+                  description: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   description_CONTAINS: String
                   description_ENDS_WITH: String
+                  description_EQ: String
                   description_IN: [String]
                   description_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   description_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -3299,9 +3331,10 @@ describe("@selectable", () => {
                   description_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   description_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   description_STARTS_WITH: String
-                  title: String
+                  title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   title_CONTAINS: String
                   title_ENDS_WITH: String
+                  title_EQ: String
                   title_IN: [String!]
                   title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -3358,17 +3391,17 @@ describe("@selectable", () => {
                     description: String
                 }
 
-                type Movie implements Production @query(aggregate: true) {
+                type Movie implements Production @query(aggregate: true) @node {
                     title: String!
                     description: String
                 }
 
-                type Series implements Production @query(aggregate: true) {
+                type Series implements Production @query(aggregate: true) @node {
                     title: String!
                     description: String
                 }
 
-                type Actor @query(aggregate: true) {
+                type Actor @query(aggregate: true) @node {
                     name: String!
                     actedIn: [Production!]!
                         @relationship(type: "ACTED_IN", direction: OUT)
@@ -3630,9 +3663,10 @@ describe("@selectable", () => {
                   actedIn_SINGLE: ProductionWhere
                   \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
                   actedIn_SOME: ProductionWhere
-                  name: String
+                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   name_CONTAINS: String
                   name_ENDS_WITH: String
+                  name_EQ: String
                   name_IN: [String!]
                   name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -3728,9 +3762,10 @@ describe("@selectable", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  description: String
+                  description: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   description_CONTAINS: String
                   description_ENDS_WITH: String
+                  description_EQ: String
                   description_IN: [String]
                   description_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   description_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -3738,9 +3773,10 @@ describe("@selectable", () => {
                   description_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   description_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   description_STARTS_WITH: String
-                  title: String
+                  title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   title_CONTAINS: String
                   title_ENDS_WITH: String
+                  title_EQ: String
                   title_IN: [String!]
                   title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -3832,9 +3868,10 @@ describe("@selectable", () => {
                   AND: [ProductionWhere!]
                   NOT: ProductionWhere
                   OR: [ProductionWhere!]
-                  description: String
+                  description: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   description_CONTAINS: String
                   description_ENDS_WITH: String
+                  description_EQ: String
                   description_IN: [String]
                   description_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   description_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -3842,9 +3879,10 @@ describe("@selectable", () => {
                   description_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   description_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   description_STARTS_WITH: String
-                  title: String
+                  title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   title_CONTAINS: String
                   title_ENDS_WITH: String
+                  title_EQ: String
                   title_IN: [String!]
                   title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -3929,9 +3967,10 @@ describe("@selectable", () => {
                   AND: [SeriesWhere!]
                   NOT: SeriesWhere
                   OR: [SeriesWhere!]
-                  description: String
+                  description: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   description_CONTAINS: String
                   description_ENDS_WITH: String
+                  description_EQ: String
                   description_IN: [String]
                   description_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   description_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -3939,9 +3978,10 @@ describe("@selectable", () => {
                   description_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   description_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   description_STARTS_WITH: String
-                  title: String
+                  title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   title_CONTAINS: String
                   title_ENDS_WITH: String
+                  title_EQ: String
                   title_IN: [String!]
                   title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")

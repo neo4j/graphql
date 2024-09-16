@@ -26,11 +26,11 @@ describe("Cypher Aggregations where node with Logical AND + OR", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type User {
+            type User @node {
                 someFloat: Float
             }
 
-            type Post {
+            type Post @node {
                 content: String!
                 likes: [User!]! @relationship(type: "LIKES", direction: IN)
             }

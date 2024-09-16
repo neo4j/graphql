@@ -25,12 +25,12 @@ import { Neo4jGraphQL } from "../../../src";
 describe("Enums", () => {
     test("Enum Relationship Properties", async () => {
         const typeDefs = gql`
-            type Actor {
+            type Actor @node {
                 name: String!
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
-            type Movie {
+            type Movie @node {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
@@ -78,7 +78,8 @@ describe("Enums", () => {
               AND: [ActedInWhere!]
               NOT: ActedInWhere
               OR: [ActedInWhere!]
-              roleType: RoleType
+              roleType: RoleType @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              roleType_EQ: RoleType
               roleType_IN: [RoleType!]
               roleType_NOT: RoleType @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               roleType_NOT_IN: [RoleType!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -313,9 +314,10 @@ describe("Enums", () => {
               movies_SINGLE: MovieWhere
               \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
               movies_SOME: MovieWhere
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -588,9 +590,10 @@ describe("Enums", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
-              title: String
+              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
+              title_EQ: String
               title_IN: [String!]
               title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")

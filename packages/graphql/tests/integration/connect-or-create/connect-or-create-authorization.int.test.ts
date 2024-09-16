@@ -38,12 +38,12 @@ describe("connectOrCreate", () => {
                 roles: [String!]!
             }
             
-            type ${typeMovie.name} {
+            type ${typeMovie.name} @node {
                 title: String
                 genres: [${typeGenre.name}!]! @relationship(type: "IN_GENRE", direction: OUT)
             }
     
-            type ${typeGenre.name} @authorization(validate: [{ operations: [CREATE_RELATIONSHIP, CREATE], where: { jwt: { roles_INCLUDES: "admin" } } }]) {
+            type ${typeGenre.name} @node @authorization(validate: [{ operations: [CREATE_RELATIONSHIP, CREATE], where: { jwt: { roles_INCLUDES: "admin" } } }]) {
                 name: String @unique
             }
             `;
@@ -155,12 +155,12 @@ describe("connectOrCreate", () => {
                 roles: [String!]!
             }
             
-            type ${typeMovie.name} @authorization(validate: [{ operations: [CREATE_RELATIONSHIP, CREATE], where: { jwt: { roles_INCLUDES: "admin" } } }]) {
+            type ${typeMovie.name} @node @authorization(validate: [{ operations: [CREATE_RELATIONSHIP, CREATE], where: { jwt: { roles_INCLUDES: "admin" } } }]) {
                 title: String
                 genres: [${typeGenre.name}!]! @relationship(type: "IN_GENRE", direction: OUT)
             }
     
-            type ${typeGenre.name} @authorization(validate: [{ operations: [CREATE_RELATIONSHIP, CREATE], where: { jwt: { roles_INCLUDES: "admin" } } }]) {
+            type ${typeGenre.name} @node @authorization(validate: [{ operations: [CREATE_RELATIONSHIP, CREATE], where: { jwt: { roles_INCLUDES: "admin" } } }]) {
                 name: String @unique
             }
             `;

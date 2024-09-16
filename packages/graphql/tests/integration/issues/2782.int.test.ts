@@ -33,20 +33,20 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
         Photo = testHelper.createUniqueType("Photo");
 
         const typeDefs = `
-            type ${Product} {
+            type ${Product} @node {
                 id: ID!
                 name: String
                 colors: [${Color}!]! @relationship(type: "HAS_COLOR", direction: OUT)
                 photos: [${Photo}!]! @relationship(type: "HAS_PHOTO", direction: OUT)
             }
 
-            type ${Color} {
+            type ${Color} @node {
                 id: ID!
                 name: String!
                 photos: [${Photo}!]! @relationship(type: "OF_COLOR", direction: IN)
             }
 
-            type ${Photo} {
+            type ${Photo} @node {
                 id: ID!
                 color: ${Color} @relationship(type: "OF_COLOR", direction: OUT)
             }

@@ -18,14 +18,14 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("3817", () => {
     test("3817", async () => {
         const typeDefs = gql`
-            type Person {
+            type Person @node {
                 id: ID! @id @unique
                 friends: [Person!]!
                     @relationship(
@@ -150,9 +150,10 @@ describe("3817", () => {
               AND: [FriendOfWhere!]
               NOT: FriendOfWhere
               OR: [FriendOfWhere!]
-              id: String
+              id: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: String
               id_ENDS_WITH: String
+              id_EQ: String
               id_IN: [String]
               id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -414,9 +415,10 @@ describe("3817", () => {
               friends_SINGLE: PersonWhere
               \\"\\"\\"Return People where some of the related People match this filter\\"\\"\\"
               friends_SOME: PersonWhere
-              id: ID
+              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
+              id_EQ: ID
               id_IN: [ID!]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")

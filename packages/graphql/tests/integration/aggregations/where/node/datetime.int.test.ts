@@ -39,17 +39,17 @@ describe("aggregations-where-node-datetime", () => {
             someDateTime: DateTime!
         }
 
-        type ${Person} implements Human {
+        type ${Person} implements Human @node {
             testString: String!
             someDateTime: DateTime!
         }
 
-            type ${User} implements Human {
+            type ${User} implements Human @node {
                 testString: String!
                 someDateTime: DateTime!
             }
     
-            type ${Post} {
+            type ${Post} @node {
               testString: String!
               likes: [Human!]! @relationship(type: "LIKES", direction: IN)
             }
@@ -304,17 +304,17 @@ describe("aggregations-where-node-datetime interface relationships of concrete t
             someDateTime: DateTime!
         }
 
-        type ${Person} implements Human {
+        type ${Person} implements Human @node {
             testString: String!
             someDateTime: DateTime!
         }
 
-            type ${User} implements Human {
+            type ${User} implements Human @node {
                 testString: String!
                 someDateTime: DateTime!
             }
     
-            type ${Post} {
+            type ${Post} @node {
               testString: String!
               likes: [Human!]! @relationship(type: "LIKES", direction: IN)
             }

@@ -36,22 +36,22 @@ describe("https://github.com/neo4j/graphql/issues/1050", () => {
         testAttachment = testHelper.createUniqueType("Attachment");
 
         const typeDefs = gql`
-            type ${testUser.name} {
+            type ${testUser.name} @node {
                 id: String
                 inboxes: [${testInbox.name}!]! @relationship(type: "OWNS", direction: OUT)
             }
 
-            type ${testInbox.name} {
+            type ${testInbox.name} @node {
                 ownerId: String
                 messages: [${testMessage.name}!]! @relationship(type: "CONTAINS", direction: OUT)
             }
 
-            type ${testMessage.name} {
+            type ${testMessage.name} @node {
                 ownerId: String
                 attachments: [${testAttachment.name}!]! @relationship(type: "ATTACHED_TO", direction: IN)
             }
 
-            type ${testAttachment.name} {
+            type ${testAttachment.name} @node {
                 ownerId: String
                 contents: String
             }

@@ -58,7 +58,7 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
                     ]
                 )
 
-            type Product @key(fields: "id") @key(fields: "sku package") @key(fields: "sku variation { id }") {
+            type Product @key(fields: "id") @key(fields: "sku package") @key(fields: "sku variation { id }") @node {
                 id: ID!
                 sku: String
                 package: String
@@ -71,28 +71,28 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
                 research: [ProductResearch!]! @relationship(type: "HAS_RESEARCH", direction: OUT)
             }
 
-            type DeprecatedProduct @key(fields: "sku package") {
+            type DeprecatedProduct @key(fields: "sku package") @node {
                 sku: String!
                 package: String!
                 reason: String
                 createdBy: User @relationship(type: "CREATED_BY", direction: OUT)
             }
 
-            type ProductVariation {
+            type ProductVariation @node {
                 id: ID!
             }
 
-            type ProductResearch @key(fields: "study { caseNumber }") {
+            type ProductResearch @key(fields: "study { caseNumber }") @node {
                 study: CaseStudy! @relationship(type: "HAS_STUDY", direction: OUT)
                 outcome: String
             }
 
-            type CaseStudy {
+            type CaseStudy @node {
                 caseNumber: ID!
                 description: String
             }
 
-            type ProductDimension @shareable {
+            type ProductDimension @node @shareable {
                 size: String
                 weight: Float
                 unit: String @inaccessible
@@ -113,7 +113,7 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
             }
 
             # should be extends
-            type User @key(fields: "email") @extends {
+            type User @node @key(fields: "email") @extends {
                 averageProductsCreatedPerYear: Int @requires(fields: "totalProductsCreated yearsOfEmployment")
                 email: ID! @external
                 name: String @override(from: "users")

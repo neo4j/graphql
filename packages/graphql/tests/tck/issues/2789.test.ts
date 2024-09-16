@@ -18,12 +18,12 @@
  */
 
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/2789", () => {
     let neoSchema: Neo4jGraphQL;
     const typeDefs = /* GraphQL */ `
-        type User @authorization(validate: [{ where: { node: { id: "Foo" } } }]) {
+        type User @authorization(validate: [{ where: { node: { id: "Foo" } } }]) @node {
             id: ID
             password: String! @authorization(validate: [{ where: { node: { id: "Bar" } } }])
         }

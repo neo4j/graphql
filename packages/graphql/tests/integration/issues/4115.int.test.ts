@@ -35,18 +35,18 @@ describe("https://github.com/neo4j/graphql/issues/4115", () => {
         Person = testHelper.createUniqueType("Person");
 
         const typeDefs = `
-            type ${User} {
+            type ${User} @node {
                 id: ID! @unique
                 roles: [String!]!
             }
 
-            type ${Family} {
+            type ${Family} @node {
                 id: ID! @id @unique
                 members: [${Person}!]! @relationship(type: "MEMBER_OF", direction: IN)
                 creator: ${User}! @relationship(type: "CREATOR_OF", direction: IN)
             }
 
-            type ${Person}
+            type ${Person} @node
                 @authorization(
                     filter: [
                         {

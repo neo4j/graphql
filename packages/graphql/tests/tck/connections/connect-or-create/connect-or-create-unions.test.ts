@@ -26,12 +26,12 @@ describe("Create or connect with unions", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Movie {
+            type Movie @node {
                 title: String!
                 isan: String! @unique
             }
 
-            type Series {
+            type Series @node {
                 title: String!
                 isan: String! @unique
             }
@@ -42,7 +42,7 @@ describe("Create or connect with unions", () => {
                 screentime: Int!
             }
 
-            type Actor {
+            type Actor @node {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }

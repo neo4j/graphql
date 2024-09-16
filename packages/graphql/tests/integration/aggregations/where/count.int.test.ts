@@ -31,11 +31,11 @@ describe("aggregations-where-count", () => {
         Post = testHelper.createUniqueType("Post");
 
         const typeDefs = /* GraphQL */ `
-            type ${User} {
+            type ${User} @node {
                 testString: String!
             }
 
-            type ${Post} {
+            type ${Post} @node {
               testString: String!
               likes: [${User}!]! @relationship(type: "LIKES", direction: IN)
             }
@@ -270,15 +270,15 @@ describe("aggregations-where-count  interface relationships of concrete types", 
             testString: String!
         }
 
-        type ${User} implements Human {
+        type ${User} implements Human @node {
             testString: String!
         }
 
-        type ${Person} implements Human {
+        type ${Person} implements Human @node {
             testString: String!
         }
 
-            type ${Post} {
+            type ${Post} @node {
               testString: String!
               likes: [Human!]! @relationship(type: "LIKES", direction: IN)
             }

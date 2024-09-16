@@ -31,12 +31,12 @@ describe("Connections Filtering", () => {
         actorType = testHelper.createUniqueType("Actor");
 
         const typeDefs = gql`
-            type ${movieType} {
+            type ${movieType} @node {
                 title: String!
                 actors: [${actorType}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type ${actorType} {
+            type ${actorType} @node {
                 name: String!
                 movies: [${movieType}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }

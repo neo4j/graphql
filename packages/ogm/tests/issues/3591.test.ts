@@ -22,20 +22,20 @@ import { generate, OGM } from "../../src";
 describe("issues/3591", () => {
     test("should correctly generate types and ignore all the schema configuration directives", async () => {
         const typeDefs = `
-          type User @query(aggregate: false) @mutation(operation: [CREATE]), @subscription(events: [CREATED]) {
+          type User @query(aggregate: false) @mutation(operation: [CREATE]), @subscription(events: [CREATED]) @node {
             id: ID! @id
             company: [Company!]! @relationship(type: "WORKS_AT", direction: OUT)
             favoriteRestaurants: [Restaurant!]! @relationship(type: "FAVORITE_RESTAURANTS", direction: OUT)           
           }
 
-          type Company {
+          type Company @node {
             id: ID! @id
             field1: String @filterable(byValue: false, byAggregate: false)
             field2: String @selectable(onRead: false, onAggregate: false)
             field3: String @settable(onCreate: false, onUpdate: false)
           }
 
-          type Restaurant {
+          type Restaurant @node {
             name: String
           }
         `;
@@ -502,7 +502,9 @@ describe("issues/3591", () => {
             };
 
             export type CompanyWhere = {
+              /** @deprecated Please use the explicit _EQ version */
               id?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
+              id_EQ?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               id_NOT?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               id_IN?: InputMaybe<Array<Scalars[\\"ID\\"][\\"input\\"]>>;
@@ -517,7 +519,9 @@ describe("issues/3591", () => {
               id_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               id_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
+              /** @deprecated Please use the explicit _EQ version */
               field1?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              field1_EQ?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               field1_NOT?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               field1_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"][\\"input\\"]>>>;
@@ -532,7 +536,9 @@ describe("issues/3591", () => {
               field1_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               field1_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              /** @deprecated Please use the explicit _EQ version */
               field2?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              field2_EQ?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               field2_NOT?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               field2_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"][\\"input\\"]>>>;
@@ -547,7 +553,9 @@ describe("issues/3591", () => {
               field2_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               field2_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              /** @deprecated Please use the explicit _EQ version */
               field3?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              field3_EQ?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               field3_NOT?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               field3_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"][\\"input\\"]>>>;
@@ -592,7 +600,9 @@ describe("issues/3591", () => {
             };
 
             export type RestaurantWhere = {
+              /** @deprecated Please use the explicit _EQ version */
               name?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              name_EQ?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               name_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"][\\"input\\"]>>>;
@@ -1021,7 +1031,9 @@ describe("issues/3591", () => {
             };
 
             export type UserWhere = {
+              /** @deprecated Please use the explicit _EQ version */
               id?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
+              id_EQ?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               id_NOT?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               id_IN?: InputMaybe<Array<Scalars[\\"ID\\"][\\"input\\"]>>;

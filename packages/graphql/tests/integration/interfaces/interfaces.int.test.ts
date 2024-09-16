@@ -31,18 +31,18 @@ describe("Interfaces tests", () => {
 
     beforeAll(async () => {
         const typeDefs = `
-            type ${SomeNodeType} {
+            type ${SomeNodeType} @node {
                 id: ID! @id @unique
                 other: ${OtherNodeType}! @relationship(type: "HAS_OTHER_NODES", direction: OUT)
             }
-            type ${OtherNodeType} {
+            type ${OtherNodeType} @node {
                 id: ID! @id @unique
                 interfaceField: MyInterface! @relationship(type: "HAS_INTERFACE_NODES", direction: OUT)
             }
             interface MyInterface {
                 id: ID!
             }
-            type ${MyImplementationType} implements MyInterface {
+            type ${MyImplementationType} implements MyInterface @node {
                 id: ID! @id @unique
             }
 

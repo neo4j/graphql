@@ -26,13 +26,13 @@ describe("Cypher alias directive", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Actor {
+            type Actor @node {
                 name: String!
                 city: String @alias(property: "cityPropInDb")
                 actedIn: [Movie!]! @relationship(direction: OUT, type: "ACTED_IN", properties: "ActorActedInProps")
             }
 
-            type Movie {
+            type Movie @node {
                 title: String!
                 rating: Float @alias(property: "ratingPropInDb")
             }

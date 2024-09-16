@@ -32,20 +32,20 @@ describe("Interfaces top level connections", () => {
                 actors: [${Actor}!]! @declareRelationship
             }
 
-            type ${Movie} implements Show {
+            type ${Movie} implements Show @node {
                 title: String!
                 cost: Float
                 runtime: Int
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type ${Series} implements Show {
+            type ${Series} implements Show @node {
                 title: String!
                 episodes: Int
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type ${Actor} {
+            type ${Actor} @node {
                 name: String!
                 actedIn: [Show!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }

@@ -75,7 +75,7 @@ describe("https://github.com/neo4j/graphql/issues/5461", () => {
         const type = testHelper.createUniqueType("Book");
 
         const typeDefs = `
-        type ${type.name} {
+        type ${type.name} @node {
             isbn: BigInt! @unique
             age: BigInt!
         }

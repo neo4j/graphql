@@ -42,7 +42,7 @@ describe("auth/allow-unauthenticated", () => {
     describe("allowUnauthenticated with allow", () => {
         test("should return a Post without errors", async () => {
             const typeDefs = `
-                type ${Post} {
+                type ${Post} @node {
                     id: ID!
                     publisher: String!
                     published: Boolean!
@@ -96,7 +96,7 @@ describe("auth/allow-unauthenticated", () => {
 
         test("should throw a Forbidden error", async () => {
             const typeDefs = `
-                type ${Post} {
+                type ${Post} @node {
                     id: ID!
                     publisher: String!
                     published: Boolean!
@@ -151,7 +151,7 @@ describe("auth/allow-unauthenticated", () => {
 
         test("should throw a Forbidden error if at least one result isn't allowed", async () => {
             const typeDefs = `
-                type ${Post} {
+                type ${Post} @node {
                     id: ID!
                     publisher: String!
                     published: Boolean!
@@ -210,7 +210,7 @@ describe("auth/allow-unauthenticated", () => {
     describe("allowUnauthenticated with where", () => {
         test("should return a Post without errors", async () => {
             const typeDefs = `
-                type ${Post} {
+                type ${Post} @node {
                     id: ID!
                     publisher: String!
                     published: Boolean!
@@ -263,7 +263,7 @@ describe("auth/allow-unauthenticated", () => {
 
         test("should return an empty array without errors", async () => {
             const typeDefs = `
-                type ${Post} {
+                type ${Post} @node {
                     id: ID!
                     publisher: String!
                     published: Boolean!
@@ -316,7 +316,7 @@ describe("auth/allow-unauthenticated", () => {
 
         test("should only return published Posts without errors", async () => {
             const typeDefs = `
-                type ${Post} {
+                type ${Post} @node {
                     id: ID!
                     publisher: String!
                     published: Boolean!
@@ -376,7 +376,7 @@ describe("auth/allow-unauthenticated", () => {
             const User = testHelper.createUniqueType("User");
 
             const typeDefs = `
-                type ${User} {
+                type ${User} @node {
                     id: ID
                 }
 

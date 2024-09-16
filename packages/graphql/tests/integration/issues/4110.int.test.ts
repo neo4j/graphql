@@ -35,14 +35,14 @@ describe("https://github.com/neo4j/graphql/issues/4110", () => {
         InBetween = testHelper.createUniqueType("Person");
 
         const typeDefs = /* GraphQL */ `
-            type ${Company}
+            type ${Company} @node
                 @authorization(
                     filter: [{ operations: [READ], where: { node: { inBetween: { company: { id: "example" } } } } }]
                 ) {
                 id: ID @id
                 inBetween: ${InBetween} @relationship(type: "CONNECT_TO", direction: OUT)
             }
-            type ${InBetween} {
+            type ${InBetween} @node {
                 id: ID @id
                 company: ${Company}! @relationship(type: "CONNECT_TO", direction: IN)
             }

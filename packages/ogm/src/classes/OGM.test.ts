@@ -22,14 +22,14 @@ import OGM from "./OGM";
 describe("OGM", () => {
     test("should construct", () => {
         // @ts-ignore
-        expect(new OGM({ typeDefs: "type User {id: ID}" })).toBeInstanceOf(OGM);
+        expect(new OGM({ typeDefs: "type User @node {id: ID}" })).toBeInstanceOf(OGM);
     });
 
     describe("methods", () => {
         describe("checkNeo4jCompat", () => {
             test("should neo4j-driver Driver missing", async () => {
                 // @ts-ignore
-                const ogm = new OGM({ typeDefs: "type User {id: ID}" });
+                const ogm = new OGM({ typeDefs: "type User @node {id: ID}" });
 
                 await expect(ogm.checkNeo4jCompat()).rejects.toThrow(`neo4j-driver Driver missing`);
             });
@@ -37,14 +37,14 @@ describe("OGM", () => {
 
         describe("assertIndexesAndConstraints", () => {
             test("should throw to await ogm.init()", async () => {
-                const ogm = new OGM({ typeDefs: "type User {id: ID}" });
+                const ogm = new OGM({ typeDefs: "type User @node {id: ID}" });
 
                 await expect(ogm.assertIndexesAndConstraints()).rejects.toThrow(
                     `You must await \`.init()\` before \`.assertIndexesAndConstraints()\``
                 );
             });
             test("should throw neo4j-driver Driver missing", async () => {
-                const ogm = new OGM({ typeDefs: "type User {id: ID}" });
+                const ogm = new OGM({ typeDefs: "type User @node {id: ID}" });
                 await ogm.init();
                 await expect(ogm.assertIndexesAndConstraints()).rejects.toThrow(`neo4j-driver Driver missing`);
             });
@@ -52,7 +52,7 @@ describe("OGM", () => {
 
         describe("model", () => {
             test("should throw cannot find model", async () => {
-                const ogm = new OGM({ typeDefs: `type User {id:ID}` });
+                const ogm = new OGM({ typeDefs: `type User @node {id:ID}` });
 
                 await ogm.init();
 

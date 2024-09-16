@@ -34,7 +34,7 @@ describe("integration/rfcs/query-limits", () => {
             const randomType = testHelper.createUniqueType("Movie");
 
             const typeDefs = `
-                type ${randomType.name} @limit(default: 2) {
+                type ${randomType.name} @limit(default: 2) @node {
                     id: ID!
                 }
             `;
@@ -78,12 +78,12 @@ describe("integration/rfcs/query-limits", () => {
             });
 
             const typeDefs = `
-                type ${randomType1.name}  {
+                type ${randomType1.name}  @node {
                     id: ID!
                     actors: [${randomType2.name}!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type ${randomType2.name} @limit(default: 3) {
+                type ${randomType2.name} @limit(default: 3) @node {
                     id: ID!
                 }
             `;
@@ -129,12 +129,12 @@ describe("integration/rfcs/query-limits", () => {
             });
 
             const typeDefs = `
-                type ${randomType1.name}  {
+                type ${randomType1.name}  @node {
                     id: ID!
                     actors: [${randomType2.name}!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type ${randomType2.name} @limit(default: 4) {
+                type ${randomType2.name} @limit(default: 4) @node {
                     id: ID!
                 }
             `;

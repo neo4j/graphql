@@ -26,7 +26,7 @@ describe("Cypher autogenerate directive", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Movie {
+            type Movie @node {
                 id: ID! @id @unique
                 name: String!
             }

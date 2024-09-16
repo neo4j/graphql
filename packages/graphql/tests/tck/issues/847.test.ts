@@ -18,7 +18,7 @@
  */
 
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/847", () => {
     test("should be able to query multiple interface relations", async () => {
@@ -27,17 +27,17 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
                 id: String!
             }
 
-            type Person implements Entity {
+            type Person implements Entity @node {
                 id: String! @unique
                 name: String!
             }
 
-            type Place implements Entity {
+            type Place implements Entity @node {
                 id: String! @unique
                 location: Point!
             }
 
-            type Interaction {
+            type Interaction @node {
                 id: ID! @id @unique
                 kind: String!
                 subjects: [Entity!]! @relationship(type: "ACTED_IN", direction: IN)

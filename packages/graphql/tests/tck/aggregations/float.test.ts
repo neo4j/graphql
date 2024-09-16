@@ -26,7 +26,7 @@ describe("Cypher Aggregations Float", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Movie {
+            type Movie @node {
                 actorCount: Float!
             }
         `;

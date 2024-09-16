@@ -26,7 +26,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type User {
+            type User @node {
                 id: ID!
                 authId: String
                 workspaces: [Workspace!]! @relationship(type: "MEMBER_OF", direction: OUT)
@@ -35,6 +35,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
             }
 
             type Workspace
+                @node
                 @authorization(
                     filter: [
                         {
@@ -57,6 +58,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
             }
 
             type Page
+                @node
                 @authorization(
                     filter: [
                         {

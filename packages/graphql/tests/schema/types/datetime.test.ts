@@ -18,14 +18,14 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Datetime", () => {
     test("DateTime", async () => {
         const typeDefs = gql`
-            type Movie {
+            type Movie @node {
                 id: ID
                 datetime: DateTime
             }
@@ -122,7 +122,8 @@ describe("Datetime", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              datetime: DateTime
+              datetime: DateTime @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              datetime_EQ: DateTime
               datetime_GT: DateTime
               datetime_GTE: DateTime
               datetime_IN: [DateTime]
@@ -130,9 +131,10 @@ describe("Datetime", () => {
               datetime_LTE: DateTime
               datetime_NOT: DateTime @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               datetime_NOT_IN: [DateTime] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id: ID
+              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
+              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")

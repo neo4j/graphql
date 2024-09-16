@@ -18,13 +18,7 @@
  */
 
 import { Neo4jGraphQL } from "../../../../../src";
-import {
-    formatCypher,
-    formatParams,
-    setTestEnvVars,
-    translateQuery,
-    unsetTestEnvVars,
-} from "../../../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../../../utils/tck-test-utils";
 
 describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
     let typeDefs: string;
@@ -32,12 +26,12 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Movie {
+            type Movie @node {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
             }
 
-            type Actor {
+            type Actor @node {
                 name: String!
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
@@ -58,12 +52,8 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
                 },
             },
         });
-        setTestEnvVars("NEO4J_GRAPHQL_ENABLE_REGEX=1");
     });
 
-    afterAll(() => {
-        unsetTestEnvVars(undefined);
-    });
     test("CONTAINS", async () => {
         const query = /* GraphQL */ `
             query {

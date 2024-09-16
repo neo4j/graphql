@@ -31,11 +31,11 @@ describe("https://github.com/neo4j/graphql/issues/4001", () => {
                 offset: Int = 0
             }
 
-            type Video {
+            type Video @node {
                 id: ID!
             }
 
-            type Serie {
+            type Serie @node {
                 id: ID!
 
                 allEpisodes(options: Pagination): [Video!]!

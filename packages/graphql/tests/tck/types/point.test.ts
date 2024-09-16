@@ -18,7 +18,7 @@
  */
 
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Cypher Points", () => {
     let typeDefs: string;
@@ -26,7 +26,7 @@ describe("Cypher Points", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type PointContainer {
+            type PointContainer @node {
                 id: String
                 point: Point
             }

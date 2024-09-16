@@ -26,7 +26,7 @@ describe("Cypher Aggregations String", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Movie {
+            type Movie @node {
                 title: String
                 testId: ID
             }

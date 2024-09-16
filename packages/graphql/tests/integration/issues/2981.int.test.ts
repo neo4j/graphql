@@ -33,7 +33,7 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
         BookTitle_EN = testHelper.createUniqueType("BookTitle_EN");
 
         const typeDefs = `
-        type ${Book} {
+        type ${Book} @node {
             originalTitle: String!
             translatedTitle: BookTitle @relationship(type: "TRANSLATED_BOOK_TITLE", direction: IN)
             isbn: String!
@@ -41,12 +41,12 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
     
         union BookTitle = ${BookTitle_SV} | ${BookTitle_EN}
     
-        type ${BookTitle_SV} {
+        type ${BookTitle_SV} @node {
             book: ${Book}! @relationship(type: "TRANSLATED_BOOK_TITLE", direction: OUT)
             value: String!
         }
     
-        type ${BookTitle_EN} {
+        type ${BookTitle_EN} @node {
             book: ${Book}! @relationship(type: "TRANSLATED_BOOK_TITLE", direction: OUT)
             value: String!
         }

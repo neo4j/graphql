@@ -33,7 +33,7 @@ describe("https://github.com/neo4j/graphql/issues/1287", () => {
         norwegianScreenable = testHelper.createUniqueType("NorwegianScreenableMeta");
 
         typeDefs = `
-            type ${screeningsType} {
+            type ${screeningsType} @node {
                 id: ID! @id @unique
                 title: String
                 beginsAt: DateTime!
@@ -48,7 +48,7 @@ describe("https://github.com/neo4j/graphql/issues/1287", () => {
                 locale: LocalTime!
             }
     
-            type ${norwegianScreenable} implements ScreenableMeta {
+            type ${norwegianScreenable} implements ScreenableMeta @node {
                 id: ID! @id @unique
                 spokenLanguage: String!
                 subtitlesLanguage: String!

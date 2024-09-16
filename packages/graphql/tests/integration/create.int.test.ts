@@ -31,12 +31,12 @@ describe("create", () => {
         Movie = testHelper.createUniqueType("Movie");
 
         const typeDefs = `
-            type ${Actor} {
+            type ${Actor} @node {
                 name: String
                 movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         
-            type ${Movie} {
+            type ${Movie} @node {
                 id: ID!
                 title: String
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
@@ -196,7 +196,7 @@ describe("create", () => {
         const Photo = testHelper.createUniqueType("Photo");
 
         const typeDefs = `
-            type ${Product} {
+            type ${Product} @node {
                 id: ID!
                 name: String!
                 sizes: [${Size}!]! @relationship(type: "HAS_SIZE", direction: OUT)
@@ -204,18 +204,18 @@ describe("create", () => {
                 photos: [${Photo}!]! @relationship(type: "HAS_PHOTO", direction: OUT)
             }
 
-            type ${Size} {
+            type ${Size} @node {
                 id: ID!
                 name: String!
             }
 
-            type ${Color} {
+            type ${Color} @node {
                 id: ID!
                 name: String!
                 photos: [${Photo}!]! @relationship(type: "OF_COLOR", direction: IN)
             }
 
-            type ${Photo} {
+            type ${Photo} @node {
                 id: ID!
                 description: String!
                 url: String!

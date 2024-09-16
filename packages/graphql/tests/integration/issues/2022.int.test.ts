@@ -33,14 +33,14 @@ describe("https://github.com/neo4j/graphql/issues/2022", () => {
         Organization = testHelper.createUniqueType("Organization");
 
         const typeDefs = `
-            type ${ArtPiece} {
+            type ${ArtPiece} @node {
                 dbId: ID! @id @unique @relayId @alias(property: "id")
                 title: String!
                 auction: ${AuctionItem}! @relationship(type: "SOLD_AT_AUCTION_AS", direction: OUT)
                 owner: ${Organization}! @relationship(type: "OWNED_BY", direction: OUT)
             }
 
-            type ${AuctionItem} {
+            type ${AuctionItem} @node {
                 dbId: ID! @id @unique @relayId @alias(property: "id")
                 auctionName: String!
                 lotNumber: Int!
@@ -50,7 +50,7 @@ describe("https://github.com/neo4j/graphql/issues/2022", () => {
                 seller: ${Organization}! @relationship(type: "SOLD_ITEM_AT_AUCTION", direction: IN)
             }
 
-            type ${Organization} {
+            type ${Organization} @node {
                 dbId: ID! @id @unique @relayId @alias(property: "id")
                 name: String!
 

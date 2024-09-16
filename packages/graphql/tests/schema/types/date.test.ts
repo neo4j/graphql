@@ -25,7 +25,7 @@ import { Neo4jGraphQL } from "../../../src";
 describe("Date", () => {
     test("Date", async () => {
         const typeDefs = gql`
-            type Movie {
+            type Movie @node {
                 id: ID
                 date: Date
             }
@@ -116,7 +116,8 @@ describe("Date", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              date: Date
+              date: Date @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              date_EQ: Date
               date_GT: Date
               date_GTE: Date
               date_IN: [Date]
@@ -124,9 +125,10 @@ describe("Date", () => {
               date_LTE: Date
               date_NOT: Date @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               date_NOT_IN: [Date] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id: ID
+              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
+              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")

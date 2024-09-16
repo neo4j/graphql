@@ -30,7 +30,7 @@ describe("Point", () => {
         Photograph = testHelper.createUniqueType("Photograph");
 
         const typeDefs = /* GraphQL */ `
-            type ${Photograph} {
+            type ${Photograph} @node {
                 id: String!
                 size: Int!
                 location: Point!

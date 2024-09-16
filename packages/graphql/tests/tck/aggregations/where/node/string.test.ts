@@ -26,12 +26,12 @@ describe("Cypher Aggregations where node with String", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type User {
+            type User @node {
                 name: String!
                 someStringAlias: String @alias(property: "_someStringAlias")
             }
 
-            type Post {
+            type Post @node {
                 content: String!
                 likes: [User!]! @relationship(type: "LIKES", direction: IN)
             }
@@ -731,12 +731,12 @@ describe("Cypher Aggregations where node with String interface relationships of 
                 someStringAlias: String @alias(property: "_someStringAlias")
             }
 
-            type Person implements Human {
+            type Person implements Human @node {
                 name: String!
                 someStringAlias: String
             }
 
-            type Post {
+            type Post @node {
                 content: String!
                 likes: [Human!]! @relationship(type: "LIKES", direction: IN)
             }

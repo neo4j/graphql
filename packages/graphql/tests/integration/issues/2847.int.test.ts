@@ -37,11 +37,11 @@ describe("https://github.com/neo4j/graphql/issues/2847", () => {
             name: String!
           }
           
-          type ${Movie} implements ${Product} {
+          type ${Movie} implements ${Product} @node {
             name: String!
           }
         
-          type ${Actor} {
+          type ${Actor} @node {
             name: String!
             product: ${Product} @relationship(type: "HAS_PRODUCT", direction: OUT)
           }

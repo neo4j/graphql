@@ -42,10 +42,10 @@ describe("unions", () => {
     test("read Unions with missing types", async () => {
         const typeDefs = `
             union Search = ${GenreType} | ${MovieType}
-            type ${GenreType} {
+            type ${GenreType} @node {
                 name: String
             }
-            type ${MovieType} {
+            type ${MovieType} @node {
                 title: String
                 search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
             }
@@ -95,11 +95,11 @@ describe("unions", () => {
         const typeDefs = `
             union Search = ${GenreType} | ${MovieType}
 
-            type ${GenreType} {
+            type ${GenreType} @node {
                 name: String
             }
 
-            type ${MovieType} {
+            type ${MovieType} @node {
                 title: String
                 search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
             }
@@ -156,11 +156,11 @@ describe("unions", () => {
         const typeDefs = `
             union Search = ${MovieType} | ${GenreType}
 
-            type ${GenreType} {
+            type ${GenreType} @node {
                 name: String
             }
 
-            type ${MovieType} {
+            type ${MovieType} @node {
                 title: String
                 search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
             }
@@ -220,11 +220,11 @@ describe("unions", () => {
         const typeDefs = `
             union Search = ${MovieType} | ${GenreType}
 
-            type ${GenreType} {
+            type ${GenreType} @node {
                 name: String
             }
 
-            type ${MovieType} {
+            type ${MovieType} @node {
                 title: String
                 search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
             }
@@ -274,11 +274,11 @@ describe("unions", () => {
         const typeDefs = `
             union Search = ${MovieType} | ${GenreType}
 
-            type ${GenreType} {
+            type ${GenreType} @node {
                 name: String
             }
 
-            type ${MovieType} {
+            type ${MovieType} @node {
                 title: String
                 search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
             }
@@ -337,11 +337,11 @@ describe("unions", () => {
         const typeDefs = `
             union Search = ${MovieType} | ${GenreType}
 
-            type ${GenreType} {
+            type ${GenreType} @node {
                 name: String
             }
 
-            type ${MovieType} {
+            type ${MovieType} @node {
                 title: String
                 search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
             }
@@ -421,11 +421,11 @@ describe("unions", () => {
         const typeDefs = `
             union Search = ${MovieType} | ${GenreType}
 
-            type ${GenreType} {
+            type ${GenreType} @node {
                 name: String
             }
 
-            type ${MovieType} {
+            type ${MovieType} @node {
                 title: String
                 search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
             }
@@ -486,11 +486,11 @@ describe("unions", () => {
         const typeDefs = `
             union Search = ${MovieType} | ${GenreType}
 
-            type ${GenreType} {
+            type ${GenreType} @node {
                 name: String
             }
 
-            type ${MovieType} {
+            type ${MovieType} @node {
                 title: String
                 search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
             }
@@ -558,11 +558,11 @@ describe("unions", () => {
         const typeDefs = `
             union Search = ${MovieType} | ${GenreType}
 
-            type ${GenreType} {
+            type ${GenreType} @node {
                 name: String
             }
 
-            type ${MovieType} {
+            type ${MovieType} @node {
                 title: String
                 search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
             }
@@ -654,11 +654,11 @@ describe("unions", () => {
         const typeDefs = `
             union Search =  ${MovieType} | ${GenreType}
 
-            type ${GenreType} {
+            type ${GenreType} @node {
                 name: String
             }
 
-            type ${MovieType} {
+            type ${MovieType} @node {
                 title: String
                 search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
             }
@@ -726,11 +726,11 @@ describe("unions", () => {
                 union Search = ${MovieType} | ${GenreType}
 
 
-                type ${GenreType} @authorization(validate: [{ operations: [READ], when: BEFORE, where: { node: { name: "$jwt.jwtAllowedNamesExample" } } }]) {
+                type ${GenreType} @authorization(validate: [{ operations: [READ], when: BEFORE, where: { node: { name: "$jwt.jwtAllowedNamesExample" } } }]) @node {
                     name: String
                 }
 
-                type ${MovieType} {
+                type ${MovieType} @node {
                     title: String
                     search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
                 }

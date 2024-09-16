@@ -24,7 +24,7 @@ import { Neo4jGraphQL } from "../../../src/classes";
 describe("https://github.com/neo4j/graphql/issues/556", () => {
     test("should compile type defs with no errors", async () => {
         const typeDefs = gql`
-            type Journalist {
+            type Journalist @node {
                 articles: [Article!]! @relationship(type: "HAS_ARTICLE", direction: OUT, properties: "HasArticle")
             }
 
@@ -32,7 +32,7 @@ describe("https://github.com/neo4j/graphql/issues/556", () => {
                 createdAt: DateTime! @timestamp
             }
 
-            type Article {
+            type Article @node {
                 id: ID! @id @unique
                 blocks: [Block!]! @relationship(type: "HAS_BLOCK", direction: OUT, properties: "HasBlock")
                 images: [Image!]! @relationship(type: "HAS_IMAGE", direction: OUT)
@@ -46,16 +46,16 @@ describe("https://github.com/neo4j/graphql/issues/556", () => {
                 id: ID
             }
 
-            type TextBlock implements Block {
+            type TextBlock implements Block @node {
                 id: ID @id @unique
                 text: String
             }
 
-            type DividerBlock implements Block {
+            type DividerBlock implements Block @node {
                 id: ID @id @unique
             }
 
-            type ImageBlock implements Block {
+            type ImageBlock implements Block @node {
                 id: ID @id @unique
                 images: [Image!]! @relationship(type: "HAS_IMAGE", direction: OUT)
             }
@@ -64,7 +64,7 @@ describe("https://github.com/neo4j/graphql/issues/556", () => {
                 featuredIn: [Article!]
             }
 
-            type PDFImage implements Image {
+            type PDFImage implements Image @node {
                 featuredIn: [Article!]! @relationship(type: "HAS_IMAGE", direction: IN)
                 url: String!
             }
@@ -94,7 +94,7 @@ describe("https://github.com/neo4j/graphql/issues/556", () => {
         const typeDefs = `
             input JournalistInput {
             }
-            type Journalist {
+            type Journalist @node {
                 query(input: JournalistInput): Int
             }
 
@@ -109,7 +109,7 @@ describe("https://github.com/neo4j/graphql/issues/556", () => {
             interface Person {
             }
 
-            type Journalist implements Person {
+            type Journalist implements Person @node {
                 test: Int
             }
 

@@ -22,7 +22,7 @@ import Neo4jGraphQL from "../../../src/classes/Neo4jGraphQL";
 const basicTypeDefs = `
     extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key"])
 
-    type Journalist {
+    type Journalist @node {
         articles: [Article!]! @relationship(type: "HAS_ARTICLE", direction: OUT, properties: "HasArticle")
     }
 
@@ -30,13 +30,13 @@ const basicTypeDefs = `
         createdAt: DateTime! @timestamp
     }
 
-    type Article @key(fields: "id") {
+    type Article @key(fields: "id") @node {
         id: ID! @id @unique
         blocks: [Block!]! @relationship(type: "HAS_BLOCK", direction: OUT, properties: "HasBlock")
         images: [Image!]! @relationship(type: "HAS_IMAGE", direction: OUT)
     }
 
-    type HasBlock @relationshipProperties {
+    type HasBlock @relationshipProperties @node {
         order: Int!
     }
 
@@ -44,16 +44,16 @@ const basicTypeDefs = `
         id: ID
     }
 
-    type TextBlock implements Block {
+    type TextBlock implements Block @node {
         id: ID @id @unique
         text: String
     }
 
-    type DividerBlock implements Block {
+    type DividerBlock implements Block @node {
         id: ID @id @unique
     }
 
-    type ImageBlock implements Block {
+    type ImageBlock implements Block @node {
         id: ID @id @unique
         images: [Image!]! @relationship(type: "HAS_IMAGE", direction: OUT)
     }
@@ -62,7 +62,7 @@ const basicTypeDefs = `
         featuredIn: [Article!]
     }
 
-    type PDFImage implements Image {
+    type PDFImage implements Image @node {
         featuredIn: [Article!]! @relationship(type: "HAS_IMAGE", direction: IN)
         url: String!
     }

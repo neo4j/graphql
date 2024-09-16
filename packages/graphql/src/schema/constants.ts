@@ -33,6 +33,13 @@ export const DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS = {
     },
 };
 
+export const DEPRECATE_EQUAL_FILTERS = {
+    name: DEPRECATED,
+    args: {
+        reason: "Please use the explicit _EQ version",
+    },
+};
+
 export const DEPRECATE_INVALID_AGGREGATION_FILTERS = {
     name: DEPRECATED,
     args: {

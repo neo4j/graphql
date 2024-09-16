@@ -28,7 +28,7 @@ describe("[Point]", () => {
     beforeEach(async () => {
         Route = testHelper.createUniqueType("Route");
         const typeDefs = /* GraphQL */ `
-            type ${Route} {
+            type ${Route} @node {
                 id: String!
                 waypoints: [Point!]!
             }

@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("https://github.com/neo4j/graphql/issues/2377", () => {
@@ -57,7 +57,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
                 properties: [Property!]
             }
 
-            type Resource implements ResourceEntity {
+            type Resource implements ResourceEntity @node {
                 id: ID! @unique
                 name: String
                 type: ResourceType!
@@ -427,9 +427,10 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               AND: [ResourceEntityWhere!]
               NOT: ResourceEntityWhere
               OR: [ResourceEntityWhere!]
-              id: ID
+              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
+              id_EQ: ID
               id_IN: [ID!]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -437,9 +438,10 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -447,15 +449,18 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
-              properties: [Property!]
+              properties: [Property!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              properties_EQ: [Property!]
               properties_INCLUDES: Property
               properties_NOT: [Property!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               properties_NOT_INCLUDES: Property @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              tags: [Tag!]
+              tags: [Tag!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              tags_EQ: [Tag!]
               tags_INCLUDES: Tag
               tags_NOT: [Tag!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               tags_NOT_INCLUDES: Tag @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              type: ResourceType
+              type: ResourceType @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              type_EQ: ResourceType
               type_IN: [ResourceType!]
               type_NOT: ResourceType @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               type_NOT_IN: [ResourceType!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -564,7 +569,8 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               containedBy_SINGLE: ResourceWhere
               \\"\\"\\"Return Resources where some of the related Resources match this filter\\"\\"\\"
               containedBy_SOME: ResourceWhere
-              createdAt: DateTime
+              createdAt: DateTime @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              createdAt_EQ: DateTime
               createdAt_GT: DateTime
               createdAt_GTE: DateTime
               createdAt_IN: [DateTime!]
@@ -572,13 +578,15 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               createdAt_LTE: DateTime
               createdAt_NOT: DateTime @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               createdAt_NOT_IN: [DateTime!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              externalIds: [ID!]
+              externalIds: [ID!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              externalIds_EQ: [ID!]
               externalIds_INCLUDES: ID
               externalIds_NOT: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               externalIds_NOT_INCLUDES: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id: ID
+              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
+              id_EQ: ID
               id_IN: [ID!]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -586,9 +594,10 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -596,19 +605,23 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
-              properties: [Property!]
+              properties: [Property!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              properties_EQ: [Property!]
               properties_INCLUDES: Property
               properties_NOT: [Property!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               properties_NOT_INCLUDES: Property @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              tags: [Tag!]
+              tags: [Tag!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              tags_EQ: [Tag!]
               tags_INCLUDES: Tag
               tags_NOT: [Tag!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               tags_NOT_INCLUDES: Tag @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              type: ResourceType
+              type: ResourceType @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              type_EQ: ResourceType
               type_IN: [ResourceType!]
               type_NOT: ResourceType @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               type_NOT_IN: [ResourceType!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              updatedAt: DateTime
+              updatedAt: DateTime @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              updatedAt_EQ: DateTime
               updatedAt_GT: DateTime
               updatedAt_GTE: DateTime
               updatedAt_IN: [DateTime!]

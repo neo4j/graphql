@@ -36,7 +36,8 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
                 nameDetails: NameDetails
             }
 
-            type ApplicationVariant implements BusinessObject
+            type ApplicationVariant implements BusinessObject 
+                @node
                 @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "ALL" } } }])
                 @mutation(operations: []) {
                 markets: [Market!]! @relationship(type: "HAS_MARKETS", direction: OUT)
@@ -49,6 +50,7 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
             }
 
             type NameDetails
+                @node
                 @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "ALL" } } }])
                 @mutation(operations: [])
                 @query(read: false, aggregate: false) {
@@ -56,6 +58,7 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
             }
 
             type Market implements BusinessObject
+                @node
                 @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "ALL" } } }])
                 @mutation(operations: []) {
                 id: ID! @unique
@@ -63,6 +66,7 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
             }
 
             type BaseObject
+                @node
                 @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "ALL" } } }])
                 @mutation(operations: []) {
                 id: ID! @id @unique

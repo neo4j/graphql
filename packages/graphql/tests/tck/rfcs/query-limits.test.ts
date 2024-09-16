@@ -18,7 +18,7 @@
  */
 
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("tck/rfcs/query-limits", () => {
     let typeDefs: string;
@@ -26,20 +26,20 @@ describe("tck/rfcs/query-limits", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Movie @limit(default: 3, max: 5) {
+            type Movie @limit(default: 3, max: 5) @node {
                 id: ID!
                 actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Person @limit(default: 2) {
+            type Person @limit(default: 2) @node {
                 id: ID!
             }
 
-            type Show @limit(max: 2) {
+            type Show @limit(max: 2) @node {
                 id: ID!
             }
 
-            type Festival {
+            type Festival @node {
                 name: String!
                 shows: [Show!]! @relationship(type: "PART_OF", direction: IN)
             }

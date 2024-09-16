@@ -30,12 +30,12 @@ import {
 
 describe("isUnwindCreateSupported", () => {
     const simpleTypeDefs = /* GraphQL */ `
-        type Movie {
+        type Movie @node {
             title: String!
             actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
         }
 
-        type Actor {
+        type Actor @node {
             name: String!
             movies: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
         }
@@ -148,12 +148,12 @@ describe("isUnwindCreateSupported", () => {
 
     test("populatedBy not supported", () => {
         const populatedByTD = /* GraphQL */ `
-            type Movie {
+            type Movie @node {
                 title: String! @populatedBy(callback: "setTitle", operations: [CREATE])
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type Actor {
+            type Actor @node {
                 name: String!
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
             }
@@ -172,12 +172,12 @@ describe("isUnwindCreateSupported", () => {
 
     test("populatedBy defined but not for create operations", () => {
         const populatedByTD = /* GraphQL */ `
-            type Movie {
+            type Movie @node {
                 title: String! @populatedBy(callback: "setTitle", operations: [UPDATE])
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type Actor {
+            type Actor @node {
                 name: String!
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
             }
@@ -196,12 +196,12 @@ describe("isUnwindCreateSupported", () => {
 
     test("populatedBy not supported (nested)", () => {
         const populatedByTD = /* GraphQL */ `
-            type Movie {
+            type Movie @node {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type Actor {
+            type Actor @node {
                 id: ID!
                 name: String! @populatedBy(callback: "setName", operations: [CREATE])
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
@@ -221,12 +221,12 @@ describe("isUnwindCreateSupported", () => {
 
     test("populatedBy defined but not for create operations (nested)", () => {
         const populatedByTD = /* GraphQL */ `
-            type Movie {
+            type Movie @node {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type Actor {
+            type Actor @node {
                 id: ID!
                 name: String! @populatedBy(callback: "setName", operations: [UPDATE])
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
@@ -250,13 +250,13 @@ describe("isUnwindCreateSupported", () => {
                 id: ID!
             }
 
-            type Movie implements Entity {
+            type Movie implements Entity @node {
                 id: ID!
                 title: String!
                 actors: [Entity!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type Actor implements Entity {
+            type Actor implements Entity @node {
                 id: ID!
                 name: String!
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)

@@ -39,7 +39,7 @@ describe("https://github.com/neo4j/graphql/issues/5467", () => {
                 roles: [String!]!
             }
 
-            type ${User}
+            type ${User} @node
                 @authorization(
                     validate: [
                         { operations: [CREATE, DELETE], where: { jwt: { roles_INCLUDES: "admin" } } }
@@ -51,19 +51,19 @@ describe("https://github.com/neo4j/graphql/issues/5467", () => {
                 cabinets: [${Cabinet}!]! @relationship(type: "HAS_CABINET", direction: OUT)
             }
 
-            type ${Cabinet} @authorization(filter: [{ where: { node: { user: { id: "$jwt.sub" } } } }]) {
+            type ${Cabinet} @authorization(filter: [{ where: { node: { user: { id: "$jwt.sub" } } } }]) @node {
                 id: ID! @id
                 categories: [${Category}!]! @relationship(type: "HAS_CATEGORY", direction: OUT)
                 user: ${User}! @relationship(type: "HAS_CABINET", direction: IN)
             }
 
-            type ${Category} @authorization(filter: [{ where: { node: { cabinet: { user: { id: "$jwt.sub" } } } } }]) {
+            type ${Category} @authorization(filter: [{ where: { node: { cabinet: { user: { id: "$jwt.sub" } } } } }]) @node {
                 id: ID! @id
                 files: [${File}!]! @relationship(type: "HAS_FILE", direction: OUT)
                 cabinet: ${Cabinet}! @relationship(type: "HAS_CATEGORY", direction: IN)
             }
 
-            type ${File} {
+            type ${File} @node {
                 id: ID! @unique
                 category: ${Category} @relationship(type: "HAS_FILE", direction: IN)
             }

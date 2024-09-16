@@ -31,20 +31,20 @@ describe("https://github.com/neo4j/graphql/issues/4704", () => {
                 actors: [Actor!]! @declareRelationship
             }
 
-            type Movie implements Show {
+            type Movie implements Show @node {
                 title: String!
                 cost: Float
                 runtime: Int
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type Series implements Show {
+            type Series implements Show @node {
                 title: String!
                 episodes: Int
                 actors: [Actor!]! @relationship(type: "STARRED_IN", direction: IN, properties: "StarredIn")
             }
 
-            type Actor {
+            type Actor @node {
                 name: String!
                 actedIn: [Show!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }

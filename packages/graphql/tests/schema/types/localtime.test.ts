@@ -18,14 +18,14 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Localtime", () => {
     test("LocalTime", async () => {
         const typeDefs = gql`
-            type Movie {
+            type Movie @node {
                 id: ID
                 time: LocalTime
             }
@@ -124,9 +124,10 @@ describe("Localtime", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              id: ID
+              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
+              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -134,7 +135,8 @@ describe("Localtime", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
-              time: LocalTime
+              time: LocalTime @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              time_EQ: LocalTime
               time_GT: LocalTime
               time_GTE: LocalTime
               time_IN: [LocalTime]

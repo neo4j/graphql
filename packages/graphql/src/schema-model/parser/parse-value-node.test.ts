@@ -24,7 +24,7 @@ import { parseValueNode } from "./parse-value-node";
 describe("parseValueNode", () => {
     test("should return a correct nested object", () => {
         const typeDefs = `
-            type Movie @Auth(rules: [{ str: "string", int: 123, float: 12.3, bool: true }]) {
+            type Movie @Auth(rules: [{ str: "string", int: 123, float: 12.3, bool: true }]) @node {
                 name: String
             }
         `;

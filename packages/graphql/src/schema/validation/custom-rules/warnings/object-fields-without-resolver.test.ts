@@ -46,11 +46,11 @@ describe("WarnObjectFieldsWithoutResolver", () => {
     describe("Does not show warning", () => {
         test("Error on object field array  without resolver throw warning in debug", () => {
             const doc = gql`
-                type Movie {
+                type Movie @node {
                     actors: [Actor!]!
                 }
 
-                type Actor {
+                type Actor @node {
                     name: String
                 }
             `;
@@ -65,11 +65,11 @@ describe("WarnObjectFieldsWithoutResolver", () => {
 
         test("Error on object field without resolver throw warning in debug", () => {
             const doc = gql`
-                type Movie {
+                type Movie @node {
                     actors: Actor
                 }
 
-                type Actor {
+                type Actor @node {
                     name: String
                 }
             `;
@@ -84,11 +84,11 @@ describe("WarnObjectFieldsWithoutResolver", () => {
 
         test("Relationship", () => {
             const doc = gql`
-                type Movie {
+                type Movie @node {
                     actors: Actor @relationship(type: "ACTED_IN", direction: OUT)
                 }
 
-                type Actor {
+                type Actor @node {
                     name: String
                 }
             `;
@@ -103,11 +103,11 @@ describe("WarnObjectFieldsWithoutResolver", () => {
 
         test("Custom Cypher", () => {
             const doc = gql`
-                type Movie {
+                type Movie @node {
                     actors: Actor @cypher(statement: "RETURN 4 AS x", columnName: "x")
                 }
 
-                type Actor {
+                type Actor @node {
                     name: String
                 }
             `;
@@ -122,7 +122,7 @@ describe("WarnObjectFieldsWithoutResolver", () => {
 
         test("enum", () => {
             const doc = gql`
-                type Movie {
+                type Movie @node {
                     actors: Actor
                 }
 

@@ -42,14 +42,14 @@ describe("Interface Field Level Aggregations with authorization", () => {
                 cost: Float!
             }
 
-            type ${Movie} implements ${Production} @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "movies-reader" } } }]) {
+            type ${Movie} implements ${Production} @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "movies-reader" } } }]) @node {
                 title: String!
                 cost: Float!
                 runtime: Int!
                 ${Actor.plural}: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type ${Series} implements ${Production} @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "series-reader" } } }]) {
+            type ${Series} implements ${Production} @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "series-reader" } } }]) @node {
                 title: String!
                 cost: Float!
                 episodes: Int!
@@ -59,7 +59,7 @@ describe("Interface Field Level Aggregations with authorization", () => {
                 screenTime: Int!
             }
 
-            type ${Actor} {
+            type ${Actor} @node {
                 name: String!
                 actedIn: [${Production}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }

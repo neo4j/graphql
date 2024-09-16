@@ -31,7 +31,7 @@ describe("https://github.com/neo4j/graphql/pull/579", () => {
         Product = testHelper.createUniqueType("Product");
         Color = testHelper.createUniqueType("Color");
         typeDefs = `
-        type ${Product} {
+        type ${Product} @node {
            id: ID
            color: ${Color}! @relationship(type: "OF_COLOR", direction: OUT, properties: "OfColorProperties")
          }
@@ -40,7 +40,7 @@ describe("https://github.com/neo4j/graphql/pull/579", () => {
              test: Boolean
          }
 
-         type ${Color} {
+         type ${Color} @node {
            name: String
            id: ID
          }

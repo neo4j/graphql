@@ -26,7 +26,7 @@ describe("Cypher Aggregations Time", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Movie {
+            type Movie @node {
                 createdAt: Time!
             }
         `;

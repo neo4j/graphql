@@ -26,7 +26,7 @@ describe("Cypher Delete - union", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Episode {
+            type Episode @node {
                 runtime: Int!
                 series: Series! @relationship(type: "HAS_EPISODE", direction: IN)
             }
@@ -35,29 +35,29 @@ describe("Cypher Delete - union", () => {
 
             union Worker = ScreenWriter | StuntPerformer
 
-            type ScreenWriter {
+            type ScreenWriter @node {
                 name: String
             }
 
-            type StuntPerformer {
+            type StuntPerformer @node {
                 name: String!
                 workedOn: [Production!]! @relationship(type: "WORKED_ON", direction: OUT)
             }
 
-            type Movie {
+            type Movie @node {
                 title: String!
                 runtime: Int!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
                 workers: [Worker!]! @relationship(type: "WORKED_ON", direction: IN)
             }
 
-            type Series {
+            type Series @node {
                 title: String!
                 episodes: [Episode!]! @relationship(type: "HAS_EPISODE", direction: OUT)
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type Actor {
+            type Actor @node {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }

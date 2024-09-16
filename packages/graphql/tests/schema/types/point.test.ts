@@ -18,14 +18,14 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Point", () => {
     test("Point", async () => {
         const typeDefs = gql`
-            type Movie {
+            type Movie @node {
                 filmedAt: Point!
             }
         `;
@@ -102,8 +102,9 @@ describe("Point", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              filmedAt: PointInput
+              filmedAt: PointInput @deprecated(reason: \\"Please use the explicit _EQ version\\")
               filmedAt_DISTANCE: PointDistance
+              filmedAt_EQ: PointInput
               filmedAt_GT: PointDistance
               filmedAt_GTE: PointDistance
               filmedAt_IN: [PointInput!]
@@ -192,7 +193,7 @@ describe("Point", () => {
 
     test("CartesianPoint", async () => {
         const typeDefs = gql`
-            type Machine {
+            type Machine @node {
                 partLocation: CartesianPoint!
             }
         `;
@@ -293,8 +294,9 @@ describe("Point", () => {
               AND: [MachineWhere!]
               NOT: MachineWhere
               OR: [MachineWhere!]
-              partLocation: CartesianPointInput
+              partLocation: CartesianPointInput @deprecated(reason: \\"Please use the explicit _EQ version\\")
               partLocation_DISTANCE: CartesianPointDistance
+              partLocation_EQ: CartesianPointInput
               partLocation_GT: CartesianPointDistance
               partLocation_GTE: CartesianPointDistance
               partLocation_IN: [CartesianPointInput!]
@@ -358,7 +360,7 @@ describe("Point", () => {
 
     test("Points", async () => {
         const typeDefs = gql`
-            type Movie {
+            type Movie @node {
                 filmedAt: [Point!]!
             }
         `;
@@ -426,7 +428,8 @@ describe("Point", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              filmedAt: [PointInput!]
+              filmedAt: [PointInput!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              filmedAt_EQ: [PointInput!]
               filmedAt_INCLUDES: PointInput
               filmedAt_NOT: [PointInput!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               filmedAt_NOT_INCLUDES: PointInput @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -496,7 +499,7 @@ describe("Point", () => {
 
     test("CartesianPoints", async () => {
         const typeDefs = gql`
-            type Machine {
+            type Machine @node {
                 partLocations: [CartesianPoint!]!
             }
         `;
@@ -582,7 +585,8 @@ describe("Point", () => {
               AND: [MachineWhere!]
               NOT: MachineWhere
               OR: [MachineWhere!]
-              partLocations: [CartesianPointInput!]
+              partLocations: [CartesianPointInput!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              partLocations_EQ: [CartesianPointInput!]
               partLocations_INCLUDES: CartesianPointInput
               partLocations_NOT: [CartesianPointInput!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               partLocations_NOT_INCLUDES: CartesianPointInput @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")

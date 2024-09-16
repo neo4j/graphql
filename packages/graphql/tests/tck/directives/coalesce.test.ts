@@ -18,16 +18,9 @@
  */
 
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, formatParams, setTestEnvVars, translateQuery, unsetTestEnvVars } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Cypher coalesce()", () => {
-    beforeAll(() => {
-        setTestEnvVars("NEO4J_GRAPHQL_ENABLE_REGEX=1");
-    });
-
-    afterAll(() => {
-        unsetTestEnvVars(undefined);
-    });
     test("Simple coalesce", async () => {
         const typeDefs = /* GraphQL */ `
             interface UserInterface {
@@ -35,7 +28,7 @@ describe("Cypher coalesce()", () => {
                 toBeOverridden: String!
             }
 
-            type User implements UserInterface {
+            type User implements UserInterface @node {
                 id: ID! @coalesce(value: "00000000-00000000-00000000-00000000")
                 name: String! @coalesce(value: "Jane Smith")
                 verified: Boolean! @coalesce(value: false)
@@ -123,7 +116,7 @@ describe("Cypher coalesce()", () => {
                 ACTIVE
                 INACTIVE
             }
-            type Movie {
+            type Movie @node {
                 id: ID
                 status: Status @coalesce(value: ACTIVE)
             }
@@ -170,12 +163,12 @@ describe("Cypher coalesce()", () => {
                 ACTIVE
                 INACTIVE
             }
-            type Movie {
+            type Movie @node {
                 id: ID
                 status: Status @coalesce(value: ACTIVE)
             }
 
-            type Actor {
+            type Actor @node {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
@@ -240,12 +233,12 @@ describe("Cypher coalesce()", () => {
                 ACTIVE
                 INACTIVE
             }
-            type Movie {
+            type Movie @node {
                 id: ID
                 statuses: [Status!]! @coalesce(value: [ACTIVE, INACTIVE])
             }
 
-            type Actor {
+            type Actor @node {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;

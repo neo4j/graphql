@@ -41,7 +41,7 @@ describe("@customResolver directive", () => {
         testType = testHelper.createUniqueType("User");
 
         typeDefs = `
-            type ${testType} {
+            type ${testType} @node {
                 id: ID!
                 firstName: String!
                 lastName: String!
@@ -143,7 +143,7 @@ describe("@customResolver directive", () => {
 
         beforeEach(async () => {
             const typeDefs = `
-                type ${testType.name} {
+                type ${testType.name} @node {
                     id: ID!
                     firstName: String! @cypher(statement: "RETURN '${user.firstName}' as x", columnName: "x")
                     lastName: String! @cypher(statement: "RETURN '${user.lastName}' as x", columnName: "x")
@@ -338,12 +338,12 @@ describe("Related Fields", () => {
         );
 
         const typeDefs = gql`
-            type ${Address} {
+            type ${Address} @node {
                 street: String!
                 city: String!
             }
 
-            type ${User} {
+            type ${User} @node {
                 id: ID!
                 firstName: String!
                 lastName: String!
@@ -396,12 +396,12 @@ describe("Related Fields", () => {
         );
 
         const typeDefs = gql`
-            type ${Address} {
+            type ${Address} @node {
                 street: String!
                 city: String!
             }
 
-            type ${User} {
+            type ${User} @node {
                 id: ID!
                 firstName: String!
                 lastName: String!
@@ -435,12 +435,12 @@ describe("Related Fields", () => {
         );
 
         const typeDefs = gql`
-            type ${Address} {
+            type ${Address} @node {
                 street: String!
                 city: String!
             }
 
-            type ${User} {
+            type ${User} @node {
                 id: ID!
                 firstName: String!
                 lastName: String!
@@ -474,12 +474,12 @@ describe("Related Fields", () => {
         );
 
         const typeDefs = gql`
-            type ${Address} {
+            type ${Address} @node {
                 street: String!
                 city: String!
             }
 
-            type ${User} {
+            type ${User} @node {
                 id: ID!
                 firstName: String!
                 lastName: String!
@@ -542,12 +542,12 @@ describe("Related Fields", () => {
         );
 
         const typeDefs = gql`
-            type ${Address} {
+            type ${Address} @node {
                 street: String!
                 city: String!
             }
 
-            type ${User} {
+            type ${User} @node {
                 id: ID!
                 firstName: String!
                 lastName: String!
@@ -619,12 +619,12 @@ describe("Related Fields", () => {
         );
 
         const typeDefs = gql`
-            type ${Address} {
+            type ${Address} @node {
                 street: String!
                 city: String!
             }
 
-            type ${User} {
+            type ${User} @node {
                 id: ID!
                 firstName: String!
                 lastName: String!
@@ -698,17 +698,17 @@ describe("Related Fields", () => {
         );
 
         const typeDefs = gql`
-            type ${City} {
+            type ${City} @node {
                 name: String!
                 population: Int
             }
 
-            type ${Address} {
+            type ${Address} @node {
                 street: String!
                 city: ${City}! @relationship(type: "IN_CITY", direction: OUT)
             }
 
-            type ${User} {
+            type ${User} @node {
                 id: ID!
                 firstName: String!
                 lastName: String!
@@ -789,22 +789,22 @@ describe("Related Fields", () => {
         );
 
         const typeDefs = gql`
-            type ${State} {
+            type ${State} @node {
                 someValue: Int!
             }
 
-            type ${City} {
+            type ${City} @node {
                 name: String!
                 population: Int
                 state: ${State}! @relationship(type: "IN_STATE", direction: OUT)
             }
 
-            type ${Address} {
+            type ${Address} @node {
                 street: String!
                 city: ${City}! @relationship(type: "IN_CITY", direction: OUT)
             }
 
-            type ${User} {
+            type ${User} @node {
                 id: ID!
                 firstName: String!
                 lastName: String!
@@ -898,19 +898,19 @@ describe("Related Fields", () => {
         const typeDefs = gql`
             union ${Publication} = ${Book} | ${Journal}
 
-            type ${Author} {
+            type ${Author} @node {
                 name: String!
                 publications: [${Publication}!]! @relationship(type: "WROTE", direction: OUT)
                 publicationsWithAuthor: [String!]!
                     @customResolver(requires: "name publications { ...on ${Book} { title } ... on ${Journal} { subject } }")
             }
 
-            type ${Book} {
+            type ${Book} @node {
                 title: String!
                 author: ${Author}! @relationship(type: "WROTE", direction: IN)
             }
 
-            type ${Journal} {
+            type ${Journal} @node {
                 subject: String!
                 author: ${Author}! @relationship(type: "WROTE", direction: IN)
             }
@@ -982,17 +982,17 @@ describe("Related Fields", () => {
         );
 
         const typeDefs = gql` 
-            type ${City} {
+            type ${City} @node {
                 name: String!
                 population: Int @alias(property: "cityPopulation")
             }
 
-            type ${Address} {
+            type ${Address} @node {
                 street: String!
                 city: ${City}! @relationship(type: "IN_CITY", direction: OUT)
             }
 
-            type ${User} {
+            type ${User} @node {
                 id: ID!
                 firstName: String! @alias(property: "first")
                 lastName: String!
@@ -1085,17 +1085,17 @@ describe("Related Fields", () => {
                 roles: [String!]!
             }
 
-            type ${City} {
+            type ${City} @node {
                 name: String! @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "admin" } } }])
                 population: Int
             }
 
-            type ${Address} {
+            type ${Address} @node {
                 street: String!
                 city: ${City}! @relationship(type: "IN_CITY", direction: OUT)
             }
 
-            type ${User} {
+            type ${User} @node {
                 id: ID!
                 firstName: String! @authorization(validate: [{ when: [BEFORE], where: { node: { id: "$jwt.sub" } } }])
                 lastName: String!
@@ -1163,17 +1163,17 @@ describe("Related Fields", () => {
                 roles: [String!]!
             }
 
-            type ${City} {
+            type ${City} @node {
                 name: String! @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "admin" } } }])
                 population: Int
             }
 
-            type ${Address} {
+            type ${Address} @node {
                 street: String!
                 city: ${City}! @relationship(type: "IN_CITY", direction: OUT)
             }
 
-            type ${User} {
+            type ${User} @node {
                 id: ID!
                 firstName: String! @authorization(validate: [{ when: [BEFORE], where: { node: { id: "$jwt.sub" } } }])
                 lastName: String!
@@ -1243,17 +1243,17 @@ describe("Related Fields", () => {
                 roles: [String!]!
             }
 
-            type ${City} {
+            type ${City} @node {
                 name: String! @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "admin" } } }])
                 population: Int
             }
 
-            type ${Address} {
+            type ${Address} @node {
                 street: String!
                 city: ${City}! @relationship(type: "IN_CITY", direction: OUT)
             }
 
-            type ${User} {
+            type ${User} @node {
                 id: ID!
                 firstName: String! @authorization(validate: [{ when: [BEFORE], where: { node: { id: "$jwt.sub" } } }])
                 lastName: String!
@@ -1323,17 +1323,17 @@ describe("Related Fields", () => {
                 roles: [String!]!
             }
 
-            type ${City} {
+            type ${City} @node {
                 name: String! @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "admin" } } }])
                 population: Int
             }
 
-            type ${Address} {
+            type ${Address} @node {
                 street: String!
                 city: ${City}! @relationship(type: "IN_CITY", direction: OUT)
             }
 
-            type ${User} {
+            type ${User} @node {
                 id: ID!
                 firstName: String! @authorization(validate: [{ when: [BEFORE], where: { node: { id: "$jwt.sub" } } }])
                 lastName: String!
@@ -1410,7 +1410,7 @@ describe("Related Fields", () => {
                 publicationYear: Int!
             }
 
-            type ${Author} {
+            type ${Author} @node {
                 name: String!
                 publications: [${Publication}!]! @relationship(type: "WROTE", direction: OUT)
                 publicationsWithAuthor: [String!]!
@@ -1419,13 +1419,13 @@ describe("Related Fields", () => {
                     )
             }
 
-            type ${Book} implements ${Publication} {
+            type ${Book} implements ${Publication} @node {
                 title: String!
                 publicationYear: Int!
                 author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
             }
 
-            type ${Journal} implements ${Publication} {
+            type ${Journal} implements ${Publication} @node {
                 subject: String!
                 publicationYear: Int!
                 author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
@@ -1498,7 +1498,7 @@ describe("Related Fields", () => {
                 publicationYear: Int!
             }
 
-            type ${User} {
+            type ${User} @node {
                 id: ID!
                 firstName: String!
                 lastName: String!
@@ -1506,18 +1506,18 @@ describe("Related Fields", () => {
                 customResolverField: Int @customResolver(requires: "followedAuthors { name publications { publicationYear ...on ${Book} { title } ... on ${Journal} { subject } } } firstName")
             }
 
-            type ${Author} {
+            type ${Author} @node {
                 name: String!
                 publications: [${Publication}!]! @relationship(type: "WROTE", direction: OUT)
             }
 
-            type ${Book} implements ${Publication} {
+            type ${Book} implements ${Publication} @node {
                 title: String!
                 publicationYear: Int!
                 author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
             }
 
-            type ${Journal} implements ${Publication} {
+            type ${Journal} implements ${Publication} @node {
                 subject: String!
                 publicationYear: Int!
                 author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
@@ -1593,7 +1593,7 @@ describe("Related Fields", () => {
         );
 
         const typeDefs = gql`
-            type ${User} {
+            type ${User} @node {
                 id: ID!
                 firstName: String!
                 lastName: String!
@@ -1603,17 +1603,17 @@ describe("Related Fields", () => {
 
             union ${Publication} = ${Book} | ${Journal}
 
-            type ${Author} {
+            type ${Author} @node {
                 name: String!
                 publications: [${Publication}!]! @relationship(type: "WROTE", direction: OUT)
             }
 
-            type ${Book} {
+            type ${Book} @node {
                 title: String!
                 author: ${Author}! @relationship(type: "WROTE", direction: IN)
             }
 
-            type ${Journal} {
+            type ${Journal} @node {
                 subject: String!
                 author: ${Author}! @relationship(type: "WROTE", direction: IN)
             }
@@ -1687,7 +1687,7 @@ describe("Related Fields", () => {
         );
 
         const typeDefs = gql`
-            type ${User} {
+            type ${User} @node {
                 id: ID!
                 firstName: String!
                 lastName: String!
@@ -1697,17 +1697,17 @@ describe("Related Fields", () => {
 
             union ${Publication} = ${Book} | ${Journal}
 
-            type ${Author} {
+            type ${Author} @node {
                 name: String!
                 publications: [${Publication}!]! @relationship(type: "WROTE", direction: OUT)
             }
 
-            type ${Book} {
+            type ${Book} @node {
                 title: String!
                 author: ${Author}! @relationship(type: "WROTE", direction: IN)
             }
 
-            type ${Journal} {
+            type ${Journal} @node {
                 subject: String!
                 author: ${Author}! @relationship(type: "WROTE", direction: IN)
             }
@@ -1748,7 +1748,7 @@ describe("Related Fields", () => {
                 publicationYear: Int!
             }
 
-            type ${User} {
+            type ${User} @node {
                 id: ID!
                 firstName: String! @customResolver
                 lastName: String!
@@ -1756,18 +1756,18 @@ describe("Related Fields", () => {
                 customResolverField: Int @customResolver(requires: "followedAuthors { name publications { publicationYear ...on ${Book} { title } ... on ${Journal} { subject } } } firstName")
             }
 
-            type ${Author} {
+            type ${Author} @node {
                 name: String!
                 publications: [${Publication}!]! @relationship(type: "WROTE", direction: OUT)
             }
 
-            type ${Book} implements ${Publication} {
+            type ${Book} implements ${Publication} @node {
                 title: String!
                 publicationYear: Int!
                 author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
             }
 
-            type ${Journal} implements ${Publication} {
+            type ${Journal} implements ${Publication} @node {
                 subject: String!
                 publicationYear: Int!
                 author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
@@ -1809,7 +1809,7 @@ describe("Related Fields", () => {
                 publicationYear: Int! 
             }
 
-            type ${User} {
+            type ${User} @node {
                 id: ID!
                 firstName: String!
                 lastName: String!
@@ -1817,18 +1817,18 @@ describe("Related Fields", () => {
                 customResolverField: Int @customResolver(requires: "followedAuthors { name publications { publicationYear ...on ${Book} { title } ... on ${Journal} { subject } } } firstName")
             }
 
-            type ${Author} {
+            type ${Author} @node {
                 name: String!
                 publications: [${Publication}!]! @relationship(type: "WROTE", direction: OUT)
             }
 
-            type ${Book} implements ${Publication} {
+            type ${Book} implements ${Publication} @node {
                 title: String!
                 publicationYear: Int! @customResolver
                 author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
             }
 
-            type ${Journal} implements ${Publication} {
+            type ${Journal} implements ${Publication} @node {
                 subject: String!
                 publicationYear: Int! @customResolver
                 author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
@@ -1872,7 +1872,7 @@ describe("Related Fields", () => {
                 publicationYear: Int!
             }
 
-            type ${User} {
+            type ${User} @node {
                 id: ID!
                 firstName: String!
                 lastName: String!
@@ -1880,18 +1880,18 @@ describe("Related Fields", () => {
                 customResolverField: Int @customResolver(requires: "followedAuthors { name publications { publicationYear ...on ${Book} { title } ... on ${Journal} { subject } } } firstName")
             }
 
-            type ${Author} {
+            type ${Author} @node {
                 name: String!
                 publications: [${Publication}!]! @relationship(type: "WROTE", direction: OUT)
             }
 
-            type ${Book} implements ${Publication} {
+            type ${Book} implements ${Publication} @node {
                 title: String!
                 publicationYear: Int! @customResolver
                 author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
             }
 
-            type ${Journal} implements ${Publication} {
+            type ${Journal} implements ${Publication} @node {
                 subject: String!
                 publicationYear: Int!
                 author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
@@ -1935,7 +1935,7 @@ describe("Related Fields", () => {
                 publicationYear: Int!
             }
 
-            type ${User} {
+            type ${User} @node {
                 id: ID!
                 firstName: String!
                 lastName: String!
@@ -1943,18 +1943,18 @@ describe("Related Fields", () => {
                 customResolverField: Int @customResolver(requires: "followedAuthors { name publications { ...on ${Book} { title publicationYear } ... on ${Journal} { subject } } } firstName")
             }
 
-            type ${Author} {
+            type ${Author} @node {
                 name: String!
                 publications: [${Publication}!]! @relationship(type: "WROTE", direction: OUT)
             }
 
-            type ${Book} implements ${Publication} {
+            type ${Book} implements ${Publication} @node {
                 title: String!
                 publicationYear: Int! @customResolver
                 author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
             }
 
-            type ${Journal} implements ${Publication} {
+            type ${Journal} implements ${Publication} @node {
                 subject: String!
                 publicationYear: Int!
                 author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
@@ -1998,7 +1998,7 @@ describe("Related Fields", () => {
                 publicationYear: Int!
             }
 
-            type ${User} {
+            type ${User} @node {
                 id: ID!
                 firstName: String!
                 lastName: String! @customResolver
@@ -2006,18 +2006,18 @@ describe("Related Fields", () => {
                 customResolverField: Int @customResolver(requires: "followedAuthors { name publications { publicationYear ...on ${Book} { title } ... on ${Journal} { subject } } } firstName")
             }
 
-            type ${Author} {
+            type ${Author} @node {
                 name: String!
                 publications: [${Publication}!]! @relationship(type: "WROTE", direction: OUT)
             }
 
-            type ${Book} implements ${Publication} {
+            type ${Book} implements ${Publication} @node {
                 title: String!
                 publicationYear: Int!
                 author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
             }
 
-            type ${Journal} implements ${Publication} {
+            type ${Journal} implements ${Publication} @node {
                 subject: String!
                 publicationYear: Int!
                 author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
@@ -2059,7 +2059,7 @@ describe("Related Fields", () => {
                 publicationYear: Int!
             }
 
-            type ${User} {
+            type ${User} @node {
                 id: ID!
                 firstName: String!
                 lastName: String!
@@ -2067,18 +2067,18 @@ describe("Related Fields", () => {
                 customResolverField: Int @customResolver(requires: "followedAuthors { name publications { ...on ${Book} { title publicationYear } ... on ${Journal} { subject } } } firstName")
             }
 
-            type ${Author} {
+            type ${Author} @node {
                 name: String!
                 publications: [${Publication}!]! @relationship(type: "WROTE", direction: OUT)
             }
 
-            type ${Book} implements ${Publication} {
+            type ${Book} implements ${Publication} @node {
                 title: String!
                 publicationYear: Int!
                 author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
             }
 
-            type ${Journal} implements ${Publication} {
+            type ${Journal} implements ${Publication} @node {
                 subject: String!
                 publicationYear: Int! @customResolver
                 author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
@@ -2123,13 +2123,13 @@ describe("Related Fields", () => {
         );
 
         const typeDefs = gql`
-            type ${Address} {
+            type ${Address} @node {
                 houseNumber: Int! @cypher(statement: "RETURN 12 AS number", columnName: "number")
                 street: String!
                 city: String!
             }
 
-            type ${User} {
+            type ${User} @node {
                 id: ID!
                 firstName: String!
                 lastName: String!
@@ -2183,13 +2183,13 @@ describe("Related Fields", () => {
         );
 
         const typeDefs = gql`
-            type ${Address} {
+            type ${Address} @node {
                 houseNumber: Int! @cypher(statement: "RETURN 12 AS number", columnName: "number")
                 street: String!
                 city: String!
             }
 
-            type ${User} {
+            type ${User} @node {
                 id: ID!
                 firstName: String!
                 lastName: String!
@@ -2238,13 +2238,13 @@ describe("Related Fields", () => {
 
     test("should not throw an error for invalid type defs when validate is false", async () => {
         const typeDefs = gql`
-            type ${Address} {
+            type ${Address} @node {
                 houseNumber: Int! @cypher(statement: "RETURN 12 AS number", columnName: "number")
                 street: String!
                 city: String!
             }
 
-            type ${User} {
+            type ${User} @node {
                 id: ID!
                 firstName: String!
                 lastName: String!

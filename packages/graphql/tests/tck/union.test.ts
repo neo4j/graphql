@@ -18,8 +18,8 @@
  */
 
 import { Neo4jGraphQL } from "../../src";
-import { formatCypher, translateQuery, formatParams } from "./utils/tck-test-utils";
 import { createBearerToken } from "../utils/create-bearer-token";
+import { formatCypher, formatParams, translateQuery } from "./utils/tck-test-utils";
 
 describe("Cypher Union", () => {
     const secret = "secret";
@@ -31,6 +31,7 @@ describe("Cypher Union", () => {
             union Search = Genre | Movie
 
             type Genre
+                @node
                 @authorization(
                     validate: [
                         { when: [BEFORE], operations: [READ], where: { node: { name: "$jwt.jwtAllowedNamesExample" } } }
@@ -39,7 +40,7 @@ describe("Cypher Union", () => {
                 name: String
             }
 
-            type Movie {
+            type Movie @node {
                 title: String
                 search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
             }

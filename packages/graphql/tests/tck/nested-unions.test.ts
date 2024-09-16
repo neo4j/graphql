@@ -26,24 +26,24 @@ describe("Nested Unions", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Movie {
+            type Movie @node {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Series {
+            type Series @node {
                 name: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
             union Production = Movie | Series
 
-            type LeadActor {
+            type LeadActor @node {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type Extra {
+            type Extra @node {
                 name: String
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
