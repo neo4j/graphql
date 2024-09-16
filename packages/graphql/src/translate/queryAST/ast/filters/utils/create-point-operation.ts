@@ -19,7 +19,7 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
-import type { WhereOperator } from "../Filter";
+import type { FilterOperator } from "../Filter";
 
 export function createPointOperation({
     operator,
@@ -27,7 +27,7 @@ export function createPointOperation({
     param,
     attribute,
 }: {
-    operator: WhereOperator | "EQ";
+    operator: FilterOperator;
     property: Cypher.Expr;
     param: Cypher.Param;
     attribute: AttributeAdapter;

@@ -17,18 +17,18 @@
  * limitations under the License.
  */
 
-import type { LogicalOperators, WhereOperator } from "../../ast/filters/Filter";
+import type { FilterOperator, LogicalOperators } from "../../ast/filters/Filter";
 
 export type WhereRegexGroups = {
     fieldName: string;
     isAggregate: boolean;
-    operator: WhereOperator | undefined;
+    operator: FilterOperator | undefined;
     prefix?: string;
     isNot: boolean;
     isConnection: boolean;
 };
 
-export const whereRegEx =
+const whereRegEx =
     /(?<prefix>\w*\.)?(?<fieldName>[_A-Za-z]\w*?)(?<isConnection>Connection)?(?<isAggregate>Aggregate)?(?:_(?<operator>NOT|NOT_IN|IN|NOT_INCLUDES|INCLUDES|MATCHES|NOT_CONTAINS|CONTAINS|NOT_STARTS_WITH|STARTS_WITH|NOT_ENDS_WITH|ENDS_WITH|EQ|LT|LTE|GT|GTE|DISTANCE|ALL|NONE|SINGLE|SOME))?$/;
 
 export function parseWhereField(field: string): WhereRegexGroups {
@@ -43,20 +43,20 @@ export function parseWhereField(field: string): WhereRegexGroups {
     };
 
     let isNot = false;
-    let operator = undefined as WhereOperator | undefined;
+    let operator = undefined as FilterOperator | undefined;
 
     if (matchGroups.operator) {
         const notSplit = matchGroups.operator.split("NOT_");
         if (notSplit.length === 2) {
             isNot = true;
-            operator = notSplit[1] as WhereOperator;
+            operator = notSplit[1] as FilterOperator;
         } else if (matchGroups.operator === "NOT" || matchGroups.operator === "NONE") {
             isNot = true;
             if (matchGroups.operator === "NONE") {
-                operator = notSplit[0] as WhereOperator;
+                operator = notSplit[0] as FilterOperator;
             }
         } else {
-            operator = notSplit[0] as WhereOperator;
+            operator = notSplit[0] as FilterOperator;
         }
     }
 
