@@ -183,8 +183,10 @@ export class FilterFactory {
         isNot: boolean;
         attachedTo?: "node" | "relationship";
     }): PropertyFilter | CypherFilter {
-        const filterOperator = operator ?? "EQ";
-
+        const filterOperator = operator;
+        if (!filterOperator) {
+            throw new Error(`${attribute.name}Please use _EQ`);
+        }
         if (attribute.annotations.cypher) {
             const selection = new CustomCypherSelection({
                 operationField: attribute,

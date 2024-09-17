@@ -140,7 +140,10 @@ export class AuthFilterFactory extends FilterFactory {
         attachedTo?: "node" | "relationship";
         relationship?: RelationshipAdapter;
     }): PropertyFilter {
-        const filterOperator = operator || "EQ";
+        const filterOperator = operator;
+        if (!filterOperator) {
+            throw new Error(`${attribute.name}Please use _EQ`);
+        }
 
         // This is probably not needed, but avoid changing the cypher
         if (typeof comparisonValue === "boolean") {

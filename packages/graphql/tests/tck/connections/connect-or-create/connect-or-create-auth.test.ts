@@ -51,7 +51,7 @@ describe("connectOrCreate", () => {
                             title: "Cool Movie"
                             genres: {
                                 connectOrCreate: [
-                                    { where: { node: { name: "Horror" } }, onCreate: { node: { name: "Horror" } } }
+                                    { where: { node: { name_EQ: "Horror" } }, onCreate: { node: { name: "Horror" } } }
                                 ]
                             }
                         }

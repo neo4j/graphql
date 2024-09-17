@@ -56,7 +56,7 @@ describe("Create or Connect", () => {
                                 name: "Tom Hanks"
                                 movies: {
                                     connectOrCreate: {
-                                        where: { node: { title: "The Terminal" } }
+                                        where: { node: { title_EQ: "The Terminal" } }
                                         onCreate: { edge: { screentime: 105 }, node: { title: "The Terminal" } }
                                     }
                                 }
@@ -118,12 +118,12 @@ describe("Create or Connect", () => {
                             name: "Tom Hanks 2"
                             movies: {
                                 connectOrCreate: {
-                                    where: { node: { title: "The Terminal" } }
+                                    where: { node: { title_EQ: "The Terminal" } }
                                     onCreate: { edge: { screentime: 105 }, node: { title: "The Terminal" } }
                                 }
                             }
                         }
-                        where: { name: "Tom Hanks" }
+                        where: { name_EQ: "Tom Hanks" }
                     ) {
                         actors {
                             name
@@ -205,7 +205,7 @@ describe("Create or Connect", () => {
                                 name: "Tom Hanks"
                                 movies: {
                                     connectOrCreate: {
-                                        where: { node: { title: "The Terminal" } }
+                                        where: { node: { title_EQ: "The Terminal" } }
                                         onCreate: { edge: { screentime: 105 }, node: { title: "The Terminal" } }
                                     }
                                 }
@@ -270,7 +270,7 @@ describe("Create or Connect", () => {
                                 name: "Tom Hanks"
                                 movies: {
                                     connectOrCreate: {
-                                        where: { node: { id: "movieId" } }
+                                        where: { node: { id_EQ: "movieId" } }
                                         onCreate: { edge: { screentime: 105 }, node: { title: "The Terminal" } }
                                     }
                                 }
@@ -333,12 +333,12 @@ describe("Create or Connect", () => {
                             name: "Tom Hanks 2"
                             movies: {
                                 connectOrCreate: {
-                                    where: { node: { title: "The Terminal" } }
+                                    where: { node: { title_EQ: "The Terminal" } }
                                     onCreate: { edge: { screentime: 105 }, node: { title: "The Terminal" } }
                                 }
                             }
                         }
-                        where: { name: "Tom Hanks" }
+                        where: { name_EQ: "Tom Hanks" }
                     ) {
                         actors {
                             name
@@ -392,12 +392,12 @@ describe("Create or Connect", () => {
                             name: "Tom Hanks 2"
                             movies: {
                                 connectOrCreate: {
-                                    where: { node: { id: "movieId" } }
+                                    where: { node: { id_EQ: "movieId" } }
                                     onCreate: { edge: { screentime: 105 }, node: { title: "The Terminal" } }
                                 }
                             }
                         }
-                        where: { name: "Tom Hanks" }
+                        where: { name_EQ: "Tom Hanks" }
                     ) {
                         actors {
                             name
@@ -481,7 +481,7 @@ describe("Create or Connect", () => {
                                 name: "Tom Hanks"
                                 movies: {
                                     connectOrCreate: {
-                                        where: { node: { title: "The Terminal" } }
+                                        where: { node: { title_EQ: "The Terminal" } }
                                         onCreate: { edge: { screentime: 105 }, node: { title: "The Terminal" } }
                                     }
                                 }
@@ -545,12 +545,12 @@ describe("Create or Connect", () => {
                             name: "Tom Hanks 2"
                             movies: {
                                 connectOrCreate: {
-                                    where: { node: { title: "The Terminal" } }
+                                    where: { node: { title_EQ: "The Terminal" } }
                                     onCreate: { edge: { screentime: 105 }, node: { title: "The Terminal" } }
                                 }
                             }
                         }
-                        where: { name: "Tom Hanks" }
+                        where: { name_EQ: "Tom Hanks" }
                     ) {
                         actors {
                             name

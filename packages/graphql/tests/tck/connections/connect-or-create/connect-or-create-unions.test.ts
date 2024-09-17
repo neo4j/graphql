@@ -63,7 +63,7 @@ describe("Create or connect with unions", () => {
                             actedIn: {
                                 Movie: {
                                     connectOrCreate: {
-                                        where: { node: { isan: "0000-0000-03B6-0000-O-0000-0006-P" } }
+                                        where: { node: { isan_EQ: "0000-0000-03B6-0000-O-0000-0006-P" } }
                                         onCreate: {
                                             edge: { screentime: 105 }
                                             node: { title: "Forrest Gump", isan: "0000-0000-03B6-0000-O-0000-0006-P" }
@@ -72,7 +72,7 @@ describe("Create or connect with unions", () => {
                                 }
                                 Series: {
                                     connectOrCreate: {
-                                        where: { node: { isan: "0000-0001-ECC5-0000-8-0000-0001-B" } }
+                                        where: { node: { isan_EQ: "0000-0001-ECC5-0000-8-0000-0001-B" } }
                                         onCreate: {
                                             edge: { screentime: 126 }
                                             node: {
@@ -162,7 +162,7 @@ describe("Create or connect with unions", () => {
                         actedIn: {
                             Movie: {
                                 connectOrCreate: {
-                                    where: { node: { isan: "0000-0000-03B6-0000-O-0000-0006-P" } }
+                                    where: { node: { isan_EQ: "0000-0000-03B6-0000-O-0000-0006-P" } }
                                     onCreate: {
                                         edge: { screentime: 105 }
                                         node: { title: "Forrest Gump", isan: "0000-0000-03B6-0000-O-0000-0006-P" }
@@ -171,7 +171,7 @@ describe("Create or connect with unions", () => {
                             }
                             Series: {
                                 connectOrCreate: {
-                                    where: { node: { isan: "0000-0001-ECC5-0000-8-0000-0001-B" } }
+                                    where: { node: { isan_EQ: "0000-0001-ECC5-0000-8-0000-0001-B" } }
                                     onCreate: {
                                         edge: { screentime: 126 }
                                         node: { title: "Band of Brothers", isan: "0000-0001-ECC5-0000-8-0000-0001-B" }
@@ -180,7 +180,7 @@ describe("Create or connect with unions", () => {
                             }
                         }
                     }
-                    where: { name: "Tom Hanks evil twin" }
+                    where: { name_EQ: "Tom Hanks evil twin" }
                 ) {
                     actors {
                         name
