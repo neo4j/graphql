@@ -142,7 +142,7 @@ describe("Interface Relationships - Update connect", () => {
                             edge: { screenTime: 90 }
                             where: { node: { title_STARTS_WITH: "The " } }
                             connect: {
-                                actors: { edge: { ActedIn: { screenTime: 90 } }, where: { node: { name: "Actor" } } }
+                                actors: { edge: { ActedIn: { screenTime: 90 } }, where: { node: { name_EQ: "Actor" } } }
                             }
                         }
                     }

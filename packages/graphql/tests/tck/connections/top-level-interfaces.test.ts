@@ -62,7 +62,7 @@ describe("Top level interface connections", () => {
     test("Top level connection", async () => {
         const query = /* GraphQL */ `
             query {
-                showsConnection(where: { title: "The Matrix" }) {
+                showsConnection(where: { title_EQ: "The Matrix" }) {
                     edges {
                         node {
                             title
@@ -104,7 +104,7 @@ describe("Top level interface connections", () => {
     test("Top level connection with limit", async () => {
         const query = /* GraphQL */ `
             query {
-                showsConnection(where: { title: "The Matrix" }, first: 2) {
+                showsConnection(where: { title_EQ: "The Matrix" }, first: 2) {
                     edges {
                         node {
                             title

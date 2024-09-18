@@ -146,11 +146,11 @@ describe("Cypher relationship", () => {
     test("Nested relation with params", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { title: "some title" }) {
+                movies(where: { title_EQ: "some title" }) {
                     title
-                    topActor(where: { name: "top actor" }) {
+                    topActor(where: { name_EQ: "top actor" }) {
                         name
-                        movies(where: { title: "top actor movie" }) {
+                        movies(where: { title_EQ: "top actor movie" }) {
                             title
                         }
                     }

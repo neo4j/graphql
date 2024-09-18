@@ -326,7 +326,7 @@ describe("Cypher Auth Roles", () => {
     test("Update Node", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateUsers(where: { id: "1" }, update: { id: "id-1" }) {
+                updateUsers(where: { id_EQ: "1" }, update: { id: "id-1" }) {
                     users {
                         id
                     }
@@ -373,7 +373,7 @@ describe("Cypher Auth Roles", () => {
     test("Update Node & Field", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateUsers(where: { id: "1" }, update: { password: "password" }) {
+                updateUsers(where: { id_EQ: "1" }, update: { password: "password" }) {
                     users {
                         id
                     }
@@ -491,7 +491,7 @@ describe("Cypher Auth Roles", () => {
             mutation {
                 updateComments(
                     update: {
-                        post: { update: { node: { creator: { connect: { where: { node: { id: "user-id" } } } } } } }
+                        post: { update: { node: { creator: { connect: { where: { node: { id_EQ: "user-id" } } } } } } }
                     }
                 ) {
                     comments {
@@ -647,7 +647,7 @@ describe("Cypher Auth Roles", () => {
             mutation {
                 updateComments(
                     update: {
-                        post: { update: { node: { creator: { disconnect: { where: { node: { id: "user-id" } } } } } } }
+                        post: { update: { node: { creator: { disconnect: { where: { node: { id_EQ: "user-id" } } } } } } }
                     }
                 ) {
                     comments {
@@ -728,7 +728,7 @@ describe("Cypher Auth Roles", () => {
                                             \\"disconnect\\": {
                                                 \\"where\\": {
                                                     \\"node\\": {
-                                                        \\"id\\": \\"user-id\\"
+                                                        \\"id_EQ\\": \\"user-id\\"
                                                     }
                                                 }
                                             }

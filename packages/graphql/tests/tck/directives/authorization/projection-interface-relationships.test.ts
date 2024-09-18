@@ -42,7 +42,7 @@ describe("Auth projections for interface relationship fields", () => {
                 episodes: String!
             }
 
-            extend type Series @authorization(validate: [{ when: BEFORE, where: { node: { episodes: "$jwt.sub" } } }])
+            extend type Series @authorization(validate: [{ when: BEFORE, where: { node: { episodes_EQ: "$jwt.sub" } } }])
 
             type ActedIn @relationshipProperties {
                 screenTime: Int!

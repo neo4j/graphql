@@ -46,9 +46,9 @@ describe("Node directive with unions", () => {
     test("Read Unions", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { title: "some title" }) {
+                movies(where: { title_EQ: "some title" }) {
                     search(
-                        where: { Movie: { title: "The Matrix" }, Genre: { name: "Horror" } }
+                        where: { Movie: { title_EQ: "The Matrix" }, Genre: { name_EQ: "Horror" } }
                         options: { offset: 1, limit: 10 }
                     ) {
                         ... on Movie {

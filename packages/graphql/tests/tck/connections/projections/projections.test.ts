@@ -52,7 +52,7 @@ describe("Relay Cursor Connection projections", () => {
     test("edges not returned if not asked for", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { title: "Forrest Gump" }) {
+                movies(where: { title_EQ: "Forrest Gump" }) {
                     title
                     actorsConnection {
                         totalCount
@@ -92,7 +92,7 @@ describe("Relay Cursor Connection projections", () => {
     test("edges and totalCount returned if pageInfo asked for", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { title: "Forrest Gump" }) {
+                movies(where: { title_EQ: "Forrest Gump" }) {
                     title
                     actorsConnection {
                         pageInfo {
@@ -137,7 +137,7 @@ describe("Relay Cursor Connection projections", () => {
     test("Minimal edges returned if not asked for with pagination arguments", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { title: "Forrest Gump" }) {
+                movies(where: { title_EQ: "Forrest Gump" }) {
                     title
                     actorsConnection(first: 5) {
                         totalCount
@@ -183,7 +183,7 @@ describe("Relay Cursor Connection projections", () => {
     test("edges not returned if not asked for on a union", async () => {
         const query = /* GraphQL */ `
             query {
-                actors(where: { name: "Tom Hanks" }) {
+                actors(where: { name_EQ: "Tom Hanks" }) {
                     name
                     productionsConnection {
                         totalCount
@@ -227,7 +227,7 @@ describe("Relay Cursor Connection projections", () => {
     test("edges and totalCount returned if pageInfo asked for on a union", async () => {
         const query = /* GraphQL */ `
             query {
-                actors(where: { name: "Tom Hanks" }) {
+                actors(where: { name_EQ: "Tom Hanks" }) {
                     name
                     productionsConnection {
                         pageInfo {
@@ -276,7 +276,7 @@ describe("Relay Cursor Connection projections", () => {
     test("totalCount is calculated and returned if asked for with edges", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { title: "Forrest Gump" }) {
+                movies(where: { title_EQ: "Forrest Gump" }) {
                     title
                     actorsConnection {
                         totalCount
@@ -321,7 +321,7 @@ describe("Relay Cursor Connection projections", () => {
     test("totalCount is calculated and returned if asked for with edges with pagination arguments", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { title: "Forrest Gump" }) {
+                movies(where: { title_EQ: "Forrest Gump" }) {
                     title
                     actorsConnection(first: 5) {
                         totalCount

@@ -63,7 +63,7 @@ describe("Interface Relationships - Update update", () => {
             mutation {
                 updateActors(
                     update: {
-                        actedIn: { where: { node: { title: "Old Title" } }, update: { node: { title: "New Title" } } }
+                        actedIn: { where: { node: { title_EQ: "Old Title" } }, update: { node: { title: "New Title" } } }
                     }
                 ) {
                     actors {
@@ -116,7 +116,7 @@ describe("Interface Relationships - Update update", () => {
                                 {
                                     \\"where\\": {
                                         \\"node\\": {
-                                            \\"title\\": \\"Old Title\\"
+                                            \\"title_EQ\\": \\"Old Title\\"
                                         }
                                     },
                                     \\"update\\": {
@@ -140,7 +140,7 @@ describe("Interface Relationships - Update update", () => {
                 updateActors(
                     update: {
                         actedIn: {
-                            where: { node: { title: "Old Title" } }
+                            where: { node: { title_EQ: "Old Title" } }
                             update: { node: { actors: { update: { node: { name: "New Actor Name" } } } } }
                         }
                     }
@@ -207,7 +207,7 @@ describe("Interface Relationships - Update update", () => {
                                 {
                                     \\"where\\": {
                                         \\"node\\": {
-                                            \\"title\\": \\"Old Title\\"
+                                            \\"title_EQ\\": \\"Old Title\\"
                                         }
                                     },
                                     \\"update\\": {

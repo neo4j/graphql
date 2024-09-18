@@ -240,7 +240,7 @@ describe("Label in Node directive", () => {
     test("Update Movie with label film", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateMovies(where: { id: "1" }, update: { id: "2" }) {
+                updateMovies(where: { id_EQ: "1" }, update: { id: "2" }) {
                     movies {
                         id
                     }
@@ -270,9 +270,9 @@ describe("Label in Node directive", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateMovies(
-                    where: { id: "1" }
+                    where: { id_EQ: "1" }
                     update: {
-                        actors: [{ where: { node: { name: "old name" } }, update: { node: { name: "new name" } } }]
+                        actors: [{ where: { node: { name_EQ: "old name" } }, update: { node: { name: "new name" } } }]
                     }
                 ) {
                     movies {
@@ -310,7 +310,7 @@ describe("Label in Node directive", () => {
                                 {
                                     \\"where\\": {
                                         \\"node\\": {
-                                            \\"name\\": \\"old name\\"
+                                            \\"name_EQ\\": \\"old name\\"
                                         }
                                     },
                                     \\"update\\": {
@@ -331,7 +331,7 @@ describe("Label in Node directive", () => {
     test("Update connection in Movie with label film", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateMovies(where: { id: "1" }, connect: { actors: [{ where: { node: { name: "Daniel" } } }] }) {
+                updateMovies(where: { id_EQ: "1" }, connect: { actors: [{ where: { node: { name_EQ: "Daniel" } } }] }) {
                     movies {
                         id
                     }
@@ -378,7 +378,7 @@ describe("Label in Node directive", () => {
     test("Update disconnect in Movie with label film", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateMovies(where: { id: "1" }, disconnect: { actors: [{ where: { node: { name: "Daniel" } } }] }) {
+                updateMovies(where: { id_EQ: "1" }, disconnect: { actors: [{ where: { node: { name_EQ: "Daniel" } } }] }) {
                     movies {
                         id
                     }
@@ -419,7 +419,7 @@ describe("Label in Node directive", () => {
                                 {
                                     \\"where\\": {
                                         \\"node\\": {
-                                            \\"name\\": \\"Daniel\\"
+                                            \\"name_EQ\\": \\"Daniel\\"
                                         }
                                     }
                                 }
@@ -435,7 +435,7 @@ describe("Label in Node directive", () => {
     test("Delete Movie with custom label", async () => {
         const query = /* GraphQL */ `
             mutation {
-                deleteMovies(where: { id: "123" }) {
+                deleteMovies(where: { id_EQ: "123" }) {
                     nodesDeleted
                 }
             }
@@ -459,7 +459,7 @@ describe("Label in Node directive", () => {
     test("Delete Movies and actors with custom labels", async () => {
         const query = /* GraphQL */ `
             mutation {
-                deleteMovies(where: { id: 123 }, delete: { actors: { where: { node: { name: "Actor to delete" } } } }) {
+                deleteMovies(where: { id_EQ: 123 }, delete: { actors: { where: { node: { name_EQ: "Actor to delete" } } } }) {
                     nodesDeleted
                 }
             }
@@ -497,7 +497,7 @@ describe("Label in Node directive", () => {
     test("Admin Deletes Post", async () => {
         const query = /* GraphQL */ `
             mutation {
-                deleteMovies(where: { actors: { name: "tom" } }) {
+                deleteMovies(where: { actors: { name_EQ: "tom" } }) {
                     nodesDeleted
                 }
             }

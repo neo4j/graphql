@@ -44,7 +44,7 @@ describe("Cypher Auth Allow", () => {
                     validate: {
                         when: AFTER
                         operations: [CREATE, UPDATE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
-                        where: { node: { id: "$jwt.sub" } }
+                        where: { node: { id_EQ: "$jwt.sub" } }
                     }
                 )
 
@@ -54,7 +54,7 @@ describe("Cypher Auth Allow", () => {
                         {
                             when: AFTER
                             operations: [CREATE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
-                            where: { node: { creator: { id: "$jwt.sub" } } }
+                            where: { node: { creator: { id_EQ: "$jwt.sub" } } }
                         }
                     ]
                 )
@@ -235,7 +235,7 @@ describe("Cypher Auth Allow", () => {
     test("Update Node", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateUsers(where: { id: "id-01" }, update: { id: "not bound" }) {
+                updateUsers(where: { id_EQ: "id-01" }, update: { id: "not bound" }) {
                     users {
                         id
                     }
@@ -277,10 +277,10 @@ describe("Cypher Auth Allow", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateUsers(
-                    where: { id: "id-01" }
+                    where: { id_EQ: "id-01" }
                     update: {
                         posts: {
-                            where: { node: { id: "post-id" } }
+                            where: { node: { id_EQ: "post-id" } }
                             update: { node: { creator: { update: { node: { id: "not bound" } } } } }
                         }
                     }
@@ -348,7 +348,7 @@ describe("Cypher Auth Allow", () => {
                                 {
                                     \\"where\\": {
                                         \\"node\\": {
-                                            \\"id\\": \\"post-id\\"
+                                            \\"id_EQ\\": \\"post-id\\"
                                         }
                                     },
                                     \\"update\\": {
@@ -375,7 +375,7 @@ describe("Cypher Auth Allow", () => {
     test("Connect Node", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updatePosts(where: { id: "post-id" }, connect: { creator: { where: { node: { id: "user-id" } } } }) {
+                updatePosts(where: { id_EQ: "post-id" }, connect: { creator: { where: { node: { id_EQ: "user-id" } } } }) {
                     posts {
                         id
                     }
@@ -445,7 +445,7 @@ describe("Cypher Auth Allow", () => {
     test("Disconnect Node", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updatePosts(where: { id: "post-id" }, disconnect: { creator: { where: { node: { id: "user-id" } } } }) {
+                updatePosts(where: { id_EQ: "post-id" }, disconnect: { creator: { where: { node: { id_EQ: "user-id" } } } }) {
                     posts {
                         id
                     }
@@ -508,7 +508,7 @@ describe("Cypher Auth Allow", () => {
                             \\"creator\\": {
                                 \\"where\\": {
                                     \\"node\\": {
-                                        \\"id\\": \\"user-id\\"
+                                        \\"id_EQ\\": \\"user-id\\"
                                     }
                                 }
                             }

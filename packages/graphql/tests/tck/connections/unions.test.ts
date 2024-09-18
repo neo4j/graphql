@@ -111,8 +111,8 @@ describe("Cypher -> Connections -> Unions", () => {
                     name
                     publicationsConnection(
                         where: {
-                            Book: { node: { title: "Book Title" } }
-                            Journal: { node: { subject: "Journal Subject" } }
+                            Book: { node: { title_EQ: "Book Title" } }
+                            Journal: { node: { subject_EQ: "Journal Subject" } }
                         }
                     ) {
                         edges {
@@ -173,7 +173,7 @@ describe("Cypher -> Connections -> Unions", () => {
                 authors {
                     name
                     publicationsConnection(
-                        where: { Book: { edge: { words: 1000 } }, Journal: { edge: { words: 2000 } } }
+                        where: { Book: { edge: { words_EQ: 1000 } }, Journal: { edge: { words_EQ: 2000 } } }
                     ) {
                         edges {
                             properties {
@@ -240,8 +240,8 @@ describe("Cypher -> Connections -> Unions", () => {
                     name
                     publicationsConnection(
                         where: {
-                            Book: { edge: { words: 1000 }, node: { title: "Book Title" } }
-                            Journal: { edge: { words: 2000 }, node: { subject: "Journal Subject" } }
+                            Book: { edge: { words_EQ: 1000 }, node: { title_EQ: "Book Title" } }
+                            Journal: { edge: { words_EQ: 2000 }, node: { subject_EQ: "Journal Subject" } }
                         }
                     ) {
                         edges {

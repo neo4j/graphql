@@ -52,7 +52,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> OR", () => {
             query {
                 movies {
                     title
-                    actorsConnection(where: { node: { OR: [{ firstName: "Tom" }, { lastName: "Hanks" }] } }) {
+                    actorsConnection(where: { node: { OR: [{ firstName_EQ: "Tom" }, { lastName_EQ: "Hanks" }] } }) {
                         edges {
                             properties {
                                 screenTime

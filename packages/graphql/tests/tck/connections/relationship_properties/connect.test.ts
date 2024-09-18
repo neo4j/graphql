@@ -132,7 +132,7 @@ describe("Relationship Properties Connect Cypher", () => {
                     input: [
                         {
                             title: "Forrest Gump"
-                            actors: { connect: [{ where: { node: { name: "Tom Hanks" } }, edge: { screenTime: 60 } }] }
+                            actors: { connect: [{ where: { node: { name_EQ: "Tom Hanks" } }, edge: { screenTime: 60 } }] }
                         }
                     ]
                 ) {
@@ -216,7 +216,7 @@ describe("Relationship Properties Connect Cypher", () => {
     test("Update a movie while connecting a relationship that has properties(top level-connect)", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateMovies(where: { title: "Forrest Gump" }, connect: { actors: { edge: { screenTime: 60 } } }) {
+                updateMovies(where: { title_EQ: "Forrest Gump" }, connect: { actors: { edge: { screenTime: 60 } } }) {
                     movies {
                         title
                         actorsConnection {
@@ -290,8 +290,8 @@ describe("Relationship Properties Connect Cypher", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateMovies(
-                    where: { title: "Forrest Gump" }
-                    connect: { actors: { where: { node: { name: "Tom Hanks" } }, edge: { screenTime: 60 } } }
+                    where: { title_EQ: "Forrest Gump" }
+                    connect: { actors: { where: { node: { name_EQ: "Tom Hanks" } }, edge: { screenTime: 60 } } }
                 ) {
                     movies {
                         title

@@ -45,7 +45,7 @@ describe("Cypher Auth Allow", () => {
                         {
                             when: AFTER
                             operations: [CREATE, UPDATE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
-                            where: { node: { creator: { id: "$jwt.sub" } } }
+                            where: { node: { creator: { id_EQ: "$jwt.sub" } } }
                         }
                     ]
                 ) {
@@ -65,7 +65,7 @@ describe("Cypher Auth Allow", () => {
                         {
                             when: AFTER
                             operations: [CREATE, UPDATE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
-                            where: { node: { id: "$jwt.sub" } }
+                            where: { node: { id_EQ: "$jwt.sub" } }
                         }
                     ]
                 )
@@ -258,10 +258,10 @@ describe("Cypher Auth Allow", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateUsers(
-                    where: { id: "id-01" }
+                    where: { id_EQ: "id-01" }
                     update: {
                         content: {
-                            where: { node: { id: "post-id" } }
+                            where: { node: { id_EQ: "post-id" } }
                             update: { node: { creator: { update: { node: { id: "not bound" } } } } }
                         }
                     }
@@ -367,7 +367,7 @@ describe("Cypher Auth Allow", () => {
                                 {
                                     \\"where\\": {
                                         \\"node\\": {
-                                            \\"id\\": \\"post-id\\"
+                                            \\"id_EQ\\": \\"post-id\\"
                                         }
                                     },
                                     \\"update\\": {
@@ -394,7 +394,7 @@ describe("Cypher Auth Allow", () => {
     test("Connect Node", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateUsers(where: { id: "user-id" }, connect: { content: { where: { node: { id: "content-id" } } } }) {
+                updateUsers(where: { id_EQ: "user-id" }, connect: { content: { where: { node: { id_EQ: "content-id" } } } }) {
                     users {
                         id
                     }
@@ -477,8 +477,8 @@ describe("Cypher Auth Allow", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateUsers(
-                    where: { id: "user-id" }
-                    disconnect: { content: { where: { node: { id: "content-id" } } } }
+                    where: { id_EQ: "user-id" }
+                    disconnect: { content: { where: { node: { id_EQ: "content-id" } } } }
                 ) {
                     users {
                         id
@@ -550,7 +550,7 @@ describe("Cypher Auth Allow", () => {
                                 {
                                     \\"where\\": {
                                         \\"node\\": {
-                                            \\"id\\": \\"content-id\\"
+                                            \\"id_EQ\\": \\"content-id\\"
                                         }
                                     }
                                 }

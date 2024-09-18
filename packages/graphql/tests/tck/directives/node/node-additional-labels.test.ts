@@ -165,7 +165,7 @@ describe("Node directive with additionalLabels", () => {
     test("Delete Movie with additional additionalLabels", async () => {
         const query = /* GraphQL */ `
             mutation {
-                deleteMovies(where: { id: "123" }) {
+                deleteMovies(where: { id_EQ: "123" }) {
                     nodesDeleted
                 }
             }
@@ -189,7 +189,7 @@ describe("Node directive with additionalLabels", () => {
     test("Update Movie with additional labels", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateMovies(where: { id: "1" }, update: { id: "2" }) {
+                updateMovies(where: { id_EQ: "1" }, update: { id: "2" }) {
                     movies {
                         id
                     }
