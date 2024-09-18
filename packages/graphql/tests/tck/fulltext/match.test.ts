@@ -66,7 +66,7 @@ describe("Cypher -> fulltext -> Match", () => {
             query {
                 movies(
                     fulltext: { MovieTitle: { phrase: "something AND something" } }
-                    where: { title: "some-title" }
+                    where: { title_EQ: "some-title" }
                 ) {
                     title
                 }

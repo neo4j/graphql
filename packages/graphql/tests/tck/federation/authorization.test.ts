@@ -32,7 +32,7 @@ describe("Federation and authorization", () => {
         const typeDefs = /* GraphQL */ `
             extend schema @link(url: "https://specs.apollo.dev/federation/v2.3", import: ["@key"])
 
-            type User @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) @key(fields: "id") @node {
+            type User @authorization(filter: [{ where: { node: { id_EQ: "$jwt.sub" } } }]) @key(fields: "id") @node {
                 id: ID!
                 name: String!
             }
@@ -95,7 +95,7 @@ describe("Federation and authorization", () => {
             type User @key(fields: "id") @node {
                 id: ID!
                 name: String!
-                password: String! @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+                password: String! @authorization(filter: [{ where: { node: { id_EQ: "$jwt.sub" } } }])
             }
         `;
 
