@@ -37,7 +37,7 @@ describe("aggregations-top_level authorization", () => {
                 id: ID
             }
 
-            extend type ${randomType.name} @authorization(validate: [ { operations: [AGGREGATE], when: BEFORE, where: { node: { id: "$jwt.sub" } } }])
+            extend type ${randomType.name} @authorization(validate: [ { operations: [AGGREGATE], when: BEFORE, where: { node: { id_EQ: "$jwt.sub" } } }])
         `;
 
         const userId = generate({
@@ -85,7 +85,7 @@ describe("aggregations-top_level authorization", () => {
             }
 
             extend type Post
-                @authorization(filter: [{ operations: [AGGREGATE], where: { node: { creator: { id: "$jwt.sub" } } } }])
+                @authorization(filter: [{ operations: [AGGREGATE], where: { node: { creator: { id_EQ: "$jwt.sub" } } } }])
         `;
 
         const userId = generate({
@@ -132,7 +132,7 @@ describe("aggregations-top_level authorization", () => {
                 id: ID
                 director: Person! @relationship(type: "DIRECTED", direction: IN)
                 imdbRatingInt: Int
-                    @authorization(validate: [{ when: BEFORE, where: { node: { director: { id: "$jwt.sub" } } } }])
+                    @authorization(validate: [{ when: BEFORE, where: { node: { director: { id_EQ: "$jwt.sub" } } } }])
             }
 
             type Person @node {
@@ -150,7 +150,7 @@ describe("aggregations-top_level authorization", () => {
 
         const query = `
             {
-                moviesAggregate(where: {id: "${movieId}"}) {
+                moviesAggregate(where: {id_EQ: "${movieId}"}) {
                     imdbRatingInt {
                         min
                         max
@@ -185,7 +185,7 @@ describe("aggregations-top_level authorization", () => {
                 id: ID
                 director: Person! @relationship(type: "DIRECTED", direction: IN)
                 someId: ID
-                    @authorization(validate: [{ when: BEFORE, where: { node: { director: { id: "$jwt.sub" } } } }])
+                    @authorization(validate: [{ when: BEFORE, where: { node: { director: { id_EQ: "$jwt.sub" } } } }])
             }
 
             type Person @node {
@@ -203,7 +203,7 @@ describe("aggregations-top_level authorization", () => {
 
         const query = `
             {
-                moviesAggregate(where: {id: "${movieId}"}) {
+                moviesAggregate(where: {id_EQ: "${movieId}"}) {
                     someId {
                         shortest
                         longest
@@ -238,7 +238,7 @@ describe("aggregations-top_level authorization", () => {
                 id: ID
                 director: Person! @relationship(type: "DIRECTED", direction: IN)
                 someString: String
-                    @authorization(validate: [{ when: BEFORE, where: { node: { director: { id: "$jwt.sub" } } } }])
+                    @authorization(validate: [{ when: BEFORE, where: { node: { director: { id_EQ: "$jwt.sub" } } } }])
             }
 
             type Person @node {
@@ -256,7 +256,7 @@ describe("aggregations-top_level authorization", () => {
 
         const query = `
             {
-                moviesAggregate(where: {id: "${movieId}"}) {
+                moviesAggregate(where: {id_EQ: "${movieId}"}) {
                     someString {
                         shortest
                         longest
@@ -291,7 +291,7 @@ describe("aggregations-top_level authorization", () => {
                 id: ID
                 director: Person! @relationship(type: "DIRECTED", direction: IN)
                 imdbRatingFloat: Float
-                    @authorization(validate: [{ when: BEFORE, where: { node: { director: { id: "$jwt.sub" } } } }])
+                    @authorization(validate: [{ when: BEFORE, where: { node: { director: { id_EQ: "$jwt.sub" } } } }])
             }
 
             type Person @node {
@@ -309,7 +309,7 @@ describe("aggregations-top_level authorization", () => {
 
         const query = `
             {
-                moviesAggregate(where: {id: "${movieId}"}) {
+                moviesAggregate(where: {id_EQ: "${movieId}"}) {
                     imdbRatingFloat {
                         min
                         max
@@ -344,7 +344,7 @@ describe("aggregations-top_level authorization", () => {
                 id: ID
                 director: Person! @relationship(type: "DIRECTED", direction: IN)
                 imdbRatingBigInt: BigInt
-                    @authorization(validate: [{ when: BEFORE, where: { node: { director: { id: "$jwt.sub" } } } }])
+                    @authorization(validate: [{ when: BEFORE, where: { node: { director: { id_EQ: "$jwt.sub" } } } }])
             }
 
             type Person @node {
@@ -362,7 +362,7 @@ describe("aggregations-top_level authorization", () => {
 
         const query = `
             {
-                moviesAggregate(where: {id: "${movieId}"}) {
+                moviesAggregate(where: {id_EQ: "${movieId}"}) {
                     imdbRatingBigInt {
                         min
                         max
@@ -397,7 +397,7 @@ describe("aggregations-top_level authorization", () => {
                 id: ID
                 director: Person! @relationship(type: "DIRECTED", direction: IN)
                 createdAt: DateTime
-                    @authorization(validate: [{ when: BEFORE, where: { node: { director: { id: "$jwt.sub" } } } }])
+                    @authorization(validate: [{ when: BEFORE, where: { node: { director: { id_EQ: "$jwt.sub" } } } }])
             }
 
             type Person @node {
@@ -415,7 +415,7 @@ describe("aggregations-top_level authorization", () => {
 
         const query = `
             {
-                moviesAggregate(where: {id: "${movieId}"}) {
+                moviesAggregate(where: {id_EQ: "${movieId}"}) {
                     createdAt {
                         min
                         max
@@ -450,7 +450,7 @@ describe("aggregations-top_level authorization", () => {
                 id: ID
                 director: Person! @relationship(type: "DIRECTED", direction: IN)
                 screenTime: Duration
-                    @authorization(validate: [{ when: BEFORE, where: { node: { director: { id: "$jwt.sub" } } } }])
+                    @authorization(validate: [{ when: BEFORE, where: { node: { director: { id_EQ: "$jwt.sub" } } } }])
             }
 
             type Person @node {
@@ -468,7 +468,7 @@ describe("aggregations-top_level authorization", () => {
 
         const query = `
             {
-                moviesAggregate(where: {id: "${movieId}"}) {
+                moviesAggregate(where: {id_EQ: "${movieId}"}) {
                     screenTime {
                         min
                         max

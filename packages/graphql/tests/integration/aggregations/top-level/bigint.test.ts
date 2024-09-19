@@ -62,7 +62,7 @@ describe("aggregations-top_level-bigint", () => {
 
         const query = `
                 {
-                    ${movieType.operations.aggregate}(where: {testString: "${testString}"}) {
+                    ${movieType.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
                         imdbRatingBigInt {
                             min
                         }
@@ -112,7 +112,7 @@ describe("aggregations-top_level-bigint", () => {
 
         const query = `
                 {
-                    ${movieType.operations.aggregate}(where: {testString: "${testString}"}) {
+                    ${movieType.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
                         imdbRatingBigInt {
                             max
                         }
@@ -162,7 +162,7 @@ describe("aggregations-top_level-bigint", () => {
 
         const query = `
                 {
-                    ${movieType.operations.aggregate}(where: {testString: "${testString}"}) {
+                    ${movieType.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
                         imdbRatingBigInt {
                             average
                         }
@@ -212,7 +212,7 @@ describe("aggregations-top_level-bigint", () => {
 
         const query = `
                 {
-                    ${movieType.operations.aggregate}(where: {testString: "${testString}"}) {
+                    ${movieType.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
                         imdbRatingBigInt {
                             sum
                         }
@@ -262,7 +262,7 @@ describe("aggregations-top_level-bigint", () => {
 
         const query = `
                 {
-                    ${movieType.operations.aggregate}(where: {testString: "${testString}"}) {
+                    ${movieType.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
                         imdbRatingBigInt {
                             min
                             max

@@ -58,7 +58,7 @@ describe(`Field Level Authorization Where Requests`, () => {
                 CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: "Linda", year:1985, createdAt: datetime(), testStr: "1235"})`);
 
         const extendedTypeDefs = `${typeDefs}
-        extend type ${typeActor.name} @authorization(filter: [{ operations: [AGGREGATE], where: { node: { testStr: "$jwt.sub" } } }])`;
+        extend type ${typeActor.name} @authorization(filter: [{ operations: [AGGREGATE], where: { node: { testStr_EQ: "$jwt.sub" } } }])`;
 
         await testHelper.initNeo4jGraphQL({
             typeDefs: extendedTypeDefs,

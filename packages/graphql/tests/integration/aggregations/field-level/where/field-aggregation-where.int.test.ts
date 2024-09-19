@@ -64,7 +64,7 @@ describe("Field Level Aggregations Where", () => {
         const query = `
             query {
               ${typeMovie.plural} {
-                actorsAggregate(where: {name: "Linda"}) {
+                actorsAggregate(where: {name_EQ: "Linda"}) {
                   count
                 }
               }
@@ -83,7 +83,7 @@ describe("Field Level Aggregations Where", () => {
         const query = `
             query {
               ${typeMovie.plural} {
-                actorsAggregate(where: {OR: [{name: "Linda"}, {name: "Arnold"}]}) {
+                actorsAggregate(where: {OR: [{name_EQ: "Linda"}, {name_EQ: "Arnold"}]}) {
                   count
                 }
               }
@@ -120,7 +120,7 @@ describe("Field Level Aggregations Where", () => {
             const query = `
             query {
                 ${typePerson.plural} {
-                    moviesAggregate(where:{actorsConnection: {node: {name: "Linda"}}}){
+                    moviesAggregate(where:{actorsConnection: {node: {name_EQ: "Linda"}}}){
                         count
                     }
                 }
@@ -154,7 +154,7 @@ describe("Field Level Aggregations Where", () => {
             const query = `
             query {
                 ${typePerson.plural} {
-                    moviesAggregate(where:{actorsConnection: {node: {OR: [{name: "Linda"},{name: "Arnold"}]}}}){
+                    moviesAggregate(where:{actorsConnection: {node: {OR: [{ name_EQ: "Linda" },{ name_EQ: "Arnold" } ]}}}){
                         count
                     }
                 }

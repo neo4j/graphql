@@ -61,7 +61,7 @@ describe("aggregations-top_level-int", () => {
 
         const query = `
                 {
-                    ${Movie.operations.aggregate}(where: {testString: "${testString}"}) {
+                    ${Movie.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
                         imdbRating {
                             min
                         }
@@ -104,7 +104,7 @@ describe("aggregations-top_level-int", () => {
 
         const query = `
                 {
-                    ${Movie.operations.aggregate}(where: {testString: "${testString}"}) {
+                    ${Movie.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
                         imdbRating {
                             max
                         }
@@ -147,7 +147,7 @@ describe("aggregations-top_level-int", () => {
 
         const query = `
                 {
-                    ${Movie.operations.aggregate}(where: {testString: "${testString}"}) {
+                    ${Movie.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
                         imdbRating {
                             average
                         }
@@ -190,7 +190,7 @@ describe("aggregations-top_level-int", () => {
 
         const query = `
                 {
-                    ${Movie.operations.aggregate}(where: {testString: "${testString}"}) {
+                    ${Movie.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
                         imdbRating {
                             sum
                         }
@@ -233,7 +233,7 @@ describe("aggregations-top_level-int", () => {
 
         const query = `
                 {
-                    ${Movie.operations.aggregate}(where: {testString: "${testString}"}) {
+                    ${Movie.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
                         imdbRating {
                             min
                             max

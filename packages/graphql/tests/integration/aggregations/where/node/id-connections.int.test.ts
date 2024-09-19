@@ -69,7 +69,7 @@ describe("aggregations-where-node-id - connections", () => {
 
         const query = `
                 {
-                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { id_EQUAL: "${testId}" } } }) {
+                    ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { id_EQUAL: "${testId}" } } }) {
                         edges {
                             node {
                                 testString
@@ -164,7 +164,7 @@ describe("aggregations-where-node-id - connections - interface relationships of 
 
         const query = `
                 {
-                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { id_EQUAL: "${testId}" } } }) {
+                    ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { id_EQUAL: "${testId}" } } }) {
                         edges {
                             node {
                                 testString

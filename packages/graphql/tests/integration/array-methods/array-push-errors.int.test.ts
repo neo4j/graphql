@@ -245,7 +245,7 @@ describe("array-push", () => {
 
         const query = `
             mutation Mutation($id: ID, $payIncrement: [Float]) {
-                ${actor.operations.update}(where: { id: $id }, update: {
+                ${actor.operations.update}(where: { id_EQ: $id }, update: {
                     actedIn: [
                         {
                             update: {

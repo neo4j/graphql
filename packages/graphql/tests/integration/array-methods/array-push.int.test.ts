@@ -491,7 +491,7 @@ describe("array-push", () => {
 
         const update = `
             mutation($id: ID, $value: [Int]) {
-                ${actor.operations.update}(where: { id: $id },
+                ${actor.operations.update}(where: { id_EQ: $id },
                     update: {
                         worksInMovies: [
                             {
@@ -565,7 +565,7 @@ describe("array-push", () => {
 
         const query = `
             mutation Mutation($id: ID, $payIncrement: [Float]) {
-                ${actor.operations.update}(where: { id: $id }, update: {
+                ${actor.operations.update}(where: { id_EQ: $id }, update: {
                     actedIn: [
                         {
                             update: {
@@ -648,7 +648,7 @@ describe("array-push", () => {
 
         const query = `
             mutation Mutation($id: ID, $location: [PointInput]) {
-                ${actor.operations.update}(where: { id: $id }, update: {
+                ${actor.operations.update}(where: { id_EQ: $id }, update: {
                     actedIn: [
                         {
                             update: {

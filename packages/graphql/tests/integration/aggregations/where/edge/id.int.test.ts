@@ -72,7 +72,7 @@ describe("aggregations-where-edge-id", () => {
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { edge: { testId_EQUAL: "${testId}" } } }) {
+                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { edge: { testId_EQUAL: "${testId}" } } }) {
                         testString
                         likes {
                             testString

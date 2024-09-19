@@ -67,7 +67,7 @@ describe("aggregations-top_level-alias", () => {
 
         const query = /* GraphQL */ `
                 {
-                    ${typeMovie.operations.aggregate}(where: { testString: "${testString}" }) {
+                    ${typeMovie.operations.aggregate}(where: { testString_EQ: "${testString}" }) {
                         _count: count
                         _id: id {
                             _shortest: shortest

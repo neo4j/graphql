@@ -80,7 +80,7 @@ describe("aggregations-where-node-datetime", () => {
                 {
                     ${
                         Post.plural
-                    }(where: { testString: "${testString}", likesAggregate: { node: { someDateTime_EQUAL: "${someDateTime.toISOString()}" } } }) {
+                    }(where: { testString_EQ: "${testString}", likesAggregate: { node: { someDateTime_EQUAL: "${someDateTime.toISOString()}" } } }) {
                         testString
                         likes {
                             testString
@@ -127,7 +127,7 @@ describe("aggregations-where-node-datetime", () => {
                 {
                     ${
                         Post.plural
-                    }(where: { testString: "${testString}", likesAggregate: { node: { someDateTime_GT: "${someDateTimeGT.toISOString()}" } } }) {
+                    }(where: { testString_EQ: "${testString}", likesAggregate: { node: { someDateTime_GT: "${someDateTimeGT.toISOString()}" } } }) {
                         testString
                         likes {
                             testString
@@ -171,7 +171,7 @@ describe("aggregations-where-node-datetime", () => {
                 {
                     ${
                         Post.plural
-                    }(where: { testString: "${testString}", likesAggregate: { node: { someDateTime_GTE: "${someDateTime.toISOString()}" } } }) {
+                    }(where: { testString_EQ: "${testString}", likesAggregate: { node: { someDateTime_GTE: "${someDateTime.toISOString()}" } } }) {
                         testString
                         likes {
                             testString
@@ -217,7 +217,7 @@ describe("aggregations-where-node-datetime", () => {
                 {
                     ${
                         Post.plural
-                    }(where: { testString: "${testString}", likesAggregate: { node: { someDateTime_LT: "${someDateTimeLT.toISOString()}" } } }) {
+                    }(where: { testString_EQ: "${testString}", likesAggregate: { node: { someDateTime_LT: "${someDateTimeLT.toISOString()}" } } }) {
                         testString
                         likes {
                             testString
@@ -261,7 +261,7 @@ describe("aggregations-where-node-datetime", () => {
                 {
                     ${
                         Post.plural
-                    }(where: { testString: "${testString}", likesAggregate: { node: { someDateTime_LTE: "${someDateTime.toISOString()}" } } }) {
+                    }(where: { testString_EQ: "${testString}", likesAggregate: { node: { someDateTime_LTE: "${someDateTime.toISOString()}" } } }) {
                         testString
                         likes {
                             testString
@@ -345,7 +345,7 @@ describe("aggregations-where-node-datetime interface relationships of concrete t
                 {
                     ${
                         Post.plural
-                    }(where: { testString: "${testString}", likesAggregate: { node: { someDateTime_EQUAL: "${someDateTime.toISOString()}" } } }) {
+                    }(where: { testString_EQ: "${testString}", likesAggregate: { node: { someDateTime_EQUAL: "${someDateTime.toISOString()}" } } }) {
                         testString
                         likes {
                             testString
@@ -391,7 +391,7 @@ describe("aggregations-where-node-datetime interface relationships of concrete t
                 {
                     ${
                         Post.plural
-                    }(where: { testString: "${testString}", likesAggregate: { node: { someDateTime_GT: "${someDateTimeGT.toISOString()}" } } }) {
+                    }(where: { testString_EQ: "${testString}", likesAggregate: { node: { someDateTime_GT: "${someDateTimeGT.toISOString()}" } } }) {
                         testString
                         likes {
                             testString
@@ -435,7 +435,7 @@ describe("aggregations-where-node-datetime interface relationships of concrete t
                 {
                     ${
                         Post.plural
-                    }(where: { testString: "${testString}", likesAggregate: { node: { someDateTime_GTE: "${someDateTime.toISOString()}" } } }) {
+                    }(where: { testString_EQ: "${testString}", likesAggregate: { node: { someDateTime_GTE: "${someDateTime.toISOString()}" } } }) {
                         testString
                         likes {
                             testString
@@ -481,7 +481,7 @@ describe("aggregations-where-node-datetime interface relationships of concrete t
                 {
                     ${
                         Post.plural
-                    }(where: { testString: "${testString}", likesAggregate: { node: { someDateTime_LT: "${someDateTimeLT.toISOString()}" } } }) {
+                    }(where: { testString_EQ: "${testString}", likesAggregate: { node: { someDateTime_LT: "${someDateTimeLT.toISOString()}" } } }) {
                         testString
                         likes {
                             testString
@@ -525,7 +525,7 @@ describe("aggregations-where-node-datetime interface relationships of concrete t
                 {
                     ${
                         Post.plural
-                    }(where: { testString: "${testString}", likesAggregate: { node: { someDateTime_LTE: "${someDateTime.toISOString()}" } } }) {
+                    }(where: { testString_EQ: "${testString}", likesAggregate: { node: { someDateTime_LTE: "${someDateTime.toISOString()}" } } }) {
                         testString
                         likes {
                             testString

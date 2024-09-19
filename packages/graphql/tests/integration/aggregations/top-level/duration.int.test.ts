@@ -68,7 +68,7 @@ describe("aggregations-top_level-duration", () => {
 
         const query = `
                 {
-                    ${Movie.operations.aggregate}(where: {testString: "${testString}"}) {
+                    ${Movie.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
                         runningTime {
                             min
                         }
@@ -112,7 +112,7 @@ describe("aggregations-top_level-duration", () => {
 
         const query = `
                 {
-                    ${Movie.operations.aggregate}(where: {testString: "${testString}"}) {
+                    ${Movie.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
                         runningTime {
                             max
                         }
@@ -156,7 +156,7 @@ describe("aggregations-top_level-duration", () => {
 
         const query = `
                 {
-                    ${Movie.operations.aggregate}(where: {testString: "${testString}"}) {
+                    ${Movie.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
                         runningTime {
                             min
                             max

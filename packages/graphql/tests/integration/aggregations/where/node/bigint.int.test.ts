@@ -65,7 +65,7 @@ describe("aggregations-where-node-bigint", () => {
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_EQUAL: ${bigInt} } } }) {
+                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someBigInt_EQUAL: ${bigInt} } } }) {
                         testString
                         likes {
                             testString
@@ -109,7 +109,7 @@ describe("aggregations-where-node-bigint", () => {
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_GT: ${someBigIntGt} } } }) {
+                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someBigInt_GT: ${someBigIntGt} } } }) {
                         testString
                         likes {
                             testString
@@ -150,7 +150,7 @@ describe("aggregations-where-node-bigint", () => {
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_GTE: ${bigInt} } } }) {
+                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someBigInt_GTE: ${bigInt} } } }) {
                         testString
                         likes {
                             testString
@@ -193,7 +193,7 @@ describe("aggregations-where-node-bigint", () => {
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_LT: ${someBigIntLT} } } }) {
+                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someBigInt_LT: ${someBigIntLT} } } }) {
                         testString
                         likes {
                             testString
@@ -234,7 +234,7 @@ describe("aggregations-where-node-bigint", () => {
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_LTE: ${bigInt} } } }) {
+                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someBigInt_LTE: ${bigInt} } } }) {
                         testString
                         likes {
                             testString
@@ -319,7 +319,7 @@ describe("aggregations-where-node-bigint interface relationships of concrete typ
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_EQUAL: ${bigInt} } } }) {
+                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someBigInt_EQUAL: ${bigInt} } } }) {
                         testString
                         likes {
                             testString
@@ -363,7 +363,7 @@ describe("aggregations-where-node-bigint interface relationships of concrete typ
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_GT: ${someBigIntGt} } } }) {
+                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someBigInt_GT: ${someBigIntGt} } } }) {
                         testString
                         likes {
                             testString
@@ -404,7 +404,7 @@ describe("aggregations-where-node-bigint interface relationships of concrete typ
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_GTE: ${bigInt} } } }) {
+                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someBigInt_GTE: ${bigInt} } } }) {
                         testString
                         likes {
                             testString
@@ -447,7 +447,7 @@ describe("aggregations-where-node-bigint interface relationships of concrete typ
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_LT: ${someBigIntLT} } } }) {
+                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someBigInt_LT: ${someBigIntLT} } } }) {
                         testString
                         likes {
                             testString
@@ -488,7 +488,7 @@ describe("aggregations-where-node-bigint interface relationships of concrete typ
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_LTE: ${bigInt} } } }) {
+                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someBigInt_LTE: ${bigInt} } } }) {
                         testString
                         likes {
                             testString

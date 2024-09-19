@@ -66,7 +66,7 @@ describe("aggregations-where-node-bigint - connections", () => {
 
         const query = `
                 {
-                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_EQUAL: ${bigInt} } } }) {
+                    ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someBigInt_EQUAL: ${bigInt} } } }) {
                         edges {
                             node {
                                 testString
@@ -118,7 +118,7 @@ describe("aggregations-where-node-bigint - connections", () => {
 
         const query = `
                 {
-                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_GT: ${someBigIntGt} } } }) {
+                    ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someBigInt_GT: ${someBigIntGt} } } }) {
                         edges {
                             node {
                                 testString
@@ -167,7 +167,7 @@ describe("aggregations-where-node-bigint - connections", () => {
 
         const query = `
                 {
-                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_GTE: ${bigInt} } } }) {
+                    ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someBigInt_GTE: ${bigInt} } } }) {
                         edges {
                             node {
                                 testString
@@ -218,7 +218,7 @@ describe("aggregations-where-node-bigint - connections", () => {
 
         const query = `
                 {
-                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_LT: ${someBigIntLT} } } }) {
+                    ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someBigInt_LT: ${someBigIntLT} } } }) {
                         edges {
                             node {
                                 testString
@@ -267,7 +267,7 @@ describe("aggregations-where-node-bigint - connections", () => {
 
         const query = `
                 {
-                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_LTE: ${bigInt} } } }) {
+                    ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someBigInt_LTE: ${bigInt} } } }) {
                        edges {
                             node {
                                 testString
@@ -359,7 +359,7 @@ describe("aggregations-where-node-bigint - connections - interface relationships
 
         const query = `
                 {
-                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_EQUAL: ${bigInt} } } }) {
+                    ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someBigInt_EQUAL: ${bigInt} } } }) {
                         edges {
                             node {
                                 testString
@@ -411,7 +411,7 @@ describe("aggregations-where-node-bigint - connections - interface relationships
 
         const query = `
                 {
-                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_GT: ${someBigIntGt} } } }) {
+                    ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someBigInt_GT: ${someBigIntGt} } } }) {
                        edges {
                         node {
                              testString
@@ -460,7 +460,7 @@ describe("aggregations-where-node-bigint - connections - interface relationships
 
         const query = `
                 {
-                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_GTE: ${bigInt} } } }) {
+                    ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someBigInt_GTE: ${bigInt} } } }) {
                         edges {
                             node {
                                 testString
@@ -511,7 +511,7 @@ describe("aggregations-where-node-bigint - connections - interface relationships
 
         const query = `
                 {
-                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_LT: ${someBigIntLT} } } }) {
+                    ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someBigInt_LT: ${someBigIntLT} } } }) {
                         edges {
                             node {
                                 testString
@@ -560,7 +560,7 @@ describe("aggregations-where-node-bigint - connections - interface relationships
 
         const query = `
                 {
-                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_LTE: ${bigInt} } } }) {
+                    ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someBigInt_LTE: ${bigInt} } } }) {
                         edges {
                             node {
                                 testString

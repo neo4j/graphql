@@ -69,7 +69,7 @@ describe("aggregations-where-edge-datetime", () => {
                 {
                     ${
                         Post.plural
-                    }(where: { testString: "${testString}", likesAggregate: { edge: { someDateTime_EQUAL: "${someDateTime.toISOString()}" } } }) {
+                    }(where: { testString_EQ: "${testString}", likesAggregate: { edge: { someDateTime_EQUAL: "${someDateTime.toISOString()}" } } }) {
                         testString
                         likes {
                             testString
@@ -115,7 +115,7 @@ describe("aggregations-where-edge-datetime", () => {
                 {
                     ${
                         Post.plural
-                    }(where: { testString: "${testString}", likesAggregate: { edge: { someDateTime_GT: "${someDateTimeGT.toISOString()}" } } }) {
+                    }(where: { testString_EQ: "${testString}", likesAggregate: { edge: { someDateTime_GT: "${someDateTimeGT.toISOString()}" } } }) {
                         testString
                         likes {
                             testString
@@ -159,7 +159,7 @@ describe("aggregations-where-edge-datetime", () => {
                 {
                     ${
                         Post.plural
-                    }(where: { testString: "${testString}", likesAggregate: { edge: { someDateTime_GTE: "${someDateTime.toISOString()}" } } }) {
+                    }(where: { testString_EQ: "${testString}", likesAggregate: { edge: { someDateTime_GTE: "${someDateTime.toISOString()}" } } }) {
                         testString
                         likes {
                             testString
@@ -205,7 +205,7 @@ describe("aggregations-where-edge-datetime", () => {
                 {
                     ${
                         Post.plural
-                    }(where: { testString: "${testString}", likesAggregate: { edge: { someDateTime_LT: "${someDateTimeLT.toISOString()}" } } }) {
+                    }(where: { testString_EQ: "${testString}", likesAggregate: { edge: { someDateTime_LT: "${someDateTimeLT.toISOString()}" } } }) {
                         testString
                         likes {
                             testString
@@ -249,7 +249,7 @@ describe("aggregations-where-edge-datetime", () => {
                 {
                     ${
                         Post.plural
-                    }(where: { testString: "${testString}", likesAggregate: { edge: { someDateTime_LTE: "${someDateTime.toISOString()}" } } }) {
+                    }(where: { testString_EQ: "${testString}", likesAggregate: { edge: { someDateTime_LTE: "${someDateTime.toISOString()}" } } }) {
                         testString
                         likes {
                             testString

@@ -82,7 +82,7 @@ describe("Update using aggregate where", () => {
         const query = `
             mutation {
                 ${userType.operations.update}(
-                    where: { name: "${userName}" }
+                    where: { name_EQ: "${userName}" }
                     update: { 
                         likedPosts: {
                             where: { 
@@ -153,7 +153,7 @@ describe("Update using aggregate where", () => {
         const query = `
              mutation {
                  ${userType.operations.update}(
-                     where: { name: "${userName}" }
+                     where: { name_EQ: "${userName}" }
                      update: { 
                          likedPosts: {
                             where: { 
@@ -234,7 +234,7 @@ describe("Update using aggregate where", () => {
         const query = `
             mutation {
                 ${userType.operations.update}(
-                    where: { name: "${userName}" }
+                    where: { name_EQ: "${userName}" }
                     update: { 
                         likedPosts: {
                             where: { 

@@ -64,7 +64,7 @@ describe("aggregations-where-node-float", () => {
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someFloat_EQUAL: ${someFloat} } } }) {
+                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someFloat_EQUAL: ${someFloat} } } }) {
                         testString
                         likes {
                             testString
@@ -108,7 +108,7 @@ describe("aggregations-where-node-float", () => {
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someFloat_GT: ${someFloatGt} } } }) {
+                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someFloat_GT: ${someFloatGt} } } }) {
                         testString
                         likes {
                             testString
@@ -151,7 +151,7 @@ describe("aggregations-where-node-float", () => {
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someFloat_GTE: ${someFloat} } } }) {
+                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someFloat_GTE: ${someFloat} } } }) {
                         testString
                         likes {
                             testString
@@ -195,7 +195,7 @@ describe("aggregations-where-node-float", () => {
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someFloat_LT: ${someFloatLT} } } }) {
+                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someFloat_LT: ${someFloatLT} } } }) {
                         testString
                         likes {
                             testString
@@ -238,7 +238,7 @@ describe("aggregations-where-node-float", () => {
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someFloat_LTE: ${someFloat} } } }) {
+                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someFloat_LTE: ${someFloat} } } }) {
                         testString
                         likes {
                             testString
@@ -322,7 +322,7 @@ describe("aggregations-where-node-float interface relationships of concrete type
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someFloat_EQUAL: ${someFloat} } } }) {
+                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someFloat_EQUAL: ${someFloat} } } }) {
                         testString
                         likes {
                             testString
@@ -366,7 +366,7 @@ describe("aggregations-where-node-float interface relationships of concrete type
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someFloat_GT: ${someFloatGt} } } }) {
+                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someFloat_GT: ${someFloatGt} } } }) {
                         testString
                         likes {
                             testString
@@ -409,7 +409,7 @@ describe("aggregations-where-node-float interface relationships of concrete type
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someFloat_GTE: ${someFloat} } } }) {
+                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someFloat_GTE: ${someFloat} } } }) {
                         testString
                         likes {
                             testString
@@ -453,7 +453,7 @@ describe("aggregations-where-node-float interface relationships of concrete type
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someFloat_LT: ${someFloatLT} } } }) {
+                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someFloat_LT: ${someFloatLT} } } }) {
                         testString
                         likes {
                             testString
@@ -496,7 +496,7 @@ describe("aggregations-where-node-float interface relationships of concrete type
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { someFloat_LTE: ${someFloat} } } }) {
+                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someFloat_LTE: ${someFloat} } } }) {
                         testString
                         likes {
                             testString

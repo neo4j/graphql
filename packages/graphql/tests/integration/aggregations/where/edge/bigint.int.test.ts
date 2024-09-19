@@ -69,7 +69,7 @@ describe("aggregations-where-edge-bigint", () => {
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { edge: { someBigInt_EQUAL: ${bigInt} } } }) {
+                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { edge: { someBigInt_EQUAL: ${bigInt} } } }) {
                         testString
                         likes {
                             testString
@@ -112,7 +112,7 @@ describe("aggregations-where-edge-bigint", () => {
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { edge: { someBigInt_GT: ${someBigIntGt} } } }) {
+                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { edge: { someBigInt_GT: ${someBigIntGt} } } }) {
                         testString
                         likes {
                             testString
@@ -152,7 +152,7 @@ describe("aggregations-where-edge-bigint", () => {
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { edge: { someBigInt_GTE: ${bigInt} } } }) {
+                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { edge: { someBigInt_GTE: ${bigInt} } } }) {
                         testString
                         likes {
                             testString
@@ -194,7 +194,7 @@ describe("aggregations-where-edge-bigint", () => {
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { edge: { someBigInt_LT: ${someBigIntLT} } } }) {
+                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { edge: { someBigInt_LT: ${someBigIntLT} } } }) {
                         testString
                         likes {
                             testString
@@ -234,7 +234,7 @@ describe("aggregations-where-edge-bigint", () => {
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { edge: { someBigInt_LTE: ${bigInt} } } }) {
+                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { edge: { someBigInt_LTE: ${bigInt} } } }) {
                         testString
                         likes {
                             testString
