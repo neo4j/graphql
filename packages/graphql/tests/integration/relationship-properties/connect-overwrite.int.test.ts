@@ -46,13 +46,13 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             typeMovie = testHelper.createUniqueType("Movie");
 
             typeDefs = gql`
-                type ${typeMovie.name} {
+                type ${typeMovie.name} @node {
                     title: String!
                     directors: [${typeActor.name}!]! @relationship(type: "DIRECTED", properties: "Directed", direction: IN)
                     actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
                 }
 
-                type ${typeActor.name} {
+                type ${typeActor.name} @node {
                     name: String!
                     movies: [ ${typeMovie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
                     directed: [ ${typeMovie.name}!]! @relationship(type: "DIRECTED", properties: "Directed", direction: OUT)
@@ -284,12 +284,12 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             typeMovie = testHelper.createUniqueType("Movie");
 
             typeDefs = gql`
-                type ${typeMovie.name} {
+                type ${typeMovie.name} @node {
                     title: String!
                     actors: ${typeActor.name}! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
                 }
 
-                type ${typeActor.name} {
+                type ${typeActor.name} @node {
                     name: String!
                     movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
                 }
@@ -1225,12 +1225,12 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             typeMovie = testHelper.createUniqueType("Movie");
 
             typeDefs = gql`
-                        type ${typeMovie.name} {
+                        type ${typeMovie.name} @node {
                             title: String!
                             actors: ${typeActor.name}! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
                         }
         
-                        type ${typeActor.name} {
+                        type ${typeActor.name} @node {
                             name: String!
                             id: Int! @unique
                             movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
@@ -1345,12 +1345,12 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             typeMovie = testHelper.createUniqueType("Movie");
 
             typeDefs = gql`
-                type ${typeMovie.name} {
+                type ${typeMovie.name} @node {
                     title: String!
                     directors: [${typeActor.name}!]! @relationship(type: "DIRECTED", properties: "Directed", direction: IN)
                 }
 
-                type ${typeActor.name} {
+                type ${typeActor.name} @node {
                     name: String!
                     directed: [${typeMovie.name}!]! @relationship(type: "DIRECTED", properties: "Directed", direction: OUT)
                 }

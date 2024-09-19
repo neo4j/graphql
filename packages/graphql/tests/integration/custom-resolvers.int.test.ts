@@ -37,7 +37,7 @@ describe("Custom Resolvers", () => {
 
     test("should define a custom field resolver and resolve it", async () => {
         const typeDefs = `
-            type ${Movie} {
+            type ${Movie} @node {
               id: ID
               custom: String
             }
@@ -79,7 +79,7 @@ describe("Custom Resolvers", () => {
 
     test("should define a custom Query resolver and resolve it", async () => {
         const typeDefs = `
-            type ${Movie} {
+            type ${Movie} @node {
               id: ID
               custom: String
             }
@@ -117,7 +117,7 @@ describe("Custom Resolvers", () => {
 
     test("should define a custom Mutation resolver and resolve it", async () => {
         const typeDefs = `
-            type ${Movie} {
+            type ${Movie} @node {
               id: ID
               custom: String
             }
@@ -155,7 +155,7 @@ describe("Custom Resolvers", () => {
 
     test("should define a custom Subscription resolver and resolve it", async () => {
         const typeDefs = `
-            type ${Movie} {
+            type ${Movie} @node {
               id: ID
               custom: String
             }
@@ -198,7 +198,7 @@ describe("Custom Resolvers", () => {
 
     test("should accept an array of custom resolvers", async () => {
         const typeDefs = `
-            type ${Movie} {
+            type ${Movie} @node {
               id: ID
               custom1: String
               custom2: String
@@ -327,7 +327,7 @@ describe("Custom Resolvers", () => {
 
                 if (type === "Object") {
                     typeDefs = `
-                            type Test {
+                            type Test @node {
                                 id: ID
                             }
 
@@ -349,7 +349,7 @@ describe("Custom Resolvers", () => {
 
                 if (type === "Node") {
                     typeDefs = `
-                            type ${Movie} {
+                            type ${Movie} @node {
                                 id: ID
                             }
 
@@ -485,7 +485,7 @@ describe("Custom Resolvers", () => {
                     COMPLETED
                 }
 
-                type ${Trade} {
+                type ${Trade} @node {
                     id: ID
                     status: Status @cypher(statement: """
                         RETURN 'COMPLETED' as res
@@ -534,7 +534,7 @@ describe("Custom Resolvers", () => {
             });
 
             const typeDefs = `
-                type ${Type} {
+                type ${Type} @node {
                     id: ID
                     strings: [String] @cypher(statement: """
                         RETURN ['${string1}', '${string2}', '${string3}'] as arr

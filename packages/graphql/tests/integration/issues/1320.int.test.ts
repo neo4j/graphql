@@ -34,13 +34,13 @@ describe("https://github.com/neo4j/graphql/issues/1320", () => {
         mitigationStateType = testHelper.createUniqueType("MitigationState");
 
         const typeDefs = gql`
-            type ${riskType.name} {
+            type ${riskType.name} @node {
                 code: String!
                 ownedBy: ${teamType.name} @relationship(type: "OWNS_RISK", direction: IN)
                 mitigationState: [${mitigationStateType.name}] 
             }
         
-            type ${teamType.name} {
+            type ${teamType.name} @node {
                 code: String!
                 ownsRisks: [${riskType.name}!]! @relationship(type: "OWNS_RISK", direction: OUT)
             }

@@ -36,7 +36,7 @@ describe("https://github.com/neo4j/graphql/issues/3355", () => {
 
     test("should return info object when subscriptions enabled", async () => {
         const typeDefs = `
-            type ${Movie} {
+            type ${Movie} @node {
                 id: ID!
                 name: String
             }

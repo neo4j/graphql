@@ -97,7 +97,7 @@ describe("cypher directive filtering", () => {
             query {
                 ${CustomType.plural}(
                     where: {
-                        special_duration: "P14DT16H12M"
+                        special_duration_EQ: "P14DT16H12M"
                     }
                 ) {
                     title

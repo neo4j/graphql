@@ -38,7 +38,7 @@ describe("https://github.com/neo4j/graphql/issues/1414", () => {
                 productTitle: String!
             }
 
-            type ${testProgrammeItem.name} implements ${testProduct.name} {
+            type ${testProgrammeItem.name} implements ${testProduct.name} @node {
                 id: ID! @populatedBy(operations: [CREATE], callback: "nanoid")
                 productTitle: String!
             }

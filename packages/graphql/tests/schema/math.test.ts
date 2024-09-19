@@ -25,7 +25,7 @@ import { Neo4jGraphQL } from "../../src";
 describe("Algebraic", () => {
     test("Int fields should be extended with Increment/Decrement operators", async () => {
         const typeDefs = gql`
-            type Movie {
+            type Movie @node {
                 id: ID
                 viewers: Int!
             }
@@ -122,9 +122,10 @@ describe("Algebraic", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              id: ID
+              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
+              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -132,7 +133,8 @@ describe("Algebraic", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
-              viewers: Int
+              viewers: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              viewers_EQ: Int
               viewers_GT: Int
               viewers_GTE: Int
               viewers_IN: [Int!]
@@ -196,7 +198,7 @@ describe("Algebraic", () => {
 
     test("BigInt fields should be extended with Increment/Decrement operators", async () => {
         const typeDefs = gql`
-            type Movie {
+            type Movie @node {
                 id: ID
                 viewers: BigInt!
             }
@@ -298,9 +300,10 @@ describe("Algebraic", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              id: ID
+              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
+              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -308,7 +311,8 @@ describe("Algebraic", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
-              viewers: BigInt
+              viewers: BigInt @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              viewers_EQ: BigInt
               viewers_GT: BigInt
               viewers_GTE: BigInt
               viewers_IN: [BigInt!]
@@ -372,7 +376,7 @@ describe("Algebraic", () => {
 
     test("Float fields should be extended with Add/Subtract/Multiply/Divide operators", async () => {
         const typeDefs = gql`
-            type Movie {
+            type Movie @node {
                 id: ID
                 viewers: Float!
             }
@@ -472,9 +476,10 @@ describe("Algebraic", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              id: ID
+              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
+              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -482,7 +487,8 @@ describe("Algebraic", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
-              viewers: Float
+              viewers: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              viewers_EQ: Float
               viewers_GT: Float
               viewers_GTE: Float
               viewers_IN: [Float!]
@@ -546,13 +552,13 @@ describe("Algebraic", () => {
 
     test("Operators should be presents in nested updates", async () => {
         const typeDefs = gql`
-            type Movie {
+            type Movie @node {
                 id: ID
                 viewers: Int!
                 directedBy: Director @relationship(type: "DIRECTS", direction: IN)
             }
 
-            type Director {
+            type Director @node {
                 lastName: String!
                 directs: [Movie!]! @relationship(type: "DIRECTS", direction: OUT)
             }
@@ -807,9 +813,10 @@ describe("Algebraic", () => {
               directs_SINGLE: MovieWhere
               \\"\\"\\"Return Directors where some of the related Movies match this filter\\"\\"\\"
               directs_SOME: MovieWhere
-              lastName: String
+              lastName: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               lastName_CONTAINS: String
               lastName_ENDS_WITH: String
+              lastName_EQ: String
               lastName_IN: [String!]
               lastName_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               lastName_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1042,9 +1049,10 @@ describe("Algebraic", () => {
               directedByConnection: MovieDirectedByConnectionWhere
               directedByConnection_NOT: MovieDirectedByConnectionWhere
               directedBy_NOT: DirectorWhere
-              id: ID
+              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
+              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1052,7 +1060,8 @@ describe("Algebraic", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
-              viewers: Int
+              viewers: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              viewers_EQ: Int
               viewers_GT: Int
               viewers_GTE: Int
               viewers_IN: [Int!]
@@ -1136,13 +1145,13 @@ describe("Algebraic", () => {
                 viewers: Int!
             }
 
-            type Movie implements Production {
+            type Movie implements Production @node {
                 id: ID
                 viewers: Int!
                 workers: [Person!]! @relationship(type: "WORKED_IN", direction: IN)
             }
 
-            type Person {
+            type Person @node {
                 name: String!
                 worksInProduction: [Production!]! @relationship(type: "WORKED_IN", direction: OUT)
             }
@@ -1274,9 +1283,10 @@ describe("Algebraic", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              id: ID
+              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
+              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1284,7 +1294,8 @@ describe("Algebraic", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
-              viewers: Int
+              viewers: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              viewers_EQ: Int
               viewers_GT: Int
               viewers_GTE: Int
               viewers_IN: [Int!]
@@ -1545,9 +1556,10 @@ describe("Algebraic", () => {
               AND: [PersonWhere!]
               NOT: PersonWhere
               OR: [PersonWhere!]
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1739,7 +1751,8 @@ describe("Algebraic", () => {
               NOT: ProductionWhere
               OR: [ProductionWhere!]
               typename_IN: [ProductionImplementation!]
-              viewers: Int
+              viewers: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              viewers_EQ: Int
               viewers_GT: Int
               viewers_GTE: Int
               viewers_IN: [Int!]
@@ -1805,12 +1818,12 @@ describe("Algebraic", () => {
 
     test("Should be supported in Relationship properties", async () => {
         const typeDefs = gql`
-            type Person {
+            type Person @node {
                 name: String!
                 actedInMovies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            type Movie {
+            type Movie @node {
                 title: String!
                 actors: [Person!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
             }
@@ -1895,7 +1908,8 @@ describe("Algebraic", () => {
               AND: [ActedInWhere!]
               NOT: ActedInWhere
               OR: [ActedInWhere!]
-              pay: Float
+              pay: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              pay_EQ: Float
               pay_GT: Float
               pay_GTE: Float
               pay_IN: [Float]
@@ -1903,7 +1917,8 @@ describe("Algebraic", () => {
               pay_LTE: Float
               pay_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               pay_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              roles: [String!]
+              roles: [String!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              roles_EQ: [String!]
               roles_INCLUDES: String
               roles_NOT: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               roles_NOT_INCLUDES: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -2179,9 +2194,10 @@ describe("Algebraic", () => {
               actors_SINGLE: PersonWhere
               \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
               actors_SOME: PersonWhere
-              title: String
+              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
+              title_EQ: String
               title_IN: [String!]
               title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -2455,9 +2471,10 @@ describe("Algebraic", () => {
               actedInMovies_SINGLE: MovieWhere
               \\"\\"\\"Return People where some of the related Movies match this filter\\"\\"\\"
               actedInMovies_SOME: MovieWhere
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")

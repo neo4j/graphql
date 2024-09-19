@@ -36,7 +36,7 @@ describe("Middleware Resolvers", () => {
 
     test("should allow middleware Query resolver to modify arguments", async () => {
         const typeDefs = `
-            type ${Movie} {
+            type ${Movie} @node {
               id: ID
               custom: String
             }
@@ -92,7 +92,7 @@ describe("Middleware Resolvers", () => {
 
     test("should allow middleware Mutation resolver to modify arguments", async () => {
         const typeDefs = `
-            type ${Movie} {
+            type ${Movie} @node {
               id: ID
               custom: String
             }

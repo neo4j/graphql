@@ -38,14 +38,14 @@ describe("Field-level filter interface query fields", () => {
                 cost: Float!
             }
 
-            type ${Movie} implements ${Production} {
+            type ${Movie} implements ${Production} @node {
                 title: String!
                 cost: Float!
                 runtime: Int!
                 ${Actor.plural}: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type ${Series} implements ${Production} {
+            type ${Series} implements ${Production} @node {
                 title: String!
                 cost: Float!
                 episodes: Int!
@@ -55,7 +55,7 @@ describe("Field-level filter interface query fields", () => {
                 screenTime: Int!
             }
 
-            type ${Actor} {
+            type ${Actor} @node {
                 name: String!
                 actedIn: [${Production}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }

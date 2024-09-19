@@ -56,10 +56,11 @@ describe("scalars", () => {
     });
 
     test("should create a movie (with a custom scalar)", async () => {
+        const Movie = testHelper.createUniqueType("Movie");
         const typeDefs = `
             scalar UpperCaseString
 
-            type Movie {
+            type ${Movie} @node {
               id: ID
               name: UpperCaseString
             }
@@ -79,8 +80,8 @@ describe("scalars", () => {
 
         const create = `
             mutation {
-                createMovies(input:[{id: "${id}", name: "${initialName}"}]) {
-                    movies {
+                ${Movie.operations.create}(input:[{id: "${id}", name: "${initialName}"}]) {
+                    ${Movie.plural} {
                         id
                     }
                 }
@@ -92,7 +93,7 @@ describe("scalars", () => {
         expect(gqlResult.errors).toBeFalsy();
 
         const result = await testHelper.executeCypher(`
-                MATCH (m:Movie {id: "${id}"})
+                MATCH (m:${Movie.name} {id: "${id}"})
                 RETURN m {.id, .name} as m
             `);
 
@@ -100,8 +101,9 @@ describe("scalars", () => {
     });
 
     test("should serialize a id correctly", async () => {
+        const Movie = testHelper.createUniqueType("Movie");
         const typeDefs = `
-            type Movie {
+            type ${Movie} @node {
               id: ID
             }
         `;
@@ -114,14 +116,14 @@ describe("scalars", () => {
 
         const query = `
             {
-                movies(where: {id: ${id}}) {
+                ${Movie.plural}(where: {id: ${id}}) {
                     id
                 }
             }
         `;
 
         await testHelper.executeCypher(`
-                CREATE (m:Movie {id: "${id}"})
+                CREATE (m:${Movie.name} {id: "${id}"})
                 RETURN m {.id} as m
             `);
 
@@ -129,14 +131,14 @@ describe("scalars", () => {
 
         expect(gqlResult.errors).toBeFalsy();
 
-        expect((gqlResult.data as any).movies[0]).toEqual({ id: id.toString() });
+        expect((gqlResult.data as any)[Movie.plural][0]).toEqual({ id: id.toString() });
     });
 
     test("should serialize a list of integers correctly", async () => {
         const type = testHelper.createUniqueType("Type");
 
         const typeDefs = `
-            type ${type.name} {
+            type ${type.name} @node {
               integers: [Int!]!
             }
         `;
@@ -172,7 +174,7 @@ describe("scalars", () => {
         const type = testHelper.createUniqueType("Type");
 
         const typeDefs = `
-            type ${type.name} {
+            type ${type.name} @node {
               floats: [Float!]!
             }
         `;

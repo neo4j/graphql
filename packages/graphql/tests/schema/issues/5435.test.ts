@@ -25,11 +25,11 @@ import { Neo4jGraphQL } from "../../../src";
 describe("https://github.com/neo4j/graphql/issues/5435", () => {
     test("filters should be generated for non-list relationships with array filters disabled", async () => {
         const typeDefs = gql`
-            type User {
+            type User @node {
                 id: ID! @id
             }
 
-            type Post @authorization(validate: [{ where: { node: { author: { id: "$jwt.sub" } } } }]) {
+            type Post @authorization(validate: [{ where: { node: { author: { id: "$jwt.sub" } } } }]) @node {
                 title: String!
                 content: String!
                 author: User! @relationship(type: "AUTHORED", direction: IN)
@@ -266,9 +266,10 @@ describe("https://github.com/neo4j/graphql/issues/5435", () => {
               authorConnection: PostAuthorConnectionWhere
               authorConnection_NOT: PostAuthorConnectionWhere
               author_NOT: UserWhere
-              content: String
+              content: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               content_CONTAINS: String
               content_ENDS_WITH: String
+              content_EQ: String
               content_IN: [String!]
               content_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               content_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -276,9 +277,10 @@ describe("https://github.com/neo4j/graphql/issues/5435", () => {
               content_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               content_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               content_STARTS_WITH: String
-              title: String
+              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
+              title_EQ: String
               title_IN: [String!]
               title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -389,9 +391,10 @@ describe("https://github.com/neo4j/graphql/issues/5435", () => {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
-              id: ID
+              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
+              id_EQ: ID
               id_IN: [ID!]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")

@@ -142,14 +142,14 @@ describe("@vector directive - Auth", () => {
         }
 
         const typeDefs = /* GraphQL */ `
-            type ${Person} @vector(indexes: [{ indexName: "${Person}Index", embeddingProperty: "embedding", queryName: "${queryName}" }])
+            type ${Person} @node @vector(indexes: [{ indexName: "${Person}Index", embeddingProperty: "embedding", queryName: "${queryName}" }])
             @authorization(filter: [{ where: { node: { name: "$jwt.name" } } }]) {
                 name: String!
                 born: Int!
                 actedInMovies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type ${Movie} {
+            type ${Movie} @node {
                 title: String!
                 released: Int!
                 actors: [${Person}!]! @relationship(type: "ACTED_IN", direction: IN)
@@ -221,14 +221,14 @@ describe("@vector directive - Auth", () => {
         }
 
         const typeDefs = /* GraphQL */ `
-            type ${Person} @vector(indexes: [{ indexName: "${Person}Index", embeddingProperty: "embedding", queryName: "${queryName}" }])
+            type ${Person} @node @vector(indexes: [{ indexName: "${Person}Index", embeddingProperty: "embedding", queryName: "${queryName}" }])
             @authorization(filter: [{ where: { node: { name: "$jwt.name" } } }]) {
                 name: String!
                 born: Int!
                 actedInMovies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type ${Movie} {
+            type ${Movie} @node {
                 title: String!
                 released: Int!
                 actors: [${Person}!]! @relationship(type: "ACTED_IN", direction: IN)
@@ -298,14 +298,14 @@ describe("@vector directive - Auth", () => {
                 roles: [String!]!
             }
 
-            type ${Person} @vector(indexes: [{ indexName: "${Person}Index", embeddingProperty: "embedding", queryName: "${queryName}" }])
+            type ${Person} @node @vector(indexes: [{ indexName: "${Person}Index", embeddingProperty: "embedding", queryName: "${queryName}" }])
             @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "admin" } } }]) {
                 name: String!
                 born: Int!
                 actedInMovies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type ${Movie} {
+            type ${Movie} @node {
                 title: String!
                 released: Int!
                 actors: [${Person}!]! @relationship(type: "ACTED_IN", direction: IN)
@@ -394,14 +394,14 @@ describe("@vector directive - Auth", () => {
                 roles: [String!]!
             }
 
-            type ${Person} @vector(indexes: [{ indexName: "${Person}Index", embeddingProperty: "embedding", queryName: "${queryName}" }])
+            type ${Person} @node @vector(indexes: [{ indexName: "${Person}Index", embeddingProperty: "embedding", queryName: "${queryName}" }])
             @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "admin" } } }]) {
                 name: String!
                 born: Int!
                 actedInMovies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type ${Movie} {
+            type ${Movie} @node {
                 title: String!
                 released: Int!
                 actors: [${Person}!]! @relationship(type: "ACTED_IN", direction: IN)
@@ -461,14 +461,14 @@ describe("@vector directive - Auth", () => {
         }
 
         const typeDefs = /* GraphQL */ `
-            type ${Person} @vector(indexes: [{ indexName: "${Person}Index", embeddingProperty: "embedding", queryName: "${queryName}" }])
+            type ${Person} @node @vector(indexes: [{ indexName: "${Person}Index", embeddingProperty: "embedding", queryName: "${queryName}" }])
             @authorization(validate: [{ when: BEFORE, where: { node: { name: "$jwt.name" } } }]) {
                 name: String!
                 born: Int!
                 actedInMovies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type ${Movie} {
+            type ${Movie} @node {
                 title: String!
                 released: Int!
                 actors: [${Person}!]! @relationship(type: "ACTED_IN", direction: IN)
@@ -541,14 +541,14 @@ describe("@vector directive - Auth", () => {
         }
 
         const typeDefs = /* GraphQL */ `
-            type ${Person} @vector(indexes: [{ indexName: "${Person}Index", embeddingProperty: "embedding", queryName: "${queryName}" }])
+            type ${Person} @node @vector(indexes: [{ indexName: "${Person}Index", embeddingProperty: "embedding", queryName: "${queryName}" }])
             @authorization(validate: [{ when: BEFORE, where: { node: { name: "$jwt.name" } } }]) {
                 name: String!
                 born: Int!
                 actedInMovies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type ${Movie} {
+            type ${Movie} @node {
                 title: String!
                 released: Int!
                 actors: [${Person}!]! @relationship(type: "ACTED_IN", direction: IN)
@@ -612,14 +612,14 @@ describe("@vector directive - Auth", () => {
                 roles: [String!]!
             }
 
-            type ${Person} @vector(indexes: [{ indexName: "${Person}Index", embeddingProperty: "embedding", queryName: "${queryName}" }])
+            type ${Person} @node @vector(indexes: [{ indexName: "${Person}Index", embeddingProperty: "embedding", queryName: "${queryName}" }])
             @authorization(validate: [{ operations: [READ], where: { jwt: { roles_INCLUDES: "admin" } } }]) {
                 name: String!
                 born: Int!
                 actedInMovies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type ${Movie} {
+            type ${Movie} @node {
                 title: String!
                 released: Int!
                 actors: [${Person}!]! @relationship(type: "ACTED_IN", direction: IN)

@@ -24,11 +24,12 @@ import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-ut
 describe("https://github.com/neo4j/graphql/issues/4405", () => {
     test("authorization should work when the filter value is an array", async () => {
         const typeDefs = /* GraphQL */ `
-            type Movie {
+            type Movie @node {
                 title: String
             }
 
             type Actor
+                @node
                 @authorization(
                     validate: [
                         {
@@ -75,11 +76,12 @@ describe("https://github.com/neo4j/graphql/issues/4405", () => {
 
     test("authorization should work when the filter value is an array, inside logical", async () => {
         const typeDefs = /* GraphQL */ `
-            type Movie {
+            type Movie @node {
                 title: String
             }
 
             type Actor
+                @node
                 @authorization(
                     validate: [
                         {

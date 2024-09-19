@@ -37,7 +37,7 @@ describe("DateTime", () => {
     describe("create", () => {
         test("should create a movie (with a DateTime)", async () => {
             const typeDefs = /* GraphQL */ `
-                type ${Movie} {
+                type ${Movie} @node {
                   id: ID
                   datetime: DateTime
                 }
@@ -81,7 +81,7 @@ describe("DateTime", () => {
 
         test("should create a movie (with many DateTime)", async () => {
             const typeDefs = /* GraphQL */ `
-                type ${Movie} {
+                type ${Movie} @node {
                   id: ID
                   datetimes: [DateTime]
                 }
@@ -132,7 +132,7 @@ describe("DateTime", () => {
     describe("find", () => {
         test("should find a movie (with a DateTime)", async () => {
             const typeDefs = /* GraphQL */ `
-                type ${Movie.name} {
+                type ${Movie.name} @node {
                     datetime: DateTime
                 }
             `;
@@ -167,7 +167,7 @@ describe("DateTime", () => {
 
         test("should find a movie (with a DateTime created with a timezone)", async () => {
             const typeDefs = /* GraphQL */ `
-                type ${Movie.name} {
+                type ${Movie.name} @node {
                     name: String
                     datetime: DateTime
                 }
@@ -201,7 +201,7 @@ describe("DateTime", () => {
     describe("update", () => {
         test("should update a movie (with a DateTime)", async () => {
             const typeDefs = /* GraphQL */ `
-                type ${Movie} {
+                type ${Movie} @node {
                   id: ID
                   datetime: DateTime
                 }

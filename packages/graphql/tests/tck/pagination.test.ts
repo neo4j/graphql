@@ -26,7 +26,7 @@ describe("Cypher pagination tests", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Movie {
+            type Movie @node {
                 id: ID
                 title: String
             }

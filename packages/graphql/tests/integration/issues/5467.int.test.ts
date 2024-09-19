@@ -29,7 +29,7 @@ describe("https://github.com/neo4j/graphql/issues/5467", () => {
         Test = testHelper.createUniqueType("Test");
 
         const typeDefs = /* GraphQL */ `
-            type ${Test} {
+            type ${Test} @node {
                 name: String!
                 groups: [String!]
             }

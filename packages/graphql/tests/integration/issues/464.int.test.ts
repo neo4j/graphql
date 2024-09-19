@@ -62,12 +62,12 @@ describe("https://github.com/neo4j/graphql/issues/464", () => {
         typeBook = testHelper.createUniqueType("Book");
 
         typeDefs = gql`
-            type ${typeAuthor.name} {
+            type ${typeAuthor.name} @node {
                 id: ID!
                 name: String!
             }
 
-            type ${typeBook.name} {
+            type ${typeBook.name} @node {
                 id: ID!
                 name: String!
                 author: ${typeAuthor.name}! @relationship(type: "WROTE", direction: IN)

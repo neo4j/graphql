@@ -143,13 +143,13 @@ describe("type narrowing nested connections", () => {
             actors: [Person!]! @declareRelationship
         }
 
-        type ${Movie} implements Production {
+        type ${Movie} implements Production @node {
             title: String!
             runtime: Int!
             actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
         }
 
-        type ${AmatureProduction} implements Production {
+        type ${AmatureProduction} implements Production @node {
             title: String!
             episodeCount: Int!
             actors: [${UntrainedPerson}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
@@ -168,13 +168,13 @@ describe("type narrowing nested connections", () => {
             actedIn: [Production!]! @declareRelationship
         }
 
-        type ${Actor} implements Person {
+        type ${Actor} implements Person @node {
             name: String!
             moviesCnt: Int!
             actedIn: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
         }
 
-        type ${UntrainedPerson} implements Person {
+        type ${UntrainedPerson} implements Person @node {
             name: String!
             age: Int!
             actedIn: [${AmatureProduction}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "AppearsIn")
@@ -223,13 +223,13 @@ describe("type narrowing nested connections", () => {
             actors: [Person!]! @declareRelationship
         }
 
-        type ${Movie} implements Production {
+        type ${Movie} implements Production @node {
             title: String!
             runtime: Int!
             actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
         }
 
-        type ${AmatureProduction} implements Production {
+        type ${AmatureProduction} implements Production @node {
             title: String!
             episodeCount: Int!
             actors: [${UntrainedPerson}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
@@ -248,13 +248,13 @@ describe("type narrowing nested connections", () => {
             actedIn: [Production!]! @declareRelationship
         }
 
-        type ${Actor} implements Person {
+        type ${Actor} implements Person @node {
             name: String!
             moviesCnt: Int!
             actedIn: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
         }
 
-        type ${UntrainedPerson} implements Person {
+        type ${UntrainedPerson} implements Person @node {
             name: String!
             age: Int!
             actedIn: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "AppearsIn")
@@ -303,13 +303,13 @@ describe("type narrowing nested connections", () => {
             actors: [Person!]! @declareRelationship
         }
 
-        type ${Movie} implements Production {
+        type ${Movie} implements Production @node {
             title: String!
             runtime: Int!
             actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
         }
 
-        type ${AmatureProduction} implements Production {
+        type ${AmatureProduction} implements Production @node {
             title: String!
             episodeCount: Int!
             actors: [${UntrainedPerson}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
@@ -328,13 +328,13 @@ describe("type narrowing nested connections", () => {
             actedIn: [Production!]! @declareRelationship
         }
 
-        type ${Actor} implements Person {
+        type ${Actor} implements Person @node {
             name: String!
             moviesCnt: Int!
             actedIn: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
         }
 
-        type ${UntrainedPerson} implements Person {
+        type ${UntrainedPerson} implements Person @node {
             name: String!
             age: Int!
             actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "AppearsIn")
@@ -392,13 +392,13 @@ describe("type narrowing nested connections", () => {
             actors: [Person!]! @declareRelationship
         }
 
-        type ${Movie} implements Production {
+        type ${Movie} implements Production @node {
             title: String!
             runtime: Int!
             actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
         }
 
-        type ${AmatureProduction} implements Production {
+        type ${AmatureProduction} implements Production @node {
             title: String!
             episodeCount: Int!
             actors: [${UntrainedPerson}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
@@ -417,13 +417,13 @@ describe("type narrowing nested connections", () => {
             actedIn: [Production!]! @declareRelationship
         }
 
-        type ${Actor} implements Person {
+        type ${Actor} implements Person @node {
             name: String!
             moviesCnt: Int!
             actedIn: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
         }
 
-        type ${UntrainedPerson} implements Person {
+        type ${UntrainedPerson} implements Person @node {
             name: String!
             age: Int!
             actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "AppearsIn")
@@ -482,13 +482,13 @@ describe("type narrowing nested connections", () => {
             actors: [Person!]! @declareRelationship
         }
 
-        type ${Movie} implements Production {
+        type ${Movie} implements Production @node {
             title: String!
             runtime: Int!
             actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
         }
 
-        type ${AmatureProduction} implements Production {
+        type ${AmatureProduction} implements Production @node {
             title: String!
             episodeCount: Int!
             actors: [${UntrainedPerson}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
@@ -507,13 +507,13 @@ describe("type narrowing nested connections", () => {
             actedIn: [Production!]! @declareRelationship
         }
 
-        type ${Actor} implements Person {
+        type ${Actor} implements Person @node {
             name: String!
             moviesCnt: Int!
             actedIn: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
         }
 
-        type ${UntrainedPerson} implements Person {
+        type ${UntrainedPerson} implements Person @node {
             name: String!
             age: Int!
             actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "AppearsIn")

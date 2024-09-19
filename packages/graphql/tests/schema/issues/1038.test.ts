@@ -18,19 +18,19 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("https://github.com/neo4j/graphql/issues/1038", () => {
     test("AWSAccount and DNSZone should be cased correctly", async () => {
         const typeDefs = gql`
-            type AWSAccount {
+            type AWSAccount @node {
                 code: String
                 accountName: String
             }
 
-            type DNSZone {
+            type DNSZone @node {
                 awsId: String
                 zoneType: String
             }
@@ -91,9 +91,10 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
               AND: [AWSAccountWhere!]
               NOT: AWSAccountWhere
               OR: [AWSAccountWhere!]
-              accountName: String
+              accountName: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               accountName_CONTAINS: String
               accountName_ENDS_WITH: String
+              accountName_EQ: String
               accountName_IN: [String]
               accountName_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               accountName_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -101,9 +102,10 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
               accountName_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               accountName_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               accountName_STARTS_WITH: String
-              code: String
+              code: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               code_CONTAINS: String
               code_ENDS_WITH: String
+              code_EQ: String
               code_IN: [String]
               code_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               code_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -185,9 +187,10 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
               AND: [DNSZoneWhere!]
               NOT: DNSZoneWhere
               OR: [DNSZoneWhere!]
-              awsId: String
+              awsId: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               awsId_CONTAINS: String
               awsId_ENDS_WITH: String
+              awsId_EQ: String
               awsId_IN: [String]
               awsId_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               awsId_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -195,9 +198,10 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
               awsId_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               awsId_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               awsId_STARTS_WITH: String
-              zoneType: String
+              zoneType: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               zoneType_CONTAINS: String
               zoneType_ENDS_WITH: String
+              zoneType_EQ: String
               zoneType_IN: [String]
               zoneType_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               zoneType_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")

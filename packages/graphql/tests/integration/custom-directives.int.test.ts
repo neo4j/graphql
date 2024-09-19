@@ -70,7 +70,7 @@ describe("Custom Directives", () => {
                 gql`
                     directive @uppercase on FIELD_DEFINITION
 
-                    type ${Movie} {
+                    type ${Movie} @node {
                         name: String @uppercase
                     }
                 `,

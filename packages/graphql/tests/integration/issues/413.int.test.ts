@@ -42,7 +42,7 @@ describe("https://github.com/neo4j/graphql/issues/413", () => {
                 tenant_id: String!
             }
 
-            type ${JobPlan} {
+            type ${JobPlan} @node {
                 id: ID! @id @unique
                 tenantID: ID!
                 name: String!

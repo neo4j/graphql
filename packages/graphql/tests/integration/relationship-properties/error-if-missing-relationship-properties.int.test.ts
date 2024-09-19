@@ -23,12 +23,12 @@ import { getErrorAsync } from "../../utils/get-error";
 describe("Throw error if missing @relationshipProperties", () => {
     test("should throw error if the @relationshipProperties directive is not used", async () => {
         const typeDefs = /* GraphQL */ `
-            type Movie {
+            type Movie @node  {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
             }
 
-            type Actor {
+            type Actor @node {
                 name: String!
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
@@ -56,12 +56,12 @@ describe("Throw error if missing @relationshipProperties", () => {
 
     test("should not throw error if the @relationshipProperties directive is used", async () => {
         const typeDefs = /* GraphQL */ `
-            type Movie {
+            type Movie @node {
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
             }
 
-            type Actor {
+            type Actor @node {
                 name: String!
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }

@@ -30,13 +30,13 @@ describe("https://github.com/neo4j/graphql/issues/1756", () => {
                 id: ID
             }
 
-            type Product implements INode {
+            type Product implements INode @node {
                 id: ID @populatedBy(operations: [CREATE], callback: "nanoid")
                 name: String!
                 genre: [Genre!]! @relationship(type: "HAS_GENRE", direction: OUT)
             }
 
-            type Genre implements INode {
+            type Genre implements INode @node {
                 id: ID @populatedBy(operations: [CREATE], callback: "nanoid")
                 value: String! @unique
             }

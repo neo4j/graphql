@@ -18,7 +18,7 @@
  */
 
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/2871", () => {
     let neoSchema: Neo4jGraphQL;
@@ -29,6 +29,7 @@ describe("https://github.com/neo4j/graphql/issues/2871", () => {
             roles: [String]
         }
         type User
+            @node
             @authorization(
                 validate: [
                     { where: { node: { userId: "$jwt.id" } }, operations: [READ] }
@@ -40,6 +41,7 @@ describe("https://github.com/neo4j/graphql/issues/2871", () => {
         }
 
         type Tenant
+            @node
             @authorization(
                 validate: [
                     { where: { node: { admins: { userId: "$jwt.id" } } } }
@@ -52,6 +54,7 @@ describe("https://github.com/neo4j/graphql/issues/2871", () => {
         }
 
         type Settings
+            @node
             @authorization(
                 validate: [
                     { where: { node: { tenant: { admins: { userId: "$jwt.id" } } } } }
@@ -65,6 +68,7 @@ describe("https://github.com/neo4j/graphql/issues/2871", () => {
         }
 
         type OpeningDay
+            @node
             @authorization(
                 validate: [{ where: { node: { settings: { tenant: { admins: { userId: "$jwt.id" } } } } } }]
             ) {
@@ -73,7 +77,7 @@ describe("https://github.com/neo4j/graphql/issues/2871", () => {
             name: String
         }
 
-        type LOL @authorization(validate: [{ where: { node: { host: { admins: { userId: "$jwt.id" } } } } }]) {
+        type LOL @authorization(validate: [{ where: { node: { host: { admins: { userId: "$jwt.id" } } } } }]) @node {
             host: Tenant! @relationship(type: "HOSTED_BY", direction: OUT)
             openingDays: [OpeningDay!]! @relationship(type: "HAS_OPENING_DAY", direction: OUT)
         }

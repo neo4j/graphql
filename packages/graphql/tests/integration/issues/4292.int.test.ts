@@ -43,7 +43,7 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                 roles: [String!]!
             }
 
-            type ${User.name} {
+            type ${User.name} @node {
                 id: ID! @unique
                 email: String! @unique
                 name: String
@@ -54,7 +54,7 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                 roles: [String!]!
             }
 
-            type ${Group.name} {
+            type ${Group.name} @node {
                 id: ID! @id @unique
                 name: String
                 members: [${Person.name}!]! @relationship(type: "MEMBER_OF", direction: IN)
@@ -65,7 +65,7 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                 contributors: [${Contributor.name}!]! @relationship(type: "CONTRIBUTOR_TO", direction: IN)
             }
 
-            type ${Person.name} 
+            type ${Person.name} @node 
                 @authorization(
                     validate: [
                         {
@@ -131,7 +131,7 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                 role: InviteeRole!
             }
 
-            type ${Admin.name} implements Invitee {
+            type ${Admin.name} implements Invitee @node {
                 id: ID! @unique @id
                 group: ${Group.name}! @relationship(type: "ADMIN_OF", direction: OUT)
                 creator: ${User.name}! @relationship(type: "CREATOR_OF", direction: IN)
@@ -142,7 +142,7 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                 role: InviteeRole! @default(value: ADMIN)
             }
 
-            type ${Contributor.name} implements Invitee {
+            type ${Contributor.name} implements Invitee @node {
                 id: ID! @unique @id
                 group: ${Group.name}! @relationship(type: "CONTRIBUTOR_TO", direction: OUT)
                 creator: ${User.name}! @relationship(type: "CREATOR_OF", direction: IN)

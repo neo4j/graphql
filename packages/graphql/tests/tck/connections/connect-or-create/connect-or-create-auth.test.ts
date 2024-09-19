@@ -31,12 +31,12 @@ describe("connectOrCreate", () => {
             roles: [String!]!
         }
 
-        type Movie {
+        type Movie @node {
             title: String
             genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT)
         }
 
-        type Genre @authorization(validate: [{ operations: ${operations}, where: { jwt: { roles_INCLUDES: "admin" } } }]) {
+        type Genre @authorization(validate: [{ operations: ${operations}, where: { jwt: { roles_INCLUDES: "admin" } } }]) @node {
             name: String @unique
         }
         `;
@@ -607,12 +607,12 @@ describe("connectOrCreate", () => {
 
         test("Create with createOrConnect and allow in auth", async () => {
             const typeDefs = `
-                type Movie {
+                type Movie @node {
                     title: String
                     genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT)
                 }
 
-                type Genre {
+                type Genre @node {
                     name: String @unique
                 }
 

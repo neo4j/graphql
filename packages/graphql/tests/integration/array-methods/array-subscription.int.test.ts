@@ -35,12 +35,12 @@ describe("array-subscription", () => {
 
         plugin = new TestSubscriptionsEngine();
         const typeDefs = gql`
-            type ${typeActor.name} {
+            type ${typeActor.name} @node {
                 name: String!
                 movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type ${typeMovie.name} {
+            type ${typeMovie.name} @node {
                 id: ID!
                 name: String
                 tagline: String

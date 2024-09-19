@@ -39,7 +39,7 @@ describe("Time", () => {
     describe("create", () => {
         test("should create a movie (with a Time)", async () => {
             const typeDefs = /* GraphQL */ `
-                type ${Movie} {
+                type ${Movie} @node {
                     id: ID!
                     time: Time!
                 }
@@ -90,7 +90,7 @@ describe("Time", () => {
 
         test("should create a movie (with many Times)", async () => {
             const typeDefs = /* GraphQL */ `
-                type ${Movie} {
+                type ${Movie} @node {
                     id: ID!
                     times: [Time!]!
                 }
@@ -157,7 +157,7 @@ describe("Time", () => {
     describe("update", () => {
         test("should update a movie (with a Time)", async () => {
             const typeDefs = /* GraphQL */ `
-                type ${Movie} {
+                type ${Movie} @node {
                     id: ID!
                     time: Time
                 }
@@ -218,7 +218,7 @@ describe("Time", () => {
     describe("filter", () => {
         test("should filter based on time equality", async () => {
             const typeDefs = /* GraphQL */ `
-                type ${Movie} {
+                type ${Movie} @node {
                     id: ID!
                     time: Time!
                 }
@@ -263,7 +263,7 @@ describe("Time", () => {
             "should filter based on time comparison for filter: %s",
             async (filter) => {
                 const typeDefs = /* GraphQL */ `
-                        type ${Movie} {
+                        type ${Movie} @node {
                             id: ID!
                             time: Time!
                         }
@@ -381,7 +381,7 @@ describe("Time", () => {
     describe("sorting", () => {
         test.each(["ASC", "DESC"])("should sort based on time, sorted by: %s", async (sort) => {
             const typeDefs = /* GraphQL */ `
-                        type ${Movie} {
+                        type ${Movie} @node {
                             id: ID!
                             time: Time!
                         }

@@ -32,7 +32,7 @@ describe("Create", () => {
 
     beforeAll(async () => {
         const typeDefs = `
-         type ${typeMovie} {
+         type ${typeMovie} @node {
              title: String
          }
          `;

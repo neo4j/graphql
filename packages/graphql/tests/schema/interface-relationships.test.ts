@@ -29,12 +29,12 @@ describe("Interface Relationships", () => {
                 title: String!
             }
 
-            type Movie implements Production {
+            type Movie implements Production @node {
                 title: String!
                 runtime: Int!
             }
 
-            type Series implements Production {
+            type Series implements Production @node {
                 title: String!
                 episodes: Int!
             }
@@ -43,7 +43,7 @@ describe("Interface Relationships", () => {
                 screenTime: Int!
             }
 
-            type Actor {
+            type Actor @node {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
@@ -114,7 +114,8 @@ describe("Interface Relationships", () => {
               AND: [ActedInWhere!]
               NOT: ActedInWhere
               OR: [ActedInWhere!]
-              screenTime: Int
+              screenTime: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              screenTime_EQ: Int
               screenTime_GT: Int
               screenTime_GTE: Int
               screenTime_IN: [Int!]
@@ -348,9 +349,10 @@ describe("Interface Relationships", () => {
               actedIn_SINGLE: ProductionWhere
               \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
               actedIn_SOME: ProductionWhere
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -455,7 +457,8 @@ describe("Interface Relationships", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              runtime: Int
+              runtime: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              runtime_EQ: Int
               runtime_GT: Int
               runtime_GTE: Int
               runtime_IN: [Int!]
@@ -463,9 +466,10 @@ describe("Interface Relationships", () => {
               runtime_LTE: Int
               runtime_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               runtime_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title: String
+              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
+              title_EQ: String
               title_IN: [String!]
               title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -553,9 +557,10 @@ describe("Interface Relationships", () => {
               AND: [ProductionWhere!]
               NOT: ProductionWhere
               OR: [ProductionWhere!]
-              title: String
+              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
+              title_EQ: String
               title_IN: [String!]
               title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -642,7 +647,8 @@ describe("Interface Relationships", () => {
               AND: [SeriesWhere!]
               NOT: SeriesWhere
               OR: [SeriesWhere!]
-              episodes: Int
+              episodes: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              episodes_EQ: Int
               episodes_GT: Int
               episodes_GTE: Int
               episodes_IN: [Int!]
@@ -650,9 +656,10 @@ describe("Interface Relationships", () => {
               episodes_LTE: Int
               episodes_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               episodes_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title: String
+              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
+              title_EQ: String
               title_IN: [String!]
               title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -705,7 +712,7 @@ describe("Interface Relationships", () => {
 
     test("Interface Relationships - multiple - same relationship implementation", async () => {
         const typeDefs = gql`
-            type Episode {
+            type Episode @node {
                 runtime: Int!
                 series: Series! @relationship(type: "HAS_EPISODE", direction: IN)
             }
@@ -715,13 +722,13 @@ describe("Interface Relationships", () => {
                 actors: [Actor!]! @declareRelationship
             }
 
-            type Movie implements Production {
+            type Movie implements Production @node {
                 title: String!
                 runtime: Int!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type Series implements Production {
+            type Series implements Production @node {
                 title: String!
                 episodeCount: Int!
                 episodes: [Episode!]! @relationship(type: "HAS_EPISODE", direction: OUT)
@@ -732,7 +739,7 @@ describe("Interface Relationships", () => {
                 screenTime: Int!
             }
 
-            type Actor {
+            type Actor @node {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
@@ -805,7 +812,8 @@ describe("Interface Relationships", () => {
               AND: [ActedInWhere!]
               NOT: ActedInWhere
               OR: [ActedInWhere!]
-              screenTime: Int
+              screenTime: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              screenTime_EQ: Int
               screenTime_GT: Int
               screenTime_GTE: Int
               screenTime_IN: [Int!]
@@ -1046,9 +1054,10 @@ describe("Interface Relationships", () => {
               actedIn_SINGLE: ProductionWhere
               \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
               actedIn_SOME: ProductionWhere
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1323,7 +1332,8 @@ describe("Interface Relationships", () => {
               AND: [EpisodeWhere!]
               NOT: EpisodeWhere
               OR: [EpisodeWhere!]
-              runtime: Int
+              runtime: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              runtime_EQ: Int
               runtime_GT: Int
               runtime_GTE: Int
               runtime_IN: [Int!]
@@ -1552,7 +1562,8 @@ describe("Interface Relationships", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
-              runtime: Int
+              runtime: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              runtime_EQ: Int
               runtime_GT: Int
               runtime_GTE: Int
               runtime_IN: [Int!]
@@ -1560,9 +1571,10 @@ describe("Interface Relationships", () => {
               runtime_LTE: Int
               runtime_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               runtime_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title: String
+              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
+              title_EQ: String
               title_IN: [String!]
               title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1864,9 +1876,10 @@ describe("Interface Relationships", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Productions where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
-              title: String
+              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
+              title_EQ: String
               title_IN: [String!]
               title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -2237,7 +2250,8 @@ describe("Interface Relationships", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
-              episodeCount: Int
+              episodeCount: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              episodeCount_EQ: Int
               episodeCount_GT: Int
               episodeCount_GTE: Int
               episodeCount_IN: [Int!]
@@ -2274,9 +2288,10 @@ describe("Interface Relationships", () => {
               episodes_SINGLE: EpisodeWhere
               \\"\\"\\"Return Series where some of the related Episodes match this filter\\"\\"\\"
               episodes_SOME: EpisodeWhere
-              title: String
+              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
+              title_EQ: String
               title_IN: [String!]
               title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -2334,7 +2349,7 @@ describe("Interface Relationships", () => {
 
     test("Interface Relationships - multiple - different relationship implementations", async () => {
         const typeDefs = gql`
-            type Episode {
+            type Episode @node {
                 runtime: Int!
                 series: Series! @relationship(type: "HAS_EPISODE", direction: IN)
             }
@@ -2344,13 +2359,13 @@ describe("Interface Relationships", () => {
                 actors: [Actor!]! @declareRelationship
             }
 
-            type Movie implements Production {
+            type Movie implements Production @node {
                 title: String!
                 runtime: Int!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type Series implements Production {
+            type Series implements Production @node {
                 title: String!
                 episodeCount: Int!
                 episodes: [Episode!]! @relationship(type: "HAS_EPISODE", direction: OUT)
@@ -2365,7 +2380,7 @@ describe("Interface Relationships", () => {
                 seasons: Int!
             }
 
-            type Actor {
+            type Actor @node {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
@@ -2437,7 +2452,8 @@ describe("Interface Relationships", () => {
               AND: [ActedInWhere!]
               NOT: ActedInWhere
               OR: [ActedInWhere!]
-              screenTime: Int
+              screenTime: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              screenTime_EQ: Int
               screenTime_GT: Int
               screenTime_GTE: Int
               screenTime_IN: [Int!]
@@ -2678,9 +2694,10 @@ describe("Interface Relationships", () => {
               actedIn_SINGLE: ProductionWhere
               \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
               actedIn_SOME: ProductionWhere
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -2955,7 +2972,8 @@ describe("Interface Relationships", () => {
               AND: [EpisodeWhere!]
               NOT: EpisodeWhere
               OR: [EpisodeWhere!]
-              runtime: Int
+              runtime: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              runtime_EQ: Int
               runtime_GT: Int
               runtime_GTE: Int
               runtime_IN: [Int!]
@@ -3184,7 +3202,8 @@ describe("Interface Relationships", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
-              runtime: Int
+              runtime: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              runtime_EQ: Int
               runtime_GT: Int
               runtime_GTE: Int
               runtime_IN: [Int!]
@@ -3192,9 +3211,10 @@ describe("Interface Relationships", () => {
               runtime_LTE: Int
               runtime_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               runtime_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title: String
+              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
+              title_EQ: String
               title_IN: [String!]
               title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -3516,9 +3536,10 @@ describe("Interface Relationships", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Productions where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
-              title: String
+              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
+              title_EQ: String
               title_IN: [String!]
               title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -3889,7 +3910,8 @@ describe("Interface Relationships", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
-              episodeCount: Int
+              episodeCount: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              episodeCount_EQ: Int
               episodeCount_GT: Int
               episodeCount_GTE: Int
               episodeCount_IN: [Int!]
@@ -3926,9 +3948,10 @@ describe("Interface Relationships", () => {
               episodes_SINGLE: EpisodeWhere
               \\"\\"\\"Return Series where some of the related Episodes match this filter\\"\\"\\"
               episodes_SOME: EpisodeWhere
-              title: String
+              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
+              title_EQ: String
               title_IN: [String!]
               title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -4003,7 +4026,8 @@ describe("Interface Relationships", () => {
               AND: [StarredInWhere!]
               NOT: StarredInWhere
               OR: [StarredInWhere!]
-              seasons: Int
+              seasons: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              seasons_EQ: Int
               seasons_GT: Int
               seasons_GTE: Int
               seasons_IN: [Int!]
@@ -4062,25 +4086,25 @@ describe("Interface Relationships", () => {
                 field2: String
             }
 
-            type Type1Interface1 implements Interface1 {
+            type Type1Interface1 implements Interface1 @node {
                 field1: String!
                 interface2: [Interface2!]! @relationship(type: "INTERFACE_TWO", direction: OUT)
             }
 
-            type Type2Interface1 implements Interface1 {
+            type Type2Interface1 implements Interface1 @node {
                 field1: String!
                 interface2: [Interface2!]! @relationship(type: "INTERFACE_TWO", direction: OUT)
             }
 
-            type Type1Interface2 implements Interface2 {
+            type Type1Interface2 implements Interface2 @node {
                 field2: String!
             }
 
-            type Type2Interface2 implements Interface2 {
+            type Type2Interface2 implements Interface2 @node {
                 field2: String!
             }
 
-            type Type1 {
+            type Type1 @node {
                 field1: String!
                 interface1: [Interface1!]! @relationship(type: "INTERFACE_ONE", direction: OUT)
             }
@@ -4310,9 +4334,10 @@ describe("Interface Relationships", () => {
               AND: [Interface1Where!]
               NOT: Interface1Where
               OR: [Interface1Where!]
-              field1: String
+              field1: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               field1_CONTAINS: String
               field1_ENDS_WITH: String
+              field1_EQ: String
               field1_IN: [String!]
               field1_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field1_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -4418,9 +4443,10 @@ describe("Interface Relationships", () => {
               AND: [Interface2Where!]
               NOT: Interface2Where
               OR: [Interface2Where!]
-              field2: String
+              field2: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               field2_CONTAINS: String
               field2_ENDS_WITH: String
+              field2_EQ: String
               field2_IN: [String]
               field2_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field2_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -4815,9 +4841,10 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface1Where!]
               NOT: Type1Interface1Where
               OR: [Type1Interface1Where!]
-              field1: String
+              field1: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               field1_CONTAINS: String
               field1_ENDS_WITH: String
+              field1_EQ: String
               field1_IN: [String!]
               field1_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field1_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -4912,9 +4939,10 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface2Where!]
               NOT: Type1Interface2Where
               OR: [Type1Interface2Where!]
-              field2: String
+              field2: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               field2_CONTAINS: String
               field2_ENDS_WITH: String
+              field2_EQ: String
               field2_IN: [String!]
               field2_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field2_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -4959,9 +4987,10 @@ describe("Interface Relationships", () => {
               AND: [Type1Where!]
               NOT: Type1Where
               OR: [Type1Where!]
-              field1: String
+              field1: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               field1_CONTAINS: String
               field1_ENDS_WITH: String
+              field1_EQ: String
               field1_IN: [String!]
               field1_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field1_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -5165,9 +5194,10 @@ describe("Interface Relationships", () => {
               AND: [Type2Interface1Where!]
               NOT: Type2Interface1Where
               OR: [Type2Interface1Where!]
-              field1: String
+              field1: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               field1_CONTAINS: String
               field1_ENDS_WITH: String
+              field1_EQ: String
               field1_IN: [String!]
               field1_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field1_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -5262,9 +5292,10 @@ describe("Interface Relationships", () => {
               AND: [Type2Interface2Where!]
               NOT: Type2Interface2Where
               OR: [Type2Interface2Where!]
-              field2: String
+              field2: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               field2_CONTAINS: String
               field2_ENDS_WITH: String
+              field2_EQ: String
               field2_IN: [String!]
               field2_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field2_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -5334,25 +5365,25 @@ describe("Interface Relationships", () => {
                 field2: String
             }
 
-            type Type1Interface1 implements Interface1 {
+            type Type1Interface1 implements Interface1 @node {
                 field1: String!
                 interface2: [Interface2!]! @relationship(type: "INTERFACE_TWO", direction: OUT, properties: "Props")
             }
 
-            type Type2Interface1 implements Interface1 {
+            type Type2Interface1 implements Interface1 @node {
                 field1: String!
                 interface2: [Interface2!]! @relationship(type: "INTERFACE_TWO", direction: OUT, properties: "Props")
             }
 
-            type Type1Interface2 implements Interface2 {
+            type Type1Interface2 implements Interface2 @node {
                 field2: String!
             }
 
-            type Type2Interface2 implements Interface2 {
+            type Type2Interface2 implements Interface2 @node {
                 field2: String!
             }
 
-            type Type1 {
+            type Type1 @node {
                 field1: String!
                 interface1: [Interface1!]! @relationship(type: "INTERFACE_ONE", direction: OUT)
             }
@@ -5648,9 +5679,10 @@ describe("Interface Relationships", () => {
               AND: [Interface1Where!]
               NOT: Interface1Where
               OR: [Interface1Where!]
-              field1: String
+              field1: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               field1_CONTAINS: String
               field1_ENDS_WITH: String
+              field1_EQ: String
               field1_IN: [String!]
               field1_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field1_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -5756,9 +5788,10 @@ describe("Interface Relationships", () => {
               AND: [Interface2Where!]
               NOT: Interface2Where
               OR: [Interface2Where!]
-              field2: String
+              field2: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               field2_CONTAINS: String
               field2_ENDS_WITH: String
+              field2_EQ: String
               field2_IN: [String]
               field2_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field2_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -5859,7 +5892,8 @@ describe("Interface Relationships", () => {
               AND: [PropsWhere!]
               NOT: PropsWhere
               OR: [PropsWhere!]
-              propsField: Int
+              propsField: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              propsField_EQ: Int
               propsField_GT: Int
               propsField_GTE: Int
               propsField_IN: [Int!]
@@ -6230,9 +6264,10 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface1Where!]
               NOT: Type1Interface1Where
               OR: [Type1Interface1Where!]
-              field1: String
+              field1: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               field1_CONTAINS: String
               field1_ENDS_WITH: String
+              field1_EQ: String
               field1_IN: [String!]
               field1_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field1_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -6327,9 +6362,10 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface2Where!]
               NOT: Type1Interface2Where
               OR: [Type1Interface2Where!]
-              field2: String
+              field2: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               field2_CONTAINS: String
               field2_ENDS_WITH: String
+              field2_EQ: String
               field2_IN: [String!]
               field2_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field2_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -6374,9 +6410,10 @@ describe("Interface Relationships", () => {
               AND: [Type1Where!]
               NOT: Type1Where
               OR: [Type1Where!]
-              field1: String
+              field1: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               field1_CONTAINS: String
               field1_ENDS_WITH: String
+              field1_EQ: String
               field1_IN: [String!]
               field1_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field1_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -6589,9 +6626,10 @@ describe("Interface Relationships", () => {
               AND: [Type2Interface1Where!]
               NOT: Type2Interface1Where
               OR: [Type2Interface1Where!]
-              field1: String
+              field1: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               field1_CONTAINS: String
               field1_ENDS_WITH: String
+              field1_EQ: String
               field1_IN: [String!]
               field1_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field1_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -6686,9 +6724,10 @@ describe("Interface Relationships", () => {
               AND: [Type2Interface2Where!]
               NOT: Type2Interface2Where
               OR: [Type2Interface2Where!]
-              field2: String
+              field2: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               field2_CONTAINS: String
               field2_ENDS_WITH: String
+              field2_EQ: String
               field2_IN: [String!]
               field2_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field2_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -6758,27 +6797,27 @@ describe("Interface Relationships", () => {
                 field2: String
             }
 
-            type Type1Interface1 implements Interface1 {
+            type Type1Interface1 implements Interface1 @node {
                 field1: String!
                 interface2: [Interface2!]!
                     @relationship(type: "INTERFACE_TWO", direction: OUT, properties: "Type1Props")
             }
 
-            type Type2Interface1 implements Interface1 {
+            type Type2Interface1 implements Interface1 @node {
                 field1: String!
                 interface2: [Interface2!]!
                     @relationship(type: "INTERFACE_TWO", direction: OUT, properties: "Type2Props")
             }
 
-            type Type1Interface2 implements Interface2 {
+            type Type1Interface2 implements Interface2 @node {
                 field2: String!
             }
 
-            type Type2Interface2 implements Interface2 {
+            type Type2Interface2 implements Interface2 @node {
                 field2: String!
             }
 
-            type Type1 {
+            type Type1 @node {
                 field1: String!
                 interface1: [Interface1!]! @relationship(type: "INTERFACE_ONE", direction: OUT)
             }
@@ -7098,9 +7137,10 @@ describe("Interface Relationships", () => {
               AND: [Interface1Where!]
               NOT: Interface1Where
               OR: [Interface1Where!]
-              field1: String
+              field1: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               field1_CONTAINS: String
               field1_ENDS_WITH: String
+              field1_EQ: String
               field1_IN: [String!]
               field1_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field1_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -7206,9 +7246,10 @@ describe("Interface Relationships", () => {
               AND: [Interface2Where!]
               NOT: Interface2Where
               OR: [Interface2Where!]
-              field2: String
+              field2: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               field2_CONTAINS: String
               field2_ENDS_WITH: String
+              field2_EQ: String
               field2_IN: [String]
               field2_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field2_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -7612,9 +7653,10 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface1Where!]
               NOT: Type1Interface1Where
               OR: [Type1Interface1Where!]
-              field1: String
+              field1: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               field1_CONTAINS: String
               field1_ENDS_WITH: String
+              field1_EQ: String
               field1_IN: [String!]
               field1_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field1_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -7709,9 +7751,10 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface2Where!]
               NOT: Type1Interface2Where
               OR: [Type1Interface2Where!]
-              field2: String
+              field2: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               field2_CONTAINS: String
               field2_ENDS_WITH: String
+              field2_EQ: String
               field2_IN: [String!]
               field2_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field2_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -7793,7 +7836,8 @@ describe("Interface Relationships", () => {
               AND: [Type1PropsWhere!]
               NOT: Type1PropsWhere
               OR: [Type1PropsWhere!]
-              type1Field: Int
+              type1Field: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              type1Field_EQ: Int
               type1Field_GT: Int
               type1Field_GTE: Int
               type1Field_IN: [Int!]
@@ -7823,9 +7867,10 @@ describe("Interface Relationships", () => {
               AND: [Type1Where!]
               NOT: Type1Where
               OR: [Type1Where!]
-              field1: String
+              field1: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               field1_CONTAINS: String
               field1_ENDS_WITH: String
+              field1_EQ: String
               field1_IN: [String!]
               field1_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field1_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -8038,9 +8083,10 @@ describe("Interface Relationships", () => {
               AND: [Type2Interface1Where!]
               NOT: Type2Interface1Where
               OR: [Type2Interface1Where!]
-              field1: String
+              field1: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               field1_CONTAINS: String
               field1_ENDS_WITH: String
+              field1_EQ: String
               field1_IN: [String!]
               field1_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field1_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -8135,9 +8181,10 @@ describe("Interface Relationships", () => {
               AND: [Type2Interface2Where!]
               NOT: Type2Interface2Where
               OR: [Type2Interface2Where!]
-              field2: String
+              field2: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               field2_CONTAINS: String
               field2_ENDS_WITH: String
+              field2_EQ: String
               field2_IN: [String!]
               field2_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field2_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -8210,7 +8257,8 @@ describe("Interface Relationships", () => {
               AND: [Type2PropsWhere!]
               NOT: Type2PropsWhere
               OR: [Type2PropsWhere!]
-              type2Field: Int
+              type2Field: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              type2Field_EQ: Int
               type2Field_GT: Int
               type2Field_GTE: Int
               type2Field_IN: [Int!]
@@ -8271,21 +8319,21 @@ describe("Interface Relationships", () => {
                 creator: User! @declareRelationship
             }
 
-            type Comment implements Content {
+            type Comment implements Content @node {
                 id: ID
                 content: String
                 creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
                 post: Post! @relationship(type: "HAS_COMMENT", direction: IN)
             }
 
-            type Post implements Content {
+            type Post implements Content @node {
                 id: ID
                 content: String
                 creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
                 comments: [Comment!]! @relationship(type: "HAS_COMMENT", direction: OUT)
             }
 
-            type User {
+            type User @node {
                 id: ID
                 name: String
                 content: [Content!]! @relationship(type: "HAS_CONTENT", direction: OUT)
@@ -8605,9 +8653,10 @@ describe("Interface Relationships", () => {
               AND: [CommentWhere!]
               NOT: CommentWhere
               OR: [CommentWhere!]
-              content: String
+              content: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               content_CONTAINS: String
               content_ENDS_WITH: String
+              content_EQ: String
               content_IN: [String]
               content_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               content_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -8620,9 +8669,10 @@ describe("Interface Relationships", () => {
               creatorConnection: ContentCreatorConnectionWhere
               creatorConnection_NOT: ContentCreatorConnectionWhere
               creator_NOT: UserWhere
-              id: ID
+              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
+              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -8827,9 +8877,10 @@ describe("Interface Relationships", () => {
               AND: [ContentWhere!]
               NOT: ContentWhere
               OR: [ContentWhere!]
-              content: String
+              content: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               content_CONTAINS: String
               content_ENDS_WITH: String
+              content_EQ: String
               content_IN: [String]
               content_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               content_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -8842,9 +8893,10 @@ describe("Interface Relationships", () => {
               creatorConnection: ContentCreatorConnectionWhere
               creatorConnection_NOT: ContentCreatorConnectionWhere
               creator_NOT: UserWhere
-              id: ID
+              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
+              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -9252,9 +9304,10 @@ describe("Interface Relationships", () => {
               comments_SINGLE: CommentWhere
               \\"\\"\\"Return Posts where some of the related Comments match this filter\\"\\"\\"
               comments_SOME: CommentWhere
-              content: String
+              content: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               content_CONTAINS: String
               content_ENDS_WITH: String
+              content_EQ: String
               content_IN: [String]
               content_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               content_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -9267,9 +9320,10 @@ describe("Interface Relationships", () => {
               creatorConnection: ContentCreatorConnectionWhere
               creatorConnection_NOT: ContentCreatorConnectionWhere
               creator_NOT: UserWhere
-              id: ID
+              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
+              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -9564,9 +9618,10 @@ describe("Interface Relationships", () => {
               content_SINGLE: ContentWhere
               \\"\\"\\"Return Users where some of the related Contents match this filter\\"\\"\\"
               content_SOME: ContentWhere
-              id: ID
+              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
+              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -9574,9 +9629,10 @@ describe("Interface Relationships", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -9606,13 +9662,13 @@ describe("Interface Relationships", () => {
                 actors: [Actor!]!
             }
 
-            type Movie implements Production & Show {
+            type Movie implements Production & Show @node {
                 title: String!
                 runtime: Int!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type Series implements Production & Show {
+            type Series implements Production & Show @node {
                 title: String!
                 episodeCount: Int!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "StarredIn")
@@ -9626,7 +9682,7 @@ describe("Interface Relationships", () => {
                 episodeNr: Int!
             }
 
-            type Actor {
+            type Actor @node {
                 name: String!
                 actedIn: [Show!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
@@ -9699,7 +9755,8 @@ describe("Interface Relationships", () => {
               AND: [ActedInWhere!]
               NOT: ActedInWhere
               OR: [ActedInWhere!]
-              screenTime: Int
+              screenTime: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              screenTime_EQ: Int
               screenTime_GT: Int
               screenTime_GTE: Int
               screenTime_IN: [Int!]
@@ -9940,9 +9997,10 @@ describe("Interface Relationships", () => {
               actedIn_SINGLE: ShowWhere
               \\"\\"\\"Return Actors where some of the related Shows match this filter\\"\\"\\"
               actedIn_SOME: ShowWhere
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -10199,7 +10257,8 @@ describe("Interface Relationships", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
-              runtime: Int
+              runtime: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              runtime_EQ: Int
               runtime_GT: Int
               runtime_GTE: Int
               runtime_IN: [Int!]
@@ -10207,9 +10266,10 @@ describe("Interface Relationships", () => {
               runtime_LTE: Int
               runtime_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               runtime_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title: String
+              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
+              title_EQ: String
               title_IN: [String!]
               title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -10285,9 +10345,10 @@ describe("Interface Relationships", () => {
               AND: [ProductionWhere!]
               NOT: ProductionWhere
               OR: [ProductionWhere!]
-              title: String
+              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
+              title_EQ: String
               title_IN: [String!]
               title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -10529,7 +10590,8 @@ describe("Interface Relationships", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
-              episodeCount: Int
+              episodeCount: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              episodeCount_EQ: Int
               episodeCount_GT: Int
               episodeCount_GTE: Int
               episodeCount_IN: [Int!]
@@ -10537,9 +10599,10 @@ describe("Interface Relationships", () => {
               episodeCount_LTE: Int
               episodeCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               episodeCount_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title: String
+              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
+              title_EQ: String
               title_IN: [String!]
               title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -10832,9 +10895,10 @@ describe("Interface Relationships", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Shows where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
-              title: String
+              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
+              title_EQ: String
               title_IN: [String!]
               title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -10916,7 +10980,8 @@ describe("Interface Relationships", () => {
               AND: [StarredInWhere!]
               NOT: StarredInWhere
               OR: [StarredInWhere!]
-              episodeNr: Int
+              episodeNr: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              episodeNr_EQ: Int
               episodeNr_GT: Int
               episodeNr_GTE: Int
               episodeNr_IN: [Int!]

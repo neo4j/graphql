@@ -33,12 +33,12 @@ describe("https://github.com/neo4j/graphql/issues/3165", () => {
         Related = testHelper.createUniqueType("Related");
 
         const typeDefs = `
-            type ${A} {
+            type ${A} @node {
                 name: String!
                 related: [${Related}!]! @relationship(type: "PROPERTY_OF", properties: "RelatedProperties", direction: IN)
             }
 
-            type ${B} {
+            type ${B} @node {
                 name: String!
                 related: [${Related}!]! @relationship(type: "PROPERTY_OF", properties: "RelatedProperties", direction: IN)
             }
@@ -49,7 +49,7 @@ describe("https://github.com/neo4j/graphql/issues/3165", () => {
                 prop: String!
             }
 
-            type ${Related} {
+            type ${Related} @node {
                 name: String!
                 value: String!
                 target: RelatedTarget!

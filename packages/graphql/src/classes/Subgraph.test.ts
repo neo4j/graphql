@@ -31,7 +31,7 @@ describe("Subgraph", () => {
                     location(id: ID!): Location
                 }
 
-                type Location @key(fields: "id") {
+                type Location @key(fields: "id") @node {
                     id: ID!
                     "The name of the location"
                     name: String!
@@ -61,7 +61,7 @@ describe("Subgraph", () => {
                     location(id: ID!): Location
                 }
 
-                type Location @key(fields: "id") {
+                type Location @key(fields: "id") @node {
                     id: ID!
                     "The name of the location"
                     name: String!
@@ -93,7 +93,7 @@ describe("Subgraph", () => {
                     location(id: ID!): Location
                 }
 
-                type Location {
+                type Location @node {
                     id: ID!
                     "The name of the location"
                     name: String!
@@ -120,7 +120,7 @@ describe("Subgraph", () => {
                     location(id: ID!): Location
                 }
 
-                type Location {
+                type Location @node {
                     id: ID!
                     "The name of the location"
                     name: String!
@@ -160,7 +160,7 @@ describe("Subgraph", () => {
                     location(id: ID!): Location
                 }
 
-                type Location @key(fields: "id") {
+                type Location @key(fields: "id") @node {
                     id: ID!
                     "The name of the location"
                     name: String!
@@ -216,7 +216,7 @@ describe("Subgraph", () => {
                     location(id: ID!): Location
                 }
 
-                type Location @key(fields: "id") {
+                type Location @key(fields: "id") @node {
                     id: ID!
                     "The name of the location"
                     name: String!
@@ -251,7 +251,7 @@ describe("Subgraph", () => {
                     location(id: ID!): Location
                 }
 
-                type Location @key(fields: "id") {
+                type Location @key(fields: "id") @node {
                     id: ID!
                     "The name of the location"
                     name: String!

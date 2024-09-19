@@ -37,7 +37,7 @@ describe("Date", () => {
     describe("create", () => {
         test("should create a movie (with a Date)", async () => {
             const typeDefs = /* GraphQL */ `
-                type ${Movie} {
+                type ${Movie} @node {
                   id: ID
                   date: Date
                 }
@@ -80,7 +80,7 @@ describe("Date", () => {
 
         test("should create a movie (with many Dates)", async () => {
             const typeDefs = /* GraphQL */ `
-                type ${Movie} {
+                type ${Movie} @node {
                   id: ID
                   dates: [Date]
                 }
@@ -132,7 +132,7 @@ describe("Date", () => {
     describe("find", () => {
         test("should find a movie (with a Date)", async () => {
             const typeDefs = /* GraphQL */ `
-                type ${Movie.name} {
+                type ${Movie.name} @node {
                     date: Date
                 }
             `;
@@ -171,7 +171,7 @@ describe("Date", () => {
     describe("update", () => {
         test("should update a movie (with a Date)", async () => {
             const typeDefs = /* GraphQL */ `
-                type ${Movie} {
+                type ${Movie} @node {
                   id: ID
                   date: Date
                 }

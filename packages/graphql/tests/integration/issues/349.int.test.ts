@@ -98,7 +98,7 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
                 typeDefs: [
                     disallowDirectiveTypeDefs,
                     gql`
-                        type NestedResult {
+                        type NestedResult @node {
                             stuff: String! @disallow
                         }
 

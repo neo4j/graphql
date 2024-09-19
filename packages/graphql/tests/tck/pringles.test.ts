@@ -26,7 +26,7 @@ describe("Cypher Create Pringles", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Product {
+            type Product @node {
                 id: ID!
                 name: String
                 sizes: [Size!]! @relationship(type: "HAS_SIZE", direction: OUT)
@@ -34,18 +34,18 @@ describe("Cypher Create Pringles", () => {
                 photos: [Photo!]! @relationship(type: "HAS_PHOTO", direction: OUT)
             }
 
-            type Size {
+            type Size @node {
                 id: ID!
                 name: String!
             }
 
-            type Color {
+            type Color @node {
                 id: ID!
                 name: String!
                 photos: [Photo!]! @relationship(type: "OF_COLOR", direction: IN)
             }
 
-            type Photo {
+            type Photo @node {
                 id: ID!
                 description: String!
                 url: String!

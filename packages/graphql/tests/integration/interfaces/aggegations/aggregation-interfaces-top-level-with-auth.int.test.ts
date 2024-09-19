@@ -41,13 +41,13 @@ describe("Top-level interface query fields with authorization", () => {
                 cost: Float!
             }
 
-            type ${Movie} implements Production @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "movies-reader" } } }]) {
+            type ${Movie} implements Production @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "movies-reader" } } }]) @node {
                 title: String!
                 cost: Float!
                 runtime: Int
             }
 
-            type ${Series} implements Production {
+            type ${Series} implements Production @node {
                 title: String!
                 cost: Float!
                 episodes: Int

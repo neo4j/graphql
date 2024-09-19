@@ -38,7 +38,7 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
         Valuation = testHelper.createUniqueType("Valuation");
 
         const typeDefs = `
-        type ${PostalCode.name} {
+        type ${PostalCode.name} @node {
             archivedAt: DateTime
             number: String! @unique
             address: [${Address.name}!]! @relationship(type: "HAS_POSTAL_CODE", direction: IN)
@@ -46,7 +46,7 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
           
           union AddressNode = ${Estate.name}
           
-          type ${Address.name} {
+          type ${Address.name} @node {
             archivedAt: DateTime
             uuid: ID! @id @unique
             createdAt: DateTime! @timestamp(operations: [CREATE])
@@ -55,7 +55,7 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
             node: [AddressNode!]! @relationship(type: "HAS_ADDRESS", direction: IN)
           }
           
-          type ${Mandate.name} @mutation(operations: [CREATE, UPDATE]) {
+          type ${Mandate.name} @mutation(operations: [CREATE, UPDATE]) @node {
             archivedAt: DateTime
             number: ID! @id @unique # numéro
             createdAt: DateTime! @timestamp(operations: [CREATE])
@@ -64,7 +64,7 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
             valuation: ${Valuation.name}! @relationship(type: "HAS_VALUATION", direction: OUT)
           }
           
-          type ${Valuation.name} @mutation(operations: [CREATE, UPDATE]) {
+          type ${Valuation.name} @mutation(operations: [CREATE, UPDATE]) @node {
             archivedAt: DateTime
             uuid: ID! @id @unique
             createdAt: DateTime! @timestamp(operations: [CREATE])
@@ -87,7 +87,7 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
             BUSINESS_FUND
           }
           
-          type ${Estate.name} @mutation(operations: [CREATE, UPDATE]) {
+          type ${Estate.name} @mutation(operations: [CREATE, UPDATE]) @node {
             archivedAt: DateTime
             uuid: ID! @id @unique
             createdAt: DateTime! @timestamp(operations: [CREATE])

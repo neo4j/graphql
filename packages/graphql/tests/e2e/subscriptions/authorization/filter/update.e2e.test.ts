@@ -45,6 +45,7 @@ describe("Subscriptions authorization with update events", () => {
             }
 
             type ${User}
+                @node
                 @subscriptionsAuthorization(
                     filter: [
                         { where: { node: { id: "$jwt.sub" }, jwt: { roles_INCLUDES: "user" } } }

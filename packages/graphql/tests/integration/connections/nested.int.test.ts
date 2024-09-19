@@ -36,12 +36,12 @@ describe("Connections Alias", () => {
         typeActor = testHelper.createUniqueType("Actor");
 
         const typeDefs = gql`
-            type ${typeMovie} {
+            type ${typeMovie} @node {
                 title: String!
                 actors: [${typeActor}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
             }
 
-            type ${typeActor} {
+            type ${typeActor} @node {
                 name: String!
                 movies: [${typeMovie}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }

@@ -33,7 +33,7 @@ describe("Label cypher injection", () => {
         const typeMovie = testHelper.createUniqueType("Movie");
 
         const typeDefs = `
-            type ${typeMovie} @node(labels: ["$context.label"]) {
+            type ${typeMovie} @node(labels: ["$context.label"])  {
                 title: String
             }
         `;

@@ -31,7 +31,7 @@ describe("Interfaces", () => {
                 customQuery: [Movie]
             }
 
-            type Movie implements MovieNode {
+            type Movie implements MovieNode @node {
                 id: ID
                 nodes: [MovieNode]
                 movies: [Movie!]! @relationship(type: "HAS_MOVIE", direction: OUT)
@@ -274,9 +274,10 @@ describe("Interfaces", () => {
               AND: [MovieNodeWhere!]
               NOT: MovieNodeWhere
               OR: [MovieNodeWhere!]
-              id: ID
+              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
+              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -351,9 +352,10 @@ describe("Interfaces", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              id: ID
+              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
+              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -456,7 +458,7 @@ describe("Interfaces", () => {
                 customQuery: [Movie]
             }
 
-            type Movie implements MovieNode {
+            type Movie implements MovieNode @node {
                 id: ID
                 nodes: [MovieNode]
                 movies: [Movie!]! @relationship(type: "HAS_MOVIE", direction: OUT)
@@ -701,9 +703,10 @@ describe("Interfaces", () => {
               AND: [MovieNodeWhere!]
               NOT: MovieNodeWhere
               OR: [MovieNodeWhere!]
-              id: ID
+              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
+              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -778,9 +781,10 @@ describe("Interfaces", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              id: ID
+              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
+              id_EQ: ID
               id_IN: [ID]
               id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")

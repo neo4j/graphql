@@ -32,7 +32,7 @@ describe("generate", () => {
 
     test("should generate simple types of a single node and return the string", async () => {
         const typeDefs = `
-            type User {
+            type User @node {
                 name: String
             }
         `;
@@ -234,7 +234,9 @@ describe("generate", () => {
             };
 
             export type UserWhere = {
+              /** @deprecated Please use the explicit _EQ version */
               name?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              name_EQ?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               name_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"][\\"input\\"]>>>;
@@ -309,7 +311,7 @@ describe("generate", () => {
 
     test("should generate simple types of a single node with fulltext directive and return the string", async () => {
         const typeDefs = `
-            type User {
+            type User @node {
                 name: String
             }
 
@@ -560,7 +562,9 @@ describe("generate", () => {
             };
 
             export type UserWhere = {
+              /** @deprecated Please use the explicit _EQ version */
               name?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              name_EQ?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               name_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"][\\"input\\"]>>>;
@@ -644,7 +648,7 @@ describe("generate", () => {
         filesToDelete.push(outFile);
 
         const typeDefs = `
-            type User {
+            type User @node {
                 name: String
             }
         `;
@@ -848,7 +852,9 @@ describe("generate", () => {
             };
 
             export type UserWhere = {
+              /** @deprecated Please use the explicit _EQ version */
               name?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              name_EQ?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               name_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"][\\"input\\"]>>>;
@@ -923,11 +929,11 @@ describe("generate", () => {
 
     test("should generate more complex types of two nodes with a relationship and properties and return the string", async () => {
         const typeDefs = `
-            type Movie {
+            type Movie @node {
                 title: String!
                 actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
-            type Person {
+            type Person @node {
                 name: String!
             }
             type ActedIn @relationshipProperties {
@@ -1309,7 +1315,9 @@ describe("generate", () => {
             };
 
             export type ActedInWhere = {
+              /** @deprecated Please use the explicit _EQ version */
               screenTime?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_EQ?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               screenTime_NOT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               screenTime_IN?: InputMaybe<Array<Scalars[\\"Int\\"][\\"input\\"]>>;
@@ -1493,7 +1501,9 @@ describe("generate", () => {
             };
 
             export type MovieWhere = {
+              /** @deprecated Please use the explicit _EQ version */
               title?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              title_EQ?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               title_NOT?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               title_IN?: InputMaybe<Array<Scalars[\\"String\\"][\\"input\\"]>>;
@@ -1563,7 +1573,9 @@ describe("generate", () => {
             };
 
             export type PersonWhere = {
+              /** @deprecated Please use the explicit _EQ version */
               name?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              name_EQ?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               name_IN?: InputMaybe<Array<Scalars[\\"String\\"][\\"input\\"]>>;
@@ -1688,7 +1700,7 @@ describe("generate", () => {
 
     test("should throw outFile or noWrite required", async () => {
         const typeDefs = `
-          type User {
+          type User @node {
               name: String
           }
         `;
@@ -1708,7 +1720,7 @@ describe("generate", () => {
 
     test("https://github.com/neo4j/graphql/issues/3539", async () => {
         const typeDefs = /* GraphQL */ `
-            type FAQ {
+            type FAQ @node {
                 id: ID! @id @unique
                 activated: Boolean!
                 name: String!
@@ -1716,7 +1728,7 @@ describe("generate", () => {
                     @relationship(type: "FAQ_ENTRY_IN_FAQ", properties: "FaqEntryInFaq", direction: IN)
             }
 
-            type FAQEntry {
+            type FAQEntry @node {
                 id: ID! @id @unique
                 title: String!
                 body: String!
@@ -2589,7 +2601,9 @@ describe("generate", () => {
             };
 
             export type FaqEntryInFaqWhere = {
+              /** @deprecated Please use the explicit _EQ version */
               position?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_EQ?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               position_NOT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               position_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>>>;
@@ -2638,7 +2652,9 @@ describe("generate", () => {
             };
 
             export type FaqEntryWhere = {
+              /** @deprecated Please use the explicit _EQ version */
               id?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
+              id_EQ?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               id_NOT?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               id_IN?: InputMaybe<Array<Scalars[\\"ID\\"][\\"input\\"]>>;
@@ -2653,7 +2669,9 @@ describe("generate", () => {
               id_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               id_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
+              /** @deprecated Please use the explicit _EQ version */
               title?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              title_EQ?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               title_NOT?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               title_IN?: InputMaybe<Array<Scalars[\\"String\\"][\\"input\\"]>>;
@@ -2668,7 +2686,9 @@ describe("generate", () => {
               title_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               title_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              /** @deprecated Please use the explicit _EQ version */
               body?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              body_EQ?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               body_NOT?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               body_IN?: InputMaybe<Array<Scalars[\\"String\\"][\\"input\\"]>>;
@@ -2747,7 +2767,9 @@ describe("generate", () => {
             };
 
             export type FaqWhere = {
+              /** @deprecated Please use the explicit _EQ version */
               id?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
+              id_EQ?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               id_NOT?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               id_IN?: InputMaybe<Array<Scalars[\\"ID\\"][\\"input\\"]>>;
@@ -2762,10 +2784,14 @@ describe("generate", () => {
               id_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               id_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
+              /** @deprecated Please use the explicit _EQ version */
               activated?: InputMaybe<Scalars[\\"Boolean\\"][\\"input\\"]>;
+              activated_EQ?: InputMaybe<Scalars[\\"Boolean\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               activated_NOT?: InputMaybe<Scalars[\\"Boolean\\"][\\"input\\"]>;
+              /** @deprecated Please use the explicit _EQ version */
               name?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              name_EQ?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               name_IN?: InputMaybe<Array<Scalars[\\"String\\"][\\"input\\"]>>;

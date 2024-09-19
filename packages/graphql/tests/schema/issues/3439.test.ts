@@ -38,21 +38,21 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
                 genre: Genre!
             }
 
-            type Movie implements INode & IProduct {
+            type Movie implements INode & IProduct @node {
                 id: String!
 
                 name: String!
                 genre: Genre! @relationship(type: "HAS_GENRE", direction: OUT)
             }
 
-            type Series implements INode & IProduct {
+            type Series implements INode & IProduct @node {
                 id: String!
 
                 name: String!
                 genre: Genre! @relationship(type: "HAS_GENRE", direction: OUT)
             }
 
-            type Genre {
+            type Genre @node {
                 name: String! @unique
                 product: [IProduct!]! @relationship(type: "HAS_GENRE", direction: IN)
             }
@@ -404,9 +404,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [GenreSubscriptionWhere!]
               NOT: GenreSubscriptionWhere
               OR: [GenreSubscriptionWhere!]
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -436,9 +437,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [GenreWhere!]
               NOT: GenreWhere
               OR: [GenreWhere!]
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -522,9 +524,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [INodeWhere!]
               NOT: INodeWhere
               OR: [INodeWhere!]
-              id: String
+              id: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: String
               id_ENDS_WITH: String
+              id_EQ: String
               id_IN: [String!]
               id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -598,9 +601,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [IProductSubscriptionWhere!]
               NOT: IProductSubscriptionWhere
               OR: [IProductSubscriptionWhere!]
-              id: String
+              id: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: String
               id_ENDS_WITH: String
+              id_EQ: String
               id_IN: [String!]
               id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -608,9 +612,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               id_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: String
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -630,9 +635,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [IProductWhere!]
               NOT: IProductWhere
               OR: [IProductWhere!]
-              id: String
+              id: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: String
               id_ENDS_WITH: String
+              id_EQ: String
               id_IN: [String!]
               id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -640,9 +646,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               id_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: String
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -927,9 +934,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [MovieSubscriptionWhere!]
               NOT: MovieSubscriptionWhere
               OR: [MovieSubscriptionWhere!]
-              id: String
+              id: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: String
               id_ENDS_WITH: String
+              id_EQ: String
               id_IN: [String!]
               id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -937,9 +945,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               id_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: String
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -971,9 +980,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               genreConnection: MovieGenreConnectionWhere
               genreConnection_NOT: MovieGenreConnectionWhere
               genre_NOT: GenreWhere
-              id: String
+              id: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: String
               id_ENDS_WITH: String
+              id_EQ: String
               id_IN: [String!]
               id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -981,9 +991,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               id_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: String
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1311,9 +1322,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [SeriesSubscriptionWhere!]
               NOT: SeriesSubscriptionWhere
               OR: [SeriesSubscriptionWhere!]
-              id: String
+              id: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: String
               id_ENDS_WITH: String
+              id_EQ: String
               id_IN: [String!]
               id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1321,9 +1333,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               id_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: String
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1355,9 +1368,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               genreConnection: SeriesGenreConnectionWhere
               genreConnection_NOT: SeriesGenreConnectionWhere
               genre_NOT: GenreWhere
-              id: String
+              id: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: String
               id_ENDS_WITH: String
+              id_EQ: String
               id_IN: [String!]
               id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1365,9 +1379,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               id_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: String
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1445,21 +1460,21 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
                 genre: Genre!
             }
 
-            type Movie implements IProduct {
+            type Movie implements IProduct @node {
                 id: String!
 
                 name: String!
                 genre: Genre! @relationship(type: "HAS_GENRE", direction: OUT)
             }
 
-            type Series implements IProduct {
+            type Series implements IProduct @node {
                 id: String!
 
                 name: String!
                 genre: Genre! @relationship(type: "HAS_GENRE", direction: OUT)
             }
 
-            type Genre {
+            type Genre @node {
                 name: String! @unique
                 product: [IProduct!]! @relationship(type: "HAS_GENRE", direction: IN)
             }
@@ -1811,9 +1826,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [GenreSubscriptionWhere!]
               NOT: GenreSubscriptionWhere
               OR: [GenreSubscriptionWhere!]
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1843,9 +1859,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [GenreWhere!]
               NOT: GenreWhere
               OR: [GenreWhere!]
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1947,9 +1964,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [IProductSubscriptionWhere!]
               NOT: IProductSubscriptionWhere
               OR: [IProductSubscriptionWhere!]
-              id: String
+              id: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: String
               id_ENDS_WITH: String
+              id_EQ: String
               id_IN: [String!]
               id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1957,9 +1975,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               id_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: String
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1979,9 +1998,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [IProductWhere!]
               NOT: IProductWhere
               OR: [IProductWhere!]
-              id: String
+              id: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: String
               id_ENDS_WITH: String
+              id_EQ: String
               id_IN: [String!]
               id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -1989,9 +2009,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               id_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: String
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -2276,9 +2297,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [MovieSubscriptionWhere!]
               NOT: MovieSubscriptionWhere
               OR: [MovieSubscriptionWhere!]
-              id: String
+              id: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: String
               id_ENDS_WITH: String
+              id_EQ: String
               id_IN: [String!]
               id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -2286,9 +2308,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               id_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: String
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -2320,9 +2343,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               genreConnection: MovieGenreConnectionWhere
               genreConnection_NOT: MovieGenreConnectionWhere
               genre_NOT: GenreWhere
-              id: String
+              id: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: String
               id_ENDS_WITH: String
+              id_EQ: String
               id_IN: [String!]
               id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -2330,9 +2354,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               id_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: String
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -2657,9 +2682,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [SeriesSubscriptionWhere!]
               NOT: SeriesSubscriptionWhere
               OR: [SeriesSubscriptionWhere!]
-              id: String
+              id: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: String
               id_ENDS_WITH: String
+              id_EQ: String
               id_IN: [String!]
               id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -2667,9 +2693,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               id_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: String
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -2701,9 +2728,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               genreConnection: SeriesGenreConnectionWhere
               genreConnection_NOT: SeriesGenreConnectionWhere
               genre_NOT: GenreWhere
-              id: String
+              id: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: String
               id_ENDS_WITH: String
+              id_EQ: String
               id_IN: [String!]
               id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -2711,9 +2739,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               id_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: String
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -2791,14 +2820,14 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
                 genre: Genre! @declareRelationship
             }
 
-            type Movie implements IProduct {
+            type Movie implements IProduct @node {
                 id: String!
 
                 name: String!
                 genre: Genre! @relationship(type: "HAS_GENRE", direction: OUT, properties: "MovieProps")
             }
 
-            type Series implements IProduct {
+            type Series implements IProduct @node {
                 id: String!
 
                 name: String!
@@ -2813,7 +2842,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
                 episodes: Int
             }
 
-            type Genre {
+            type Genre @node {
                 name: String! @unique
                 product: [IProduct!]! @relationship(type: "HAS_GENRE", direction: IN)
             }
@@ -3168,9 +3197,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [GenreSubscriptionWhere!]
               NOT: GenreSubscriptionWhere
               OR: [GenreSubscriptionWhere!]
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -3200,9 +3230,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [GenreWhere!]
               NOT: GenreWhere
               OR: [GenreWhere!]
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -3515,9 +3546,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [IProductSubscriptionWhere!]
               NOT: IProductSubscriptionWhere
               OR: [IProductSubscriptionWhere!]
-              id: String
+              id: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: String
               id_ENDS_WITH: String
+              id_EQ: String
               id_IN: [String!]
               id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -3525,9 +3557,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               id_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: String
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -3553,9 +3586,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               genreConnection: IProductGenreConnectionWhere
               genreConnection_NOT: IProductGenreConnectionWhere
               genre_NOT: GenreWhere
-              id: String
+              id: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: String
               id_ENDS_WITH: String
+              id_EQ: String
               id_IN: [String!]
               id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -3563,9 +3597,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               id_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: String
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -3835,7 +3870,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [MoviePropsSubscriptionWhere!]
               NOT: MoviePropsSubscriptionWhere
               OR: [MoviePropsSubscriptionWhere!]
-              year: Int
+              year: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              year_EQ: Int
               year_GT: Int
               year_GTE: Int
               year_IN: [Int!]
@@ -3855,7 +3891,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [MoviePropsWhere!]
               NOT: MoviePropsWhere
               OR: [MoviePropsWhere!]
-              year: Int
+              year: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              year_EQ: Int
               year_GT: Int
               year_GTE: Int
               year_IN: [Int!]
@@ -3917,9 +3954,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [MovieSubscriptionWhere!]
               NOT: MovieSubscriptionWhere
               OR: [MovieSubscriptionWhere!]
-              id: String
+              id: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: String
               id_ENDS_WITH: String
+              id_EQ: String
               id_IN: [String!]
               id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -3927,9 +3965,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               id_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: String
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -3961,9 +4000,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               genreConnection: IProductGenreConnectionWhere
               genreConnection_NOT: IProductGenreConnectionWhere
               genre_NOT: GenreWhere
-              id: String
+              id: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: String
               id_ENDS_WITH: String
+              id_EQ: String
               id_IN: [String!]
               id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -3971,9 +4011,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               id_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: String
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -4276,7 +4317,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [SeriesPropsSubscriptionWhere!]
               NOT: SeriesPropsSubscriptionWhere
               OR: [SeriesPropsSubscriptionWhere!]
-              episodes: Int
+              episodes: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              episodes_EQ: Int
               episodes_GT: Int
               episodes_GTE: Int
               episodes_IN: [Int]
@@ -4296,7 +4338,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [SeriesPropsWhere!]
               NOT: SeriesPropsWhere
               OR: [SeriesPropsWhere!]
-              episodes: Int
+              episodes: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              episodes_EQ: Int
               episodes_GT: Int
               episodes_GTE: Int
               episodes_IN: [Int]
@@ -4358,9 +4401,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [SeriesSubscriptionWhere!]
               NOT: SeriesSubscriptionWhere
               OR: [SeriesSubscriptionWhere!]
-              id: String
+              id: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: String
               id_ENDS_WITH: String
+              id_EQ: String
               id_IN: [String!]
               id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -4368,9 +4412,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               id_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: String
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -4402,9 +4447,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               genreConnection: IProductGenreConnectionWhere
               genreConnection_NOT: IProductGenreConnectionWhere
               genre_NOT: GenreWhere
-              id: String
+              id: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: String
               id_ENDS_WITH: String
+              id_EQ: String
               id_IN: [String!]
               id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -4412,9 +4458,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               id_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: String
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -4492,14 +4539,14 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
                 genre: UGenre! @declareRelationship
             }
 
-            type Movie implements IProduct {
+            type Movie implements IProduct @node {
                 id: String!
 
                 name: String!
                 genre: UGenre! @relationship(type: "HAS_GENRE", direction: OUT, properties: "MovieProps")
             }
 
-            type Series implements IProduct {
+            type Series implements IProduct @node {
                 id: String!
 
                 name: String!
@@ -4516,12 +4563,12 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             union UGenre = Genre | Rating
 
-            type Genre {
+            type Genre @node {
                 name: String! @unique
                 product: [IProduct!]! @relationship(type: "HAS_GENRE", direction: IN)
             }
 
-            type Rating {
+            type Rating @node {
                 number: Int! @unique
                 product: [IProduct!]! @relationship(type: "HAS_RATING", direction: IN)
             }
@@ -4881,9 +4928,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [GenreSubscriptionWhere!]
               NOT: GenreSubscriptionWhere
               OR: [GenreSubscriptionWhere!]
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -4913,9 +4961,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [GenreWhere!]
               NOT: GenreWhere
               OR: [GenreWhere!]
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -5237,9 +5286,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [IProductSubscriptionWhere!]
               NOT: IProductSubscriptionWhere
               OR: [IProductSubscriptionWhere!]
-              id: String
+              id: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: String
               id_ENDS_WITH: String
+              id_EQ: String
               id_IN: [String!]
               id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -5247,9 +5297,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               id_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: String
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -5274,9 +5325,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               genreConnection: IProductGenreConnectionWhere
               genreConnection_NOT: IProductGenreConnectionWhere
               genre_NOT: UGenreWhere
-              id: String
+              id: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: String
               id_ENDS_WITH: String
+              id_EQ: String
               id_IN: [String!]
               id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -5284,9 +5336,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               id_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: String
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -5539,7 +5592,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [MoviePropsSubscriptionWhere!]
               NOT: MoviePropsSubscriptionWhere
               OR: [MoviePropsSubscriptionWhere!]
-              year: Int
+              year: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              year_EQ: Int
               year_GT: Int
               year_GTE: Int
               year_IN: [Int!]
@@ -5559,7 +5613,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [MoviePropsWhere!]
               NOT: MoviePropsWhere
               OR: [MoviePropsWhere!]
-              year: Int
+              year: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              year_EQ: Int
               year_GT: Int
               year_GTE: Int
               year_IN: [Int!]
@@ -5621,9 +5676,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [MovieSubscriptionWhere!]
               NOT: MovieSubscriptionWhere
               OR: [MovieSubscriptionWhere!]
-              id: String
+              id: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: String
               id_ENDS_WITH: String
+              id_EQ: String
               id_IN: [String!]
               id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -5631,9 +5687,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               id_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: String
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -5664,9 +5721,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               genreConnection: IProductGenreConnectionWhere
               genreConnection_NOT: IProductGenreConnectionWhere
               genre_NOT: UGenreWhere
-              id: String
+              id: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: String
               id_ENDS_WITH: String
+              id_EQ: String
               id_IN: [String!]
               id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -5674,9 +5732,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               id_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: String
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -6032,7 +6091,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [RatingSubscriptionWhere!]
               NOT: RatingSubscriptionWhere
               OR: [RatingSubscriptionWhere!]
-              number: Int
+              number: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              number_EQ: Int
               number_GT: Int
               number_GTE: Int
               number_IN: [Int!]
@@ -6064,7 +6124,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [RatingWhere!]
               NOT: RatingWhere
               OR: [RatingWhere!]
-              number: Int
+              number: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              number_EQ: Int
               number_GT: Int
               number_GTE: Int
               number_IN: [Int!]
@@ -6344,7 +6405,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [SeriesPropsSubscriptionWhere!]
               NOT: SeriesPropsSubscriptionWhere
               OR: [SeriesPropsSubscriptionWhere!]
-              episodes: Int
+              episodes: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              episodes_EQ: Int
               episodes_GT: Int
               episodes_GTE: Int
               episodes_IN: [Int]
@@ -6364,7 +6426,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [SeriesPropsWhere!]
               NOT: SeriesPropsWhere
               OR: [SeriesPropsWhere!]
-              episodes: Int
+              episodes: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              episodes_EQ: Int
               episodes_GT: Int
               episodes_GTE: Int
               episodes_IN: [Int]
@@ -6426,9 +6489,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [SeriesSubscriptionWhere!]
               NOT: SeriesSubscriptionWhere
               OR: [SeriesSubscriptionWhere!]
-              id: String
+              id: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: String
               id_ENDS_WITH: String
+              id_EQ: String
               id_IN: [String!]
               id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -6436,9 +6500,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               id_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: String
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -6469,9 +6534,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               genreConnection: IProductGenreConnectionWhere
               genreConnection_NOT: IProductGenreConnectionWhere
               genre_NOT: UGenreWhere
-              id: String
+              id: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: String
               id_ENDS_WITH: String
+              id_EQ: String
               id_IN: [String!]
               id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
@@ -6479,9 +6545,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               id_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: String
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
+              name_EQ: String
               name_IN: [String!]
               name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")

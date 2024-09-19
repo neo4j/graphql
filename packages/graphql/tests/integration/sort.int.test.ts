@@ -34,7 +34,7 @@ describe("sort", () => {
             id: ID!
             title: String!
         }
-        type ${movieType} implements Production {
+        type ${movieType} implements Production @node {
             id: ID!
             title: String!
             runtime: Int!
@@ -42,12 +42,12 @@ describe("sort", () => {
             numberOfActors: Int! @cypher(statement: "MATCH (actor:${actorType})-[:ACTED_IN]->(this) RETURN count(actor) AS count", columnName: "count")
         }
 
-        type ${seriesType} implements Production {
+        type ${seriesType} implements Production @node {
             id: ID!
             title: String!
             episodes: Int!
         }
-        type ${actorType} {
+        type ${actorType} @node {
             id: ID!
             name: String!
             movies: [${movieType}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")

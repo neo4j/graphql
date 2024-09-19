@@ -34,7 +34,7 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
             roles: [String!]!
         }
 
-        type ${Movie.name} @authorization(
+        type ${Movie.name} @node @authorization(
                     validate: [
                         { when: [BEFORE], where: { jwt: { OR: [{ roles_INCLUDES: "admin" }, { roles_INCLUDES: "super-admin" }] } } }
                     ]

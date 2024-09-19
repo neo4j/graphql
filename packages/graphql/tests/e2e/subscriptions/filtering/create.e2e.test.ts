@@ -57,7 +57,7 @@ describe.each([
     beforeEach(async () => {
         typeMovie = testHelper.createUniqueType("Movie");
         const typeDefs = `
-         type ${typeMovie} {
+         type ${typeMovie} @node {
             id: ID
             title: String
             releasedIn: Int

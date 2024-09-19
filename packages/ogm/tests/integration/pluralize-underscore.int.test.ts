@@ -27,7 +27,7 @@ describe("pluralize with underscore", () => {
     const taskType = new UniqueType("super_task");
 
     const typeDefs = /* GraphQL */ `
-        type ${taskType.name} {
+        type ${taskType.name} @node {
             string: String
         }
     `;

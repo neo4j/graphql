@@ -34,7 +34,7 @@ describe("https://github.com/neo4j/graphql/issues/560", () => {
         const testLog = testHelper.createUniqueType("Log");
 
         const typeDefs = gql`
-            type ${testLog.name} {
+            type ${testLog.name} @node {
                 id: ID!
                 location: Point
             }
@@ -87,7 +87,7 @@ describe("https://github.com/neo4j/graphql/issues/560", () => {
         const testLog = testHelper.createUniqueType("Log");
 
         const typeDefs = gql`
-            type ${testLog.name} {
+            type ${testLog.name} @node {
                 id: ID!
                 location: CartesianPoint
             }

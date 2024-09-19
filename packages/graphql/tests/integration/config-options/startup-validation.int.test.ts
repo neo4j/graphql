@@ -35,7 +35,7 @@ describe("Startup Validation", () => {
     const missingCustomResolverError = "Custom resolver for fullName has not been provided";
 
     const customResolverTypeDefs = `
-        type User {
+        type User @node {
             id: ID!
             firstName: String!
             lastName: String!
@@ -44,28 +44,28 @@ describe("Startup Validation", () => {
     `;
 
     const invalidTypeDefs = `
-        type Point {
+        type Point @node {
             latitude: Float!
             longitude: Float!
         }
     `;
 
     const invalidAndCustomResolverTypeDefs = `
-        type User {
+        type User @node {
             id: ID!
             firstName: String!
             lastName: String!
             fullName: String @customResolver(requires: "firstName lastName")
         }
 
-        type Point {
+        type Point @node {
             latitude: Float!
             longitude: Float!
         }
     `;
 
     const validTypeDefs = `
-        type User {
+        type User @node {
             id: ID!
             firstName: String!
             lastName: String!
@@ -73,7 +73,7 @@ describe("Startup Validation", () => {
     `;
 
     const invalidDuplicateRelationship = `
-        type User {
+        type User @node {
             id: ID!
             firstName: String!
             lastName: String!
@@ -83,7 +83,7 @@ describe("Startup Validation", () => {
     `;
 
     const invalidAll = `
-        type User {
+        type User @node {
             id: ID!
             firstName: String!
             lastName: String!
@@ -92,7 +92,7 @@ describe("Startup Validation", () => {
             friend2: User! @relationship(type: "FRIENDS_WITH", direction: IN)
         }
 
-        type Point {
+        type Point @node {
             latitude: Float!
             longitude: Float!
         }

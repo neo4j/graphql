@@ -32,13 +32,13 @@ describe("https://github.com/neo4j/graphql/issues/4532", () => {
             Scenario = testHelper.createUniqueType("Scenario");
 
             const typeDefs = /* GraphQL */ `
-                type ${Inventory} {
+                type ${Inventory} @node {
                     id: ID
                     children: [${Scenario}!]!
                         @relationship(type: "HasChildren", properties: "InventoryChildRelation", direction: OUT)
                 }
 
-                type ${Scenario} {
+                type ${Scenario} @node {
                     id: ID
                 }
 
@@ -131,7 +131,7 @@ describe("https://github.com/neo4j/graphql/issues/4532", () => {
             Video = testHelper.createUniqueType("Video");
 
             const typeDefs = /* GraphQL */ `
-                type ${Inventory} {
+                type ${Inventory} @node {
                     id: ID
                     children: [Scenario!]!
                         @relationship(type: "HasChildren", properties: "InventoryChildRelation", direction: OUT)
@@ -141,11 +141,11 @@ describe("https://github.com/neo4j/graphql/issues/4532", () => {
                     id: ID
                 }
 
-                type ${Image} implements Scenario {
+                type ${Image} implements Scenario @node {
                     id: ID
                 }
 
-                type ${Video} implements Scenario {
+                type ${Video} implements Scenario @node {
                     id: ID
                 }
 

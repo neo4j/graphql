@@ -33,7 +33,7 @@ describe("Subscriptions to spatial types", () => {
         plugin = new TestSubscriptionsEngine();
         typeMovie = testHelper.createUniqueType("Movie");
         const typeDefs = gql`
-            type ${typeMovie} {
+            type ${typeMovie} @node {
                 title: String!
                 synopsis: String
                 filmedIn: Point

@@ -38,12 +38,12 @@ describe("https://github.com/neo4j/graphql/issues/247", () => {
 
     test("should return the correct number of results following connect", async () => {
         const typeDefs = gql`
-           type ${Movie} {
+           type ${Movie} @node {
                 title: String!
                 owners: [${User}!]! @relationship(type: "OWNS", direction: IN)
             }
 
-            type ${User} {
+            type ${User} @node {
                 name: String!
                 movies: [${Movie}!]! @relationship(type: "OWNS", direction: OUT)
             }

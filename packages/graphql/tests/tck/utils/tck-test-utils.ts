@@ -25,24 +25,6 @@ import { Neo4jDatabaseInfo } from "../../../src/classes/Neo4jDatabaseInfo";
 import { DriverBuilder } from "../../utils/builders/driver-builder";
 import { TestHelper } from "../../utils/tests-helper";
 
-export function setTestEnvVars(envVars: string | undefined): void {
-    if (envVars) {
-        envVars.split(/\n/g).forEach((v: string) => {
-            const [name, val] = v.split("=");
-            process.env[name as string] = val;
-        });
-    }
-}
-
-export function unsetTestEnvVars(envVars: string | undefined): void {
-    if (envVars) {
-        envVars.split(/\n/g).forEach((v: string) => {
-            const name = v.split("=")[0] as string;
-            delete process.env[name];
-        });
-    }
-}
-
 export function formatCypher(cypher: string): string {
     return cypher.replace(/\s+\n/g, "\n");
 }

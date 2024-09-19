@@ -28,17 +28,17 @@ describe("Cypher -> Connections -> Unions", () => {
         typeDefs = /* GraphQL */ `
             union Publication = Book | Journal
 
-            type Author {
+            type Author @node {
                 name: String!
                 publications: [Publication!]! @relationship(type: "WROTE", direction: OUT, properties: "Wrote")
             }
 
-            type Book {
+            type Book @node {
                 title: String!
                 author: [Author!]! @relationship(type: "WROTE", direction: IN, properties: "Wrote")
             }
 
-            type Journal {
+            type Journal @node {
                 subject: String!
                 author: [Author!]! @relationship(type: "WROTE", direction: IN, properties: "Wrote")
             }

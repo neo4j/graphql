@@ -33,13 +33,13 @@ describe("https://github.com/neo4j/graphql/issues/2250", () => {
         Actor = testHelper.createUniqueType("Actor");
 
         const typeDefs = `
-            type ${Movie} {
+            type ${Movie} @node {
                 title: String!
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
                 directors: [Director!]! @relationship(type: "DIRECTED", properties: "Directed", direction: IN)
             }
 
-            type ${Actor} {
+            type ${Actor} @node {
                 name: String!
                 movies: [${Movie}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
@@ -52,7 +52,7 @@ describe("https://github.com/neo4j/graphql/issues/2250", () => {
                 year: Int!
             }
 
-            type ${Person} {
+            type ${Person} @node {
                 name: String!
                 reputation: Int!
             }

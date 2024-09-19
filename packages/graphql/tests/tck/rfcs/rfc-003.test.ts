@@ -18,18 +18,18 @@
  */
 
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("tck/rfs/003", () => {
     describe("one-to-one", () => {
         describe("create", () => {
             test("should add validation when creating node with a required relationship", async () => {
                 const typeDefs = /* GraphQL */ `
-                    type Director {
+                    type Director @node {
                         id: ID!
                     }
 
-                    type Movie {
+                    type Movie @node {
                         id: ID!
                         director: Director! @relationship(type: "DIRECTED", direction: IN)
                     }
@@ -84,11 +84,11 @@ describe("tck/rfs/003", () => {
 
             test("should add length validation when creating a node with a non required relationship", async () => {
                 const typeDefs = /* GraphQL */ `
-                    type Director {
+                    type Director @node {
                         id: ID!
                     }
 
-                    type Movie {
+                    type Movie @node {
                         id: ID!
                         director: Director @relationship(type: "DIRECTED", direction: IN)
                     }
@@ -144,16 +144,16 @@ describe("tck/rfs/003", () => {
             describe("nested mutations", () => {
                 test("should add validation when creating node with required relationship", async () => {
                     const typeDefs = /* GraphQL */ `
-                        type Address {
+                        type Address @node {
                             street: String!
                         }
 
-                        type Director {
+                        type Director @node {
                             id: ID!
                             address: Address! @relationship(type: "HAS_ADDRESS", direction: OUT)
                         }
 
-                        type Movie {
+                        type Movie @node {
                             id: ID!
                             director: Director! @relationship(type: "DIRECTED", direction: IN)
                         }
@@ -234,16 +234,16 @@ describe("tck/rfs/003", () => {
 
                 test("should add length validation when creating a node with a non required relationship", async () => {
                     const typeDefs = /* GraphQL */ `
-                        type Address {
+                        type Address @node {
                             street: String!
                         }
 
-                        type Director {
+                        type Director @node {
                             id: ID!
                             address: Address @relationship(type: "HAS_ADDRESS", direction: OUT)
                         }
 
-                        type Movie {
+                        type Movie @node {
                             id: ID!
                             director: Director @relationship(type: "DIRECTED", direction: IN)
                         }
@@ -326,11 +326,11 @@ describe("tck/rfs/003", () => {
             describe("update", () => {
                 test("should add validation when updating a node with a required relationship", async () => {
                     const typeDefs = /* GraphQL */ `
-                        type Director {
+                        type Director @node {
                             id: ID!
                         }
 
-                        type Movie {
+                        type Movie @node {
                             id: ID!
                             director: Director! @relationship(type: "DIRECTED", direction: IN)
                         }
@@ -378,11 +378,11 @@ describe("tck/rfs/003", () => {
 
                 test("should add length validation when updating a node with a non required relationship", async () => {
                     const typeDefs = /* GraphQL */ `
-                        type Director {
+                        type Director @node {
                             id: ID!
                         }
 
-                        type Movie {
+                        type Movie @node {
                             id: ID!
                             director: Director @relationship(type: "DIRECTED", direction: IN)
                         }
@@ -431,16 +431,16 @@ describe("tck/rfs/003", () => {
                 describe("nested mutations", () => {
                     test("should add validation when updating a nested node with a required relationship", async () => {
                         const typeDefs = /* GraphQL */ `
-                            type Address {
+                            type Address @node {
                                 street: String!
                             }
 
-                            type Director {
+                            type Director @node {
                                 id: ID!
                                 address: Address! @relationship(type: "HAS_ADDRESS", direction: OUT)
                             }
 
-                            type Movie {
+                            type Movie @node {
                                 id: ID!
                                 director: Director! @relationship(type: "DIRECTED", direction: IN)
                             }
@@ -506,16 +506,16 @@ describe("tck/rfs/003", () => {
 
                     test("should add length validation when updating a nested node with a non required relationship", async () => {
                         const typeDefs = /* GraphQL */ `
-                            type Address {
+                            type Address @node {
                                 street: String!
                             }
 
-                            type Director {
+                            type Director @node {
                                 id: ID!
                                 address: Address @relationship(type: "HAS_ADDRESS", direction: OUT)
                             }
 
-                            type Movie {
+                            type Movie @node {
                                 id: ID!
                                 director: Director @relationship(type: "DIRECTED", direction: IN)
                             }
@@ -581,16 +581,16 @@ describe("tck/rfs/003", () => {
 
                     test("should add validation when creating a node with a required relationship through a nested mutation", async () => {
                         const typeDefs = /* GraphQL */ `
-                            type Address {
+                            type Address @node {
                                 street: String!
                             }
 
-                            type Director {
+                            type Director @node {
                                 id: ID!
                                 address: Address! @relationship(type: "HAS_ADDRESS", direction: OUT)
                             }
 
-                            type Movie {
+                            type Movie @node {
                                 id: ID!
                                 director: Director! @relationship(type: "DIRECTED", direction: IN)
                             }
@@ -657,20 +657,20 @@ describe("tck/rfs/003", () => {
                 describe("nested mutations", () => {
                     test("should add validation when deleting a required relationship", async () => {
                         const typeDefs = /* GraphQL */ `
-                            type Address {
+                            type Address @node {
                                 id: ID!
                             }
 
-                            type Director {
+                            type Director @node {
                                 id: ID!
                                 address: Address! @relationship(type: "HAS_ADDRESS", direction: OUT)
                             }
 
-                            type CoDirector {
+                            type CoDirector @node {
                                 id: ID!
                             }
 
-                            type Movie {
+                            type Movie @node {
                                 id: ID!
                                 director: Director! @relationship(type: "DIRECTED", direction: IN)
                                 coDirector: CoDirector @relationship(type: "CO_DIRECTED", direction: IN)
@@ -782,20 +782,20 @@ describe("tck/rfs/003", () => {
 
                     test("should add length validation when deleting a node with a non required relationship", async () => {
                         const typeDefs = /* GraphQL */ `
-                            type Address {
+                            type Address @node {
                                 id: ID!
                             }
 
-                            type Director {
+                            type Director @node {
                                 id: ID!
                                 address: Address @relationship(type: "HAS_ADDRESS", direction: OUT)
                             }
 
-                            type CoDirector {
+                            type CoDirector @node {
                                 id: ID!
                             }
 
-                            type Movie {
+                            type Movie @node {
                                 id: ID!
                                 director: Director @relationship(type: "DIRECTED", direction: IN)
                                 coDirector: CoDirector @relationship(type: "CO_DIRECTED", direction: IN)
@@ -910,11 +910,11 @@ describe("tck/rfs/003", () => {
             describe("connect", () => {
                 test("should add validation when connecting to a required relationship", async () => {
                     const typeDefs = /* GraphQL */ `
-                        type Director {
+                        type Director @node {
                             id: ID!
                         }
 
-                        type Movie {
+                        type Movie @node {
                             id: ID!
                             director: Director! @relationship(type: "DIRECTED", direction: IN)
                         }
@@ -983,11 +983,11 @@ describe("tck/rfs/003", () => {
 
                 test("should add length validation when connecting to a non required relationship", async () => {
                     const typeDefs = /* GraphQL */ `
-                        type Director {
+                        type Director @node {
                             id: ID!
                         }
 
-                        type Movie {
+                        type Movie @node {
                             id: ID!
                             director: Director @relationship(type: "DIRECTED", direction: IN)
                         }
@@ -1057,16 +1057,16 @@ describe("tck/rfs/003", () => {
                 describe("nested mutations", () => {
                     test("should add validation when connecting to a required relationship", async () => {
                         const typeDefs = /* GraphQL */ `
-                            type Address {
+                            type Address @node {
                                 street: String!
                             }
 
-                            type Director {
+                            type Director @node {
                                 id: ID!
                                 address: Address! @relationship(type: "HAS_ADDRESS", direction: OUT)
                             }
 
-                            type Movie {
+                            type Movie @node {
                                 id: ID!
                                 director: Director! @relationship(type: "DIRECTED", direction: IN)
                             }
@@ -1176,11 +1176,11 @@ describe("tck/rfs/003", () => {
             describe("disconnect", () => {
                 test("should add validation when disconnecting from a required relationship", async () => {
                     const typeDefs = /* GraphQL */ `
-                        type Director {
+                        type Director @node {
                             id: ID!
                         }
 
-                        type Movie {
+                        type Movie @node {
                             id: ID!
                             director: Director! @relationship(type: "DIRECTED", direction: IN)
                         }
@@ -1257,11 +1257,11 @@ describe("tck/rfs/003", () => {
             describe("reconnect", () => {
                 test("should add validation after disconnecting and connecting with a required relationship", async () => {
                     const typeDefs = /* GraphQL */ `
-                        type Director {
+                        type Director @node {
                             id: ID!
                         }
 
-                        type Movie {
+                        type Movie @node {
                             id: ID!
                             director: Director! @relationship(type: "DIRECTED", direction: IN)
                         }
@@ -1373,11 +1373,11 @@ describe("tck/rfs/003", () => {
 
                 test("should add validation after disconnecting and connecting with a non required relationship", async () => {
                     const typeDefs = /* GraphQL */ `
-                        type Director {
+                        type Director @node {
                             id: ID!
                         }
 
-                        type Movie {
+                        type Movie @node {
                             id: ID!
                             director: Director @relationship(type: "DIRECTED", direction: IN)
                         }

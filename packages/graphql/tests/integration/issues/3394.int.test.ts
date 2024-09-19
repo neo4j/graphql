@@ -31,11 +31,11 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
         Employee = testHelper.createUniqueType("Employee");
 
         const typeDefs = `#graphql
-            type ${Employee} {
+            type ${Employee} @node {
                 products: [${Product}!]! @relationship(type: "CAN_ACCESS", direction: OUT)
             }
 
-            type ${Product} {
+            type ${Product} @node {
                 id: String! @alias(property: "fg_item_id")
                 description: String!
                 partNumber: ID! @alias(property: "fg_item")

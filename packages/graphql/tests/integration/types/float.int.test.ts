@@ -39,7 +39,7 @@ describe("Float", () => {
 
     test("should create a movie with float (as ast value)", async () => {
         const typeDefs = /* GraphQL */ `
-            type ${Movie} {
+            type ${Movie} @node {
                 id: String
                 imdbRating_float: Float
                 imdbRating_int: Int
@@ -91,7 +91,7 @@ describe("Float", () => {
 
     test("should create a movie with float (as variable)", async () => {
         const typeDefs = /* GraphQL */ `
-            type ${Movie} {
+            type ${Movie} @node {
                 id: String
                 imdbRating_float: Float
                 imdbRating_int: Int
@@ -151,7 +151,7 @@ describe("Float", () => {
         const floats = [float, float, float];
 
         const typeDefs = /* GraphQL */ `
-            type ${Movie} {
+            type ${Movie} @node {
                 id: String
             }
 
@@ -207,7 +207,7 @@ describe("Float", () => {
 
     test("should return normal JS number if the value isInt", async () => {
         const typeDefs = /* GraphQL */ `
-            type ${Movie} {
+            type ${Movie} @node {
                 id: String
                 fakeFloat: Float! @cypher(statement: """
                     RETURN 12345 as result

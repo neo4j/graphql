@@ -18,12 +18,12 @@
  */
 
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/1528", () => {
     test("order in connections with custom cypher", async () => {
         const typeDefs = /* GraphQL */ `
-            type Movie {
+            type Movie @node {
                 title: String!
                 actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN)
                 actorsCount: Int!
@@ -36,12 +36,12 @@ describe("https://github.com/neo4j/graphql/issues/1528", () => {
                     )
             }
 
-            type Person {
+            type Person @node {
                 name: String!
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type Genre {
+            type Genre @node {
                 name: String!
                 movies: [Movie!]! @relationship(type: "IS_GENRE", direction: IN)
             }

@@ -31,12 +31,12 @@ describe("https://github.com/neo4j/graphql/issues/4741", () => {
         ListOli = testHelper.createUniqueType("ListOli");
 
         const typeDefs = /* GraphQL */ `
-            type ${Opportunity} {
+            type ${Opportunity} @node {
                 country: String!
                 listsOlis: [${ListOli}!]! @relationship(type: "HAS_LIST", direction: OUT)
             }
 
-            type ${ListOli} {
+            type ${ListOli} @node {
                 name: String!
             }
         `;

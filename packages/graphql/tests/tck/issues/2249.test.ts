@@ -26,7 +26,7 @@ describe("https://github.com/neo4j/graphql/issues/2249", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Movie {
+            type Movie @node {
                 title: String!
                 reviewers: [Reviewer!]! @relationship(type: "REVIEWED", properties: "Review", direction: IN)
             }
@@ -35,14 +35,14 @@ describe("https://github.com/neo4j/graphql/issues/2249", () => {
                 score: Int!
             }
 
-            type Person implements Reviewer {
+            type Person implements Reviewer @node {
                 name: String!
                 reputation: Int!
                 id: Int @unique
                 reviewerId: Int @unique
             }
 
-            type Influencer implements Reviewer {
+            type Influencer implements Reviewer @node {
                 reputation: Int!
                 url: String!
                 reviewerId: Int

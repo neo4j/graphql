@@ -38,11 +38,11 @@ describe("https://github.com/neo4j/graphql/issues/4004", () => {
 
     test("should query allEpisodes with argument named as options", async () => {
         const typeDefs = gql`
-            type ${typeEpisode.name} {
+            type ${typeEpisode.name} @node {
                 id: ID!
             }
 
-            type ${typeSeries.name} {
+            type ${typeSeries.name} @node {
                 id: ID!
                 allEpisodes(options: [Int!]!): [${typeEpisode.name}!]!
                     @cypher(
