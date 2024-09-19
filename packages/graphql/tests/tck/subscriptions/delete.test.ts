@@ -51,7 +51,7 @@ describe("Subscriptions metadata on delete", () => {
     test("Simple delete", async () => {
         const query = /* GraphQL */ `
             mutation {
-                deleteMovies(where: { id: "1" }) {
+                deleteMovies(where: { id_EQ: "1" }) {
                     nodesDeleted
                 }
             }
@@ -92,7 +92,7 @@ describe("Subscriptions metadata on delete", () => {
     test("Nested delete", async () => {
         const query = /* GraphQL */ `
             mutation {
-                deleteMovies(where: { id: "1" }, delete: { actors: { where: { node: { name: "1" } } } }) {
+                deleteMovies(where: { id_EQ: "1" }, delete: { actors: { where: { node: { name_EQ: "1" } } } }) {
                     nodesDeleted
                 }
             }
@@ -140,7 +140,7 @@ describe("Subscriptions metadata on delete", () => {
                                 {
                                     \\"where\\": {
                                         \\"node\\": {
-                                            \\"name\\": \\"1\\"
+                                            \\"name_EQ\\": \\"1\\"
                                         }
                                     }
                                 }
@@ -156,14 +156,14 @@ describe("Subscriptions metadata on delete", () => {
         const query = /* GraphQL */ `
             mutation {
                 deleteMovies(
-                    where: { id: 123 }
+                    where: { id_EQ: 123 }
                     delete: {
                         actors: {
-                            where: { node: { name: "Actor to delete" } }
+                            where: { node: { name_EQ: "Actor to delete" } }
                             delete: {
                                 movies: {
-                                    where: { node: { id: 321 } }
-                                    delete: { actors: { where: { node: { name: "Another actor to delete" } } } }
+                                    where: { node: { id_EQ: 321 } }
+                                    delete: { actors: { where: { node: { name_EQ: "Another actor to delete" } } } }
                                 }
                             }
                         }
@@ -254,7 +254,7 @@ describe("Subscriptions metadata on delete", () => {
                                 {
                                     \\"where\\": {
                                         \\"node\\": {
-                                            \\"name\\": \\"Actor to delete\\"
+                                            \\"name_EQ\\": \\"Actor to delete\\"
                                         }
                                     },
                                     \\"delete\\": {
@@ -262,7 +262,7 @@ describe("Subscriptions metadata on delete", () => {
                                             {
                                                 \\"where\\": {
                                                     \\"node\\": {
-                                                        \\"id\\": \\"321\\"
+                                                        \\"id_EQ\\": \\"321\\"
                                                     }
                                                 },
                                                 \\"delete\\": {
@@ -270,7 +270,7 @@ describe("Subscriptions metadata on delete", () => {
                                                         {
                                                             \\"where\\": {
                                                                 \\"node\\": {
-                                                                    \\"name\\": \\"Another actor to delete\\"
+                                                                    \\"name_EQ\\": \\"Another actor to delete\\"
                                                                 }
                                                             }
                                                         }

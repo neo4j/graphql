@@ -51,7 +51,7 @@ describe("Subscriptions metadata on update", () => {
     test("Simple update with subscriptions", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateMovies(where: { id: "1" }, update: { id: "2" }) {
+                updateMovies(where: { id_EQ: "1" }, update: { id: "2" }) {
                     movies {
                         id
                     }
@@ -93,10 +93,10 @@ describe("Subscriptions metadata on update", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateMovies(
-                    where: { id: "1" }
+                    where: { id_EQ: "1" }
                     update: {
                         id: "2"
-                        actors: [{ where: { node: { name: "arthur" } }, update: { node: { name: "ford" } } }]
+                        actors: [{ where: { node: { name_EQ: "arthur" } }, update: { node: { name: "ford" } } }]
                     }
                 ) {
                     movies {
@@ -157,7 +157,7 @@ describe("Subscriptions metadata on update", () => {
                                 {
                                     \\"where\\": {
                                         \\"node\\": {
-                                            \\"name\\": \\"arthur\\"
+                                            \\"name_EQ\\": \\"arthur\\"
                                         }
                                     },
                                     \\"update\\": {

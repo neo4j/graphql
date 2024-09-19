@@ -40,7 +40,7 @@ describe("Cypher Points", () => {
     test("Simple Point query", async () => {
         const query = /* GraphQL */ `
             {
-                pointContainers(where: { point: { longitude: 1.0, latitude: 2.0 } }) {
+                pointContainers(where: { point_EQ: { longitude: 1.0, latitude: 2.0 } }) {
                     point {
                         longitude
                         latitude

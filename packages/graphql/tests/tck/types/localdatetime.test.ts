@@ -40,7 +40,7 @@ describe("Cypher LocalDateTime", () => {
     test("Simple Read", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { localDT: "2003-09-14T12:00:00" }) {
+                movies(where: { localDT_EQ: "2003-09-14T12:00:00" }) {
                     localDT
                 }
             }

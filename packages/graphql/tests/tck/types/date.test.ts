@@ -40,7 +40,7 @@ describe("Cypher Date", () => {
     test("Simple Read", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { date: "1970-01-01" }) {
+                movies(where: { date_EQ: "1970-01-01" }) {
                     date
                 }
             }

@@ -40,7 +40,7 @@ describe("Subscriptions metadata on create", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            extend type Actor @authorization(validate: [{ when: [AFTER], where: { node: { id: "$jwt.sub" } } }])
+            extend type Actor @authorization(validate: [{ when: [AFTER], where: { node: { id_EQ: "$jwt.sub" } } }])
         `;
 
         neoSchema = new Neo4jGraphQL({
