@@ -62,12 +62,12 @@ describe("Update -> ConnectOrCreate", () => {
                     name: "Tom Hanks 2"
                     ${typeMovie.plural}: {
                       connectOrCreate: {
-                        where: { node: { id: 5 } }
+                        where: { node: { id_EQ: 5 } }
                         onCreate: { edge: { screentime: 105 }, node: { title: "The Terminal", id: 5 } }
                       }
                     }
                   }
-                where: { name: "Tom Hanks"}
+                where: { name_EQ: "Tom Hanks"}
               ) {
                 ${typeActor.plural} {
                   name
@@ -115,12 +115,12 @@ describe("Update -> ConnectOrCreate", () => {
                     name: "${updatedActorName}"
                     ${typeMovie.plural}: {
                       connectOrCreate: {
-                        where: { node: { id: 2222 } }
+                        where: { node: { id_EQ: 2222 } }
                         onCreate: { edge: { screentime: 105 }, node: { title: "The Terminal", id: 22224 } }
                       }
                     }
                   }
-                where: { name: "${testActorName}"}
+                where: { name_EQ: "${testActorName}"}
               ) {
                 ${typeActor.plural} {
                   name

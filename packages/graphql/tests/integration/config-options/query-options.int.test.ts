@@ -63,7 +63,7 @@ describe("query options", () => {
 
         const query = `
             query($id: ID){
-                ${Movie.plural}(where: {id: $id}){
+                ${Movie.plural}(where: {id_EQ: $id}){
                     id
                 }
             }

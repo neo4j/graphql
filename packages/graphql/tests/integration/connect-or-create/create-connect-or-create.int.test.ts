@@ -78,7 +78,7 @@ describe("Create -> ConnectOrCreate", () => {
                     name: "Tom Hanks"
                     ${typeMovie.plural}: {
                       connectOrCreate: {
-                        where: { node: { id: 5 } }
+                        where: { node: { id_EQ: 5 } }
                         onCreate: { node: { title: "The Terminal", id: 5 } }
                       }
                     }
@@ -131,7 +131,7 @@ describe("Create -> ConnectOrCreate", () => {
                     name: "${testActorName}"
                     ${typeMovie.plural}: {
                       connectOrCreate: {
-                        where: { node: { id: 2222 } }
+                        where: { node: { id_EQ: 2222 } }
                         onCreate: { edge: { screentime: 105 }, node: { title: "The Terminal", id: 22224 } }
                       }
                     }
@@ -214,7 +214,7 @@ describe("Create -> ConnectOrCreate", () => {
                     name: "${actorName}"
                     ${typeMovie.plural}: {
                       connectOrCreate: {
-                        where: { node: { id: 52 } }
+                        where: { node: { id_EQ: 52 } }
                         onCreate: { edge: { screentime: 105 }, node: { title: "The Terminal 2", id: 52 } }
                       }
                     }
@@ -266,7 +266,7 @@ describe("Create -> ConnectOrCreate", () => {
                 title: "The Matrix",
                 ${typeActor.plural}: {
                   connectOrCreate: {
-                    where: { node: { id: 305 } }
+                    where: { node: { id_EQ: 305 } }
                     onCreate: { node: { id: 305, name: "Keanu" }, edge: { screentime: 105 } }
                   }
                 }
