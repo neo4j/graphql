@@ -70,15 +70,15 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
 
         const query = /* GraphQL */ `
             query getDrivesWithFilteredUnionType {
-                drives(where: { current: true }) {
+                drives(where: { current_EQ: true }) {
                     current
-                    driveCompositionsConnection(where: { edge: { current: true } }) {
+                    driveCompositionsConnection(where: { edge: { current_EQ: true } }) {
                         edges {
                             node {
                                 driveComponentConnection(
                                     where: {
-                                        Battery: { edge: { current: true } }
-                                        CombustionEngine: { edge: { current: true } }
+                                        Battery: { edge: { current_EQ: true } }
+                                        CombustionEngine: { edge: { current_EQ: true } }
                                     }
                                 ) {
                                     edges {

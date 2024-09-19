@@ -85,7 +85,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
     test("query nested relations under a root connection field", async () => {
         const query = /* GraphQL */ `
             query {
-                bacentas(where: { id: 1 }) {
+                bacentas(where: { id_EQ: 1 }) {
                     id
                     name
                     bussing(limit: 10) {

@@ -62,7 +62,7 @@ describe("https://github.com/neo4j/graphql/issues/2614", () => {
         const query = /* GraphQL */ `
             query GetProductionsMovie {
                 actors {
-                    actedIn(where: { title: "Test Movie" }) {
+                    actedIn(where: { title_EQ: "Test Movie" }) {
                         title
                     }
                 }

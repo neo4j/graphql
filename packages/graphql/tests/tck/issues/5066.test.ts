@@ -31,7 +31,7 @@ describe("https://github.com/neo4j/graphql/issues/5066", () => {
             type AdminGroup
                 @node(labels: ["AdminGroup"])
                 @mutation(operations: [])
-                @authorization(filter: [{ where: { node: { createdBy: { id: "$jwt.sub" } } } }]) {
+                @authorization(filter: [{ where: { node: { createdBy: { id_EQ: "$jwt.sub" } } } }]) {
                 id: ID! @id @unique
                 createdAt: DateTime! @timestamp(operations: [CREATE]) @private
                 updatedAt: DateTime! @timestamp(operations: [CREATE, UPDATE]) @private
@@ -44,7 +44,7 @@ describe("https://github.com/neo4j/graphql/issues/5066", () => {
                 @node(labels: ["User"])
                 @mutation(operations: [])
                 @authorization(
-                    filter: [{ where: { node: { NOT: { blockedUsers_SOME: { to: { id: "$jwt.sub" } } } } } }]
+                    filter: [{ where: { node: { NOT: { blockedUsers_SOME: { to: { id_EQ: "$jwt.sub" } } } } } }]
                 ) {
                 id: ID! @unique @settable(onCreate: true, onUpdate: false)
                 createdAt: DateTime! @private
@@ -58,7 +58,7 @@ describe("https://github.com/neo4j/graphql/issues/5066", () => {
                 @node(labels: ["UserBlockedUser"])
                 @query(read: false, aggregate: false)
                 @mutation(operations: [])
-                @authorization(filter: [{ where: { node: { from: { id: "$jwt.sub" } } } }]) {
+                @authorization(filter: [{ where: { node: { from: { id_EQ: "$jwt.sub" } } } }]) {
                 id: ID! @id @unique
                 createdAt: DateTime! @timestamp(operations: [CREATE]) @private
                 updatedAt: DateTime! @timestamp(operations: [CREATE, UPDATE]) @private
@@ -73,11 +73,11 @@ describe("https://github.com/neo4j/graphql/issues/5066", () => {
                 @mutation(operations: [])
                 @authorization(
                     filter: [
-                        { where: { node: { createdByConnection: { User: { node: { id: "$jwt.sub" } } } } } }
+                        { where: { node: { createdByConnection: { User: { node: { id_EQ: "$jwt.sub" } } } } } }
                         {
                             where: {
                                 node: {
-                                    createdByConnection: { AdminGroup: { node: { createdBy: { id: "$jwt.sub" } } } }
+                                    createdByConnection: { AdminGroup: { node: { createdBy: { id_EQ: "$jwt.sub" } } } }
                                 }
                             }
                         }

@@ -87,27 +87,27 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
         const result = await translateQuery(neoSchema, query, {
             variableValues: {
                 where: {
-                    current: true,
+                    current_EQ: true,
                     AND: [
                         {
                             OR: [
                                 {
                                     manufacturerConnection: {
                                         edge: {
-                                            current: true,
+                                            current_EQ: true,
                                         },
                                         node: {
-                                            name: "C",
+                                            name_EQ: "C",
                                         },
                                     },
                                 },
                                 {
                                     manufacturerConnection: {
                                         edge: {
-                                            current: false,
+                                            current_EQ: false,
                                         },
                                         node: {
-                                            name: "AM",
+                                            name_EQ: "AM",
                                         },
                                     },
                                 },
@@ -118,10 +118,10 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
                                 {
                                     brandConnection: {
                                         edge: {
-                                            current: true,
+                                            current_EQ: true,
                                         },
                                         node: {
-                                            name: "smart",
+                                            name_EQ: "smart",
                                         },
                                     },
                                 },

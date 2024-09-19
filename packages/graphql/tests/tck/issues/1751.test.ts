@@ -58,7 +58,7 @@ describe("https://github.com/neo4j/graphql/issues/1751", () => {
 
         const variableValues = {
             where: {
-                title: "Google",
+                title_EQ: "Google",
             },
             delete: {
                 admins: [

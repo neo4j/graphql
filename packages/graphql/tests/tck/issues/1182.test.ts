@@ -54,7 +54,7 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
                             title: "Forrest Gump"
                             actors: {
                                 connectOrCreate: {
-                                    where: { node: { id: 1 } }
+                                    where: { node: { id_EQ: 1 } }
                                     onCreate: {
                                         node: {
                                             name: "Tom Hanks"

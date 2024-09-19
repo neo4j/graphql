@@ -1003,7 +1003,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
                         moviesConnection_SINGLE: {
                             node: {
                                 actorsConnection_SOME: {
-                                    node: { name: "actor name", moviesAggregate: { count_GT: 1 } }
+                                    node: { name_EQ: "actor name", moviesAggregate: { count_GT: 1 } }
                                     edge: { roles_INCLUDES: "actor role" }
                                 }
                             }
@@ -1058,7 +1058,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
     test("should be able to filter by node properties and aggregations in nested relationships", async () => {
         const query = /* GraphQL */ `
             {
-                actors(where: { movies_ALL: { actors_SOME: { name: "a name", moviesAggregate: { count_GT: 1 } } } }) {
+                actors(where: { movies_ALL: { actors_SOME: { name_EQ: "a name", moviesAggregate: { count_GT: 1 } } } }) {
                     name
                 }
             }
@@ -1133,7 +1133,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
                 actors(
                     where: {
                         movies_ALL: {
-                            actors_SOME: { OR: [{ name: "some name" }, { moviesAggregate: { count_GT: 1 } }] }
+                            actors_SOME: { OR: [{ name_EQ: "some name" }, { moviesAggregate: { count_GT: 1 } }] }
                         }
                     }
                 ) {
@@ -1211,7 +1211,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
                 actors(
                     where: {
                         movies_ALL: {
-                            actors_SOME: { AND: [{ name: "some name" }, { moviesAggregate: { count_GT: 1 } }] }
+                            actors_SOME: { AND: [{ name_EQ: "some name" }, { moviesAggregate: { count_GT: 1 } }] }
                         }
                     }
                 ) {
@@ -1358,7 +1358,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
                         moviesConnection_SINGLE: {
                             node: {
                                 actorsConnection_SOME: {
-                                    node: { name: "a name", moviesAggregate: { count_GT: 1 } }
+                                    node: { name_EQ: "a name", moviesAggregate: { count_GT: 1 } }
                                     edge: { roles_INCLUDES: "some-role" }
                                 }
                             }
