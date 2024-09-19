@@ -280,7 +280,7 @@ describe("Cypher sort tests", () => {
             query ($title: String, $offset: Int, $limit: Int) {
                 movies(
                     options: { sort: [{ id: DESC }, { title: ASC }], offset: $offset, limit: $limit }
-                    where: { title: $title }
+                    where: { title_EQ: $title }
                 ) {
                     id
                     title

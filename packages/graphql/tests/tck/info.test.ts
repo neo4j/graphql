@@ -102,7 +102,7 @@ describe("info", () => {
     test("should return info from a delete mutation", async () => {
         const query = /* GraphQL */ `
             mutation {
-                deleteMovies(where: { id: "123" }) {
+                deleteMovies(where: { id_EQ: "123" }) {
                     bookmark
                 }
             }
@@ -126,7 +126,7 @@ describe("info", () => {
     test("should return info from an update mutation", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateMovies(where: { id: "123" }) {
+                updateMovies(where: { id_EQ: "123" }) {
                     info {
                         bookmark
                     }

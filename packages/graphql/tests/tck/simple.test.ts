@@ -40,7 +40,7 @@ describe("Simple Cypher tests", () => {
     test("Single selection, Movie by title", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { title: "River Runs Through It, A" }) {
+                movies(where: { title_EQ: "River Runs Through It, A" }) {
                     title
                 }
             }
@@ -64,7 +64,7 @@ describe("Simple Cypher tests", () => {
     test("Multi selection, Movie by title", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { title: "River Runs Through It, A" }) {
+                movies(where: { title_EQ: "River Runs Through It, A" }) {
                     id
                     title
                 }
@@ -89,7 +89,7 @@ describe("Simple Cypher tests", () => {
     test("Multi selection, Movie by title via variable", async () => {
         const query = /* GraphQL */ `
             query ($title: String) {
-                movies(where: { title: $title }) {
+                movies(where: { title_EQ: $title }) {
                     id
                     title
                 }

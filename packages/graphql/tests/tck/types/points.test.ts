@@ -212,7 +212,7 @@ describe("Cypher Points", () => {
     test("Simple Points update mutation", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updatePointContainers(where: { id: "id" }, update: { points: [{ longitude: 1.0, latitude: 2.0 }] }) {
+                updatePointContainers(where: { id_EQ: "id" }, update: { points: [{ longitude: 1.0, latitude: 2.0 }] }) {
                     pointContainers {
                         points {
                             longitude

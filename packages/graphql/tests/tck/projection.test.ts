@@ -65,7 +65,7 @@ describe("Cypher Projection", () => {
                 createProducts(input: [{ id: "1" }, { id: "2" }]) {
                     products {
                         id
-                        photos(where: { url: "url.com" }) {
+                        photos(where: { url_EQ: "url.com" }) {
                             url
                             location {
                                 latitude
@@ -73,10 +73,10 @@ describe("Cypher Projection", () => {
                                 height
                             }
                         }
-                        colors(where: { id: 123 }) {
+                        colors(where: { id_EQ: 123 }) {
                             id
                         }
-                        sizes(where: { name: "small" }) {
+                        sizes(where: { name_EQ: "small" }) {
                             name
                         }
                     }

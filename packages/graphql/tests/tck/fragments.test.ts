@@ -186,7 +186,7 @@ describe("Cypher Fragment", () => {
 
         const query = /* GraphQL */ `
             query {
-                actors(where: { name: "Keanu" }) {
+                actors(where: { name_EQ: "Keanu" }) {
                     name
                     actedIn {
                         ...FragmentA
