@@ -214,7 +214,7 @@ export function getWhereFieldsForAttributes({
             directives: deprecatedDirectives,
         };
 
-        if (shouldAddDeprecatedFields(features, "negationFilters") && !field.isCypher()) {
+        if (shouldAddDeprecatedFields(features, "negationFilters")) {
             result[`${field.name}_NOT`] = {
                 type: field.getInputTypeNames().where.pretty,
                 directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
@@ -247,7 +247,7 @@ export function getWhereFieldsForAttributes({
             type: field.getFilterableInputTypeName(),
             directives: deprecatedDirectives,
         };
-        if (shouldAddDeprecatedFields(features, "negationFilters") && !field.isCypher()) {
+        if (shouldAddDeprecatedFields(features, "negationFilters")) {
             result[`${field.name}_NOT_IN`] = {
                 type: field.getFilterableInputTypeName(),
                 directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
