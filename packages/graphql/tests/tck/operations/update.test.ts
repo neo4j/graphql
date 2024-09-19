@@ -50,7 +50,7 @@ describe("Cypher Update", () => {
     test("Simple Update", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateMovies(where: { id: "1" }, update: { id: "2" }) {
+                updateMovies(where: { id_EQ: "1" }, update: { id: "2" }) {
                     movies {
                         id
                     }
@@ -80,9 +80,9 @@ describe("Cypher Update", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateMovies(
-                    where: { id: "1" }
+                    where: { id_EQ: "1" }
                     update: {
-                        actors: [{ where: { node: { name: "old name" } }, update: { node: { name: "new name" } } }]
+                        actors: [{ where: { node: { name_EQ: "old name" } }, update: { node: { name: "new name" } } }]
                     }
                 ) {
                     movies {
@@ -120,7 +120,7 @@ describe("Cypher Update", () => {
                                 {
                                     \\"where\\": {
                                         \\"node\\": {
-                                            \\"name\\": \\"old name\\"
+                                            \\"name_EQ\\": \\"old name\\"
                                         }
                                     },
                                     \\"update\\": {
@@ -142,17 +142,17 @@ describe("Cypher Update", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateMovies(
-                    where: { id: "1" }
+                    where: { id_EQ: "1" }
                     update: {
                         actors: [
                             {
-                                where: { node: { name: "old actor name" } }
+                                where: { node: { name_EQ: "old actor name" } }
                                 update: {
                                     node: {
                                         name: "new actor name"
                                         movies: [
                                             {
-                                                where: { node: { id: "old movie title" } }
+                                                where: { node: { id_EQ: "old movie title" } }
                                                 update: { node: { title: "new movie title" } }
                                             }
                                         ]
@@ -207,7 +207,7 @@ describe("Cypher Update", () => {
                                 {
                                     \\"where\\": {
                                         \\"node\\": {
-                                            \\"name\\": \\"old actor name\\"
+                                            \\"name_EQ\\": \\"old actor name\\"
                                         }
                                     },
                                     \\"update\\": {
@@ -217,7 +217,7 @@ describe("Cypher Update", () => {
                                                 {
                                                     \\"where\\": {
                                                         \\"node\\": {
-                                                            \\"id\\": \\"old movie title\\"
+                                                            \\"id_EQ\\": \\"old movie title\\"
                                                         }
                                                     },
                                                     \\"update\\": {
@@ -242,7 +242,7 @@ describe("Cypher Update", () => {
     test("Simple Update as Connect", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateMovies(where: { id: "1" }, connect: { actors: [{ where: { node: { name: "Daniel" } } }] }) {
+                updateMovies(where: { id_EQ: "1" }, connect: { actors: [{ where: { node: { name_EQ: "Daniel" } } }] }) {
                     movies {
                         id
                     }
@@ -290,9 +290,12 @@ describe("Cypher Update", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateMovies(
-                    where: { id: "1" }
+                    where: { id_EQ: "1" }
                     connect: {
-                        actors: [{ where: { node: { name: "Daniel" } } }, { where: { node: { name: "Darrell" } } }]
+                        actors: [
+                            { where: { node: { name_EQ: "Daniel" } } }
+                            { where: { node: { name_EQ: "Darrell" } } }
+                        ]
                     }
                 ) {
                     movies {
@@ -360,7 +363,10 @@ describe("Cypher Update", () => {
     test("Simple Update as Disconnect", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateMovies(where: { id: "1" }, disconnect: { actors: [{ where: { node: { name: "Daniel" } } }] }) {
+                updateMovies(
+                    where: { id_EQ: "1" }
+                    disconnect: { actors: [{ where: { node: { name_EQ: "Daniel" } } }] }
+                ) {
                     movies {
                         id
                     }
@@ -401,7 +407,7 @@ describe("Cypher Update", () => {
                                 {
                                     \\"where\\": {
                                         \\"node\\": {
-                                            \\"name\\": \\"Daniel\\"
+                                            \\"name_EQ\\": \\"Daniel\\"
                                         }
                                     }
                                 }
@@ -418,9 +424,12 @@ describe("Cypher Update", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateMovies(
-                    where: { id: "1" }
+                    where: { id_EQ: "1" }
                     disconnect: {
-                        actors: [{ where: { node: { name: "Daniel" } } }, { where: { node: { name: "Darrell" } } }]
+                        actors: [
+                            { where: { node: { name_EQ: "Daniel" } } }
+                            { where: { node: { name_EQ: "Darrell" } } }
+                        ]
                     }
                 ) {
                     movies {
@@ -477,14 +486,14 @@ describe("Cypher Update", () => {
                                 {
                                     \\"where\\": {
                                         \\"node\\": {
-                                            \\"name\\": \\"Daniel\\"
+                                            \\"name_EQ\\": \\"Daniel\\"
                                         }
                                     }
                                 },
                                 {
                                     \\"where\\": {
                                         \\"node\\": {
-                                            \\"name\\": \\"Darrell\\"
+                                            \\"name_EQ\\": \\"Darrell\\"
                                         }
                                     }
                                 }
@@ -501,7 +510,7 @@ describe("Cypher Update", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateActors(
-                    where: { name: "Dan" }
+                    where: { name_EQ: "Dan" }
                     update: { movies: { create: [{ node: { id: "dan_movie_id", title: "The Story of Beer" } }] } }
                 ) {
                     actors {
@@ -549,7 +558,7 @@ describe("Cypher Update", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateActors(
-                    where: { name: "Dan" }
+                    where: { name_EQ: "Dan" }
                     create: { movies: [{ node: { id: "dan_movie_id", title: "The Story of Beer" } }] }
                 ) {
                     actors {
@@ -596,7 +605,7 @@ describe("Cypher Update", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateActors(
-                    where: { name: "Dan" }
+                    where: { name_EQ: "Dan" }
                     create: {
                         movies: [
                             { node: { id: "dan_movie_id", title: "The Story of Beer" } }
@@ -654,8 +663,8 @@ describe("Cypher Update", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateMovies(
-                    where: { id: "1" }
-                    delete: { actors: { where: { node: { name: "Actor to delete" }, edge: { screenTime: 60 } } } }
+                    where: { id_EQ: "1" }
+                    delete: { actors: { where: { node: { name_EQ: "Actor to delete" }, edge: { screenTime_EQ: 60 } } } }
                 ) {
                     movies {
                         id
@@ -700,10 +709,10 @@ describe("Cypher Update", () => {
                                 {
                                     \\"where\\": {
                                         \\"node\\": {
-                                            \\"name\\": \\"Actor to delete\\"
+                                            \\"name_EQ\\": \\"Actor to delete\\"
                                         },
                                         \\"edge\\": {
-                                            \\"screenTime\\": {
+                                            \\"screenTime_EQ\\": {
                                                 \\"low\\": 60,
                                                 \\"high\\": 0
                                             }
@@ -723,14 +732,14 @@ describe("Cypher Update", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateMovies(
-                    where: { id: "1" }
+                    where: { id_EQ: "1" }
                     update: {
                         actors: {
-                            where: { node: { name: "Actor to update" } }
+                            where: { node: { name_EQ: "Actor to update" } }
                             update: { node: { name: "Updated name" } }
                         }
                     }
-                    delete: { actors: { where: { node: { name: "Actor to delete" } } } }
+                    delete: { actors: { where: { node: { name_EQ: "Actor to delete" } } } }
                 ) {
                     movies {
                         id
@@ -781,7 +790,7 @@ describe("Cypher Update", () => {
                                 {
                                     \\"where\\": {
                                         \\"node\\": {
-                                            \\"name\\": \\"Actor to delete\\"
+                                            \\"name_EQ\\": \\"Actor to delete\\"
                                         }
                                     }
                                 }
@@ -792,7 +801,7 @@ describe("Cypher Update", () => {
                                 {
                                     \\"where\\": {
                                         \\"node\\": {
-                                            \\"name\\": \\"Actor to update\\"
+                                            \\"name_EQ\\": \\"Actor to update\\"
                                         }
                                     },
                                     \\"update\\": {
@@ -814,8 +823,8 @@ describe("Cypher Update", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateMovies(
-                    where: { id: "1" }
-                    update: { actors: { delete: { where: { node: { name: "Actor to delete" } } } } }
+                    where: { id_EQ: "1" }
+                    update: { actors: { delete: { where: { node: { name_EQ: "Actor to delete" } } } } }
                 ) {
                     movies {
                         id
@@ -857,7 +866,7 @@ describe("Cypher Update", () => {
                                         {
                                             \\"where\\": {
                                                 \\"node\\": {
-                                                    \\"name\\": \\"Actor to delete\\"
+                                                    \\"name_EQ\\": \\"Actor to delete\\"
                                                 }
                                             }
                                         }
@@ -876,12 +885,12 @@ describe("Cypher Update", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateMovies(
-                    where: { id: "1" }
+                    where: { id_EQ: "1" }
                     update: {
                         actors: {
                             delete: {
-                                where: { node: { name: "Actor to delete" } }
-                                delete: { movies: { where: { node: { id: "2" } } } }
+                                where: { node: { name_EQ: "Actor to delete" } }
+                                delete: { movies: { where: { node: { id_EQ: "2" } } } }
                             }
                         }
                     }
@@ -939,7 +948,7 @@ describe("Cypher Update", () => {
                                         {
                                             \\"where\\": {
                                                 \\"node\\": {
-                                                    \\"name\\": \\"Actor to delete\\"
+                                                    \\"name_EQ\\": \\"Actor to delete\\"
                                                 }
                                             },
                                             \\"delete\\": {
@@ -947,7 +956,7 @@ describe("Cypher Update", () => {
                                                     {
                                                         \\"where\\": {
                                                             \\"node\\": {
-                                                                \\"id\\": \\"2\\"
+                                                                \\"id_EQ\\": \\"2\\"
                                                             }
                                                         }
                                                     }
