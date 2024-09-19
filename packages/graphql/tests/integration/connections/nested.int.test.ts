@@ -61,9 +61,9 @@ describe("Connections Alias", () => {
     test("should allow nested connections", async () => {
         const query = `
             {
-                ${typeMovie.plural}(where: { title: "${movieTitle}" }) {
+                ${typeMovie.plural}(where: { title_EQ: "${movieTitle}" }) {
                     title
-                    actorsConnection(where: { node: { name: "${actorName}" } }) {
+                    actorsConnection(where: { node: { name_EQ: "${actorName}" } }) {
                         edges {
                             properties { 
                                 screenTime
@@ -123,16 +123,16 @@ describe("Connections Alias", () => {
     test("should allow where clause on nested connections", async () => {
         const query = `
             {
-                ${typeMovie.plural}(where: { title: "${movieTitle}" }) {
+                ${typeMovie.plural}(where: { title_EQ: "${movieTitle}" }) {
                     title
-                    actorsConnection(where: { node: { name: "${actorName}" } }) {
+                    actorsConnection(where: { node: { name_EQ: "${actorName}" } }) {
                         edges {
                             properties {
                                 screenTime
                             }
                             node {
                                 name
-                                moviesConnection(where: { node: { title: "${movieTitle}" } }) {
+                                moviesConnection(where: { node: { title_EQ: "${movieTitle}" } }) {
                                     edges {
                                         node {
                                             title

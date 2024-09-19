@@ -108,7 +108,7 @@ describe("Connections -> Unions", () => {
     test("Projecting node and relationship properties with no arguments", async () => {
         const query = /* GraphQL */ `
             query ($authorName: String) {
-                ${Author.plural}(where: { name: $authorName }) {
+                ${Author.plural}(where: { name_EQ: $authorName }) {
                     name
                     publicationsConnection {
                         edges {
@@ -169,7 +169,7 @@ describe("Connections -> Unions", () => {
     test("Projecting node and relationship properties with sort argument", async () => {
         const query = /* GraphQL */ `
             query($authorName: String) {
-                ${Author.plural}(where: { name: $authorName }) {
+                ${Author.plural}(where: { name_EQ: $authorName }) {
                     name
                     publicationsConnection(sort: [{ edge: { words: ASC } }]) {
                         edges {
@@ -230,7 +230,7 @@ describe("Connections -> Unions", () => {
     test("Projecting node and relationship properties with pagination", async () => {
         const query = /* GraphQL */ `
             query($authorName: String, $after: String) {
-                ${Author.plural}(where: { name: $authorName }) {
+                ${Author.plural}(where: { name_EQ: $authorName }) {
                     name
                     publicationsConnection(first: 2, after: $after, sort: [{ edge: { words: ASC } }]) {
                         pageInfo {
@@ -325,7 +325,7 @@ describe("Connections -> Unions", () => {
     test("Projecting node and relationship properties for one union member with no arguments", async () => {
         const query = /* GraphQL */ `
             query ($authorName: String) {
-                ${Author.plural}(where: { name: $authorName }) {
+                ${Author.plural}(where: { name_EQ: $authorName }) {
                     name
                     publicationsConnection {
                         edges {
@@ -381,9 +381,9 @@ describe("Connections -> Unions", () => {
     test("With where argument on node with node in database", async () => {
         const query = /* GraphQL */ `
             query ($authorName: String, $bookTitle: String) {
-                ${Author.plural}(where: { name: $authorName }) {
+                ${Author.plural}(where: { name_EQ: $authorName }) {
                     name
-                    publicationsConnection(where: { ${Book}: { node: { title: $bookTitle } } }) {
+                    publicationsConnection(where: { ${Book}: { node: { title_EQ: $bookTitle } } }) {
                         edges {
                             properties {
                                 words
@@ -428,9 +428,9 @@ describe("Connections -> Unions", () => {
     test("With where argument on node with node not in database", async () => {
         const query = /* GraphQL */ `
             query ($authorName: String, $bookTitle: String) {
-                ${Author.plural}(where: { name: $authorName }) {
+                ${Author.plural}(where: { name_EQ: $authorName }) {
                     name
-                    publicationsConnection(where: { ${Book}: { node: { title_NOT: $bookTitle } } }) {
+                    publicationsConnection(where: { ${Book}: { node: { NOT: { title_EQ: $bookTitle } } } }) {
                         edges {
                             properties {
                                 words
@@ -475,12 +475,12 @@ describe("Connections -> Unions", () => {
     test("With where argument on all nodes with all in database", async () => {
         const query = /* GraphQL */ `
             query ($authorName: String, $bookTitle: String, $journalSubject: String) {
-                ${Author.plural}(where: { name: $authorName }) {
+                ${Author.plural}(where: { name_EQ: $authorName }) {
                     name
                     publicationsConnection(
                         where: {
-                            ${Book}: { node: { title: $bookTitle } }
-                            ${Journal}: { node: { subject: $journalSubject } }
+                            ${Book}: { node: { title_EQ: $bookTitle } }
+                            ${Journal}: { node: { subject_EQ: $journalSubject } }
                         }
                     ) {
                         totalCount
@@ -542,12 +542,12 @@ describe("Connections -> Unions", () => {
     test("With where argument on all nodes with only one in database", async () => {
         const query = /* GraphQL */ `
             query ($authorName: String, $bookTitle: String, $journalSubject: String) {
-                ${Author.plural}(where: { name: $authorName }) {
+                ${Author.plural}(where: { name_EQ: $authorName }) {
                     name
                     publicationsConnection(
                         where: {
-                            ${Book}: { node: { title: $bookTitle } }
-                            ${Journal}: { node: { subject_NOT: $journalSubject } }
+                            ${Book}: { node: { title_EQ: $bookTitle } }
+                            ${Journal}: { node: { NOT: { subject_EQ: $journalSubject } } }
                         }
                     ) {
                         totalCount
@@ -602,9 +602,9 @@ describe("Connections -> Unions", () => {
     test("With where argument on relationship with relationship in database", async () => {
         const query = /* GraphQL */ `
             query ($authorName: String, $bookWordCount: Int) {
-                ${Author.plural}(where: { name: $authorName }) {
+                ${Author.plural}(where: { name_EQ: $authorName }) {
                     name
-                    publicationsConnection(where: { ${Book}: { edge: { words: $bookWordCount } } }) {
+                    publicationsConnection(where: { ${Book}: { edge: { words_EQ: $bookWordCount } } }) {
                         edges {
                             properties {
                                 words
@@ -649,9 +649,9 @@ describe("Connections -> Unions", () => {
     test("With where argument on relationship with relationship not in database", async () => {
         const query = /* GraphQL */ `
             query ($authorName: String, $bookWordCount: Int) {
-                ${Author.plural}(where: { name: $authorName }) {
+                ${Author.plural}(where: { name_EQ: $authorName }) {
                     name
-                    publicationsConnection(where: { ${Book}: { edge: { words_NOT: $bookWordCount } } }) {
+                    publicationsConnection(where: { ${Book}: { edge: { NOT: { words_EQ: $bookWordCount } } } }) {
                         edges {
                            properties {
                              words
@@ -696,12 +696,12 @@ describe("Connections -> Unions", () => {
     test("With where argument on all edges with all in database", async () => {
         const query = /* GraphQL */ `
             query ($authorName: String, $bookWordCount: Int, $journalWordCount: Int) {
-                ${Author.plural}(where: { name: $authorName }) {
+                ${Author.plural}(where: { name_EQ: $authorName }) {
                     name
                     publicationsConnection(
                         where: {
-                            ${Book}: { edge: { words: $bookWordCount } }
-                            ${Journal}: { edge: { words: $journalWordCount } }
+                            ${Book}: { edge: { words_EQ: $bookWordCount } }
+                            ${Journal}: { edge: { words_EQ: $journalWordCount } }
                         }
                     ) {
                         totalCount
@@ -763,12 +763,12 @@ describe("Connections -> Unions", () => {
     test("With where argument on all edges with only one in database", async () => {
         const query = /* GraphQL */ `
             query ($authorName: String, $bookWordCount: Int, $journalWordCount: Int) {
-                ${Author.plural}(where: { name: $authorName }) {
+                ${Author.plural}(where: { name_EQ: $authorName }) {
                     name
                     publicationsConnection(
                         where: {
-                            ${Book}: { edge: { words: $bookWordCount } }
-                            ${Journal}: { edge: { words_NOT: $journalWordCount } }
+                            ${Book}: { edge: { words_EQ: $bookWordCount } }
+                            ${Journal}: { edge: { NOT: { words_EQ: $journalWordCount } } }
                         }
                     ) {
                         totalCount
@@ -823,13 +823,13 @@ describe("Connections -> Unions", () => {
     test("With where argument on relationship and node", async () => {
         const query = /* GraphQL */ `
             query ($authorName: String, $bookWordCount: Int, $bookTitle: String) {
-                ${Author.plural}(where: { name: $authorName }) {
+                ${Author.plural}(where: { name_EQ: $authorName }) {
                     name
                     publicationsConnection(
                         where: {
                             ${Book}: {
-                                edge: { words: $bookWordCount }
-                                node: { title: $bookTitle }
+                                edge: { words_EQ: $bookWordCount }
+                                node: { title_EQ: $bookTitle }
                             }
                         }
                     ) {
