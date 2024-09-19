@@ -68,8 +68,13 @@ function getWhereFields({
             const deprecatedDirectives = graphqlDirectivesToCompose(
                 f.otherDirectives.filter((directive) => directive.name.value === DEPRECATED)
             );
-
-            res[f.fieldName] = {
+            if (shouldAddDeprecatedFields(features, "implicitEqualFilters")) {
+                res[f.fieldName] = {
+                    type: f.typeMeta.input.where.pretty,
+                    directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_EQUAL_FILTERS],
+                };
+            }
+            res[`${f.fieldName}_EQ`] = {
                 type: f.typeMeta.input.where.pretty,
                 directives: deprecatedDirectives,
             };
