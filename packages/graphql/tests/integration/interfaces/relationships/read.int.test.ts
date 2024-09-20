@@ -90,7 +90,7 @@ describe("interface relationships", () => {
 
         const query = `
             query Actors($name: String) {
-                ${typeActor.plural}(where: { name: $name }) {
+                ${typeActor.plural}(where: { name_EQ: $name }) {
                     name
                     actedIn {
                         title
@@ -173,7 +173,7 @@ describe("interface relationships", () => {
 
         const query = /* GraphQL */ `
             query Actors($name: String) {
-                ${typeActor.plural}(where: { name: $name }) {
+                ${typeActor.plural}(where: { name_EQ: $name }) {
                     name
                     actedIn(options: { sort: [{ title: DESC }] }) {
                         title
@@ -241,7 +241,7 @@ describe("interface relationships", () => {
 
         const query = `
             query Actors($name: String) {
-                ${typeActor.plural}(where: { name: $name }) {
+                ${typeActor.plural}(where: { name_EQ: $name }) {
                     name
                     currentlyActingIn {
                         title
@@ -313,9 +313,9 @@ describe("interface relationships", () => {
 
         const query = `
             query Actors($name: String, $title: String) {
-                ${typeActor.plural}(where: { name: $name }) {
+                ${typeActor.plural}(where: { name_EQ: $name }) {
                     name
-                    actedIn(where: { title: $title }) {
+                    actedIn(where: { title_EQ: $title }) {
                         title
                         ... on ${typeMovie} {
                             runtime

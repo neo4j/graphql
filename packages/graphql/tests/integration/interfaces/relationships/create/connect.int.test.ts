@@ -102,9 +102,9 @@ describe("interface relationships", () => {
                             actedIn: {
                                 connect: {
                                     edge: { screenTime: $screenTime }
-                                    where: { node: { title: $title } }
+                                    where: { node: { title_EQ: $title } }
                                     connect: {
-                                        actors: { edge: { ActedIn: { screenTime: $screenTime } }, where: { node: { name: $name2 } } }
+                                        actors: { edge: { ActedIn: { screenTime: $screenTime } }, where: { node: { name_EQ: $name2 } } }
                                     }
                                 }
                             }

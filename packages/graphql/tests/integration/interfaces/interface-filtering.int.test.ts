@@ -92,7 +92,7 @@ describe("Interface filtering", () => {
     test("allow for logical filters on top-level interfaces", async () => {
         const query = `
             query actedInWhere {
-                shows(where: { OR: [{ title: "The Office" }, { title: "The Office 2" }] }) {
+                shows(where: { OR: [{ title_EQ: "The Office" }, { title_EQ: "The Office 2" }] }) {
                     title
                 }
             }
@@ -120,7 +120,7 @@ describe("Interface filtering", () => {
         const query = `
             query actedInWhere {
                 ${Actor.plural} {
-                    actedIn(where: { OR: [{ title: "The Office" }, { title: "The Office 2" }] }) {
+                    actedIn(where: { OR: [{ title_EQ: "The Office" }, { title_EQ: "The Office 2" }] }) {
                         title
                     }
                 }

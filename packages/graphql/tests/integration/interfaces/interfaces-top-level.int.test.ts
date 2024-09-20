@@ -289,7 +289,7 @@ describe("Top-level interface query fields", () => {
                 filter: [
                     {
                         operations: [READ]
-                        where: { node: { something: "$jwt.jwtAllowedNamesExample" }, jwt: { roles_INCLUDES: "admin" } }
+                        where: { node: { something_EQ: "$jwt.jwtAllowedNamesExample" }, jwt: { roles_INCLUDES: "admin" } }
                     }
                 ]
             ) 

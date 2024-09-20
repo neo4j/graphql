@@ -103,9 +103,9 @@ describe("interface relationships", () => {
         const query = `
             mutation UpdateUpdate($name: String, $oldTitle: String, $newTitle: String) {
                 ${Actor.operations.update}(
-                    where: { name: $name }
+                    where: { name_EQ: $name }
                     update: {
-                        actedIn: { where: { node: { title: $oldTitle } }, update: { node: { title: $newTitle } } }
+                        actedIn: { where: { node: { title_EQ: $oldTitle } }, update: { node: { title: $newTitle } } }
                     }
                 ) {
                     ${Actor.plural} {
@@ -198,10 +198,10 @@ describe("interface relationships", () => {
         const query = `
             mutation UpdateUpdate($name: String, $newName: String, $oldTitle: String, $newTitle: String) {
                 ${Actor.operations.update}(
-                    where: { name: $name }
+                    where: { name_EQ: $name }
                     update: {
                         actedIn: {
-                            where: { node: { title: $oldTitle } }
+                            where: { node: { title_EQ: $oldTitle } }
                             update: { node: { title: $newTitle, actors: { update: { node: { name: $newName } } } } }
                         }
                     }
