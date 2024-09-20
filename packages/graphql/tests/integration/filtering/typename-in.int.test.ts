@@ -88,7 +88,7 @@ describe("typename_IN", () => {
     test("top-level", async () => {
         const query = `
         {
-            productions(where: { OR: [{ AND: [{ title: "The Matrix" }, { typename_IN: [${Movie.name}] }] }, { typename_IN: [${Series.name}] }]}) {
+            productions(where: { OR: [{ AND: [{ title_EQ: "The Matrix" }, { typename_IN: [${Movie.name}] }] }, { typename_IN: [${Series.name}] }]}) {
                 __typename
                 title
             }
@@ -116,7 +116,7 @@ describe("typename_IN", () => {
         {
             ${Actor.plural} {
                 actedIn(where: { OR: [
-                    { AND: [{ title: "The Matrix" }, { typename_IN: [${Movie.name}] }] }
+                    { AND: [{ title_EQ: "The Matrix" }, { typename_IN: [${Movie.name}] }] }
                     { typename_IN: [${Series.name}] }
                 ] }) {
                     __typename

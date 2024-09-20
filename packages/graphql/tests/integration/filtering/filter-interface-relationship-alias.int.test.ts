@@ -62,7 +62,7 @@ describe("interface relationships aliased fields", () => {
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
-            type ${ProtectedActor} @node @authorization(validate: [{ where: { node: { actedInConnection: { node: { title: "$jwt.title"  } } } } }]) {
+            type ${ProtectedActor} @node @authorization(validate: [{ where: { node: { actedInConnection: { node: { title_EQ: "$jwt.title"  } } } } }]) {
                 name: String! @alias(property: "dbName")
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
@@ -105,7 +105,7 @@ describe("interface relationships aliased fields", () => {
 
         const query = /* GraphQL */ `
             query Actors($title: String) {
-                 ${typeActor.plural}(where: { actedInConnection_SOME: { node: { title: $title } } }) {
+                 ${typeActor.plural}(where: { actedInConnection_SOME: { node: { title_EQ: $title } } }) {
                     name
                     actedIn {
                         title
@@ -192,7 +192,7 @@ describe("interface relationships aliased fields", () => {
 
         const query = /* GraphQL */ `
             mutation deleteActors($title: String) {
-                 ${typeActor.operations.delete}(where: { actedInConnection_SOME: { node: { title: $title } } }) {
+                 ${typeActor.operations.delete}(where: { actedInConnection_SOME: { node: { title_EQ: $title } } }) {
                     nodesDeleted
                     relationshipsDeleted
                 }

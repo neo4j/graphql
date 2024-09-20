@@ -98,7 +98,7 @@ describe("interface relationships", () => {
 
         const query = `
             query Actors($title: String) {
-                ${typeActor.plural}(where: { actedIn_SOME: { title: $title } }) {
+                ${typeActor.plural}(where: { actedIn_SOME: { title_EQ: $title } }) {
                     name
                     actedIn {
                         title
@@ -181,7 +181,7 @@ describe("interface relationships", () => {
 
         const query = `
             query Actors($title: String) {
-                ${typeActor.plural}(where: { actedIn_ALL: { title: $title } }) {
+                ${typeActor.plural}(where: { actedIn_ALL: { title_EQ: $title } }) {
                     name
                     actedIn {
                         title
@@ -269,7 +269,7 @@ describe("interface relationships", () => {
 
         const query = `
             query Actors($title: String) {
-                ${typeActor.plural}(where: { actedIn_ALL: { title: $title } }) {
+                ${typeActor.plural}(where: { actedIn_ALL: { title_EQ: $title } }) {
                     name
                     actedIn {
                         title
@@ -346,7 +346,7 @@ describe("interface relationships", () => {
 
         const query = `
             query Actors($title: String) {
-                ${typeActor.plural}(where: { actedIn_SINGLE: { title: $title } }) {
+                ${typeActor.plural}(where: { actedIn_SINGLE: { title_EQ: $title } }) {
                     name
                     actedIn {
                         title
@@ -439,7 +439,7 @@ describe("interface relationships", () => {
 
         const query = `
             query Actors($title: String) {
-                ${typeActor.plural}(where: { actedIn_NONE: { title: $title } }) {
+                ${typeActor.plural}(where: { actedIn_NONE: { title_EQ: $title } }) {
                     name
                     actedIn {
                         title
