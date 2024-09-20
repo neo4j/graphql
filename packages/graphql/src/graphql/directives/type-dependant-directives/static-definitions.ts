@@ -19,15 +19,20 @@
 
 import { astFromEnumType, astFromInputObjectType } from "@graphql-tools/utils";
 import type {
-    ObjectTypeDefinitionNode,
+    DocumentNode,
     EnumTypeDefinitionNode,
-    InputObjectTypeDefinitionNode,
     GraphQLInputObjectType,
+    InputObjectTypeDefinitionNode,
+    ObjectTypeDefinitionNode,
 } from "graphql";
 import { GraphQLEnumType, GraphQLSchema } from "graphql";
 import { SchemaComposer } from "graphql-compose";
-import getWhereFields from "../../../schema/get-where-fields";
-import { getJwtFields } from "./jwt-payload";
+import { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
+import type { DefinitionCollection } from "../../../schema-model/parser/definition-collection";
+import { getDefinitionCollection } from "../../../schema-model/parser/definition-collection";
+import { parseAttribute } from "../../../schema-model/parser/parse-attribute";
+import { getWhereFieldsForAttributes } from "../../../schema/get-where-fields";
+import { getStandardJwtDefinition } from "./jwt-payload";
 
 export const AUTHORIZATION_VALIDATE_STAGE = new GraphQLEnumType({
     name: "AuthorizationValidateStage",
@@ -85,6 +90,7 @@ export const SUBSCRIPTIONS_AUTHORIZATION_FILTER_EVENT = new GraphQLEnumType({
 });
 
 export function getStaticAuthorizationDefinitions(
+    userDocument: DocumentNode,
     JWTPayloadDefinition?: ObjectTypeDefinitionNode
 ): Array<InputObjectTypeDefinitionNode | EnumTypeDefinitionNode> {
     const schema = new GraphQLSchema({});
@@ -101,20 +107,35 @@ export function getStaticAuthorizationDefinitions(
         subscriptionsAuthorizationFilterOperation,
     ];
 
-    const JWTPayloadWhere = createJWTPayloadWhere(schema, JWTPayloadDefinition);
+    const JWTPayloadWhere = createJWTPayloadWhere(userDocument, schema, JWTPayloadDefinition);
     const JWTPayloadWhereAST = astFromInputObjectType(JWTPayloadWhere, schema);
     ASTs.push(JWTPayloadWhereAST);
     return ASTs;
 }
 
 function createJWTPayloadWhere(
+    userDocument: DocumentNode,
     schema: GraphQLSchema,
     JWTPayloadDefinition?: ObjectTypeDefinitionNode
 ): GraphQLInputObjectType {
-    const inputFieldsType = getWhereFields({
-        typeName: "JWTPayload",
-        fields: getJwtFields(schema, JWTPayloadDefinition),
+    // TODO: We would like not to have to do this getDefinitionCollection again as it is a heavy operation
+    // We should find a way to get the definitionCollection from the generated model
+    // Or we should find a way to use parseAttribute without a DefinitionCollection
+    const definitionCollection: DefinitionCollection = getDefinitionCollection(userDocument);
+
+    const jwtStandardTypeDefinitionFields = getStandardJwtDefinition(schema).fields || [];
+    const jwtPayloadDefinitionFields = JWTPayloadDefinition?.fields || [];
+
+    const jwtFieldAttributeAdapters = [...jwtStandardTypeDefinitionFields, ...jwtPayloadDefinitionFields].map(
+        (field) => new AttributeAdapter(parseAttribute(field, definitionCollection))
+    );
+
+    const inputFieldsType = getWhereFieldsForAttributes({
+        attributes: jwtFieldAttributeAdapters,
+        userDefinedFieldDirectives: undefined,
+        features: undefined,
     });
+
     const composer = new SchemaComposer();
     const inputTC = composer.createInputTC({
         name: "JWTPayloadWhere",

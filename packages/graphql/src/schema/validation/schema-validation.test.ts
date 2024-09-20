@@ -112,6 +112,23 @@ describe("schema validation", () => {
                 expect(errors[0]).toHaveProperty("path", ["User", "@authorization", "filter", 0, "where", "jwt"]);
             });
 
+            test("should return no error when jwt field iss is used", () => {
+                const userDocument = gql`
+                    type User @authorization(filter: [{ where: { jwt: { iss: "Something" } } }]) {
+                        id: ID!
+                        name: String!
+                    }
+                `;
+
+                const schemaModel = generateModel(userDocument);
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema({
+                    document: userDocument,
+                    schemaModel,
+                });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+                expect(executeValidate).not.toThrow();
+            });
+
             test("should not return errors when jwt field is standard", () => {
                 const jwtType = `
                     type MyJWT  @jwt {
