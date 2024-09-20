@@ -175,7 +175,7 @@ describe("@populatedBy directive - Relationship properties", () => {
             const mutation = `
                     mutation {
                         ${testMovie.operations.update}(
-                            where: { id: "${movieId}" }, 
+                            where: { id_EQ: "${movieId}" }, 
                             update: { 
                                 genres: {
                                     update: {
@@ -318,7 +318,7 @@ describe("@populatedBy directive - Relationship properties", () => {
                         }
 
                         ${testMovie.operations.update}(
-                            where: { id: "${movieId}" }, 
+                            where: { id_EQ: "${movieId}" }, 
                             update: { 
                                 genres: {
                                     update: {
@@ -545,7 +545,7 @@ describe("@populatedBy directive - Relationship properties", () => {
             const mutation = `
                     mutation {
                         ${testMovie.operations.update}(
-                            where: { id: "${movieId}" }, 
+                            where: { id_EQ: "${movieId}" }, 
                             update: { 
                                 genres: {
                                     update: {
@@ -696,7 +696,7 @@ describe("@populatedBy directive - Relationship properties", () => {
                         }
 
                         ${testMovie.operations.update}(
-                            where: { id: "${movieId}" }, 
+                            where: { id_EQ: "${movieId}" }, 
                             update: { 
                                 genres: {
                                     update: {
@@ -923,7 +923,7 @@ describe("@populatedBy directive - Relationship properties", () => {
             const mutation = `
                     mutation {
                         ${testMovie.operations.update}(
-                            where: { id: "${movieId}" }, 
+                            where: { id_EQ: "${movieId}" }, 
                             update: { 
                                 genres: {
                                     update: {
@@ -1074,7 +1074,7 @@ describe("@populatedBy directive - Relationship properties", () => {
                         }
 
                         ${testMovie.operations.update}(
-                            where: { id: "${movieId}" }, 
+                            where: { id_EQ: "${movieId}" }, 
                             update: { 
                                 genres: {
                                     update: {
@@ -1289,7 +1289,7 @@ describe("@populatedBy directive - Relationship properties", () => {
             const mutation = `
                     mutation {
                         ${testMovie.operations.update}(
-                            where: { id: "${movieId}" }, 
+                            where: { id_EQ: "${movieId}" }, 
                             update: { 
                                 genres: {
                                     update: {
@@ -1428,7 +1428,7 @@ describe("@populatedBy directive - Relationship properties", () => {
                         }
 
                         ${testMovie.operations.update}(
-                            where: { id: "${movieId}" }, 
+                            where: { id_EQ: "${movieId}" }, 
                             update: { 
                                 genres: {
                                     update: {
@@ -1643,7 +1643,7 @@ describe("@populatedBy directive - Relationship properties", () => {
             const mutation = `
                     mutation {
                         ${testMovie.operations.update}(
-                            where: { id: "${movieId}" }, 
+                            where: { id_EQ: "${movieId}" }, 
                             update: { 
                                 genres: {
                                     update: {
@@ -1782,7 +1782,7 @@ describe("@populatedBy directive - Relationship properties", () => {
                         }
 
                         ${testMovie.operations.update}(
-                            where: { id: "${movieId}" }, 
+                            where: { id_EQ: "${movieId}" }, 
                             update: { 
                                 genres: {
                                     update: {
@@ -1925,7 +1925,7 @@ describe("@populatedBy directive - Relationship properties", () => {
                         }
 
                         ${testMovie.operations.update}(
-                            where: { id: "${movieId}" }, 
+                            where: { id_EQ: "${movieId}" }, 
                             update: { 
                                 genres: {
                                     update: {
@@ -2108,7 +2108,7 @@ describe("@populatedBy directive - Relationship properties", () => {
             const mutation = `
                     mutation {
                         ${testMovie.operations.update}(
-                            where: { id: "${movieId}" }, 
+                            where: { id_EQ: "${movieId}" }, 
                             update: { 
                                 genres: {
                                     update: {
@@ -2247,7 +2247,7 @@ describe("@populatedBy directive - Relationship properties", () => {
                         }
 
                         ${testMovie.operations.update}(
-                            where: { id: "${movieId}" }, 
+                            where: { id_EQ: "${movieId}" }, 
                             update: { 
                                 genres: {
                                     update: {
@@ -2390,7 +2390,7 @@ describe("@populatedBy directive - Relationship properties", () => {
                         }
 
                         ${testMovie.operations.update}(
-                            where: { id: "${movieId}" }, 
+                            where: { id_EQ: "${movieId}" }, 
                             update: { 
                                 genres: {
                                     update: {
@@ -2601,7 +2601,7 @@ describe("@populatedBy directive - Relationship properties", () => {
             const mutation = `
                     mutation {
                         ${testMovie.operations.update}(
-                            where: { id: "${movieId}" }, 
+                            where: { id_EQ: "${movieId}" }, 
                             update: { 
                                 genres: {
                                     update: {
@@ -2731,7 +2731,7 @@ describe("@populatedBy directive - Relationship properties", () => {
                         }
     
                         ${testMovie.operations.update}(
-                            where: { id: "${movieId}" }, 
+                            where: { id_EQ: "${movieId}" }, 
                             update: { 
                                 genres: {
                                     update: {
@@ -2928,7 +2928,7 @@ describe("@populatedBy directive - Relationship properties", () => {
             const mutation = `
                     mutation {
                         ${testMovie.operations.update}(
-                            where: { id: "${movieId}" }, 
+                            where: { id_EQ: "${movieId}" }, 
                             update: { 
                                 genres: {
                                     update: {
@@ -3058,7 +3058,7 @@ describe("@populatedBy directive - Relationship properties", () => {
                         }
     
                         ${testMovie.operations.update}(
-                            where: { id: "${movieId}" }, 
+                            where: { id_EQ: "${movieId}" }, 
                             update: { 
                                 genres: {
                                     update: {
@@ -3249,7 +3249,7 @@ describe("@populatedBy directive - Relationship properties", () => {
             const mutation = `
                 mutation {
                     ${testMovie.operations.update}(
-                        where: { id: "${movieId}" }, 
+                        where: { id_EQ: "${movieId}" }, 
                         update: { 
                             genres: {
                                 update: {

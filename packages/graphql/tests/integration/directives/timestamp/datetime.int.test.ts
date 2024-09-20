@@ -158,7 +158,7 @@ describe("timestamp/datetime", () => {
 
             const create = `
                 mutation {
-                    ${Movie.operations.update}(where: {id: "${id}"}, update: { id: "${id}" }) {
+                    ${Movie.operations.update}(where: {id_EQ: "${id}"}, update: { id: "${id}" }) {
                         ${Movie.plural} {
                             id
                         }
@@ -217,7 +217,7 @@ describe("timestamp/datetime", () => {
             const update = `
                 mutation($title: String!) {
                     ${Movie.operations.update}(
-                        where: { title: $title }
+                        where: { title_EQ: $title }
                         update: { actors: [{ update: { edge: { screenTime: 60 } } }] }
                     ) {
                         ${Movie.plural} {
@@ -383,7 +383,7 @@ describe("timestamp/datetime", () => {
             const update = `
                 mutation($title: String!) {
                     ${Movie.operations.update}(
-                        where: { title: $title }
+                        where: { title_EQ: $title }
                         update: { actors: [{ update: { edge: { screenTime: 60 } } }] }
                     ) {
                         ${Movie.plural} {
@@ -435,7 +435,7 @@ describe("timestamp/datetime", () => {
 
             const create = `
                 mutation {
-                    ${Movie.operations.update}(where: {id: "${id}"}, update: { id: "${id}" }) {
+                    ${Movie.operations.update}(where: {id_EQ: "${id}"}, update: { id: "${id}" }) {
                         ${Movie.plural} {
                             id
                         }
@@ -597,7 +597,7 @@ describe("timestamp/datetime", () => {
             const update = `
                 mutation($title: String!) {
                     ${Movie.operations.update}(
-                        where: { title: $title }
+                        where: { title_EQ: $title }
                         update: { actors: [{ update: { edge: { screenTime: 60 } } }] }
                     ) {
                         ${Movie.plural} {
@@ -649,7 +649,7 @@ describe("timestamp/datetime", () => {
 
             const create = `
                 mutation {
-                    ${Movie.operations.update}(where: {id: "${id}"}, update: { id: "${id}" }) {
+                    ${Movie.operations.update}(where: {id_EQ: "${id}"}, update: { id: "${id}" }) {
                         ${Movie.plural} {
                             id
                         }

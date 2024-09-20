@@ -47,7 +47,7 @@ describe("auth/object-path", () => {
                 id: ID
             }
 
-            extend type ${User} @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.nestedSub" } } }])
+            extend type ${User} @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id_EQ: "$jwt.nestedSub" } } }])
         `;
 
         const userId = generate({
@@ -56,7 +56,7 @@ describe("auth/object-path", () => {
 
         const query = `
             {
-                ${User.plural}(where: {id: "${userId}"}) {
+                ${User.plural}(where: {id_EQ: "${userId}"}) {
                     id
                 }
             }
@@ -104,7 +104,7 @@ describe("auth/object-path", () => {
                 creator: ${User}! @relationship(type: "HAS_POST", direction: IN)
             }
 
-            extend type ${Post} @node @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { creator: { id: "$context.userId" } } } }])
+            extend type ${Post} @node @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { creator: { id_EQ: "$context.userId" } } } }])
         `;
 
         const userId = generate({
@@ -117,7 +117,7 @@ describe("auth/object-path", () => {
 
         const query = `
             {
-                ${Post.plural}(where: {id: "${postId}"}) {
+                ${Post.plural}(where: {id_EQ: "${postId}"}) {
                     id
                 }
             }
@@ -167,7 +167,7 @@ describe("auth/object-path", () => {
 
         const query = `
             {
-                ${User.plural}(where: {id: "${userId}"}) {
+                ${User.plural}(where: {id_EQ: "${userId}"}) {
                     id
                 }
             }
@@ -217,7 +217,7 @@ describe("auth/object-path", () => {
 
         const query = `
             {
-                ${User.plural}(where: {id: "${userId}"}) {
+                ${User.plural}(where: {id_EQ: "${userId}"}) {
                     id
                 }
             }

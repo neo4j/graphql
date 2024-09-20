@@ -58,7 +58,7 @@ describe("auth/jwks-endpoint", () => {
 
         const query = `
             {
-                ${User.plural}(where: {id: "${userId}"}) {
+                ${User.plural}(where: {id_EQ: "${userId}"}) {
                     id
                 }
             }
@@ -111,7 +111,7 @@ describe("auth/jwks-endpoint", () => {
 
         const query = `
             {
-                ${User.plural}(where: {id: "${userId}"}) {
+                ${User.plural}(where: {id_EQ: "${userId}"}) {
                     id
                 }
             }
@@ -166,7 +166,7 @@ describe("auth/jwks-endpoint", () => {
 
         const query = `
             {
-                ${User.plural}(where: {id: "${userId}"}) {
+                ${User.plural}(where: {id_EQ: "${userId}"}) {
                     id
                 }
             }
@@ -216,7 +216,7 @@ describe("auth/jwks-endpoint", () => {
 
         const query = `
             {
-                ${User.plural}(where: {id: "${userId}"}) {
+                ${User.plural}(where: {id_EQ: "${userId}"}) {
                     id
                 }
             }
@@ -267,7 +267,7 @@ describe("auth/jwks-endpoint", () => {
 
         const query = `
             {
-                ${User.plural}(where: {id: "${userId}"}) {
+                ${User.plural}(where: {id_EQ: "${userId}"}) {
                     id
                 }
             }
@@ -319,7 +319,7 @@ describe("auth/jwks-endpoint", () => {
 
         const query = `
             {
-                ${User.plural}(where: {id: "${userId}"}) {
+                ${User.plural}(where: {id_EQ: "${userId}"}) {
                     id
                 }
             }
@@ -370,7 +370,7 @@ describe("auth/jwks-endpoint", () => {
 
         const query = `
             {
-                ${User.plural}(where: {id: "${userId}"}) {
+                ${User.plural}(where: {id_EQ: "${userId}"}) {
                     id
                 }
             }

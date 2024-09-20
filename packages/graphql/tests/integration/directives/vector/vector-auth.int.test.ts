@@ -143,7 +143,7 @@ describe("@vector directive - Auth", () => {
 
         const typeDefs = /* GraphQL */ `
             type ${Person} @node @vector(indexes: [{ indexName: "${Person}Index", embeddingProperty: "embedding", queryName: "${queryName}" }])
-            @authorization(filter: [{ where: { node: { name: "$jwt.name" } } }]) {
+            @authorization(filter: [{ where: { node: { name_EQ: "$jwt.name" } } }]) {
                 name: String!
                 born: Int!
                 actedInMovies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
@@ -222,7 +222,7 @@ describe("@vector directive - Auth", () => {
 
         const typeDefs = /* GraphQL */ `
             type ${Person} @node @vector(indexes: [{ indexName: "${Person}Index", embeddingProperty: "embedding", queryName: "${queryName}" }])
-            @authorization(filter: [{ where: { node: { name: "$jwt.name" } } }]) {
+            @authorization(filter: [{ where: { node: { name_EQ: "$jwt.name" } } }]) {
                 name: String!
                 born: Int!
                 actedInMovies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
@@ -462,7 +462,7 @@ describe("@vector directive - Auth", () => {
 
         const typeDefs = /* GraphQL */ `
             type ${Person} @node @vector(indexes: [{ indexName: "${Person}Index", embeddingProperty: "embedding", queryName: "${queryName}" }])
-            @authorization(validate: [{ when: BEFORE, where: { node: { name: "$jwt.name" } } }]) {
+            @authorization(validate: [{ when: BEFORE, where: { node: { name_EQ: "$jwt.name" } } }]) {
                 name: String!
                 born: Int!
                 actedInMovies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
@@ -491,7 +491,7 @@ describe("@vector directive - Auth", () => {
 
         const query = /* GraphQL */ `
             query($vector: [Float!]) {
-                ${queryName}(vector: $vector, where: { node: { name: "${person2.name}" } }) {
+                ${queryName}(vector: $vector, where: { node: { name_EQ: "${person2.name}" } }) {
                     ${Person.operations.connection} {
                         edges {
                             score
@@ -542,7 +542,7 @@ describe("@vector directive - Auth", () => {
 
         const typeDefs = /* GraphQL */ `
             type ${Person} @node @vector(indexes: [{ indexName: "${Person}Index", embeddingProperty: "embedding", queryName: "${queryName}" }])
-            @authorization(validate: [{ when: BEFORE, where: { node: { name: "$jwt.name" } } }]) {
+            @authorization(validate: [{ when: BEFORE, where: { node: { name_EQ: "$jwt.name" } } }]) {
                 name: String!
                 born: Int!
                 actedInMovies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)

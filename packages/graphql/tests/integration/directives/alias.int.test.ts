@@ -65,7 +65,7 @@ describe("@alias directive", () => {
                 relationshipCreatedAt: DateTime! @timestamp(operations: [CREATE]) @alias(property: "dbCreatedAt")
             }
 
-            type ${ProtectedUser} @node @authorization(validate: [{ when: [BEFORE], where: { node: { name: "$jwt.sub" } } }]) {
+            type ${ProtectedUser} @node @authorization(validate: [{ when: [BEFORE], where: { node: { name_EQ: "$jwt.sub" } } }]) {
                 name: String! @alias(property: "dbName")
             }
         `;
@@ -287,7 +287,7 @@ describe("@alias directive", () => {
         const userMutation = `
         mutation CreateUserConnectMovie {
             ${AliasDirectiveTestUser.operations.create}(
-                input: [{ name: "${name}", likes: { connect: { where: {node: {title: "${title}"}}, edge: {comment: "${comment}"} } } }]
+                input: [{ name: "${name}", likes: { connect: { where: { node: {title_EQ: "${title}" }}, edge: {comment: "${comment}"} } } }]
             ) {
                 ${AliasDirectiveTestUser.plural} {
                     id

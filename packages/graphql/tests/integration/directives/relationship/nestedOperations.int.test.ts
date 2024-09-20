@@ -59,7 +59,7 @@ describe("@relationhip - nestedOperations", () => {
             `;
             createMutationWithNestedConnect = `#graphql
                 mutation {
-                    ${Movie.operations.create}(input: { id: "1", actors: { connect: { where: { node: { name: "someName" } } } } }) {
+                    ${Movie.operations.create}(input: { id: "1", actors: { connect: { where: { node: { name_EQ: "someName" } } } } }) {
                         info {
                             nodesCreated
                         }
@@ -73,7 +73,7 @@ describe("@relationhip - nestedOperations", () => {
                             id: "1"
                             actors: {
                                 connectOrCreate: {
-                                    where: { node: { id: "1" } }
+                                    where: { node: { id_EQ: "1" } }
                                     onCreate: { node: { name: "someName" } }
                                 }
                             }
@@ -98,7 +98,7 @@ describe("@relationhip - nestedOperations", () => {
             updateMutationWithNestedConnect = `#graphql
                 mutation {
                     ${Movie.operations.update}(
-                        update: { actors: { connect: { where: { node: { name: "someName" } } } } }
+                        update: { actors: { connect: { where: { node: { name_EQ: "someName" } } } } }
                     ) {
                         info {
                             nodesCreated
@@ -113,7 +113,7 @@ describe("@relationhip - nestedOperations", () => {
                         update: {
                             actors: {
                                 connectOrCreate: {
-                                    where: { node: { id: "1" } }
+                                    where: { node: { id_EQ: "1" } }
                                     onCreate: { node: { name: "someName" } }
                                 }
                             }
@@ -130,7 +130,7 @@ describe("@relationhip - nestedOperations", () => {
                 mutation {
                     ${Movie.operations.update}(
                         update: {
-                            actors: { disconnect: { where: { node: { name: "someName" } } } }
+                            actors: { disconnect: { where: { node: { name_EQ: "someName" } } } }
                         }
                     ) {
                         info {
@@ -152,7 +152,7 @@ describe("@relationhip - nestedOperations", () => {
             `;
             updateMutationWithNestedDelete = `#graphql
                 mutation {
-                    ${Movie.operations.update}(update: { actors: { delete: { where: { node: { name: "someName" } } } } }) {
+                    ${Movie.operations.update}(update: { actors: { delete: { where: { node: { name_EQ: "someName" } } } } }) {
                         info {
                             nodesCreated
                             nodesDeleted
@@ -162,7 +162,7 @@ describe("@relationhip - nestedOperations", () => {
             `;
             deleteMutationWithNestedDelete = `#graphql
                 mutation {
-                    ${Movie.operations.delete}(delete: { actors: { where: { node: { name: "someName" } } } }) {
+                    ${Movie.operations.delete}(delete: { actors: { where: { node: { name_EQ: "someName" } } } }) {
                         nodesDeleted
                     }
                 }
@@ -603,7 +603,7 @@ describe("@relationhip - nestedOperations", () => {
             `;
             createMutationWithNestedConnect = `#graphql
                 mutation {
-                    ${Movie.operations.create}(input: { id: "1", actors: { ${PersonOne}: { connect: { where: { node: { name: "someName" } } } } } }) {
+                    ${Movie.operations.create}(input: { id: "1", actors: { ${PersonOne}: { connect: { where: { node: { name_EQ: "someName" } } } } } }) {
                         info {
                             nodesCreated
                         }
@@ -618,7 +618,7 @@ describe("@relationhip - nestedOperations", () => {
                             actors: {
                                 ${PersonOne}: {
                                     connectOrCreate: {
-                                        where: { node: { id: "1" } }
+                                        where: { node: { id_EQ: "1" } }
                                         onCreate: { node: { name: "someName" } }
                                     }
                                 }
@@ -644,7 +644,7 @@ describe("@relationhip - nestedOperations", () => {
             updateMutationWithNestedConnect = `#graphql
                 mutation {
                     ${Movie.operations.update}(
-                        update: { actors: { ${PersonOne}: { connect: { where: { node: { name: "someName" } } } } } }
+                        update: { actors: { ${PersonOne}: { connect: { where: { node: { name_EQ: "someName" } } } } } }
                     ) {
                         info {
                             nodesCreated
@@ -660,7 +660,7 @@ describe("@relationhip - nestedOperations", () => {
                             actors: {
                                 ${PersonOne}: {
                                     connectOrCreate: {
-                                        where: { node: { id: "1" } }
+                                        where: { node: { id_EQ: "1" } }
                                         onCreate: { node: { name: "someName" } }
                                     }
                                 }
@@ -678,7 +678,7 @@ describe("@relationhip - nestedOperations", () => {
                 mutation {
                     ${Movie.operations.update}(
                         update: {
-                            actors: { ${PersonOne}: { disconnect: { where: { node: { name: "someName" } } } } }
+                            actors: { ${PersonOne}: { disconnect: { where: { node: { name_EQ: "someName" } } } } }
                         }
                     ) {
                         info {
@@ -700,7 +700,7 @@ describe("@relationhip - nestedOperations", () => {
             `;
             updateMutationWithNestedDelete = `#graphql
                 mutation {
-                    ${Movie.operations.update}(delete: { actors: { ${PersonOne}: { where: { node: { name: "someName" } } } } }) {
+                    ${Movie.operations.update}(delete: { actors: { ${PersonOne}: { where: { node: { name_EQ: "someName" } } } } }) {
                         info {
                             nodesCreated
                             nodesDeleted
@@ -710,7 +710,7 @@ describe("@relationhip - nestedOperations", () => {
             `;
             deleteMutationWithNestedDelete = `#graphql
                 mutation {
-                    ${Movie.operations.delete}(delete: { actors: { ${PersonOne}: { where: { node: { name: "someName" } } } } }) {
+                    ${Movie.operations.delete}(delete: { actors: { ${PersonOne}: { where: { node: { name_EQ: "someName" } } } } }) {
                         nodesDeleted
                     }
                 }
@@ -1185,7 +1185,7 @@ describe("@relationhip - nestedOperations", () => {
             `;
             createMutationWithNestedConnect = `#graphql
                 mutation {
-                    ${Movie.operations.create}(input: { id: "1", actors: { connect: { where: { node: { name: "someName" } } } } }) {
+                    ${Movie.operations.create}(input: { id: "1", actors: { connect: { where: { node: { name_EQ: "someName" } } } } }) {
                         info {
                             nodesCreated
                         }
@@ -1205,7 +1205,7 @@ describe("@relationhip - nestedOperations", () => {
             updateMutationWithNestedConnect = `#graphql
                 mutation {
                     ${Movie.operations.update}(
-                        update: { actors: { connect: { where: { node: { name: "someName" } } } } }
+                        update: { actors: { connect: { where: { node: { name_EQ: "someName" } } } } }
                     ) {
                         info {
                             nodesCreated
@@ -1218,7 +1218,7 @@ describe("@relationhip - nestedOperations", () => {
                 mutation {
                     ${Movie.operations.update}(
                         update: {
-                            actors: { disconnect: { where: { node: { name: "someName" } } } }
+                            actors: { disconnect: { where: { node: { name_EQ: "someName" } } } }
                         }
                     ) {
                         info {
@@ -1240,7 +1240,7 @@ describe("@relationhip - nestedOperations", () => {
             `;
             updateMutationWithNestedDelete = `#graphql
                 mutation {
-                    ${Movie.operations.update}(update: { actors: { delete: { where: { node: { name: "someName" } } } } }) {
+                    ${Movie.operations.update}(update: { actors: { delete: { where: { node: { name_EQ: "someName" } } } } }) {
                         info {
                             nodesCreated
                             nodesDeleted
@@ -1250,7 +1250,7 @@ describe("@relationhip - nestedOperations", () => {
             `;
             deleteMutationWithNestedDelete = `#graphql
                 mutation {
-                    ${Movie.operations.delete}(delete: { actors: { where: { node: { name: "someName" } } } }) {
+                    ${Movie.operations.delete}(delete: { actors: { where: { node: { name_EQ: "someName" } } } }) {
                         nodesDeleted
                     }
                 }

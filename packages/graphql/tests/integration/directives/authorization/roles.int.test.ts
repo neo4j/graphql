@@ -510,7 +510,7 @@ describe("auth/roles", () => {
 
             const query = `
                 mutation {
-                    ${typeUser.operations.update}(update: { id: "${userId}" }, connect: { posts: { where: { node: { id: "${postId}" } } } }) {
+                    ${typeUser.operations.update}(update: { id: "${userId}" }, connect: { posts: { where: { node: { id_EQ: "${postId}" } } } }) {
                         ${typeUser.plural} {
                             id
                         }
@@ -587,12 +587,12 @@ describe("auth/roles", () => {
             const query = `
                 mutation {
                     ${typeComment.operations.update}(
-                        where: { id: "${commentId}" }
+                        where: { id_EQ: "${commentId}" }
                         update: {
                             post: {
                                 update: {
                                     node: {
-                                        creator: { connect: { where: { node: { id: "${userId}" } } } }
+                                        creator: { connect: { where: { node: { id_EQ: "${userId}" } } } }
                                     }
                                 }
                             }
@@ -670,7 +670,7 @@ describe("auth/roles", () => {
 
             const query = `
                 mutation {
-                    ${typeUser.operations.update}(update: { id: "${userId}" }, disconnect: { posts: { where: { node: { id: "${postId}" } } } }) {
+                    ${typeUser.operations.update}(update: { id: "${userId}" }, disconnect: { posts: { where: { node: { id_EQ: "${postId}" } } } }) {
                         ${typeUser.plural} {
                             id
                         }
@@ -747,12 +747,12 @@ describe("auth/roles", () => {
             const query = `
                 mutation {
                     ${typeComment.operations.update}(
-                        where: { id: "${commentId}" }
+                        where: { id_EQ: "${commentId}" }
                         update: {
                             post: {
                                 update: {
                                     node: {
-                                        creator: { disconnect: { where: { node: { id: "${userId}" } } } }
+                                        creator: { disconnect: { where: { node: { id_EQ: "${userId}" } } } }
                                     }
                                 }
                             }
@@ -859,7 +859,7 @@ describe("auth/roles", () => {
 
             const query = `
                 mutation {
-                    ${typeUser.operations.delete}(where: {id: "${userId}"}, delete:{posts: {where:{node: { id: "${postId}"}}}}) {
+                    ${typeUser.operations.delete}(where: {id_EQ: "${userId}"}, delete:{posts: {where:{node: { id_EQ: "${postId}"}}}}) {
                         nodesDeleted
                     }
                 }
@@ -1036,7 +1036,7 @@ describe("auth/roles", () => {
                     @authorization(
                         filter: [
                             {
-                                where: { node: { id: "$jwt.id" }, jwt: { roles_INCLUDES: "user" } }
+                                where: { node: { id_EQ: "$jwt.id" }, jwt: { roles_INCLUDES: "user" } }
                             }, 
                             {
                                 where: { jwt: { roles_INCLUDES: "admin" } }

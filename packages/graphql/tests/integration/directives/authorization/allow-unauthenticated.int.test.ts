@@ -52,8 +52,8 @@ describe("auth/allow-unauthenticated", () => {
                     when: BEFORE, 
                     requireAuthentication: false, 
                     where: { node: { OR: [
-                        { publisher: "$jwt.sub" },
-                        { published: true }
+                        { publisher_EQ: "$jwt.sub" },
+                        { published_EQ: true }
                     ] } } }])
             `;
 
@@ -61,7 +61,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const query = `
                 {
-                    ${Post.plural}(where: { id: "${postId}" }) {
+                    ${Post.plural}(where: { id_EQ: "${postId}" }) {
                         id
                     }
                 }
@@ -106,8 +106,8 @@ describe("auth/allow-unauthenticated", () => {
                     when: BEFORE, 
                     requireAuthentication: false, 
                     where: { node: { OR: [
-                        { publisher: "$jwt.sub" },
-                        { published: true }
+                        { publisher_EQ: "$jwt.sub" },
+                        { published_EQ: true }
                     ] } } }])
             `;
 
@@ -115,7 +115,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const query = `
                 {
-                    ${Post.plural}(where: { id: "${postId}" }) {
+                    ${Post.plural}(where: { id_EQ: "${postId}" }) {
                         id
                     }
                 }
@@ -161,8 +161,8 @@ describe("auth/allow-unauthenticated", () => {
                     when: BEFORE, 
                     requireAuthentication: false, 
                     where: { node: { OR: [
-                        { publisher: "$jwt.sub" },
-                        { published: true }
+                        { publisher_EQ: "$jwt.sub" },
+                        { published_EQ: true }
                     ] } } }])
             `;
 
@@ -171,7 +171,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const query = `
                 {
-                    ${Post.plural}(where: { OR: [{id: "${postId}"}, {id: "${postId2}"}] }) {
+                    ${Post.plural}(where: { OR: [{id_EQ: "${postId}"}, {id_EQ: "${postId2}"}] }) {
                         id
                     }
                 }
@@ -219,8 +219,8 @@ describe("auth/allow-unauthenticated", () => {
                 extend type ${Post} @authorization(filter: [{ 
                     requireAuthentication: false, 
                     where: { node: { OR: [
-                        { publisher: "$jwt.sub" },
-                        { published: true }
+                        { publisher_EQ: "$jwt.sub" },
+                        { published_EQ: true }
                     ] } } }])
             `;
 
@@ -228,7 +228,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const query = `
                 {
-                    ${Post.plural}(where: { id: "${postId}" }) {
+                    ${Post.plural}(where: { id_EQ: "${postId}" }) {
                         id
                     }
                 }
@@ -272,8 +272,8 @@ describe("auth/allow-unauthenticated", () => {
                 extend type ${Post} @authorization(filter: [{
                     requireAuthentication: false, 
                     where: { node: { OR: [
-                        { publisher: "$jwt.sub" },
-                        { published: true }
+                        { publisher_EQ: "$jwt.sub" },
+                        { published_EQ: true }
                     ] } } }])
             `;
 
@@ -281,7 +281,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const query = `
                 {
-                    ${Post.plural}(where: { id: "${postId}" }) {
+                    ${Post.plural}(where: { id_EQ: "${postId}" }) {
                         id
                     }
                 }
@@ -325,8 +325,8 @@ describe("auth/allow-unauthenticated", () => {
                 extend type ${Post} @authorization(filter: [{
                     requireAuthentication: false, 
                     where: { node: { OR: [
-                        { publisher: "$jwt.sub" },
-                        { published: true }
+                        { publisher_EQ: "$jwt.sub" },
+                        { published_EQ: true }
                     ] } } }])
             `;
 
@@ -335,7 +335,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const query = `
                 {
-                    ${Post.plural}(where: { OR: [{id: "${postId}"}, {id: "${postId2}"}] }) {
+                    ${Post.plural}(where: { OR: [{id_EQ: "${postId}"}, {id_EQ: "${postId2}"}] }) {
                         id
                     }
                 }
@@ -383,7 +383,7 @@ describe("auth/allow-unauthenticated", () => {
                 extend type ${User} @authorization(validate: [{ 
                     when: AFTER, 
                     requireAuthentication: false, 
-                    where: { node: { id: "$jwt.sub" } } }])
+                    where: { node: { id_EQ: "$jwt.sub" } } }])
             `;
 
             const query = `

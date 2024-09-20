@@ -44,7 +44,7 @@ describe("auth/where", () => {
                     id: ID
                 }
 
-                extend type ${User} @authorization(filter: [{ operations: [READ], where: { node: { id: "$jwt.sub" } } }])
+                extend type ${User} @authorization(filter: [{ operations: [READ], where: { node: { id_EQ: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -95,7 +95,7 @@ describe("auth/where", () => {
                     creator: ${User}! @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                extend type ${Post} @authorization(filter: [{ operations: [READ], where: { node: { creator: { id: "$jwt.sub" } } } }])
+                extend type ${Post} @authorization(filter: [{ operations: [READ], where: { node: { creator: { id_EQ: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -160,7 +160,7 @@ describe("auth/where", () => {
                     creator: ${User}! @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                extend type ${Post} @authorization(filter: [{ operations: [READ], where: { node: { creator: { id: "$jwt.sub" } } } }])
+                extend type ${Post} @authorization(filter: [{ operations: [READ], where: { node: { creator: { id_EQ: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -179,7 +179,7 @@ describe("auth/where", () => {
 
             const query = `
                 {
-                    ${User.plural}(where: { id: "${userId}" }) {
+                    ${User.plural}(where: { id_EQ: "${userId}" }) {
                         postsConnection {
                             edges {
                                 node {
@@ -240,8 +240,8 @@ describe("auth/where", () => {
                         creator: ${User}! @relationship(type: "HAS_CONTENT", direction: IN)
                     }
 
-                    extend type ${Post} @authorization(filter: [{ operations: [READ], where: { node: { creator: { id: "$jwt.sub" } } } }])
-                    extend type ${User} @authorization(filter: [{ operations: [READ], where: { node: { id: "$jwt.sub" } } }])
+                    extend type ${Post} @authorization(filter: [{ operations: [READ], where: { node: { creator: { id_EQ: "$jwt.sub" } } } }])
+                    extend type ${User} @authorization(filter: [{ operations: [READ], where: { node: { id_EQ: "$jwt.sub" } } }])
                 `;
 
                 const userId = generate({
@@ -311,8 +311,8 @@ describe("auth/where", () => {
                     creator: ${User}! @relationship(type: "HAS_CONTENT", direction: IN)
                 }
 
-                extend type ${Post} @authorization(filter: [{ operations: [READ], where: { node: { creator: { id: "$jwt.sub" } } } }])
-                extend type ${User} @authorization(filter: [{ operations: [READ], where: { node: { id: "$jwt.sub" } } }])
+                extend type ${Post} @authorization(filter: [{ operations: [READ], where: { node: { creator: { id_EQ: "$jwt.sub" } } } }])
+                extend type ${User} @authorization(filter: [{ operations: [READ], where: { node: { id_EQ: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -382,7 +382,7 @@ describe("auth/where", () => {
                     id: ID
                 }
 
-                extend type ${User} @authorization(filter: [{ operations: [UPDATE], where: { node: { id: "$jwt.sub" } } }])
+                extend type ${User} @authorization(filter: [{ operations: [UPDATE], where: { node: { id_EQ: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -433,7 +433,7 @@ describe("auth/where", () => {
                     id: ID
                 }
 
-                extend type ${User} @authorization(filter: [{ operations: [DELETE], where: { node: { id: "$jwt.sub" } } }])
+                extend type ${User} @authorization(filter: [{ operations: [DELETE], where: { node: { id_EQ: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -442,7 +442,7 @@ describe("auth/where", () => {
 
             const query = `
                 mutation {
-                    ${User.operations.delete}(where: { id: "${userId}" }){
+                    ${User.operations.delete}(where: { id_EQ: "${userId}" }){
                         nodesDeleted
                     }
                 }
@@ -490,7 +490,7 @@ describe("auth/where", () => {
                     creator: ${User}! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type ${User} @authorization(filter: [{ operations: [UPDATE, CREATE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }])
+                extend type ${User} @authorization(filter: [{ operations: [UPDATE, CREATE_RELATIONSHIP], where: { node: { id_EQ: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -502,7 +502,7 @@ describe("auth/where", () => {
 
             const query = `
                 mutation {
-                    ${User.operations.update}(update: { posts: { connect: { where: { node: { id: "${postId}" } } } } }) {
+                    ${User.operations.update}(update: { posts: { connect: { where: { node: { id_EQ: "${postId}" } } } } }) {
                         ${User.plural} {
                             id
                             posts {
@@ -548,7 +548,7 @@ describe("auth/where", () => {
                     creator: ${User}! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type ${User} @authorization(filter: [{ operations: [UPDATE, CREATE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }])
+                extend type ${User} @authorization(filter: [{ operations: [UPDATE, CREATE_RELATIONSHIP], where: { node: { id_EQ: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -560,7 +560,7 @@ describe("auth/where", () => {
 
             const query = `
                 mutation {
-                    ${User.operations.update}(connect:{posts:{where:{node:{id: "${postId}"}}}}) {
+                    ${User.operations.update}(connect:{posts:{where:{node:{id_EQ: "${postId}"}}}}) {
                         ${User.plural} {
                             id
                             posts {
@@ -608,7 +608,7 @@ describe("auth/where", () => {
                     creator: ${User}! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type ${User} @authorization(filter: [{ operations: [UPDATE, DELETE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }])
+                extend type ${User} @authorization(filter: [{ operations: [UPDATE, DELETE_RELATIONSHIP], where: { node: { id_EQ: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -623,7 +623,7 @@ describe("auth/where", () => {
 
             const query = `
                 mutation {
-                    ${User.operations.update}(update: { posts: { disconnect: { where: { node: { id: "${postId1}" } } } } }) {
+                    ${User.operations.update}(update: { posts: { disconnect: { where: { node: { id_EQ: "${postId1}" } } } } }) {
                         ${User.plural} {
                             id
                             posts {
@@ -670,7 +670,7 @@ describe("auth/where", () => {
                     creator: ${User}! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type ${User} @authorization(filter: [{ operations: [UPDATE, DELETE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }])
+                extend type ${User} @authorization(filter: [{ operations: [UPDATE, DELETE_RELATIONSHIP], where: { node: { id_EQ: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -685,7 +685,7 @@ describe("auth/where", () => {
 
             const query = `
                 mutation {
-                    ${User.operations.update}(disconnect: { posts: { where: {node: { id : "${postId1}"}}}}) {
+                    ${User.operations.update}(disconnect: { posts: { where: {node: { id_EQ: "${postId1}"}}}}) {
                         ${User.plural} {
                             id
                             posts {

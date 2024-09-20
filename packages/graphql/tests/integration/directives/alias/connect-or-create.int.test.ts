@@ -63,11 +63,11 @@ describe("@alias directive", () => {
                 },
                 connectOrCreate: {
                     movies: {
-                        where: { node: { id: 5 } }
+                        where: { node: { id_EQ: 5 } }
                         onCreate: { node: { title: "The Terminal", titleAgain: "oops" } }
                     }
                 }
-                where: { name: "Tom Hanks"}
+                where: { name_EQ: "Tom Hanks"}
               ) {
                 ${typeActor.plural} {
                   name
@@ -92,7 +92,7 @@ describe("@alias directive", () => {
                     name: "Tom Hanks",
                     movies: {
                         connectOrCreate: {
-                            where: { node: { id: "1234" } }
+                            where: { node: { id_EQ: "1234" } }
                             onCreate: { node: { title: "Forrest Gump" } }
                         }
                     }
@@ -116,7 +116,7 @@ describe("@alias directive", () => {
                     name: "Hanks",
                     movies: {
                         connectOrCreate: {
-                            where: { node: { id: "2341" } }
+                            where: { node: { id_EQ: "2341" } }
                             onCreate: { node: { titleAgain: "Forrest Run" } }
                         }
                     }
@@ -140,7 +140,7 @@ describe("@alias directive", () => {
                     name: "Tom Hanks",
                     movies: {
                         connectOrCreate: {
-                            where: { node: { id: "3412" } }
+                            where: { node: { id_EQ: "3412" } }
                             onCreate: { node: { title: "Forrest Gump", titleAgain: "Forrest G" } }
                         }
                     }
@@ -178,7 +178,7 @@ describe("@alias directive", () => {
                             },
                             where: {
                               node: {
-                                id: "123"
+                                id_EQ: "123"
                               }
                             }
                           }
@@ -214,7 +214,7 @@ describe("@alias directive", () => {
                             },
                             where: {
                               node: {
-                                id: "123"
+                                id_EQ: "123"
                               }
                             }
                           }
@@ -264,7 +264,7 @@ describe("@alias directive", () => {
                                                 },
                                                 where: {
                                                   node: {
-                                                    id: "1"
+                                                    id_EQ: "1"
                                                   }
                                                 }
                                               }
@@ -321,7 +321,7 @@ describe("@alias directive", () => {
                                                 },
                                                 where: {
                                                   node: {
-                                                    id: "1"
+                                                    id_EQ: "1"
                                                   }
                                                 }
                                               }

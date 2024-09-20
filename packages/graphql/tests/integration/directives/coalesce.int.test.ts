@@ -97,7 +97,7 @@ describe("@coalesce directive", () => {
 
         const query = `
             query {
-                ${type.plural}(where: {classification: "Unrated"}){
+                ${type.plural}(where: {classification_EQ: "Unrated"}){
                     id
                     classification
                 }
@@ -142,7 +142,7 @@ describe("@coalesce directive", () => {
 
         const query = `
             query {
-                ${type.plural}(where: {status: ACTIVE}){
+                ${type.plural}(where: {status_EQ: ACTIVE}){
                     id
                     status
                 }
@@ -188,7 +188,7 @@ describe("@coalesce directive", () => {
 
         const query = `
             query {
-                ${type.plural}(where: {statuses: [ACTIVE, INACTIVE]}){
+                ${type.plural}(where: {statuses_EQ: [ACTIVE, INACTIVE]}){
                     id
                     statuses
                 }

@@ -214,7 +214,7 @@ describe("should inject the auth into cypher directive", () => {
 
         const query = `
         {
-             ${User.plural}(where: {id: "${userId}"}){
+             ${User.plural}(where: {id_EQ: "${userId}"}){
                 userId
             }
         }
@@ -257,7 +257,7 @@ describe("should inject the auth into cypher directive", () => {
 
         const query = `
         {
-             ${User.plural}(where: {id: "${userId}"}){
+             ${User.plural}(where: {id_EQ: "${userId}"}){
                 userId
             }
         }

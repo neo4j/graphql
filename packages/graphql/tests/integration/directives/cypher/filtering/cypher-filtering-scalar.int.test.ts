@@ -234,7 +234,7 @@ describe("cypher directive filtering", () => {
 
         const query = `
             query {
-                ${CustomType.plural}(where: { special_count_GTE: 1, title: "CustomType Unknown" }) {
+                ${CustomType.plural}(where: { special_count_GTE: 1, title_EQ: "CustomType Unknown" }) {
                     special_count
                 }
             }

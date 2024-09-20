@@ -89,7 +89,7 @@ describe("@populatedBy directive - Node properties", () => {
 
             const mutation = `
                     mutation {
-                        ${testMovie.operations.update}(where: { id: "${movieId}" }, update: { id: "${movieId}" }) {
+                        ${testMovie.operations.update}(where: { id_EQ: "${movieId}" }, update: { id: "${movieId}" }) {
                             ${testMovie.plural} {
                                 id
                                 callback
@@ -161,7 +161,7 @@ describe("@populatedBy directive - Node properties", () => {
                                 callback
                             }
                         }
-                        ${testMovie.operations.update}(where: { id: "${movieId}" }, update: { id: "${movieId}" }) {
+                        ${testMovie.operations.update}(where: { id_EQ: "${movieId}" }, update: { id: "${movieId}" }) {
                             ${testMovie.plural} {
                                 id
                                 callback
@@ -319,7 +319,7 @@ describe("@populatedBy directive - Node properties", () => {
 
             const mutation = `
                     mutation {
-                        ${testMovie.operations.update}(where: { id: "${movieId}" }, update: { id: "${movieId}" }) {
+                        ${testMovie.operations.update}(where: { id_EQ: "${movieId}" }, update: { id: "${movieId}" }) {
                             ${testMovie.plural} {
                                 id
                                 callback
@@ -389,7 +389,7 @@ describe("@populatedBy directive - Node properties", () => {
                                 callback
                             }
                         }
-                        ${testMovie.operations.update}(where: { id: "${movieId}" }, update: { id: "${movieId}" }) {
+                        ${testMovie.operations.update}(where: { id_EQ: "${movieId}" }, update: { id: "${movieId}" }) {
                             ${testMovie.plural} {
                                 id
                                 callback
@@ -549,7 +549,7 @@ describe("@populatedBy directive - Node properties", () => {
 
             const mutation = `
                     mutation {
-                        ${testMovie.operations.update}(where: { id: "${movieId}" }, update: { id: "${movieId}" }) {
+                        ${testMovie.operations.update}(where: { id_EQ: "${movieId}" }, update: { id: "${movieId}" }) {
                             ${testMovie.plural} {
                                 id
                                 callback
@@ -621,7 +621,7 @@ describe("@populatedBy directive - Node properties", () => {
                                 callback
                             }
                         }
-                        ${testMovie.operations.update}(where: { id: "${movieId}" }, update: { id: "${movieId}" }) {
+                        ${testMovie.operations.update}(where: { id_EQ: "${movieId}" }, update: { id: "${movieId}" }) {
                             ${testMovie.plural} {
                                 id
                                 callback
@@ -779,7 +779,7 @@ describe("@populatedBy directive - Node properties", () => {
 
             const mutation = `
                     mutation {
-                        ${testMovie.operations.update}(where: { id: "${movieId}" }, update: { id: "${movieId}" }) {
+                        ${testMovie.operations.update}(where: { id_EQ: "${movieId}" }, update: { id: "${movieId}" }) {
                             ${testMovie.plural} {
                                 id
                                 callback
@@ -849,7 +849,7 @@ describe("@populatedBy directive - Node properties", () => {
                                 callback
                             }
                         }
-                        ${testMovie.operations.update}(where: { id: "${movieId}" }, update: { id: "${movieId}" }) {
+                        ${testMovie.operations.update}(where: { id_EQ: "${movieId}" }, update: { id: "${movieId}" }) {
                             ${testMovie.plural} {
                                 id
                                 callback
@@ -1007,7 +1007,7 @@ describe("@populatedBy directive - Node properties", () => {
 
             const mutation = `
                     mutation {
-                        ${testMovie.operations.update}(where: { id: "${movieId}" }, update: { id: "${movieId}" }) {
+                        ${testMovie.operations.update}(where: { id_EQ: "${movieId}" }, update: { id: "${movieId}" }) {
                             ${testMovie.plural} {
                                 id
                                 callback
@@ -1077,7 +1077,7 @@ describe("@populatedBy directive - Node properties", () => {
                                 callback
                             }
                         }
-                        ${testMovie.operations.update}(where: { id: "${movieId}" }, update: { id: "${movieId}" }) {
+                        ${testMovie.operations.update}(where: { id_EQ: "${movieId}" }, update: { id: "${movieId}" }) {
                             ${testMovie.plural} {
                                 id
                                 callback
@@ -1235,7 +1235,7 @@ describe("@populatedBy directive - Node properties", () => {
 
             const mutation = `
                     mutation {
-                        ${testMovie.operations.update}(where: { id: "${movieId}" }, update: { id: "${movieId}" }) {
+                        ${testMovie.operations.update}(where: { id_EQ: "${movieId}" }, update: { id: "${movieId}" }) {
                             ${testMovie.plural} {
                                 id
                                 callback
@@ -1305,7 +1305,7 @@ describe("@populatedBy directive - Node properties", () => {
                                 callback
                             }
                         }
-                        ${testMovie.operations.update}(where: { id: "${movieId}" }, update: { id: "${movieId}" }) {
+                        ${testMovie.operations.update}(where: { id_EQ: "${movieId}" }, update: { id: "${movieId}" }) {
                             ${testMovie.plural} {
                                 id
                                 callback
@@ -1467,7 +1467,7 @@ describe("@populatedBy directive - Node properties", () => {
 
             const mutation = `
                     mutation {
-                        ${testMovie.operations.update}(where: { id: "${movieId}" }, update: { id: "${movieId}" }) {
+                        ${testMovie.operations.update}(where: { id_EQ: "${movieId}" }, update: { id: "${movieId}" }) {
                             ${testMovie.plural} {
                                 id
                                 callback
@@ -1625,7 +1625,7 @@ describe("@populatedBy directive - Node properties", () => {
 
             const mutation = `
                     mutation {
-                        ${testMovie.operations.update}(where: { id: "${movieId}" }, update: { id: "${movieId}" }) {
+                        ${testMovie.operations.update}(where: { id_EQ: "${movieId}" }, update: { id: "${movieId}" }) {
                             ${testMovie.plural} {
                                 id
                                 callback
@@ -1783,7 +1783,7 @@ describe("@populatedBy directive - Node properties", () => {
 
             const mutation = `
                     mutation {
-                        ${testMovie.operations.update}(where: { id: "${movieId}" }, update: { id: "${movieId}" }) {
+                        ${testMovie.operations.update}(where: { id_EQ: "${movieId}" }, update: { id: "${movieId}" }) {
                             ${testMovie.plural} {
                                 id
                                 callback
@@ -1941,7 +1941,7 @@ describe("@populatedBy directive - Node properties", () => {
 
             const mutation = `
                     mutation {
-                        ${testMovie.operations.update}(where: { id: "${movieId}" }, update: { id: "${movieId}" }) {
+                        ${testMovie.operations.update}(where: { id_EQ: "${movieId}" }, update: { id: "${movieId}" }) {
                             ${testMovie.plural} {
                                 id
                                 callback
@@ -2099,7 +2099,7 @@ describe("@populatedBy directive - Node properties", () => {
 
             const mutation = `
                     mutation {
-                        ${testMovie.operations.update}(where: { id: "${movieId}" }, update: { id: "${movieId}" }) {
+                        ${testMovie.operations.update}(where: { id_EQ: "${movieId}" }, update: { id: "${movieId}" }) {
                             ${testMovie.plural} {
                                 id
                                 callback
@@ -2257,7 +2257,7 @@ describe("@populatedBy directive - Node properties", () => {
 
             const mutation = `
                     mutation {
-                        ${testMovie.operations.update}(where: { id: "${movieId}" }, update: { id: "${movieId}" }) {
+                        ${testMovie.operations.update}(where: { id_EQ: "${movieId}" }, update: { id: "${movieId}" }) {
                             ${testMovie.plural} {
                                 id
                                 callback
@@ -2361,7 +2361,7 @@ describe("@populatedBy directive - Node properties", () => {
 
             const mutation = `
                     mutation {
-                        ${testMovie.operations.update}(where: { id: "${movieId}" }, update: { id: "${movieId}" }) {
+                        ${testMovie.operations.update}(where: { id_EQ: "${movieId}" }, update: { id: "${movieId}" }) {
                             ${testMovie.plural} {
                                 id
                                 callback
@@ -2417,7 +2417,7 @@ describe("@populatedBy directive - Node properties", () => {
 
             const mutation = `
                     mutation {
-                        ${testMovie.operations.update}(where: { id: "${movieId}" }, update: { id: "${movieId}" }) {
+                        ${testMovie.operations.update}(where: { id_EQ: "${movieId}" }, update: { id: "${movieId}" }) {
                             ${testMovie.plural} {
                                 id
                                 callback
@@ -2531,7 +2531,7 @@ describe("@populatedBy directive - Node properties", () => {
 
             const mutation = `
                     mutation {
-                        ${testMovie.operations.update}(where: { id: "${movieId}" }, update: { id: "${movieId}", title: "${movieTitle}" }) {
+                        ${testMovie.operations.update}(where: { id_EQ: "${movieId}" }, update: { id: "${movieId}", title: "${movieTitle}" }) {
                             ${testMovie.plural} {
                                 id
                                 title

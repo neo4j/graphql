@@ -141,7 +141,7 @@ describe("cypher directive", () => {
                     query($title: String!, $name: String) {
                         customMovies(title: $title) {
                             title
-                            actors(where: {name: $name}) {
+                            actors(where: {name_EQ: $name}) {
                                 name
                             }
                         }
@@ -212,7 +212,7 @@ describe("cypher directive", () => {
                     query($title: String!, $name: String) {
                         customMovies(title: $title) {
                             title
-                            actors(where: {name: $name}) {
+                            actors(where: {name_EQ: $name}) {
                                 name
                             }
                         }
@@ -527,7 +527,7 @@ describe("cypher directive", () => {
                     mutation($title: String!, $name: String) {
                         customMovies(title: $title) {
                             title
-                            actors(where: {name: $name}) {
+                            actors(where: {name_EQ: $name}) {
                                 name
                             }
                         }
@@ -596,7 +596,7 @@ describe("cypher directive", () => {
                     mutation($title: String!, $name: String) {
                         customMovies(title: $title) {
                             title
-                            actors(where: {name: $name}) {
+                            actors(where: {name_EQ: $name}) {
                                 name
                             }
                         }
@@ -870,7 +870,7 @@ describe("cypher directive", () => {
             test("should return __typename", async () => {
                 const source = `
                         query {
-                            ${User.plural} (where: { id: "${userId}" }) {
+                            ${User.plural} (where: { id_EQ: "${userId}" }) {
                                 updates {
                                     __typename
                                 }
