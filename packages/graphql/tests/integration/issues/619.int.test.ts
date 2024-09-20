@@ -58,7 +58,7 @@ describe("https://github.com/neo4j/graphql/issues/619", () => {
                     input: {
                         DrinksAt: {
                             connectOrCreate: {
-                                where: { node: { id: "b50bd49b-9295-4749-9c0e-91d1e16df0b5" } }
+                                where: { node: { id_EQ: "b50bd49b-9295-4749-9c0e-91d1e16df0b5" } }
                                 onCreate: { node: { Adress: "Some Street" } }
                             }
                         }

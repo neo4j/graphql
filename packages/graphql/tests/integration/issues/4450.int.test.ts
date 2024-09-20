@@ -72,7 +72,7 @@ describe("https://github.com/neo4j/graphql/issues/4450", () => {
     test("filtering through a connection to a many-to-1 relationship should work", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Actor.plural}(where: { sceneConnection_SOME: { edge: { cut: true }, node: { location: { city: "test" } } } }) {
+                ${Actor.plural}(where: { sceneConnection_SOME: { edge: { cut_EQ: true }, node: { location: { city_EQ: "test" } } } }) {
                     name
                 }
             }

@@ -150,7 +150,7 @@ describe("https://github.com/neo4j/graphql/issues/369", () => {
             {
                 getDato(uuid: "${datoUUID}" ){
                   uuid
-                  dependeToConnection(where: { node: { uuid: "${datoToUUID}" } }) {
+                  dependeToConnection(where: { node: { uuid_EQ: "${datoToUUID}" } }) {
                     edges {
                      properties{ uuid}
                       node {

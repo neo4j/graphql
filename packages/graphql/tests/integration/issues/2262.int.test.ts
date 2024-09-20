@@ -57,7 +57,7 @@ describe("https://github.com/neo4j/graphql/issues/2262", () => {
         await testHelper.executeCypher(`CREATE(:${Component} {uuid: "c1"})<-[:OUTPUT]-(:${Process} {uuid: "p1"})`);
         const query = `
             query ComponentsProcesses {
-                ${Component.plural}(where: { uuid: "c1" }) {
+                ${Component.plural}(where: { uuid_EQ: "c1" }) {
                     uuid
                     upstreamProcessConnection {
                         edges {

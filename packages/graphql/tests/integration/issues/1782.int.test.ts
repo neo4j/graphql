@@ -89,8 +89,8 @@ describe("https://github.com/neo4j/graphql/issues/1782", () => {
 
         const query = `
                 query (
-                    $where: ${testMain}Where = { current: true }
-                    $connectionWhere: RelationPropsWhere = { current: true }
+                    $where: ${testMain}Where = { current_EQ: true }
+                    $connectionWhere: RelationPropsWhere = { current_EQ: true }
                 ) {
                     ${testMain.plural}(where: $where) {
                         id
@@ -119,14 +119,14 @@ describe("https://github.com/neo4j/graphql/issues/1782", () => {
 
         const variableValues = {
             where: {
-                current: true,
+                current_EQ: true,
                 mainConnection_SINGLE: {
                     node: {
                         architectureConnection_SOME: {
                             node: {
                                 nameDetailsConnection: {
                                     node: {
-                                        fullName: "MHA",
+                                        fullName_EQ: "MHA",
                                     },
                                 },
                             },
@@ -135,7 +135,7 @@ describe("https://github.com/neo4j/graphql/issues/1782", () => {
                 },
             },
             connectionWhere: {
-                current: true,
+                current_EQ: true,
             },
         };
 

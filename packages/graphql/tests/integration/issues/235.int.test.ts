@@ -102,7 +102,7 @@ describe("https://github.com/neo4j/graphql/issues/235", () => {
 
         const as = `
             query As($a: String) {
-                ${A.plural}(where: { name: $a }) {
+                ${A.plural}(where: { name_EQ: $a }) {
                     name
                     rel_b {
                         name

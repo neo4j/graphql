@@ -59,7 +59,7 @@ describe("https://github.com/neo4j/graphql/issues/3428", () => {
         `;
             createMutationWithNestedConnect = `#graphql
                 mutation {
-                    ${Movie.operations.create}(input: { id: "1", actors: { connect: { where: { node: { name: "someName" } } } } }) {
+                    ${Movie.operations.create}(input: { id: "1", actors: { connect: { where: { node: { name_EQ: "someName" } } } } }) {
                         info {
                             nodesCreated
                         }
@@ -73,7 +73,7 @@ describe("https://github.com/neo4j/graphql/issues/3428", () => {
                             id: "1"
                             actors: {
                                 connectOrCreate: {
-                                    where: { node: { id: "1" } }
+                                    where: { node: { id_EQ: "1" } }
                                     onCreate: { node: { name: "someName" } }
                                 }
                             }
@@ -99,7 +99,7 @@ describe("https://github.com/neo4j/graphql/issues/3428", () => {
             updateMutationWithNestedConnect = `#graphql
                 mutation {
                     ${Movie.operations.update}(
-                        update: { actors: { connect: { where: { node: { name: "someName" } } } } }
+                        update: { actors: { connect: { where: { node: { name_EQ: "someName" } } } } }
                     ) {
                         info {
                             nodesCreated
@@ -114,7 +114,7 @@ describe("https://github.com/neo4j/graphql/issues/3428", () => {
                         update: {
                         actors: {
                             connectOrCreate: {
-                            where: { node: { id: "1" } }
+                            where: { node: { id_EQ: "1" } }
                             onCreate: { node: { name: "someName" } }
                             }
                         }
@@ -131,7 +131,7 @@ describe("https://github.com/neo4j/graphql/issues/3428", () => {
                 mutation {
                     ${Movie.operations.update}(
                         update: {
-                        actors: { disconnect: { where: { node: { name: "someName" } } } }
+                        actors: { disconnect: { where: { node: { name_EQ: "someName" } } } }
                         }
                     ) {
                         info {
@@ -153,7 +153,7 @@ describe("https://github.com/neo4j/graphql/issues/3428", () => {
         `;
             updateMutationWithNestedDelete = `#graphql
                 mutation {
-                    ${Movie.operations.update}(update: { actors: { delete: { where: { node: { name: "someName" } } } } }) {
+                    ${Movie.operations.update}(update: { actors: { delete: { where: { node: { name_EQ: "someName" } } } } }) {
                         info {
                             nodesCreated
                             nodesDeleted
@@ -163,7 +163,7 @@ describe("https://github.com/neo4j/graphql/issues/3428", () => {
         `;
             deleteMutationWithNestedDelete = `#graphql
                 mutation {
-                    ${Movie.operations.delete}(delete: { actors: { where: { node: { name: "someName" } } } }) {
+                    ${Movie.operations.delete}(delete: { actors: { where: { node: { name_EQ: "someName" } } } }) {
                         nodesDeleted
                     }
                 }
@@ -334,7 +334,7 @@ describe("https://github.com/neo4j/graphql/issues/3428", () => {
             `;
             createMutationWithNestedConnect = `#graphql
                 mutation {
-                    ${Movie.operations.create}(input: { id: "1", actors: { ${PersonOne}: { connect: { where: { node: { name: "someName" } } } } } }) {
+                    ${Movie.operations.create}(input: { id: "1", actors: { ${PersonOne}: { connect: { where: { node: { name_EQ: "someName" } } } } } }) {
                         info {
                             nodesCreated
                         }
@@ -349,7 +349,7 @@ describe("https://github.com/neo4j/graphql/issues/3428", () => {
                             actors: {
                                 ${PersonOne}: {
                                     connectOrCreate: {
-                                        where: { node: { name: "someName" } }
+                                        where: { node: { name_EQ: "someName" } }
                                         onCreate: { node: { name: "someName" } }
                                     }
                                 }
@@ -375,7 +375,7 @@ describe("https://github.com/neo4j/graphql/issues/3428", () => {
             updateMutationWithNestedConnect = `#graphql
                 mutation {
                     ${Movie.operations.update}(
-                        update: { actors: { ${PersonOne}: { connect: { where: { node: { name: "someName" } } } } } }
+                        update: { actors: { ${PersonOne}: { connect: { where: { node: { name_EQ: "someName" } } } } } }
                     ) {
                         info {
                             nodesCreated
@@ -391,7 +391,7 @@ describe("https://github.com/neo4j/graphql/issues/3428", () => {
                             actors: {
                                 ${PersonOne}: {
                                     connectOrCreate: {
-                                        where: { node: { name: "someName" } }
+                                        where: { node: { name_EQ: "someName" } }
                                         onCreate: { node: { name: "someName" } }
                                     }
                                 }
@@ -409,7 +409,7 @@ describe("https://github.com/neo4j/graphql/issues/3428", () => {
                 mutation {
                     ${Movie.operations.update}(
                         update: {
-                        actors: { ${PersonOne}: { disconnect: { where: { node: { name: "someName" } } } } }
+                        actors: { ${PersonOne}: { disconnect: { where: { node: { name_EQ: "someName" } } } } }
                         }
                     ) {
                         info {
@@ -431,7 +431,7 @@ describe("https://github.com/neo4j/graphql/issues/3428", () => {
             `;
             updateMutationWithNestedDelete = `#graphql
                 mutation {
-                    ${Movie.operations.update}(update: { actors: { ${PersonOne}: { delete: { where: { node: { name: "someName" } } } } } }) {
+                    ${Movie.operations.update}(update: { actors: { ${PersonOne}: { delete: { where: { node: { name_EQ: "someName" } } } } } }) {
                         info {
                             nodesCreated
                             nodesDeleted
@@ -441,7 +441,7 @@ describe("https://github.com/neo4j/graphql/issues/3428", () => {
             `;
             deleteMutationWithNestedDelete = `#graphql
                 mutation {
-                    ${Movie.operations.delete}(delete: { actors: { ${PersonOne}: { where: { node: { name: "someName" } } } } }) {
+                    ${Movie.operations.delete}(delete: { actors: { ${PersonOne}: { where: { node: { name_EQ: "someName" } } } } }) {
                         nodesDeleted
                     }
                 }

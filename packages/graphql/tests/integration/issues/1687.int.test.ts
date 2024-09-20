@@ -65,7 +65,7 @@ describe("https://github.com/neo4j/graphql/issues/1687", () => {
                 ${genreType.plural}(where: {
                     ${movieType.operations.connection}_SOME: {
                         node: {
-                            title: "Matrix"
+                            title_EQ: "Matrix"
                         }
                     }
                 }) {

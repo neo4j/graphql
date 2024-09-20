@@ -75,7 +75,7 @@ describe("https://github.com/neo4j/graphql/issues/4405", () => {
     test("should not raise if title is the filter array value", async () => {
         const query = /* GraphQL */ `
             query Actors {
-                ${Actor.plural}(where: { name: "Keanu"}) {
+                ${Actor.plural}(where: { name_EQ: "Keanu"}) {
                     name
                 }
             }
@@ -97,7 +97,7 @@ describe("https://github.com/neo4j/graphql/issues/4405", () => {
     test("should raise if title is not in the filter array value", async () => {
         const query = /* GraphQL */ `
             query Actors {
-                ${Actor.plural}(where: { name: "Laurence"}) {
+                ${Actor.plural}(where: { name_EQ: "Laurence"}) {
                     name
                 }
             }

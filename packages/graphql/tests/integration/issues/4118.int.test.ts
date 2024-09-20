@@ -53,7 +53,7 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
                 @node
                 @authorization(
                     validate: [
-                        { where: { node: { userId: "$jwt.id" } }, operations: [READ] }
+                        { where: { node: { userId_EQ: "$jwt.id" } }, operations: [READ] }
                         { where: { jwt: { roles_INCLUDES: "overlord" } } }
                     ]
                 ) {
@@ -65,7 +65,7 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
                 @node
                 @authorization(
                     validate: [
-                        { where: { node: { admins: { userId: "$jwt.id" } } } }
+                        { where: { node: { admins: { userId_EQ: "$jwt.id" } } } }
                         { where: { jwt: { roles_INCLUDES: "overlord" } } }
                     ]
                 ) {
@@ -78,7 +78,7 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
                 @node
                 @authorization(
                     validate: [
-                        { where: { node: { tenant: { admins: { userId: "$jwt.id" } } } } }
+                        { where: { node: { tenant: { admins: { userId_EQ: "$jwt.id" } } } } }
                         { where: { jwt: { roles_INCLUDES: "overlord" } } }
                     ]
                 ) {
@@ -91,14 +91,14 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
             type ${OpeningDay.name}
                 @node
                 @authorization(
-                    validate: [{ where: { node: { settings: { tenant: { admins: { userId: "$jwt.id" } } } } } }]
+                    validate: [{ where: { node: { settings: { tenant: { admins: { userId_EQ: "$jwt.id" } } } } } }]
                 ) {
                 settings: ${Settings.name} @relationship(type: "VALID_OPENING_DAYS", direction: IN)
                 id: ID! @id
                 name: String
             }
     
-            type ${LOL.name} @authorization(validate: [{ where: { node: { host: { admins: { userId: "$jwt.id" } } } } }]) @node {
+            type ${LOL.name} @authorization(validate: [{ where: { node: { host: { admins: { userId_EQ: "$jwt.id" } } } } }]) @node {
                 host: ${Tenant.name}! @relationship(type: "HOSTED_BY", direction: OUT)
                 openingDays: [${OpeningDay.name}!]! @relationship(type: "HAS_OPENING_DAY", direction: OUT)
             }
@@ -153,7 +153,7 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
                     connect: {
                         where: {
                             node: {
-                                id: settingsId,
+                                id_EQ: settingsId,
                             },
                         },
                     },
@@ -211,7 +211,7 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
                         connect: {
                             where: {
                                 node: {
-                                    id: myUserId,
+                                    id_EQ: myUserId,
                                 },
                             },
                         },
@@ -220,7 +220,7 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
                         connect: {
                             where: {
                                 node: {
-                                    id: openingDayId,
+                                    id_EQ: openingDayId,
                                 },
                             },
                         },
@@ -283,7 +283,7 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
                         connect: {
                             where: {
                                 node: {
-                                    id: myUserId,
+                                    id_EQ: myUserId,
                                 },
                             },
                         },
@@ -292,7 +292,7 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
                         connect: {
                             where: {
                                 node: {
-                                    id: openingDayId,
+                                    id_EQ: openingDayId,
                                 },
                             },
                         },

@@ -53,7 +53,7 @@ describe("https://github.com/neo4j/graphql/issues/3901", () => {
                             when: [AFTER]
                             where: {
                                 AND: [
-                                    { node: { publisher: { id: "$jwt.sub" } } }
+                                    { node: { publisher: { id_EQ: "$jwt.sub" } } }
                                     { jwt: { roles_INCLUDES: "verified" } }
                                     { jwt: { roles_INCLUDES: "creator" } }
                                 ]
@@ -76,7 +76,7 @@ describe("https://github.com/neo4j/graphql/issues/3901", () => {
                             when: [AFTER]
                             where: {
                                 AND: [
-                                    { node: { serie: { publisher: { id: "$jwt.sub" } } } }
+                                    { node: { serie: { publisher: { id_EQ: "$jwt.sub" } } } }
                                     { jwt: { roles_INCLUDES: "verified" } }
                                     { jwt: { roles_INCLUDES: "creator" } }
                                 ]
@@ -121,7 +121,7 @@ describe("https://github.com/neo4j/graphql/issues/3901", () => {
                     input: [
                         {
                             title: "title"
-                            publisher: { connect: { where: { node: { id: "michel" } } } }
+                            publisher: { connect: { where: { node: { id_EQ: "michel" } } } }
                             seasons: { create: { node: { number: 1 } } }
                         }
                     ]

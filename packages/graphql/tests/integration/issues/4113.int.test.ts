@@ -79,7 +79,7 @@ describe("https://github.com/neo4j/graphql/issues/4113", () => {
                             operations: [CREATE, CREATE_RELATIONSHIP]
                             where: {
                                 jwt: { OR: [{ roles_INCLUDES: "store-owner" }, { roles_INCLUDES: "employee" }] }
-                                node: { store: { id: "$jwt.store" } }
+                                node: { store: { id_EQ: "$jwt.store" } }
                             }
                         }
                     ]
@@ -93,7 +93,7 @@ describe("https://github.com/neo4j/graphql/issues/4113", () => {
                             operations: [CREATE, CREATE_RELATIONSHIP]
                             where: {
                                 jwt: { OR: [{ roles_INCLUDES: "store-owner" }, { roles_INCLUDES: "employee" }] }
-                                node: { transaction: { store: { id: "$jwt.store" } } }
+                                node: { transaction: { store: { id_EQ: "$jwt.store" } } }
                             }
                         }
                     ]
@@ -138,9 +138,9 @@ describe("https://github.com/neo4j/graphql/issues/4113", () => {
                     employees: {
                     connect: {
                         where: {
-                        node: {
-                            email: "a@a.com"
-                        }
+                            node: {
+                                email_EQ: "a@a.com"
+                            }
                         }
                     }
                     }
@@ -167,7 +167,7 @@ describe("https://github.com/neo4j/graphql/issues/4113", () => {
                         connect: {
                             where: {
                                 node: {
-                                    name: "Store"
+                                    name_EQ: "Store"
                                 }
                             }
                         }
@@ -292,7 +292,7 @@ describe("replicates the test for relationship to interface so that multiple ref
                             operations: [CREATE, CREATE_RELATIONSHIP]
                             where: {
                                 jwt: { OR: [{ roles_INCLUDES: "store-owner" }, { roles_INCLUDES: "employee" }] }
-                                node: { store: { id: "$jwt.store" } }
+                                node: { store: { id_EQ: "$jwt.store" } }
                             }
                         }
                     ]
@@ -306,7 +306,7 @@ describe("replicates the test for relationship to interface so that multiple ref
                             operations: [CREATE, CREATE_RELATIONSHIP]
                             where: {
                                 jwt: { OR: [{ roles_INCLUDES: "store-owner" }, { roles_INCLUDES: "employee" }] }
-                                node: { transaction: { store: { id: "$jwt.store" } } }
+                                node: { transaction: { store: { id_EQ: "$jwt.store" } } }
                             }
                         }
                     ]
@@ -320,7 +320,7 @@ describe("replicates the test for relationship to interface so that multiple ref
                             operations: [CREATE, CREATE_RELATIONSHIP]
                             where: {
                                 jwt: { OR: [{ roles_INCLUDES: "store-owner" }, { roles_INCLUDES: "employee" }] }
-                                node: { transaction: { store: { id: "$jwt.store" } } }
+                                node: { transaction: { store: { id_EQ: "$jwt.store" } } }
                             }
                         }
                     ]
@@ -357,29 +357,29 @@ describe("replicates the test for relationship to interface so that multiple ref
         const gqlResult1 = await testHelper.executeGraphQL(setupCreateUsers);
         expect(gqlResult1.errors).toBeFalsy();
 
-        const setupCreateStores = `#graphql
+        const setupCreateStores = /* GraphQL */ `
             mutation {
                 ${Store.operations.create}(input: 
                 {
                     name: "Store", 
                     employees: {
-                    connect: {
-                        where: {
-                        node: {
-                            email: "a@a.com"
+                        connect: {
+                            where: {
+                                node: {
+                                    email_EQ: "a@a.com"
+                                }
+                            }
                         }
-                        }
-                    }
                     }
                 }
                 ) {
-                ${Store.plural} {
-                    id
-                    name
-                    employees {
-                    email
+                    ${Store.plural} {
+                        id
+                        name
+                        employees {
+                            email
+                        }
                     }
-                }
                 }
             }`;
         const gqlResult2 = await testHelper.executeGraphQL(setupCreateStores);
@@ -394,7 +394,7 @@ describe("replicates the test for relationship to interface so that multiple ref
                         connect: {
                             where: {
                                 node: {
-                                    name: "Store"
+                                    name_EQ: "Store"
                                 }
                             }
                         }

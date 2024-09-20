@@ -44,7 +44,7 @@ describe("https://github.com/neo4j/graphql/issues/2437", () => {
             }
 
             extend type ${Agent}
-                @authorization(validate: [{ operations: [CREATE], where: { jwt: { roles_INCLUDES: "Admin" } } }], filter: [{ where: { node: { archivedAt: null } } }])
+                @authorization(validate: [{ operations: [CREATE], where: { jwt: { roles_INCLUDES: "Admin" } } }], filter: [{ where: { node: { archivedAt_EQ: null } } }])
 
             type ${Valuation} @mutation(operations: [CREATE, UPDATE]) @node {
                 uuid: ID! @id @unique
@@ -53,7 +53,7 @@ describe("https://github.com/neo4j/graphql/issues/2437", () => {
                 agent: ${Agent}! @relationship(type: "IS_VALUATION_AGENT", direction: IN)
             }
 
-            extend type ${Valuation} @authorization(filter: [{ where: { node: { archivedAt: null } } }])
+            extend type ${Valuation} @authorization(filter: [{ where: { node: { archivedAt_EQ: null } } }])
         `;
 
         await testHelper.executeCypher(`
@@ -84,7 +84,7 @@ describe("https://github.com/neo4j/graphql/issues/2437", () => {
     test("should return only the first elements", async () => {
         const query = `
             query {
-                ${Agent.plural}(where: { uuid: "a1" }) {
+                ${Agent.plural}(where: { uuid_EQ: "a1" }) {
                     uuid
                     valuationsConnection(first: 10) {
                         edges {

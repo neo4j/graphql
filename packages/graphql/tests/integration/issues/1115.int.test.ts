@@ -75,11 +75,11 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
             connectOrCreate: {
               children: [
                 {
-                  where: { node: { tcId: "123" } }
+                  where: { node: { tcId_EQ: "123" } }
                   onCreate: { node: { tcId: "123" } }
                 }
                 {
-                  where: { node: { tcId: "456" } }
+                  where: { node: { tcId_EQ: "456" } }
                   onCreate: { node: { tcId: "456" } }
                 }
               ]

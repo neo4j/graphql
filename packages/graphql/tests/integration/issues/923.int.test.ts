@@ -59,7 +59,7 @@ describe("https://github.com/neo4j/graphql/issues/923", () => {
                             blogs: {
                                 connectOrCreate: [
                                     {
-                                        where: { node: { slug: "dsa" } }
+                                        where: { node: { slug_EQ: "dsa" } }
                                         onCreate: { node: { title: "mytitle", slug: "myslug" } }
                                     }
                                 ]

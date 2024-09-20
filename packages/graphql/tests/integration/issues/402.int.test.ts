@@ -63,7 +63,7 @@ describe("https://github.com/neo4j/graphql/issues/402", () => {
             query ($area: [ID!]) {
                ${Event.plural} (
                  where: {
-                   id: "${eventId}"
+                   id_EQ: "${eventId}"
                    area: {
                      id_IN: $area
                    }

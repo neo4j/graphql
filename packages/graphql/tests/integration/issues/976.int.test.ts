@@ -74,24 +74,24 @@ describe("https://github.com/neo4j/graphql/issues/976", () => {
         `;
         const updateBibRefQuery = /* GraphQL */ `
             mutation {
-                ${testConcept.operations.delete}(where: { iri: "new-e" }) {
+                ${testConcept.operations.delete}(where: { iri_EQ: "new-e" }) {
                     nodesDeleted
                 }
 
                 ${testBibliographicReference.operations.update}(
-                    where: { iri: "urn:myiri2" }
+                    where: { iri_EQ: "urn:myiri2" }
                     update: {
                     prefLabel: "Updated Label"
                     isInPublication: [
                         {
                             connectOrCreate: {
-                                where: { node: { iri: "new-g" } }
+                                where: { node: { iri_EQ: "new-g" } }
                                 onCreate: { node: { iri: "new-g", prefLabel: "pub" } }
                             }
                         }
                         {
                             connectOrCreate: {
-                                where: { node: { iri: "new-f" } }
+                                where: { node: { iri_EQ: "new-f" } }
                                 onCreate: { node: { iri: "new-f", prefLabel: "pub" } }
                             }
                         }

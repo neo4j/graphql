@@ -84,7 +84,7 @@ describe("context-variable-not-always-resolved-on-cypher-queries", () => {
                     where: {
                         realizationOf: {
                             hasResourceType_SOME: {
-                                iri: "uri-to-be-found"
+                                iri_EQ: "uri-to-be-found"
                             }
                         }
                     }

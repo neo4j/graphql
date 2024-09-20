@@ -69,7 +69,7 @@ describe("https://github.com/neo4j/graphql/issues/3027", () => {
             const query = `
         mutation UpdateBooks {
             ${Book.operations.update}(
-              where: { isbn: "123" }
+              where: { isbn_EQ: "123" }
               create: { translatedTitle: { ${BookTitle_EN}: { node: { value: "English book title" } } } }
             ) {
               ${Book.plural} {
@@ -154,7 +154,7 @@ describe("https://github.com/neo4j/graphql/issues/3027", () => {
             const query = `
         mutation UpdateBooks {
             ${Book.operations.update}(
-              where: { isbn: "123" }
+              where: { isbn_EQ: "123" }
               create: { translatedTitle: { node: { ${BookTitle_EN}: { value: "English book title" } }
              } }
             ) {

@@ -58,7 +58,7 @@ describe("https://github.com/neo4j/graphql/issues/567", () => {
 
         const query = `
             mutation {
-                ${Movie.operations.update}(where: { id: "${movieId}" }, update: { title: "${newTitle}" }) {
+                ${Movie.operations.update}(where: { id_EQ: "${movieId}" }, update: { title: "${newTitle}" }) {
                     info {
                         nodesCreated
                         nodesDeleted

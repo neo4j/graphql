@@ -82,7 +82,7 @@ describe("https://github.com/neo4j/graphql/issues/630", () => {
 
         const source = `
             query($actorId: ID!) {
-                ${typeActor.plural}(where: { id: $actorId }) {
+                ${typeActor.plural}(where: { id_EQ: $actorId }) {
                     id
                     name
                     movies {

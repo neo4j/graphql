@@ -47,7 +47,7 @@ describe("https://github.com/neo4j/graphql/issues/360", () => {
 
         const query = `
             query ($rangeStart: DateTime, $rangeEnd: DateTime, $activity: String) {
-                ${type.plural}(where: { AND: [{ start_GTE: $rangeStart }, { start_LTE: $rangeEnd }, { activity: $activity }] }) {
+                ${type.plural}(where: { AND: [{ start_GTE: $rangeStart }, { start_LTE: $rangeEnd }, { activity_EQ: $activity }] }) {
                     id
                 }
             }
@@ -86,7 +86,7 @@ describe("https://github.com/neo4j/graphql/issues/360", () => {
 
         const query = `
             query ($rangeStart: DateTime, $rangeEnd: DateTime, $activity: String) {
-                ${type.plural}(where: { OR: [{ start_GTE: $rangeStart }, { start_LTE: $rangeEnd }, { activity: $activity }] }) {
+                ${type.plural}(where: { OR: [{ start_GTE: $rangeStart }, { start_LTE: $rangeEnd }, { activity_EQ: $activity }] }) {
                     id
                 }
             }
@@ -128,7 +128,7 @@ describe("https://github.com/neo4j/graphql/issues/360", () => {
 
         const query = `
             query ($rangeStart: DateTime, $rangeEnd: DateTime, $activity: String) {
-                ${type.plural}(where: { OR: [{ start_GTE: $rangeStart }, { start_LTE: $rangeEnd }, { activity: $activity }] }) {
+                ${type.plural}(where: { OR: [{ start_GTE: $rangeStart }, { start_LTE: $rangeEnd }, { activity_EQ: $activity }] }) {
                     id
                 }
             }

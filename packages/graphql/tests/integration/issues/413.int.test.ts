@@ -51,11 +51,11 @@ describe("https://github.com/neo4j/graphql/issues/413", () => {
             extend type ${JobPlan}
                 @authorization(
                     validate: [
-                        { when: [AFTER], operations: [CREATE, UPDATE], where: { node: { tenantID: "$jwt.tenant_id" } } }
+                        { when: [AFTER], operations: [CREATE, UPDATE], where: { node: { tenantID_EQ: "$jwt.tenant_id" } } }
                         {
                             when: [BEFORE]
                             operations: [READ, UPDATE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP, DELETE]
-                            where: { node: { tenantID: "$jwt.tenant_id" } }
+                            where: { node: { tenantID_EQ: "$jwt.tenant_id" } }
                         }
                     ]
                 )
@@ -71,7 +71,7 @@ describe("https://github.com/neo4j/graphql/issues/413", () => {
 
         const query = `
             query {
-                ${JobPlan.operations.aggregate}(where: {tenantID: "${tenantID}"}) {
+                ${JobPlan.operations.aggregate}(where: {tenantID_EQ: "${tenantID}"}) {
                   count
                 }
             }

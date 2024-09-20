@@ -63,7 +63,7 @@ describe("https://github.com/neo4j/graphql/issues/4759", () => {
                 ${Node1.plural} {
                     uuid
                     name
-                    nodesAggregate(where: { active: true }) {
+                    nodesAggregate(where: { active_EQ: true }) {
                         count
                     }
                 }
@@ -98,7 +98,7 @@ describe("https://github.com/neo4j/graphql/issues/4759", () => {
                 ${Node1.plural} {
                     uuid
                     name
-                    activeNodes: nodesAggregate(where: { active: true }) {
+                    activeNodes: nodesAggregate(where: { active_EQ: true }) {
                         count
                     }
                 }

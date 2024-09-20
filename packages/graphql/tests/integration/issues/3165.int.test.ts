@@ -97,8 +97,8 @@ describe("https://github.com/neo4j/graphql/issues/3165", () => {
                 ${Related.plural}(
                     where: {
                         OR: [
-                            { targetConnection: { ${A}: { edge: { prop: "propvalue" } } } }
-                            { targetConnection: { ${B}: { edge: { prop: "propvalue" } } } }
+                            { targetConnection: { ${A}: { edge: { prop_EQ: "propvalue" } } } }
+                            { targetConnection: { ${B}: { edge: { prop_EQ: "propvalue" } } } }
                         ]
                     }
                 ) {

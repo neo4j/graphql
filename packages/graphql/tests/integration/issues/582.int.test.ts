@@ -65,13 +65,13 @@ describe("https://github.com/neo4j/graphql/issues/582", () => {
         const gqlResult = await testHelper.executeGraphQL(query, {
             variableValues: {
                 where: {
-                    type: "Cat",
+                    type_EQ: "Cat",
                     childrenConnection: {
                         node: {
-                            type: "Dog",
+                            type_EQ: "Dog",
                             parentsConnection: {
                                 node: {
-                                    type: "Bird",
+                                    type_EQ: "Bird",
                                 },
                             },
                         },
@@ -91,16 +91,16 @@ describe("https://github.com/neo4j/graphql/issues/582", () => {
         const gqlResult = await testHelper.executeGraphQL(query, {
             variableValues: {
                 where: {
-                    type: "Cat",
+                    type_EQ: "Cat",
                     childrenConnection: {
                         node: {
-                            type: "Dog",
+                            type_EQ: "Dog",
                             parentsConnection: {
                                 node: {
-                                    type: "Bird",
+                                    type_EQ: "Bird",
                                     childrenConnection: {
                                         node: {
-                                            type: "Fish",
+                                            type_EQ: "Fish",
                                         },
                                     },
                                 },

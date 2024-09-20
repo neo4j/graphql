@@ -52,7 +52,7 @@ describe("https://github.com/neo4j/graphql/issues/4115", () => {
                         {
                             where: {
                                 AND: [
-                                    { node: { creator: { id: "$jwt.uid" } } }
+                                    { node: { creator: { id_EQ: "$jwt.uid" } } }
                                     { node: { family: { creator: { roles_INCLUDES: "plan:paid" } } } }
                                 ]
                             }

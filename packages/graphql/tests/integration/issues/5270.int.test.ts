@@ -35,7 +35,7 @@ describe("https://github.com/neo4j/graphql/issues/5270", () => {
         const typeDefs = /* GraphQL */ `
             type ${User} @node(labels: ["${User}"]) @authorization(
                 filter: [
-                    { where: { node: { NOT: { blockedUsers_SOME: { to: { id: "$jwt.sub" } } } } } },
+                    { where: { node: { NOT: { blockedUsers_SOME: { to: { id_EQ: "$jwt.sub" } } } } } },
                 ]
             ) {
                 id: ID! @unique @id
@@ -44,7 +44,7 @@ describe("https://github.com/neo4j/graphql/issues/5270", () => {
         
             type ${UserBlockedUser} @node(labels: ["${UserBlockedUser}"]) @authorization(
                 filter: [
-                    { where: { node: { from: { id: "$jwt.sub" } } } }
+                    { where: { node: { from: { id_EQ: "$jwt.sub" } } } }
                 ]
             ) {
                 id: ID! @id @unique
