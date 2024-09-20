@@ -14,40 +14,37 @@ For example, for create:
 
 _deprecated_
 
-```
+```graphql
 mutation UpdatePeople {
-  updatePeople(create: {
-    movies: [
-      {
-        node: {
-          title: "The Good",
-        },
-      },
-    ],
-  }) {
-    people {
-      name
+    updatePeople(create: { movies: [{ node: { title: "The Good" } }] }) {
+        people {
+            name
+        }
     }
-  }
 }
 ```
 
 _recommended_
 
-```
+```graphql
 mutation UpdatePeople {
-  updatePeople(update: {
-    movies: {
-      create: {
-        node: {
-          title: "The Good",
-        },
-      }
+    updatePeople(update: { movies: { create: { node: { title: "The Good" } } } }) {
+        people {
+            name
+        }
     }
-  }) {
-    people {
-      name
-    }
-  }
 }
+```
+
+These deprecated arguments can be removed from the schema with the flag `nestedUpdateOperationsFields` in `excludeDeprecatedFields`:
+
+```js
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    features: {
+        excludeDeprecatedFields: {
+            nestedUpdateOperationsFields: true,
+        },
+    },
+});
 ```
