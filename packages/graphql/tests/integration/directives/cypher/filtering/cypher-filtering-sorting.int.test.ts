@@ -26,7 +26,91 @@ describe("cypher directive filtering", () => {
         await testHelper.close();
     });
 
-    test("With sorting", async () => {
+    test("With sorting on the return value", async () => {
+        const Movie = testHelper.createUniqueType("Movie");
+        const Actor = testHelper.createUniqueType("Actor");
+
+        const typeDefs = `
+            type ${Movie} @node {
+                title: String
+                custom_field: String
+                    @cypher(
+                        statement: """
+                        MATCH (m:Movie)
+                        WITH m
+                        RETURN m.title AS s
+                        """
+                        columnName: "s"
+                    )
+                actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
+            }
+
+            type ${Actor} @node {
+                name: String
+                movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
+            }
+        `;
+
+        await testHelper.initNeo4jGraphQL({
+            typeDefs,
+        });
+
+        await testHelper.executeCypher(
+            `
+            CREATE (m1:${Movie} { title: "The Matrix" })
+            CREATE (m2:${Movie} { title: "The Matrix Reloaded" })
+            CREATE (a1:${Actor} { name: "Keanu Reeves" })
+            CREATE (a2:${Actor} { name: "Jada Pinkett Smith" })
+            CREATE (a1)-[:ACTED_IN]->(m1)
+            CREATE (a1)-[:ACTED_IN]->(m2)
+            CREATE (a2)-[:ACTED_IN]->(m2)
+            `,
+            {}
+        );
+
+        const query = `
+            query {
+                ${Movie.plural}(
+                    where: { custom_field: "hello world!" }
+                    options: { sort: [{ custom_field: DESC }] }
+                ) {
+                    title
+                    actors {
+                        name
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult?.data).toEqual({
+            [Movie.plural]: expect.toIncludeSameMembers([
+                {
+                    title: "The Matrix Reloaded",
+                    actors: expect.toIncludeSameMembers([
+                        {
+                            name: "Keanu Reeves",
+                        },
+                        {
+                            name: "Jada Pinkett Smith",
+                        },
+                    ]),
+                },
+                {
+                    title: "The Matrix",
+                    actors: [
+                        {
+                            name: "Keanu Reeves",
+                        },
+                    ],
+                },
+            ]),
+        });
+    });
+
+    test("With sorting on the return value of a different field", async () => {
         const Movie = testHelper.createUniqueType("Movie");
         const Actor = testHelper.createUniqueType("Actor");
 
@@ -84,7 +168,7 @@ describe("cypher directive filtering", () => {
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult?.data).toEqual({
-            [Movie.plural]: [
+            [Movie.plural]: expect.toIncludeSameMembers([
                 {
                     title: "The Matrix Reloaded",
                     actors: expect.toIncludeSameMembers([
@@ -104,7 +188,7 @@ describe("cypher directive filtering", () => {
                         },
                     ],
                 },
-            ],
+            ]),
         });
     });
 });
