@@ -18,14 +18,24 @@
  */
 
 import { Kind, type FieldNode, type GraphQLResolveInfo } from "graphql";
-import type { SchemaComposer } from "graphql-compose";
+import type {
+    ObjectTypeComposerArgumentConfigAsObjectDefinition,
+    ObjectTypeComposerFieldConfigAsObjectDefinition,
+    SchemaComposer,
+} from "graphql-compose";
 import type { Node } from "../../../classes";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import type { UpdateMutationArgumentNames } from "../../../schema-model/entity/model-adapters/ImplementingEntityOperations";
 import { translateUpdate } from "../../../translate";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { execute } from "../../../utils";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
+import {
+    DEPRECATE_UPDATE_CONNECT_INPUT_FIELD,
+    DEPRECATE_UPDATE_CONNECT_OR_CREATE_INPUT_FIELD,
+    DEPRECATE_UPDATE_CREATE_INPUT_FIELD,
+    DEPRECATE_UPDATE_DELETE_INPUT_FIELD,
+    DEPRECATE_UPDATE_DISCONNECT_INPUT_FIELD,
+} from "../../constants";
 import { publishEventsToSubscriptionMechanism } from "../../subscriptions/publish-events-to-subscription-mechanism";
 import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
 
@@ -37,7 +47,7 @@ export function updateResolver({
     node: Node;
     composer: SchemaComposer;
     concreteEntityAdapter: ConcreteEntityAdapter;
-}) {
+}): ObjectTypeComposerFieldConfigAsObjectDefinition<any, any> {
     async function resolve(
         _root: any,
         args: any,
@@ -84,22 +94,37 @@ export function updateResolver({
         return resolveResult;
     }
 
-    const relationFields: Partial<UpdateMutationArgumentNames> = {};
+    const relationFields: Record<string, string | ObjectTypeComposerArgumentConfigAsObjectDefinition> = {};
 
     if (composer.has(concreteEntityAdapter.operations.updateMutationArgumentNames.connect)) {
-        relationFields.connect = concreteEntityAdapter.operations.updateMutationArgumentNames.connect;
+        relationFields.connect = {
+            type: concreteEntityAdapter.operations.updateMutationArgumentNames.connect,
+            directives: [DEPRECATE_UPDATE_CONNECT_INPUT_FIELD],
+        };
     }
     if (composer.has(concreteEntityAdapter.operations.updateMutationArgumentNames.disconnect)) {
-        relationFields.disconnect = concreteEntityAdapter.operations.updateMutationArgumentNames.disconnect;
+        relationFields.disconnect = {
+            type: concreteEntityAdapter.operations.updateMutationArgumentNames.disconnect,
+            directives: [DEPRECATE_UPDATE_DISCONNECT_INPUT_FIELD],
+        };
     }
     if (composer.has(concreteEntityAdapter.operations.updateMutationArgumentNames.create)) {
-        relationFields.create = concreteEntityAdapter.operations.updateMutationArgumentNames.create;
+        relationFields.create = {
+            type: concreteEntityAdapter.operations.updateMutationArgumentNames.create,
+            directives: [DEPRECATE_UPDATE_CREATE_INPUT_FIELD],
+        };
     }
     if (composer.has(concreteEntityAdapter.operations.updateMutationArgumentNames.delete)) {
-        relationFields.delete = concreteEntityAdapter.operations.updateMutationArgumentNames.delete;
+        relationFields.delete = {
+            type: concreteEntityAdapter.operations.updateMutationArgumentNames.delete,
+            directives: [DEPRECATE_UPDATE_DELETE_INPUT_FIELD],
+        };
     }
     if (composer.has(concreteEntityAdapter.operations.updateMutationArgumentNames.connectOrCreate)) {
-        relationFields.connectOrCreate = concreteEntityAdapter.operations.updateMutationArgumentNames.connectOrCreate;
+        relationFields.connectOrCreate = {
+            type: concreteEntityAdapter.operations.updateMutationArgumentNames.connectOrCreate,
+            directives: [DEPRECATE_UPDATE_CONNECT_OR_CREATE_INPUT_FIELD],
+        };
     }
 
     return {
