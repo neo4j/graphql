@@ -183,7 +183,7 @@ describe("[Point]", () => {
 
         const update = `
             mutation UpdateRoutes($id: String!, $waypoints: [PointInput!]) {
-                ${Route.operations.update}(where: { id: $id }, update: { waypoints: $waypoints }) {
+                ${Route.operations.update}(where: { id_EQ: $id }, update: { waypoints: $waypoints }) {
                     ${Route.plural} {
                         id
                         waypoints {
@@ -267,7 +267,7 @@ describe("[Point]", () => {
 
         const update = `
             mutation UpdateRoutes($id: String!, $waypoints: [PointInput!]) {
-                ${Route.operations.update}(where: { id: $id }, update: { waypoints: $waypoints }) {
+                ${Route.operations.update}(where: { id_EQ: $id }, update: { waypoints: $waypoints }) {
                     ${Route.plural} {
                         id
                         waypoints {
@@ -334,7 +334,7 @@ describe("[Point]", () => {
         // Test for equality
         const routesQuery = /* GraphQL */ `
             query Routes($waypoints: [PointInput!]) {
-                ${Route.plural}(where: { waypoints: $waypoints }) {
+                ${Route.plural}(where: { waypoints_EQ: $waypoints }) {
                     id
                     waypoints {
                         latitude
@@ -434,7 +434,7 @@ describe("[Point]", () => {
 
         const routesQuery = /* GraphQL */ `
             query Routes($id: String!) {
-                ${Route.plural}(where: { id: $id }) {
+                ${Route.plural}(where: { id_EQ: $id }) {
                     id
                     waypoints {
                         latitude

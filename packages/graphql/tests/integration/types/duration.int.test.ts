@@ -189,7 +189,7 @@ describe("Duration", () => {
 
             const mutation = /* GraphQL */ `
                     mutation ($id: ID!, $duration: Duration) {
-                        ${Movie.operations.update}(where: { id: $id }, update: { duration: $duration }) {
+                        ${Movie.operations.update}(where: { id_EQ: $id }, update: { duration: $duration }) {
                             ${Movie.plural} {
                                 id
                                 duration
@@ -255,7 +255,7 @@ describe("Duration", () => {
 
             const query = /* GraphQL */ `
                     query ($id: ID!, $duration: Duration!) {
-                        ${Movie.plural}(where: { id: $id, duration: $duration }) {
+                        ${Movie.plural}(where: { id_EQ: $id, duration_EQ: $duration }) {
                             id
                             duration
                         }

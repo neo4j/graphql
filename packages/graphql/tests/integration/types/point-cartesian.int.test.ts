@@ -155,7 +155,7 @@ describe("CartesianPoint", () => {
 
         const update = /* GraphQL */ `
             mutation UpdateParts($serial: String!, $x: Float!, $y: Float!) {
-                ${Part.operations.update}(where: { serial: $serial }, update: { location: { x: $x, y: $y } }) {
+                ${Part.operations.update}(where: { serial_EQ: $serial }, update: { location: { x: $x, y: $y } }) {
                     ${Part.plural} {
                         serial
                         location {
@@ -218,7 +218,7 @@ describe("CartesianPoint", () => {
 
         const update = /* GraphQL */ `
             mutation UpdateParts($serial: String!, $x: Float!, $y: Float!, $z: Float!) {
-                ${Part.operations.update}(where: { serial: $serial }, update: { location: { x: $x, y: $y, z: $z } }) {
+                ${Part.operations.update}(where: { serial_EQ: $serial }, update: { location: { x: $x, y: $y, z: $z } }) {
                     ${Part.plural} {
                         serial
                         location {
@@ -279,7 +279,7 @@ describe("CartesianPoint", () => {
 
         const partsQuery = /* GraphQL */ `
             query Parts($serial: String!) {
-                ${Part.plural}(where: { serial: $serial }) {
+                ${Part.plural}(where: { serial_EQ: $serial }) {
                     serial
                     location {
                         x
@@ -330,7 +330,7 @@ describe("CartesianPoint", () => {
 
         const partsQuery = /* GraphQL */ `
             query Parts($serial: String!) {
-                ${Part.plural}(where: { serial: $serial }) {
+                ${Part.plural}(where: { serial_EQ: $serial }) {
                     serial
                     location {
                         x

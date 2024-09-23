@@ -143,7 +143,7 @@ describe("Date", () => {
 
             const query = /* GraphQL */ `
                 query {
-                    ${Movie.plural}(where: { date: "${date.toISOString()}" }) {
+                    ${Movie.plural}(where: { date_EQ: "${date.toISOString()}" }) {
                         date
                     }
                 }
@@ -187,7 +187,7 @@ describe("Date", () => {
 
             const create = /* GraphQL */ `
                 mutation {
-                    ${Movie.operations.update}(where: {id: "${id}"}, update: {date: "${date.toISOString()}"}) {
+                    ${Movie.operations.update}(where: { id_EQ: "${id}"}, update: {date: "${date.toISOString()}"}) {
                         ${Movie.plural} {
                             id
                             date
