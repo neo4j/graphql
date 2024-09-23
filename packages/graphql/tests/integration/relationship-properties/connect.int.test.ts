@@ -65,7 +65,7 @@ describe("Relationship properties - connect", () => {
                         {
                             title: $movieTitle
                             actors: {
-                                connect: [{ where: { node: { name: $actorName } }, edge: { screenTime: $screenTime } }]
+                                connect: [{ where: { node: { name_EQ: $actorName } }, edge: { screenTime: $screenTime } }]
                             }
                         }
                     ]
@@ -118,8 +118,8 @@ describe("Relationship properties - connect", () => {
         const source = /* GraphQL */ `
             mutation ($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
                 ${Movie.operations.update}(
-                    where: { title: $movieTitle }
-                    connect: { actors: { where: { node: { name: $actorName } }, edge: { screenTime: $screenTime } } }
+                    where: { title_EQ: $movieTitle }
+                    connect: { actors: { where: { node: { name_EQ: $actorName } }, edge: { screenTime: $screenTime } } }
                 ) {
                     ${Movie.plural} {
                         title
