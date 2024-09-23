@@ -41,7 +41,7 @@ describe("Subscriptions delete", () => {
             id: ID
         }
 
-        extend type ${typeUser.name} @authorization(validate: [{ operations: [DELETE], when: [BEFORE], where: { node: { id: "$jwt.sub" } } }])
+        extend type ${typeUser.name} @authorization(validate: [{ operations: [DELETE], when: [BEFORE], where: { node: { id_EQ: "$jwt.sub" } } }])
     `;
 
         const userId = generate({
@@ -51,7 +51,7 @@ describe("Subscriptions delete", () => {
         const query = `
         mutation {
             ${typeUser.operations.delete}(
-                where: { id: "${userId}" }
+                where: { id_EQ: "${userId}" }
             ) {
                nodesDeleted
             }

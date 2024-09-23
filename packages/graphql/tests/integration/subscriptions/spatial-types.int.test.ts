@@ -197,7 +197,7 @@ describe("Subscriptions to spatial types", () => {
         const query = `
             mutation UpdateMovie($longitude1: Float!, $newLatitude: Float!, $latitude1: Float!, $height1: Float!)  {
                 ${typeMovie.operations.update}(
-                    where: { filmedIn: { longitude: $longitude1, latitude: $latitude1, height: $height1 } },
+                    where: { filmedIn_EQ: { longitude: $longitude1, latitude: $latitude1, height: $height1 } },
                     update: {
                         filmedIn: { latitude: $newLatitude, longitude: $longitude1, height: $height1 },
                     }
@@ -288,7 +288,7 @@ describe("Subscriptions to spatial types", () => {
         // Test equality
         const equalityFilterQuery = `
             query MoviesEqual($longitude: Float!, $latitude: Float!) {
-                ${typeMovie.plural}(where: { filmedIn: { longitude: $longitude, latitude: $latitude } }) {
+                ${typeMovie.plural}(where: { filmedIn_EQ: { longitude: $longitude, latitude: $latitude } }) {
                     title
                     filmedIn {
                         latitude
@@ -534,7 +534,7 @@ describe("Subscriptions to spatial types", () => {
         const query = `
             mutation UpdateMovie($x: Float!, $y: Float!, $newY: Float!)  {
                 ${typeMovie.operations.update}(
-                    where: { location: { x: $x, y: $y } },
+                    where: { location_EQ: { x: $x, y: $y } },
                     update: {
                         location: { x: $x, y: $newY },
                     }
@@ -626,7 +626,7 @@ describe("Subscriptions to spatial types", () => {
         // Test equality
         const equalityFilterQuery = `
             query MoviesEqual($x: Float!, $y: Float!) {
-                ${typeMovie.plural}(where: { location: { x: $x, y: $y } }) {
+                ${typeMovie.plural}(where: { location_EQ: { x: $x, y: $y } }) {
                     title
                     location {
                         x

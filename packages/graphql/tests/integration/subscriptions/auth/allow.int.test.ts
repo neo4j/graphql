@@ -51,7 +51,7 @@ describe("auth/allow", () => {
                     id: ID
                 }
 
-                extend type ${userType.name} @node @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
+                extend type ${userType.name} @node @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id_EQ: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -60,7 +60,7 @@ describe("auth/allow", () => {
 
             const query = `
                 {
-                    ${userType.plural}(where: {id: "${userId}"}) {
+                    ${userType.plural}(where: {id_EQ: "${userId}"}) {
                         id
                     }
                 }
@@ -94,7 +94,7 @@ describe("auth/allow", () => {
                 }
 
                 extend type ${userType.name} {
-                    password: String @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
+                    password: String @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id_EQ: "$jwt.sub" } } }])
                 }
             `;
 
@@ -104,7 +104,7 @@ describe("auth/allow", () => {
 
             const query = `
                 {
-                    ${userType.plural}(where: {id: "${userId}"}) {
+                    ${userType.plural}(where: {id_EQ: "${userId}"}) {
                         password
                     }
                 }
@@ -143,7 +143,7 @@ describe("auth/allow", () => {
                 }
 
                 extend type ${userType.name} {
-                    password: String @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
+                    password: String @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id_EQ: "$jwt.sub" } } }])
                 }
             `;
 
@@ -157,7 +157,7 @@ describe("auth/allow", () => {
 
             const query = `
                 {
-                    ${postType.plural}(where: {id: "${postId}"}) {
+                    ${postType.plural}(where: {id_EQ: "${postId}"}) {
                         creator {
                             password
                         }
@@ -198,7 +198,7 @@ describe("auth/allow", () => {
                 }
 
                 extend type ${userType.name} {
-                    password: String @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
+                    password: String @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id_EQ: "$jwt.sub" } } }])
                 }
             `;
 
@@ -212,7 +212,7 @@ describe("auth/allow", () => {
 
             const query = `
                 {
-                    ${postType.plural}(where: {id: "${postId}"}) {
+                    ${postType.plural}(where: {id_EQ: "${postId}"}) {
                         creatorConnection {
                             edges {
                                 node {
@@ -259,7 +259,7 @@ describe("auth/allow", () => {
                 }
 
                 extend type ${postType.name}
-                    @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { creator: { id: "$jwt.sub" } } } }])
+                    @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { creator: { id_EQ: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -272,7 +272,7 @@ describe("auth/allow", () => {
 
             const query = `
                 {
-                    ${userType.plural}(where: {id: "${userId}"}) {
+                    ${userType.plural}(where: {id_EQ: "${userId}"}) {
                         id
                         posts {
                             content
@@ -316,7 +316,7 @@ describe("auth/allow", () => {
                 }
 
                 extend type ${postType.name}
-                    @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { creator: { id: "$jwt.sub" } } } }])
+                    @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { creator: { id_EQ: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -329,7 +329,7 @@ describe("auth/allow", () => {
 
             const query = `
                 {
-                    ${userType.plural}(where: {id: "${userId}"}) {
+                    ${userType.plural}(where: {id_EQ: "${userId}"}) {
                         id
                         postsConnection {
                             edges {
@@ -385,7 +385,7 @@ describe("auth/allow", () => {
                 }
 
                 extend type ${commentType.name}
-                    @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { creator: { id: "$jwt.sub" } } } }])
+                    @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { creator: { id_EQ: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -402,10 +402,10 @@ describe("auth/allow", () => {
 
             const query = `
                 {
-                    ${userType.plural}(where: {id: "${userId}"}) {
+                    ${userType.plural}(where: {id_EQ: "${userId}"}) {
                         id
-                        posts(where: {id: "${postId}"}) {
-                            comments(where: {id: "${commentId}"}) {
+                        posts(where: {id_EQ: "${postId}"}) {
+                            comments(where: {id_EQ: "${commentId}"}) {
                                 content
                             }
                         }
@@ -443,7 +443,7 @@ describe("auth/allow", () => {
                 }
 
                 extend type ${userType.name}
-                    @authorization(validate: [{ when: [BEFORE], operations: [UPDATE], where: { node: { id: "$jwt.sub" } } }])
+                    @authorization(validate: [{ when: [BEFORE], operations: [UPDATE], where: { node: { id_EQ: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -452,7 +452,7 @@ describe("auth/allow", () => {
 
             const query = `
                 mutation {
-                    ${userType.operations.update}(where: {id: "${userId}"}, update: {id: "new-id"}) {
+                    ${userType.operations.update}(where: {id_EQ: "${userId}"}, update: {id: "new-id"}) {
                         ${userType.plural} {
                             id
                         }
@@ -488,7 +488,7 @@ describe("auth/allow", () => {
                 }
 
                 extend type ${userType.name} {
-                    password: String @authorization(validate: [{ when: [BEFORE], operations: [UPDATE], where: { node: { id: "$jwt.sub" } } }])
+                    password: String @authorization(validate: [{ when: [BEFORE], operations: [UPDATE], where: { node: { id_EQ: "$jwt.sub" } } }])
                 }
 
             `;
@@ -499,7 +499,7 @@ describe("auth/allow", () => {
 
             const query = `
                 mutation {
-                    ${userType.operations.update}(where: {id: "${userId}"}, update: {password: "new-password"}) {
+                    ${userType.operations.update}(where: {id_EQ: "${userId}"}, update: {password: "new-password"}) {
                         ${userType.plural} {
                             id
                         }
@@ -540,7 +540,7 @@ describe("auth/allow", () => {
                     id: ID
                 }
 
-                extend type ${userType.name} @authorization(validate: [{ when: [BEFORE], operations: [UPDATE], where: { node: { id: "$jwt.sub" } } }])
+                extend type ${userType.name} @authorization(validate: [{ when: [BEFORE], operations: [UPDATE], where: { node: { id_EQ: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -554,7 +554,7 @@ describe("auth/allow", () => {
             const query = `
                 mutation {
                     ${postType.operations.update}(
-                        where: { id: "${postId}" }
+                        where: { id_EQ: "${postId}" }
                         update: { creator: { update: { node: { id: "new-id" } } } }
                     ) {
                         ${postType.plural} {
@@ -598,7 +598,7 @@ describe("auth/allow", () => {
                 }
 
                 extend type ${userType.name} {
-                    password: String @authorization(validate: [{ when: [BEFORE], operations: [UPDATE], where: { node: { id: "$jwt.sub" } } }])
+                    password: String @authorization(validate: [{ when: [BEFORE], operations: [UPDATE], where: { node: { id_EQ: "$jwt.sub" } } }])
                 }
             `;
 
@@ -613,7 +613,7 @@ describe("auth/allow", () => {
             const query = `
                 mutation {
                     ${postType.operations.update}(
-                        where: { id: "${postId}" }
+                        where: { id_EQ: "${postId}" }
                         update: { creator: { update: { node: { password: "new-password" } } } }
                     ) {
                         ${postType.plural} {
@@ -652,7 +652,7 @@ describe("auth/allow", () => {
                     id: ID
                 }
 
-                extend type ${userType.name} @authorization(validate: [{ when: [BEFORE], operations: [DELETE], where: { node: { id: "$jwt.sub" } } }])
+                extend type ${userType.name} @authorization(validate: [{ when: [BEFORE], operations: [DELETE], where: { node: { id_EQ: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -662,7 +662,7 @@ describe("auth/allow", () => {
             const query = `
                 mutation {
                     ${userType.operations.delete}(
-                        where: { id: "${userId}" }
+                        where: { id_EQ: "${userId}" }
                     ) {
                        nodesDeleted
                     }
@@ -703,7 +703,7 @@ describe("auth/allow", () => {
                     creator: ${userType.name}! @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                extend type ${postType.name} @authorization(validate: [{ when: [BEFORE], operations: [DELETE], where: { node: { creator: { id: "$jwt.sub" } } } }])
+                extend type ${postType.name} @authorization(validate: [{ when: [BEFORE], operations: [DELETE], where: { node: { creator: { id_EQ: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -717,12 +717,12 @@ describe("auth/allow", () => {
             const query = `
                 mutation {
                     ${userType.operations.delete}(
-                        where: { id: "${userId}" },
+                        where: { id_EQ: "${userId}" },
                         delete: {
                             posts: {
                                 where: {
                                     node: {
-                                        id: "${postId}"
+                                        id_EQ: "${postId}"
                                     }
                                 }
                             }
@@ -768,7 +768,7 @@ describe("auth/allow", () => {
                     posts: [${postType.name}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type ${postType.name} @authorization(validate: [{ when: [BEFORE], operations: [DELETE_RELATIONSHIP], where: { node: { creator: { id: "$jwt.sub" } } } }])
+                extend type ${postType.name} @authorization(validate: [{ when: [BEFORE], operations: [DELETE_RELATIONSHIP], where: { node: { creator: { id_EQ: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -782,8 +782,8 @@ describe("auth/allow", () => {
             const query = `
                 mutation {
                     ${userType.operations.update}(
-                        where: { id: "${userId}" }
-                        disconnect: { posts: { where: { node: { id: "${postId}" } } } }
+                        where: { id_EQ: "${userId}" }
+                        disconnect: { posts: { where: { node: { id_EQ: "${postId}" } } } }
                     ) {
                         ${userType.plural} {
                             id
@@ -832,7 +832,7 @@ describe("auth/allow", () => {
                     posts: [${postType.name}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type ${postType.name} @authorization(validate: [{ when: [BEFORE], operations: [DELETE_RELATIONSHIP], where: { node: { creator: { id: "$jwt.sub" } } } }])
+                extend type ${postType.name} @authorization(validate: [{ when: [BEFORE], operations: [DELETE_RELATIONSHIP], where: { node: { creator: { id_EQ: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -850,13 +850,13 @@ describe("auth/allow", () => {
             const query = `
                 mutation {
                     ${commentType.operations.update}(
-                        where: { id: "${commentId}" }
+                        where: { id_EQ: "${commentId}" }
                         update: {
                             post: {
                                 disconnect: {
                                     disconnect: {
                                         creator: {
-                                            where: { node: { id: "${userId}" } }
+                                            where: { node: { id_EQ: "${userId}" } }
                                         }
                                     }
                                 }
@@ -907,7 +907,7 @@ describe("auth/allow", () => {
                     posts: [${postType.name}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type ${postType.name} @authorization(validate: [{ when: [BEFORE], operations: [CREATE_RELATIONSHIP], where: { node: { creator: { id: "$jwt.sub" } } } }])
+                extend type ${postType.name} @authorization(validate: [{ when: [BEFORE], operations: [CREATE_RELATIONSHIP], where: { node: { creator: { id_EQ: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -921,8 +921,8 @@ describe("auth/allow", () => {
             const query = `
                 mutation {
                     ${userType.operations.update}(
-                        where: { id: "${userId}" }
-                        connect: { posts: { where: { node: { id: "${postId}" } } } }
+                        where: { id_EQ: "${userId}" }
+                        connect: { posts: { where: { node: { id_EQ: "${postId}" } } } }
                     ) {
                         ${userType.plural} {
                             id
@@ -972,7 +972,7 @@ describe("auth/allow", () => {
                     posts: [${postType.name}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type ${postType.name} @authorization(validate: [{ when: [BEFORE], operations: [CREATE_RELATIONSHIP], where: { node: { creator: { id: "$jwt.sub" } } } }])
+                extend type ${postType.name} @authorization(validate: [{ when: [BEFORE], operations: [CREATE_RELATIONSHIP], where: { node: { creator: { id_EQ: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -990,13 +990,13 @@ describe("auth/allow", () => {
             const query = `
                 mutation {
                     ${commentType.operations.update}(
-                        where: { id: "${commentId}" }
+                        where: { id_EQ: "${commentId}" }
                         update: {
                             post: {
                                 connect: {
                                     connect: {
                                         creator: {
-                                            where: { node: { id: "${userId}" } }
+                                            where: { node: { id_EQ: "${userId}" } }
                                         }
                                     }
                                 }
