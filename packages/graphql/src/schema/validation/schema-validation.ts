@@ -25,13 +25,13 @@ import type {
     ObjectTypeDefinitionNode,
 } from "graphql";
 import { GraphQLSchema, specifiedDirectives, visit } from "graphql";
-import { specifiedSDLRules } from "graphql/validation/specifiedRules";
 import type { SDLValidationRule } from "graphql/validation/ValidationContext";
+import { specifiedSDLRules } from "graphql/validation/specifiedRules";
 import { createAuthenticationDirectiveDefinition } from "../../graphql/directives/type-dependant-directives/authentication";
-import { getStaticAuthorizationDefinitions } from "../../graphql/directives/type-dependant-directives/static-definitions";
+import { getStaticAuthorizationDefinitions } from "../../graphql/directives/type-dependant-directives/get-static-auth-definitions";
+import { EnricherContext } from "./EnricherContext";
 import { DirectiveArgumentOfCorrectType } from "./custom-rules/directive-argument-of-correct-type";
 import { makeReplaceWildcardVisitor } from "./custom-rules/replace-wildcard-value";
-import { EnricherContext } from "./EnricherContext";
 import { authenticationDirectiveEnricher } from "./enrichers/authentication";
 import { authorizationDefinitionsEnricher, authorizationDirectiveEnricher } from "./enrichers/authorization";
 import {
