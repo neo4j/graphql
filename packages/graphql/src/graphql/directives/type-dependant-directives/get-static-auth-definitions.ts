@@ -71,9 +71,6 @@ function createJWTPayloadWhere(
     schema: GraphQLSchema,
     JWTPayloadDefinition?: ObjectTypeDefinitionNode
 ): GraphQLInputObjectType {
-    // TODO: We would like not to have to do this getDefinitionCollection again as it is a heavy operation
-    // We should find a way to get the definitionCollection from the generated model
-    // Or we should find a way to use parseAttribute without a DefinitionCollection
     const definitionCollection: DefinitionCollection = getDefinitionCollection(userDocument);
 
     const jwtStandardTypeDefinitionFields = getStandardJwtDefinition(schema).fields || [];
