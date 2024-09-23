@@ -45,7 +45,7 @@ describe("unwind-create field-level auth rules", () => {
                     id: ID
                 }
                 extend type ${User} {
-                    id: ID @authorization(validate: [{ operations: [CREATE], where: { node: { id: "$jwt.sub" } } }])
+                    id: ID @authorization(validate: [{ operations: [CREATE], where: { node: { id_EQ: "$jwt.sub" } } }])
                 }
             `;
 
@@ -94,7 +94,7 @@ describe("unwind-create field-level auth rules", () => {
                 name: String
             }
             extend type ${User} {
-                id: ID @authorization(validate: [{ operations: [CREATE], where: { node: { id: "$jwt.sub" } } }])
+                id: ID @authorization(validate: [{ operations: [CREATE], where: { node: { id_EQ: "$jwt.sub" } } }])
             }
         `;
 
@@ -148,7 +148,7 @@ describe("unwind-create field-level auth rules", () => {
                 creator: ${User} @relationship(type: "HAS_POST", direction: IN)
             }
             extend type ${User} {
-                id: ID @authorization(validate: [{ operations: [CREATE], where: { node: { id: "$jwt.sub" } } }])
+                id: ID @authorization(validate: [{ operations: [CREATE], where: { node: { id_EQ: "$jwt.sub" } } }])
             }
         `;
 
