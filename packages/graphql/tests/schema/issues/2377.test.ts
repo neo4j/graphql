@@ -123,7 +123,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             type Mutation {
               createResources(input: [ResourceCreateInput!]!): CreateResourcesMutationResponse!
               deleteResources(delete: ResourceDeleteInput, where: ResourceWhere): DeleteInfo!
-              updateResources(connect: ResourceConnectInput, connectOrCreate: ResourceConnectOrCreateInput, create: ResourceRelationInput, delete: ResourceDeleteInput, disconnect: ResourceDisconnectInput, update: ResourceUpdateInput, where: ResourceWhere): UpdateResourcesMutationResponse!
+              updateResources(connect: ResourceConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), connectOrCreate: ResourceConnectOrCreateInput @deprecated(reason: \\"Top level connectOrCreate input argument in update is deprecated. Use the nested connectOrCreate field in the relationship within the update argument\\"), create: ResourceRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: ResourceDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: ResourceDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: ResourceUpdateInput, where: ResourceWhere): UpdateResourcesMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
