@@ -17,17 +17,7 @@
  * limitations under the License.
  */
 
-import { astFromEnumType, astFromInputObjectType } from "@graphql-tools/utils";
-import type {
-    ObjectTypeDefinitionNode,
-    EnumTypeDefinitionNode,
-    InputObjectTypeDefinitionNode,
-    GraphQLInputObjectType,
-} from "graphql";
-import { GraphQLEnumType, GraphQLSchema } from "graphql";
-import { SchemaComposer } from "graphql-compose";
-import getWhereFields from "../../../schema/get-where-fields";
-import { getJwtFields } from "./jwt-payload";
+import { GraphQLEnumType } from "graphql";
 
 export const AUTHORIZATION_VALIDATE_STAGE = new GraphQLEnumType({
     name: "AuthorizationValidateStage",
@@ -83,42 +73,3 @@ export const SUBSCRIPTIONS_AUTHORIZATION_FILTER_EVENT = new GraphQLEnumType({
         RELATIONSHIP_DELETED: { value: "RELATIONSHIP_DELETED" },
     },
 });
-
-export function getStaticAuthorizationDefinitions(
-    JWTPayloadDefinition?: ObjectTypeDefinitionNode
-): Array<InputObjectTypeDefinitionNode | EnumTypeDefinitionNode> {
-    const schema = new GraphQLSchema({});
-    const authorizationValidateStage = astFromEnumType(AUTHORIZATION_VALIDATE_STAGE, schema);
-    const authorizationValidateOperation = astFromEnumType(AUTHORIZATION_VALIDATE_OPERATION, schema);
-    const authorizationFilterOperation = astFromEnumType(AUTHORIZATION_FILTER_OPERATION, schema);
-    const authenticationOperation = astFromEnumType(AUTHENTICATION_OPERATION, schema);
-    const subscriptionsAuthorizationFilterOperation = astFromEnumType(SUBSCRIPTIONS_AUTHORIZATION_FILTER_EVENT, schema);
-    const ASTs: Array<InputObjectTypeDefinitionNode | EnumTypeDefinitionNode> = [
-        authorizationValidateStage,
-        authorizationValidateOperation,
-        authorizationFilterOperation,
-        authenticationOperation,
-        subscriptionsAuthorizationFilterOperation,
-    ];
-
-    const JWTPayloadWhere = createJWTPayloadWhere(schema, JWTPayloadDefinition);
-    const JWTPayloadWhereAST = astFromInputObjectType(JWTPayloadWhere, schema);
-    ASTs.push(JWTPayloadWhereAST);
-    return ASTs;
-}
-
-function createJWTPayloadWhere(
-    schema: GraphQLSchema,
-    JWTPayloadDefinition?: ObjectTypeDefinitionNode
-): GraphQLInputObjectType {
-    const inputFieldsType = getWhereFields({
-        typeName: "JWTPayload",
-        fields: getJwtFields(schema, JWTPayloadDefinition),
-    });
-    const composer = new SchemaComposer();
-    const inputTC = composer.createInputTC({
-        name: "JWTPayloadWhere",
-        fields: inputFieldsType,
-    });
-    return inputTC.getType();
-}

@@ -145,7 +145,7 @@ export function isUserScalar(definitionCollection: DefinitionCollection, name: s
     return definitionCollection.scalarTypes.has(name);
 }
 
-export function isObject(definitionCollection, name: string) {
+export function isObject(definitionCollection: DefinitionCollection, name: string) {
     return definitionCollection.nodes.has(name);
 }
 
@@ -157,7 +157,7 @@ function isPoint(value: string): boolean {
     return isNeo4jGraphQLSpatialType(value) && value === Neo4jGraphQLSpatialType.Point;
 }
 
-function isCartesianPoint(value): boolean {
+function isCartesianPoint(value: string): boolean {
     return isNeo4jGraphQLSpatialType(value) && value === Neo4jGraphQLSpatialType.CartesianPoint;
 }
 

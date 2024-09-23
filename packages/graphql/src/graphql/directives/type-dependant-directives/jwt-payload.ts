@@ -19,43 +19,7 @@
 
 import { astFromObjectType } from "@graphql-tools/utils";
 import type { GraphQLSchema, ObjectTypeDefinitionNode } from "graphql";
-import { GraphQLList, GraphQLInt, GraphQLString, GraphQLObjectType } from "graphql";
-import getObjFieldMeta from "../../../schema/get-obj-field-meta";
-import type { ObjectFields } from "../../../schema/get-obj-field-meta";
-
-export function getJwtFields(
-    schema: GraphQLSchema,
-    JWTPayloadDefinition?: ObjectTypeDefinitionNode
-): Pick<ObjectFields, "scalarFields" | "primitiveFields" | "enumFields" | "temporalFields" | "pointFields"> {
-    if (JWTPayloadDefinition) {
-        const fields = getObjFieldMeta({
-            obj: JWTPayloadDefinition,
-            objects: [],
-            interfaces: [],
-            unions: [],
-            scalars: [],
-            enums: [],
-        });
-        const standardTypeDefinition = getStandardJwtDefinition(schema);
-        const standardJwtFields = getObjFieldMeta({
-            obj: standardTypeDefinition,
-            objects: [],
-            interfaces: [],
-            unions: [],
-            scalars: [],
-            enums: [],
-        });
-        fields.primitiveFields.push(...standardJwtFields.primitiveFields);
-        return fields;
-    }
-    return {
-        scalarFields: [],
-        primitiveFields: [],
-        enumFields: [],
-        temporalFields: [],
-        pointFields: [],
-    };
-}
+import { GraphQLInt, GraphQLList, GraphQLObjectType, GraphQLString } from "graphql";
 
 export function getStandardJwtDefinition(schema: GraphQLSchema): ObjectTypeDefinitionNode {
     const jwtStandardType = new GraphQLObjectType({
