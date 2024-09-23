@@ -16,7 +16,7 @@ _deprecated_
 
 ```graphql
 mutation UpdatePeople {
-    updatePeople(create: { movies: [{ node: { title: "The Good" } }] }) {
+    updatePeople(create: { movies: { node: { title: "The Good" } } }) {
         people {
             name
         }
