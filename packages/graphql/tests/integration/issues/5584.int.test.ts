@@ -65,12 +65,24 @@ describe("https://github.com/neo4j/graphql/issues/5584", () => {
                     title1: title
                     actorsConnection1: actorsConnection(where: { node: { name: "Keanu Reeves" } }) {
                         edges1: edges {
-                            properties1: properties {
-                                screenTime1: screenTime
-                            }
                             node1: node {
-                                name1: name
-                                b: moviesConnection(where: { node: { title: "The Matrix" } }) {
+                                nameA1: name
+                                A1: moviesConnection(where: { node: { title: "Foo" } }) {
+                                    edges2: edges {
+                                        node2: node {
+                                            title2: title
+                                            a: actors {
+                                                name2: name
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        edges2: edges {
+                            node1: node {
+                                nameA2: name
+                                A2: moviesConnection(where: { node: { title: "The Matrix" } }) {
                                     edges2: edges {
                                         node2: node {
                                             title2: title
@@ -90,6 +102,8 @@ describe("https://github.com/neo4j/graphql/issues/5584", () => {
         const response = await testHelper.executeGraphQL(query);
 
         expect(response.errors).toBeFalsy();
+
+        //TODO: update expected response
         expect(response.data).toEqual({
             [Movie.plural]: [
                 {
