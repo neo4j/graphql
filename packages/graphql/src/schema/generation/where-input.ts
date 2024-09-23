@@ -61,6 +61,14 @@ export function withUniqueWhereInputType({
     return uniqueWhereInputType;
 }
 
+export function addLogicalOperatorsToWhereInputType(type: InputTypeComposer): void {
+    type.addFields({
+        OR: type.NonNull.List,
+        AND: type.NonNull.List,
+        NOT: type,
+    });
+}
+
 export function withWhereInputType({
     entityAdapter,
     userDefinedFieldDirectives,
@@ -98,11 +106,7 @@ export function withWhereInputType({
         entityAdapter instanceof InterfaceEntityAdapter;
 
     if (allowNesting) {
-        whereInputType.addFields({
-            OR: whereInputType.NonNull.List,
-            AND: whereInputType.NonNull.List,
-            NOT: whereInputType,
-        });
+        addLogicalOperatorsToWhereInputType(whereInputType);
     }
     if (entityAdapter instanceof ConcreteEntityAdapter && entityAdapter.isGlobalNode()) {
         whereInputType.addFields({ id: GraphQLID });

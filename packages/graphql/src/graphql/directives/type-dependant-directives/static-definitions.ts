@@ -31,6 +31,7 @@ import { AttributeAdapter } from "../../../schema-model/attribute/model-adapters
 import type { DefinitionCollection } from "../../../schema-model/parser/definition-collection";
 import { getDefinitionCollection } from "../../../schema-model/parser/definition-collection";
 import { parseAttribute } from "../../../schema-model/parser/parse-attribute";
+import { addLogicalOperatorsToWhereInputType } from "../../../schema/generation/where-input";
 import { getWhereFieldsForAttributes } from "../../../schema/get-where-fields";
 import { getStandardJwtDefinition } from "./jwt-payload";
 
@@ -141,5 +142,8 @@ function createJWTPayloadWhere(
         name: "JWTPayloadWhere",
         fields: inputFieldsType,
     });
+
+    addLogicalOperatorsToWhereInputType(inputTC);
+
     return inputTC.getType();
 }
