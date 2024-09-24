@@ -29,7 +29,7 @@ export function createPointOperation({
 }: {
     operator: WhereOperator | "EQ";
     property: Cypher.Expr;
-    param: Cypher.Param;
+    param: Cypher.Param | Cypher.Variable | Cypher.Property;
     attribute: AttributeAdapter;
 }): Cypher.ComparisonOp {
     const pointDistance = createPointDistanceExpression(property, param);
@@ -65,13 +65,18 @@ export function createPointOperation({
     }
 }
 
-function createPointListComprehension(param: Cypher.Param): Cypher.ListComprehension {
+function createPointListComprehension(
+    param: Cypher.Param | Cypher.Variable | Cypher.Property
+): Cypher.ListComprehension {
     const comprehensionVar = new Cypher.Variable();
     const mapPoint = Cypher.point(comprehensionVar);
     return new Cypher.ListComprehension(comprehensionVar, param).map(mapPoint);
 }
 
-function createPointDistanceExpression(property: Cypher.Expr, param: Cypher.Param): Cypher.Function {
+function createPointDistanceExpression(
+    property: Cypher.Expr,
+    param: Cypher.Param | Cypher.Variable | Cypher.Property
+): Cypher.Function {
     const nestedPointRef = param.property("point");
     return Cypher.point.distance(property, Cypher.point(nestedPointRef));
 }
