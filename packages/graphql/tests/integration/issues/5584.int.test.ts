@@ -54,6 +54,61 @@ describe("https://github.com/neo4j/graphql/issues/5584", () => {
         await testHelper.close();
     });
 
+    test("should support multiple edges with aliases", async () => {
+        await testHelper.executeCypher(`
+            CREATE(:${Movie} {title: "The Matrix"})<-[:ACTED_IN {screenTime: 12}]-(:${Actor} {name: "Keanu Reeves"})
+            `);
+
+        const query = /* GraphQL */ `
+            query {
+                ${Movie.plural}(where: { title: "The Matrix" }) {
+                    title1: title
+                    actorsConnection1: actorsConnection(where: { node: { name: "Keanu Reeves" } }) {
+                        edges1: edges {
+                            node1: node {
+                                nameA1: name
+                            }
+                        }
+                        edges2: edges {
+                            node1: node {
+                                nameA2: name
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const response = await testHelper.executeGraphQL(query);
+
+        expect(response.errors).toBeFalsy();
+
+        //TODO: update expected response
+        expect(response.data).toEqual({
+            [Movie.plural]: [
+                {
+                    title1: "The Matrix",
+                    actorsConnection1: {
+                        edges1: [
+                            {
+                                node1: {
+                                    name1: "Keanu Reeves",
+                                },
+                            },
+                        ],
+                        edges2: [
+                            {
+                                node1: {
+                                    nameA2: "Keanu Reeves",
+                                },
+                            },
+                        ],
+                    },
+                },
+            ],
+        });
+    });
+
     test("should support alias at every level of a query", async () => {
         await testHelper.executeCypher(`
             CREATE(:${Movie} {title: "The Matrix"})<-[:ACTED_IN {screenTime: 12}]-(:${Actor} {name: "Keanu Reeves"})
@@ -122,6 +177,27 @@ describe("https://github.com/neo4j/graphql/issues/5584", () => {
                                             {
                                                 node2: {
                                                     title2: "The Matrix",
+                                                    a: [
+                                                        {
+                                                            name2: "Keanu Reeves",
+                                                        },
+                                                    ],
+                                                },
+                                            },
+                                        ],
+                                    },
+                                },
+                            },
+                        ],
+                        edges2: [
+                            {
+                                node1: {
+                                    nameA2: "Keanu Reeves",
+                                    A2: {
+                                        edges2: [
+                                            {
+                                                node2: {
+                                                    title2: "The MAtrix",
                                                     a: [
                                                         {
                                                             name2: "Keanu Reeves",
