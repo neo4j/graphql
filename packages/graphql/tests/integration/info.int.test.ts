@@ -103,7 +103,7 @@ describe("info", () => {
 
         const query = `
             mutation($id: ID!) {
-                ${Movie.operations.delete}(where: { id: $id }) {
+                ${Movie.operations.delete}(where: { id_EQ: $id }) {
                     bookmark
                 }
             }
@@ -133,7 +133,7 @@ describe("info", () => {
 
         const query = `
             mutation($id: ID!) {
-                ${Movie.operations.update}(where: { id: $id }) {
+                ${Movie.operations.update}(where: { id_EQ: $id }) {
                     info {
                         bookmark
                     }

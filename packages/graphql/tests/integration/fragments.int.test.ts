@@ -96,7 +96,7 @@ describe("fragments", () => {
     test("should be able project fragment on type", async () => {
         const query = /* GraphQL */ `
             query ($actorName: String!) {
-                ${Actor.plural}(where: { name: $actorName }) {
+                ${Actor.plural}(where: { name_EQ: $actorName }) {
                     ...FragmentOnType
                 }
             }
@@ -120,7 +120,7 @@ describe("fragments", () => {
     test("should be able project fragment on interface", async () => {
         const query = /* GraphQL */ `
             query ($actorName: String!) {
-                ${Actor.plural}(where: { name: $actorName }) {
+                ${Actor.plural}(where: { name_EQ: $actorName }) {
                     name
                     actedIn {
                         ...FragmentOnInterface
@@ -153,7 +153,7 @@ describe("fragments", () => {
     test("should be able to project nested fragments", async () => {
         const query = `
             query ($actorName: String!) {
-                ${Actor.plural}(where: { name: $actorName }) {
+                ${Actor.plural}(where: { name_EQ: $actorName }) {
                     name
                     actedIn {
                         ...FragmentA

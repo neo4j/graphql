@@ -93,14 +93,14 @@ describe("create", () => {
                 ${Actor.operations.create}(
                     input: {
                         name: $actorName
-                        movies: { connect: { where: { node: { title: $movieTitle } } } }
+                        movies: { connect: { where: { node: { title_EQ: $movieTitle } } } }
                     }
                 ) {
                     ${Actor.plural} {
                         name
                         movies {
                             title
-                            actorsConnection(where: { node: { name: $actorName } }) {
+                            actorsConnection(where: { node: { name_EQ: $actorName } }) {
                                 totalCount
                                 edges {
                                     node {
@@ -304,13 +304,13 @@ describe("create", () => {
                                 {
                                     node: {
                                         ...photos[0],
-                                        color: { connect: { where: { node: { id: colors[0]?.id } } } },
+                                        color: { connect: { where: { node: { id_EQ: colors[0]?.id } } } },
                                     },
                                 },
                                 {
                                     node: {
                                         ...photos[1],
-                                        color: { connect: { where: { node: { id: colors[1]?.id } } } },
+                                        color: { connect: { where: { node: { id_EQ: colors[1]?.id } } } },
                                     },
                                 },
                             ],

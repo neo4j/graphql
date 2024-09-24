@@ -75,12 +75,12 @@ describe("Nested unions", () => {
         const source = `
             mutation {
                 ${Movie.operations.update}(
-                    where: { title: "${movieTitle}" }
+                    where: { title_EQ: "${movieTitle}" }
                     connect: {
                         actors: {
                             ${LeadActor} : {
-                                where: { node: { name: "${actorName}" } }
-                                connect: { actedIn: { ${Series}: { where: { node: { name: "${seriesName}" } } } } }
+                                where: { node: { name_EQ: "${actorName}" } }
+                                connect: { actedIn: { ${Series}: { where: { node: { name_EQ: "${seriesName}" } } } } }
                             }
                         }
                     }
@@ -128,12 +128,12 @@ describe("Nested unions", () => {
         const source = `
             mutation {
                 ${Movie.operations.update}(
-                    where: { title: "${movieTitle}" }
+                    where: { title_EQ: "${movieTitle}" }
                     disconnect: {
                         actors: {
                             ${LeadActor}: {
-                                where: { node: { name: "${actorName}" } }
-                                disconnect: { actedIn: { ${Series} : { where: { node: { name: "${seriesName}" } } } } }
+                                where: { node: { name_EQ: "${actorName}" } }
+                                disconnect: { actedIn: { ${Series} : { where: { node: { name_EQ: "${seriesName}" } } } } }
                             }
                         }
                     }
@@ -200,12 +200,12 @@ describe("Nested unions", () => {
         const source = `
             mutation {
                 ${Movie.operations.update}(
-                    where: { title: "${movieTitle}" }
+                    where: { title_EQ: "${movieTitle}" }
                     delete: {
                         actors: {
                             ${LeadActor}: {
-                                where: { node: { name: "${actorName}" } }
-                                delete: { actedIn: { ${Series}: { where: { node: { name: "${seriesName}" } } } } }
+                                where: { node: { name_EQ: "${actorName}" } }
+                                delete: { actedIn: { ${Series}: { where: { node: { name_EQ: "${seriesName}" } } } } }
                             }
                         }
                     }
@@ -276,7 +276,7 @@ describe("Nested unions", () => {
         const source = `
             mutation {
                 ${Movie.operations.update}(
-                    where: { title: "${movieTitle}" }
+                    where: { title_EQ: "${movieTitle}" }
                     create: {
                         actors: {
                             ${LeadActor}: {

@@ -67,7 +67,7 @@ describe("Aliasing", () => {
     test("should correctly alias an ID field", async () => {
         const query = `
             query ($id: ID!) {
-                ${Movie.plural}(where: { id: $id }) {
+                ${Movie.plural}(where: { id_EQ: $id }) {
                     aliased: id
                     budget
                     boxOffice
@@ -90,7 +90,7 @@ describe("Aliasing", () => {
     test("should correctly alias an Int field", async () => {
         const query = `
             query ($id: ID!) {
-                ${Movie.plural}(where: { id: $id }) {
+                ${Movie.plural}(where: { id_EQ: $id }) {
                     id
                     aliased: budget
                     boxOffice
@@ -113,7 +113,7 @@ describe("Aliasing", () => {
     test("should correctly alias an Float field", async () => {
         const query = `
             query ($id: ID!) {
-                ${Movie.plural}(where: { id: $id }) {
+                ${Movie.plural}(where: { id_EQ: $id }) {
                     id
                     budget
                     aliased: boxOffice

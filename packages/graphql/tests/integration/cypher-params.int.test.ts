@@ -92,7 +92,7 @@ describe("cypherParams", () => {
 
         const source = `
             query($id: ID) {
-                ${Movie.plural}(where: {id: $id}) {
+                ${Movie.plural}(where: {id_EQ: $id}) {
                     id
                     cypherParams {
                         id

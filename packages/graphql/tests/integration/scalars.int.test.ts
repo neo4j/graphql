@@ -116,7 +116,7 @@ describe("scalars", () => {
 
         const query = `
             {
-                ${Movie.plural}(where: {id: ${id}}) {
+                ${Movie.plural}(where: { id_EQ: ${id}}) {
                     id
                 }
             }

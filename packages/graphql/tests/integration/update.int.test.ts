@@ -66,7 +66,7 @@ describe("update", () => {
 
         const query = `
         mutation($id: ID, $name: String) {
-            ${Movie.operations.update}(where: { id: $id }, update: {name: $name}) {
+            ${Movie.operations.update}(where: { id_EQ: $id }, update: {name: $name}) {
                 ${Movie.plural} {
                     id
                     name
@@ -108,7 +108,7 @@ describe("update", () => {
 
         const query = `
         mutation($id: ID, $name: String) {
-            ${Movie.operations.update}(where: { id: $id }, update: {name: $name}) {
+            ${Movie.operations.update}(where: { id_EQ: $id }, update: {name: $name}) {
                 ${Movie.plural} {
                     id
                     name
@@ -175,15 +175,15 @@ describe("update", () => {
         const query = `
         mutation {
             ${Movie.operations.update}(
-                where: { id: "1" }, 
+                where: { id_EQ: "1" }, 
                 connect: { director: { 
-                    where: { node: {id: "2"} }, 
+                    where: { node: { id_EQ: "2"} }, 
                     connect: { movies: {
-                        where: { node: {id: "3"} }, 
+                        where: { node: { id_EQ: "3"} }, 
                         connect: { director: {
-                            where: { node: {id: "4"} }, 
+                            where: { node: { id_EQ: "4"} }, 
                             connect: { movies: {
-                                where: { node: { id: "5" } }
+                                where: { node: { id_EQ: "5" } }
                             } }
                         } }
                     } } 
@@ -256,7 +256,7 @@ describe("update", () => {
         const query = `
         mutation($updatedMovieId: ID, $actorName: String) {
             ${Movie.operations.update}(
-              where: { actorsConnection: { node: { name: $actorName } } },
+              where: { actorsConnection: { node: { name_EQ: $actorName } } },
               update: {
                 id: $updatedMovieId
               }
@@ -314,7 +314,7 @@ describe("update", () => {
 
         const query = `
         mutation($id1: ID, $id2: ID, $name: String) {
-            ${Movie.operations.update}(where: { OR: [{id: $id1}, {id: $id2}] }, update: {name: $name}) {
+            ${Movie.operations.update}(where: { OR: [{ id_EQ: $id1 }, { id_EQ: $id2 }] }, update: {name: $name}) {
                 ${Movie.plural} {
                     id
                     name
@@ -378,10 +378,10 @@ describe("update", () => {
         const query = `
         mutation($movieId: ID, $initialName: String, $updatedName: String) {
             ${Movie.operations.update}(
-              where: { id: $movieId },
+              where: { id_EQ: $movieId },
               update: {
                 actors: [{
-                  where: { node: { name: $initialName } },
+                  where: { node: { name_EQ: $initialName } },
                   update: { node: { name: $updatedName } }
                 }]
               }
@@ -447,7 +447,7 @@ describe("update", () => {
 
         const mutation = `
             mutation($id: ID, $actorName1: String) {
-                ${Movie.operations.update}(where: { id: $id }, delete: { actors: { where: { node: { name: $actorName1 } } } }) {
+                ${Movie.operations.update}(where: { id_EQ: $id }, delete: { actors: { where: { node: { name_EQ: $actorName1 } } } }) {
                     ${Movie.plural} {
                         id
                         actors {
@@ -512,7 +512,7 @@ describe("update", () => {
 
         const mutation = `
             mutation($id: ID, $actorName1: String) {
-                ${Movie.operations.update}(where: { id: $id }, update: { actors: { delete: { where: { node: { name: $actorName1 } } } } }) {
+                ${Movie.operations.update}(where: { id_EQ: $id }, update: { actors: { delete: { where: { node: { name_EQ: $actorName1 } } } } }) {
                     ${Movie.plural} {
                         id
                         actors {
@@ -583,9 +583,9 @@ describe("update", () => {
         const mutation = `
             mutation($movieId1: ID, $actorName1: String, $movieId2: ID) {
                 ${Movie.operations.update}(
-                    where: { id: $movieId1 }
+                    where: { id_EQ: $movieId1 }
                     update: {
-                        actors: { delete: { where: { node: { name: $actorName1 } }, delete: { movies: { where: { node: { id: $movieId2 } } } } } }
+                        actors: { delete: { where: { node: { name_EQ: $actorName1 } }, delete: { movies: { where: { node: { id_EQ: $movieId2 } } } } } }
                     }
                 ) {
                     ${Movie.plural} {
@@ -675,8 +675,8 @@ describe("update", () => {
         const mutation = `
             mutation($id: ID, $name1: String, $name3: String) {
                 ${Movie.operations.update}(
-                    where: { id: $id }
-                    delete: { actors: [{ where: { node: { name: $name1 } } }, { where: { node: { name: $name3 } } }] }
+                    where: { id_EQ: $id }
+                    delete: { actors: [{ where: { node: { name_EQ: $name1 } } }, { where: { node: { name_EQ: $name3 } } }] }
                 ) {
                     ${Movie.plural} {
                         id
@@ -740,15 +740,15 @@ describe("update", () => {
         const query = `
         mutation {
             ${Movie.operations.update}(
-              where: { id: "${movieId}" }
+              where: { id_EQ: "${movieId}" }
               update: {
                 actors: [{
-                  where: { node: { name: "old actor name" } }
+                  where: { node: { name_EQ: "old actor name" } }
                   update: {
                     node: {
                         name: "new actor name"
                         movies: [{
-                            where: { node: { title: "old movie title" } }
+                            where: { node: { title_EQ: "old movie title" } }
                             update: { node: { title: "new movie title" } }
                         }]
                     }
@@ -810,7 +810,7 @@ describe("update", () => {
 
         const query = `
         mutation {
-            ${Movie.operations.update}(where: { id: "${movieId}" }, connect: {actors: [{where: {node:{id: "${actorId}"}}}]}) {
+            ${Movie.operations.update}(where: { id_EQ: "${movieId}" }, connect: {actors: [{ where: { node:{ id_EQ: "${actorId}"}}}]}) {
                 ${Movie.plural} {
                     id
                     actors {
@@ -877,8 +877,8 @@ describe("update", () => {
         const query = `
             mutation($movieId: ID, $seriesId: ID) {
                 ${Movie.operations.update}(
-                    where: { id: $movieId }
-                    connect: { actors: [{ where: { node: { seriesConnection: { node: { id: $seriesId } } } } }] }
+                    where: { id_EQ: $movieId }
+                    connect: { actors: [{ where: { node: { seriesConnection: { node: { id_EQ: $seriesId } } } } }] }
                 ) {
                     ${Movie.plural} {
                         id
@@ -941,7 +941,7 @@ describe("update", () => {
 
         const query = `
         mutation {
-            ${Movie.operations.update}(where: { id: "${movieId}" }, disconnect: {actors: [{where: { node: { id: "${actorId1}"}}}]}) {
+            ${Movie.operations.update}(where: { id_EQ: "${movieId}" }, disconnect: {actors: [{where: { node: { id_EQ: "${actorId1}"}}}]}) {
                 ${Movie.plural} {
                     id
                     actors {
@@ -1010,13 +1010,13 @@ describe("update", () => {
         const query = `
         mutation {
             ${Product.operations.update}(
-              where: { id: "${productId}" }
+              where: { id_EQ: "${productId}" }
               update: {
                 photos: [{
-                  where: { node: { id: "${photoId}" } }
+                  where: { node: { id_EQ: "${photoId}" } }
                   update: {
                       node: {
-                        color: { disconnect: { where: { node: { id: "${colorId}" } } } }
+                        color: { disconnect: { where: { node: { id_EQ: "${colorId}" } } } }
                       }
                   }
                 }]
@@ -1113,29 +1113,29 @@ describe("update", () => {
         const query = `
             mutation {
                 ${Product.operations.update}(
-                  where: { id: "${productId}" }
+                  where: { id_EQ: "${productId}" }
                   update: {
                     photos: [
                       {
-                        where: { node: { name: "Green Photo", id: "${photo0Id}" } }
+                        where: { node: { name_EQ: "Green Photo", id_EQ: "${photo0Id}" } }
                         update: {
                             node: {
                                 name: "Light Green Photo"
                                 color: {
-                                    connect: { where: { node: { name: "Light Green", id: "${photo0Color1Id}" } } }
-                                    disconnect: { where: { node: { name: "Green", id: "${photo0Color0Id}" } } }
+                                    connect: { where: { node: { name_EQ: "Light Green", id_EQ: "${photo0Color1Id}" } } }
+                                    disconnect: { where: { node: { name_EQ: "Green", id_EQ: "${photo0Color0Id}" } } }
                                 }
                             }
                         }
                       }
                       {
-                        where: { node: { name: "Yellow Photo", id: "${photo1Id}" } }
+                        where: { node: { name_EQ: "Yellow Photo", id_EQ: "${photo1Id}" } }
                         update: {
                             node: {
                                 name: "Light Yellow Photo"
                                 color: {
-                                    connect: { where: { node: { name: "Light Yellow", id: "${photo1Color1Id}" } } }
-                                    disconnect: { where: { node: { name: "Yellow", id: "${photo1Color0Id}" } } }
+                                    connect: { where: { node: { name_EQ: "Light Yellow", id_EQ: "${photo1Color1Id}" } } }
+                                    disconnect: { where: { node: { name_EQ: "Yellow", id_EQ: "${photo1Color0Id}" } } }
                                 }
                             }
                         }
@@ -1248,7 +1248,7 @@ describe("update", () => {
         const query = `
             mutation {
                 ${Product.operations.update}(
-                  where: { id: "${productId}" }
+                  where: { id_EQ: "${productId}" }
                   update: {
                       photos: [{
                           create: [{
@@ -1340,7 +1340,7 @@ describe("update", () => {
         const query = `
             mutation {
                 ${Product.operations.update}(
-                  where: { id: "${productId}" }
+                  where: { id_EQ: "${productId}" }
                   create: {
                     photos: [{
                       node: {

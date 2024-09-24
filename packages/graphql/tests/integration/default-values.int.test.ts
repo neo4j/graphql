@@ -57,7 +57,7 @@ describe("Default values", () => {
 
         const create = `
             {
-                ${Movie.plural}(where: {id: "${id}"}){
+                ${Movie.plural}(where: {id_EQ: "${id}"}){
                     id
                     field
                 }

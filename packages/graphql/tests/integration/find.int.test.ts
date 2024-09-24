@@ -59,7 +59,7 @@ describe("find", () => {
 
         const query = `
             query($id: ID){
-                ${Movie.plural}(where: {id: $id}){
+                ${Movie.plural}(where: {id_EQ: $id}){
                     id
                 }
             }
@@ -102,7 +102,7 @@ describe("find", () => {
 
         const query = `
             query($id: ID){
-                ${Movie.plural}(where: {id: $id}, options: {limit: 2}){
+                ${Movie.plural}(where: {id_EQ: $id}, options: {limit: 2}){
                     id
                 }
             }
@@ -207,7 +207,7 @@ describe("find", () => {
 
         const query = `
             query($ids: [ID!], $title: String){
-                ${Movie.plural}(where: {id_IN: $ids, title: $title}){
+                ${Movie.plural}(where: {id_IN: $ids, title_EQ: $title}){
                     id
                     title
                 }
@@ -493,7 +493,7 @@ describe("find", () => {
         );
 
         const result = await testHelper.executeGraphQL(query, {
-            variableValues: { movieWhere: { OR: [{ title, id }] } },
+            variableValues: { movieWhere: { OR: [{ title_EQ: title, id_EQ: id }] } },
         });
 
         expect(result.errors).toBeFalsy();

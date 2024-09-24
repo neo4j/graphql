@@ -136,7 +136,7 @@ describe("delete union relationships", () => {
     test("should delete one nested concrete entity", async () => {
         const query = `
             mutation DeleteActorAndMovie($name: String, $title: String) {
-                ${actorType.operations.delete}(where: { name: $name }, delete: { actedIn: { ${movieType.name}: { where: { node: { title: $title } } } } }) {
+                ${actorType.operations.delete}(where: { name_EQ: $name }, delete: { actedIn: { ${movieType.name}: { where: { node: { title_EQ: $title } } } } }) {
                     nodesDeleted
                     relationshipsDeleted
                 }
@@ -161,11 +161,11 @@ describe("delete union relationships", () => {
         const query = `
             mutation DeleteActorAndMovie($name1: String, $movieScreenTime1: Int) {
                 ${actorType.operations.delete}(
-                    where: { name: $name1 }
+                    where: { name_EQ: $name1 }
                     delete: {
                         actedIn: {
                             ${movieType.name}: {
-                                where: { edge: { screenTime: $movieScreenTime1 } }
+                                where: { edge: { screenTime_EQ: $movieScreenTime1 } }
                             }
                         }
                     }
@@ -194,12 +194,12 @@ describe("delete union relationships", () => {
         const query = `
             mutation DeleteActorAndMovie($name1: String, $movieScreenTime1: Int, $movieScreenTime2: Int) {
                 ${actorType.operations.delete}(
-                    where: { name: $name1 }
+                    where: { name_EQ: $name1 }
                     delete: {
                         actedIn: {
                             ${movieType.name}:  [ 
-                                { where: { edge: { screenTime: $movieScreenTime1 } } }
-                                { where: { edge: { screenTime: $movieScreenTime2 } } }
+                                { where: { edge: { screenTime_EQ: $movieScreenTime1 } } }
+                                { where: { edge: { screenTime_EQ: $movieScreenTime2 } } }
                             ]
                         }
                     }
@@ -232,14 +232,14 @@ describe("delete union relationships", () => {
         const query = `
             mutation DeleteActorAndMovie($name1: String, $movieRuntime2: Int, $name2: String) {
                 ${actorType.operations.delete}(
-                    where: { name: $name1 }
+                    where: { name_EQ: $name1 }
                     delete: {
                         actedIn: {
                             ${movieType.name}: {
-                                where: { node: { runtime: $movieRuntime2 } }
+                                where: { node: { runtime_EQ: $movieRuntime2 } }
                                 delete: {
                                     actors: {
-                                        where: { node: { name: $name2 } }
+                                        where: { node: { name_EQ: $name2 } }
                                     }
                                 }
                             }

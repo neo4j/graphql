@@ -42,7 +42,7 @@ describe("undirected relationships", () => {
         });
         const query = /* GraphQL */ `
             query {
-                ${userType.plural}(where: {name: "Ford"}) {
+                ${userType.plural}(where: { name_EQ: "Ford"}) {
                     name
                     friends: friends(directed: false) {
                         name
@@ -91,7 +91,7 @@ describe("undirected relationships", () => {
         });
         const query = /* GraphQL */ `
             query {
-                ${userType.plural}(where: {name: "Ford"}) {
+                ${userType.plural}(where: {name_EQ: "Ford"}) {
                     name
                     friend: friend(directed: false) {
                         name

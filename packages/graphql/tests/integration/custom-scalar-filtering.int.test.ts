@@ -53,7 +53,7 @@ describe("Custom Scalar Filtering", () => {
 
             const query = `
                     {
-                        ${randomType.plural}(where: { property_NOT: ${unwantedValue} }) {
+                        ${randomType.plural}(where: { NOT: { property_EQ: ${unwantedValue} } }) { 
                             property
                         }
                     }
@@ -93,7 +93,7 @@ describe("Custom Scalar Filtering", () => {
 
             const query = `
                     {
-                        ${randomType.plural}(where: { property_NOT: ${unwantedValue} }) {
+                        ${randomType.plural}(where: { NOT: { property_EQ: ${unwantedValue} } }) {
                             property
                         }
                     }
@@ -136,7 +136,7 @@ describe("Custom Scalar Filtering", () => {
 
             const query = `
                     {
-                        ${randomType.plural}(where: { property_NOT: ${value} }) {
+                        ${randomType.plural}(where: { NOT: { property_EQ: ${value} }}) {
                             property
                         }
                     }
@@ -422,7 +422,7 @@ describe("Custom Scalar Filtering", () => {
 
             const query = `
                     query($unwantedValue: [CustomListScalar!]!){
-                        ${randomType.plural}(where: { property_NOT: $unwantedValue }) {
+                        ${randomType.plural}(where: { NOT: { property_EQ: $unwantedValue } }) {
                             property
                         }
                     }
@@ -464,7 +464,7 @@ describe("Custom Scalar Filtering", () => {
 
             const query = `
                     query($unwantedValue: [CustomListScalar!]!){
-                        ${randomType.plural}(where: { property_NOT: $unwantedValue }) {
+                        ${randomType.plural}(where: { NOT: { property_EQ: $unwantedValue }}) {
                             property
                         }
                     }
@@ -509,7 +509,7 @@ describe("Custom Scalar Filtering", () => {
 
             const query = `
                     query($value: [CustomListScalar!]!){
-                        ${randomType.plural}(where: { property_NOT: $value }) {
+                        ${randomType.plural}(where: { NOT: { property_EQ: $value } }) {
                             property
                         }
                     }
