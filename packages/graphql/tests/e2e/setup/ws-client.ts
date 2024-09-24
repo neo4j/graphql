@@ -17,10 +17,11 @@
  * limitations under the License.
  */
 
-import ws from "ws";
+import { asArray } from "@graphql-tools/utils";
 import type { Client } from "graphql-ws";
 import { createClient } from "graphql-ws";
 import { EventEmitter } from "stream";
+import ws from "ws";
 
 const NEW_EVENT = "NEW_EVENT";
 
@@ -83,8 +84,8 @@ export class WebSocketTestClient {
                             this.events.push(value.data);
                         }
                     },
-                    error: (err: Array<unknown>) => {
-                        this.errors.push(...err);
+                    error: (err: unknown) => {
+                        this.errors.push(...asArray(err));
                         if (callback) {
                             // hack to be able to expect errors on bad subscriptions
                             // bc. resolve() happens before below reject()
