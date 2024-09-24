@@ -121,8 +121,8 @@ describe("createDisconnectAndParams", () => {
             withVars: ["this"],
             value: [
                 {
-                    where: { node: { title: "abc" } },
-                    disconnect: { similarMovies: [{ where: { node: { title: "cba" } } }] },
+                    where: { node: { title_EQ: "abc" } },
+                    disconnect: { similarMovies: [{ where: { node: { title_EQ: "cba" } } }] },
                 },
             ],
             varName: "this",
