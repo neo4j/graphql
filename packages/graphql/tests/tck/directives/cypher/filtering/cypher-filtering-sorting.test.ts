@@ -45,7 +45,7 @@ describe("cypher directive filtering", () => {
         const query = `
             query {
                 movies(
-                    where: { custom_field: "hello world!" }
+                    where: { custom_field_STARTS_WITH: "The Matrix" }
                     options: { sort: [{ custom_field: DESC }] }
                 ) {
                     title

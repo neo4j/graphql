@@ -36,9 +36,8 @@ describe("cypher directive filtering", () => {
                 custom_field: String
                     @cypher(
                         statement: """
-                        MATCH (m:Movie)
-                        WITH m
-                        RETURN m.title AS s
+                        WITH this
+                        RETURN this.title AS s
                         """
                         columnName: "s"
                     )
@@ -71,7 +70,7 @@ describe("cypher directive filtering", () => {
         const query = `
             query {
                 ${Movie.plural}(
-                    where: { custom_field: "hello world!" }
+                    where: { custom_field_STARTS_WITH: "The Matrix" }
                     options: { sort: [{ custom_field: DESC }] }
                 ) {
                     title
