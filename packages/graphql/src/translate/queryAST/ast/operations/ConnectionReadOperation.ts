@@ -104,25 +104,6 @@ export class ConnectionReadOperation extends Operation {
         ]);
     }
 
-    protected getWithCollectEdgesAndTotalCount(
-        nestedContext: QueryASTContext<Cypher.Node>,
-        edgesVar: Cypher.Variable,
-        totalCount: Cypher.Variable
-    ): Cypher.With {
-        const nodeAndRelationshipMap = new Cypher.Map({
-            node: nestedContext.target,
-        });
-
-        if (nestedContext.relationship) {
-            nodeAndRelationshipMap.set("relationship", nestedContext.relationship);
-        }
-
-        return new Cypher.With([Cypher.collect(nodeAndRelationshipMap), edgesVar]).with(edgesVar, [
-            Cypher.size(edgesVar),
-            totalCount,
-        ]);
-    }
-
     public transpile(context: QueryASTContext): OperationTranspileResult {
         if (!context.target) throw new Error();
 
@@ -196,6 +177,25 @@ export class ConnectionReadOperation extends Operation {
         };
     }
 
+    protected getWithCollectEdgesAndTotalCount(
+        nestedContext: QueryASTContext<Cypher.Node>,
+        edgesVar: Cypher.Variable,
+        totalCount: Cypher.Variable
+    ): Cypher.With {
+        const nodeAndRelationshipMap = new Cypher.Map({
+            node: nestedContext.target,
+        });
+
+        if (nestedContext.relationship) {
+            nodeAndRelationshipMap.set("relationship", nestedContext.relationship);
+        }
+
+        return new Cypher.With([Cypher.collect(nodeAndRelationshipMap), edgesVar]).with(edgesVar, [
+            Cypher.size(edgesVar),
+            totalCount,
+        ]);
+    }
+
     protected getAuthFilterSubqueries(context: QueryASTContext): Cypher.Clause[] {
         return this.authFilters.flatMap((f) => f.getSubqueries(context));
     }
@@ -223,30 +223,6 @@ export class ConnectionReadOperation extends Operation {
             unwindClause = new Cypher.Unwind([edgesVar, edgeVar]).with([edgeVar.property("node"), context.target]);
         }
         return unwindClause;
-    }
-
-    private createUnwindAndProjectionSubquery(
-        context: QueryASTContext<Cypher.Node>,
-        edgesVar: Cypher.Variable,
-        returnVar: Cypher.Variable
-    ) {
-        const edgeVar = new Cypher.NamedVariable("edge");
-        const { prePaginationSubqueries, postPaginationSubqueries } = this.getPreAndPostSubqueries(context);
-
-        const unwindClause = this.getUnwindClause(context, edgeVar, edgesVar);
-
-        const edgeProjectionMap = this.createProjectionMapForEdge(context);
-        const paginationWith = this.generateSortAndPaginationClause(context);
-
-        return new Cypher.Call(
-            Cypher.concat(
-                unwindClause,
-                ...prePaginationSubqueries,
-                paginationWith,
-                ...postPaginationSubqueries,
-                new Cypher.Return([Cypher.collect(edgeProjectionMap), returnVar])
-            )
-        ).importWith(edgesVar);
     }
 
     protected createProjectionMapForNode(context: QueryASTContext<Cypher.Node>): Cypher.Map {
@@ -302,6 +278,30 @@ export class ConnectionReadOperation extends Operation {
             });
 
         return projectionMap;
+    }
+
+    private createUnwindAndProjectionSubquery(
+        context: QueryASTContext<Cypher.Node>,
+        edgesVar: Cypher.Variable,
+        returnVar: Cypher.Variable
+    ) {
+        const edgeVar = new Cypher.NamedVariable("edge");
+        const { prePaginationSubqueries, postPaginationSubqueries } = this.getPreAndPostSubqueries(context);
+
+        const unwindClause = this.getUnwindClause(context, edgeVar, edgesVar);
+
+        const edgeProjectionMap = this.createProjectionMapForEdge(context);
+        const paginationWith = this.generateSortAndPaginationClause(context);
+
+        return new Cypher.Call(
+            Cypher.concat(
+                unwindClause,
+                ...prePaginationSubqueries,
+                paginationWith,
+                ...postPaginationSubqueries,
+                new Cypher.Return([Cypher.collect(edgeProjectionMap), returnVar])
+            )
+        ).importWith(edgesVar);
     }
 
     private generateSortAndPaginationClause(context: QueryASTContext<Cypher.Node>): Cypher.With | undefined {
