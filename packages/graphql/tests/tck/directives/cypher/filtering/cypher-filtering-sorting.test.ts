@@ -69,23 +69,21 @@ describe("cypher directive filtering", () => {
                 CALL {
                     WITH this
                     WITH this AS this
-                    MATCH (m:Movie)
-                    WITH m
-                    RETURN m.title AS s
+                    WITH this
+                    RETURN this.title AS s
                 }
                 WITH s AS this0
                 RETURN this0 AS var1
             }
             WITH *
-            WHERE var1 = $param0
+            WHERE var1 STARTS WITH $param0
             CALL {
                 WITH this
                 CALL {
                     WITH this
                     WITH this AS this
-                    MATCH (m:Movie)
-                    WITH m
-                    RETURN m.title AS s
+                    WITH this
+                    RETURN this.title AS s
                 }
                 WITH s AS this2
                 RETURN this2 AS var3
