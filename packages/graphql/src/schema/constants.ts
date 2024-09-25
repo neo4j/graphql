@@ -39,3 +39,38 @@ export const DEPRECATE_INVALID_AGGREGATION_FILTERS = {
         reason: "Aggregation filters that are not relying on an aggregating function will be deprecated.",
     },
 };
+
+export const DEPRECATE_UPDATE_CREATE_INPUT_FIELD = {
+    name: DEPRECATED,
+    args: {
+        reason: "Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument",
+    },
+};
+
+export const DEPRECATE_UPDATE_DELETE_INPUT_FIELD = {
+    name: DEPRECATED,
+    args: {
+        reason: "Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument",
+    },
+};
+
+export const DEPRECATE_UPDATE_CONNECT_INPUT_FIELD = {
+    name: DEPRECATED,
+    args: {
+        reason: "Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument",
+    },
+};
+
+export const DEPRECATE_UPDATE_DISCONNECT_INPUT_FIELD = {
+    name: DEPRECATED,
+    args: {
+        reason: "Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument",
+    },
+};
+
+export const DEPRECATE_UPDATE_CONNECT_OR_CREATE_INPUT_FIELD = {
+    name: DEPRECATED,
+    args: {
+        reason: "Top level connectOrCreate input argument in update is deprecated. Use the nested connectOrCreate field in the relationship within the update argument",
+    },
+};
