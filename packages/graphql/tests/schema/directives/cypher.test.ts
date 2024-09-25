@@ -500,7 +500,7 @@ describe("Cypher", () => {
         `);
     });
 
-    test("Filters should not be generated on a custom cypher field with arguments", async () => {
+    test("Filters should not be generated on custom cypher fields with arguments", async () => {
         const typeDefs = gql`
             type Movie {
                 custom_string_with_param(param: String): String
@@ -882,6 +882,223 @@ describe("Cypher", () => {
             type UpdateActorsMutationResponse {
               actors: [Actor!]!
               info: UpdateInfo!
+            }
+
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
+            type UpdateInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type UpdateMoviesMutationResponse {
+              info: UpdateInfo!
+              movies: [Movie!]!
+            }"
+        `);
+    });
+
+    test("Filters should not be generated on custom cypher fields for subscriptions", async () => {
+        const typeDefs = gql`
+            type Movie {
+                title: String
+                custom_title: String @cypher(statement: "RETURN 'hello' as t", columnName: "t")
+            }
+        `;
+        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: true } });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
+
+        expect(printedSchema).toMatchInlineSnapshot(`
+            "schema {
+              query: Query
+              mutation: Mutation
+              subscription: Subscription
+            }
+
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
+            type CreateInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            type CreateMoviesMutationResponse {
+              info: CreateInfo!
+              movies: [Movie!]!
+            }
+
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
+            type DeleteInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
+            enum EventType {
+              CREATE
+              CREATE_RELATIONSHIP
+              DELETE
+              DELETE_RELATIONSHIP
+              UPDATE
+            }
+
+            type Movie {
+              custom_title: String
+              title: String
+            }
+
+            type MovieAggregateSelection {
+              count: Int!
+              title: StringAggregateSelection!
+            }
+
+            input MovieCreateInput {
+              title: String
+            }
+
+            type MovieCreatedEvent {
+              createdMovie: MovieEventPayload!
+              event: EventType!
+              timestamp: Float!
+            }
+
+            type MovieDeletedEvent {
+              deletedMovie: MovieEventPayload!
+              event: EventType!
+              timestamp: Float!
+            }
+
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
+            type MovieEventPayload {
+              custom_title: String
+              title: String
+            }
+
+            input MovieOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [MovieSort!]
+            }
+
+            \\"\\"\\"
+            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+            \\"\\"\\"
+            input MovieSort {
+              custom_title: SortDirection
+              title: SortDirection
+            }
+
+            input MovieSubscriptionWhere {
+              AND: [MovieSubscriptionWhere!]
+              NOT: MovieSubscriptionWhere
+              OR: [MovieSubscriptionWhere!]
+              title: String
+              title_CONTAINS: String
+              title_ENDS_WITH: String
+              title_IN: [String]
+              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_STARTS_WITH: String
+            }
+
+            input MovieUpdateInput {
+              title: String
+            }
+
+            type MovieUpdatedEvent {
+              event: EventType!
+              previousState: MovieEventPayload!
+              timestamp: Float!
+              updatedMovie: MovieEventPayload!
+            }
+
+            input MovieWhere {
+              AND: [MovieWhere!]
+              NOT: MovieWhere
+              OR: [MovieWhere!]
+              custom_title: String
+              custom_title_CONTAINS: String
+              custom_title_ENDS_WITH: String
+              custom_title_IN: [String]
+              custom_title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              custom_title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              custom_title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              custom_title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              custom_title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              custom_title_STARTS_WITH: String
+              title: String
+              title_CONTAINS: String
+              title_ENDS_WITH: String
+              title_IN: [String]
+              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_STARTS_WITH: String
+            }
+
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type Mutation {
+              createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
+              deleteMovies(where: MovieWhere): DeleteInfo!
+              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+            }
+
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
+            type Query {
+              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+            }
+
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
+
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
+            }
+
+            type Subscription {
+              movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
+              movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
+              movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
             }
 
             \\"\\"\\"

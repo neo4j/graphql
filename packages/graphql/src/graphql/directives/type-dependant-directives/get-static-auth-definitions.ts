@@ -84,6 +84,7 @@ function createJWTPayloadWhere(
         attributes: jwtFieldAttributeAdapters,
         userDefinedFieldDirectives: undefined,
         features: undefined,
+        ignoreCypherFieldFilters: false,
     });
 
     const composer = new SchemaComposer();
