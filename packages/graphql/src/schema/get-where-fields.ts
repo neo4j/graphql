@@ -57,6 +57,11 @@ export function getWhereFieldsForAttributes({
             (userDefinedDirectivesOnField ?? []).filter((directive) => directive.name.value === DEPRECATED)
         );
 
+        // If the field is a cypher field with arguments, skip it
+        if (field.annotations.cypher && field.args.length > 0) {
+            continue;
+        }
+
         result[field.name] = {
             type: field.getInputTypeNames().where.pretty,
             directives: deprecatedDirectives,
