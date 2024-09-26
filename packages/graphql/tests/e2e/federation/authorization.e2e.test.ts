@@ -46,7 +46,7 @@ describe("Federation 2 Authorization", () => {
             const users = `
                 extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
     
-                type ${User} @authorization(validate: [{ where: { node: { id: "$jwt.sub" } } }]) @key(fields: "id") @shareable @node {
+                type ${User} @authorization(validate: [{ where: { node: { id_EQ: "$jwt.sub" } } }]) @key(fields: "id") @shareable @node {
                     id: ID!
                     name: String
                     password: String 
@@ -184,7 +184,7 @@ describe("Federation 2 Authorization", () => {
                 type ${User} @key(fields: "id") @shareable @node {
                     id: ID!
                     name: String
-                    password: String @authorization(validate: [{ where: { node: { id: "$jwt.sub" } } }])
+                    password: String @authorization(validate: [{ where: { node: { id_EQ: "$jwt.sub" } } }])
                 }
             `;
 

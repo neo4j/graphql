@@ -901,7 +901,7 @@ describe.each([
             .send({
                 query: `
                     mutation {
-                        ${typeMovie.operations.delete}(where: { ${fieldName}: ${makeTypedFieldValue(value)} }) {
+                        ${typeMovie.operations.delete}(where: { ${fieldName}_EQ: ${makeTypedFieldValue(value)} }) {
                             nodesDeleted
                         }
                     }

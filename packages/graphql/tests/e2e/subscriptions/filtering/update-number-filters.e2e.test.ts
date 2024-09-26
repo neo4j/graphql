@@ -913,7 +913,7 @@ describe.each([
             .send({
                 query: `
                         mutation {
-                            ${typeMovie.operations.update}(where: { ${fieldName}: ${makeTypedFieldValue(
+                            ${typeMovie.operations.update}(where: { ${fieldName}_EQ: ${makeTypedFieldValue(
                     oldValue
                 )} }, update: { ${fieldName}: ${makeTypedFieldValue(newValue)} }) {
                                 ${typeMovie.plural} {

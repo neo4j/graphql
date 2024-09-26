@@ -658,7 +658,7 @@ subscription SubscriptionPerson {
                     mutation {
                         ${typeMovie.operations.update}(
                                 where: {
-                                  title: "John Wick"
+                                  title_EQ: "John Wick"
                                 },
                                 update: {
                                   title: "John Wick 2",
@@ -666,7 +666,7 @@ subscription SubscriptionPerson {
                                     {
                                       where: {
                                         node: {
-                                          name: "Keanu Reeves"
+                                          name_EQ: "Keanu Reeves"
                                         }
                                       },
                                       update: {
@@ -839,7 +839,7 @@ subscription SubscriptionPerson {
                     mutation {
                         ${typeMovie.operations.update}(
                                 where: {
-                                  title: "John Wick"
+                                  title_EQ: "John Wick"
                                 },
                                 create: {
                                     directors: {
@@ -1130,7 +1130,7 @@ subscription SubscriptionPerson {
                     mutation {
                         ${typeMovie.operations.update}(
                                 where: {
-                                  title: "John Wick"
+                                  title_EQ: "John Wick"
                                 },
                                 update: {
                                     reviewers: [{
@@ -1235,7 +1235,7 @@ subscription SubscriptionPerson {
                     mutation {
                         ${typeMovie.operations.update}(
                                 where: {
-                                  title: "John Wick"
+                                  title_EQ: "John Wick"
                                 },
                                 update: {
                                     reviewers: [{
@@ -1397,8 +1397,8 @@ subscription SubscriptionPerson {
                                   {
                                     where: {
                                       node: {
-                                        title: "Matrix",
-                                        imdbId: 1
+                                        title_EQ: "Matrix",
+                                        imdbId_EQ: 1
                                       }
                                     },
                                     edge: {
@@ -1508,7 +1508,7 @@ subscription SubscriptionPerson {
                                         {
                                           where: {
                                             node: {
-                                                reputation: 100
+                                                reputation_EQ: 100
                                             }
                                           },
                                           edge: {
@@ -1603,7 +1603,7 @@ subscription SubscriptionPerson {
                                         {
                                           where: {
                                             node: {
-                                              reputation: 100,
+                                              reputation_EQ: 100,
                                             }
                                           },
                                           edge: {
@@ -1702,7 +1702,7 @@ subscription SubscriptionPerson {
                                         {
                                           where: {
                                             node: {
-                                                reputation: 100
+                                                reputation_EQ: 100
                                             }
                                           },
                                           edge: {
@@ -1819,7 +1819,7 @@ subscription SubscriptionPerson {
                                         {
                                           where: {
                                             node: {
-                                                reputation: 100
+                                                reputation_EQ: 100
                                             }
                                           },
                                           edge: {
@@ -1918,7 +1918,7 @@ subscription SubscriptionPerson {
                                         {
                                           where: {
                                             node: {
-                                              reputation: 100
+                                              reputation_EQ: 100
                                             }
                                           },
                                           edge: {
@@ -2051,7 +2051,7 @@ subscription SubscriptionPerson {
                                   {
                                     where: {
                                       node: {
-                                        title: "Matrix",
+                                        title_EQ: "Matrix",
                                       }
                                     },
                                     edge: {
@@ -2066,7 +2066,7 @@ subscription SubscriptionPerson {
                                                   },
                                                   where: {
                                                     node: {
-                                                        reputation: 100
+                                                        reputation_EQ: 100
                                               
                                                     }
                                                   },
@@ -2214,8 +2214,8 @@ subscription SubscriptionPerson {
                                   {
                                     where: {
                                       node: {
-                                        title: "Matrix",
-                                        imdbId: 1
+                                        title_EQ: "Matrix",
+                                        imdbId_EQ: 1
                                       }
                                     },
                                     edge: {
@@ -2228,7 +2228,7 @@ subscription SubscriptionPerson {
                                                 {
                                                   where: {
                                                     node: {
-                                                      name: "Marion"
+                                                      name_EQ: "Marion"
                                                     }
                                                   },
                                                   edge: {
@@ -2240,8 +2240,8 @@ subscription SubscriptionPerson {
                                                         {
                                                           where: {
                                                             node: {
-                                                              title: "Matrix",
-                                                              imdbId: 1
+                                                              title_EQ: "Matrix",
+                                                              imdbId_EQ: 1
                                                             }
                                                           },
                                                           edge: {
@@ -2457,7 +2457,7 @@ subscription SubscriptionPerson {
                     mutation {
                         ${typeActor.operations.update}(
                                 where: {
-                                  name: "Keanu Reeves"
+                                  name_EQ: "Keanu Reeves"
                                 },
                                 connect: {
                                     movies: [
@@ -2467,7 +2467,7 @@ subscription SubscriptionPerson {
                                         },
                                         where: {
                                           node: {
-                                            title: "John Wick"
+                                            title_EQ: "John Wick"
                                           }
                                         },
                                         connect: [
@@ -2480,7 +2480,7 @@ subscription SubscriptionPerson {
                                                   },
                                                   where: {
                                                     node: {
-                                                      name: "Tom"
+                                                      name_EQ: "Tom"
                                                     }
                                                   }
                                                 }
@@ -2492,8 +2492,8 @@ subscription SubscriptionPerson {
                                                   },
                                                   where: {
                                                     node: {
-                                                      name: "John",
-                                                      reputation: 100
+                                                      name_EQ: "John",
+                                                      reputation_EQ: 100
                                                     }
                                                   }
                                                 }
@@ -2609,7 +2609,7 @@ subscription SubscriptionPerson {
                                           },
                                           where: {
                                             node: {
-                                              imdbId: 1
+                                              imdbId_EQ: 1
                                             }
                                           }
                                         }
@@ -2708,7 +2708,7 @@ subscription SubscriptionPerson {
                                                         {
                                                           where: {
                                                             node: {
-                                                              imdbId: 2
+                                                              imdbId_EQ: 2
                                                             }
                                                           },
                                                           onCreate: {
@@ -2873,7 +2873,7 @@ subscription SubscriptionPerson {
                                           {
                                             where: {
                                               node: {
-                                                id: 1
+                                                id_EQ: 1
                                               }
                                             },
                                             onCreate: {
@@ -2893,7 +2893,7 @@ subscription SubscriptionPerson {
                                           {
                                             where: {
                                               node: {
-                                                id: 2
+                                                id_EQ: 2
                                               }
                                             },
                                             onCreate: {
@@ -3005,7 +3005,7 @@ subscription SubscriptionPerson {
                                                           {
                                                             where: {
                                                               node: {
-                                                                imdbId: 21
+                                                                imdbId_EQ: 21
                                                               }
                                                             },
                                                             onCreate: {
@@ -3029,7 +3029,7 @@ subscription SubscriptionPerson {
                                                   {
                                                     where: {
                                                       node: {
-                                                        id: 1
+                                                        id_EQ: 1
                                                       }
                                                     },
                                                     onCreate: {
@@ -3210,14 +3210,14 @@ subscription SubscriptionPerson {
                     mutation {
                         ${typeMovie.operations.update}(
                             where: {
-                                title: "The Raven"
+                                title_EQ: "The Raven"
                             },
                             connectOrCreate: {
                                 actors: [
                                     {
                                         where: {
                                             node: {
-                                                id: 111
+                                                id_EQ: 111
                                             }
                                         },
                                         onCreate: {
@@ -3234,7 +3234,7 @@ subscription SubscriptionPerson {
                                     ${typeActor.name}: [{
                                         where: {
                                             node: {
-                                                id: 112
+                                                id_EQ: 112
                                             }
                                         },
                                         onCreate: {
@@ -3249,7 +3249,7 @@ subscription SubscriptionPerson {
                                     ${typePerson.name}: [{
                                         where: {
                                             node: {
-                                                id: 113
+                                                id_EQ: 113
                                             }
                                         },
                                         onCreate: {
@@ -3405,7 +3405,7 @@ subscription SubscriptionPerson {
                                                           {
                                                             where: {
                                                               node: {
-                                                                imdbId: 21
+                                                                imdbId_EQ: 21
                                                               }
                                                             },
                                                             onCreate: {
@@ -3429,7 +3429,7 @@ subscription SubscriptionPerson {
                                                   {
                                                     where: {
                                                       node: {
-                                                        id: 1
+                                                        id_EQ: 1
                                                       }
                                                     },
                                                     onCreate: {
@@ -3474,7 +3474,7 @@ subscription SubscriptionPerson {
                     mutation {
                         ${typeMovie.operations.update}(
                             where: {
-                                title: "The House of Usher"
+                                title_EQ: "The House of Usher"
                             },
                             update: {
                                 directors: {
@@ -3493,7 +3493,7 @@ subscription SubscriptionPerson {
                                           },
                                           where: {
                                             node: {
-                                              id: 101
+                                              id_EQ: 101
                                             }
                                           }
                                         }
@@ -3506,7 +3506,7 @@ subscription SubscriptionPerson {
                                         {
                                           where: {
                                             node: {
-                                              id: 102
+                                              id_EQ: 102
                                             }
                                           },
                                           onCreate: {
@@ -3525,7 +3525,7 @@ subscription SubscriptionPerson {
                                 actors: {
                                     where: {
                                         node: {
-                                          id:1234
+                                          id_EQ: 1234
                                         }
                                       },
                                       update: {
@@ -3540,7 +3540,7 @@ subscription SubscriptionPerson {
                                                 {
                                                   where: {
                                                     node: {
-                                                      imdbId: 15
+                                                      imdbId_EQ: 15
                                                     }
                                                   },
                                                   onCreate: {
@@ -3715,7 +3715,7 @@ subscription SubscriptionPerson {
                                           },
                                           where: {
                                             node: {
-                                              imdbId: 1
+                                              imdbId_EQ: 1
                                             }
                                           }
                                         }
@@ -3858,7 +3858,7 @@ subscription SubscriptionPerson {
                                                           {
                                                             where: {
                                                               node: {
-                                                                imdbId: 21
+                                                                imdbId_EQ: 21
                                                               }
                                                             },
                                                             onCreate: {
@@ -3882,7 +3882,7 @@ subscription SubscriptionPerson {
                                                   {
                                                     where: {
                                                       node: {
-                                                        id: 1
+                                                        id_EQ: 1
                                                       }
                                                     },
                                                     onCreate: {
@@ -4063,14 +4063,14 @@ subscription SubscriptionPerson {
                     mutation {
                         ${typeMovie.operations.update}(
                             where: {
-                                title: "The Raven"
+                                title_EQ: "The Raven"
                             },
                             connectOrCreate: {
                                 actors: [
                                     {
                                         where: {
                                             node: {
-                                                id: 111
+                                                id_EQ: 111
                                             }
                                         },
                                         onCreate: {
@@ -4087,7 +4087,7 @@ subscription SubscriptionPerson {
                                     ${typeActor.name}: [{
                                         where: {
                                             node: {
-                                                id: 112
+                                                id_EQ: 112
                                             }
                                         },
                                         onCreate: {
@@ -4102,7 +4102,7 @@ subscription SubscriptionPerson {
                                     ${typePerson.name}: [{
                                         where: {
                                             node: {
-                                                id: 113
+                                                id_EQ: 113
                                             }
                                         },
                                         onCreate: {

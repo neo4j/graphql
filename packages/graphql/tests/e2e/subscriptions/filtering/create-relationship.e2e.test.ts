@@ -187,7 +187,7 @@ subscription SubscriptionMovie {
 `;
 
     test("node filter on standard type", async () => {
-        const where = `{createdRelationship: {actors: {node: {name_NOT: "Keanu"}}}}`;
+        const where = /* GraphQL */ `{ createdRelationship: { actors: { node: { NOT: { name_EQ: "Keanu" } } } } }`;
         await wsClient.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson, where }));
 
         await supertest(server.path)
@@ -435,8 +435,9 @@ subscription SubscriptionMovie {
             },
         ]);
     });
+
     test("node filter on standard type - by connected field expecting none", async () => {
-        const where = `{${typeMovie.operations.subscribe.payload.relationship_created}: {title_NOT: "Matrix"}}`;
+        const where = /* GraphQL */ `{ ${typeMovie.operations.subscribe.payload.relationship_created}: {  NOT: { title_EQ: "Matrix"  } } }`;
         await wsClient.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson, where }));
 
         await supertest(server.path)

@@ -249,7 +249,7 @@ subscription SubscriptionPerson {
                     mutation {
                         ${typeMovie.operations.delete}(
                                 where: {
-                                  title: "John Wick"
+                                  title_EQ: "John Wick"
                                 }
                         ) {
                             nodesDeleted
@@ -359,7 +359,7 @@ subscription SubscriptionPerson {
                     mutation {
                         ${typeMovie.operations.delete}(
                                 where: {
-                                  title: "John Wick"
+                                  title_EQ: "John Wick"
                                 }
                         ) {
                             nodesDeleted
@@ -477,7 +477,7 @@ subscription SubscriptionPerson {
                     mutation {
                         ${typeMovie.operations.delete}(
                                 where: {
-                                  title: "John Wick"
+                                  title_EQ: "John Wick"
                                 }
                         ) {
                             nodesDeleted
@@ -624,7 +624,7 @@ subscription SubscriptionPerson {
                     mutation {
                         ${typeMovie.operations.delete}(
                                 where: {
-                                  title: "John Wick"
+                                  title_EQ: "John Wick"
                                 }
                         ) {
                             nodesDeleted
@@ -729,7 +729,7 @@ subscription SubscriptionPerson {
                     mutation {
                         ${typeMovie.operations.delete}(
                                 where: {
-                                  title: "John Wick"
+                                  title_EQ: "John Wick"
                                 }
                         ) {
                             nodesDeleted
@@ -861,7 +861,7 @@ subscription SubscriptionPerson {
                     mutation {
                         ${typeMovie.operations.delete}(
                                 where: {
-                                  title: "John Wick"
+                                  title_EQ: "John Wick"
                                 }
                         ) {
                             nodesDeleted
@@ -1020,7 +1020,7 @@ subscription SubscriptionPerson {
                     mutation {
                         ${typeMovie.operations.delete}(
                                 where: {
-                                  title: "John Wick"
+                                  title_EQ: "John Wick"
                                 }
                         ) {
                             nodesDeleted
@@ -1173,7 +1173,7 @@ subscription SubscriptionPerson {
                     mutation {
                         ${typeMovie.operations.delete}(
                                 where: {
-                                  title: "John Wick"
+                                  title_EQ: "John Wick"
                                 }
                         ) {
                             nodesDeleted
@@ -1340,7 +1340,7 @@ subscription SubscriptionPerson {
                     mutation {
                         ${typeMovie.operations.delete}(
                                 where: {
-                                  title: "John Wick"
+                                  title_EQ: "John Wick"
                                 }
                         ) {
                             nodesDeleted
@@ -1510,7 +1510,7 @@ subscription SubscriptionPerson {
                     mutation {
                         ${typeMovie.operations.delete}(
                                 where: {
-                                  title: "John Wick"
+                                  title_EQ: "John Wick"
                                 }
                         ) {
                             nodesDeleted
@@ -1813,7 +1813,7 @@ subscription SubscriptionPerson {
                     mutation {
                         ${typeMovie.operations.delete}(
                                 where: {
-                                  title: "John Wick"
+                                  title_EQ: "John Wick"
                                 } 
                         ) {
                             nodesDeleted
@@ -2162,7 +2162,7 @@ subscription SubscriptionPerson {
                     mutation {
                         ${typeMovie.operations.delete}(
                                 where: {
-                                  title: "John Wick"
+                                  title_EQ: "John Wick"
                                 }
                         ) {
                             nodesDeleted

@@ -97,84 +97,11 @@ describe.each([
         await testHelper.close();
     });
 
-    test("subscription with where filter _NOT 1 result", async () => {
-        await wsClient.subscribe(`
-            subscription {
-                ${typeMovie.operations.subscribe.created}(where: { title_NOT: "movie1" }) {
-                    ${typeMovie.operations.subscribe.payload.created} {
-                        title
-                    }
-                }
-            }
-        `);
-
-        await createMovie({ title: "movie1" });
-        await createMovie({ title: "movie2" });
-
-        await wsClient.waitForEvents(1);
-
-        expect(wsClient.errors).toEqual([]);
-        expect(wsClient.events).toEqual([
-            {
-                [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { title: "movie2" },
-                },
-            },
-        ]);
-    });
-    test("subscription with where filter _NOT multiple results", async () => {
-        await wsClient.subscribe(`
-            subscription {
-                ${typeMovie.operations.subscribe.created}(where: { title_NOT: "movie0" }) {
-                    ${typeMovie.operations.subscribe.payload.created} {
-                        title
-                    }
-                }
-            }
-        `);
-
-        await createMovie({ title: "movie1" });
-        await createMovie({ title: "movie2" });
-
-        await wsClient.waitForEvents(2);
-
-        expect(wsClient.errors).toEqual([]);
-        expect(wsClient.events).toIncludeSameMembers([
-            {
-                [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { title: "movie1" },
-                },
-            },
-            {
-                [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { title: "movie2" },
-                },
-            },
-        ]);
-    });
-    test("subscription with where filter _NOT empty result", async () => {
-        await wsClient.subscribe(`
-            subscription {
-                ${typeMovie.operations.subscribe.created}(where: { title_NOT: "movie1" }) {
-                    ${typeMovie.operations.subscribe.payload.created} {
-                        title
-                    }
-                }
-            }
-        `);
-
-        await createMovie({ title: "movie1" });
-
-        // forcing a delay to ensure events do not exist
-        await delay(2);
-
-        expect(wsClient.errors).toEqual([]);
-        expect(wsClient.events).toEqual([]);
-    });
+    
     test("create subscription with where OR", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { OR: [{ title: "movie1"}, {title: "movie2"}] }) {
+                ${typeMovie.operations.subscribe.created}(where: { OR: [{ title_EQ: "movie1"}, {title_EQ: "movie2"}] }) {
                     ${typeMovie.operations.subscribe.payload.created} {
                         title
                     }
@@ -205,7 +132,7 @@ describe.each([
     test("create subscription with where AND match 1", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { AND: [{ title: "movie2"}, {releasedIn: 2000}] }) {
+                ${typeMovie.operations.subscribe.created}(where: { AND: [{ title_EQ: "movie2"}, {releasedIn_EQ: 2000}] }) {
                     ${typeMovie.operations.subscribe.payload.created} {
                         title
                     }
@@ -230,7 +157,7 @@ describe.each([
     test("create subscription with where OR match 1", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { OR: [{ title: "movie2", releasedIn: 2020}, {releasedIn: 2000}] }) {
+                ${typeMovie.operations.subscribe.created}(where: { OR: [{ title_EQ: "movie2", releasedIn_EQ: 2020}, {releasedIn_EQ: 2000}] }) {
                     ${typeMovie.operations.subscribe.payload.created} {
                         title
                     }
@@ -255,7 +182,7 @@ describe.each([
     test("create subscription with where OR match 2", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { OR: [{ title: "movie2", releasedIn: 2000}, {title: "movie1", releasedIn: 2020}] }) {
+                ${typeMovie.operations.subscribe.created}(where: { OR: [{ title_EQ: "movie2", releasedIn_EQ: 2000}, {title_EQ: "movie1", releasedIn_EQ: 2020}] }) {
                     ${typeMovie.operations.subscribe.payload.created} {
                         title
                     }
@@ -285,7 +212,7 @@ describe.each([
     test("create subscription with where property + OR match 1", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { title: "movie3", OR: [{ releasedIn: 2001}, {title: "movie2", releasedIn: 2020}] }) {
+                ${typeMovie.operations.subscribe.created}(where: { title_EQ: "movie3", OR: [{ releasedIn_EQ: 2001}, {title_EQ: "movie2", releasedIn_EQ: 2020}] }) {
                     ${typeMovie.operations.subscribe.payload.created} {
                         title
                     }
@@ -311,7 +238,7 @@ describe.each([
     test("create subscription with where property + OR match nothing", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { title: "movie2", OR: [{ releasedIn: 2001}, {title: "movie2", releasedIn: 2020}] }) {
+                ${typeMovie.operations.subscribe.created}(where: { title_EQ: "movie2", OR: [{ releasedIn_EQ: 2001}, {title_EQ: "movie2", releasedIn_EQ: 2020}] }) {
                     ${typeMovie.operations.subscribe.payload.created} {
                         title
                     }
@@ -331,7 +258,7 @@ describe.each([
     test("create subscription with where property + OR with filters match 1", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { releasedIn_GTE: 2000, OR: [{ title_NOT_STARTS_WITH: "movie", releasedIn: 2001}, {title: "movie4", releasedIn: 1000}] }) {
+                ${typeMovie.operations.subscribe.created}(where: { releasedIn_GTE: 2000, OR: [{ title_NOT_STARTS_WITH: "movie", releasedIn_EQ: 2001}, {title_EQ: "movie4", releasedIn_EQ: 1000}] }) {
                     ${typeMovie.operations.subscribe.payload.created} {
                         title
                     }
@@ -359,7 +286,7 @@ describe.each([
     test("create subscription with where property + OR with filters match 2", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { releasedIn_GTE: 2000, OR: [{ title_STARTS_WITH: "moviee", releasedIn: 2001}, {title: "amovie"}] }) {
+                ${typeMovie.operations.subscribe.created}(where: { releasedIn_GTE: 2000, OR: [{ title_STARTS_WITH: "moviee", releasedIn_EQ: 2001}, {title_EQ: "amovie"}] }) {
                     ${typeMovie.operations.subscribe.payload.created} {
                         title
                     }
@@ -394,7 +321,7 @@ describe.each([
     test("create subscription with where property + OR with filters match none", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { releasedIn_GTE: 2000, OR: [{ title_STARTS_WITH: "moviee", releasedIn: 2001}, {title: "amovie", releasedIn_GT: 2020}] }) {
+                ${typeMovie.operations.subscribe.created}(where: { releasedIn_GTE: 2000, OR: [{ title_STARTS_WITH: "moviee", releasedIn_EQ: 2001}, {title_EQ: "amovie", releasedIn_GT: 2020}] }) {
                     ${typeMovie.operations.subscribe.payload.created} {
                         title
                     }
@@ -415,7 +342,7 @@ describe.each([
     test("create subscription with where OR single element match", async () => {
         await wsClient.subscribe(`
         subscription {
-            ${typeMovie.operations.subscribe.created}(where: { OR: [{ title: "movie1"}] }) {
+            ${typeMovie.operations.subscribe.created}(where: { OR: [{ title_EQ: "movie1"}] }) {
                 ${typeMovie.operations.subscribe.payload.created} {
                     title
                 }
@@ -440,7 +367,7 @@ describe.each([
     test("create subscription with where OR single element no match", async () => {
         await wsClient.subscribe(`
         subscription {
-            ${typeMovie.operations.subscribe.created}(where: { OR: [{ title: "movie1"}] }) {
+            ${typeMovie.operations.subscribe.created}(where: { OR: [{ title_EQ: "movie1"}] }) {
                 ${typeMovie.operations.subscribe.payload.created} {
                     title
                 }
@@ -459,10 +386,10 @@ describe.each([
         subscription {
             ${typeMovie.operations.subscribe.created}(where: {
                 OR: [
-                    { title: "movie1" },
+                    { title_EQ: "movie1" },
                     { AND: [
-                        { title: "movie2" },
-                        { title: "movie3" }
+                        { title_EQ: "movie2" },
+                        { title_EQ: "movie3" }
                     ]}
                 ]
             }) {
@@ -492,10 +419,10 @@ describe.each([
         subscription {
             ${typeMovie.operations.subscribe.created}(where: {
                 OR: [
-                    { title: "movie1" },
+                    { title_EQ: "movie1" },
                     { AND: [
-                        { title: "movie2" },
-                        { releasedIn: 2000 }
+                        { title_EQ: "movie2" },
+                        { releasedIn_EQ: 2000 }
                     ]}
                 ]
             }) {
@@ -531,9 +458,9 @@ describe.each([
         subscription {
             ${typeMovie.operations.subscribe.created}(where: {
                 OR: [
-                    { title: "movie1" },
+                    { title_EQ: "movie1" },
                     { AND: [
-                        { title: "movie2" },
+                        { title_EQ: "movie2" },
                         { releasedIn_GTE: 2000 }
                     ]}
                 ]
@@ -914,7 +841,7 @@ describe.each([
     test("subscription with where filter NOT operator 1 result", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { NOT: { title: "movie1" } }) {
+                ${typeMovie.operations.subscribe.created}(where: { NOT: { title_EQ: "movie1" } }) {
                     ${typeMovie.operations.subscribe.payload.created} {
                         title
                     }
@@ -940,7 +867,7 @@ describe.each([
     test("subscription with where filter NOT operator multiple results", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { NOT: { title: "movie0" } }) {
+                ${typeMovie.operations.subscribe.created}(where: { NOT: { title_EQ: "movie0" } }) {
                     ${typeMovie.operations.subscribe.payload.created} {
                         title
                     }
@@ -970,7 +897,7 @@ describe.each([
     test("subscription with where filter NOT operator empty result", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { NOT: { title: "movie1" } }) {
+                ${typeMovie.operations.subscribe.created}(where: { NOT: { title_EQ: "movie1" } }) {
                     ${typeMovie.operations.subscribe.payload.created} {
                         title
                     }
@@ -1019,7 +946,7 @@ describe.each([
             ${typeMovie.operations.subscribe.created}(where: {
                 NOT: { 
                         AND: [
-                            { title: "movie2" },
+                            { title_EQ: "movie2" },
                             { releasedIn_GTE: 2000 }
                         ]
                     }

@@ -134,7 +134,7 @@ describe.each([
     test("create subscription with where", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { title: "movie1" }) {
+                ${typeMovie.operations.subscribe.created}(where: { title_EQ: "movie1" }) {
                     ${typeMovie.operations.subscribe.payload.created} {
                         title
                     }
@@ -162,7 +162,7 @@ describe.each([
         await wsClient.subscribe(
             `
             subscription {
-                ${typeActor.operations.subscribe.created}(where: { name: "Keanu" }) {
+                ${typeActor.operations.subscribe.created}(where: { name_EQ: "Keanu" }) {
                     ${typeActor.operations.subscribe.payload.created} {
                         name
                     }

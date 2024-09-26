@@ -47,7 +47,7 @@ describe("Subscriptions authorization with delete events", () => {
             type ${User} @node
                 @subscriptionsAuthorization(
                     filter: [
-                        { where: { node: { id: "$jwt.sub" }, jwt: { roles_INCLUDES: "user" } } }
+                        { where: { node: { id_EQ: "$jwt.sub" }, jwt: { roles_INCLUDES: "user" } } }
                         { where: { jwt: { roles_INCLUDES: "admin" } } }
                     ]
                 ) {
@@ -197,7 +197,7 @@ describe("Subscriptions authorization with delete events", () => {
             .send({
                 query: `
                     mutation {
-                        ${User.operations.delete}(where: { id: "${id}" }) {
+                        ${User.operations.delete}(where: { id_EQ: "${id}" }) {
                             nodesDeleted
                         }
                     }

@@ -255,7 +255,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                 mutation {
                     ${typeActor.operations.delete}(
                             where: {
-                                name: "Keanu Reeves"
+                                name_EQ: "Keanu Reeves"
                             }
                     ) {
                         nodesDeleted
@@ -596,14 +596,14 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                                     {
                                        where: {
                                             node: {
-                                                name: "Person someone"
+                                                name_EQ: "Person someone"
                                             }
                                         }
                                     },
                                     {
                                         where: {
                                              node: {
-                                                 name: "Dinosaur someone"
+                                                 name_EQ: "Dinosaur someone"
                                              }
                                          }
                                      }
@@ -882,14 +882,14 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                                     {
                                        where: {
                                             node: {
-                                                title: "A Production"
+                                                title_EQ: "A Production"
                                             }
                                         }
                                     },
                                     {
                                         where: {
                                              node: {
-                                                 title: "A Series"
+                                                 title_EQ: "A Series"
                                              }
                                          }
                                      }
@@ -931,7 +931,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                 mutation {
                     ${typeActor.operations.delete}(
                             where: {
-                                name: "Keanu Reeves"
+                                name_EQ: "Keanu Reeves"
                             }
                     ) {
                         nodesDeleted
@@ -1174,14 +1174,14 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                                             {
                                                 where: {
                                                     node: {
-                                                        title: "A Production"
+                                                        title_EQ: "A Production"
                                                     }
                                                 }
                                             },
                                             {
                                                 where: {
                                                     node: {
-                                                        title: "A Series"
+                                                        title_EQ: "A Series"
                                                     }
                                                 }
                                             }
@@ -1219,7 +1219,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                                     {
                                         where: {
                                              node: {
-                                                 title: "Another Series"
+                                                 title_EQ: "Another Series"
                                              }
                                          }
                                      }
@@ -1258,7 +1258,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                 mutation {
                     ${typeSeries.operations.delete}(
                             where: {
-                                title: "Another Series"
+                                title_EQ: "Another Series"
                             }
                     ) {
                         nodesDeleted

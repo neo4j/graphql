@@ -141,7 +141,7 @@ describe.each([
     test("update subscription with where", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.updated}(where: { title: "movie5" }) {
+                ${typeMovie.operations.subscribe.updated}(where: { title_EQ: "movie5" }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
                         title
                     }
@@ -202,7 +202,7 @@ describe.each([
         await wsClient.subscribe(
             `
             subscription {
-                ${typeActor.operations.subscribe.updated}(where: { name: "Keanu" }) {
+                ${typeActor.operations.subscribe.updated}(where: { name_EQ: "Keanu" }) {
                     ${typeActor.operations.subscribe.payload.updated} {
                         name
                     }
@@ -257,7 +257,7 @@ describe.each([
             .send({
                 query: `
                         mutation {
-                            ${typeMovie.operations.update}(where: { title: "${oldTitle}" }, update: { title: "${newTitle}" }) {
+                            ${typeMovie.operations.update}(where: { title_EQ: "${oldTitle}" }, update: { title: "${newTitle}" }) {
                                 ${typeMovie.plural} {
                                     title
                                 }
@@ -274,7 +274,7 @@ describe.each([
             .send({
                 query: `
                         mutation {
-                            ${typeActor.operations.update}(where: { name: "${oldName}" }, update: { name: "${newName}" }) {
+                            ${typeActor.operations.update}(where: { name_EQ: "${oldName}" }, update: { name: "${newName}" }) {
                                 ${typeActor.plural} {
                                     name
                                 }
