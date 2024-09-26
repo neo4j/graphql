@@ -2642,7 +2642,9 @@ describe("generate", () => {
             };
 
             export type FaqEntryUniqueWhere = {
+              /** @deprecated Please use the explicit _EQ version */
               id?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
+              id_EQ?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
             };
 
             export type FaqEntryUpdateInput = {
@@ -2757,7 +2759,9 @@ describe("generate", () => {
             };
 
             export type FaqUniqueWhere = {
+              /** @deprecated Please use the explicit _EQ version */
               id?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
+              id_EQ?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
             };
 
             export type FaqUpdateInput = {
