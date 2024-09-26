@@ -542,7 +542,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
                             node: {
                                 actorsConnection_SOME: {
                                     node: { 
-                                        name: "${actorInput4.name}"
+                                        name_EQ: "${actorInput4.name}"
                                         moviesAggregate: { count_GT: 1 }
                                     }
                                     edge: {
@@ -573,7 +573,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
                     where: {
                         movies_ALL: {
                             actors_SOME: {
-                                name: "${actorInput4.name}"
+                                name_EQ: "${actorInput4.name}"
                                 moviesAggregate: { count_GT: 1 }
                             }
                         }
@@ -600,7 +600,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
                         movies_ALL: {
                             actors_SOME: {
                                 OR: [
-                                    { name: "${actorInput4.name}" }
+                                    { name_EQ: "${actorInput4.name}" }
                                     { moviesAggregate: { count_GT: 1 } }
                                 ]
 
@@ -629,7 +629,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
                         movies_ALL: {
                             actors_SOME: {
                                 AND: [
-                                    { name: "${actorInput4.name}" }
+                                    { name_EQ: "${actorInput4.name}" }
                                     { moviesAggregate: { count_GT: 1 } }
                                 ]
 
@@ -698,7 +698,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
                             node: {
                                 actorsConnection_SOME: {
                                     node: { 
-                                        name: "${actorInput4.name}"
+                                        name_EQ: "${actorInput4.name}"
                                         moviesAggregate: { count_GT: 1 }
                                     }
                                     edge: {

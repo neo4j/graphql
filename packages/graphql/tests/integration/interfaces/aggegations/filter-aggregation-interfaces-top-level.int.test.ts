@@ -69,7 +69,7 @@ describe("Top-level filter interface query fields", () => {
     test("top level count", async () => {
         const query = `
             query {
-                productionsAggregate(where: { title: "The Show" }) {
+                productionsAggregate(where: { title_EQ: "The Show" }) {
                     count
                 }
             }
@@ -88,7 +88,7 @@ describe("Top-level filter interface query fields", () => {
     test("top level count with logical operator", async () => {
         const query = `
             query {
-                productionsAggregate(where: { OR: [{title: "The Show"}, {title: "A Movie"}] }) {
+                productionsAggregate(where: { OR: [{title_EQ: "The Show"}, {title_EQ: "A Movie"}] }) {
                     count
                 }
             }

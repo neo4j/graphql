@@ -55,7 +55,7 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
                 users: [${User}!]! @relationship(type: "IS_MEMBER_OF", direction: IN)
             }
 
-            type ${Group} @authorization(validate: [{ operations: [CREATE], when: [AFTER], where: { node: { organization: { users_SOME: { id: "$jwt.sub" } } } } }]) @node {
+            type ${Group} @authorization(validate: [{ operations: [CREATE], when: [AFTER], where: { node: { organization: { users_SOME: { id_EQ: "$jwt.sub" } } } } }]) @node {
                 id: String!
                 name: String
                 organization: ${Organization}! @relationship(type: "HAS_GROUP", direction: IN)
@@ -73,7 +73,7 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
                     input: {
                         id: "grp_1"
                         name: "AdminGroup"
-                        organization: { connect: { where: { node: { id: "org_1" } } } }
+                        organization: { connect: { where: { node: { id_EQ: "org_1" } } } }
                     }
                 ) {
                     ${Group.plural} {
@@ -114,7 +114,7 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
                 users: [${User}!]! @relationship(type: "IS_MEMBER_OF", direction: IN)
             }
 
-            type ${Group} @authorization(validate: [{ operations: [CREATE], when: [AFTER], where: { node: { organization: { users_ALL: { id: "$jwt.sub" } } } } }]) @node {
+            type ${Group} @authorization(validate: [{ operations: [CREATE], when: [AFTER], where: { node: { organization: { users_ALL: { id_EQ: "$jwt.sub" } } } } }]) @node {
                 id: String!
                 name: String
                 organization: ${Organization}! @relationship(type: "HAS_GROUP", direction: IN)
@@ -132,7 +132,7 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
                   input: {
                       id: "grp_1"
                       name: "AdminGroup"
-                      organization: { connect: { where: { node: { id: "org_1" } } } }
+                      organization: { connect: { where: { node: { id_EQ: "org_1" } } } }
                   }
               ) {
                   ${Group.plural} {

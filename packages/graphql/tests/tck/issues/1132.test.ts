@@ -28,7 +28,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
                 @node
                 @authorization(
                     validate: [
-                        { when: [BEFORE], operations: [CREATE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }
+                        { when: [BEFORE], operations: [CREATE_RELATIONSHIP], where: { node: { id_EQ: "$jwt.sub" } } }
                     ]
                 ) {
                 id: ID!
@@ -47,7 +47,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
 
         const query = /* GraphQL */ `
             mutation {
-                updateSources(connect: { targets: { where: { node: { id: 1 } } } }) {
+                updateSources(connect: { targets: { where: { node: { id_EQ: 1 } } } }) {
                     sources {
                         id
                     }
@@ -103,7 +103,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
                 @node
                 @authorization(
                     validate: [
-                        { when: [BEFORE], operations: [DELETE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }
+                        { when: [BEFORE], operations: [DELETE_RELATIONSHIP], where: { node: { id_EQ: "$jwt.sub" } } }
                     ]
                 ) {
                 id: ID!
@@ -122,7 +122,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
 
         const query = /* GraphQL */ `
             mutation {
-                updateSources(disconnect: { targets: { where: { node: { id: 1 } } } }) {
+                updateSources(disconnect: { targets: { where: { node: { id_EQ: 1 } } } }) {
                     sources {
                         id
                     }
@@ -169,7 +169,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
                                 {
                                     \\"where\\": {
                                         \\"node\\": {
-                                            \\"id\\": \\"1\\"
+                                            \\"id_EQ\\": \\"1\\"
                                         }
                                     }
                                 }

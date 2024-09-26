@@ -178,7 +178,7 @@ describe("cypher targeting union", () => {
                     productions(title: $title) {
                        ... on ${Movie} {
                             title
-                            actors(where: {name: $name}) {
+                            actors(where: {name_EQ: $name}) {
                                 name
                             }
                        }
@@ -234,7 +234,7 @@ describe("cypher targeting union", () => {
                     singleProduction(title: $title) {
                         ... on ${Movie} {
                            title
-                           actors(where: {name: $name}) {
+                           actors(where: {name_EQ: $name}) {
                                name
                            }
                        }

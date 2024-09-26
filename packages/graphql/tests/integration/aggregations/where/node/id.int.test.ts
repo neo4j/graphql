@@ -68,7 +68,7 @@ describe("aggregations-where-node-id", () => {
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { id_EQUAL: "${testId}" } } }) {
+                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { id_EQUAL: "${testId}" } } }) {
                         testString
                         likes {
                             id
@@ -155,7 +155,7 @@ describe("aggregations-where-node-id interface relationships of concrete types",
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { node: { id_EQUAL: "${testId}" } } }) {
+                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { id_EQUAL: "${testId}" } } }) {
                         testString
                         likes {
                             id

@@ -50,7 +50,7 @@ describe("Middleware Resolvers", () => {
         function middlewareResolver(resolve, root, args, context, info) {
             const newArgs = {
                 where: {
-                    custom: args.where.custom.replace("original", "modified"),
+                    custom_EQ: args.where.custom_EQ.replace("original", "modified"),
                 },
             } as any;
 
@@ -67,7 +67,7 @@ describe("Middleware Resolvers", () => {
 
         const query = `
             {
-                ${Movie.plural}(where: { custom: "original string" }) { custom }
+                ${Movie.plural}(where: { custom_EQ: "original string" }) { custom }
             }
         `;
 

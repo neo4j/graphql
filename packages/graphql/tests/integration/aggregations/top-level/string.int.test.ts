@@ -70,7 +70,7 @@ describe("aggregations-top_level-string", () => {
 
         const query = `
                 {
-                    ${typeMovie.operations.aggregate}(where: {testId: "${id}"}) {
+                    ${typeMovie.operations.aggregate}(where: {testId_EQ: "${id}"}) {
                         title {
                             shortest
                         }
@@ -122,7 +122,7 @@ describe("aggregations-top_level-string", () => {
 
         const query = `
                 {
-                    ${typeMovie.operations.aggregate}(where: {testId: "${id}"}) {
+                    ${typeMovie.operations.aggregate}(where: {testId_EQ: "${id}"}) {
                         title {
                             longest
                         }
@@ -174,7 +174,7 @@ describe("aggregations-top_level-string", () => {
 
         const query = `
                 {
-                    ${typeMovie.operations.aggregate}(where: {testId: "${id}"}) {
+                    ${typeMovie.operations.aggregate}(where: {testId_EQ: "${id}"}) {
                         title {
                             shortest
                             longest

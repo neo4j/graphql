@@ -247,14 +247,14 @@ subscription SubscriptionPerson {
                     mutation {
                         ${typeMovie.operations.delete}(
                                 where: {
-                                  title: "John Wick"
+                                  title_EQ: "John Wick"
                                 },
                                 delete: {
                                     actors:  [
                                         {
                                           where: {
                                                 node: {
-                                                    name: "Keanu Reeves"
+                                                    name_EQ: "Keanu Reeves"
                                                 }
                                             }
                                         }
@@ -379,14 +379,14 @@ subscription SubscriptionPerson {
                     mutation {
                         ${typeMovie.operations.delete}(
                                 where: {
-                                  title: "John Wick"
+                                  title_EQ: "John Wick"
                                 },
                                 delete: {
                                     actors:  [
                                         {
                                           where: {
                                                 node: {
-                                                    name: "Keanu Reeves"
+                                                    name_EQ: "Keanu Reeves"
                                                 }
                                             },
                                             delete: {
@@ -394,7 +394,7 @@ subscription SubscriptionPerson {
                                                     {
                                                       where: {
                                                             node: {
-                                                                title: "Matrix"
+                                                                title_EQ: "Matrix"
                                                             }
                                                         }
                                                     }
@@ -579,7 +579,7 @@ subscription SubscriptionPerson {
                     mutation {
                         ${typeMovie.operations.delete}(
                                 where: {
-                                  title: "John Wick"
+                                  title_EQ: "John Wick"
                                 },
                                 delete: {
                                     directors: {
@@ -587,7 +587,7 @@ subscription SubscriptionPerson {
                                         {
                                           where: {
                                             node: {
-                                              name: "Keanu Reeves"
+                                              name_EQ: "Keanu Reeves"
                                             }
                                           }
                                         }
@@ -596,7 +596,7 @@ subscription SubscriptionPerson {
                                         {
                                           where: {
                                             node: {
-                                              reputation: 10
+                                              reputation_EQ: 10
                                             }
                                           }
                                         }
@@ -804,7 +804,7 @@ subscription SubscriptionPerson {
                     mutation {
                         ${typeMovie.operations.delete}(
                                 where: {
-                                  title: "John Wick"
+                                  title_EQ: "John Wick"
                                 },
                                 delete: {
                                     directors: {
@@ -812,7 +812,7 @@ subscription SubscriptionPerson {
                                         {
                                           where: {
                                             node: {
-                                              name: "Keanu Reeves"
+                                              name_EQ: "Keanu Reeves"
                                             }
                                           },
                                           delete: {
@@ -832,7 +832,7 @@ subscription SubscriptionPerson {
                                         {
                                           where: {
                                             node: {
-                                              reputation: 10
+                                              reputation_EQ: 10
                                             }
                                           },
                                           delete: {
@@ -1057,14 +1057,14 @@ subscription SubscriptionPerson {
                     mutation {
                         ${typeMovie.operations.delete}(
                                 where: {
-                                  title: "John Wick"
+                                  title_EQ: "John Wick"
                                 },
                                 delete: {
                                     reviewers: [
                                         {
                                             where: {
                                                 node: {
-                                                    reputation: 10
+                                                    reputation_EQ: 10
                                                 }
                                             }
                                         }
@@ -1217,14 +1217,14 @@ subscription SubscriptionPerson {
                     mutation {
                         ${typeMovie.operations.delete}(
                                 where: {
-                                  title: "John Wick"
+                                  title_EQ: "John Wick"
                                 },
                                 delete: {
                                     actors:  [
                                         {
                                           where: {
                                                 node: {
-                                                    name: "Keanu"
+                                                    name_EQ: "Keanu"
                                                 }
                                             }
                                         }
@@ -1233,7 +1233,7 @@ subscription SubscriptionPerson {
                                         {
                                             where: {
                                                 node: {
-                                                    reputation: 10
+                                                    reputation_EQ: 10
                                                 }
                                             }
                                         }

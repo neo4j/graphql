@@ -59,7 +59,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
         const query = /* GraphQL */ `
             mutation ddfs {
                 updateAbces(
-                    where: { id: "TestID" }
+                    where: { id_EQ: "TestID" }
                     create: { interface: { node: { ChildOne: { name: "childone name2" } } } }
                 ) {
                     abces {
@@ -118,8 +118,8 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateAbces(
-                    where: { id: "TestId" }
-                    connect: { interface: { where: { node: { name: "childone name connect" } } } }
+                    where: { id_EQ: "TestId" }
+                    connect: { interface: { where: { node: { name_EQ: "childone name connect" } } } }
                 ) {
                     abces {
                         id

@@ -83,9 +83,9 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
         const swapSidesQuery = /* GraphQL*/ `
                 mutation {
                     ${testUser.operations.update}(
-                        where: { name: "Luke Skywalker" }
-                        connect: { activeOrganization: { where: { node: { id: "${orgId}" } } } }
-                        disconnect: { activeOrganization: { where: { node: { id_NOT: "${orgId}" } } } }
+                        where: { name_EQ: "Luke Skywalker" }
+                        connect: { activeOrganization: { where: { node: { id_EQ: "${orgId}" } } } }
+                        disconnect: { activeOrganization: { where: { node: { NOT: { id_EQ: "${orgId}" } } } } }
                     ) {
                         ${testUser.plural} {
                             id

@@ -378,7 +378,8 @@ describe("connect or create with id", () => {
             }
 
             input MovieUniqueWhere {
-              id: ID
+              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id_EQ: ID
             }
 
             input MovieUpdateInput {
@@ -773,7 +774,8 @@ describe("connect or create with id", () => {
             }
 
             input PostUniqueWhere {
-              id: ID
+              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id_EQ: ID
             }
 
             input PostUpdateInput {
@@ -1113,7 +1115,8 @@ describe("connect or create with id", () => {
             }
 
             input UserUniqueWhere {
-              id: ID
+              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id_EQ: ID
             }
 
             input UserUpdateInput {

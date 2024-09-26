@@ -402,7 +402,7 @@ describe("Global node resolution", () => {
             creator: ${typeUser.name}! @relationship(type: "CREATED", direction: IN)
           }
 
-          extend type ${typeFilm.name} @authorization(validate: [{ when: [BEFORE], where: { node: { creator: { dbId: "$jwt.sub" } } } }])
+          extend type ${typeFilm.name} @authorization(validate: [{ when: [BEFORE], where: { node: { creator: { dbId_EQ: "$jwt.sub" } } } }])
         `;
 
         const query = `
@@ -451,7 +451,7 @@ describe("Global node resolution", () => {
             name: String!
           }
 
-          extend type ${typeUser.name} @authorization(validate: [{ when: [BEFORE], where: { node: { dbId: "$jwt.sub" } } }])
+          extend type ${typeUser.name} @authorization(validate: [{ when: [BEFORE], where: { node: { dbId_EQ: "$jwt.sub" } } }])
       `;
 
         const query = `
@@ -504,7 +504,7 @@ describe("Global node resolution", () => {
           name: String!
         }
 
-        extend type ${typeUser.name} @authorization(validate: [{ when: [BEFORE], where: { OR: [{ jwt: { roles_INCLUDES: "admin" } }, { node: { dbId: "$jwt.sub" } }] } }])
+        extend type ${typeUser.name} @authorization(validate: [{ when: [BEFORE], where: { OR: [{ jwt: { roles_INCLUDES: "admin" } }, { node: { dbId_EQ: "$jwt.sub" } }] } }])
     `;
 
         const query = `

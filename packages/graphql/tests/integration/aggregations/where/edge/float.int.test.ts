@@ -70,7 +70,7 @@ describe("aggregations-where-edge-float", () => {
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { edge: { someFloat_EQUAL: ${someFloat} } } }) {
+                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { edge: { someFloat_EQUAL: ${someFloat} } } }) {
                         testString
                         likes {
                             testString
@@ -113,7 +113,7 @@ describe("aggregations-where-edge-float", () => {
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { edge: { someFloat_GT: ${someFloatGt} } } }) {
+                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { edge: { someFloat_GT: ${someFloatGt} } } }) {
                         testString
                         likes {
                             testString
@@ -155,7 +155,7 @@ describe("aggregations-where-edge-float", () => {
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { edge: { someFloat_GTE: ${someFloat} } } }) {
+                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { edge: { someFloat_GTE: ${someFloat} } } }) {
                         testString
                         likes {
                             testString
@@ -198,7 +198,7 @@ describe("aggregations-where-edge-float", () => {
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { edge: { someFloat_LT: ${someFloatLT} } } }) {
+                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { edge: { someFloat_LT: ${someFloatLT} } } }) {
                         testString
                         likes {
                             testString
@@ -240,7 +240,7 @@ describe("aggregations-where-edge-float", () => {
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString: "${testString}", likesAggregate: { edge: { someFloat_LTE: ${someFloat} } } }) {
+                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { edge: { someFloat_LTE: ${someFloat} } } }) {
                         testString
                         likes {
                             testString

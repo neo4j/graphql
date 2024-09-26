@@ -61,7 +61,7 @@ describe("https://github.com/neo4j/graphql/issues/1050", () => {
                     {
                         operations: [READ],
                         when: [BEFORE],
-                        where: { node: { id: "$context.user.id" } }
+                        where: { node: { id_EQ: "$context.user.id" } }
                     }
                 ]
             )
@@ -71,7 +71,7 @@ describe("https://github.com/neo4j/graphql/issues/1050", () => {
                     {
                         operations: [READ],
                         when: [BEFORE],
-                        where: { node: { ownerId: "$context.user.id" } }
+                        where: { node: { ownerId_EQ: "$context.user.id" } }
                     }
                 ]
             )
@@ -81,7 +81,7 @@ describe("https://github.com/neo4j/graphql/issues/1050", () => {
                     {
                         operations: [READ],
                         when: [BEFORE],
-                        where: { node: { ownerId: "$context.user.id" } }
+                        where: { node: { ownerId_EQ: "$context.user.id" } }
                     }
                 ]
             )
@@ -91,7 +91,7 @@ describe("https://github.com/neo4j/graphql/issues/1050", () => {
                     {
                         operations: [READ],
                         when: [BEFORE],
-                        where: { node: { ownerId: "$context.user.id" } }
+                        where: { node: { ownerId_EQ: "$context.user.id" } }
                     }
                 ]
             )

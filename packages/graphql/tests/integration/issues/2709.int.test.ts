@@ -119,7 +119,7 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
         const query = `
             query {
                 ${Movie.plural}(
-                    where: { distributionConnection_SOME: { node: { name: "Netflix" } } }
+                    where: { distributionConnection_SOME: { node: { name_EQ: "Netflix" } } }
                 ) {
                     title
                 }
@@ -142,7 +142,7 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
         const query = `
             query {
                 ${Movie.plural}(
-                    where: { distributionConnection_SOME: { node: { name: "Dishney" } } }
+                    where: { distributionConnection_SOME: { node: { name_EQ: "Dishney" } } }
                 ) {
                     title
                 }

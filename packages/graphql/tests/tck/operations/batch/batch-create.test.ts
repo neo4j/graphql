@@ -352,8 +352,8 @@ describe("Batch Create", () => {
             mutation {
                 createMovies(
                     input: [
-                        { id: "1", actors: { connect: { where: { node: { id: "3" } } } } }
-                        { id: "2", actors: { connect: { where: { node: { id: "4" } } } } }
+                        { id: "1", actors: { connect: { where: { node: { id_EQ: "3" } } } } }
+                        { id: "2", actors: { connect: { where: { node: { id_EQ: "4" } } } } }
                     ]
                 ) {
                     movies {
@@ -473,12 +473,12 @@ describe("Batch Create", () => {
                         { id: "1", actors: { create: [{ node: { name: "actor 1" }, edge: { year: 2022 } }] } }
                         { id: "2", actors: { create: [{ node: { name: "actor 2" }, edge: { year: 1999 } }] } }
                         { id: "3", website: { create: { node: { address: "mywebsite.com" } } } }
-                        { id: "4", actors: { connect: { where: { node: { id: "2" } } } } }
+                        { id: "4", actors: { connect: { where: { node: { id_EQ: "2" } } } } }
                         {
                             id: "5"
                             actors: {
                                 connectOrCreate: {
-                                    where: { node: { id: "2" } }
+                                    where: { node: { id_EQ: "2" } }
                                     onCreate: { node: { name: "actor 2" } }
                                 }
                             }

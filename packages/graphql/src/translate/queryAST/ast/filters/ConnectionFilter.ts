@@ -21,13 +21,13 @@ import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import type { RelationshipWhereOperator } from "../../../where/types";
 import { hasTarget } from "../../utils/context-has-target";
 import { getEntityLabels } from "../../utils/create-node-from-entity";
 import { isConcreteEntity } from "../../utils/is-concrete-entity";
 import { isInterfaceEntity } from "../../utils/is-interface-entity";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
+import type { RelationshipWhereOperator } from "./Filter";
 import { Filter } from "./Filter";
 
 export class ConnectionFilter extends Filter {

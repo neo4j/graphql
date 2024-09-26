@@ -34,7 +34,7 @@ describe("https://github.com/neo4j/graphql/issues/4239", () => {
                 type ${Movie.name} @node
                 @authorization(
                     validate: [
-                        { when: [BEFORE], where: { node: { directorConnection: { node: { id: "$jwt.sub" } } } } }
+                        { when: [BEFORE], where: { node: { directorConnection: { node: { id_EQ: "$jwt.sub" } } } } }
                     ]
                 ) {
                 title: String

@@ -63,7 +63,7 @@ describe("https://github.com/neo4j/graphql/issues/2249", () => {
         const query = /* GraphQL */ `
             mutation UpdateMovies {
                 updateMovies(
-                    where: { title: "John Wick" }
+                    where: { title_EQ: "John Wick" }
                     update: {
                         reviewers: [
                             { create: [{ edge: { score: 10 }, node: { Person: { reputation: 100, name: "Ana" } } }] }

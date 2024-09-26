@@ -83,7 +83,7 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
 
         const mutation = `
             mutation updateVideos($id: ID!, $fields: ${Video}UpdateInput!) {
-                ${Video.operations.update}(where: {id: $id}, update: $fields) {
+                ${Video.operations.update}(where: {id_EQ: $id}, update: $fields) {
                     ${Video.plural} {
                         id
                         categories {
@@ -144,7 +144,7 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
 
         const mutation = `
             mutation updateVideos($id: ID!, $fields: ${Video}UpdateInput!) {
-                ${Video.operations.update}(where: {id: $id}, update: $fields) {
+                ${Video.operations.update}(where: {id_EQ: $id}, update: $fields) {
                     ${Video.plural} {
                         id
                         categories {
@@ -210,7 +210,7 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
 
         const mutation = `
             mutation updateVideos($id: ID!, $fields: ${Video}UpdateInput!) {
-                ${Video.operations.update}(where: {id: $id}, update: $fields) {
+                ${Video.operations.update}(where: {id_EQ: $id}, update: $fields) {
                     ${Video.plural} {
                         id
                         categories {

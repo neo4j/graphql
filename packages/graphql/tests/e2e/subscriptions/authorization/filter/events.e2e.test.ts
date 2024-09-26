@@ -47,7 +47,7 @@ describe("Subscriptions authorization with create events", () => {
             type ${User} @node
                 @subscriptionsAuthorization(
                     filter: [
-                        { events: [CREATED], where: { node: { id: "$jwt.sub" } } }
+                        { events: [CREATED], where: { node: { id_EQ: "$jwt.sub" } } }
                     ]
                 ) {
                 id: ID!
@@ -140,7 +140,7 @@ describe("Subscriptions authorization with create events", () => {
             .send({
                 query: `
                     mutation {
-                        ${User.operations.delete}(where: { id: "${id}" }) {
+                        ${User.operations.delete}(where: { id_EQ: "${id}" }) {
                             nodesDeleted
                         }
                     }

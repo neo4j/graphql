@@ -90,7 +90,7 @@ describe("Aggregate -> count", () => {
 
         const query = `
                 {
-                  ${randomType.operations.aggregate}(where: { OR: [{id: "${id1}"}, {id: "${id2}"}] }){
+                  ${randomType.operations.aggregate}(where: { OR: [{id_EQ: "${id1}"}, {id_EQ: "${id2}"}] }){
                     count
                   }
                 }

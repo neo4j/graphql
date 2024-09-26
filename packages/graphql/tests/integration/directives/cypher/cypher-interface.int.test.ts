@@ -182,7 +182,7 @@ describe("cypher targeting interface", () => {
                     productions(title: $title) {
                         title
                        ... on ${Movie} {
-                           actors(where: {name: $name}) {
+                           actors(where: {name_EQ: $name}) {
                                name
                            }
                        }
@@ -238,7 +238,7 @@ describe("cypher targeting interface", () => {
                     singleProduction(title: $title) {
                         title
                        ... on ${Movie} {
-                           actors(where: {name: $name}) {
+                           actors(where: {name_EQ: $name}) {
                                name
                            }
                        }

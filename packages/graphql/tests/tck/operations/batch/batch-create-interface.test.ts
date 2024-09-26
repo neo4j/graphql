@@ -280,7 +280,7 @@ describe("Batch Create, Interface", () => {
                             }
                         }
                         { id: "3", website: { create: { node: { address: "mywebsite.com" } } } }
-                        { id: "4", workers: { connect: { where: { node: { id: "2" } } } } }
+                        { id: "4", workers: { connect: { where: { node: { id_EQ: "2" } } } } }
                     ]
                 ) {
                     movies {

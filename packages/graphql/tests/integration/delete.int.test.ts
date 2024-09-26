@@ -51,7 +51,7 @@ describe("delete", () => {
 
         const mutation = `
         mutation($id: ID!) {
-            ${Movie.operations.delete}(where: { id: $id }) {
+            ${Movie.operations.delete}(where: { id_EQ: $id }) {
               nodesDeleted
               relationshipsDeleted
             }
@@ -99,7 +99,7 @@ describe("delete", () => {
 
         const mutation = `
         mutation($id: ID!) {
-            ${Movie.operations.delete}(where: { id: $id }) {
+            ${Movie.operations.delete}(where: { id_EQ: $id }) {
               nodesDeleted
               relationshipsDeleted
             }
@@ -157,7 +157,7 @@ describe("delete", () => {
 
         const mutation = `
             mutation($id: ID!, $name: String) {
-                ${Movie.operations.delete}(where: { id: $id }, delete: { actors: { where: { node: { name: $name } } } }) {
+                ${Movie.operations.delete}(where: { id_EQ: $id }, delete: { actors: { where: { node: { name_EQ: $name } } } }) {
                     nodesDeleted
                     relationshipsDeleted
                 }
@@ -235,8 +235,8 @@ describe("delete", () => {
         const mutation = `
             mutation($id1: ID!, $name: String, $id2: ID!) {
                 ${Movie.operations.delete}(
-                    where: { id: $id1 }
-                    delete: { actors: { where: { node: { name: $name } }, delete: { movies: { where: { node: { id: $id2 } } } } } }
+                    where: { id_EQ: $id1 }
+                    delete: { actors: { where: { node: { name_EQ: $name } }, delete: { movies: { where: { node: { id_EQ: $id2 } } } } } }
                 ) {
                     nodesDeleted
                     relationshipsDeleted
@@ -323,7 +323,7 @@ describe("delete", () => {
 
         const mutation = `
             mutation($name: String) {
-                ${Movie.operations.delete}(where: { actorsConnection: { node: { name: $name } } } ) {
+                ${Movie.operations.delete}(where: { actorsConnection: { node: { name_EQ: $name } } } ) {
                     nodesDeleted
                     relationshipsDeleted
                 }

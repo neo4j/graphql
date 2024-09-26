@@ -375,7 +375,8 @@ describe("3817", () => {
             }
 
             input PersonUniqueWhere {
-              id: ID
+              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id_EQ: ID
             }
 
             input PersonUpdateInput {

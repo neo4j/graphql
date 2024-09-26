@@ -73,7 +73,7 @@ describe("587: Dates in edges can cause wrongly generated cypher", () => {
 
         const query = `
         query {
-            ${Genre.plural}(where: { id: "${genreId}" }) {
+            ${Genre.plural}(where: { id_EQ: "${genreId}" }) {
                 movies {
                     actorsConnection {
                         edges {

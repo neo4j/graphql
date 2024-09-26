@@ -902,7 +902,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
                 movies(
                     where: {
                         genres_ALL: {
-                            OR: [{ moviesAggregate: { count: 0 } }, { name: "Thriller" }]
+                            OR: [{ moviesAggregate: { count: 0 } }, { name_EQ: "Thriller" }]
                             seriesAggregate: { count: 1 }
                         }
                     }

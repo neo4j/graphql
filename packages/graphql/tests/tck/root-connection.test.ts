@@ -46,7 +46,7 @@ describe("Root Connection Query tests", () => {
     test("Simple selection, Movie by title", async () => {
         const query = /* GraphQL */ `
             {
-                moviesConnection(where: { title: "River Runs Through It, A" }) {
+                moviesConnection(where: { title_EQ: "River Runs Through It, A" }) {
                     totalCount
                     edges {
                         node {

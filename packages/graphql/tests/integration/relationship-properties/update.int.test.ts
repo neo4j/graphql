@@ -71,8 +71,8 @@ describe("Relationship properties - update", () => {
         const mutation = /* GraphQL */ `
             mutation {
                 ${Movie.operations.update}(
-                    where: { title: "${movieTitle}" }
-                    update: { actors: [{ where: { node: { name: "${actor1}" } }, update: { edge: { screenTime: 60 } } }] }
+                    where: { title_EQ: "${movieTitle}" }
+                    update: { actors: [{ where: { node: { name_EQ: "${actor1}" } }, update: { edge: { screenTime: 60 } } }] }
                 ) {
                     ${Movie.plural} {
                         title
@@ -121,11 +121,11 @@ describe("Relationship properties - update", () => {
         const mutation = /* GraphQL */ `
             mutation {
                 ${Movie.operations.update}(
-                    where: { title: "${movieTitle}" }
+                    where: { title_EQ: "${movieTitle}" }
                     update: {
                         actors: [
                             {
-                                where: { node: { name: "${actor2}" } }
+                                where: { node: { name_EQ: "${actor2}" } }
                                 update: {
                                     edge: { screenTime: 60 }
                                     node: { name: "${actor3}" }
@@ -182,7 +182,7 @@ describe("Relationship properties - update", () => {
         const mutation = /* GraphQL */ `
             mutation {
                 ${Movie.operations.update}(
-                    where: { title: "${movieTitle}" }
+                    where: { title_EQ: "${movieTitle}" }
                     update: {
                         actors: [
                             {
@@ -248,7 +248,7 @@ describe("Relationship properties - update", () => {
         const mutation = /* GraphQL */ `
             mutation {
                 ${Movie.operations.update}(
-                    where: { title: "${movieTitle}" }
+                    where: { title_EQ: "${movieTitle}" }
                     create: {
                         actors: [
                             {

@@ -151,7 +151,7 @@ describe("https://github.com/neo4j/graphql/issues/4704", () => {
             {
                 ${Actor.plural}(
                     where: {
-                        actedInConnection_ALL: { node: { actorsConnection_ALL: { node: { name: "${actorName3}"} } } }
+                        actedInConnection_ALL: { node: { actorsConnection_ALL: { node: { name_EQ: "${actorName3}"} } } }
                     }
                 ) {
                     name
@@ -176,7 +176,7 @@ describe("https://github.com/neo4j/graphql/issues/4704", () => {
             {
                 ${Actor.plural}(
                     where: {
-                        actedInConnection_SINGLE: { node: { actorsConnection_SINGLE: { node: { name: "${actorName4}"} } } }
+                        actedInConnection_SINGLE: { node: { actorsConnection_SINGLE: { node: { name_EQ: "${actorName4}"} } } }
                     }
                 ) {
                     name
@@ -201,7 +201,7 @@ describe("https://github.com/neo4j/graphql/issues/4704", () => {
             {
                 ${Actor.plural}(
                     where: {
-                        actedInConnection_NONE: { node: { actorsConnection_NONE: { node: { name: "${actorName}" } } } }
+                        actedInConnection_NONE: { node: { actorsConnection_NONE: { node: { name_EQ: "${actorName}" } } } }
                     }
                 ) {
                     name

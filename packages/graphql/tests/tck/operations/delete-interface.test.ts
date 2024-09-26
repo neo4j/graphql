@@ -80,7 +80,7 @@ describe("Cypher Delete - interface", () => {
     test("Simple Delete", async () => {
         const query = /* GraphQL */ `
             mutation {
-                deleteActors(where: { name: "Keanu" }) {
+                deleteActors(where: { name_EQ: "Keanu" }) {
                     nodesDeleted
                 }
             }
@@ -104,7 +104,7 @@ describe("Cypher Delete - interface", () => {
     test("Single Nested Delete", async () => {
         const query = /* GraphQL */ `
             mutation {
-                deleteActors(where: { name: "Keanu" }, delete: { actedIn: { where: { node: { title: "Matrix" } } } }) {
+                deleteActors(where: { name_EQ: "Keanu" }, delete: { actedIn: { where: { node: { title_EQ: "Matrix" } } } }) {
                     nodesDeleted
                 }
             }
@@ -155,8 +155,8 @@ describe("Cypher Delete - interface", () => {
         const query = /* GraphQL */ `
             mutation {
                 deleteActors(
-                    where: { name: "Keanu" }
-                    delete: { actedIn: { where: { node: { typename_IN: [Movie], title: "Matrix" } } } }
+                    where: { name_EQ: "Keanu" }
+                    delete: { actedIn: { where: { node: { typename_IN: [Movie], title_EQ: "Matrix" } } } }
                 ) {
                     nodesDeleted
                 }
@@ -208,9 +208,9 @@ describe("Cypher Delete - interface", () => {
         const query = /* GraphQL */ `
             mutation {
                 deleteActors(
-                    where: { name: "Keanu" }
+                    where: { name_EQ: "Keanu" }
                     delete: {
-                        actedIn: { where: { node: { OR: [{ title: "Matrix" }, { title: "Matrix Reloaded" }] } } }
+                        actedIn: { where: { node: { OR: [{ title_EQ: "Matrix" }, { title_EQ: "Matrix Reloaded" }] } } }
                     }
                 ) {
                     nodesDeleted
@@ -265,11 +265,11 @@ describe("Cypher Delete - interface", () => {
         const query = /* GraphQL */ `
             mutation {
                 deleteActors(
-                    where: { name: "Keanu" }
+                    where: { name_EQ: "Keanu" }
                     delete: {
                         actedIn: {
-                            where: { node: { title: "Matrix" } }
-                            delete: { actors: { where: { node: { name: "Gloria Foster" } } } }
+                            where: { node: { title_EQ: "Matrix" } }
+                            delete: { actors: { where: { node: { name_EQ: "Gloria Foster" } } } }
                         }
                     }
                 ) {

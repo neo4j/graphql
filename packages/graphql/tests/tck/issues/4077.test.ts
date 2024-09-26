@@ -48,7 +48,7 @@ describe("https://github.com/neo4j/graphql/issues/4077", () => {
             extend type PreviewClip
                 @authorization(
                     filter: [
-                        { where: { node: { clippedFrom: { publisher: { id: "$jwt.sub" } } } } }
+                        { where: { node: { clippedFrom: { publisher: { id_EQ: "$jwt.sub" } } } } }
                         { where: { jwt: { roles_INCLUDES: "admin" } } }
                     ]
                 )
@@ -67,12 +67,12 @@ describe("https://github.com/neo4j/graphql/issues/4077", () => {
             extend type Video
                 @authorization(
                     filter: [
-                        { where: { node: { publisher: { id: "$jwt.sub" } } } }
+                        { where: { node: { publisher: { id_EQ: "$jwt.sub" } } } }
                         { where: { jwt: { roles_INCLUDES: "admin" } } }
                         {
                             requireAuthentication: false
                             operations: [READ]
-                            where: { node: { processing: "published" } }
+                            where: { node: { processing_EQ: "published" } }
                         }
                     ]
                 )
@@ -84,7 +84,7 @@ describe("https://github.com/neo4j/graphql/issues/4077", () => {
             extend type User
                 @authorization(
                     validate: [
-                        { operations: [UPDATE], where: { node: { id: "$jwt.sub" } } }
+                        { operations: [UPDATE], where: { node: { id_EQ: "$jwt.sub" } } }
                         { operations: [UPDATE], where: { jwt: { roles_INCLUDES: "admin" } } }
                     ]
                 )
@@ -103,7 +103,7 @@ describe("https://github.com/neo4j/graphql/issues/4077", () => {
     test("wrap authenticated subquery on top level read operation", async () => {
         const query = /* GraphQL */ `
             query listPossiblePreviewClips {
-                previewClips(where: { clippedFrom: { id: "1234" }, NOT: { markedAsDone: true } }) {
+                previewClips(where: { clippedFrom: { id_EQ: "1234" }, NOT: { markedAsDone_EQ: true } }) {
                     id
                 }
             }
@@ -149,7 +149,7 @@ describe("https://github.com/neo4j/graphql/issues/4077", () => {
         const query = /* GraphQL */ `
             query {
                 videos {
-                    clips(where: { clippedFrom: { id: "1234" }, NOT: { markedAsDone: true } }) {
+                    clips(where: { clippedFrom: { id_EQ: "1234" }, NOT: { markedAsDone_EQ: true } }) {
                         id
                     }
                 }

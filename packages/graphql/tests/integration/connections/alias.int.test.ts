@@ -59,7 +59,7 @@ describe("Connections Alias", () => {
 
         const query = `
             {
-                ${typeMovie.plural}(where: { title: "${movieTitle}" }) {
+                ${typeMovie.plural}(where: { title_EQ: "${movieTitle}" }) {
                     actors: actorsConnection {
                         totalCount
                     }
@@ -109,7 +109,7 @@ describe("Connections Alias", () => {
 
         const query = `
             {
-                ${typeMovie.plural}(where: { title: "${movieTitle}" }) {
+                ${typeMovie.plural}(where: { title_EQ: "${movieTitle}" }) {
                     actorsConnection {
                         count: totalCount
                     }
@@ -160,7 +160,7 @@ describe("Connections Alias", () => {
 
         const query = `
             {
-                ${typeMovie.plural}(where: { title: "${movieTitle}" }) {
+                ${typeMovie.plural}(where: { title_EQ: "${movieTitle}" }) {
                     actorsConnection {
                         pi:pageInfo {
                             hasNextPage
@@ -212,7 +212,7 @@ describe("Connections Alias", () => {
 
         const query = `
             {
-                ${typeMovie.plural}(where: { title: "${movieTitle}" }) {
+                ${typeMovie.plural}(where: { title_EQ: "${movieTitle}" }) {
                     actorsConnection {
                         pageInfo {
                             sc:startCursor
@@ -262,7 +262,7 @@ describe("Connections Alias", () => {
 
         const query = `
             {
-                ${typeMovie.plural}(where: { title: "${movieTitle}" }) {
+                ${typeMovie.plural}(where: { title_EQ: "${movieTitle}" }) {
                     actorsConnection {
                         pageInfo {
                             ec:endCursor
@@ -312,7 +312,7 @@ describe("Connections Alias", () => {
 
         const query = `
             {
-                ${typeMovie.plural}(where: { title: "${movieTitle}" }) {
+                ${typeMovie.plural}(where: { title_EQ: "${movieTitle}" }) {
                     actorsConnection {
                         pageInfo {
                             hPP:hasPreviousPage
@@ -362,7 +362,7 @@ describe("Connections Alias", () => {
 
         const query = `
             {
-                ${typeMovie.plural}(where: { title: "${movieTitle}" }) {
+                ${typeMovie.plural}(where: { title_EQ: "${movieTitle}" }) {
                     actorsConnection(first: 1) {
                         pageInfo {
                             hNP:hasNextPage
@@ -412,7 +412,7 @@ describe("Connections Alias", () => {
 
         const query = `
             {
-                ${typeMovie.plural}(where: { title: "${movieTitle}" }) {
+                ${typeMovie.plural}(where: { title_EQ: "${movieTitle}" }) {
                     actorsConnection(first: 1) {
                         e:edges {
                             cursor
@@ -462,7 +462,7 @@ describe("Connections Alias", () => {
 
         const query = `
             {
-                ${typeMovie.plural}(where: { title: "${movieTitle}" }) {
+                ${typeMovie.plural}(where: { title_EQ: "${movieTitle}" }) {
                     actorsConnection(first: 1) {
                         edges {
                             c:cursor
@@ -512,7 +512,7 @@ describe("Connections Alias", () => {
 
         const query = `
             {
-                ${typeMovie.plural}(where: { title: "${movieTitle}" }) {
+                ${typeMovie.plural}(where: { title_EQ: "${movieTitle}" }) {
                     actorsConnection(first: 1) {
                         edges {
                             n:node {
@@ -564,7 +564,7 @@ describe("Connections Alias", () => {
 
         const query = `
             {
-                ${typeMovie.plural}(where: { title: "${movieTitle}" }) {
+                ${typeMovie.plural}(where: { title_EQ: "${movieTitle}" }) {
                     actorsConnection(first: 1) {
                         edges {
                             node {
@@ -620,7 +620,7 @@ describe("Connections Alias", () => {
 
         const query = `
             {
-                ${typeMovie.plural}(where: { title: "${movieTitle}" }) {
+                ${typeMovie.plural}(where: { title_EQ: "${movieTitle}" }) {
                     actorsConnection(first: 1) {
                         edges {
                            r:properties {
@@ -683,7 +683,7 @@ describe("Connections Alias", () => {
 
         const query = `
             {
-                ${typeMovie.plural}(where: { title: "${movieTitle}" }) {
+                ${typeMovie.plural}(where: { title_EQ: "${movieTitle}" }) {
                     title
                     connection:actorsConnection {
                         tC:totalCount
@@ -758,15 +758,15 @@ describe("Connections Alias", () => {
 
         const query = `
             {
-                posts(where: { title: "${postTitle}"}) {
-                    flagged: commentsConnection(where: { node: { flag: true } }) {
+                posts(where: { title_EQ: "${postTitle}"}) {
+                    flagged: commentsConnection(where: { node: { flag_EQ: true } }) {
                         edges {
                             node {
                                 flag
                             }
                         }
                     }
-                    unflagged: commentsConnection(where: { node: { flag: false } }) {
+                    unflagged: commentsConnection(where: { node: { flag_EQ: false } }) {
                         edges {
                             node {
                                 flag
@@ -825,16 +825,16 @@ describe("Connections Alias", () => {
 
         const query = `
             {
-                ${typeMovie.plural}(where: { title: "${movieTitle}" }) {
+                ${typeMovie.plural}(where: { title_EQ: "${movieTitle}" }) {
                     title
-                    actorsConnection(where: { node: { name: "${actorName}" } }) {
+                    actorsConnection(where: { node: { name_EQ: "${actorName}" } }) {
                         edges {
                             properties {
                                 screenTime
                             }
                             node {
                                 name
-                                b: moviesConnection(where: { node: { title: "${movieTitle}"}}) {
+                                b: moviesConnection(where: { node: { title_EQ: "${movieTitle}"}}) {
                                     edges {
                                         node {
                                             title

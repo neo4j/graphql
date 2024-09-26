@@ -107,7 +107,7 @@ describe("https://github.com/neo4j/graphql/issues/3938", () => {
         const updateGroupsResult = await testHelper.executeGraphQLWithToken(updateGroups, token, {
             variableValues: {
                 where: {
-                    name: "test",
+                    name_EQ: "test",
                 },
                 create: {
                     invitees: [
@@ -118,7 +118,7 @@ describe("https://github.com/neo4j/graphql/issues/3938", () => {
                                     connect: {
                                         where: {
                                             node: {
-                                                id: "insert_group_id_here",
+                                                id_EQ: "insert_group_id_here",
                                             },
                                         },
                                     },

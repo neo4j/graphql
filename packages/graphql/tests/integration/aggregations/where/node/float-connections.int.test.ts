@@ -65,7 +65,7 @@ describe("aggregations-where-node-float - connections", () => {
 
         const query = `
                 {
-                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { someFloat_EQUAL: ${someFloat} } } }) {
+                    ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someFloat_EQUAL: ${someFloat} } } }) {
                         edges {
                             node {
                                 testString
@@ -117,7 +117,7 @@ describe("aggregations-where-node-float - connections", () => {
 
         const query = `
                 {
-                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { someFloat_GT: ${someFloatGt} } } }) {
+                    ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someFloat_GT: ${someFloatGt} } } }) {
                         edges {
                             node {
                                 testString
@@ -168,7 +168,7 @@ describe("aggregations-where-node-float - connections", () => {
 
         const query = `
                 {
-                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { someFloat_GTE: ${someFloat} } } }) {
+                    ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someFloat_GTE: ${someFloat} } } }) {
                         edges {
                             node {
                                 testString
@@ -220,7 +220,7 @@ describe("aggregations-where-node-float - connections", () => {
 
         const query = `
                 {
-                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { someFloat_LT: ${someFloatLT} } } }) {
+                    ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someFloat_LT: ${someFloatLT} } } }) {
                         edges {
                             node {
                                 testString
@@ -271,7 +271,7 @@ describe("aggregations-where-node-float - connections", () => {
 
         const query = `
                 {
-                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { someFloat_LTE: ${someFloat} } } }) {
+                    ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someFloat_LTE: ${someFloat} } } }) {
                         edges {
                             node {
                                 testString
@@ -362,7 +362,7 @@ describe("aggregations-where-node-float - connections - interface relationships 
 
         const query = `
                 {
-                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { someFloat_EQUAL: ${someFloat} } } }) {
+                    ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someFloat_EQUAL: ${someFloat} } } }) {
                         edges {
                             node {
                                 testString
@@ -414,7 +414,7 @@ describe("aggregations-where-node-float - connections - interface relationships 
 
         const query = `
                 {
-                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { someFloat_GT: ${someFloatGt} } } }) {
+                    ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someFloat_GT: ${someFloatGt} } } }) {
                         edges {
                             node {
                                 testString
@@ -465,7 +465,7 @@ describe("aggregations-where-node-float - connections - interface relationships 
 
         const query = `
                 {
-                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { someFloat_GTE: ${someFloat} } } }) {
+                    ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someFloat_GTE: ${someFloat} } } }) {
                         edges {
                             node {
                                 testString
@@ -517,7 +517,7 @@ describe("aggregations-where-node-float - connections - interface relationships 
 
         const query = `
                 {
-                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { someFloat_LT: ${someFloatLT} } } }) {
+                    ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someFloat_LT: ${someFloatLT} } } }) {
                         edges {
                             node {
                                 testString
@@ -568,7 +568,7 @@ describe("aggregations-where-node-float - connections - interface relationships 
 
         const query = `
                 {
-                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { someFloat_LTE: ${someFloat} } } }) {
+                    ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someFloat_LTE: ${someFloat} } } }) {
                         edges {
                             node {
                                 testString

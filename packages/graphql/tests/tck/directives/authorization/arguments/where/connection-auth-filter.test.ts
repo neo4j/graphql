@@ -47,17 +47,17 @@ describe("Connection auth filter", () => {
                 creator: User! @relationship(type: "HAS_POST", direction: IN)
             }
 
-            extend type User @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+            extend type User @authorization(filter: [{ where: { node: { id_EQ: "$jwt.sub" } } }])
 
             extend type User {
-                password: String! @authorization(filter: [{ operations: [READ], where: { node: { id: "$jwt.sub" } } }])
+                password: String! @authorization(filter: [{ operations: [READ], where: { node: { id_EQ: "$jwt.sub" } } }])
             }
 
             extend type Post {
                 secretKey: String!
-                    @authorization(filter: [{ operations: [READ], where: { node: { creator: { id: "$jwt.sub" } } } }])
+                    @authorization(filter: [{ operations: [READ], where: { node: { creator: { id_EQ: "$jwt.sub" } } } }])
             }
-            extend type Post @authorization(filter: [{ where: { node: { creator: { id: "$jwt.sub" } } } }])
+            extend type Post @authorization(filter: [{ where: { node: { creator: { id_EQ: "$jwt.sub" } } } }])
         `;
 
         neoSchema = new Neo4jGraphQL({
@@ -118,7 +118,7 @@ describe("Connection auth filter", () => {
     test("Read Node + User Defined Where", async () => {
         const query = /* GraphQL */ `
             {
-                usersConnection(where: { name: "bob" }) {
+                usersConnection(where: { name_EQ: "bob" }) {
                     edges {
                         node {
                             id
@@ -295,7 +295,7 @@ describe("Connection auth filter", () => {
                     edges {
                         node {
                             id
-                            postsConnection(where: { node: { id: "some-id" } }) {
+                            postsConnection(where: { node: { id_EQ: "some-id" } }) {
                                 edges {
                                     node {
                                         content
@@ -365,7 +365,7 @@ describe("Connection auth filter", () => {
                     edges {
                         node {
                             id
-                            posts(where: { content: "cool" }) {
+                            posts(where: { content_EQ: "cool" }) {
                                 content
                             }
                         }
@@ -559,7 +559,7 @@ describe("Connection auth filter", () => {
                     edges {
                         node {
                             id
-                            contentConnection(where: { Post: { node: { id: "some-id" } } }) {
+                            contentConnection(where: { Post: { node: { id_EQ: "some-id" } } }) {
                                 edges {
                                     node {
                                         ... on Post {

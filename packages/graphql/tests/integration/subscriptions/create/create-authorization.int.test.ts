@@ -51,7 +51,7 @@ describe("auth/bind", () => {
                     posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type ${Post} @authorization(validate: [{ when: [AFTER], operations: [CREATE], where: { node: { id: "$jwt.sub" } } }])
+                extend type ${Post} @authorization(validate: [{ when: [AFTER], operations: [CREATE], where: { node: { id_EQ: "$jwt.sub" } } }])
             `;
 
             const userId = generate({

@@ -97,7 +97,7 @@ describe("https://github.com/neo4j/graphql/issues/4520", () => {
     test("sorting by interface", async () => {
         const query = /* GraphQL */ `
             query {
-                productions(where: { title: "Test Movie" }) {
+                productions(where: { title_EQ: "Test Movie" }) {
                     asc: crewConnection(sort: [{ node: { name: ASC } }]) {
                         edges {
                             node {

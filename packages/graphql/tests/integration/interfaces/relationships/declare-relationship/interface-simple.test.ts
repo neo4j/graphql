@@ -1041,11 +1041,10 @@ describe("interface with declared relationships", () => {
             mutation {
                 ${Actor.operations.update}(update: { 
                     actedIn: [{ 
-                        where: { OR: [{ node: { title: "${movieTitle}" } }] }, 
+                        where: { OR: [{ node: { title_EQ: "${movieTitle}" } }] }, 
                         update: { 
                             node: { 
                                 actors: [{ 
-                                    #where: { OR: [{ node: { name: "${actorName}" } }, { edge: { StarredIn: { episodeNr: ${episodeNr} } } }] }, 
                                     create: { node: { name: "custom actor" }, edge: { ActedIn: { screenTime: 101 }, StarredIn: { episodeNr: 101 } } } 
                                 }] 
                             } 
@@ -1349,12 +1348,12 @@ describe("interface with declared relationships", () => {
             mutation {
                 ${Actor.operations.update}(update: { 
                     actedIn: [{ # ActorActedInUpdateFieldInput
-                        where: { node: { title: "${movieTitle}" } } # ActorActedInConnectionWhere
+                        where: { node: { title_EQ: "${movieTitle}" } } # ActorActedInConnectionWhere
                         update: { # ActorActedInUpdateConnectionInput
                             node: { # ProductionUpdateInput
                                 actors: [{  # ProductionActorsUpdateFieldInput                          
                                     connect: {  # ProductionActorsConnectFieldInput
-                                        where: { node: { name: "${actorName3}" } }, 
+                                        where: { node: { name_EQ: "${actorName3}" } }, 
                                         edge: { ActedIn: { screenTime: 111 }, StarredIn: { episodeNr: 111 } }, 
                                     } 
                                 }] 
@@ -1705,7 +1704,7 @@ describe("interface with declared relationships", () => {
                     actedIn: { 
                         connect: [{ 
                             edge: { screenTime: 112 }
-                            where: { node: { title: "${movieTitle}" } } 
+                            where: { node: { title_EQ: "${movieTitle}" } } 
                             connect: { 
                                 actors: [{  
                                     edge: { ActedIn: { screenTime: 111 }, StarredIn: { episodeNr: 111 } }, 
@@ -1848,7 +1847,7 @@ describe("interface with declared relationships", () => {
                 actedIn: {
                   connect: {
                     edge: { screenTime: 10 }
-                    where: { node: { title: "${movieTitle}", typename_IN: [${Movie.name}] } }
+                    where: { node: { title_EQ: "${movieTitle}", typename_IN: [${Movie.name}] } }
                   }
                 }
               }

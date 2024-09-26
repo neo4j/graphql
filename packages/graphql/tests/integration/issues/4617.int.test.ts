@@ -71,7 +71,7 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
 
             type ${User.name} @node {
                 id: ID
-                email: String! @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
+                email: String! @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id_EQ: "$jwt.sub" } } }])
             }
         `;
 
@@ -117,7 +117,7 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
 
             type ${User.name} @node {
                 id: ID
-                email: String! @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
+                email: String! @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id_EQ: "$jwt.sub" } } }])
             }
         `;
 
@@ -164,7 +164,7 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
 
             type ${User.name} @node {
                 id: ID
-                email: String! @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
+                email: String! @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id_EQ: "$jwt.sub" } } }])
             }
         `;
 
@@ -210,7 +210,7 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
 
             type ${User.name} @node {
                 id: ID
-                email: String! @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
+                email: String! @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id_EQ: "$jwt.sub" } } }])
             }
         `;
 
@@ -262,12 +262,12 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
 
             type ${User.name} implements Person @node {
                 id: ID
-                email: String! @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
+                email: String! @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id_EQ: "$jwt.sub" } } }])
             }
 
             type ${Actor.name} implements Person @node {
                 id: ID
-                email: String! @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
+                email: String! @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id_EQ: "$jwt.sub" } } }])
                 name: String!
             }
         `;
@@ -319,12 +319,12 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
 
             type ${User.name} implements Person @node {
                 id: ID
-                email: String! @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
+                email: String! @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id_EQ: "$jwt.sub" } } }])
             }
 
             type ${Actor.name} implements Person @node {
                 id: ID
-                email: String! @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
+                email: String! @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id_EQ: "$jwt.sub" } } }])
                 name: String!
             }
         `;
@@ -375,12 +375,12 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
 
             type ${User.name} @node {
                 id: ID
-                email: String! @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
+                email: String! @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id_EQ: "$jwt.sub" } } }])
             }
 
             type ${Actor.name} @node {
                 id: ID
-                email: String! @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
+                email: String! @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id_EQ: "$jwt.sub" } } }])
                 name: String
             }
         `;
@@ -437,12 +437,12 @@ describe("https://github.com/neo4j/graphql/issues/4617", () => {
 
             type ${User.name} @node {
                 id: ID
-                email: String! @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
+                email: String! @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id_EQ: "$jwt.sub" } } }])
             }
 
             type ${Actor.name} @node {
                 id: ID
-                email: String! @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
+                email: String! @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id_EQ: "$jwt.sub" } } }])
                 name: String
             }
         `;

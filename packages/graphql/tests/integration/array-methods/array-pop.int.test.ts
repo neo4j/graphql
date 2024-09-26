@@ -629,7 +629,7 @@ describe("array-pop", () => {
 
         const update = `
             mutation($id: ID, $numberToPop: Int) {
-                ${actor.operations.update}(where: { id: $id },
+                ${actor.operations.update}(where: { id_EQ: $id },
                     update: {
                         worksInMovies: [
                             {
@@ -702,7 +702,7 @@ describe("array-pop", () => {
 
         const query = `
             mutation Mutation($id: ID, $numberToPop: Int) {
-                ${actor.operations.update}(where: { id: $id }, update: {
+                ${actor.operations.update}(where: { id_EQ: $id }, update: {
                     actedIn: [
                         {
                             update: {
@@ -785,7 +785,7 @@ describe("array-pop", () => {
 
         const query = `
             mutation Mutation($id: ID, $numberToPop: Int) {
-                ${actor.operations.update}(where: { id: $id }, update: {
+                ${actor.operations.update}(where: { id_EQ: $id }, update: {
                     actedIn: [
                         {
                             update: {

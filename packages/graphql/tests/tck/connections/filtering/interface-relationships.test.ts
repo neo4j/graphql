@@ -53,7 +53,7 @@ describe("interface relationships with aliased fields", () => {
             type ProtectedActor
                 @node
                 @authorization(
-                    validate: [{ where: { node: { actedInConnection: { node: { title: "$jwt.title" } } } } }]
+                    validate: [{ where: { node: { actedInConnection: { node: { title_EQ: "$jwt.title" } } } } }]
                 ) {
                 name: String! @alias(property: "dbName")
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
@@ -68,7 +68,7 @@ describe("interface relationships with aliased fields", () => {
     test("should read and return interface relationship fields with interface relationship filter SOME", async () => {
         const query = /* GraphQL */ `
             query Actors($title: String) {
-                actors(where: { actedInConnection_SOME: { node: { title: $title } } }) {
+                actors(where: { actedInConnection_SOME: { node: { title_EQ: $title } } }) {
                     name
                     actedIn {
                         title
@@ -126,7 +126,7 @@ describe("interface relationships with aliased fields", () => {
     test("delete", async () => {
         const query = /* GraphQL */ `
             mutation deleteActors($title: String) {
-                deleteActors(where: { actedInConnection_SOME: { node: { title: $title } } }) {
+                deleteActors(where: { actedInConnection_SOME: { node: { title_EQ: $title } } }) {
                     nodesDeleted
                     relationshipsDeleted
                 }

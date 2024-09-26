@@ -104,18 +104,18 @@ describe("Federation 2 Entities Basics (https://www.apollographql.com/docs/feder
 
         const response = await request.post("").send({
             query: `
-            {
-                ${Review.plural} {
-                  description
-                  score
-                  product {
-                    id
-                    name
-                    price
+                {
+                  ${Review.plural} {
+                    description
+                    score
+                    product {
+                      id
+                      name
+                      price
+                    }
                   }
                 }
-              }
-        `,
+            `,
         });
 
         expect(response.status).toBe(200);

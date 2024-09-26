@@ -156,7 +156,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
 
         const query = `
             query DisplayBacentaServices($id: ID!) {
-                ${BacentaType.plural}(where: {id: $id}) {
+                ${BacentaType.plural}(where: {id_EQ: $id}) {
                   id
                   name
                   bussing(limit: 10) {

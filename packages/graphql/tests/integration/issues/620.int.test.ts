@@ -56,11 +56,11 @@ describe("https://github.com/neo4j/graphql/issues/620", () => {
     test("should return topic count", async () => {
         const query = `
             query {
-                ${typeUser.plural}(where: { id: "1234"}) {
+                ${typeUser.plural}(where: { id_EQ: "1234"}) {
                     id
                     name
                 }
-                ${typeBusiness.plural}(where: { id: "1234" }) {
+                ${typeBusiness.plural}(where: { id_EQ: "1234" }) {
                     id
                     name
                 }

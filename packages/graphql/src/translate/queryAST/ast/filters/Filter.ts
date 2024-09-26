@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import { QueryASTNode } from "../QueryASTNode";
 import type Cypher from "@neo4j/cypher-builder";
 import type { QueryASTContext } from "../QueryASTContext";
+import { QueryASTNode } from "../QueryASTNode";
 
 export type NumericalWhereOperator = "GT" | "GTE" | "LT" | "LTE";
 export type SpatialWhereOperator = "DISTANCE";
@@ -28,7 +28,8 @@ export type RegexWhereOperator = "MATCHES";
 export type ArrayWhereOperator = "IN" | "INCLUDES";
 export type RelationshipWhereOperator = "ALL" | "NONE" | "SINGLE" | "SOME";
 
-export type WhereOperator =
+export type FilterOperator =
+    | "EQ"
     | "NOT"
     | NumericalWhereOperator
     | SpatialWhereOperator
@@ -38,8 +39,6 @@ export type WhereOperator =
     | ArrayWhereOperator
     | `NOT_${ArrayWhereOperator}`
     | RelationshipWhereOperator;
-
-export type FilterOperator = WhereOperator | "EQ";
 
 export type LogicalOperators = "NOT" | "AND" | "OR" | "XOR";
 

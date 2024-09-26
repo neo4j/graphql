@@ -40,20 +40,20 @@ describe("https://github.com/neo4j/graphql/issues/3929", () => {
                 uid: String!
             }
 
-            type ${User} @authorization(filter: [{ where: { node: { id: "$jwt.uid" } } }]) @node {
+            type ${User} @authorization(filter: [{ where: { node: { id_EQ: "$jwt.uid" } } }]) @node {
                 id: ID! @unique
                 email: String!
                 name: String
             }
 
-            type ${Group} @authorization(validate: [{ where: { node: { creator: { id: "$jwt.uid" } } } }]) @node {
+            type ${Group} @authorization(validate: [{ where: { node: { creator: { id_EQ: "$jwt.uid" } } } }]) @node {
                 id: ID! @id @unique
                 name: String
                 members: [${Person}!]! @relationship(type: "MEMBER_OF", direction: IN)
                 creator: ${User}! @relationship(type: "CREATOR_OF", direction: IN, nestedOperations: [CONNECT])
             }
 
-            type ${Person} @authorization(validate: [{ where: { node: { creator: { id: "$jwt.uid" }}}}]) @node {
+            type ${Person} @authorization(validate: [{ where: { node: { creator: { id_EQ: "$jwt.uid" }}}}]) @node {
                 id: ID! @id @unique
                 name: String!
                 creator: ${User}! @relationship(type: "CREATOR_OF", direction: IN)
@@ -129,7 +129,7 @@ describe("https://github.com/neo4j/graphql/issues/3929", () => {
                             connect: {
                                 where: {
                                     node: {
-                                        id: "user1_id",
+                                        id_EQ: "user1_id",
                                     },
                                 },
                             },
@@ -143,7 +143,7 @@ describe("https://github.com/neo4j/graphql/issues/3929", () => {
                                             connect: {
                                                 where: {
                                                     node: {
-                                                        id: "user1_id",
+                                                        id_EQ: "user1_id",
                                                     },
                                                 },
                                                 overwrite: true,
@@ -163,14 +163,14 @@ describe("https://github.com/neo4j/graphql/issues/3929", () => {
         const updateGroupsResult = await testHelper.executeGraphQLWithToken(updateGroups, token, {
             variableValues: {
                 where: {
-                    name: "Group 1",
+                    name_EQ: "Group 1",
                 },
                 delete: {
                     members: [
                         {
                             where: {
                                 node: {
-                                    name: "Member 1",
+                                    name_EQ: "Member 1",
                                 },
                             },
                         },

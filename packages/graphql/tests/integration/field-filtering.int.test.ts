@@ -68,9 +68,9 @@ describe("field-filtering", () => {
 
         const query = `
             {
-                ${Movie.plural}(where: { title: "${movieTitle}" }) {
+                ${Movie.plural}(where: { title_EQ: "${movieTitle}" }) {
                     title
-                    genres(where: { seriesConnection: { node: { name: "${seriesName}" } } }) {
+                    genres(where: { seriesConnection: { node: { name_EQ: "${seriesName}" } } }) {
                         name
                         series {
                             name

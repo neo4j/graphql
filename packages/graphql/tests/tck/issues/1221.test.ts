@@ -56,17 +56,17 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             query {
                 series(
                     where: {
-                        current: true
+                        current_EQ: true
                         architectureConnection_SINGLE: {
-                            node: { nameDetailsConnection: { node: { fullName: "MHA" } } }
+                            node: { nameDetailsConnection: { node: { fullName_EQ: "MHA" } } }
                         }
                     }
                 ) {
                     id
-                    architectureConnection(where: { edge: { current: true } }) {
+                    architectureConnection(where: { edge: { current_EQ: true } }) {
                         edges {
                             node {
-                                nameDetailsConnection(where: { edge: { current: true } }) {
+                                nameDetailsConnection(where: { edge: { current_EQ: true } }) {
                                     edges {
                                         node {
                                             fullName
@@ -164,24 +164,24 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             query {
                 mains(
                     where: {
-                        current: true
+                        current_EQ: true
                         mainConnection_SINGLE: {
                             node: {
                                 architectureConnection: {
-                                    node: { nameDetailsConnection: { node: { fullName: "MHA" } } }
+                                    node: { nameDetailsConnection: { node: { fullName_EQ: "MHA" } } }
                                 }
                             }
                         }
                     }
                 ) {
                     id
-                    mainConnection(where: { edge: { current: true } }) {
+                    mainConnection(where: { edge: { current_EQ: true } }) {
                         edges {
                             node {
-                                architectureConnection(where: { edge: { current: true } }) {
+                                architectureConnection(where: { edge: { current_EQ: true } }) {
                                     edges {
                                         node {
-                                            nameDetailsConnection(where: { edge: { current: true } }) {
+                                            nameDetailsConnection(where: { edge: { current_EQ: true } }) {
                                                 edges {
                                                     node {
                                                         fullName

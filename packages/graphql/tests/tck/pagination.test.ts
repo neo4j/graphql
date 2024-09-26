@@ -164,7 +164,7 @@ describe("Cypher pagination tests", () => {
     test("Skip + Limit with other variables", async () => {
         const query = /* GraphQL */ `
             query ($offset: Int, $limit: Int, $title: String) {
-                movies(options: { limit: $limit, offset: $offset }, where: { title: $title }) {
+                movies(options: { limit: $limit, offset: $offset }, where: { title_EQ: $title }) {
                     title
                 }
             }

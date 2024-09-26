@@ -105,7 +105,7 @@ describe("interface relationships", () => {
                 $seriesScreenTime: Int!
             ) {
                 ${Actor.operations.update}(
-                    where: { name: $name }
+                    where: { name_EQ: $name }
                     create: {
                         actedIn: [
                             {
@@ -206,7 +206,7 @@ describe("interface relationships", () => {
                 $seriesScreenTime: Int!
             ) {
                 ${Actor.operations.update}(
-                    where: { name: $name1 }
+                    where: { name_EQ: $name1 }
                     create: {
                         actedIn: [
                             {

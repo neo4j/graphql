@@ -252,14 +252,14 @@ subscription SubscriptionPerson {
                     mutation {
                         ${typeMovie.operations.update}(
                                 where: {
-                                  title: "John Wick"
+                                  title_EQ: "John Wick"
                                 },
                                 disconnect: {
                                     actors:  [
                                         {
                                           where: {
                                                 node: {
-                                                    name: "Keanu Reeves"
+                                                    name_EQ: "Keanu Reeves"
                                                 }
                                             }
                                         }
@@ -389,7 +389,7 @@ subscription SubscriptionPerson {
                     mutation {
                         ${typeMovie.operations.update}(
                                 where: {
-                                  title: "John Wick"
+                                  title_EQ: "John Wick"
                                 },
                                 disconnect: {
                                     directors: {
@@ -397,7 +397,7 @@ subscription SubscriptionPerson {
                                           {
                                             where: {
                                               node: {
-                                                name: "Keanu Reeves"
+                                                name_EQ: "Keanu Reeves"
                                               }
                                             }
                                           }
@@ -406,7 +406,7 @@ subscription SubscriptionPerson {
                                           {
                                             where: {
                                               edge: {
-                                                year: 2020
+                                                year_EQ: 2020
                                               }
                                             }
                                           }
@@ -529,14 +529,14 @@ subscription SubscriptionPerson {
                     mutation {
                         ${typeMovie.operations.update}(
                                 where: {
-                                  title: "John Wick"
+                                  title_EQ: "John Wick"
                                 },
                                 disconnect: {
                                     reviewers:  [
                                         {
                                           where: {
                                                 node: {
-                                                    reputation: 10
+                                                    reputation_EQ: 10
                                                 }
                                             }
                                         }
@@ -678,7 +678,7 @@ subscription SubscriptionPerson {
                     mutation {
                         ${typeMovie.operations.update}(
                                 where: {
-                                  title: "John Wick"
+                                  title_EQ: "John Wick"
                                 },
                                 disconnect: {
                                     reviewers:  [
@@ -844,7 +844,7 @@ subscription SubscriptionPerson {
                     mutation {
                         ${typeMovie.operations.update}(
                                 where: {
-                                  title: "John Wick"
+                                  title_EQ: "John Wick"
                                 },
                                 update: {
                                     title: "John WICK",
@@ -855,7 +855,7 @@ subscription SubscriptionPerson {
                                             {
                                               where: {
                                                 edge: {
-                                                  year: 2020
+                                                  year_EQ: 2020
                                                 }
                                               }
                                             }
@@ -868,7 +868,7 @@ subscription SubscriptionPerson {
                                             {
                                               where: {
                                                 node: {
-                                                  name: "Jim"
+                                                  name_EQ: "Jim"
                                                 }
                                               }
                                             }
@@ -882,7 +882,7 @@ subscription SubscriptionPerson {
                                           {
                                             where: {
                                               node: {
-                                                name: "Keanu"
+                                                name_EQ: "Keanu"
                                               }
                                             }
                                           }
@@ -1039,7 +1039,7 @@ subscription SubscriptionPerson {
                                                         connect: {
                                                           where: {
                                                             node: {
-                                                              title: "Constantine"
+                                                              title_EQ: "Constantine"
                                                             }
                                                           },
                                                           edge: {
@@ -1094,7 +1094,7 @@ subscription SubscriptionPerson {
                     mutation {
                         ${typeMovie.operations.update}(
                                 where: {
-                                  title: "John Wick"
+                                  title_EQ: "John Wick"
                                 },
                                 update: {
                                     title: "John WICK",
@@ -1109,7 +1109,7 @@ subscription SubscriptionPerson {
                                                       {
                                                         where: {
                                                           edge: {
-                                                            screenTime: 234
+                                                            screenTime_EQ: 234
                                                           }
                                                         },
                                                         disconnect: {
@@ -1117,7 +1117,7 @@ subscription SubscriptionPerson {
                                                             {
                                                               where: {
                                                                 node: {
-                                                                  reputation: 100
+                                                                  reputation_EQ: 100
                                                                 }
                                                               }
                                                             }
@@ -1309,7 +1309,7 @@ subscription SubscriptionPerson {
                                                         connect: {
                                                           where: {
                                                             node: {
-                                                              title: "Constantine"
+                                                              title_EQ: "Constantine"
                                                             }
                                                           },
                                                           edge: {
@@ -1329,7 +1329,7 @@ subscription SubscriptionPerson {
                                                         connect: {
                                                           where: {
                                                             node: {
-                                                              title: "Constantine"
+                                                              title_EQ: "Constantine"
                                                             }
                                                           },
                                                           edge: {
@@ -1384,7 +1384,7 @@ subscription SubscriptionPerson {
                     mutation {
                         ${typeMovie.operations.update}(
                                 where: {
-                                  title: "John Wick"
+                                  title_EQ: "John Wick"
                                 },
                                 update: {
                                     title: "John WICK",
@@ -1399,7 +1399,7 @@ subscription SubscriptionPerson {
                                                       {
                                                         where: {
                                                           edge: {
-                                                            screenTime: 234
+                                                            screenTime_EQ: 234
                                                           }
                                                         },
                                                         disconnect: {
@@ -1407,7 +1407,7 @@ subscription SubscriptionPerson {
                                                             {
                                                               where: {
                                                                 node: {
-                                                                  reputation: 100
+                                                                  reputation_EQ: 100
                                                                 }
                                                               }
                                                             }
@@ -1620,7 +1620,7 @@ subscription SubscriptionPerson {
                                             {
                                                where: {
                                                     node: {
-                                                        name: "Jim"
+                                                        name_EQ: "Jim"
                                                     }
                                                },
                                                 connect: [
@@ -1629,7 +1629,7 @@ subscription SubscriptionPerson {
                                                             {
                                                                 where: {
                                                                     node: {
-                                                                      title: "Other Movie"
+                                                                      title_EQ: "Other Movie"
                                                                     }
                                                                   },
                                                                   edge: {
@@ -1652,7 +1652,7 @@ subscription SubscriptionPerson {
                                                         connect: {
                                                           where: {
                                                             node: {
-                                                              title: "Constantine"
+                                                              title_EQ: "Constantine"
                                                             }
                                                           },
                                                           edge: {
@@ -1707,7 +1707,7 @@ subscription SubscriptionPerson {
                     mutation {
                         ${typeMovie.operations.update}(
                                 where: {
-                                  title: "John Wick"
+                                  title_EQ: "John Wick"
                                 },
                                 update: {
                                     title: "John WICK",
@@ -1722,7 +1722,7 @@ subscription SubscriptionPerson {
                                                       {
                                                         where: {
                                                           edge: {
-                                                            screenTime: 234
+                                                            screenTime_EQ: 234
                                                           }
                                                         },
                                                         disconnect: {
@@ -1730,7 +1730,7 @@ subscription SubscriptionPerson {
                                                             {
                                                               where: {
                                                                 node: {
-                                                                  reputation: 100
+                                                                  reputation_EQ: 100
                                                                 }
                                                               }
                                                             }

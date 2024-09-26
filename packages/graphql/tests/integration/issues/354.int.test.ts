@@ -62,7 +62,7 @@ describe("https://github.com/neo4j/graphql/issues/354", () => {
                         comment_id: "${commentId}",
                         post: {
                             connect: {
-                                where: { node: { post_id: "${missingNodeId}" } }
+                                where: { node: { post_id_EQ: "${missingNodeId}" } }
                             }
                         }
                     }]

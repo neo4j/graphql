@@ -75,7 +75,7 @@ describe("Relationship properties - connect on union", () => {
                             actedIn: {
                                 ${Movie}: {
                                     connect: {
-                                        where: { node: { title: $movieTitle } }
+                                        where: { node: { title_EQ: $movieTitle } }
                                         edge: { screenTime: $screenTime }
                                     }
                                 }
@@ -125,11 +125,11 @@ describe("Relationship properties - connect on union", () => {
         const source = /* GraphQL */ `
             mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
                 ${Actor.operations.update}(
-                    where: { name: $actorName }
+                    where: { name_EQ: $actorName }
                     connect: {
                         actedIn: {
                             ${Movie}: {
-                                where: { node: { title: $movieTitle } }
+                                where: { node: { title_EQ: $movieTitle } }
                                 edge: { screenTime: $screenTime }
                             }
                         }

@@ -141,7 +141,7 @@ describe("delete interface relationships", () => {
     test("should delete one nested concrete entity", async () => {
         const query = `
             mutation DeleteActorAndMovie($name: String, $title: String) {
-                ${actorType.operations.delete}(where: { name: $name }, delete: { actedIn:  { where: { node: { typename_IN: [${movieType}], title: $title } } } } ) {
+                ${actorType.operations.delete}(where: { name_EQ: $name }, delete: { actedIn:  { where: { node: { typename_IN: [${movieType}], title_EQ: $title } } } } ) {
                     nodesDeleted
                     relationshipsDeleted
                 }
@@ -166,10 +166,10 @@ describe("delete interface relationships", () => {
         const query = `
             mutation DeleteActorAndMovie($name1: String, $movieScreenTime1: Int) {
                 ${actorType.operations.delete}(
-                    where: { name: $name1 }
+                    where: { name_EQ: $name1 }
                     delete: {
                         actedIn: {
-                            where: { edge: { screenTime: $movieScreenTime1 } }
+                            where: { edge: { screenTime_EQ: $movieScreenTime1 } }
                         }
                     }
                 ) {
@@ -197,10 +197,10 @@ describe("delete interface relationships", () => {
         const query = `
             mutation DeleteActorAndMovie($name1: String, $movieScreenTime1: Int, $movieScreenTime2: Int) {
                 ${actorType.operations.delete}(
-                    where: { name: $name1 }
+                    where: { name_EQ: $name1 }
                     delete: {
                         actedIn: {
-                            where: { edge: { OR: [ {screenTime: $movieScreenTime1 }, { screenTime: $movieScreenTime2 } ]} } 
+                            where: { edge: { OR: [ {screenTime_EQ: $movieScreenTime1 }, { screenTime_EQ: $movieScreenTime2 } ]} } 
                         }
                     }
                 ) {
@@ -232,13 +232,13 @@ describe("delete interface relationships", () => {
         const query = `
             mutation DeleteActorAndMovie($name1: String, $movieTitle2: String, $name2: String) {
                 ${actorType.operations.delete}(
-                    where: { name: $name1 }
+                    where: { name_EQ: $name1 }
                     delete: {
                         actedIn: {
-                            where: { node: { title: $movieTitle2 } }
+                            where: { node: { title_EQ: $movieTitle2 } }
                             delete: {
                                 actors: {
-                                    where: { node: { name: $name2 } }
+                                    where: { node: { name_EQ: $name2 } }
                                 }
                             }
                         }

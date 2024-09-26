@@ -48,7 +48,7 @@ describe("Subscriptions authorization with relationship creation events", () => 
                 @node
                 @subscriptionsAuthorization(
                     filter: [
-                        { where: { relationship: { follows: { node: { id: "$jwt.sub" } } }, jwt: { roles_INCLUDES: "user" } } }
+                        { where: { relationship: { follows: { node: { id_EQ: "$jwt.sub" } } }, jwt: { roles_INCLUDES: "user" } } }
                         { where: { jwt: { roles_INCLUDES: "admin" } } }
                     ]
                 ) {
@@ -230,7 +230,7 @@ describe("Subscriptions authorization with relationship creation events", () => 
             .send({
                 query: `
                     mutation {
-                        ${User.operations.update}(where: { id: "${user}" }, connect: { follows: { where: { node: { id: "${follows}" } } } }) {
+                        ${User.operations.update}(where: { id_EQ: "${user}" }, connect: { follows: { where: { node: { id_EQ: "${follows}" } } } }) {
                             ${User.plural} {
                                 id
                             }

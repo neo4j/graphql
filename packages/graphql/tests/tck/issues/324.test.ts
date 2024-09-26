@@ -66,7 +66,7 @@ describe("#324", () => {
 
         const result = await translateQuery(neoSchema, query, {
             variableValues: {
-                where: { identifier: "Someone" },
+                where: { identifier_EQ: "Someone" },
                 update: {
                     car: {
                         update: {
@@ -75,7 +75,7 @@ describe("#324", () => {
                                     update: {
                                         node: {
                                             name: "Manufacturer",
-                                            logo: { connect: { where: { node: { identifier: "Opel Logo" } } } },
+                                            logo: { connect: { where: { node: { identifier_EQ: "Opel Logo" } } } },
                                         },
                                     },
                                 },

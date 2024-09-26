@@ -90,7 +90,7 @@ describe("https://github.com/neo4j/graphql/issues/1127", () => {
                                         connectOrCreate: {
                                             where: {
                                                 node: {
-                                                    number: "00001",
+                                                    number_EQ: "00001",
                                                 },
                                             },
                                             onCreate: {

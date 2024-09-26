@@ -19,17 +19,16 @@
 
 import { asArray } from "@graphql-tools/utils";
 import Cypher from "@neo4j/cypher-builder";
+import type { AuthorizationOperation } from "../../../schema-model/annotation/AuthorizationAnnotation";
 import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { GraphQLWhereArg } from "../../../types";
-import type { AuthorizationOperation } from "../../../schema-model/annotation/AuthorizationAnnotation";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { isLogicalOperator } from "../../utils/logical-operators";
-import type { RelationshipWhereOperator, WhereOperator } from "../../where/types";
 import type { ConnectionFilter } from "../ast/filters/ConnectionFilter";
-import type { Filter } from "../ast/filters/Filter";
+import type { Filter, FilterOperator, RelationshipWhereOperator } from "../ast/filters/Filter";
 import { LogicalFilter } from "../ast/filters/LogicalFilter";
 import type { RelationshipFilter } from "../ast/filters/RelationshipFilter";
 import { AuthConnectionFilter } from "../ast/filters/authorization-filters/AuthConnectionFilter";
@@ -135,12 +134,12 @@ export class AuthFilterFactory extends FilterFactory {
     }: {
         attribute: AttributeAdapter;
         comparisonValue: unknown;
-        operator: WhereOperator | undefined;
+        operator: FilterOperator | undefined;
         isNot: boolean;
         attachedTo?: "node" | "relationship";
         relationship?: RelationshipAdapter;
     }): PropertyFilter {
-        const filterOperator = operator || "EQ";
+        const filterOperator = operator ?? "EQ";
 
         // This is probably not needed, but avoid changing the cypher
         if (typeof comparisonValue === "boolean") {

@@ -98,8 +98,8 @@ describe("interface relationships", () => {
         const query = `
             mutation ConnectMovie($name: String, $title: String, $screenTime: Int!) {
                 ${Actor.operations.update}(
-                    where: { name: $name }
-                    connect: { actedIn: { edge: { screenTime: $screenTime }, where: { node: { title: $title } } } }
+                    where: { name_EQ: $name }
+                    connect: { actedIn: { edge: { screenTime: $screenTime }, where: { node: { title_EQ: $title } } } }
                 ) {
                     ${Actor.plural} {
                         name
@@ -175,13 +175,13 @@ describe("interface relationships", () => {
         const query = `
             mutation ConnectMovie($name1: String, $name2: String, $title: String, $screenTime: Int!) {
                 ${Actor.operations.update}(
-                    where: { name: $name1 }
+                    where: { name_EQ: $name1 }
                     connect: {
                         actedIn: {
                             edge: { screenTime: $screenTime }
-                            where: { node: { title: $title } }
+                            where: { node: { title_EQ: $title } }
                             connect: {
-                                actors: { edge: { ActedIn: { screenTime: $screenTime } }, where: { node: { name: $name2 } } }
+                                actors: { edge: { ActedIn: { screenTime: $screenTime } }, where: { node: { name_EQ: $name2 } } }
                             }
                         }
                     }

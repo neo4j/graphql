@@ -55,7 +55,7 @@ describe("https://github.com/neo4j/graphql/issues/4056", () => {
             @node
             @authorization(
                 validate: [
-                    { where: { node: { userId: "$jwt.id" } }, operations: [READ] }
+                    { where: { node: { userId_EQ: "$jwt.id" } }, operations: [READ] }
                     { where: { jwt: { roles_INCLUDES: "overlord" } } }
                 ]
             ) {
@@ -68,7 +68,7 @@ describe("https://github.com/neo4j/graphql/issues/4056", () => {
             @node
             @authorization(
                 validate: [
-                    { where: { node: { admins: { userId: "$jwt.id" } } } }
+                    { where: { node: { admins: { userId_EQ: "$jwt.id" } } } }
                     { where: { jwt: { roles_INCLUDES: "overlord" } } }
                 ]
             ) {
@@ -90,7 +90,7 @@ describe("https://github.com/neo4j/graphql/issues/4056", () => {
             @node
             @authorization(
                 validate: [
-                {  where: { node: {settings: { tenant: { admins: { userId: "$jwt.id" } } } } } }
+                {  where: { node: {settings: { tenant: { admins: { userId_EQ: "$jwt.id" } } } } } }
                 { where: { jwt: { roles_INCLUDES: "overlord" } } }
             ]
             ) {
@@ -157,7 +157,7 @@ describe("https://github.com/neo4j/graphql/issues/4056", () => {
                 connect: {
                     where: {
                         node: {
-                            id: settingsId,
+                            id_EQ: settingsId,
                         },
                     },
                 },

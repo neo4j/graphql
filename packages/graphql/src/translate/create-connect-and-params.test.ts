@@ -111,8 +111,8 @@ describe("createConnectAndParams", () => {
             withVars: ["this"],
             value: [
                 {
-                    where: { node: { title: "abc" } },
-                    connect: { similarMovies: [{ where: { node: { title: "cba" } } }] },
+                    where: { node: { title_EQ: "abc" } },
+                    connect: { similarMovies: [{ where: { node: { title_EQ: "cba" } } }] },
                 },
             ],
             varName: "this",

@@ -39,7 +39,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             const testTarget = testHelper.createUniqueType("Target");
 
             const typeDefs = gql`
-                type ${testSource.name} @authorization(validate: [{ when: BEFORE, operations: [CREATE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }]) @node {
+                type ${testSource.name} @authorization(validate: [{ when: BEFORE, operations: [CREATE_RELATIONSHIP], where: { node: { id_EQ: "$jwt.sub" } } }]) @node {
                     id: ID!
                     targets: [${testTarget.name}!]! @relationship(type: "HAS_TARGET", direction: OUT)
                 }
@@ -66,7 +66,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             });
             const query = `
                 mutation {
-                    ${testSource.operations.update}(where: { id: "${sourceId}" }, connect: { targets: { where: { node: { id: "${targetId}" } } } }) {
+                    ${testSource.operations.update}(where: { id_EQ: "${sourceId}" }, connect: { targets: { where: { node: { id_EQ: "${targetId}" } } } }) {
                         ${testSource.plural} {
                             id
                             targets {
@@ -110,7 +110,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
                     targets: [${testTarget.name}!]! @relationship(type: "HAS_TARGET", direction: OUT)
                 }
             
-                type ${testTarget.name} @authorization(validate: [{ when: BEFORE, operations: [DELETE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }]) @node {
+                type ${testTarget.name} @authorization(validate: [{ when: BEFORE, operations: [DELETE_RELATIONSHIP], where: { node: { id_EQ: "$jwt.sub" } } }]) @node {
                     id: ID!
                 }
             `;
@@ -135,7 +135,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             });
             const query = `
                 mutation {
-                    ${testSource.operations.update}(where: { id: "${sourceId}" }, disconnect: { targets: { where: { node: { id: "${targetId}" } } } }) {
+                    ${testSource.operations.update}(where: { id_EQ: "${sourceId}" }, disconnect: { targets: { where: { node: { id_EQ: "${targetId}" } } } }) {
                         ${testSource.plural} {
                             id
                         }
@@ -163,7 +163,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
                     targets: [${testTarget.name}!]! @relationship(type: "HAS_TARGET", direction: OUT)
                 }
             
-                type ${testTarget.name} @authorization(validate: [{ when: BEFORE, operations: [DELETE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }]) @node {
+                type ${testTarget.name} @authorization(validate: [{ when: BEFORE, operations: [DELETE_RELATIONSHIP], where: { node: { id_EQ: "$jwt.sub" } } }]) @node {
                     id: ID!
                 }
             `;
@@ -185,7 +185,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             });
             const query = `
                 mutation {
-                    ${testSource.operations.update}(where: { id: "${sourceId}" }, disconnect: { targets: { where: { node: { id: "${targetId}" } } } }) {
+                    ${testSource.operations.update}(where: { id_EQ: "${sourceId}" }, disconnect: { targets: { where: { node: { id_EQ: "${targetId}" } } } }) {
                         ${testSource.plural} {
                             id
                             targets {

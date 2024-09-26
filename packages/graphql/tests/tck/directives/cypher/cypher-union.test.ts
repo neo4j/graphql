@@ -325,7 +325,7 @@ describe("Cypher directive on union", () => {
                 moviesOrTVShows(title: "The Matrix") {
                     ... on Movie {
                         title
-                        actors(where: { name: "Keanu Reeves" }) {
+                        actors(where: { name_EQ: "Keanu Reeves" }) {
                             name
                         }
                     }
@@ -613,7 +613,7 @@ describe("Cypher directive on union", () => {
                 moviesOrTVShows(title: "The Matrix") {
                     ... on Movie {
                         title
-                        actors(where: { name: "Keanu Reeves" }) {
+                        actors(where: { name_EQ: "Keanu Reeves" }) {
                             name
                         }
                     }
@@ -706,7 +706,7 @@ describe("Cypher directive on union", () => {
                     moviesOrTVShows(title: "The Matrix") {
                         ... on Movie {
                             title
-                            actors(where: { name: "Keanu Reeves" }) {
+                            actors(where: { name_EQ: "Keanu Reeves" }) {
                                 name
                             }
                         }

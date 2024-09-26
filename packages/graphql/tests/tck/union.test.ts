@@ -34,7 +34,11 @@ describe("Cypher Union", () => {
                 @node
                 @authorization(
                     validate: [
-                        { when: [BEFORE], operations: [READ], where: { node: { name: "$jwt.jwtAllowedNamesExample" } } }
+                        {
+                            when: [BEFORE]
+                            operations: [READ]
+                            where: { node: { name_EQ: "$jwt.jwtAllowedNamesExample" } }
+                        }
                     ]
                 ) {
                 name: String
@@ -156,9 +160,9 @@ describe("Cypher Union", () => {
     test("Read Unions with filter and limit", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { title: "some title" }) {
+                movies(where: { title_EQ: "some title" }) {
                     search(
-                        where: { Movie: { title: "The Matrix" }, Genre: { name: "Horror" } }
+                        where: { Movie: { title_EQ: "The Matrix" }, Genre: { name_EQ: "Horror" } }
                         options: { offset: 1, limit: 10 }
                     ) {
                         ... on Movie {
@@ -303,7 +307,7 @@ describe("Cypher Union", () => {
                     input: [
                         {
                             title: "some movie"
-                            search: { Genre: { connect: [{ where: { node: { name: "some genre" } } }] } }
+                            search: { Genre: { connect: [{ where: { node: { name_EQ: "some genre" } } }] } }
                         }
                     ]
                 ) {
@@ -361,11 +365,11 @@ describe("Cypher Union", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateMovies(
-                    where: { title: "some movie" }
+                    where: { title_EQ: "some movie" }
                     update: {
                         search: {
                             Genre: {
-                                where: { node: { name: "some genre" } }
+                                where: { node: { name_EQ: "some genre" } }
                                 update: { node: { name: "some new genre" } }
                             }
                         }
@@ -408,7 +412,7 @@ describe("Cypher Union", () => {
                                     {
                                         \\"where\\": {
                                             \\"node\\": {
-                                                \\"name\\": \\"some genre\\"
+                                                \\"name_EQ\\": \\"some genre\\"
                                             }
                                         },
                                         \\"update\\": {
@@ -431,8 +435,8 @@ describe("Cypher Union", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateMovies(
-                    where: { title: "some movie" }
-                    update: { search: { Genre: { disconnect: [{ where: { node: { name: "some genre" } } }] } } }
+                    where: { title_EQ: "some movie" }
+                    update: { search: { Genre: { disconnect: [{ where: { node: { name_EQ: "some genre" } } }] } } }
                 ) {
                     movies {
                         title
@@ -477,7 +481,7 @@ describe("Cypher Union", () => {
                                             {
                                                 \\"where\\": {
                                                     \\"node\\": {
-                                                        \\"name\\": \\"some genre\\"
+                                                        \\"name_EQ\\": \\"some genre\\"
                                                     }
                                                 }
                                             }
@@ -497,8 +501,8 @@ describe("Cypher Union", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateMovies(
-                    where: { title: "some movie" }
-                    disconnect: { search: { Genre: { where: { node: { name: "some genre" } } } } }
+                    where: { title_EQ: "some movie" }
+                    disconnect: { search: { Genre: { where: { node: { name_EQ: "some genre" } } } } }
                 ) {
                     movies {
                         title
@@ -542,7 +546,7 @@ describe("Cypher Union", () => {
                                     {
                                         \\"where\\": {
                                             \\"node\\": {
-                                                \\"name\\": \\"some genre\\"
+                                                \\"name_EQ\\": \\"some genre\\"
                                             }
                                         }
                                     }
@@ -560,8 +564,8 @@ describe("Cypher Union", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateMovies(
-                    where: { title: "some movie" }
-                    connect: { search: { Genre: { where: { node: { name: "some genre" } } } } }
+                    where: { title_EQ: "some movie" }
+                    connect: { search: { Genre: { where: { node: { name_EQ: "some genre" } } } } }
                 ) {
                     movies {
                         title
@@ -611,8 +615,8 @@ describe("Cypher Union", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateMovies(
-                    where: { title: "some movie" }
-                    delete: { search: { Genre: { where: { node: { name: "some genre" } } } } }
+                    where: { title_EQ: "some movie" }
+                    delete: { search: { Genre: { where: { node: { name_EQ: "some genre" } } } } }
                 ) {
                     movies {
                         title
@@ -655,7 +659,7 @@ describe("Cypher Union", () => {
                                     {
                                         \\"where\\": {
                                             \\"node\\": {
-                                                \\"name\\": \\"some genre\\"
+                                                \\"name_EQ\\": \\"some genre\\"
                                             }
                                         }
                                     }

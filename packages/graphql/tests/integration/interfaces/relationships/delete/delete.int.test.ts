@@ -97,7 +97,7 @@ describe("interface relationships", () => {
 
         const query = `
             mutation DeleteActorAndMovie($name: String, $title: String) {
-                ${Actor.operations.delete}(where: { name: $name }, delete: { actedIn: { where: { node: { title: $title } } } }) {
+                ${Actor.operations.delete}(where: { name_EQ: $name }, delete: { actedIn: { where: { node: { title_EQ: $title } } } }) {
                     nodesDeleted
                     relationshipsDeleted
                 }
@@ -160,11 +160,11 @@ describe("interface relationships", () => {
         const query = `
             mutation DeleteActorAndMovie($name1: String, $name2: String, $title: String) {
                 ${Actor.operations.delete}(
-                    where: { name: $name1 }
+                    where: { name_EQ: $name1 }
                     delete: {
                         actedIn: {
-                            where: { node: { title: $title } }
-                            delete: { actors: { where: { node: { name: $name2 } } } }
+                            where: { node: { title_EQ: $title } }
+                            delete: { actors: { where: { node: { name_EQ: $name2 } } } }
                         }
                     }
                 ) {

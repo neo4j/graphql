@@ -147,7 +147,7 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
                 actedIn: {
                   connect: {
                     edge: { screenTime: 10 }
-                    where: { node: { title: "${movieTitle}", typename_IN: [${Movie.name}] } }
+                    where: { node: { title_EQ: "${movieTitle}", typename_IN: [${Movie.name}] } }
                   }
                 }
               }
@@ -194,11 +194,11 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
                 actors: {
                   connect: {
                     edge: { screenTime: 10 }
-                    where: { node: { name: "${actorName2}" } }
+                    where: { node: { name_EQ: "${actorName2}" } }
                     connect: {
                         actedIn: {
                             edge: { screenTime: 25 }
-                            where: { node: { title: "${sameTitle}", typename_IN: [${Movie.name}]} }
+                            where: { node: { title_EQ: "${sameTitle}", typename_IN: [${Movie.name}]} }
                         }
                     }
                   }
@@ -261,8 +261,8 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
                   connect: {
                     edge: { screenTime: 10 }
                     where: { node: { OR: [
-                        { title: "${movieTitle}", typename_IN: [${Movie.name}]},
-                        { AND: [ {typename_IN: [${Series.name}]}, { NOT: { title: "${sameTitle}"} }] }
+                        { title_EQ: "${movieTitle}", typename_IN: [${Movie.name}]},
+                        { AND: [ {typename_IN: [${Series.name}]}, { NOT: { title_EQ: "${sameTitle}"} }] }
                     ] } }
                   }
                 }

@@ -71,9 +71,9 @@ describe("Subscriptions update", () => {
         const mutation = `
                 mutation($movieId1: ID, $actorName1: String, $movieId2: ID) {
                     ${typeMovie.operations.update}(
-                        where: { id: $movieId1 }
+                        where: { id_EQ: $movieId1 }
                         update: {
-                            actors: { delete: { where: { node: { name: $actorName1 } }, delete: { movies: { where: { node: { id: $movieId2 } } } } } }
+                            actors: { delete: { where: { node: { name_EQ: $actorName1 } }, delete: { movies: { where: { node: { id_EQ: $movieId2 } } } } } }
                         }
                     ) {
                         ${typeMovie.plural} {
@@ -132,7 +132,7 @@ describe("Subscriptions update", () => {
     test("simple update with subscriptions enabled", async () => {
         const query = `
         mutation {
-            ${typeMovie.operations.update}(where: { id: "1" }, update: { name: "The Matrix" }) {
+            ${typeMovie.operations.update}(where: { id_EQ: "1" }, update: { name: "The Matrix" }) {
                 ${typeMovie.plural} {
                     id
                 }
@@ -212,7 +212,7 @@ describe("Subscriptions update", () => {
                     name: "The Matrix"
                     actors: [
                         {
-                            where: { node: { name: "arthur" } }
+                            where: { node: { name_EQ: "arthur" } }
                             update: {
                                 node: {
                                     name: "ford"
@@ -292,7 +292,7 @@ describe("Subscriptions update", () => {
                     name: "The Matrix"
                     actors: [
                         {
-                            where: { node: { name: "arthur" } }
+                            where: { node: { name_EQ: "arthur" } }
                             update: {
                                 node: {
                                     name: "ford"
@@ -385,7 +385,7 @@ describe("Subscriptions update", () => {
         const query = `
         mutation {
             ${typeMovie.operations.update}(
-                where: { id: "1" }
+                where: { id_EQ: "1" }
                 update: {
                     name: "Terminator 2"
                     actors: {
@@ -446,14 +446,14 @@ describe("Subscriptions update", () => {
         const query = `
         mutation {
             ${typeMovie.operations.update}(
-                where: { id: "1" }
+                where: { id_EQ: "1" }
                 update: {
                     name: "Terminator 2"
                     actors: {
                         delete: {
                             where: {
                                 node: {
-                                    name: "Arnold"
+                                    name_EQ: "Arnold"
                                 }
                             }
                         }
@@ -510,14 +510,14 @@ describe("Subscriptions update", () => {
         const query = `
         mutation {
             ${typeMovie.operations.update}(
-                where: { id: "1" }
+                where: { id_EQ: "1" }
                 update: {
                     name: "Terminator 2"
                     actors: {
                         delete: {
                             where: {
                                 node: {
-                                    name: "Arnold"
+                                    name_EQ: "Arnold"
                                 }
                             }
                         }
@@ -589,21 +589,21 @@ describe("Subscriptions update", () => {
         const query = `
         mutation {
             ${typeMovie.operations.update}(
-                where: { id: "1" }
+                where: { id_EQ: "1" }
                 update: {
                     name: "Terminator 2"
                     actors: {
                         delete: {
                             where: {
                                 node: {
-                                    name: "Arnold"
+                                    name_EQ: "Arnold"
                                 }
                             }
                             delete: {
                                 movies: {
                                     where: {
                                         node: {
-                                            name: "Predator"
+                                            name_EQ: "Predator"
                                         }
                                     }
                                 }
@@ -705,7 +705,7 @@ describe("Subscriptions update", () => {
     test("update multiple properties on single node", async () => {
         const query = `
             mutation {
-                ${typeMovie.operations.update}(where: { id: "1" }, update: { name: "The Matrix", tagline: "Don't worry about cookies" }) {
+                ${typeMovie.operations.update}(where: { id_EQ: "1" }, update: { name: "The Matrix", tagline: "Don't worry about cookies" }) {
                     ${typeMovie.plural} {
                         id
                     }
@@ -738,7 +738,7 @@ describe("Subscriptions update", () => {
     test("update property using mathematical operator", async () => {
         const query = `
             mutation {
-                ${typeMovie.operations.update}(where: { id: "1" }, update: { length_INCREMENT: 1 }) {
+                ${typeMovie.operations.update}(where: { id_EQ: "1" }, update: { length_INCREMENT: 1 }) {
                     ${typeMovie.plural} {
                         id
                         length
@@ -776,7 +776,7 @@ describe("Subscriptions update", () => {
     test("update multiple properties using mathematical operator", async () => {
         const query = `
             mutation {
-                ${typeMovie.operations.update}(where: { id: "1" }, update: { name: "It's not Matrix", length_INCREMENT: 1 }) {
+                ${typeMovie.operations.update}(where: { id_EQ: "1" }, update: { name: "It's not Matrix", length_INCREMENT: 1 }) {
                     ${typeMovie.plural} {
                         id
                         name
@@ -816,13 +816,13 @@ describe("Subscriptions update", () => {
         const query = `
         mutation {
             ${typeMovie.operations.update}(
-                where: { id: "1" }
+                where: { id_EQ: "1" }
                 update: {
                     name: "The Matrix"
                     length_INCREMENT: 10
                     actors: [
                         {
-                            where: { node: { name: "Keanu_wrong" } }
+                            where: { node: { name_EQ: "Keanu_wrong" } }
                             update: {
                                 node: {
                                     name: "Keanu"

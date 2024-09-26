@@ -94,7 +94,7 @@ describe("Union filtering", () => {
     test("allow for filtering on top-level union relationships", async () => {
         const query = /* GraphQL */ `
             query {
-                productions(where: { ${Movie}: { title: "The Office" }, ${Series}: { title: "The Office 2" } }) {
+                productions(where: { ${Movie}: { title_EQ: "The Office" }, ${Series}: { title_EQ: "The Office 2" } }) {
                     ... on ${Movie} {
                         title
                     }
@@ -150,7 +150,7 @@ describe("Union filtering", () => {
         const query = /* GraphQL */ `
             mutation updateName($name: String!) {
                 ${Actor.operations.update}(
-                    where: { actedIn_SOME: { ${Movie}: { title: "The Office" } }},
+                    where: { actedIn_SOME: { ${Movie}: { title_EQ: "The Office" } }},
                     update: { name: $name }
                 ) {
                     ${Actor.plural} {

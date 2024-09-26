@@ -218,7 +218,7 @@ describe("Connection Resolvers", () => {
 
         const secondQuery = /* GraphQL */ `
                 query movies($movieId: ID!, $endCursor: String) {
-                    ${Movie.plural}(where: { id: $movieId }) {
+                    ${Movie.plural}(where: { id_EQ: $movieId }) {
                         id
                         title
                         actorsConnection(sort: [{ node: { name: ASC } }], first: 5, after: $endCursor) {
@@ -308,7 +308,7 @@ describe("Connection Resolvers", () => {
 
         const query = `
             query GetMovie($movieId: ID) {
-                ${Movie.plural}(where: { id: $movieId }) {
+                ${Movie.plural}(where: { id_EQ: $movieId }) {
                     id
                     actorsConnection {
                         totalCount

@@ -94,7 +94,7 @@ describe("typename_IN with auth", () => {
                                 operations: [READ]
                                 where: {
                                     node: {
-                                        actedInConnection_SOME: { node: { AND: [ { title: "The Matrix" }, {typename_IN: [${Movie.name}] }] } } 
+                                        actedInConnection_SOME: { node: { AND: [ { title_EQ: "The Matrix" }, {typename_IN: [${Movie.name}] }] } } 
                                     }
                                 }
                             }
@@ -142,7 +142,7 @@ describe("typename_IN with auth", () => {
                                 operations: [READ]
                                 where: {
                                     node: {
-                                        actedInConnection_SOME: { node: { AND: [ { title: "The Matrix" }, {typename_IN: [${Series.name}] }] } } 
+                                        actedInConnection_SOME: { node: { AND: [ { title_EQ: "The Matrix" }, {typename_IN: [${Series.name}] }] } } 
                                     }
                                 }
                             }
@@ -185,7 +185,7 @@ describe("typename_IN with auth", () => {
                                 operations: [READ]
                                 where: {
                                     node: {
-                                        actedInConnection_SOME: { node: { AND: [ { title: "The Matrix" }, {typename_IN: [${Movie.name}] }] } } 
+                                        actedInConnection_SOME: { node: { AND: [ { title_EQ: "The Matrix" }, {typename_IN: [${Movie.name}] }] } } 
                                     }
                                 }
                             }
@@ -235,7 +235,7 @@ describe("typename_IN with auth", () => {
                                 operations: [READ]
                                 where: {
                                     node: {
-                                        actedInConnection_SOME: { node: { AND: [ { title: "The Matrix" }, {typename_IN: [${Series.name}] }] } } 
+                                        actedInConnection_SOME: { node: { AND: [ { title_EQ: "The Matrix" }, {typename_IN: [${Series.name}] }] } } 
                                     }
                                 }
                             }
@@ -279,7 +279,7 @@ describe("typename_IN with auth", () => {
                                 operations: [READ]
                                 where: {
                                     node: {
-                                        actedInConnection_SOME: { node: { AND: [ { title: "The Matrix" }, {typename_IN: [${Series.name}] }] } } 
+                                        actedInConnection_SOME: { node: { AND: [ { title_EQ: "The Matrix" }, {typename_IN: [${Series.name}] }] } } 
                                     }
                                 }
                             }
@@ -333,7 +333,7 @@ describe("typename_IN with auth", () => {
                             {
                                 where: {
                                     node: {
-                                        actedInConnection_SOME: { node: { AND: [ { title: "The Matrix" }, {typename_IN: [${Movie.name}] }] } } 
+                                        actedInConnection_SOME: { node: { AND: [ { title_EQ: "The Matrix" }, {typename_IN: [${Movie.name}] }] } } 
                                     }
                                 }
                             }
@@ -379,7 +379,7 @@ describe("typename_IN with auth", () => {
                             {
                                 where: {
                                     node: {
-                                        actedInConnection_SOME: { node: { AND: [ { title: "The Matrix" }, {typename_IN: [${Series.name}] }] } } 
+                                        actedInConnection_SOME: { node: { AND: [ { title_EQ: "The Matrix" }, {typename_IN: [${Series.name}] }] } } 
                                     }
                                 }
                             }

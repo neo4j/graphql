@@ -59,7 +59,7 @@ describe("https://github.com/neo4j/graphql/issues/1735", () => {
         const query = `
             mutation DeleteOrganizations {
                 ${organizationType.operations.delete}(
-                    where: { title: "Google" }
+                    where: { title_EQ: "Google" }
                     delete: { admins: [{ where: { node: { organizationsAggregate: { count: 1 } } } }] }
                 ) {
                     nodesDeleted

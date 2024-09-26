@@ -48,7 +48,7 @@ describe("https://github.com/neo4j/graphql/issues/4450", () => {
 
         const query = /* GraphQL */ `
             query {
-                actors(where: { sceneConnection_SOME: { edge: { cut: true }, node: { location: { city: "test" } } } }) {
+                actors(where: { sceneConnection_SOME: { edge: { cut_EQ: true }, node: { location: { city_EQ: "test" } } } }) {
                     name
                 }
             }

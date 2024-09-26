@@ -31,12 +31,12 @@ describe("https://github.com/neo4j/graphql/issues/5080", () => {
             type JWT @jwt {
                 id: String
             }
-            type User @authorization(filter: [{ where: { node: { userId: "$jwt.id" } } }]) @node {
+            type User @authorization(filter: [{ where: { node: { userId_EQ: "$jwt.id" } } }]) @node {
                 userId: String! @unique
                 adminAccess: [Tenant!]! @relationship(type: "ADMIN_IN", direction: OUT, aggregate: false)
             }
 
-            type Tenant @authorization(validate: [{ where: { node: { admins: { userId: "$jwt.id" } } } }]) @node {
+            type Tenant @authorization(validate: [{ where: { node: { admins: { userId_EQ: "$jwt.id" } } } }]) @node {
                 id: ID! @id
                 admins: [User!]! @relationship(type: "ADMIN_IN", direction: IN, aggregate: false)
                 deletedCars: [DeletedCar!]! @relationship(type: "OWNED_BY", direction: IN, aggregate: false)
@@ -65,7 +65,7 @@ describe("https://github.com/neo4j/graphql/issues/5080", () => {
             type Car
                 @node
                 @mutation(operations: [UPDATE])
-                @authorization(validate: [{ where: { node: { owner: { admins: { userId: "$jwt.id" } } } } }]) {
+                @authorization(validate: [{ where: { node: { owner: { admins: { userId_EQ: "$jwt.id" } } } } }]) {
                 id: ID! @id
                 owner: Tenant! @relationship(type: "OWNED_BY", direction: OUT, aggregate: false)
                 name: String!
@@ -76,7 +76,7 @@ describe("https://github.com/neo4j/graphql/issues/5080", () => {
             type DeletedCar
                 @node
                 @mutation(operations: [UPDATE])
-                @authorization(validate: [{ where: { node: { owner: { admins: { userId: "$jwt.id" } } } } }]) {
+                @authorization(validate: [{ where: { node: { owner: { admins: { userId_EQ: "$jwt.id" } } } } }]) {
                 id: ID! @id
                 owner: Tenant! @relationship(type: "OWNED_BY", direction: OUT, aggregate: false)
                 name: String!

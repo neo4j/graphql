@@ -84,7 +84,7 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
                                     { jwt: { roles_INCLUDES: "store-owner" } }
                                     { jwt: { roles_INCLUDES: "employee" } }
                                 ]
-                                node: { store: { id: "$jwt.store" } }
+                                node: { store: { id_EQ: "$jwt.store" } }
                             }
                         }
                     ]
@@ -99,7 +99,7 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
                                     { jwt: { roles_INCLUDES: "store-owner" } }
                                     { jwt: { roles_INCLUDES: "employee" } }
                                 ]
-                                node: { store: { id: "$jwt.store" } }
+                                node: { store: { id_EQ: "$jwt.store" } }
                             }
                         }
                     ]
@@ -117,7 +117,7 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
                                     { jwt: { roles_INCLUDES: "store-owner" } }
                                     { jwt: { roles_INCLUDES: "employee" } }
                                 ]
-                                node: { transaction: { store: { id: "$jwt.store" } } }
+                                node: { transaction: { store: { id_EQ: "$jwt.store" } } }
                             }
                         }
                     ]
@@ -132,7 +132,7 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
                                     { jwt: { roles_INCLUDES: "store-owner" } }
                                     { jwt: { roles_INCLUDES: "employee" } }
                                 ]
-                                node: { transaction: { store: { id: "$jwt.store" } } }
+                                node: { transaction: { store: { id_EQ: "$jwt.store" } } }
                             }
                         }
                     ]
@@ -173,7 +173,7 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
                         name: "Milk"
                         price: 5
                         quantity: 1
-                        transaction: { connect: { where: { node: { id: "transactionid" } } } }
+                        transaction: { connect: { where: { node: { id_EQ: "transactionid" } } } }
                     }
                 ) {
                     ${TransactionItem.plural} {
@@ -209,7 +209,7 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
                         name: "Milk"
                         price: 5
                         quantity: 1
-                        transaction: { connect: { where: { node: { id: "transactionid" } } } }
+                        transaction: { connect: { where: { node: { id_EQ: "transactionid" } } } }
                     }
                 ) {
                     ${TransactionItem.plural} {

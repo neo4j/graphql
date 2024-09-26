@@ -41,7 +41,7 @@ describe("cypher directive filtering", () => {
                         """
                         columnName: "s"
                     )
-                    @authorization(filter: [{ where: { node: { title: "$jwt.title" } } }])
+                    @authorization(filter: [{ where: { node: { title_EQ: "$jwt.title" } } }])
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 

@@ -143,7 +143,7 @@ describe("DateTime", () => {
 
             const query = `
                 query {
-                    ${Movie.plural}(where: { datetime: "${date.toISOString()}" }) {
+                    ${Movie.plural}(where: { datetime_EQ: "${date.toISOString()}" }) {
                         datetime
                     }
                 }
@@ -179,7 +179,7 @@ describe("DateTime", () => {
 
             const query = /* GraphQL */ `
                 query {
-                    ${Movie.plural}(where: { name: "${Movie.name}" }) {
+                    ${Movie.plural}(where: { name_EQ: "${Movie.name}" }) {
                         datetime
                     }
                 }
@@ -217,7 +217,7 @@ describe("DateTime", () => {
 
             const create = /* GraphQL */ `
                 mutation {
-                    ${Movie.operations.update}(where: {id: "${id}"}, update: {datetime: "${date.toISOString()}"}) {
+                    ${Movie.operations.update}(where: {id_EQ: "${id}"}, update: {datetime: "${date.toISOString()}"}) {
                         ${Movie.plural} {
                             id
                             datetime

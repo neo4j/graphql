@@ -45,7 +45,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
                 address: [${Address}!]! @relationship(type: "HAS_POSTAL_CODE", direction: IN)
             }
 
-            extend type ${PostalCode} @authorization(filter: [{ where: { node: { archivedAt: null } } }])
+            extend type ${PostalCode} @authorization(filter: [{ where: { node: { archivedAt_EQ: null } } }])
 
             type ${Address} @mutation(operations: [CREATE, UPDATE]) @node {
                 archivedAt: DateTime
@@ -56,7 +56,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
                 postalCode: ${PostalCode}! @relationship(type: "HAS_POSTAL_CODE", direction: OUT)
             }
 
-            extend type ${Address} @authorization(filter: [{ where: { node: { archivedAt: null } } }])
+            extend type ${Address} @authorization(filter: [{ where: { node: { archivedAt_EQ: null } } }])
 
             type ${Mandate} @mutation(operations: [CREATE, UPDATE]) @node {
                 archivedAt: DateTime
@@ -69,7 +69,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
                 valuation: ${Valuation}! @relationship(type: "HAS_VALUATION", direction: OUT)
             }
 
-            extend type ${Mandate} @authorization(filter: [{ where: { node: { archivedAt: null } } }])
+            extend type ${Mandate} @authorization(filter: [{ where: { node: { archivedAt_EQ: null } } }])
 
             type ${Valuation} @mutation(operations: [CREATE, UPDATE]) @node {
                 archivedAt: DateTime
@@ -80,7 +80,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
                 estate: ${Estate} @relationship(type: "VALUATION_FOR", direction: OUT)
             }
 
-            extend type ${Valuation} @authorization(filter: [{ where: { node: { archivedAt: null } } }])
+            extend type ${Valuation} @authorization(filter: [{ where: { node: { archivedAt_EQ: null } } }])
 
             enum EstateType {
                 APARTMENT
@@ -110,7 +110,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
                 address: ${Address} @relationship(type: "HAS_ADDRESS", direction: OUT)
             }
 
-            extend type ${Estate} @authorization(filter: [{ where: { node: { archivedAt: null } } }])
+            extend type ${Estate} @authorization(filter: [{ where: { node: { archivedAt_EQ: null } } }])
         `;
 
         const input = [

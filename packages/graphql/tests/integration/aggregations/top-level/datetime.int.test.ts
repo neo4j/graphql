@@ -64,7 +64,7 @@ describe("aggregations-top_level-datetime", () => {
 
         const query = `
                 {
-                    ${Movie.operations.aggregate}(where: {testString: "${testString}"}) {
+                    ${Movie.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
                         createdAt {
                             min
                         }
@@ -108,7 +108,7 @@ describe("aggregations-top_level-datetime", () => {
 
         const query = `
                 {
-                    ${Movie.operations.aggregate}(where: {testString: "${testString}"}) {
+                    ${Movie.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
                         createdAt {
                             max
                         }
@@ -152,7 +152,7 @@ describe("aggregations-top_level-datetime", () => {
 
         const query = `
                 {
-                    ${Movie.operations.aggregate}(where: {testString: "${testString}"}) {
+                    ${Movie.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
                         createdAt {
                             min
                             max

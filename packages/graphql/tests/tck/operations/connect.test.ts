@@ -69,12 +69,12 @@ describe("Cypher Connect", () => {
                             colors: {
                                 connect: [
                                     {
-                                        where: { node: { name: "Red" } }
+                                        where: { node: { name_EQ: "Red" } }
                                         connect: {
                                             photos: [
                                                 {
-                                                    where: { node: { id: "123" } }
-                                                    connect: { color: { where: { node: { id: "134" } } } }
+                                                    where: { node: { id_EQ: "123" } }
+                                                    connect: { color: { where: { node: { id_EQ: "134" } } } }
                                                 }
                                             ]
                                         }
@@ -84,12 +84,12 @@ describe("Cypher Connect", () => {
                             photos: {
                                 connect: [
                                     {
-                                        where: { node: { id: "321" } }
-                                        connect: { color: { where: { node: { name: "Green" } } } }
+                                        where: { node: { id_EQ: "321" } }
+                                        connect: { color: { where: { node: { name_EQ: "Green" } } } }
                                     }
                                     {
-                                        where: { node: { id: "33211" } }
-                                        connect: { color: { where: { node: { name: "Red" } } } }
+                                        where: { node: { id_EQ: "33211" } }
+                                        connect: { color: { where: { node: { name_EQ: "Red" } } } }
                                     }
                                 ]
                             }

@@ -50,11 +50,11 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
     test("Composite", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { title: "Forrest Gump" }) {
+                movies(where: { title_EQ: "Forrest Gump" }) {
                     title
                     actorsConnection(
                         where: {
-                            node: { AND: [{ firstName: "Tom" }, { lastName: "Hanks" }] }
+                            node: { AND: [{ firstName_EQ: "Tom" }, { lastName_EQ: "Hanks" }] }
                             edge: { AND: [{ screenTime_GT: 30 }, { screenTime_LT: 90 }] }
                         }
                     ) {
@@ -114,11 +114,11 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
     test("Composite NOT", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { title: "Forrest Gump" }) {
+                movies(where: { title_EQ: "Forrest Gump" }) {
                     title
                     actorsConnection(
                         where: {
-                            node: { NOT: { firstName: "Tom", lastName: "Hanks" } }
+                            node: { NOT: { firstName_EQ: "Tom", lastName_EQ: "Hanks" } }
                             edge: { NOT: { screenTime_GT: 30, screenTime_LT: 90 } }
                         }
                     ) {
@@ -178,12 +178,12 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
     test("Composite OR (edge and node)", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { title: "Forrest Gump" }) {
+                movies(where: { title_EQ: "Forrest Gump" }) {
                     title
                     actorsConnection(
                         where: {
                             OR: [
-                                { node: { AND: [{ firstName: "Tom" }, { lastName: "Hanks" }] } }
+                                { node: { AND: [{ firstName_EQ: "Tom" }, { lastName_EQ: "Hanks" }] } }
                                 { edge: { AND: [{ screenTime_GT: 30 }, { screenTime_LT: 90 }] } }
                             ]
                         }
@@ -244,13 +244,13 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
     test("Composite NOT with nested OR (edge and node)", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { title: "Forrest Gump" }) {
+                movies(where: { title_EQ: "Forrest Gump" }) {
                     title
                     actorsConnection(
                         where: {
                             NOT: {
                                 OR: [
-                                    { node: { AND: [{ firstName: "Tom" }, { lastName: "Hanks" }] } }
+                                    { node: { AND: [{ firstName_EQ: "Tom" }, { lastName_EQ: "Hanks" }] } }
                                     { edge: { AND: [{ screenTime_GT: 30 }, { screenTime_LT: 90 }] } }
                                 ]
                             }
@@ -312,7 +312,7 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
     test("Composite NOT with complex nested filters", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { title: "Forrest Gump" }) {
+                movies(where: { title_EQ: "Forrest Gump" }) {
                     title
                     actorsConnection(
                         where: {
@@ -320,11 +320,11 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
                                 AND: [
                                     {
                                         OR: [
-                                            { node: { AND: [{ firstName: "Tom" }, { lastName: "Hanks" }] } }
+                                            { node: { AND: [{ firstName_EQ: "Tom" }, { lastName_EQ: "Hanks" }] } }
                                             { edge: { AND: [{ screenTime_GT: 30 }, { screenTime_LT: 90 }] } }
                                         ]
                                     }
-                                    { node: { AND: [{ firstName: "Tommy" }, { lastName: "Ford" }] } }
+                                    { node: { AND: [{ firstName_EQ: "Tommy" }, { lastName_EQ: "Ford" }] } }
                                 ]
                             }
                         }

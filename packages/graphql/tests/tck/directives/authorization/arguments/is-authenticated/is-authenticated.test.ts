@@ -230,7 +230,7 @@ describe("Cypher Auth isAuthenticated", () => {
     test("Update Node", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateUsers(where: { id: "1" }, update: { id: "id-1" }) {
+                updateUsers(where: { id_EQ: "1" }, update: { id: "id-1" }) {
                     users {
                         id
                     }
@@ -262,7 +262,7 @@ describe("Cypher Auth isAuthenticated", () => {
     test("Update Node & Field", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateUsers(where: { id: "1" }, update: { password: "password" }) {
+                updateUsers(where: { id_EQ: "1" }, update: { password: "password" }) {
                     users {
                         id
                     }

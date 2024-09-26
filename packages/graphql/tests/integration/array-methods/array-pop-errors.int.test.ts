@@ -291,7 +291,7 @@ describe("array-pop-errors", () => {
 
         const query = `
             mutation Mutation($id: ID, $numberToPop: Int) {
-                ${actor.operations.update}(where: { id: $id }, update: {
+                ${actor.operations.update}(where: { id_EQ: $id }, update: {
                     actedIn: [
                         {
                             update: {

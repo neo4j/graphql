@@ -76,7 +76,7 @@ describe("Disconnect using aggregate where", () => {
         const query = `
             mutation {
                 ${userType.operations.update}(
-                    where: { name: "${userName}" }
+                    where: { name_EQ: "${userName}" }
                     update: { 
                         likedPosts: { 
                             disconnect: { 
@@ -120,7 +120,7 @@ describe("Disconnect using aggregate where", () => {
         const query = `
              mutation {
                  ${userType.operations.update}(
-                     where: { name: "${userName}" }
+                     where: { name_EQ: "${userName}" }
                      update: { 
                          likedPosts: { 
                              disconnect: { 
@@ -174,7 +174,7 @@ describe("Disconnect using aggregate where", () => {
         const query = `
             mutation {
                 ${userType.operations.update}(
-                    where: { name: "${userName}" }
+                    where: { name_EQ: "${userName}" }
                     update: { 
                         likedPosts: {
                             disconnect: {
@@ -310,7 +310,7 @@ describe("Disconnect UNIONs using aggregate where", () => {
         const query = `
             mutation {
                 ${postType.operations.update}(
-                    where: { id: "${postId2}" }
+                    where: { id_EQ: "${postId2}" }
                     disconnect: {
                         likes: {
                             ${specialUserType.name}: {
@@ -366,7 +366,7 @@ describe("Disconnect UNIONs using aggregate where", () => {
         const query = `
             mutation {
                 ${postType.operations.update}(
-                    where: { id: "${postId2}" }
+                    where: { id_EQ: "${postId2}" }
                     disconnect: {
                         likes: {
                             ${userType.name}: {
@@ -436,7 +436,7 @@ describe("Disconnect UNIONs using aggregate where", () => {
         const query = `
             mutation {
                 ${postType.operations.update}(
-                    where: { id: "${postId2}" }
+                    where: { id_EQ: "${postId2}" }
                     disconnect: {
                         likes: {
                             ${userType.name}: {
@@ -506,7 +506,7 @@ describe("Disconnect UNIONs using aggregate where", () => {
         const query = `
             mutation {
                 ${postType.operations.update}(
-                    where: { id: "${postId2}" }
+                    where: { id_EQ: "${postId2}" }
                     disconnect: {
                         likes: {
                             ${userType.name}: {

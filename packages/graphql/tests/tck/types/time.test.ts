@@ -40,7 +40,7 @@ describe("Cypher Time", () => {
     test("Simple Read", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { time: "12:00:00" }) {
+                movies(where: { time_EQ: "12:00:00" }) {
                     time
                 }
             }

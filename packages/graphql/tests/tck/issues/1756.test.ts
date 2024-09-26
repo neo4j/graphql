@@ -60,7 +60,7 @@ describe("https://github.com/neo4j/graphql/issues/1756", () => {
                         name: "TestProduct"
                         genre: {
                             connectOrCreate: [
-                                { where: { node: { value: "Action" } }, onCreate: { node: { value: "Action" } } }
+                                { where: { node: { value_EQ: "Action" } }, onCreate: { node: { value: "Action" } } }
                             ]
                         }
                     }

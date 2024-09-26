@@ -67,7 +67,7 @@ describe("https://github.com/neo4j/graphql/issues/190", () => {
     test("Example 1", async () => {
         const query = /* GraphQL */ `
             query {
-                ${User.plural}(where: { demographics: { type: "Gender", value: "Female" } }) {
+                ${User.plural}(where: { demographics: { type_EQ: "Gender", value_EQ: "Female" } }) {
                     uid
                     demographics {
                         type
@@ -101,7 +101,7 @@ describe("https://github.com/neo4j/graphql/issues/190", () => {
             query {
                 ${User.plural}(
                     where: {
-                        demographics: { OR: [{ type: "Gender", value: "Female" }, { type: "State" }, { type: "Age" }] }
+                        demographics: { OR: [{ type_EQ: "Gender", value_EQ: "Female" }, { type_EQ: "State" }, { type_EQ: "Age" }] }
                     }
                 ) {
                     uid

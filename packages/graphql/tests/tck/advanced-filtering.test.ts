@@ -63,7 +63,7 @@ describe("Cypher Advanced Filtering", () => {
     test("implicit EQ", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { title: "The Matrix" }) {
+                movies(where: { title_EQ: "The Matrix" }) {
                     title
                 }
             }
@@ -161,7 +161,7 @@ describe("Cypher Advanced Filtering", () => {
     test("NOT", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { id_NOT: "123" }) {
+                movies(where: { NOT: { id_EQ: "123" } }) {
                     id
                 }
             }
@@ -664,7 +664,7 @@ describe("Cypher Advanced Filtering", () => {
         test("equality", async () => {
             const query = /* GraphQL */ `
                 {
-                    movies(where: { genres: { name: "some genre" } }) {
+                    movies(where: { genres: { name_EQ: "some genre" } }) {
                         actorCount
                     }
                 }
@@ -691,7 +691,7 @@ describe("Cypher Advanced Filtering", () => {
         test("NOT", async () => {
             const query = /* GraphQL */ `
                 {
-                    movies(where: { genres_NOT: { name: "some genre" } }) {
+                    movies(where: { genres_NOT: { name_EQ: "some genre" } }) {
                         actorCount
                     }
                 }
@@ -719,7 +719,7 @@ describe("Cypher Advanced Filtering", () => {
             const generateQuery = (operator: "ALL" | "NONE" | "SINGLE" | "SOME"): string => {
                 const query = /* GraphQL */ `
                     {
-                        movies(where: { genres_${operator}: { name: "some genre" } }) {
+                        movies(where: { genres_${operator}: { name_EQ: "some genre" } }) {
                             actorCount
                         }
                     }
@@ -809,7 +809,7 @@ describe("Cypher Advanced Filtering", () => {
         test("Node and relationship properties equality", async () => {
             const query = /* GraphQL */ `
                 {
-                    movies(where: { genresConnection: { node: { name: "some genre" } } }) {
+                    movies(where: { genresConnection: { node: { name_EQ: "some genre" } } }) {
                         actorCount
                     }
                 }
@@ -836,7 +836,7 @@ describe("Cypher Advanced Filtering", () => {
         test("Node and relationship properties NOT", async () => {
             const query = /* GraphQL */ `
                 {
-                    movies(where: { genresConnection_NOT: { node: { name: "some genre" } } }) {
+                    movies(where: { genresConnection_NOT: { node: { name_EQ: "some genre" } } }) {
                         actorCount
                     }
                 }
@@ -864,7 +864,7 @@ describe("Cypher Advanced Filtering", () => {
             const generateQuery = (operator: "ALL" | "NONE" | "SINGLE" | "SOME"): string => {
                 const query = /* GraphQL */ `
                     {
-                        movies(where: { genresConnection_${operator}: { node: { name: "some genre" } } }) {
+                        movies(where: { genresConnection_${operator}: { node: { name_EQ: "some genre" } } }) {
                             actorCount
                         }
                     }

@@ -40,7 +40,7 @@ describe("Cypher BigInt", () => {
     test("Querying with native BigInt in AST", async () => {
         const query = /* GraphQL */ `
             query {
-                files(where: { size: 9223372036854775807 }) {
+                files(where: { size_EQ: 9223372036854775807 }) {
                     name
                 }
             }
@@ -67,7 +67,7 @@ describe("Cypher BigInt", () => {
     test("Querying with BigInt as string in AST", async () => {
         const query = /* GraphQL */ `
             query {
-                files(where: { size: "9223372036854775807" }) {
+                files(where: { size_EQ: "9223372036854775807" }) {
                     name
                 }
             }
@@ -94,7 +94,7 @@ describe("Cypher BigInt", () => {
     test("Querying with BigInt as string in variables", async () => {
         const query = /* GraphQL */ `
             query Files($size: BigInt) {
-                files(where: { size: $size }) {
+                files(where: { size_EQ: $size }) {
                     name
                 }
             }

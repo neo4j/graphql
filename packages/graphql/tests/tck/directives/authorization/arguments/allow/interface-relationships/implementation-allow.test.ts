@@ -48,7 +48,7 @@ describe("@auth allow on specific interface implementation", () => {
                         {
                             when: BEFORE
                             operations: [READ, UPDATE, DELETE, DELETE_RELATIONSHIP, CREATE_RELATIONSHIP]
-                            where: { node: { creator: { id: "$jwt.sub" } } }
+                            where: { node: { creator: { id_EQ: "$jwt.sub" } } }
                         }
                     ]
                 ) {
@@ -134,11 +134,11 @@ describe("@auth allow on specific interface implementation", () => {
     test("Read Two Relationships", async () => {
         const query = /* GraphQL */ `
             {
-                users(where: { id: "1" }) {
+                users(where: { id_EQ: "1" }) {
                     id
-                    content(where: { id: "1" }) {
+                    content(where: { id_EQ: "1" }) {
                         ... on Post {
-                            comments(where: { id: "1" }) {
+                            comments(where: { id_EQ: "1" }) {
                                 content
                             }
                         }
@@ -206,7 +206,7 @@ describe("@auth allow on specific interface implementation", () => {
     test("Nested Update Node", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateUsers(where: { id: "user-id" }, update: { content: { update: { node: { id: "new-id" } } } }) {
+                updateUsers(where: { id_EQ: "user-id" }, update: { content: { update: { node: { id: "new-id" } } } }) {
                     users {
                         id
                         content {
@@ -317,7 +317,7 @@ describe("@auth allow on specific interface implementation", () => {
     test("Nested Delete Node", async () => {
         const query = /* GraphQL */ `
             mutation {
-                deleteUsers(where: { id: "user-id" }, delete: { content: { where: { node: { id: "post-id" } } } }) {
+                deleteUsers(where: { id_EQ: "user-id" }, delete: { content: { where: { node: { id_EQ: "post-id" } } } }) {
                     nodesDeleted
                 }
             }
@@ -379,7 +379,7 @@ describe("@auth allow on specific interface implementation", () => {
     test("Disconnect Node", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateUsers(where: { id: "user-id" }, disconnect: { content: { where: { node: { id: "post-id" } } } }) {
+                updateUsers(where: { id_EQ: "user-id" }, disconnect: { content: { where: { node: { id_EQ: "post-id" } } } }) {
                     users {
                         id
                     }
@@ -446,7 +446,7 @@ describe("@auth allow on specific interface implementation", () => {
                                 {
                                     \\"where\\": {
                                         \\"node\\": {
-                                            \\"id\\": \\"post-id\\"
+                                            \\"id_EQ\\": \\"post-id\\"
                                         }
                                     }
                                 }
@@ -462,7 +462,7 @@ describe("@auth allow on specific interface implementation", () => {
     test("Connect node", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateUsers(where: { id: "user-id" }, connect: { content: { where: { node: { id: "post-id" } } } }) {
+                updateUsers(where: { id_EQ: "user-id" }, connect: { content: { where: { node: { id_EQ: "post-id" } } } }) {
                     users {
                         id
                     }

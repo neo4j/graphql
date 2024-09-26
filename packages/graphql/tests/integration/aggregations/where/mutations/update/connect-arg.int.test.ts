@@ -82,7 +82,7 @@ describe("Connect using aggregate where", () => {
         const query = `
             mutation {
                 ${userType.operations.update}(
-                    where: { name: "${userName}" }
+                    where: { name_EQ: "${userName}" }
                     update: { 
                         likedPosts: { 
                             connect: { 
@@ -128,7 +128,7 @@ describe("Connect using aggregate where", () => {
         const query = `
             mutation {
                 ${userType.operations.update}(
-                    where: { name: "${userName}" }
+                    where: { name_EQ: "${userName}" }
                     update: { 
                         likedPosts: { 
                             connect: { 
@@ -184,7 +184,7 @@ describe("Connect using aggregate where", () => {
         const query = `
             mutation {
                 ${userType.operations.update}(
-                    where: { name: "${userName}" }
+                    where: { name_EQ: "${userName}" }
                     update: { 
                         likedPosts: {
                             connect: {
@@ -246,7 +246,7 @@ describe("Connect using aggregate where", () => {
         const query = `
             mutation {
                 ${userType.operations.update}(
-                    where: { name: "${userName}" }
+                    where: { name_EQ: "${userName}" }
                     update: { 
                         likedPosts: {
                             connect: {
@@ -387,7 +387,7 @@ describe("Connect UNIONs using aggregate where", () => {
         const query = `
             mutation {
                 ${postType.operations.update}(
-                    where: { id: "${postId3}" }
+                    where: { id_EQ: "${postId3}" }
                     connect: {
                         likes: {
                             ${specialUserType.name}: {
@@ -441,7 +441,7 @@ describe("Connect UNIONs using aggregate where", () => {
         const query = `
             mutation {
                 ${postType.operations.update}(
-                    where: { id: "${postId1}" }
+                    where: { id_EQ: "${postId1}" }
                     connect: {
                         likes: {
                             ${userType.name}: {
@@ -515,7 +515,7 @@ describe("Connect UNIONs using aggregate where", () => {
         const query = `
             mutation {
                 ${postType.operations.update}(
-                    where: { id: "${postId1}" }
+                    where: { id_EQ: "${postId1}" }
                     connect: {
                         likes: {
                             ${specialUserType.name}: {

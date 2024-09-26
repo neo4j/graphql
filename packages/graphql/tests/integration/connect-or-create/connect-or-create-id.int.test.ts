@@ -62,7 +62,7 @@ describe("connect-or-create with @id", () => {
                     name: "Tom Hanks"
                     movies: {
                       connectOrCreate: {
-                        where: { node: { title: "${title}" } }
+                        where: { node: { title_EQ: "${title}" } }
                         onCreate: { node: { title: "${title}" } }
                       }
                     }
@@ -108,7 +108,7 @@ describe("connect-or-create with @id", () => {
                     name: "Tom Hanks"
                     movies: {
                       connectOrCreate: {
-                        where: { node: { title: "${title}" } }
+                        where: { node: { title_EQ: "${title}" } }
                         onCreate: { node: { } }
                       }
                     }
@@ -143,7 +143,7 @@ describe("connect-or-create with @id", () => {
                     name: "Tom Hanks"
                     movies: {
                       connectOrCreate: {
-                        where: { node: { id: "myid" } }
+                        where: { node: { id_EQ: "myid" } }
                         onCreate: { node: { id: "myid", title: "The Terminal" } }
                       }
                     }
@@ -182,7 +182,7 @@ describe("connect-or-create with @id", () => {
                     name: "Tom Hanks"
                     movies: {
                       connectOrCreate: {
-                        where: { node: { title: "${title}" } }
+                        where: { node: { title_EQ: "${title}" } }
                         onCreate: { node: { title: "${title}-2" } }
                       }
                     }
@@ -226,7 +226,7 @@ describe("connect-or-create with @id", () => {
                     name: "Tom Hanks"
                     movies: {
                       connectOrCreate: {
-                        where: { node: { subtitle: "${title}" } }
+                        where: { node: { subtitle_EQ: "${title}" } }
                         onCreate: { node: { title: "${title}"} }
                       }
                     }

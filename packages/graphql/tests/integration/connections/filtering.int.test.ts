@@ -55,8 +55,8 @@ describe("Connections Filtering", () => {
 
         const query = `
 			query ($movieTitle: String!) {
-				${movieType.plural}(where: { title: $movieTitle }) {
-					actorsConnection(where: {node: {movies: { title: $movieTitle } } }) {
+				${movieType.plural}(where: { title_EQ: $movieTitle }) {
+					actorsConnection(where: {node: {movies: { title_EQ: $movieTitle } } }) {
 						edges {
 							node {
 								name
@@ -101,7 +101,7 @@ describe("Connections Filtering", () => {
 
         const query = `
 			query {
-				${movieType.plural} (where: {actorsConnection: { OR: [{ node: { name: "${actor1Name}" } }, { node: { name: "${actor2Name}" } }]}}){
+				${movieType.plural} (where: {actorsConnection: { OR: [{ node: { name_EQ: "${actor1Name}" } }, { node: { name_EQ: "${actor2Name}" } }]}}){
                     actorsConnection {
 						edges {
 							node {
@@ -151,7 +151,7 @@ describe("Connections Filtering", () => {
 
         const query = `
 			query {
-				${movieType.plural} (where: {actorsConnection: { NOT: { node: { name: "${actor1Name}" } } } }){
+				${movieType.plural} (where: {actorsConnection: { NOT: { node: { name_EQ: "${actor1Name}" } } } }){
                     actorsConnection {
 						edges {
 							node {
@@ -202,7 +202,7 @@ describe("Connections Filtering", () => {
         const query = `
 			query {
 				${movieType.plural}{
-                    actorsConnection(where: { NOT: { node: { name: "${actor1Name}" } } }){
+                    actorsConnection(where: { NOT: { node: { name_EQ: "${actor1Name}" } } }){
 						edges {
 							node {
 								name

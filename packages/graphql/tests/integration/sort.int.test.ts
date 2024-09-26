@@ -435,7 +435,7 @@ describe("sort", () => {
             describe("with field in selection set", () => {
                 const queryWithName = `
                                 query($movieId: ID!, $actorIds: [ID!]!, $direction: SortDirection!) {
-                                    ${movieType.plural}(where: { id: $movieId }) {
+                                    ${movieType.plural}(where: { id_EQ: $movieId }) {
                                         id
                                         actors(where: { id_IN: $actorIds }, options: { sort: [{ name: $direction }] }) {
                                             id
@@ -479,7 +479,7 @@ describe("sort", () => {
             describe("with field aliased in selection set", () => {
                 const queryWithName = `
                                 query($movieId: ID!, $actorIds: [ID!]!, $direction: SortDirection!) {
-                                    ${movieType.plural}(where: { id: $movieId }) {
+                                    ${movieType.plural}(where: { id_EQ: $movieId }) {
                                         id
                                         actors(where: { id_IN: $actorIds }, options: { sort: [{ name: $direction }] }) {
                                             id
@@ -523,7 +523,7 @@ describe("sort", () => {
             describe("with field not in selection set", () => {
                 const queryWithoutName = `
                                 query($movieId: ID!, $actorIds: [ID!]!, $direction: SortDirection!) {
-                                    ${movieType.plural}(where: { id: $movieId }) {
+                                    ${movieType.plural}(where: { id_EQ: $movieId }) {
                                         id
                                         actors(where: { id_IN: $actorIds }, options: { sort: [{ name: $direction }] }) {
                                             id
@@ -569,7 +569,7 @@ describe("sort", () => {
             describe("with field in selection set", () => {
                 const queryWithTotalScreenTime = `
                     query($movieId: ID!, $actorIds: [ID!]!, $direction: SortDirection!) {
-                        ${movieType.plural}(where: { id: $movieId }) {
+                        ${movieType.plural}(where: { id_EQ: $movieId }) {
                             id
                             actors(where: { id_IN: $actorIds }, options: { sort: [{ totalScreenTime: $direction }] }) {
                                 id
@@ -617,7 +617,7 @@ describe("sort", () => {
             describe("with field aliased in selection set", () => {
                 const queryWithTotalScreenTime = `
                     query($movieId: ID!, $actorIds: [ID!]!, $direction: SortDirection!) {
-                        ${movieType.plural}(where: { id: $movieId }) {
+                        ${movieType.plural}(where: { id_EQ: $movieId }) {
                             id
                             actors(where: { id_IN: $actorIds }, options: { sort: [{ totalScreenTime: $direction }] }) {
                                 id
@@ -664,7 +664,7 @@ describe("sort", () => {
             describe("with field not in selection set", () => {
                 const queryWithoutTotalScreenTime = `
                     query($movieId: ID!, $actorIds: [ID!]!, $direction: SortDirection!) {
-                        ${movieType.plural}(where: { id: $movieId }) {
+                        ${movieType.plural}(where: { id_EQ: $movieId }) {
                             id
                             actors(where: { id_IN: $actorIds }, options: { sort: [{ totalScreenTime: $direction }] }) {
                                 id
@@ -737,7 +737,7 @@ describe("sort", () => {
             describe("with field in selection set", () => {
                 const queryWithSortField = `
                         query ($actorId: ID!, $direction: SortDirection!) {
-                            ${actorType.plural}(where: { id: $actorId }) {
+                            ${actorType.plural}(where: { id_EQ: $actorId }) {
                                 id
                                 actedIn(options: { sort: [{ title: $direction }] }) {
                                     id
@@ -783,7 +783,7 @@ describe("sort", () => {
             describe("with field aliased in selection set", () => {
                 const queryWithAliasedSortField = `
                     query ($actorId: ID!, $direction: SortDirection!) {
-                        ${actorType.plural}(where: { id: $actorId }) {
+                        ${actorType.plural}(where: { id_EQ: $actorId }) {
                             id
                             actedIn(options: { sort: [{ title: $direction }] }) {
                                 id
@@ -829,7 +829,7 @@ describe("sort", () => {
             describe("with field not in selection set", () => {
                 const queryWithOutSortField = `
                     query ($actorId: ID!, $direction: SortDirection!) {
-                        ${actorType.plural}(where: { id: $actorId }) {
+                        ${actorType.plural}(where: { id_EQ: $actorId }) {
                             id
                             actedIn(options: { sort: [{ title: $direction }] }) {
                                 id

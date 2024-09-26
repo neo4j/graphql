@@ -80,7 +80,7 @@ describe("Cypher Create Pringles", () => {
                                             id: 106
                                             description: "Green photo"
                                             url: "g.png"
-                                            color: { connect: { where: { node: { id: "102" } } } }
+                                            color: { connect: { where: { node: { id_EQ: "102" } } } }
                                         }
                                     }
                                     {
@@ -88,7 +88,7 @@ describe("Cypher Create Pringles", () => {
                                             id: 107
                                             description: "Red photo"
                                             url: "r.png"
-                                            color: { connect: { where: { node: { id: "100" } } } }
+                                            color: { connect: { where: { node: { id_EQ: "100" } } } }
                                         }
                                     }
                                 ]
@@ -249,17 +249,17 @@ describe("Cypher Create Pringles", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateProducts(
-                    where: { name: "Pringles" }
+                    where: { name_EQ: "Pringles" }
                     update: {
                         photos: [
                             {
-                                where: { node: { description: "Green Photo" } }
+                                where: { node: { description_EQ: "Green Photo" } }
                                 update: {
                                     node: {
                                         description: "Light Green Photo"
                                         color: {
-                                            connect: { where: { node: { name: "Light Green" } } }
-                                            disconnect: { where: { node: { name: "Green" } } }
+                                            connect: { where: { node: { name_EQ: "Light Green" } } }
+                                            disconnect: { where: { node: { name_EQ: "Green" } } }
                                         }
                                     }
                                 }
@@ -343,7 +343,7 @@ describe("Cypher Create Pringles", () => {
                                 {
                                     \\"where\\": {
                                         \\"node\\": {
-                                            \\"description\\": \\"Green Photo\\"
+                                            \\"description_EQ\\": \\"Green Photo\\"
                                         }
                                     },
                                     \\"update\\": {
@@ -353,7 +353,7 @@ describe("Cypher Create Pringles", () => {
                                                 \\"connect\\": {
                                                     \\"where\\": {
                                                         \\"node\\": {
-                                                            \\"name\\": \\"Light Green\\"
+                                                            \\"name_EQ\\": \\"Light Green\\"
                                                         }
                                                     },
                                                     \\"overwrite\\": true
@@ -361,7 +361,7 @@ describe("Cypher Create Pringles", () => {
                                                 \\"disconnect\\": {
                                                     \\"where\\": {
                                                         \\"node\\": {
-                                                            \\"name\\": \\"Green\\"
+                                                            \\"name_EQ\\": \\"Green\\"
                                                         }
                                                     }
                                                 }

@@ -160,14 +160,14 @@ describe("Subscriptions delete", () => {
         const query = `
         mutation {
             ${typeMovie.operations.delete}(
-                where: { id: 1 }
+                where: { id_EQ: 1 }
                 delete: {
                     actors: {
-                        where: { node: { id: 3 } }
+                        where: { node: { id_EQ: 3 } }
                         delete: {
                             movies: {
-                                where: { node: { id: 2 } }
-                                delete: { actors: { where: { node: { id: 4 } } } }
+                                where: { node: { id_EQ: 2 } }
+                                delete: { actors: { where: { node: { id_EQ: 4 } } } }
                             }
                         }
                     }

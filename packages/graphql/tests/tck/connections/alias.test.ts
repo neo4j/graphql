@@ -83,9 +83,9 @@ describe("Connections Alias", () => {
     test("Alias Top Level Connection Field Multiple Times", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { title: "Forrest Gump" }) {
+                movies(where: { title_EQ: "Forrest Gump" }) {
                     title
-                    hanks: actorsConnection(where: { node: { name: "Tom Hanks" } }) {
+                    hanks: actorsConnection(where: { node: { name_EQ: "Tom Hanks" } }) {
                         edges {
                             properties {
                                 screenTime
@@ -95,7 +95,7 @@ describe("Connections Alias", () => {
                             }
                         }
                     }
-                    jenny: actorsConnection(where: { node: { name: "Robin Wright" } }) {
+                    jenny: actorsConnection(where: { node: { name_EQ: "Robin Wright" } }) {
                         edges {
                             properties {
                                 screenTime

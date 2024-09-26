@@ -27,9 +27,8 @@ import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphq
 import { fromGlobalId } from "../../../utils/global-ids";
 import { asArray, filterTruthy } from "../../../utils/utils";
 import { isLogicalOperator } from "../../utils/logical-operators";
-import type { RelationshipWhereOperator, WhereOperator } from "../../where/types";
 import { ConnectionFilter } from "../ast/filters/ConnectionFilter";
-import type { Filter } from "../ast/filters/Filter";
+import type { Filter, FilterOperator, RelationshipWhereOperator } from "../ast/filters/Filter";
 import { isRelationshipOperator } from "../ast/filters/Filter";
 import { LogicalFilter } from "../ast/filters/LogicalFilter";
 import { RelationshipFilter } from "../ast/filters/RelationshipFilter";
@@ -179,12 +178,11 @@ export class FilterFactory {
         attribute: AttributeAdapter;
         relationship?: RelationshipAdapter;
         comparisonValue: unknown;
-        operator: WhereOperator | undefined;
+        operator: FilterOperator | undefined;
         isNot: boolean;
         attachedTo?: "node" | "relationship";
     }): PropertyFilter | CypherFilter {
         const filterOperator = operator ?? "EQ";
-
         if (attribute.annotations.cypher) {
             const selection = new CustomCypherSelection({
                 operationField: attribute,
@@ -428,7 +426,7 @@ export class FilterFactory {
     }: {
         relationship: RelationshipAdapter;
         value: any;
-        operator: WhereOperator | undefined;
+        operator: FilterOperator | undefined;
         isNot: boolean;
         isConnection: boolean;
         isAggregate: boolean;
@@ -475,7 +473,7 @@ export class FilterFactory {
     private createRelayIdPropertyFilter(
         entity: ConcreteEntityAdapter,
         isNot: boolean,
-        operator: WhereOperator | undefined,
+        operator: FilterOperator | undefined,
         value: string
     ): Filter {
         const relayIdData = fromGlobalId(value);

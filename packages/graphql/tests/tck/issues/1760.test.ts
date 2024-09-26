@@ -117,7 +117,7 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
 
         const variableValues = {
             where: {
-                current: true,
+                current_EQ: true,
             },
             options: {
                 sort: {

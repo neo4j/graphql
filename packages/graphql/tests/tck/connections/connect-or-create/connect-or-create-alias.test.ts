@@ -47,19 +47,19 @@ describe("Connect or create with @alias", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateBibliographicReferences(
-                    where: { iri: "urn:myiri2" }
+                    where: { iri_EQ: "urn:myiri2" }
                     update: {
                         prefLabel: "Updated Label:My BRS with Resource"
                         isInPublication: [
                             {
                                 connectOrCreate: {
-                                    where: { node: { iri: "new-g" } }
+                                    where: { node: { iri_EQ: "new-g" } }
                                     onCreate: { node: { iri: "new-g", prefLabel: "pub" } }
                                 }
                             }
                             {
                                 connectOrCreate: {
-                                    where: { node: { iri: "new-f" } }
+                                    where: { node: { iri_EQ: "new-f" } }
                                     onCreate: { node: { iri: "new-f", prefLabel: "pub" } }
                                 }
                             }

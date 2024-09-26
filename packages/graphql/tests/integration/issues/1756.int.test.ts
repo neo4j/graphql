@@ -67,7 +67,7 @@ describe("https://github.com/neo4j/graphql/issues/1756", () => {
                   {
                     where: {
                       node: {
-                        value: "Action"
+                        value_EQ: "Action"
                       }
                     },
                     onCreate: {
@@ -107,7 +107,7 @@ describe("https://github.com/neo4j/graphql/issues/1756", () => {
                 {
                   where: {
                     node: {
-                      value: "Action"
+                      value_EQ: "Action"
                     }
                   },
                   onCreate: {

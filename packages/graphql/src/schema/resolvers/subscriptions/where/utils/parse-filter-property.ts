@@ -17,17 +17,35 @@
  * limitations under the License.
  */
 
-import type { WhereRegexGroups } from "../../../../../translate/where/utils";
-import { whereRegEx } from "../../../../../translate/where/utils";
+import { parseWhereField } from "../../../../../translate/queryAST/factory/parsers/parse-where-field";
 
 export function parseFilterProperty(key: string): { fieldName: string; operator: string | undefined } {
-    const match = whereRegEx.exec(key);
-    if (!match) {
-        throw new Error(`Failed to match key in filter: ${key}`);
+    // eslint-disable-next-line prefer-const
+    let { fieldName, operator, isNot } = parseWhereField(key);
+
+    // These conversions are only temporary necessary until the the _NOT operator exists, after that we can just return the output of parseWhereField
+    if (operator === "EQ") {
+        operator = undefined;
     }
-    const { fieldName, operator } = match.groups as WhereRegexGroups;
-    if (!fieldName) {
-        throw new Error(`Failed to find field name in filter: ${key}`);
+    if (isNot) {
+        if (operator && isOperatorIsANegateSupportedOperator(operator)) {
+            operator = `NOT_${operator}`;
+        } else {
+            operator = "NOT";
+        }
     }
     return { fieldName, operator };
+}
+
+// These are the operator that have a negate version as _NOT_CONTAINS, _NOT_STARTS_WITH etc... .
+type NegateSupportedOperator = "CONTAINS" | "STARTS_WITH" | "ENDS_WITH" | "IN" | "INCLUDES";
+
+/**
+ * isOperatorIsANegateSupportedOperator returns true if the operator is one of these that have the negate version
+ * the following is temporary required until the `_NOT` operator is removed.
+ **/
+function isOperatorIsANegateSupportedOperator(operator: string): operator is NegateSupportedOperator {
+    return (["CONTAINS", "STARTS_WITH", "ENDS_WITH", "IN", "INCLUDES"] as const).includes(
+        operator as NegateSupportedOperator
+    );
 }

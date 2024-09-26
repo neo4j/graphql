@@ -183,7 +183,7 @@ describe("Update -> ConnectOrCreate Union", () => {
                             }
                         },
                     where: {
-                        name: "${actorName}"
+                        name_EQ: "${actorName}"
                     }
                 ) {
                     ${typeActor.plural} {

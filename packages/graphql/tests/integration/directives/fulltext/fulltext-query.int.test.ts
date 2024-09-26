@@ -263,7 +263,7 @@ describe("@fulltext directive", () => {
 
             const query = `
                 query {
-                    ${queryType}(phrase: "a different name", where: { ${personTypeLowerFirst}: { name: "${person1.name}" } }) {
+                    ${queryType}(phrase: "a different name", where: { ${personTypeLowerFirst}: { name_EQ: "${person1.name}" } }) {
                         score
                         ${personTypeLowerFirst} {
                             name
@@ -494,7 +494,7 @@ describe("@fulltext directive", () => {
 
             const query = `
                 query {
-                    ${queryType}(phrase: "a different name", where: { ${personTypeLowerFirst}: { actedInMovies_SOME: { title: "${movie1.title}" } } }) {
+                    ${queryType}(phrase: "a different name", where: { ${personTypeLowerFirst}: { actedInMovies_SOME: { title_EQ: "${movie1.title}" } } }) {
                         score
                         ${personTypeLowerFirst} {
                             name
@@ -542,7 +542,7 @@ describe("@fulltext directive", () => {
 
             const query = `
                 query {
-                    ${queryType}(phrase: "a different name", where: { ${personTypeLowerFirst}: { actedInMovies_ALL: { released: ${movie1.released} } } }) {
+                    ${queryType}(phrase: "a different name", where: { ${personTypeLowerFirst}: { actedInMovies_ALL: { released_EQ: ${movie1.released} } } }) {
                         ${personTypeLowerFirst} {
                             name
                             actedInMovies {
@@ -578,9 +578,9 @@ describe("@fulltext directive", () => {
                 return;
             }
 
-            const query = `
+            const query = /* GraphQL */ `
                 query {
-                    ${queryType}(phrase: "a different name", where: { ${personTypeLowerFirst}: { actedInMovies_ALL: { released_NOT_IN: [${movie1.released}, ${movie2.released}] } } }) {
+                    ${queryType}(phrase: "a different name", where: { ${personTypeLowerFirst}: { actedInMovies_ALL: { NOT: { released_IN: [${movie1.released}, ${movie2.released}] }} } }) {
                         score
                         ${personTypeLowerFirst} {
                             name
@@ -637,7 +637,7 @@ describe("@fulltext directive", () => {
             const invalidField = "not_a_field";
             const query = `
                 query {
-                    ${queryType}(phrase: "some name", where: { ${personTypeLowerFirst}: { ${invalidField}: "invalid" } }) {
+                    ${queryType}(phrase: "some name", where: { ${personTypeLowerFirst}: { ${invalidField}_EQ: "invalid" } }) {
                         score
                         ${personTypeLowerFirst} {
                             name
@@ -652,7 +652,7 @@ describe("@fulltext directive", () => {
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect((gqlResult.errors as any[])[0].message).toStartWith(
-                `Field "${invalidField}" is not defined by type`
+                `Field "${invalidField}_EQ" is not defined by type`
             );
         });
 
@@ -1109,7 +1109,7 @@ describe("@fulltext directive", () => {
 
             const query = `
                 query {
-                    ${queryType}(phrase: "a different name", where: { ${personTypeLowerFirst}: { name: "${person1.name}" } }) {
+                    ${queryType}(phrase: "a different name", where: { ${personTypeLowerFirst}: { name_EQ: "${person1.name}" } }) {
                         score
                     }
                 }
@@ -1222,7 +1222,7 @@ describe("@fulltext directive", () => {
 
             const typeDefs = `
                     type ${personType.name} @node @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
-                    @authorization(filter: [{ where: { node: { name: "$jwt.name" } } }]) {
+                    @authorization(filter: [{ where: { node: { name_EQ: "$jwt.name" } } }]) {
                         name: String!
                         born: Int!
                         actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
@@ -1283,7 +1283,7 @@ describe("@fulltext directive", () => {
 
             const typeDefs = `
                     type ${personType.name} @node @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
-                    @authorization(filter: [{ where: { node: { name: "$jwt.name" } } }]) {
+                    @authorization(filter: [{ where: { node: { name_EQ: "$jwt.name" } } }]) {
                         name: String!
                         born: Int!
                         actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
@@ -1476,7 +1476,7 @@ describe("@fulltext directive", () => {
 
             const typeDefs = `
                     type ${personType.name} @node @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
-                    @authorization(validate: [{ when: BEFORE, where: { node: { name: "$jwt.name" } } }]) {
+                    @authorization(validate: [{ when: BEFORE, where: { node: { name_EQ: "$jwt.name" } } }]) {
                         name: String!
                         born: Int!
                         actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
@@ -1507,7 +1507,7 @@ describe("@fulltext directive", () => {
 
             const query = `
                     query {
-                        ${queryType}(phrase: "a name", where: { ${personTypeLowerFirst}: { name: "${person2.name}" } }) {
+                        ${queryType}(phrase: "a name", where: { ${personTypeLowerFirst}: { name_EQ: "${person2.name}" } }) {
                             score
                             ${personTypeLowerFirst} {
                                 name
@@ -1535,7 +1535,7 @@ describe("@fulltext directive", () => {
 
             const typeDefs = `
                     type ${personType.name} @node @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
-                    @authorization(validate: [{ when: BEFORE, where: { node: { name: "$jwt.name" } } }]) {
+                    @authorization(validate: [{ when: BEFORE, where: { node: { name_EQ: "$jwt.name" } } }]) {
                         name: String!
                         born: Int!
                         actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)

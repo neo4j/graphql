@@ -36,11 +36,11 @@ describe("https://github.com/neo4j/graphql/issues/4099", () => {
                 isAdmin: Boolean!
             }
 
-            type ${User} @authorization(filter: [{ operations: [READ], where: { jwt: { isAdmin: true } } }]) @node {
+            type ${User} @authorization(filter: [{ operations: [READ], where: { jwt: { isAdmin_EQ: true } } }]) @node {
                 id: ID @id
             }
 
-            type ${Person} @authorization(filter: [{ operations: [READ], where: { jwt: { isAdmin_NOT: true } } }]) @node {
+            type ${Person} @authorization(filter: [{ operations: [READ], where: { jwt: { NOT: { isAdmin_EQ: true } } } }]) @node {
                 id: ID @id
             }
         `;

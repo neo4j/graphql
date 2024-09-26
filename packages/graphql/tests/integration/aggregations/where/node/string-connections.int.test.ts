@@ -63,7 +63,7 @@ describe("aggregations-where-node-string - connections", () => {
 
         const query = /* GraphQL */ `
                 {
-                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_EQUAL: "${testString}" } } }) {
+                    ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_EQUAL: "${testString}" } } }) {
                         edges {
                             node {
                                 testString
@@ -115,7 +115,7 @@ describe("aggregations-where-node-string - connections", () => {
 
         const query = `
                 {
-                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_GT: ${gtLength} } } }) {
+                    ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_GT: ${gtLength} } } }) {
                         edges {
                             node {
                                 testString
@@ -166,7 +166,7 @@ describe("aggregations-where-node-string - connections", () => {
 
         const query = `
                 {
-                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_GTE: ${length} } } }) {
+                    ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_GTE: ${length} } } }) {
                         edges {
                             node {
                                 testString
@@ -217,7 +217,7 @@ describe("aggregations-where-node-string - connections", () => {
 
         const query = `
                 {
-                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_LT: ${length} } } }) {
+                    ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_LT: ${length} } } }) {
                         edges {
                             node {
                                 testString
@@ -268,7 +268,7 @@ describe("aggregations-where-node-string - connections", () => {
 
         const query = `
                 {
-                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_LTE: ${length} } } }) {
+                    ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_LTE: ${length} } } }) {
                         edges {
                             node {
                                 testString
@@ -338,7 +338,7 @@ describe("aggregations-where-node-string - connections", () => {
 
                 const query = `
                     {
-                        ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_${shortestFilter}_EQUAL: ${shortestTestString.length} } } }) {
+                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_${shortestFilter}_EQUAL: ${shortestTestString.length} } } }) {
                             edges {
                                 node {
                                     testString
@@ -410,7 +410,7 @@ describe("aggregations-where-node-string - connections", () => {
 
                 const query = `
                     {
-                        ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_${longestFilter}_EQUAL: ${longestTestString.length} } } }) {
+                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_${longestFilter}_EQUAL: ${longestTestString.length} } } }) {
                             edges {
                                 node {
                                     testString
@@ -487,7 +487,7 @@ describe("aggregations-where-node-string - connections", () => {
 
                 const query = `
                     {
-                        ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_${averageFilter}_EQUAL: ${avg} } } }) {
+                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_${averageFilter}_EQUAL: ${avg} } } }) {
                             edges {
                                 node {
                                     testString
@@ -554,7 +554,7 @@ describe("aggregations-where-node-string - connections", () => {
 
             const query = `
                     {
-                        ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_AVERAGE_GT: ${avgGT} } } }) {
+                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_AVERAGE_GT: ${avgGT} } } }) {
                             edges {
                                 node {
                                     testString
@@ -619,7 +619,7 @@ describe("aggregations-where-node-string - connections", () => {
 
             const query = `
                     {
-                        ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_AVERAGE_GTE: ${avg} } } }) {
+                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_AVERAGE_GTE: ${avg} } } }) {
                             edges {
                                 node {
                                     testString
@@ -685,7 +685,7 @@ describe("aggregations-where-node-string - connections", () => {
 
             const query = `
                     {
-                        ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_AVERAGE_LT: ${avgLT} } } }) {
+                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_AVERAGE_LT: ${avgLT} } } }) {
                             edges {
                                 node {
                                     testString
@@ -750,7 +750,7 @@ describe("aggregations-where-node-string - connections", () => {
 
             const query = `
                     {
-                        ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_AVERAGE_LTE: ${avg} } } }) {
+                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_AVERAGE_LTE: ${avg} } } }) {
                             edges {
                                 node {
                                     testString
@@ -830,7 +830,7 @@ describe("aggregations-where-node-string - connections - interface relationships
 
         const query = `
                 {
-                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_EQUAL: "${testString}" } } }) {
+                    ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_EQUAL: "${testString}" } } }) {
                         edges {
                             node {
                                 testString
@@ -882,7 +882,7 @@ describe("aggregations-where-node-string - connections - interface relationships
 
         const query = `
                 {
-                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_GT: ${gtLength} } } }) {
+                    ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_GT: ${gtLength} } } }) {
                        edges {
                         node {
                              testString
@@ -933,7 +933,7 @@ describe("aggregations-where-node-string - connections - interface relationships
 
         const query = `
                 {
-                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_GTE: ${length} } } }) {
+                    ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_GTE: ${length} } } }) {
                         edges {
                             node {
                                 testString
@@ -984,7 +984,7 @@ describe("aggregations-where-node-string - connections - interface relationships
 
         const query = `
                 {
-                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_LT: ${length} } } }) {
+                    ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_LT: ${length} } } }) {
                         edges {
                             node {
                                 testString
@@ -1035,7 +1035,7 @@ describe("aggregations-where-node-string - connections - interface relationships
 
         const query = `
                 {
-                    ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_LTE: ${length} } } }) {
+                    ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_LTE: ${length} } } }) {
                        edges {
                         node {
                              testString
@@ -1105,7 +1105,7 @@ describe("aggregations-where-node-string - connections - interface relationships
 
                 const query = `
                     {
-                        ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_${shortestFilter}_EQUAL: ${shortestTestString.length} } } }) {
+                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_${shortestFilter}_EQUAL: ${shortestTestString.length} } } }) {
                            edges {
                             node {
                                  testString
@@ -1177,7 +1177,7 @@ describe("aggregations-where-node-string - connections - interface relationships
 
                 const query = `
                     {
-                        ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_${longestFilter}_EQUAL: ${longestTestString.length} } } }) {
+                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_${longestFilter}_EQUAL: ${longestTestString.length} } } }) {
                             edges {
                                 node {
                                     testString
@@ -1254,7 +1254,7 @@ describe("aggregations-where-node-string - connections - interface relationships
 
                 const query = `
                     {
-                        ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_${averageFilter}_EQUAL: ${avg} } } }) {
+                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_${averageFilter}_EQUAL: ${avg} } } }) {
                             edges {
                                 node {
                                     testString
@@ -1321,7 +1321,7 @@ describe("aggregations-where-node-string - connections - interface relationships
 
             const query = `
                     {
-                        ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_AVERAGE_GT: ${avgGT} } } }) {
+                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_AVERAGE_GT: ${avgGT} } } }) {
                             edges {
                                 node {
                                     testString
@@ -1386,7 +1386,7 @@ describe("aggregations-where-node-string - connections - interface relationships
 
             const query = `
                     {
-                        ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_AVERAGE_GTE: ${avg} } } }) {
+                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_AVERAGE_GTE: ${avg} } } }) {
                             edges {
                                 node {
                                     testString
@@ -1452,7 +1452,7 @@ describe("aggregations-where-node-string - connections - interface relationships
 
             const query = `
                     {
-                        ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_AVERAGE_LT: ${avgLT} } } }) {
+                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_AVERAGE_LT: ${avgLT} } } }) {
                             edges {
                                 node {
                                     testString
@@ -1517,7 +1517,7 @@ describe("aggregations-where-node-string - connections - interface relationships
 
             const query = `
                     {
-                        ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_AVERAGE_LTE: ${avg} } } }) {
+                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_AVERAGE_LTE: ${avg} } } }) {
                             edges {
                                 node {
                                     testString
@@ -1714,7 +1714,7 @@ describe("aggregations-where-node-string - connections - relationships of interf
 
         const query = `
                 {
-                    thingsConnection(where: { testString: "${testString}", likesAggregate: { node: { testString_EQUAL: "${testString}" } } }) {
+                    thingsConnection(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_EQUAL: "${testString}" } } }) {
                         edges {
                             node {
                                 testString
@@ -1791,7 +1791,7 @@ describe("aggregations-where-node-string - connections - relationships of interf
                         edges {
                             node {
                                 testString
-                                thingsConnection(where: { node: { testString: "${testString}", likesAggregate: { node: { testString_EQUAL: "${testString}" } } } }) {
+                                thingsConnection(where: { node: { testString_EQ: "${testString}", likesAggregate: { node: { testString_EQUAL: "${testString}" } } } }) {
                                     edges {
                                         node {
                                             testString
@@ -1875,7 +1875,7 @@ describe("aggregations-where-node-string - connections - relationships of interf
 
         const query = `
                 {
-                    thingsConnection(where: { testString: "${testString}", likesAggregate: { node: { testString_EQUAL: "${testString}" } } }) {
+                    thingsConnection(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_EQUAL: "${testString}" } } }) {
                         edges {
                             node {
                                 testString
@@ -2027,7 +2027,7 @@ describe("aggregations-where-node-string - connections - relationships of interf
 
                 const query = `
                     {
-                        ${Post.operations.connection}(where: { testString: "${testString}", likesAggregate: { node: { testString_${shortestFilter}_EQUAL: ${shortestTestString.length} } } }) {
+                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_${shortestFilter}_EQUAL: ${shortestTestString.length} } } }) {
                             edges {
                                 node {
                                     testString

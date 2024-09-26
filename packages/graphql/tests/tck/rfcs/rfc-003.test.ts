@@ -342,7 +342,7 @@ describe("tck/rfs/003", () => {
 
                     const mutation = /* GraphQL */ `
                         mutation {
-                            updateMovies(where: { id: "${movieId}" }, update: { id: "${movieId}" }) {
+                            updateMovies(where: { id_EQ: "${movieId}" }, update: { id: "${movieId}" }) {
                                 info {
                                     nodesCreated
                                 }
@@ -394,7 +394,7 @@ describe("tck/rfs/003", () => {
 
                     const mutation = /* GraphQL */ `
                         mutation {
-                            updateMovies(where: { id: "${movieId}" }, update: { id: "${movieId}" }) {
+                            updateMovies(where: { id_EQ: "${movieId}" }, update: { id: "${movieId}" }) {
                                 info {
                                     nodesCreated
                                 }
@@ -454,7 +454,7 @@ describe("tck/rfs/003", () => {
                         const mutation = /* GraphQL */ `
                             mutation {
                                 updateMovies(
-                                  where: { id: "${movieId}" }
+                                  where: { id_EQ: "${movieId}" }
                                   update: { director: { update: { node: { id: "${directorId}" } } } }
                                 ) {
                                   info {
@@ -529,7 +529,7 @@ describe("tck/rfs/003", () => {
                         const mutation = /* GraphQL */ `
                             mutation {
                                 updateMovies(
-                                  where: { id: "${movieId}" }
+                                  where: { id_EQ: "${movieId}" }
                                   update: { director: { update: { node: { id: "${directorId}" } } } }
                                 ) {
                                   info {
@@ -604,7 +604,7 @@ describe("tck/rfs/003", () => {
                         const mutation = /* GraphQL */ `
                         mutation {
                             updateMovies(
-                              where: { id: "${movieId}" }
+                              where: { id_EQ: "${movieId}" }
                               update: { director: { create: { node: { id: "${directorId}" } } } }
                             ) {
                               info {
@@ -685,11 +685,11 @@ describe("tck/rfs/003", () => {
                         const mutation = /* GraphQL */ `
                             mutation {
                                 updateMovies(
-                                    where: { id: "${movieId}" },
+                                    where: { id_EQ: "${movieId}" },
                                     delete: {
                                         director: {
-                                            where: { node: { id: "${directorId}" } },
-                                            delete: { address: { where: { node: { id: "some-address" } } } }
+                                            where: { node: { id_EQ: "${directorId}" } },
+                                            delete: { address: { where: { node: { id_EQ: "some-address" } } } }
                                         }
                                     }
                                 ) {
@@ -759,14 +759,14 @@ describe("tck/rfs/003", () => {
                                             \\"director\\": {
                                                 \\"where\\": {
                                                     \\"node\\": {
-                                                        \\"id\\": \\"directorId-3\\"
+                                                        \\"id_EQ\\": \\"directorId-3\\"
                                                     }
                                                 },
                                                 \\"delete\\": {
                                                     \\"address\\": {
                                                         \\"where\\": {
                                                             \\"node\\": {
-                                                                \\"id\\": \\"some-address\\"
+                                                                \\"id_EQ\\": \\"some-address\\"
                                                             }
                                                         }
                                                     }
@@ -810,11 +810,11 @@ describe("tck/rfs/003", () => {
                         const mutation = /* GraphQL */ `
                             mutation {
                                 updateMovies(
-                                    where: { id: "${movieId}" },
+                                    where: { id_EQ: "${movieId}" },
                                     delete: {
                                         director: {
-                                            where: { node: { id: "${directorId}" } },
-                                            delete: { address: { where: { node: { id: "some-address" } } } }
+                                            where: { node: { id_EQ: "${directorId}" } },
+                                            delete: { address: { where: { node: { id_EQ: "some-address" } } } }
                                         }
                                     }
                                 ) {
@@ -884,14 +884,14 @@ describe("tck/rfs/003", () => {
                                             \\"director\\": {
                                                 \\"where\\": {
                                                     \\"node\\": {
-                                                        \\"id\\": \\"directorId-3\\"
+                                                        \\"id_EQ\\": \\"directorId-3\\"
                                                     }
                                                 },
                                                 \\"delete\\": {
                                                     \\"address\\": {
                                                         \\"where\\": {
                                                             \\"node\\": {
-                                                                \\"id\\": \\"some-address\\"
+                                                                \\"id_EQ\\": \\"some-address\\"
                                                             }
                                                         }
                                                     }
@@ -927,7 +927,7 @@ describe("tck/rfs/003", () => {
 
                     const mutation = /* GraphQL */ `
                         mutation {
-                            createMovies(input: [{ id: "${movieId}", director: { connect: { where: { node: { id: "${directorId}" } } } } }]) {
+                            createMovies(input: [{ id: "${movieId}", director: { connect: { where: { node: { id_EQ: "${directorId}" } } } } }]) {
                                 info {
                                     nodesCreated
                                 }
@@ -1000,7 +1000,7 @@ describe("tck/rfs/003", () => {
 
                     const mutation = /* GraphQL */ `
                         mutation {
-                            createMovies(input: [{ id: "${movieId}", director: { connect: { where: { node: { id: "${directorId}" } } } } }]) {
+                            createMovies(input: [{ id: "${movieId}", director: { connect: { where: { node: { id_EQ: "${directorId}" } } } } }]) {
                                 info {
                                     nodesCreated
                                 }
@@ -1085,8 +1085,8 @@ describe("tck/rfs/003", () => {
                                       id: "${movieId}"
                                       director: {
                                         connect: {
-                                          where: { node: { id: "${directorId}" } }
-                                          connect: { address: { where: { node: { street: "some-street" } } } }
+                                          where: { node: { id_EQ: "${directorId}" } }
+                                          connect: { address: { where: { node: { street_EQ: "some-street" } } } }
                                         }
                                       }
                                     }
@@ -1193,7 +1193,7 @@ describe("tck/rfs/003", () => {
 
                     const mutation = /* GraphQL */ `
                         mutation {
-                            updateMovies(where: { id: "${movieId}" }, disconnect: { director: { where: { node: {  id: "${directorId}" } } } }) {
+                            updateMovies(where: { id_EQ: "${movieId}" }, disconnect: { director: { where: { node: {  id_EQ: "${directorId}" } } } }) {
                                 info {
                                     nodesCreated
                                 }
@@ -1241,7 +1241,7 @@ describe("tck/rfs/003", () => {
                                         \\"director\\": {
                                             \\"where\\": {
                                                 \\"node\\": {
-                                                    \\"id\\": \\"directorId-5\\"
+                                                    \\"id_EQ\\": \\"directorId-5\\"
                                                 }
                                             }
                                         }
@@ -1276,12 +1276,12 @@ describe("tck/rfs/003", () => {
                     const mutation = /* GraphQL */ `
                         mutation {
                             updateMovies(
-                                where: { id: "${movieId}" },
+                                where: { id_EQ: "${movieId}" },
                                 disconnect: {
-                                    director: { where: { node: { id: "${directorId1}" } } }
+                                    director: { where: { node: { id_EQ: "${directorId1}" } } }
                                 }
                                 connect: {
-                                    director: { where: { node: { id: "${directorId2}" } } }
+                                    director: { where: { node: { id_EQ: "${directorId2}" } } }
                                 }
                             ) {
                                 movies {
@@ -1359,7 +1359,7 @@ describe("tck/rfs/003", () => {
                                         \\"director\\": {
                                             \\"where\\": {
                                                 \\"node\\": {
-                                                    \\"id\\": \\"directorId-6\\"
+                                                    \\"id_EQ\\": \\"directorId-6\\"
                                                 }
                                             }
                                         }
@@ -1392,12 +1392,12 @@ describe("tck/rfs/003", () => {
                     const mutation = /* GraphQL */ `
                         mutation {
                             updateMovies(
-                                where: { id: "${movieId}" },
+                                where: { id_EQ: "${movieId}" },
                                 disconnect: {
-                                    director: { where: { node: { id: "${directorId1}" } } }
+                                    director: { where: { node: { id_EQ: "${directorId1}" } } }
                                 }
                                 connect: {
-                                    director: { where: { node: { id: "${directorId2}" } } }
+                                    director: { where: { node: { id_EQ: "${directorId2}" } } }
                                 }
                             ) {
                                 movies {
@@ -1475,7 +1475,7 @@ describe("tck/rfs/003", () => {
                                         \\"director\\": {
                                             \\"where\\": {
                                                 \\"node\\": {
-                                                    \\"id\\": \\"directorId-6\\"
+                                                    \\"id_EQ\\": \\"directorId-6\\"
                                                 }
                                             }
                                         }

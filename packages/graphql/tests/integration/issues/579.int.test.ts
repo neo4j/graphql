@@ -64,7 +64,7 @@ describe("https://github.com/neo4j/graphql/pull/579", () => {
         const query = /* GraphQL */ `
             mutation {
                 ${Product.operations.update}(
-                  where: { id: "${productId}" }
+                  where: { id_EQ: "${productId}" }
                   update: {
                       color: {
                           update: {

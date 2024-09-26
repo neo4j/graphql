@@ -133,7 +133,7 @@ describe("Interface Relationships - Update disconnect", () => {
                     disconnect: {
                         actedIn: {
                             where: { node: { title_STARTS_WITH: "The " } }
-                            disconnect: { actors: { where: { node: { name: "Actor" } } } }
+                            disconnect: { actors: { where: { node: { name_EQ: "Actor" } } } }
                         }
                     }
                 ) {
@@ -221,7 +221,7 @@ describe("Interface Relationships - Update disconnect", () => {
                                             {
                                                 \\"where\\": {
                                                     \\"node\\": {
-                                                        \\"name\\": \\"Actor\\"
+                                                        \\"name_EQ\\": \\"Actor\\"
                                                     }
                                                 }
                                             }

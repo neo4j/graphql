@@ -61,7 +61,7 @@ describe("Cypher Aggregations Count", () => {
     test("Count with WHERE", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate(where: { title: "some-title" }) {
+                moviesAggregate(where: { title_EQ: "some-title" }) {
                     count
                 }
             }

@@ -54,7 +54,7 @@ describe("https://github.com/neo4j/graphql/issues/3027", () => {
             const query = /* GraphQL */ `
                 mutation UpdateBooks {
                     updateBooks(
-                        where: { isbn: "123" }
+                        where: { isbn_EQ: "123" }
                         create: { translatedTitle: { BookTitle_EN: { node: { value: "English book title" } } } }
                     ) {
                         info {
@@ -154,7 +154,7 @@ describe("https://github.com/neo4j/graphql/issues/3027", () => {
             const query = /* GraphQL */ `
                 mutation UpdateBooks {
                     updateBooks(
-                        where: { isbn: "123" }
+                        where: { isbn_EQ: "123" }
                         create: { translatedTitle: { node: { BookTitle_EN: { value: "English book title" } } } }
                     ) {
                         books {

@@ -316,7 +316,7 @@ describe("connections sort", () => {
             describe("field in selection set", () => {
                 const queryWithSortField = `
                         query ($actorId: ID!, $direction: SortDirection!) {
-                            ${Actor.plural}(where: { id: $actorId }) {
+                            ${Actor.plural}(where: { id_EQ: $actorId }) {
                                 id
                                 actedInConnection(sort: [{ node: { title: $direction } }]) {
                                     edges {
@@ -365,7 +365,7 @@ describe("connections sort", () => {
             describe("field aliased in selection set", () => {
                 const queryWithAliasedSortField = `
                         query ($actorId: ID!, $direction: SortDirection!) {
-                            ${Actor.plural}(where: { id: $actorId }) {
+                            ${Actor.plural}(where: { id_EQ: $actorId }) {
                                 id
                                 actedInConnection(sort: [{ node: { title: $direction } }]) {
                                     edges {
@@ -414,7 +414,7 @@ describe("connections sort", () => {
             describe("field not in selection set", () => {
                 const queryWithoutSortField = `
                         query ($actorId: ID!, $direction: SortDirection!) {
-                            ${Actor.plural}(where: { id: $actorId }) {
+                            ${Actor.plural}(where: { id_EQ: $actorId }) {
                                 id
                                 actedInConnection(sort: [{ node: { title: $direction } }]) {
                                     edges {
@@ -463,7 +463,7 @@ describe("connections sort", () => {
             describe("field in selection set", () => {
                 const queryWithSortField = `
                         query ($actorId: ID!, $direction: SortDirection!) {
-                            ${Actor.plural}(where: { id: $actorId }) {
+                            ${Actor.plural}(where: { id_EQ: $actorId }) {
                                 id
                                 actedInConnection(sort: [{ edge: { screenTime: $direction } }]) {
                                     edges {
@@ -515,7 +515,7 @@ describe("connections sort", () => {
             describe("field aliased in selection set", () => {
                 const queryWithAliasedSortField = `
                         query ($actorId: ID!, $direction: SortDirection!) {
-                            ${Actor.plural}(where: { id: $actorId }) {
+                            ${Actor.plural}(where: { id_EQ: $actorId }) {
                                 id
                                 actedInConnection(sort: [{ edge: { screenTime: $direction } }]) {
                                     edges {
@@ -567,7 +567,7 @@ describe("connections sort", () => {
             describe("field not in selection set", () => {
                 const queryWithoutSortField = `
                         query ($actorId: ID!, $direction: SortDirection!) {
-                            ${Actor.plural}(where: { id: $actorId }) {
+                            ${Actor.plural}(where: { id_EQ: $actorId }) {
                                 id
                                 actedInConnection(sort: [{ edge: { screenTime: $direction } }]) {
                                     edges {

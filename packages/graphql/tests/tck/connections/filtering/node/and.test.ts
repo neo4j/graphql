@@ -52,7 +52,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> AND", () => {
             query {
                 movies {
                     title
-                    actorsConnection(where: { node: { AND: [{ firstName: "Tom" }, { lastName: "Hanks" }] } }) {
+                    actorsConnection(where: { node: { AND: [{ firstName_EQ: "Tom" }, { lastName_EQ: "Hanks" }] } }) {
                         edges {
                             properties {
                                 screenTime
@@ -101,7 +101,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> AND", () => {
             query {
                 movies {
                     title
-                    actorsConnection(where: { node: { NOT: { firstName: "Tom" } } }) {
+                    actorsConnection(where: { node: { NOT: { firstName_EQ: "Tom" } } }) {
                         edges {
                             properties {
                                 screenTime

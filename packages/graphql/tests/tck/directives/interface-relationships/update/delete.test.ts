@@ -132,7 +132,7 @@ describe("Interface Relationships - Update delete", () => {
                     delete: {
                         actedIn: {
                             where: { node: { title_STARTS_WITH: "The " } }
-                            delete: { actors: { where: { node: { name: "Actor" } } } }
+                            delete: { actors: { where: { node: { name_EQ: "Actor" } } } }
                         }
                     }
                 ) {
@@ -220,7 +220,7 @@ describe("Interface Relationships - Update delete", () => {
                                             {
                                                 \\"where\\": {
                                                     \\"node\\": {
-                                                        \\"name\\": \\"Actor\\"
+                                                        \\"name_EQ\\": \\"Actor\\"
                                                     }
                                                 }
                                             }

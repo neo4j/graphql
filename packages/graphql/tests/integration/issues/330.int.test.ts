@@ -42,7 +42,7 @@ describe("unauthenticated-requests", () => {
                 id: ID
             }
 
-            extend type ${User} @authorization(validate: [{ when: BEFORE, where: { node: { id: "$jwt.sub" } } }])
+            extend type ${User} @authorization(validate: [{ when: BEFORE, where: { node: { id_EQ: "$jwt.sub" } } }])
         `;
 
         const query = `
@@ -77,7 +77,7 @@ describe("unauthenticated-requests", () => {
                 id: ID
             }
 
-            extend type ${User} @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+            extend type ${User} @authorization(filter: [{ where: { node: { id_EQ: "$jwt.sub" } } }])
         `;
 
         const query = `
@@ -115,7 +115,7 @@ describe("unauthenticated-requests", () => {
                 id: ID
             }
 
-            extend type ${User} @authorization(validate: [{ when: AFTER, where: { node: { id: "$jwt.sub" } } }])
+            extend type ${User} @authorization(validate: [{ when: AFTER, where: { node: { id_EQ: "$jwt.sub" } } }])
         `;
 
         const query = `

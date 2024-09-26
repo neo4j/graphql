@@ -62,7 +62,7 @@ describe("Mathematical operations tests", () => {
 
             const query = `
             mutation($id: ID, $value: ${type}) {
-                ${movie.operations.update}(where: { id: $id }, update: {viewers_${operation}: $value}) {
+                ${movie.operations.update}(where: { id_EQ: $id }, update: {viewers_${operation}: $value}) {
                     ${movie.plural} {
                         id
                         viewers
@@ -135,7 +135,7 @@ describe("Mathematical operations tests", () => {
 
             const query = `
             mutation($id: ID, $value: ${type}) {
-                ${movie.operations.update}(where: { id: $id }, update: {viewers_${operation}: $value}) {
+                ${movie.operations.update}(where: { id_EQ: $id }, update: {viewers_${operation}: $value}) {
                     ${movie.plural} {
                         id
                         viewers
@@ -192,7 +192,7 @@ describe("Mathematical operations tests", () => {
 
         const query = `
         mutation($id: ID, $value: Int) {
-            ${movie.operations.update}(where: { id: $id }, update: {viewers: $value, viewers_INCREMENT: $value}) {
+            ${movie.operations.update}(where: { id_EQ: $id }, update: {viewers: $value, viewers_INCREMENT: $value}) {
                 ${movie.plural} {
                     id
                     viewers
@@ -252,7 +252,7 @@ describe("Mathematical operations tests", () => {
 
         const query = `
         mutation($id: ID, $value: Int) {
-            ${movie.operations.update}(where: { id: $id }, update: {length_DECREMENT: $value, viewers_INCREMENT: $value}) {
+            ${movie.operations.update}(where: { id_EQ: $id }, update: {length_DECREMENT: $value, viewers_INCREMENT: $value}) {
                 ${movie.plural} {
                     id
                     viewers
@@ -316,7 +316,7 @@ describe("Mathematical operations tests", () => {
 
         const query = `
         mutation($id: ID, $value: Int) {
-            ${actor.operations.update}(where: { id: $id }, 
+            ${actor.operations.update}(where: { id_EQ: $id }, 
                 update: {
                     worksInMovies: [
                     {
@@ -398,7 +398,7 @@ describe("Mathematical operations tests", () => {
 
         const query = `
         mutation($id: ID, $value: Int) {
-            ${actor.operations.update}(where: { id: $id }, 
+            ${actor.operations.update}(where: { id_EQ: $id }, 
                 update: {
                   worksInProductions: [
                     {
@@ -468,7 +468,7 @@ describe("Mathematical operations tests", () => {
 
         const query = `
         mutation($id: ID, $value: Int) {
-            ${movie.operations.update}(where: { id: $id }, update: {viewers_INCREMENT: $value}) {
+            ${movie.operations.update}(where: { id_EQ: $id }, update: {viewers_INCREMENT: $value}) {
                 ${movie.plural} {
                     id
                     viewers
@@ -538,7 +538,7 @@ describe("Mathematical operations tests", () => {
 
         const query = `
         mutation Mutation($id: ID, $payIncrement: Float) {
-            ${actor.operations.update}(where: { id: $id }, update: {
+            ${actor.operations.update}(where: { id_EQ: $id }, update: {
                   actedIn: [
                     {
                       update: {
@@ -624,7 +624,7 @@ describe("Mathematical operations tests", () => {
 
         const query = `
         mutation Mutation($id: ID, $payIncrement: Float) {
-            ${actor.operations.update}(where: { id: $id }, update: {
+            ${actor.operations.update}(where: { id_EQ: $id }, update: {
                   actedIn: [
                     {
                       update: {

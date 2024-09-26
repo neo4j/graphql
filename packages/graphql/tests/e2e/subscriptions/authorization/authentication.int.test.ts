@@ -1085,7 +1085,7 @@ describe("Subscription authentication", () => {
                     mutation {
                         ${typeMovie.operations.update}(
                             where: {
-                                title: "Matrix",
+                                title_EQ: "Matrix",
                             }
                             update: {
                                 title: "Matrix 2"
@@ -1173,7 +1173,7 @@ describe("Subscription authentication", () => {
                     mutation {
                         ${typeMovie.operations.update}(
                             where: {
-                                title: "Matrix",
+                                title_EQ: "Matrix",
                             }
                             update: {
                                 title: "Matrix 2"
@@ -1261,7 +1261,7 @@ describe("Subscription authentication", () => {
                     mutation {
                         ${typeMovie.operations.update}(
                             where: {
-                                title: "Matrix",
+                                title_EQ: "Matrix",
                             }
                             update: {
                                 title: "Matrix 2"
@@ -1341,7 +1341,7 @@ describe("Subscription authentication", () => {
                     mutation {
                         ${typeMovie.operations.update}(
                             where: {
-                                title: "Matrix",
+                                title_EQ: "Matrix",
                             }
                             update: {
                                 title: "Matrix 2"
@@ -1417,7 +1417,7 @@ describe("Subscription authentication", () => {
                     mutation {
                         ${typeActor.operations.update}(
                             where: {
-                                name: "Keanu"
+                                name_EQ: "Keanu"
                             },
                             update: {
                                 name: "Keanu Reeves"
@@ -1490,7 +1490,7 @@ describe("Subscription authentication", () => {
                     mutation {
                         ${typeMovie.operations.delete}(
                             where: {
-                                title: "Matrix",
+                                title_EQ: "Matrix",
                             }
                         ) {
                              nodesDeleted
@@ -1569,7 +1569,7 @@ describe("Subscription authentication", () => {
                     mutation {
                         ${typeMovie.operations.delete}(
                             where: {
-                                title: "Matrix",
+                                title_EQ: "Matrix",
                             }
                         ) {
                              nodesDeleted
@@ -1647,7 +1647,7 @@ describe("Subscription authentication", () => {
                     mutation {
                         ${typeMovie.operations.delete}(
                             where: {
-                                title: "Matrix",
+                                title_EQ: "Matrix",
                             }
                         ) {
                              nodesDeleted
@@ -1716,13 +1716,13 @@ describe("Subscription authentication", () => {
                     mutation {
                         ${typeMovie.operations.update}(
                             where: {
-                                title: "Matrix"
+                                title_EQ: "Matrix"
                             },
                             delete: {
                                 actors: {
                                     where: {
                                         node: {
-                                            name: "Keanu"
+                                            name_EQ: "Keanu"
                                         }
                                     }
                                 }
@@ -1782,8 +1782,8 @@ describe("Subscription authentication", () => {
                                   {
                                     where: {
                                       node: {
-                                        title: "Matrix",
-                                        imdbId: 1
+                                        title_EQ: "Matrix",
+                                        imdbId_EQ: 1
                                       }
                                     },
                                     edge: {
@@ -1869,8 +1869,8 @@ describe("Subscription authentication", () => {
                                   {
                                     where: {
                                       node: {
-                                        title: "Matrix",
-                                        imdbId: 1
+                                        title_EQ: "Matrix",
+                                        imdbId_EQ: 1
                                       }
                                     },
                                     edge: {
@@ -1946,8 +1946,8 @@ describe("Subscription authentication", () => {
                                   {
                                     where: {
                                       node: {
-                                        title: "Matrix",
-                                        imdbId: 1
+                                        title_EQ: "Matrix",
+                                        imdbId_EQ: 1
                                       }
                                     },
                                     edge: {
@@ -2028,8 +2028,8 @@ describe("Subscription authentication", () => {
                                   {
                                     where: {
                                       node: {
-                                        title: "Matrix",
-                                        imdbId: 1
+                                        title_EQ: "Matrix",
+                                        imdbId_EQ: 1
                                       }
                                     },
                                     edge: {
@@ -2105,8 +2105,8 @@ describe("Subscription authentication", () => {
                                   {
                                     where: {
                                       node: {
-                                        title: "Matrix",
-                                        imdbId: 1
+                                        title_EQ: "Matrix",
+                                        imdbId_EQ: 1
                                       }
                                     },
                                     edge: {
@@ -2177,14 +2177,14 @@ describe("Subscription authentication", () => {
                     mutation {
                         ${typeActor.operations.update}(
                             where: {
-                                name: "Keanu",
+                                name_EQ: "Keanu",
                             }
                             disconnect: {
                               movies: {
                                 where: {
                                   node: {
-                                    title: "Matrix",
-                                    imdbId: 1
+                                    title_EQ: "Matrix",
+                                    imdbId_EQ: 1
                                   }
                                 }
                               }
@@ -2269,14 +2269,14 @@ describe("Subscription authentication", () => {
                     mutation {
                         ${typeActor.operations.update}(
                             where: {
-                                name: "Keanu",
+                                name_EQ: "Keanu",
                             }
                             disconnect: {
                               movies: {
                                 where: {
                                   node: {
-                                    title: "Matrix",
-                                    imdbId: 1
+                                    title_EQ: "Matrix",
+                                    imdbId_EQ: 1
                                   }
                                 }
                               }
@@ -2351,14 +2351,14 @@ describe("Subscription authentication", () => {
                     mutation {
                         ${typeActor.operations.update}(
                             where: {
-                                name: "Keanu",
+                                name_EQ: "Keanu",
                             }
                             disconnect: {
                               movies: {
                                 where: {
                                   node: {
-                                    title: "Matrix",
-                                    imdbId: 1
+                                    title_EQ: "Matrix",
+                                    imdbId_EQ: 1
                                   }
                                 }
                               }
@@ -2438,14 +2438,14 @@ describe("Subscription authentication", () => {
                     mutation {
                         ${typeActor.operations.update}(
                             where: {
-                                name: "Keanu",
+                                name_EQ: "Keanu",
                             }
                             disconnect: {
                               movies: {
                                 where: {
                                   node: {
-                                    title: "Matrix",
-                                    imdbId: 1
+                                    title_EQ: "Matrix",
+                                    imdbId_EQ: 1
                                   }
                                 }
                               }
@@ -2520,14 +2520,14 @@ describe("Subscription authentication", () => {
                     mutation {
                         ${typeActor.operations.update}(
                             where: {
-                                name: "Keanu",
+                                name_EQ: "Keanu",
                             }
                             disconnect: {
                               movies: {
                                 where: {
                                   node: {
-                                    title: "Matrix",
-                                    imdbId: 1
+                                    title_EQ: "Matrix",
+                                    imdbId_EQ: 1
                                   }
                                 }
                               }
@@ -2857,7 +2857,7 @@ describe("Subscription authentication", () => {
                     mutation {
                         ${typePerson.operations.update}(
                             where: {
-                                name: "Bob"
+                                name_EQ: "Bob"
                             }
                             update: {
                                 name: "John"
@@ -2947,7 +2947,7 @@ describe("Subscription authentication", () => {
                     mutation {
                         ${typePerson.operations.update}(
                             where: {
-                                name: "Bob"
+                                name_EQ: "Bob"
                             }
                             update: {
                                 name: "John"
@@ -3038,7 +3038,7 @@ describe("Subscription authentication", () => {
                     mutation {
                         ${typePerson.operations.update}(
                             where: {
-                                name: "Bob"
+                                name_EQ: "Bob"
                             }
                             update: {
                                 name: "John"
@@ -3119,7 +3119,7 @@ describe("Subscription authentication", () => {
                     mutation {
                         ${typeInfluencer.operations.update}(
                             where: {
-                                url: "/bob"
+                                url_EQ: "/bob"
                             }
                             update: {
                                url: "/john"
@@ -3198,7 +3198,7 @@ describe("Subscription authentication", () => {
                     mutation {
                         ${typeInfluencer.operations.delete}(
                             where: {
-                                url: "/bob"
+                                url_EQ: "/bob"
                             }
                         ) {
                             nodesDeleted
@@ -3279,7 +3279,7 @@ describe("Subscription authentication", () => {
                     mutation {
                         ${typePerson.operations.delete}(
                             where: {
-                                name: "Bob"
+                                name_EQ: "Bob"
                             }
                         ) {
                             nodesDeleted
@@ -3360,7 +3360,7 @@ describe("Subscription authentication", () => {
                     mutation {
                         ${typePerson.operations.delete}(
                             where: {
-                                name: "Bob"
+                                name_EQ: "Bob"
                             }
                         ) {
                             nodesDeleted
@@ -3433,7 +3433,7 @@ describe("Subscription authentication", () => {
                     mutation {
                         ${typeInfluencer.operations.delete}(
                             where: {
-                                url: "/bob"
+                                url_EQ: "/bob"
                             }
                         ) {
                             nodesDeleted
@@ -3935,13 +3935,13 @@ describe("Subscription authentication", () => {
                     mutation {
                         ${typePerson.operations.update}(
                             where: {
-                                name: "Bob",
+                                name_EQ: "Bob",
                             }
                             disconnect: {
                               movies: {
                                 where: {
                                   node: {
-                                    title: "Matrix"
+                                    title_EQ: "Matrix"
                                   }
                                 }
                               }
@@ -4044,13 +4044,13 @@ describe("Subscription authentication", () => {
                     mutation {
                         ${typePerson.operations.update}(
                             where: {
-                                name: "Bob",
+                                name_EQ: "Bob",
                             }
                             disconnect: {
                               movies: {
                                 where: {
                                   node: {
-                                    title: "Matrix"
+                                    title_EQ: "Matrix"
                                   }
                                 }
                               }
@@ -4136,13 +4136,13 @@ describe("Subscription authentication", () => {
                     mutation {
                         ${typePerson.operations.update}(
                             where: {
-                                name: "Bob",
+                                name_EQ: "Bob",
                             }
                             disconnect: {
                               movies: {
                                 where: {
                                   node: {
-                                    title: "Matrix"
+                                    title_EQ: "Matrix"
                                   }
                                 }
                               }
@@ -4228,13 +4228,13 @@ describe("Subscription authentication", () => {
                     mutation {
                         ${typePerson.operations.update}(
                             where: {
-                                name: "Bob",
+                                name_EQ: "Bob",
                             }
                             disconnect: {
                               movies: {
                                 where: {
                                   node: {
-                                    title: "Matrix"
+                                    title_EQ: "Matrix"
                                   }
                                 }
                               }
@@ -4320,13 +4320,13 @@ describe("Subscription authentication", () => {
                     mutation {
                         ${typePerson.operations.update}(
                             where: {
-                                name: "Bob",
+                                name_EQ: "Bob",
                             }
                             disconnect: {
                               movies: {
                                 where: {
                                   node: {
-                                    title: "Matrix"
+                                    title_EQ: "Matrix"
                                   }
                                 }
                               }
@@ -4818,13 +4818,13 @@ describe("Subscription authentication", () => {
                     mutation {
                         ${typePerson.operations.update}(
                             where: {
-                                name: "Bob",
+                                name_EQ: "Bob",
                             }
                             disconnect: {
                               movies: {
                                 where: {
                                   node: {
-                                    title: "Matrix"
+                                    title_EQ: "Matrix"
                                   }
                                 }
                               }
@@ -4912,14 +4912,14 @@ describe("Subscription authentication", () => {
                     mutation {
                         ${typeMovie.operations.update}(
                             where: {
-                                title: "Matrix"
+                                title_EQ: "Matrix"
                             },
                             disconnect: {
                                 directors: {
                                     ${typeActor.name}: {
                                         where: {
                                             node: {
-                                                name: "Bob", 
+                                                name_EQ: "Bob", 
                                             }
                                         }
                                     }
@@ -5227,8 +5227,8 @@ describe("Subscription authentication", () => {
                                   {
                                     where: {
                                       node: {
-                                        title: "Matrix",
-                                        imdbId: 1
+                                        title_EQ: "Matrix",
+                                        imdbId_EQ: 1
                                       }
                                     },
                                     edge: {
@@ -5314,8 +5314,8 @@ describe("Subscription authentication", () => {
                                   {
                                     where: {
                                       node: {
-                                        title: "Matrix",
-                                        imdbId: 1
+                                        title_EQ: "Matrix",
+                                        imdbId_EQ: 1
                                       }
                                     },
                                     edge: {

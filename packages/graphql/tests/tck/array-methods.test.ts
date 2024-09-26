@@ -461,7 +461,7 @@ describe("Arrays Methods", () => {
 
         const query = /* GraphQL */ `
             mutation {
-                updateActors(where: { id: 1 }, update: { actedIn: [{ update: { edge: { pay_PUSH: 10 } } }] }) {
+            updateActors(where: { id_EQ: 1 }, update: { actedIn: [{ update: { edge: { pay_PUSH: 10 } } }] }) {
                     actors {
                         name
                         actedIn {
@@ -563,7 +563,7 @@ describe("Arrays Methods", () => {
 
         const query = /* GraphQL */ `
             mutation {
-                updateActors(where: { id: 1 }, update: { actedIn: [{ update: { edge: { pay_POP: 1 } } }] }) {
+                updateActors(where: { id_EQ: 1 }, update: { actedIn: [{ update: { edge: { pay_POP: 1 } } }] }) {
                     actors {
                         name
                         actedIn {

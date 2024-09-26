@@ -47,7 +47,7 @@ describe("https://github.com/neo4j/graphql/issues/2262", () => {
     test("query nested relations under a root connection field", async () => {
         const query = /* GraphQL */ `
             query ComponentsProcesses {
-                components(where: { uuid: "c1" }) {
+                components(where: { uuid_EQ: "c1" }) {
                     uuid
                     upstreamProcessConnection {
                         edges {

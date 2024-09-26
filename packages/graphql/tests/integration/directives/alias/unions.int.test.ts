@@ -79,7 +79,7 @@ describe("@alias directive", () => {
                         actedIn: {
                             ${typeMovie.name}: {
                                 connectOrCreate: {
-                                    where: { node: { isan: "${movieIsan}" } }
+                                    where: { node: { isan_EQ: "${movieIsan}" } }
                                     onCreate: {
                                         edge: { screentime: 105 }
                                         node: { title: "Forrest Gump", titleAgain: "oops", isan: "${movieIsan}" }
@@ -88,7 +88,7 @@ describe("@alias directive", () => {
                             }
                             ${typeSeries.name}: {
                                 connectOrCreate: {
-                                    where: { node: { isan: "${seriesIsan}" } }
+                                    where: { node: { isan_EQ: "${seriesIsan}" } }
                                     onCreate: {
                                         edge: { screentime: 126 }
                                         node: {
@@ -129,7 +129,7 @@ describe("@alias directive", () => {
                         actedIn: {
                             ${typeMovie.name}: {
                                 connectOrCreate: {
-                                    where: { node: { isan: "${movieIsan}" } }
+                                    where: { node: { isan_EQ: "${movieIsan}" } }
                                     onCreate: {
                                         edge: { screentime: 105 }
                                         node: { title: "Forrest Gump", isan: "${movieIsan}" }
@@ -138,7 +138,7 @@ describe("@alias directive", () => {
                             }
                             ${typeSeries.name}: {
                                 connectOrCreate: {
-                                    where: { node: { isan: "${seriesIsan}" } }
+                                    where: { node: { isan_EQ: "${seriesIsan}" } }
                                     onCreate: {
                                         edge: { screentime: 126 }
                                         node: {
@@ -180,7 +180,7 @@ describe("@alias directive", () => {
                         actedIn: {
                             ${typeMovie.name}: {
                                 connectOrCreate: {
-                                    where: { node: { isan: "${movieIsan}" } }
+                                    where: { node: { isan_EQ: "${movieIsan}" } }
                                     onCreate: {
                                         edge: { screentime: 105 }
                                         node: { title: "Forrest Gump", isan: "${movieIsan}" }
@@ -189,7 +189,7 @@ describe("@alias directive", () => {
                             }
                             ${typeSeries.name}: {
                                 connectOrCreate: {
-                                    where: { node: { isan: "${seriesIsan}" } }
+                                    where: { node: { isan_EQ: "${seriesIsan}" } }
                                     onCreate: {
                                         edge: { screentime: 126 }
                                         node: {
@@ -227,14 +227,14 @@ describe("@alias directive", () => {
                     connectOrCreate: {
                         actedIn: {
                             ${typeMovie.name}: {
-                                where: { node: { isan: "${movieIsan}" } }
+                                where: { node: { isan_EQ: "${movieIsan}" } }
                                 onCreate: {
                                     edge: { screentime: 105 }
                                     node: { title: "Forrest Gump", isan: "${movieIsan}" }
                                 }
                             }
                             ${typeSeries.name}: {
-                                where: { node: { isan: "${seriesIsan}" } }
+                                where: { node: { isan_EQ: "${seriesIsan}" } }
                                 onCreate: {
                                     edge: { screentime: 126 }
                                     node: {
@@ -268,14 +268,14 @@ describe("@alias directive", () => {
                     connectOrCreate: {
                         actedIn: {
                             ${typeMovie.name}: {
-                                where: { node: { isan: "${movieIsan}" } }
+                                where: { node: { isan_EQ: "${movieIsan}" } }
                                 onCreate: {
                                     edge: { screentime: 105 }
                                     node: { title: "Forrest Gump", titleAgain: "oops", isan: "${movieIsan}" }
                                 }
                             }
                             ${typeSeries.name}: {
-                                where: { node: { isan: "${seriesIsan}" } }
+                                where: { node: { isan_EQ: "${seriesIsan}" } }
                                 onCreate: {
                                     edge: { screentime: 126 }
                                     node: {
@@ -315,14 +315,14 @@ describe("@alias directive", () => {
                     connectOrCreate: {
                         actedIn: {
                             ${typeMovie.name}: {
-                                where: { node: { isan: "${movieIsan}" } }
+                                where: { node: { isan_EQ: "${movieIsan}" } }
                                 onCreate: {
                                     edge: { screentime: 105 }
                                     node: { title: "Forrest Gump", isan: "${movieIsan}" }
                                 }
                             }
                             ${typeSeries.name}: {
-                                where: { node: { isan: "${seriesIsan}" } }
+                                where: { node: { isan_EQ: "${seriesIsan}" } }
                                 onCreate: {
                                     edge: { screentime: 126 }
                                     node: {
@@ -364,14 +364,14 @@ describe("@alias directive", () => {
                     connectOrCreate: {
                         actedIn: {
                             ${typeMovie.name}: {
-                                where: { node: { isan: "${movieIsan}" } }
+                                where: { node: { isan_EQ: "${movieIsan}" } }
                                 onCreate: {
                                     edge: { screentime: 105 }
                                     node: { title: "Forrest Gump", isan: "${movieIsan}" }
                                 }
                             }
                             ${typeSeries.name}: {
-                                where: { node: { isan: "${seriesIsan}" } }
+                                where: { node: { isan_EQ: "${seriesIsan}" } }
                                 onCreate: {
                                     edge: { screentime: 126 }
                                     node: {
@@ -411,7 +411,7 @@ describe("@alias directive", () => {
                         actedIn: {
                             ${typeMovie.name}: {
                                 connectOrCreate: {
-                                    where: { node: { isan: "${movieIsan}" } }
+                                    where: { node: { isan_EQ: "${movieIsan}" } }
                                     onCreate: {
                                         edge: { screentime: 105 }
                                         node: { title: "Forrest Gump", isan: "${movieIsan}" }
@@ -420,7 +420,7 @@ describe("@alias directive", () => {
                             }
                             ${typeSeries.name}: {
                                 connectOrCreate: {
-                                    where: { node: { isan: "${seriesIsan}" } }
+                                    where: { node: { isan_EQ: "${seriesIsan}" } }
                                     onCreate: {
                                         edge: { screentime: 126 }
                                         node: {
@@ -456,7 +456,7 @@ describe("@alias directive", () => {
                         actedIn: {
                             ${typeMovie.name}: {
                                 connectOrCreate: {
-                                    where: { node: { isan: "${movieIsan}" } }
+                                    where: { node: { isan_EQ: "${movieIsan}" } }
                                     onCreate: {
                                         edge: { screentime: 105 }
                                         node: { title: "Forrest Gump", titleAgain: "oops", isan: "${movieIsan}" }
@@ -465,7 +465,7 @@ describe("@alias directive", () => {
                             }
                             ${typeSeries.name}: {
                                 connectOrCreate: {
-                                    where: { node: { isan: "${seriesIsan}" } }
+                                    where: { node: { isan_EQ: "${seriesIsan}" } }
                                     onCreate: {
                                         edge: { screentime: 126 }
                                         node: {
@@ -506,7 +506,7 @@ describe("@alias directive", () => {
                         actedIn: {
                             ${typeMovie.name}: {
                                 connectOrCreate: {
-                                    where: { node: { isan: "${movieIsan}" } }
+                                    where: { node: { isan_EQ: "${movieIsan}" } }
                                     onCreate: {
                                         edge: { screentime: 105 }
                                         node: { title: "Forrest Gump", isan: "${movieIsan}" }
@@ -515,7 +515,7 @@ describe("@alias directive", () => {
                             }
                             ${typeSeries.name}: {
                                 connectOrCreate: {
-                                    where: { node: { isan: "${seriesIsan}" } }
+                                    where: { node: { isan_EQ: "${seriesIsan}" } }
                                     onCreate: {
                                         edge: { screentime: 126 }
                                         node: {
@@ -558,7 +558,7 @@ describe("@alias directive", () => {
                         actedIn: {
                             ${typeMovie.name}: {
                                 connectOrCreate: {
-                                    where: { node: { isan: "${movieIsan}" } }
+                                    where: { node: { isan_EQ: "${movieIsan}" } }
                                     onCreate: {
                                         edge: { screentime: 105 }
                                         node: { title: "Forrest Gump", isan: "${movieIsan}" }
@@ -567,7 +567,7 @@ describe("@alias directive", () => {
                             }
                             ${typeSeries.name}: {
                                 connectOrCreate: {
-                                    where: { node: { isan: "${seriesIsan}" } }
+                                    where: { node: { isan_EQ: "${seriesIsan}" } }
                                     onCreate: {
                                         edge: { screentime: 126 }
                                         node: {

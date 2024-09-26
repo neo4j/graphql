@@ -204,10 +204,10 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
             }
     
             extend type ${userType.name}
-                @authorization(filter: [{ operations: [READ, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }])
+                @authorization(filter: [{ operations: [READ, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP], where: { node: { id_EQ: "$jwt.sub" } } }])
     
             extend type ${userType.name} @node {
-                password: String! @authorization(filter: [{ operations: [READ], where: { node: { id: "$jwt.sub" } } }])
+                password: String! @authorization(filter: [{ operations: [READ], where: { node: { id_EQ: "$jwt.sub" } } }])
             }
         `;
         });
@@ -252,7 +252,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
             const query = `
             mutation {
-                ${userType.operations.update}(update: { content: { connect: { where: { node: { id: "${userID2}" } } } } }) {
+                ${userType.operations.update}(update: { content: { connect: { where: { node: { id_EQ: "${userID2}" } } } } }) {
                     ${userType.plural} {
                         id
                         contentConnection {
@@ -319,7 +319,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
             const query = `
             mutation {
-                ${userType.operations.update}(update: { content: [{ disconnect: { where: { node: { id: "${userID}" } } } }] }) {
+                ${userType.operations.update}(update: { content: [{ disconnect: { where: { node: { id_EQ: "${userID}" } } } }] }) {
                     ${userType.plural} {
                         id
                         contentConnection {
@@ -402,7 +402,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                         title: "${movieTitle}"
                         genres: {
                             connectOrCreate: [
-                                { where: { node: { name: "Horror" } }, onCreate: { node: { name: "Horror" } } }
+                                { where: { node: { name_EQ: "Horror" } }, onCreate: { node: { name: "Horror" } } }
                             ]
                         }
                     }
@@ -763,7 +763,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 ${movieType.operations.create}(input: [{ title: "${filmName1}" }, { title: "${filmName2}" }]) {
                     ${movieType.plural} {
                         title
-                        actorsConnection(where: { node: { name: "${actorName}" } }) {
+                        actorsConnection(where: { node: { name_EQ: "${actorName}" } }) {
                             edges {
                                 properties {
                                     screenTime

@@ -59,7 +59,7 @@ describe("Filtering Operations", () => {
     it("Combine AND and OR operations", async () => {
         const query = `
             query {
-                ${movieType.plural}(where: { OR: [{ title: "The Italian Job", released: 2003 }, { title: "The Lion King" }] }) {
+                ${movieType.plural}(where: { OR: [{ title_EQ: "The Italian Job", released_EQ: 2003 }, { title_EQ: "The Lion King" }] }) {
                     title
                     released
                 }

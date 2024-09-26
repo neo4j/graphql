@@ -68,16 +68,16 @@ describe("composite-where", () => {
                 mutation($movieId: ID, $actorName1: String, $screenTime: Int) {
                     ${Movie.operations.update}(
                         where: {
-                            id: $movieId
+                            id_EQ: $movieId
                         }
                         delete: {
                             actors: {
                                 where: {
                                     node: {
-                                        name: $actorName1
+                                        name_EQ: $actorName1
                                     }
                                     edge: {
-                                        screenTime: $screenTime
+                                        screenTime_EQ: $screenTime
                                     }
                                 }
                             }
@@ -131,16 +131,16 @@ describe("composite-where", () => {
                 mutation($movieId: ID, $actorName1: String, $screenTime: Int) {
                     ${Movie.operations.update}(
                         where: {
-                            id: $movieId
+                            id_EQ: $movieId
                         }
                         disconnect: {
                             actors: {
                                 where: {
                                     node: {
-                                        name: $actorName1
+                                        name_EQ: $actorName1
                                     }
                                     edge: {
-                                        screenTime: $screenTime
+                                        screenTime_EQ: $screenTime
                                     }
                                 }
                             }

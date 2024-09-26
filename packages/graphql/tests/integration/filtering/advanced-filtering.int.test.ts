@@ -155,7 +155,7 @@ describe("Advanced Filtering", () => {
 
             const query = `
                             {
-                                ${randomType.plural}(where: { property_NOT: "${randomValue1}" }) {
+                                ${randomType.plural}(where: { NOT: { property_EQ: "${randomValue1}" } }) {
                                     property
                                 }
                             }
@@ -531,7 +531,7 @@ describe("Advanced Filtering", () => {
 
             const query = `
                             {
-                                ${movieType.plural}(where: { title: "${matrix}" }) {
+                                ${movieType.plural}(where: { title_EQ: "${matrix}" }) {
                                     title
                                 }
                             }
@@ -882,7 +882,7 @@ describe("Advanced Filtering", () => {
 
             const query = `
                             {
-                                ${randomType.plural}(where: { property_NOT: ${notProperty} }) {
+                                ${randomType.plural}(where: { NOT: { property_EQ: ${notProperty} } }) {
                                     property
                                 }
                             }
@@ -1216,7 +1216,7 @@ describe("Advanced Filtering", () => {
 
             const query = `
                             {
-                                ${randomType.plural}(where: { property: false }) {
+                                ${randomType.plural}(where: { property_EQ: false }) {
                                     property
                                 }
                             }
@@ -1251,7 +1251,7 @@ describe("Advanced Filtering", () => {
 
             const query = `
                             {
-                                ${randomType.plural}(where: { property_NOT: false }) {
+                                ${randomType.plural}(where: { NOT: { property_EQ: false } }) {
                                     property
                                 }
                             }
@@ -1309,7 +1309,7 @@ describe("Advanced Filtering", () => {
 
                 const query = `
                         {
-                            ${randomType1.plural}(where: { ${randomType2.plural}: { id: "${relationId}" } }) {
+                            ${randomType1.plural}(where: { ${randomType2.plural}: { id_EQ: "${relationId}" } }) {
                                 id
                                 ${randomType2.plural} {
                                     id
@@ -1363,7 +1363,7 @@ describe("Advanced Filtering", () => {
 
                 const query = `
                         {
-                            ${Movie.plural}(where: { genresConnection: { node: { id: "${genreId}" } } }) {
+                            ${Movie.plural}(where: { genresConnection: { node: { id_EQ: "${genreId}" } } }) {
                                 id
                                 genres {
                                     id
@@ -1428,7 +1428,7 @@ describe("Advanced Filtering", () => {
 
                 const query = `
                         {
-                            ${Movie.plural}(where: { genresConnection: { edge: { id: "${actedInId}" } } }) {
+                            ${Movie.plural}(where: { genresConnection: { edge: { id_EQ: "${actedInId}" } } }) {
                                 id
                                 genres {
                                     id
@@ -1492,7 +1492,7 @@ describe("Advanced Filtering", () => {
 
                 const query = `
                         {
-                            ${Movie.plural}(where: { genresConnection: { node: { id: "${genreId}" } edge: { id: "${actedInId}" } } }) {
+                            ${Movie.plural}(where: { genresConnection: { node: { id_EQ: "${genreId}" } edge: { id_EQ: "${actedInId}" } } }) {
                                 id
                                 genres {
                                     id
@@ -1560,9 +1560,9 @@ describe("Advanced Filtering", () => {
                     { rootId1, rootId2, relationId1, relationId2 }
                 );
 
-                const query = `
+                const query = /* GraphQL */ `
                         {
-                            ${randomType1.plural}(where: { ${randomType2.plural}_NOT: { id: "${relationId2}" } }) {
+                            ${randomType1.plural}(where: { NOT: { ${randomType2.plural}: { id_EQ: "${relationId2}" } } }) {
                                 id
                                 ${randomType2.plural} {
                                     id
@@ -1623,7 +1623,7 @@ describe("Advanced Filtering", () => {
 
                 const query = `
                         {
-                            ${randomType1.plural}(where: { ${randomType2.plural}Connection_NOT: { node: { id: "${relationId2}" } } }) {
+                            ${randomType1.plural}(where: { ${randomType2.plural}Connection_NOT: { node: { id_EQ: "${relationId2}" } } }) {
                                 id
                                 ${randomType2.plural} {
                                     id
@@ -1691,7 +1691,7 @@ describe("Advanced Filtering", () => {
 
                 const query = `
                         {
-                            ${randomType1.plural}(where: { ${randomType2.plural}Connection_NOT: { edge: { id: "${actedInId}" } } }) {
+                            ${randomType1.plural}(where: { ${randomType2.plural}Connection_NOT: { edge: { id_EQ: "${actedInId}" } } }) {
                                 id
                                 ${randomType2.plural} {
                                     id
@@ -1768,11 +1768,11 @@ describe("Advanced Filtering", () => {
 
             describe("on relationship", () => {
                 function generateQuery(predicate: "ALL" | "NONE" | "SINGLE" | "SOME") {
-                    return `
+                    return /* GraphQL */ `
                     query($movieIds: [ID!]!) {
-                        ${Movie.plural}(where: { AND: [{ id_IN: $movieIds }, { actors_${predicate}: { flag_NOT: false } }] }) {
+                        ${Movie.plural}(where: { AND: [{ id_IN: $movieIds }, { actors_${predicate}: { NOT: { flag_EQ: false } } }] }) {
                             id
-                            actors(where: { flag_NOT: false }) {
+                            actors(where: { NOT: { flag_EQ: false } }) {
                                 id
                                 flag
                             }
@@ -1857,9 +1857,9 @@ describe("Advanced Filtering", () => {
             describe("on relationship using NOT operator", () => {
                 const generateQuery = (predicate: "ALL" | "NONE" | "SINGLE" | "SOME") => `
                     query($movieIds: [ID!]!) {
-                        ${Movie.plural}(where: { AND: [{ id_IN: $movieIds }, { actors_${predicate}: { NOT: { flag: false } } }] }) {
+                        ${Movie.plural}(where: { AND: [{ id_IN: $movieIds }, { actors_${predicate}: { NOT: { flag_EQ: false } } }] }) {
                             id
-                            actors(where: { NOT: { flag: false } }) {
+                            actors(where: { NOT: { flag_EQ: false } }) {
                                 id
                                 flag
                             }
@@ -1941,11 +1941,11 @@ describe("Advanced Filtering", () => {
             });
 
             describe("on connection", () => {
-                const generateQuery = (predicate: "ALL" | "NONE" | "SINGLE" | "SOME") => `
+                const generateQuery = (predicate: "ALL" | "NONE" | "SINGLE" | "SOME") => /* GraphQL */ `
                     query($movieIds: [ID!]!) {
-                        ${Movie.plural}(where: { AND: [{ id_IN: $movieIds }, { actorsConnection_${predicate}: { node: { flag_NOT: false } } }] }) {
+                        ${Movie.plural}(where: { AND: [{ id_IN: $movieIds }, { actorsConnection_${predicate}: { node: { NOT: { flag_EQ: false } } }}] }) {
                             id
-                            actors(where: {flag_NOT: false}) {
+                            actors(where: { NOT: { flag_EQ: false } }) {
                                 id
                                 flag
                             }
@@ -2029,9 +2029,9 @@ describe("Advanced Filtering", () => {
             describe("on connection using NOT operator", () => {
                 const generateQuery = (predicate: "ALL" | "NONE" | "SINGLE" | "SOME") => `
                     query($movieIds: [ID!]!) {
-                        ${Movie.plural}(where: { AND: [{ id_IN: $movieIds }, { actorsConnection_${predicate}: { node: { NOT: { flag: false } } } }] }) {
+                        ${Movie.plural}(where: { AND: [{ id_IN: $movieIds }, { actorsConnection_${predicate}: { node: { NOT: { flag_EQ: false } } } }] }) {
                             id
-                            actors(where: { NOT: { flag: false }}) {
+                            actors(where: { NOT: { flag_EQ: false }}) {
                                 id
                                 flag
                             }
@@ -2234,7 +2234,7 @@ describe("Advanced Filtering", () => {
 
             const nullQuery = `
                     {
-                        ${randomType.plural}(where: { optional: null }) {
+                        ${randomType.plural}(where: { optional_EQ: null }) {
                             id
                         }
                     }
@@ -2252,7 +2252,7 @@ describe("Advanced Filtering", () => {
 
             const notNullQuery = `
                     {
-                        ${randomType.plural}(where: { optional_NOT: null }) {
+                        ${randomType.plural}(where: { NOT: { optional_EQ: null } }) {
                             id
                         }
                     }

@@ -23,11 +23,11 @@ import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/mode
 import type { InterfaceEntityAdapter } from "../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { filterTruthy } from "../../../../utils/utils";
-import type { RelationshipWhereOperator } from "../../../where/types";
 import { getEntityLabels } from "../../utils/create-node-from-entity";
 import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
+import type { RelationshipWhereOperator } from "./Filter";
 import { Filter } from "./Filter";
 
 export class RelationshipFilter extends Filter {

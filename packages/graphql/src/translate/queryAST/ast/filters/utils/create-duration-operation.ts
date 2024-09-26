@@ -19,14 +19,14 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import { createComparisonOperation } from "../../../utils/create-comparison-operator";
-import type { WhereOperator } from "../Filter";
+import type { FilterOperator } from "../Filter";
 
 export function createDurationOperation({
     operator,
     property,
     param,
 }: {
-    operator: WhereOperator | "EQ";
+    operator: FilterOperator;
     property: Cypher.Expr;
     param: Cypher.Expr;
 }): Cypher.ComparisonOp {

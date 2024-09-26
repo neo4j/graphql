@@ -684,7 +684,7 @@ describe("unwind-create", () => {
                         name
                         movies {
                             title
-                            actorsConnection(where: { node: { name: $actor2Name } }) {
+                            actorsConnection(where: { node: { name_EQ: $actor2Name } }) {
                                 totalCount
                                 edges {
                                     node {

@@ -72,7 +72,7 @@ describe("Label in Node directive", () => {
             query {
                 actors(where: { age_GT: 10 }) {
                     name
-                    movies(where: { title: "terminator" }) {
+                    movies(where: { title_EQ: "terminator" }) {
                         title
                     }
                 }

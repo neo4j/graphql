@@ -95,7 +95,7 @@ describe("BigInt", () => {
 
             const query = `
                 query {
-                    ${File.plural}(where: { name: "${name}" }) {
+                    ${File.plural}(where: { name_EQ: "${name}" }) {
                         name
                         size
                     }
@@ -138,7 +138,7 @@ describe("BigInt", () => {
 
             const query = `
                 query {
-                    ${File.plural}(where: { size: 8323372036854775807 }) {
+                    ${File.plural}(where: { size_EQ: 8323372036854775807 }) {
                         name
                         size
                     }
@@ -185,7 +185,7 @@ describe("BigInt", () => {
 
             const query = `
                 query {
-                    ${File.plural}(where: { name: "${name}" }) {
+                    ${File.plural}(where: { name_EQ: "${name}" }) {
                         name
                         size
                     }

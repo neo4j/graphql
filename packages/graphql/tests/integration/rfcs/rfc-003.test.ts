@@ -142,7 +142,7 @@ describe("integration/rfc/003", () => {
 
                 const mutation = `
                     mutation {
-                        ${Movie.operations.update}(where: { id: "${movieId}" }, update: { id: "${movieId}" }) {
+                        ${Movie.operations.update}(where: { id_EQ: "${movieId}" }, update: { id: "${movieId}" }) {
                             info {
                                 nodesCreated
                             }
@@ -191,7 +191,7 @@ describe("integration/rfc/003", () => {
                     const mutation = `
                         mutation {
                             ${Movie.operations.update}(
-                              where: { id: "${movieId}" }
+                              where: { id_EQ: "${movieId}" }
                               update: { director: { update: { node: { id: "${directorId}" } } } }
                             ) {
                               info {
@@ -241,7 +241,7 @@ describe("integration/rfc/003", () => {
                     const mutation = `
                         mutation {
                             ${Movie.operations.update}(
-                              where: { id: "${movieId}" }
+                              where: { id_EQ: "${movieId}" }
                               update: { director: { create: { node: { id: "${directorId}" } } } }
                             ) {
                               info {
@@ -295,8 +295,8 @@ describe("integration/rfc/003", () => {
                     const mutation = `
                         mutation {
                             ${Movie.operations.update}(
-                                where: { id: "${movieId}" },
-                                delete: { director: { where: { node: { id: "${directorId}" } } } }
+                                where: { id_EQ: "${movieId}" },
+                                delete: { director: { where: { node: { id_EQ: "${directorId}" } } } }
                             ) {
                                 info {
                                     nodesCreated
@@ -342,7 +342,7 @@ describe("integration/rfc/003", () => {
 
                 const mutation = `
                     mutation {
-                        ${Movie.operations.create}(input: [{ id: "${movieId}", director: { connect: { where: { node: { id: "${directorId}" } } } } }]) {
+                        ${Movie.operations.create}(input: [{ id: "${movieId}", director: { connect: { where: { node: { id_EQ: "${directorId}" } } } } }]) {
                             info {
                                 nodesCreated
                             }
@@ -392,8 +392,8 @@ describe("integration/rfc/003", () => {
                                   id: "${movieId}"
                                   director: {
                                     connect: {
-                                      where: { node: { id: "${directorId}" } }
-                                      connect: { address: { where: { node: { street: "some-street" } } } }
+                                      where: { node: { id_EQ: "${directorId}" } }
+                                      connect: { address: { where: { node: { street_EQ: "some-street" } } } }
                                     }
                                   }
                                 }
@@ -444,7 +444,7 @@ describe("integration/rfc/003", () => {
 
                     const mutation = `
                         mutation {
-                            ${Movie.operations.update}(where: { id: "${movieId}" }, disconnect: { director: { where: { node: {  id: "${directorId}" } } } }) {
+                            ${Movie.operations.update}(where: { id_EQ: "${movieId}" }, disconnect: { director: { where: { node: { id_EQ: "${directorId}" } } } }) {
                                 info {
                                     nodesCreated
                                 }
@@ -494,12 +494,12 @@ describe("integration/rfc/003", () => {
                 const mutation = `
                     mutation {
                         ${Movie.operations.update}(
-                            where: { id: "${movieId}" },
+                            where: { id_EQ: "${movieId}" },
                             disconnect: {
-                                director: { where: { node: { id: "${directorId1}" } } }
+                                director: { where: { node: { id_EQ: "${directorId1}" } } }
                             }
                             connect: {
-                                director: { where: { node: { id: "${directorId2}" } } }
+                                director: { where: { node: { id_EQ: "${directorId2}" } } }
                             }
                         ) {
                             ${Movie.plural} {
@@ -560,12 +560,12 @@ describe("integration/rfc/003", () => {
                 const mutation = `
                     mutation {
                         ${Movie.operations.update}(
-                            where: { id: "${movieId}" },
+                            where: { id_EQ: "${movieId}" },
                             disconnect: {
-                                director: { where: { node: { id: "${directorId1}" } } }
+                                director: { where: { node: { id_EQ: "${directorId1}" } } }
                             }
                             connect: {
-                                director: { where: { node: { id: "${directorId2}" } } }
+                                director: { where: { node: { id_EQ: "${directorId2}" } } }
                             }
                         ) {
                             ${Movie.plural} {
@@ -628,7 +628,7 @@ describe("integration/rfc/003", () => {
                 const mutation = `
                     mutation {
                         ${Movie.operations.update}(
-                            where: { id: "${movieId}" },
+                            where: { id_EQ: "${movieId}" },
                             connect: {
                                 director: { where: { node: { id_IN: ["${directorId1}", "${directorId2}"] } } }
                             }

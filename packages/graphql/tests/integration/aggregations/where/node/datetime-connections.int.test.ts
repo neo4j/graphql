@@ -67,7 +67,7 @@ describe("aggregations-where-node-datetime - connections", () => {
                 {
                     ${
                         Post.operations.connection
-                    }(where: { testString: "${testString}", likesAggregate: { node: { someDateTime_EQUAL: "${someDateTime.toISOString()}" } } }) {
+                    }(where: { testString_EQ: "${testString}", likesAggregate: { node: { someDateTime_EQUAL: "${someDateTime.toISOString()}" } } }) {
                         edges {
                             node {
                                 testString
@@ -122,7 +122,7 @@ describe("aggregations-where-node-datetime - connections", () => {
                 {
                     ${
                         Post.operations.connection
-                    }(where: { testString: "${testString}", likesAggregate: { node: { someDateTime_GT: "${someDateTimeGT.toISOString()}" } } }) {
+                    }(where: { testString_EQ: "${testString}", likesAggregate: { node: { someDateTime_GT: "${someDateTimeGT.toISOString()}" } } }) {
                         edges {
                             node {
                                 testString
@@ -175,7 +175,7 @@ describe("aggregations-where-node-datetime - connections", () => {
                 {
                     ${
                         Post.operations.connection
-                    }(where: { testString: "${testString}", likesAggregate: { node: { someDateTime_GTE: "${someDateTime.toISOString()}" } } }) {
+                    }(where: { testString_EQ: "${testString}", likesAggregate: { node: { someDateTime_GTE: "${someDateTime.toISOString()}" } } }) {
                         edges {
                             node {
                                 testString
@@ -230,7 +230,7 @@ describe("aggregations-where-node-datetime - connections", () => {
                 {
                     ${
                         Post.operations.connection
-                    }(where: { testString: "${testString}", likesAggregate: { node: { someDateTime_LT: "${someDateTimeLT.toISOString()}" } } }) {
+                    }(where: { testString_EQ: "${testString}", likesAggregate: { node: { someDateTime_LT: "${someDateTimeLT.toISOString()}" } } }) {
                         edges {
                             node {
                                 testString
@@ -282,7 +282,7 @@ describe("aggregations-where-node-datetime - connections", () => {
                 {
                     ${
                         Post.operations.connection
-                    }(where: { testString: "${testString}", likesAggregate: { node: { someDateTime_LTE: "${someDateTime.toISOString()}" } } }) {
+                    }(where: { testString_EQ: "${testString}", likesAggregate: { node: { someDateTime_LTE: "${someDateTime.toISOString()}" } } }) {
                         edges {
                             node {
                                 testString
@@ -374,7 +374,7 @@ describe("aggregations-where-node-datetime - connections - interface relationshi
                 {
                     ${
                         Post.operations.connection
-                    }(where: { testString: "${testString}", likesAggregate: { node: { someDateTime_EQUAL: "${someDateTime.toISOString()}" } } }) {
+                    }(where: { testString_EQ: "${testString}", likesAggregate: { node: { someDateTime_EQUAL: "${someDateTime.toISOString()}" } } }) {
                         edges {
                             node {
                                 testString
@@ -429,7 +429,7 @@ describe("aggregations-where-node-datetime - connections - interface relationshi
                 {
                     ${
                         Post.operations.connection
-                    }(where: { testString: "${testString}", likesAggregate: { node: { someDateTime_GT: "${someDateTimeGT.toISOString()}" } } }) {
+                    }(where: { testString_EQ: "${testString}", likesAggregate: { node: { someDateTime_GT: "${someDateTimeGT.toISOString()}" } } }) {
                         edges {
                             node {
                                 testString
@@ -482,7 +482,7 @@ describe("aggregations-where-node-datetime - connections - interface relationshi
                 {
                     ${
                         Post.operations.connection
-                    }(where: { testString: "${testString}", likesAggregate: { node: { someDateTime_GTE: "${someDateTime.toISOString()}" } } }) {
+                    }(where: { testString_EQ: "${testString}", likesAggregate: { node: { someDateTime_GTE: "${someDateTime.toISOString()}" } } }) {
                         edges {
                             node {
                                 testString
@@ -537,7 +537,7 @@ describe("aggregations-where-node-datetime - connections - interface relationshi
                 {
                     ${
                         Post.operations.connection
-                    }(where: { testString: "${testString}", likesAggregate: { node: { someDateTime_LT: "${someDateTimeLT.toISOString()}" } } }) {
+                    }(where: { testString_EQ: "${testString}", likesAggregate: { node: { someDateTime_LT: "${someDateTimeLT.toISOString()}" } } }) {
                         edges {
                             node {
                                 testString
@@ -590,7 +590,7 @@ describe("aggregations-where-node-datetime - connections - interface relationshi
                 {
                     ${
                         Post.operations.connection
-                    }(where: { testString: "${testString}", likesAggregate: { node: { someDateTime_LTE: "${someDateTime.toISOString()}" } } }) {
+                    }(where: { testString_EQ: "${testString}", likesAggregate: { node: { someDateTime_LTE: "${someDateTime.toISOString()}" } } }) {
                         edges {
                             node {
                                 testString

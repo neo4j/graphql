@@ -569,7 +569,7 @@ describe("type narrowing - simple case", () => {
 
         const query = /* GraphQL */ `
             query People {
-                people(where: { actedInConnection: { edge: { ActedIn: { screenTime: ${movieScreenTime} }, AppearsIn: { sceneNr: ${sceneNr} } } } }) {
+                people(where: { actedInConnection: { edge: { ActedIn: { screenTime_EQ: ${movieScreenTime} }, AppearsIn: { sceneNr_EQ: ${sceneNr} } } } }) {
                     name
                     actedInConnection {
                         edges {
@@ -688,7 +688,7 @@ describe("type narrowing - simple case", () => {
 
         const query = /* GraphQL */ `
             query People {
-                people(where: { actedInConnection_SOME: { node: { OR: [ { title: "${movieTitle}" }, { title: "${amatureProductionTitle}" }] } } }) {
+                people(where: { actedInConnection_SOME: { node: { OR: [ { title_EQ: "${movieTitle}" }, { title_EQ: "${amatureProductionTitle}" }] } } }) {
                     name
                     actedInConnection {
                         edges {
@@ -811,7 +811,7 @@ describe("type narrowing - simple case", () => {
                         edges {
                             node {
                                 title
-                                actorsConnection(where: { edge: { ActedIn: {screenTime: ${movieScreenTime2}}, AppearsIn: {} } }) {
+                                actorsConnection(where: { edge: { ActedIn: {screenTime_EQ: ${movieScreenTime2}}, AppearsIn: {} } }) {
                                     edges {
                                         node {
                                             name
@@ -971,7 +971,7 @@ describe("type narrowing - simple case", () => {
                         edges {
                             node {
                                 title
-                                actorsConnection(where: { edge: {  AppearsIn: { sceneNr_NOT: ${sceneNr} } } }) {
+                                actorsConnection(where: { edge: {  AppearsIn: { NOT: { sceneNr_EQ: ${sceneNr} } } } }) {
                                     edges {
                                         node {
                                             name
@@ -1131,7 +1131,7 @@ describe("type narrowing - simple case", () => {
                         edges {
                             node {
                                 title
-                                actorsConnection(where: { edge: { ActedIn: { screenTime_NOT: ${movieScreenTime} }, AppearsIn: { sceneNr_NOT: ${sceneNr} } } }) {
+                                actorsConnection(where: { edge: { ActedIn: { NOT: { screenTime_EQ: ${movieScreenTime} } }, AppearsIn: { NOT: { sceneNr_EQ: ${sceneNr} } } } }) {
                                     edges {
                                         node {
                                             name
@@ -1277,7 +1277,7 @@ describe("type narrowing - simple case", () => {
             query Actors {
                 ${Actor.plural} {
                     name
-                    actedInConnection(where: { edge: { ActedIn: { screenTime: ${movieScreenTime} } } }) {
+                    actedInConnection(where: { edge: { ActedIn: { screenTime_EQ: ${movieScreenTime} } } }) {
                         edges {
                             node {
                                 title
@@ -1371,7 +1371,7 @@ describe("type narrowing - simple case", () => {
         query Actors {
             ${Actor.plural} {
                 name
-                actedInConnection(where: { edge: { AppearsIn: { sceneNr: 0 } } }) {
+                actedInConnection(where: { edge: { AppearsIn: { sceneNr_EQ: 0 } } }) {
                     edges {
                         node {
                             title

@@ -120,7 +120,7 @@ describe("https://github.com/neo4j/graphql/issues/583", () => {
     test("should project all interfaces of node", async () => {
         const query = /* GraphQL */ `
             query ($actorId: ID!) {
-                ${Actor.plural}(where: { id: $actorId }) {
+                ${Actor.plural}(where: { id_EQ: $actorId }) {
                     id
                     name
                     actedIn {

@@ -59,9 +59,9 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                             operations: [DELETE]
                             where: {
                                 OR: [
-                                    { node: { creator: { id: "$jwt.uid" } } }
-                                    { node: { group: { admins_SOME: { user: { id: "$jwt.uid" } } } } }
-                                    { node: { group: { creator: { id: "$jwt.uid" } } } }
+                                    { node: { creator: { id_EQ: "$jwt.uid" } } }
+                                    { node: { group: { admins_SOME: { user: { id_EQ: "$jwt.uid" } } } } }
+                                    { node: { group: { creator: { id_EQ: "$jwt.uid" } } } }
                                 ]
                             }
                         }
@@ -69,10 +69,10 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                             operations: [READ, UPDATE]
                             where: {
                                 OR: [
-                                    { node: { creator: { id: "$jwt.uid" } } }
-                                    { node: { group: { admins_SOME: { user: { id: "$jwt.uid" } } } } }
-                                    { node: { group: { contributors_SOME: { user: { id: "$jwt.uid" } } } } }
-                                    { node: { group: { creator: { id: "$jwt.uid" } } } }
+                                    { node: { creator: { id_EQ: "$jwt.uid" } } }
+                                    { node: { group: { admins_SOME: { user: { id_EQ: "$jwt.uid" } } } } }
+                                    { node: { group: { contributors_SOME: { user: { id_EQ: "$jwt.uid" } } } } }
+                                    { node: { group: { creator: { id_EQ: "$jwt.uid" } } } }
                                 ]
                             }
                         }
@@ -158,7 +158,7 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
 
         const query = /* GraphQL */ `
             query Groups {
-                groups(where: { id: "family_id_1" }) {
+                groups(where: { id_EQ: "family_id_1" }) {
                     id
                     name
                     members {

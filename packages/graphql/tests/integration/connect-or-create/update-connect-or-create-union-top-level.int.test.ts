@@ -73,14 +73,14 @@ describe("Update -> ConnectOrCreate union top level", () => {
                     connectOrCreate: {
                         actedIn: {
                             ${typeMovie.name}: {
-                                where: { node: { isan: "${movieIsan}" } }
+                                where: { node: { isan_EQ: "${movieIsan}" } }
                                 onCreate: {
                                     edge: { screentime: 105 }
                                     node: { title: "Forrest Gump", isan: "${movieIsan}" }
                                 }
                             }
                             ${typeSeries.name}: {
-                                where: { node: { isan: "${seriesIsan}" } }
+                                where: { node: { isan_EQ: "${seriesIsan}" } }
                                 onCreate: {
                                     edge: { screentime: 126 }
                                     node: {
@@ -159,14 +159,14 @@ describe("Update -> ConnectOrCreate union top level", () => {
                     connectOrCreate: {
                         actedIn: {
                             ${typeMovie.name}: {
-                                where: { node: { isan: "${movieIsan}" } }
+                                where: { node: { isan_EQ: "${movieIsan}" } }
                                 onCreate: {
                                     edge: { screentime: 105 }
                                     node: { title: "Forrest Gump", isan: "${movieIsan}" }
                                 }
                             }
                             ${typeSeries.name}: {
-                                where: { node: { isan: "${seriesIsan}" } }
+                                where: { node: { isan_EQ: "${seriesIsan}" } }
                                 onCreate: {
                                     edge: { screentime: 126 }
                                     node: {
@@ -177,7 +177,7 @@ describe("Update -> ConnectOrCreate union top level", () => {
                             }
                         }
                 }
-                where: { name: "${actorName}"}){
+                where: { name_EQ: "${actorName}"}){
                     ${typeActor.plural} {
                         name
                     }

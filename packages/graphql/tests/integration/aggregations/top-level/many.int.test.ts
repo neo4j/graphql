@@ -67,7 +67,7 @@ describe("aggregations-top_level-many", () => {
 
         const query = `
                 {
-                    ${typeMovie.operations.aggregate}(where: { testId: "${testId}" }) {
+                    ${typeMovie.operations.aggregate}(where: { testId_EQ: "${testId}" }) {
                         id {
                             shortest
                             longest

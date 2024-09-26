@@ -66,7 +66,7 @@ describe("Nested Field Level Aggregations", () => {
     test("count actors in movies in actors", async () => {
         const query = `
         query Query {
-          actors: ${typeActor.plural}(where: {name: "Arnold"}) {
+          actors: ${typeActor.plural}(where: {name_EQ: "Arnold"}) {
             name
             movies: ${typeMovie.plural} {
               title

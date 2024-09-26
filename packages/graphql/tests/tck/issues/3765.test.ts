@@ -551,7 +551,7 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
         test("implicit AND", async () => {
             const query = /* GraphQL */ `
                 {
-                    posts(where: { content: "stuff", alternateContent: "stuff2" }) {
+                    posts(where: { content_EQ: "stuff", alternateContent_EQ: "stuff2" }) {
                         content
                     }
                 }
@@ -576,7 +576,7 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
         test("explicit OR with an implicit AND", async () => {
             const query = /* GraphQL */ `
                 {
-                    posts(where: { OR: [{ content: "stuff", alternateContent: "stuff2" }, { content: "stuff3" }] }) {
+                    posts(where: { OR: [{ content_EQ: "stuff", alternateContent_EQ: "stuff2" }, { content_EQ: "stuff3" }] }) {
                         content
                     }
                 }
@@ -602,7 +602,7 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
         test("explicit NOT with an implicit AND", async () => {
             const query = /* GraphQL */ `
                 {
-                    posts(where: { NOT: { content: "stuff", alternateContent: "stuff2" } }) {
+                    posts(where: { NOT: { content_EQ: "stuff", alternateContent_EQ: "stuff2" } }) {
                         content
                     }
                 }
@@ -629,7 +629,7 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
         test("implicit AND  inside relationship filter", async () => {
             const query = /* GraphQL */ `
                 {
-                    posts(where: { likes_SOME: { name: "stuff", otherName: "stuff2" } }) {
+                    posts(where: { likes_SOME: { name_EQ: "stuff", otherName_EQ: "stuff2" } }) {
                         content
                     }
                 }
@@ -657,7 +657,7 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
         test("implicit AND outside relationship filters", async () => {
             const query = /* GraphQL */ `
                 {
-                    posts(where: { likes_SOME: { name: "stuff" }, likes_ALL: { otherName: "stuff2" } }) {
+                    posts(where: { likes_SOME: { name_EQ: "stuff" }, likes_ALL: { otherName_EQ: "stuff2" } }) {
                         content
                     }
                 }
@@ -694,9 +694,9 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                     posts(
                         where: {
                             OR: [
-                                { likes_SOME: { name: "stuff" } }
-                                { likes_ALL: { otherName: "stuff2" } }
-                                { likes_SOME: { otherName: "stuff3" } }
+                                { likes_SOME: { name_EQ: "stuff" } }
+                                { likes_ALL: { otherName_EQ: "stuff2" } }
+                                { likes_SOME: { otherName_EQ: "stuff3" } }
                             ]
                         }
                     ) {

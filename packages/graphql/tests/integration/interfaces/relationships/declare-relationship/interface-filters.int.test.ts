@@ -136,7 +136,7 @@ describe("interface filters of declared relationships", () => {
     test("should filter using relationship filters", async () => {
         const query = /* GraphQL */ `
             query production {
-                productions(where: { actors_SOME: { name: "${actorName2}" } }) {
+                productions(where: { actors_SOME: { name_EQ: "${actorName2}" } }) {
                     title
                     actorsConnection {
                         edges {
@@ -192,7 +192,7 @@ describe("interface filters of declared relationships", () => {
     test("should filter using connection filters", async () => {
         const query = /* GraphQL */ `
             query production {
-                productions(where: { actorsConnection_SOME: { node: { name: "${actorName2}" } } }) {
+                productions(where: { actorsConnection_SOME: { node: { name_EQ: "${actorName2}" } } }) {
                     title
                     actorsConnection {
                         edges {
@@ -248,7 +248,7 @@ describe("interface filters of declared relationships", () => {
     test("should filter using connection filters + typename_IN + logical", async () => {
         const query = /* GraphQL */ `
             query production {
-                productions(where: { OR: [{ typename_IN: [${Series}] }, {actorsConnection_SOME: { node: { name: "${actorName2}" }  }}] }) {
+                productions(where: { OR: [{ typename_IN: [${Series}] }, {actorsConnection_SOME: { node: { name_EQ: "${actorName2}" }  }}] }) {
                     title
                     actorsConnection {
                         edges {
@@ -446,7 +446,7 @@ describe("interface filters of declared interface relationships", () => {
     test("should filter using relationship filters", async () => {
         const query = /* GraphQL */ `
             query production {
-                productions(where: { actors_SOME: { name: "${actorName2}" } }) {
+                productions(where: { actors_SOME: { name_EQ: "${actorName2}" } }) {
                     title
                     actorsConnection {
                         edges {
@@ -502,7 +502,7 @@ describe("interface filters of declared interface relationships", () => {
     test("should filter using relationship filters ALL", async () => {
         const query = /* GraphQL */ `
             query production {
-                productions(where: { actors_ALL: { name: "${actorName}" } }) {
+                productions(where: { actors_ALL: { name_EQ: "${actorName}" } }) {
                     title
                     actorsConnection {
                         edges {
@@ -550,7 +550,7 @@ describe("interface filters of declared interface relationships", () => {
     test("should filter using relationship filters SOME", async () => {
         const query = /* GraphQL */ `
             query production {
-                productions(where: { actors_SOME: { name: "${actorName2}" } }) {
+                productions(where: { actors_SOME: { name_EQ: "${actorName2}" } }) {
                     title
                     actorsConnection {
                         edges {
@@ -606,7 +606,7 @@ describe("interface filters of declared interface relationships", () => {
     test("should filter using relationship filters NONE", async () => {
         const query = /* GraphQL */ `
             query production {
-                productions(where: { actors_NONE: { name: "${actorName2}" } }) {
+                productions(where: { actors_NONE: { name_EQ: "${actorName2}" } }) {
                     title
                     actorsConnection {
                         edges {
@@ -662,7 +662,7 @@ describe("interface filters of declared interface relationships", () => {
     test("should filter using connection filters", async () => {
         const query = /* GraphQL */ `
             query production {
-                productions(where: { actorsConnection_SOME: { node: { name: "${actorName2}" } } }) {
+                productions(where: { actorsConnection_SOME: { node: { name_EQ: "${actorName2}" } } }) {
                     title
                     actorsConnection {
                         edges {
@@ -718,7 +718,7 @@ describe("interface filters of declared interface relationships", () => {
     test("should filter using connection filters + typename_IN + logical", async () => {
         const query = /* GraphQL */ `
             query production {
-                productions(where: { OR: [{ typename_IN: [${Series}] }, {actorsConnection_SOME: { node: { name: "${actorName2}" }  }}] }) {
+                productions(where: { OR: [{ typename_IN: [${Series}] }, {actorsConnection_SOME: { node: { name_EQ: "${actorName2}" }  }}] }) {
                     title
                     actorsConnection {
                         edges {

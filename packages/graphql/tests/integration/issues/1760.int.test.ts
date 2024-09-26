@@ -91,7 +91,7 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
         const query = `
             query getApplicationVariants {
                 ${ApplicationVariant.plural}(where: {
-                    current: true,
+                    current_EQ: true,
                 }, options: {
                     sort: {
                         relatedId: ASC,

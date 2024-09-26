@@ -114,7 +114,7 @@ describe("https://github.com/neo4j/graphql/issues/1049", () => {
 
         const query = `
             query {
-                ${Person.plural}(where: { likesConnection_SOME: { node: { title: "Harry Potter" } } }) {
+                ${Person.plural}(where: { likesConnection_SOME: { node: { title_EQ: "Harry Potter" } } }) {
                     name
                 }
             }

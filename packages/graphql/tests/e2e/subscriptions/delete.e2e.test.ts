@@ -136,7 +136,7 @@ describe.each([
     test("delete subscription with where", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { title: "movie3" }) {
+                ${typeMovie.operations.subscribe.deleted}(where: { title_EQ: "movie3" }) {
                     ${typeMovie.operations.subscribe.payload.deleted} {
                         title
                     }
@@ -167,7 +167,7 @@ describe.each([
         await wsClient.subscribe(
             `
             subscription {
-                ${typeActor.operations.subscribe.deleted}(where: { name: "Keanu" }) {
+                ${typeActor.operations.subscribe.deleted}(where: { name_EQ: "Keanu" }) {
                     ${typeActor.operations.subscribe.payload.deleted} {
                         name
                     }
@@ -222,7 +222,7 @@ describe.each([
             .send({
                 query: `
                     mutation {
-                        ${typeMovie.operations.delete}(where: { title: "${title}" }) {
+                        ${typeMovie.operations.delete}(where: { title_EQ: "${title}" }) {
                             nodesDeleted
                         }
                     }
@@ -237,7 +237,7 @@ describe.each([
             .send({
                 query: `
                         mutation {
-                            ${typeActor.operations.update}(where: { name: "${name}" }) {
+                            ${typeActor.operations.update}(where: { name_EQ: "${name}" }) {
                                 ${typeActor.plural} {
                                     name
                                 }

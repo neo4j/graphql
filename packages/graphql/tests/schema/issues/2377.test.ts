@@ -520,7 +520,8 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             }
 
             input ResourceUniqueWhere {
-              id: ID
+              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id_EQ: ID
             }
 
             input ResourceUpdateInput {

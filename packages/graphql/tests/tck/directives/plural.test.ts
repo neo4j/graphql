@@ -143,7 +143,7 @@ describe("Plural directive", () => {
     test("Delete Tech with plural techs using aggregation", async () => {
         const query = /* GraphQL */ `
             mutation {
-                deleteTechs(where: { name: "Matrix" }) {
+                deleteTechs(where: { name_EQ: "Matrix" }) {
                     nodesDeleted
                 }
             }

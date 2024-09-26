@@ -55,7 +55,7 @@ describe("connectOrCreate", () => {
                         title: "Forrest Gump 2"
                         genres: {
                           connectOrCreate: {
-                            where: { node: { name: "Horror" } }
+                            where: { node: { name_EQ: "Horror" } }
                             onCreate: { node: { name: "Horror" } }
                           }
                         }
@@ -76,7 +76,7 @@ describe("connectOrCreate", () => {
                                 title: "Cool Movie"
                                 genres: {
                                     connectOrCreate: {
-                                        where: { node: { name: "Comedy" } },
+                                        where: { node: { name_EQ: "Comedy" } },
                                         onCreate: { node: { name: "Comedy" } }
                                     }
                                 }
@@ -172,7 +172,7 @@ describe("connectOrCreate", () => {
                         title: "Forrest Gump 2"
                         genres: {
                           connectOrCreate: {
-                            where: { node: { name: "Horror" } }
+                            where: { node: { name_EQ: "Horror" } }
                             onCreate: { node: { name: "Horror" } }
                           }
                         }
@@ -193,7 +193,7 @@ describe("connectOrCreate", () => {
                                 title: "Cool Movie"
                                 genres: {
                                     connectOrCreate: {
-                                        where: { node: { name: "Comedy" } },
+                                        where: { node: { name_EQ: "Comedy" } },
                                         onCreate: { node: { name: "Comedy" } }
                                     }
                                 }

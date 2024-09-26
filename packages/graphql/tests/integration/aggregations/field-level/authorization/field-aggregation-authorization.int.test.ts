@@ -166,7 +166,7 @@ describe("Field Level Aggregations Auth", () => {
                 }
                 
                 extend type ${typeMovie.name} 
-                @authorization(validate: [{ operations: [AGGREGATE], when: [BEFORE], where: { node: { testId: "$jwt.sub" } } }])
+                @authorization(validate: [{ operations: [AGGREGATE], when: [BEFORE], where: { node: { testId_EQ: "$jwt.sub" } } }])
                 `;
 
             await testHelper.executeCypher(`

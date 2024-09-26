@@ -418,7 +418,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input GenreUniqueWhere {
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              name_EQ: String
             }
 
             input GenreUpdateInput {
@@ -1840,7 +1841,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input GenreUniqueWhere {
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              name_EQ: String
             }
 
             input GenreUpdateInput {
@@ -3211,7 +3213,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input GenreUniqueWhere {
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              name_EQ: String
             }
 
             input GenreUpdateInput {
@@ -4942,7 +4945,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input GenreUniqueWhere {
-              name: String
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              name_EQ: String
             }
 
             input GenreUpdateInput {
@@ -6103,7 +6107,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input RatingUniqueWhere {
-              number: Int
+              number: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              number_EQ: Int
             }
 
             input RatingUpdateInput {

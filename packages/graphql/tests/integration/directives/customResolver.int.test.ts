@@ -74,7 +74,7 @@ describe("@customResolver directive", () => {
         test("removes a field from all but its object type, and resolves with a custom resolver", async () => {
             const source = `
                 query ${testType.name}($userId: ID!) {
-                    ${testType.plural}(where: { id: $userId }) {
+                    ${testType.plural}(where: { id_EQ: $userId }) {
                         id
                         firstName
                         lastName
@@ -97,7 +97,7 @@ describe("@customResolver directive", () => {
         test("resolves field with custom resolver without required fields in selection set", async () => {
             const source = `
                 query ${testType.name}($userId: ID!) {
-                    ${testType.plural}(where: { id: $userId }) {
+                    ${testType.plural}(where: { id_EQ: $userId }) {
                         id
                         fullName
                     }
@@ -118,7 +118,7 @@ describe("@customResolver directive", () => {
         test("resolves field with custom resolver with required field(s) aliased in selection set", async () => {
             const source = `
                 query ${testType.name}($userId: ID!) {
-                    ${testType.plural}(where: { id: $userId }) {
+                    ${testType.plural}(where: { id_EQ: $userId }) {
                         id
                         f: firstName
                         fullName
@@ -166,7 +166,7 @@ describe("@customResolver directive", () => {
         test("removes a field from all but its object type, and resolves with a custom resolver", async () => {
             const source = `
                 query ${testType.name}($userId: ID!) {
-                    ${testType.plural}(where: { id: $userId }) {
+                    ${testType.plural}(where: { id_EQ: $userId }) {
                         id
                         firstName
                         lastName
@@ -189,7 +189,7 @@ describe("@customResolver directive", () => {
         test("resolves field with custom resolver without required fields in selection set", async () => {
             const source = `
                 query ${testType.name}($userId: ID!) {
-                    ${testType.plural}(where: { id: $userId }) {
+                    ${testType.plural}(where: { id_EQ: $userId }) {
                         id
                         fullName
                     }
@@ -210,7 +210,7 @@ describe("@customResolver directive", () => {
         test("resolves field with custom resolver with required field(s) aliased in selection set", async () => {
             const source = `
                 query ${testType.name}($userId: ID!) {
-                    ${testType.plural}(where: { id: $userId }) {
+                    ${testType.plural}(where: { id_EQ: $userId }) {
                         id
                         f: firstName
                         fullName
@@ -1097,7 +1097,7 @@ describe("Related Fields", () => {
 
             type ${User} @node {
                 id: ID!
-                firstName: String! @authorization(validate: [{ when: [BEFORE], where: { node: { id: "$jwt.sub" } } }])
+                firstName: String! @authorization(validate: [{ when: [BEFORE], where: { node: { id_EQ: "$jwt.sub" } } }])
                 lastName: String!
                 address: ${Address} @relationship(type: "LIVES_AT", direction: OUT)
                 fullName: String @customResolver(requires: "firstName lastName address { city { name population } }")
@@ -1175,7 +1175,7 @@ describe("Related Fields", () => {
 
             type ${User} @node {
                 id: ID!
-                firstName: String! @authorization(validate: [{ when: [BEFORE], where: { node: { id: "$jwt.sub" } } }])
+                firstName: String! @authorization(validate: [{ when: [BEFORE], where: { node: { id_EQ: "$jwt.sub" } } }])
                 lastName: String!
                 address: ${Address} @relationship(type: "LIVES_AT", direction: OUT)
                 fullName: String @customResolver(requires: "firstName lastName address { city { name population } }")
@@ -1203,7 +1203,7 @@ describe("Related Fields", () => {
 
         const query = `
             query ${User} {
-                ${User.plural}(where: { id: "1" }) {
+                ${User.plural}(where: { id_EQ: "1" }) {
                     firstName
                     fullName
                     address {
@@ -1255,7 +1255,7 @@ describe("Related Fields", () => {
 
             type ${User} @node {
                 id: ID!
-                firstName: String! @authorization(validate: [{ when: [BEFORE], where: { node: { id: "$jwt.sub" } } }])
+                firstName: String! @authorization(validate: [{ when: [BEFORE], where: { node: { id_EQ: "$jwt.sub" } } }])
                 lastName: String!
                 address: ${Address} @relationship(type: "LIVES_AT", direction: OUT)
                 fullName: String @customResolver(requires: "firstName lastName address { city { name population } }")
@@ -1283,7 +1283,7 @@ describe("Related Fields", () => {
 
         const query = `
             query ${User} {
-                ${User.plural}(where: { id: "1" }) {
+                ${User.plural}(where: { id_EQ: "1" }) {
                     firstName
                     fullName
                     address {
@@ -1335,7 +1335,7 @@ describe("Related Fields", () => {
 
             type ${User} @node {
                 id: ID!
-                firstName: String! @authorization(validate: [{ when: [BEFORE], where: { node: { id: "$jwt.sub" } } }])
+                firstName: String! @authorization(validate: [{ when: [BEFORE], where: { node: { id_EQ: "$jwt.sub" } } }])
                 lastName: String!
                 address: ${Address} @relationship(type: "LIVES_AT", direction: OUT)
                 fullName: String @customResolver(requires: "firstName lastName address { city { name population } }")
@@ -1363,7 +1363,7 @@ describe("Related Fields", () => {
 
         const query = `
             query ${User} {
-                ${User.plural}(where: { id: "1" }) {
+                ${User.plural}(where: { id_EQ: "1" }) {
                     firstName
                     fullName
                     address {

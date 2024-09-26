@@ -97,8 +97,8 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
         const updateProgrammeItems = /* GraphQL */ `
             mutation {
                 ${ProgrammeItem.operations.update}(
-                    where: { productTitle: "TestFilm1" }
-                    connect: { relatedTo: { where: { node: { productTitle: "TestEpisode1" } } } }
+                    where: { productTitle_EQ: "TestFilm1" }
+                    connect: { relatedTo: { where: { node: { productTitle_EQ: "TestEpisode1" } } } }
                 ) {
                     info {
                         bookmark

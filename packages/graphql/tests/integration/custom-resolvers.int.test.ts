@@ -495,7 +495,7 @@ describe("Custom Resolvers", () => {
 
             const query = `
                 query {
-                    ${Trade.plural}(where: { id: "${id}" }) {
+                    ${Trade.plural}(where: { id_EQ: "${id}" }) {
                         id
                         status
                     }
@@ -545,7 +545,7 @@ describe("Custom Resolvers", () => {
 
             const query = `
                 query {
-                    ${Type.plural}(where: { id: "${id}" }) {
+                    ${Type.plural}(where: { id_EQ: "${id}" }) {
                         id
                         strings
                     }

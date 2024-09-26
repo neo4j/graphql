@@ -69,7 +69,7 @@ describe("https://github.com/neo4j/graphql/issues/288", () => {
 
         const updateMutation = `
             mutation {
-                ${USER.operations.update}(where: { USERID: "${userid}" }, update: { COMPANYID: "${companyid2}" }) {
+                ${USER.operations.update}(where: { USERID_EQ: "${userid}" }, update: { COMPANYID: "${companyid2}" }) {
                     ${USER.plural} {
                         USERID
                         COMPANYID

@@ -49,7 +49,7 @@ describe("Cypher -> vector -> Auth", () => {
             type Movie
                 @node
                 @vector(indexes: [{ indexName: "movie_index", embeddingProperty: "movieVector", queryName: "${queryName}" }])
-                @authorization(filter: [{ where: { node: { director: { id: "$jwt.sub" } } } }]) {
+                @authorization(filter: [{ where: { node: { director: { id_EQ: "$jwt.sub" } } } }]) {
                 title: String
                 director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
             }
@@ -250,7 +250,7 @@ describe("Cypher -> vector -> Auth", () => {
             type Movie
                 @node
                 @vector(indexes: [{ indexName: "movie_index", embeddingProperty: "movieVector", queryName: "${queryName}" }])
-                @authorization(validate: [{ when: [BEFORE], where: { node: { director: { id: "$jwt.sub" } } } }]) {
+                @authorization(validate: [{ when: [BEFORE], where: { node: { director: { id_EQ: "$jwt.sub" } } } }]) {
                 title: String
                 director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
             }
@@ -452,7 +452,7 @@ describe("Cypher -> vector -> Auth", () => {
                 @node
                 @vector(indexes: [{ indexName: "movie_index", embeddingProperty: "movieVector", queryName: "${queryName}" }])
                 @authorization(
-                    validate: [{ when: [BEFORE], where: { node: { director_ALL: { id: "$jwt.sub" } } } }]
+                    validate: [{ when: [BEFORE], where: { node: { director_ALL: { id_EQ: "$jwt.sub" } } } }]
                 ) {
                 title: String
                 director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
@@ -659,7 +659,7 @@ describe("Cypher -> vector -> Auth", () => {
                 @vector(indexes: [{ indexName: "movie_index", embeddingProperty: "movieVector", queryName: "${queryName}" }])
                 @authorization(
                     validate: [
-                        { when: [BEFORE], where: { node: { directorConnection: { node: { id: "$jwt.sub" } } } } }
+                        { when: [BEFORE], where: { node: { directorConnection: { node: { id_EQ: "$jwt.sub" } } } } }
                     ]
                 ) {
                 title: String
@@ -866,7 +866,7 @@ describe("Cypher -> vector -> Auth", () => {
                     validate: [
                         {
                             when: [BEFORE]
-                            where: { node: { directorConnection_ALL: { node: { id: "$jwt.sub" } } } }
+                            where: { node: { directorConnection_ALL: { node: { id_EQ: "$jwt.sub" } } } }
                         }
                     ]
                 ) {
@@ -1075,7 +1075,7 @@ describe("Cypher -> vector -> Auth", () => {
                 @vector(indexes: [{ indexName: "movie_index", embeddingProperty: "movieVector", queryName: "${queryName}" }])
                 @authorization(
                     validate: [
-                        { when: [BEFORE], where: { node: { directorConnection: { edge: { year: 2020 } } } } }
+                        { when: [BEFORE], where: { node: { directorConnection: { edge: { year_EQ: 2020 } } } } }
                     ]
                 ) {
                 title: String
@@ -1281,7 +1281,7 @@ describe("Cypher -> vector -> Auth", () => {
                 @vector(indexes: [{ indexName: "movie_index", embeddingProperty: "movieVector", queryName: "${queryName}" }])
                 @authorization(
                     validate: [
-                        { when: [BEFORE], where: { node: { directorConnection_ALL: { edge: { year: 2020 } } } } }
+                        { when: [BEFORE], where: { node: { directorConnection_ALL: { edge: { year_EQ: 2020 } } } } }
                     ]
                 ) {
                 title: String

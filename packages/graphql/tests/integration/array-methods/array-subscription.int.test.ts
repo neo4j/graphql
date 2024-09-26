@@ -66,7 +66,7 @@ describe("array-subscription", () => {
     test("push", async () => {
         const query = `
         mutation {
-            ${typeMovie.operations.update}(where: { id: "1" }, update: { tags_PUSH: "a tag" }) {
+            ${typeMovie.operations.update}(where: { id_EQ: "1" }, update: { tags_PUSH: "a tag" }) {
                 ${typeMovie.plural} {
                     id
                 }
@@ -100,7 +100,7 @@ describe("array-subscription", () => {
     test("pop", async () => {
         const query = `
         mutation {
-            ${typeMovie.operations.update}(where: { id: "1" }, update: { tags_POP: 1 }) {
+            ${typeMovie.operations.update}(where: { id_EQ: "1" }, update: { tags_POP: 1 }) {
                 ${typeMovie.plural} {
                     id
                 }
@@ -134,7 +134,7 @@ describe("array-subscription", () => {
     test("pop and push", async () => {
         const query = `
         mutation {
-            ${typeMovie.operations.update}(where: { id: "1" }, update: { tags_POP: 1, moreTags_PUSH: ["a new tag"] }) {
+            ${typeMovie.operations.update}(where: { id_EQ: "1" }, update: { tags_POP: 1, moreTags_PUSH: ["a new tag"] }) {
                 ${typeMovie.plural} {
                     id
                 }

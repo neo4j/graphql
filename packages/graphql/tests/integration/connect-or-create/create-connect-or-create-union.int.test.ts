@@ -71,7 +71,7 @@ describe("Create -> ConnectOrCreate Union", () => {
                             actedIn: {
                                 ${typeMovie.name}: {
                                     connectOrCreate: {
-                                        where: { node: { isan: "${movieIsan}" } }
+                                        where: { node: { isan_EQ: "${movieIsan}" } }
                                         onCreate: {
                                             edge: { screentime: 105 }
                                             node: { title: "Forrest Gump", isan: "${movieIsan}" }
@@ -80,7 +80,7 @@ describe("Create -> ConnectOrCreate Union", () => {
                                 }
                                 ${typeSeries.name}: {
                                     connectOrCreate: {
-                                        where: { node: { isan: "${seriesIsan}" } }
+                                        where: { node: { isan_EQ: "${seriesIsan}" } }
                                         onCreate: {
                                             edge: { screentime: 126 }
                                             node: {
@@ -159,7 +159,7 @@ describe("Create -> ConnectOrCreate Union", () => {
                             actedIn: {
                                 ${typeMovie.name}: {
                                     connectOrCreate: {
-                                        where: { node: { isan: "${movieIsan}" } }
+                                        where: { node: { isan_EQ: "${movieIsan}" } }
                                         onCreate: {
                                             edge: { screentime: 105 }
                                             node: { title: "Forrest Gump", isan: "${movieIsan}" }
@@ -168,7 +168,7 @@ describe("Create -> ConnectOrCreate Union", () => {
                                 }
                                 ${typeSeries.name}: {
                                     connectOrCreate: {
-                                        where: { node: { isan: "${seriesIsan}" } }
+                                        where: { node: { isan_EQ: "${seriesIsan}" } }
                                         onCreate: {
                                             edge: { screentime: 126 }
                                             node: {

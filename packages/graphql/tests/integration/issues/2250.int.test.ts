@@ -80,7 +80,7 @@ describe("https://github.com/neo4j/graphql/issues/2250", () => {
                         directors: {
                             ${Actor}: [
                                 {
-                                    where: { node: { name: "Keanu Reeves" } }
+                                    where: { node: { name_EQ: "Keanu Reeves" } }
                                     update: {
                                         edge: { year: 2020 }
                                         node: {

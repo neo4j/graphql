@@ -48,7 +48,7 @@ describe("Subscriptions authorization with update events", () => {
                 @node
                 @subscriptionsAuthorization(
                     filter: [
-                        { where: { node: { id: "$jwt.sub" }, jwt: { roles_INCLUDES: "user" } } }
+                        { where: { node: { id_EQ: "$jwt.sub" }, jwt: { roles_INCLUDES: "user" } } }
                         { where: { jwt: { roles_INCLUDES: "admin" } } }
                     ]
                 ) {
@@ -198,7 +198,7 @@ describe("Subscriptions authorization with update events", () => {
             .send({
                 query: `
                     mutation {
-                        ${User.operations.update}(where: { id: "${id1}" }, update: { id: "${id2}" }) {
+                        ${User.operations.update}(where: { id_EQ: "${id1}" }, update: { id: "${id2}" }) {
                             ${User.plural} {
                                 id
                             }

@@ -31,7 +31,7 @@ describe("Batch Create, Auth", () => {
                 roles: [String!]!
             }
 
-            type Actor @authorization(validate: [{ when: [BEFORE], where: { node: { id: "$jwt.sub" } } }]) @node {
+            type Actor @authorization(validate: [{ when: [BEFORE], where: { node: { id_EQ: "$jwt.sub" } } }]) @node {
                 id: ID! @id @unique
                 name: String
                 website: Website @relationship(type: "HAS_WEBSITE", direction: OUT)
@@ -251,12 +251,12 @@ describe("Batch Create, Auth", () => {
                         { id: "1", actors: { create: [{ node: { name: "actor 1" }, edge: { year: 2022 } }] } }
                         { id: "2", actors: { create: [{ node: { name: "actor 2" }, edge: { year: 1999 } }] } }
                         { id: "3", website: { create: { node: { address: "mywebsite.com" } } } }
-                        { id: "4", actors: { connect: { where: { node: { id: "2" } } } } }
+                        { id: "4", actors: { connect: { where: { node: { id_EQ: "2" } } } } }
                         {
                             id: "5"
                             actors: {
                                 connectOrCreate: {
-                                    where: { node: { id: "2" } }
+                                    where: { node: { id_EQ: "2" } }
                                     onCreate: { node: { name: "actor 2" } }
                                 }
                             }

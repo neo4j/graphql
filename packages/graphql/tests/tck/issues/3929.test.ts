@@ -28,20 +28,20 @@ describe("https://github.com/neo4j/graphql/issues/3929", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type User @authorization(filter: [{ where: { node: { id: "$jwt.uid" } } }]) @node {
+            type User @authorization(filter: [{ where: { node: { id_EQ: "$jwt.uid" } } }]) @node {
                 id: ID! @unique
                 email: String!
                 name: String
             }
 
-            type Group @authorization(validate: [{ where: { node: { creator: { id: "$jwt.uid" } } } }]) @node {
+            type Group @authorization(validate: [{ where: { node: { creator: { id_EQ: "$jwt.uid" } } } }]) @node {
                 id: ID! @id @unique
                 name: String
                 members: [Person!]! @relationship(type: "MEMBER_OF", direction: IN)
                 creator: User! @relationship(type: "CREATOR_OF", direction: IN, nestedOperations: [CONNECT])
             }
 
-            type Person @authorization(validate: [{ where: { node: { creator: { id: "$jwt.uid" } } } }]) @node {
+            type Person @authorization(validate: [{ where: { node: { creator: { id_EQ: "$jwt.uid" } } } }]) @node {
                 id: ID! @id @unique
                 name: String!
                 creator: User! @relationship(type: "CREATOR_OF", direction: IN)
@@ -78,14 +78,14 @@ describe("https://github.com/neo4j/graphql/issues/3929", () => {
             token,
             variableValues: {
                 where: {
-                    id: "group1_id",
+                    id_EQ: "group1_id",
                 },
                 delete: {
                     members: [
                         {
                             where: {
                                 node: {
-                                    id: "member1_id",
+                                    id_EQ: "member1_id",
                                 },
                             },
                         },
@@ -143,7 +143,7 @@ describe("https://github.com/neo4j/graphql/issues/3929", () => {
                                 {
                                     \\"where\\": {
                                         \\"node\\": {
-                                            \\"id\\": \\"member1_id\\"
+                                            \\"id_EQ\\": \\"member1_id\\"
                                         }
                                     }
                                 }
