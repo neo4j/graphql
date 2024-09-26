@@ -47,7 +47,7 @@ export class CypherOperation extends ReadOperation {
     public transpile(context: QueryASTContext<Cypher.Node | undefined>): OperationTranspileResult {
         // eslint-disable-next-line prefer-const
         let { selection: matchClause, nestedContext } = this.selection.apply(context);
-        const fieldSubqueries = Cypher.concat(
+        const fieldSubqueries = Cypher.utils.concat(
             ...this.getFieldsSubqueries(nestedContext),
             ...this.getCypherFieldsSubqueries(nestedContext)
         );
@@ -64,7 +64,7 @@ export class CypherOperation extends ReadOperation {
 
         const ret = this.getReturnClause(nestedContext, context.returnVariable);
         const extraMatches: SelectionClause[] = this.getChildren().flatMap((f) => f.getSelection(nestedContext));
-        const clause = Cypher.concat(matchClause, ...extraMatches, fieldSubqueries, ...authClauses, ret);
+        const clause = Cypher.utils.concat(matchClause, ...extraMatches, fieldSubqueries, ...authClauses, ret);
         return {
             clauses: [clause],
             projectionExpr: context.returnVariable,

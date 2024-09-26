@@ -31,7 +31,7 @@ export async function cleanNodes(driver: Driver, labels: Array<string | UniqueTy
 
     const nodeHasAnyLabelPredicate = Cypher.or(...nodeHasLabelPredicates);
 
-    const query = new Cypher.Match(nodeRef).where(nodeHasAnyLabelPredicate).detachDelete(nodeRef);
+    const query = new Cypher.Match(new Cypher.Pattern(nodeRef)).where(nodeHasAnyLabelPredicate).detachDelete(nodeRef);
     const { cypher } = query.build();
     return driver.executeQuery(cypher);
 }
@@ -45,7 +45,7 @@ export async function cleanNodesUsingSession(session: Session, labels: Array<str
 
     const nodeHasAnyLabelPredicate = Cypher.or(...nodeHasLabelPredicates);
 
-    const query = new Cypher.Match(nodeRef).where(nodeHasAnyLabelPredicate).detachDelete(nodeRef);
+    const query = new Cypher.Match(new Cypher.Pattern(nodeRef)).where(nodeHasAnyLabelPredicate).detachDelete(nodeRef);
     const { cypher } = query.build();
     return runCypher(session, cypher);
 }

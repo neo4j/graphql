@@ -20,13 +20,13 @@
 import Cypher from "@neo4j/cypher-builder";
 import Debug from "debug";
 import { DEBUG_TRANSLATE } from "../constants";
+import type { AuthenticationOperation } from "../schema-model/annotation/AuthenticationAnnotation";
 import { getEntityAdapter } from "../schema-model/utils/get-entity-adapter";
 import type { CypherField } from "../types";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { applyAuthentication } from "./authorization/utils/apply-authentication";
 import { QueryASTContext, QueryASTEnv } from "./queryAST/ast/QueryASTContext";
 import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
-import type { AuthenticationOperation } from "../schema-model/annotation/AuthenticationAnnotation";
 
 const debug = Debug(DEBUG_TRANSLATE);
 
@@ -82,7 +82,7 @@ export function translateTopLevelCypher({
     const queryASTResult = queryAST.transpile(queryASTContext);
 
     const projectionStatements = queryASTResult.clauses.length
-        ? Cypher.concat(...queryASTResult.clauses)
+        ? Cypher.utils.concat(...queryASTResult.clauses)
         : new Cypher.Return(new Cypher.Literal("Query cannot conclude with CALL"));
     return projectionStatements.build();
 }

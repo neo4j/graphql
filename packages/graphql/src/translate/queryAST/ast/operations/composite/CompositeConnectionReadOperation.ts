@@ -49,7 +49,7 @@ export class CompositeConnectionReadOperation extends Operation {
             const result = c.transpile(subQueryContext);
             if (hasTarget(context)) {
                 const parentNode = context.target;
-                return result.clauses.map((sq) => Cypher.concat(new Cypher.With(parentNode), sq));
+                return result.clauses.map((sq) => Cypher.utils.concat(new Cypher.With(parentNode), sq));
             } else {
                 return result.clauses;
             }
@@ -105,7 +105,7 @@ export class CompositeConnectionReadOperation extends Operation {
         ]);
 
         return {
-            clauses: [Cypher.concat(nestedSubquery, orderSubquery, returnClause)],
+            clauses: [Cypher.utils.concat(nestedSubquery, orderSubquery, returnClause)],
             projectionExpr: context.returnVariable,
         };
     }

@@ -19,15 +19,15 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { EntityAdapter } from "../../schema-model/entity/EntityAdapter";
+import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { GraphQLWhereArg } from "../../types";
 import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
 import { QueryASTContext, QueryASTEnv } from "../queryAST/ast/QueryASTContext";
-import { QueryASTFactory } from "../queryAST/factory/QueryASTFactory";
-import { wrapSubqueriesInCypherCalls } from "../queryAST/utils/wrap-subquery-in-calls";
 import type { Filter } from "../queryAST/ast/filters/Filter";
+import { QueryASTFactory } from "../queryAST/factory/QueryASTFactory";
 import { isInterfaceEntity } from "../queryAST/utils/is-interface-entity";
-import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import { wrapSubqueriesInCypherCalls } from "../queryAST/utils/wrap-subquery-in-calls";
 
 function createWherePredicate({
     factory,
@@ -70,7 +70,7 @@ function createWherePredicate({
 
     return {
         predicate: Cypher.and(...predicates),
-        preComputedSubqueries: Cypher.concat(...preComputedSubqueries),
+        preComputedSubqueries: Cypher.utils.concat(...preComputedSubqueries),
     };
 }
 
@@ -98,7 +98,14 @@ export function createWhereNodePredicate({
         env: queryASTEnv,
         neo4jGraphQLContext: context,
     });
-    return createWherePredicate({ factory, queryASTContext, entityOrRel: entity, whereInput, targetElement, targetEntity });
+    return createWherePredicate({
+        factory,
+        queryASTContext,
+        entityOrRel: entity,
+        whereInput,
+        targetElement,
+        targetEntity,
+    });
 }
 
 export function createWhereEdgePredicate({

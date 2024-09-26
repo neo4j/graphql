@@ -76,7 +76,7 @@ export function createAuthorizationAfterPredicate({
 
         const preComputedSubqueries = [...asArray(extraSelections), ...asArray(nodeSubqueries)];
         if (preComputedSubqueries) {
-            subqueries = Cypher.concat(subqueries, ...preComputedSubqueries);
+            subqueries = Cypher.utils.concat(subqueries, ...preComputedSubqueries);
         }
     }
     if (!predicates.length) {
@@ -138,7 +138,7 @@ export function createAuthorizationAfterPredicateField({
                 const fieldSubqueries = attributesFilters.getSubqueries(queryASTContext);
                 const preComputedSubqueries = [...asArray(fieldSelection), ...asArray(fieldSubqueries)];
                 if (preComputedSubqueries) {
-                    subqueries = Cypher.concat(subqueries, ...preComputedSubqueries);
+                    subqueries = Cypher.utils.concat(subqueries, ...preComputedSubqueries);
                 }
                 if (fieldPredicate) {
                     predicates.push(fieldPredicate);
