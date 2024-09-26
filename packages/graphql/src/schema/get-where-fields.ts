@@ -32,10 +32,12 @@ export function getWhereFieldsForAttributes({
     attributes,
     userDefinedFieldDirectives,
     features,
+    ignoreCypherFieldFilters,
 }: {
     attributes: AttributeAdapter[];
     userDefinedFieldDirectives?: Map<string, DirectiveNode[]>;
     features: Neo4jFeaturesSettings | undefined;
+    ignoreCypherFieldFilters: boolean;
 }): Record<
     string,
     {
@@ -56,6 +58,18 @@ export function getWhereFieldsForAttributes({
         const deprecatedDirectives = graphqlDirectivesToCompose(
             (userDefinedDirectivesOnField ?? []).filter((directive) => directive.name.value === DEPRECATED)
         );
+
+        if (field.annotations.cypher) {
+            // If the field is a cypher field and ignoreCypherFieldFilters is true, skip it
+            if (ignoreCypherFieldFilters === true) {
+                continue;
+            }
+
+            // If the field is a cypher field with arguments, skip it
+            if (field.args.length > 0) {
+                continue;
+            }
+        }
 
         result[field.name] = {
             type: field.getInputTypeNames().where.pretty,

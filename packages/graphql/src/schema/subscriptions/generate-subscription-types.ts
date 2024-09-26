@@ -20,6 +20,7 @@
 import type { DirectiveNode } from "graphql";
 import { GraphQLFloat, GraphQLNonNull, GraphQLString } from "graphql";
 import type { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
+import type { SubscriptionEvents } from "../../classes/Node";
 import { EventType } from "../../graphql/enums/EventType";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
 import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
@@ -35,7 +36,6 @@ import { generateSubscribeMethod, subscriptionResolve } from "../resolvers/subsc
 import { attributeAdapterToComposeFields } from "../to-compose";
 import { getConnectedTypes, hasProperties } from "./generate-subscription-connection-types";
 import { generateSubscriptionConnectionWhereType } from "./generate-subscription-where-type";
-import type { SubscriptionEvents } from "../../classes/Node";
 
 export function generateSubscriptionTypes({
     schemaComposer,
@@ -80,6 +80,7 @@ export function generateSubscriptionTypes({
             userDefinedFieldDirectives: userDefinedFieldDirectivesForNode[entityAdapter.name],
             returnUndefinedIfEmpty: true,
             alwaysAllowNesting: true,
+            ignoreCypherFieldFilters: true,
         });
     }
 
