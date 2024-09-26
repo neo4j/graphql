@@ -403,7 +403,6 @@ export class OperationsFactory {
 
         if (resolveTree.name === "_entities" && reference) {
             const { __typename, ...referenceWhere } = reference;
-            console.log(`reference where: ${JSON.stringify(referenceWhere, null, 2)}`);
             return { ...referenceWhere, ...whereArgs };
         }
         return whereArgs;

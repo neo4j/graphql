@@ -21,26 +21,31 @@ import { parseWhereField } from "../../../../../translate/queryAST/factory/parse
 
 export function parseFilterProperty(key: string): { fieldName: string; operator: string | undefined } {
     // eslint-disable-next-line prefer-const
-    let { fieldName: stuff, operator: operatorStuff, isNot } = parseWhereField(key);
+    let { fieldName, operator, isNot } = parseWhereField(key);
 
     // These conversions are only temporary necessary until the the _NOT operator exists, after that we can just return the output of parseWhereField
-    if (operatorStuff === "EQ") {
-        operatorStuff = undefined;
+    if (operator === "EQ") {
+        operator = undefined;
     }
     if (isNot) {
-        if (operatorStuff && isAPossibleNotOperator(operatorStuff)) {
-            operatorStuff = `NOT_${operatorStuff}`;
+        if (operator && isOperatorIsANegateSupportedOperator(operator)) {
+            operator = `NOT_${operator}`;
         } else {
-            operatorStuff = "NOT";
+            operator = "NOT";
         }
     }
-    return { fieldName: stuff, operator: operatorStuff };
+    return { fieldName, operator };
 }
 
-function isAPossibleNotOperator(
-    operator: string
-): operator is "CONTAINS" | "STARTS_WITH" | "ENDS_WITH" | "IN" | "INCLUDES" {
+// These are the operator that have a negate version as _NOT_CONTAINS, _NOT_STARTS_WITH etc... .
+type NegateSupportedOperator = "CONTAINS" | "STARTS_WITH" | "ENDS_WITH" | "IN" | "INCLUDES";
+
+/**
+ * isOperatorIsANegateSupportedOperator returns true if the operator is one of these that have the negate version
+ * the following is temporary required until the `_NOT` operator is removed.
+ **/
+function isOperatorIsANegateSupportedOperator(operator: string): operator is NegateSupportedOperator {
     return (["CONTAINS", "STARTS_WITH", "ENDS_WITH", "IN", "INCLUDES"] as const).includes(
-        operator as "CONTAINS" | "STARTS_WITH" | "ENDS_WITH" | "IN" | "INCLUDES"
+        operator as NegateSupportedOperator
     );
 }
