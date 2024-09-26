@@ -343,4 +343,128 @@ describe("cypher directive filtering", () => {
             ],
         });
     });
+
+    test("With authorization on type using @cypher return value, with validate FAIL", async () => {
+        const Movie = testHelper.createUniqueType("Movie");
+        const Actor = testHelper.createUniqueType("Actor");
+
+        const typeDefs = /* GraphQL */ `
+            type ${Movie} @node @authorization(validate: [{ where: { node: { custom_field: "$jwt.custom_value" } } }]) {
+                title: String
+                custom_field: String
+                    @cypher(
+                        statement: """
+                        MATCH (this)
+                        RETURN this.custom_field AS s
+                        """
+                        columnName: "s"
+                    )
+                actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
+            }
+
+            type ${Actor} @node {
+                name: String
+                movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
+            }
+        `;
+
+        await testHelper.initNeo4jGraphQL({
+            typeDefs,
+            features: {
+                authorization: {
+                    key: "secret",
+                },
+            },
+        });
+
+        const token = createBearerToken("secret", { custom_value: "hello" });
+
+        await testHelper.executeCypher(
+            `
+            CREATE (m:${Movie} { title: "The Matrix" })
+            CREATE (m2:${Movie} { title: "The Matrix 2", custom_field: "hello" })
+            CREATE (m3:${Movie} { title: "The Matrix 3" })
+            CREATE (a:${Actor} { name: "Keanu Reeves" })
+            CREATE (a)-[:ACTED_IN]->(m)
+            `,
+            {}
+        );
+
+        const query = `
+            query {
+                ${Movie.plural} {
+                    title
+                }
+            }
+        `;
+
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
+
+        expect(gqlResult.errors).toHaveLength(1);
+        expect(gqlResult.errors?.[0]?.message).toBe("Forbidden");
+    });
+
+    test("With authorization on type using @cypher return value, with validate PASS", async () => {
+        const Movie = testHelper.createUniqueType("Movie");
+        const Actor = testHelper.createUniqueType("Actor");
+
+        const typeDefs = /* GraphQL */ `
+            type ${Movie} @node @authorization(validate: [{ where: { node: { custom_field: "$jwt.custom_value" } } }]) {
+                title: String
+                custom_field: String
+                    @cypher(
+                        statement: """
+                        MATCH (this)
+                        RETURN this.custom_field AS s
+                        """
+                        columnName: "s"
+                    )
+                actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
+            }
+
+            type ${Actor} @node {
+                name: String
+                movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
+            }
+        `;
+
+        await testHelper.initNeo4jGraphQL({
+            typeDefs,
+            features: {
+                authorization: {
+                    key: "secret",
+                },
+            },
+        });
+
+        const token = createBearerToken("secret", { custom_value: "hello" });
+
+        await testHelper.executeCypher(
+            `
+            CREATE (m2:${Movie} { title: "The Matrix", custom_field: "hello" })
+            CREATE (a:${Actor} { name: "Keanu Reeves" })
+            CREATE (a)-[:ACTED_IN]->(m)
+            `,
+            {}
+        );
+
+        const query = `
+            query {
+                ${Movie.plural} {
+                    title
+                }
+            }
+        `;
+
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult?.data).toEqual({
+            [Movie.plural]: [
+                {
+                    title: "The Matrix",
+                },
+            ],
+        });
+    });
 });

@@ -335,4 +335,75 @@ describe("cypher directive filtering - Auth", () => {
             }"
         `);
     });
+
+    test("With authorization on type using @cypher return value, with validate", async () => {
+        const typeDefs = /* GraphQL */ `
+            type Movie @node @authorization(validate: [{ where: { node: { custom_field: "$jwt.custom_value" } } }]) {
+                title: String
+                custom_field: String
+                    @cypher(
+                        statement: """
+                        MATCH (this)
+                        RETURN this.custom_field AS s
+                        """
+                        columnName: "s"
+                    )
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+            }
+
+            type Actor @node {
+                name: String
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+            }
+        `;
+
+        const token = createBearerToken("secret", { custom_value: "hello" });
+
+        const query = `
+            query {
+                movies {
+                    title
+                }
+            }
+        `;
+
+        const neoSchema: Neo4jGraphQL = new Neo4jGraphQL({
+            typeDefs,
+            features: {
+                authorization: {
+                    key: "secret",
+                },
+            },
+        });
+
+        const result = await translateQuery(neoSchema, query, { token });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Movie)
+            CALL {
+                WITH this
+                CALL {
+                    WITH this
+                    WITH this AS this
+                    MATCH (this)
+                    RETURN this.custom_field AS s
+                }
+                WITH s AS this0
+                RETURN this0 AS var1
+            }
+            WITH *
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.custom_value IS NOT NULL AND var1 = $jwt.custom_value)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            RETURN this { .title } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": [],
+                    \\"custom_value\\": \\"hello\\"
+                }
+            }"
+        `);
+    });
 });
