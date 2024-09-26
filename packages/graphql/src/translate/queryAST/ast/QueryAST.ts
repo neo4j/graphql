@@ -38,7 +38,7 @@ export class QueryAST {
 
     public build(neo4jGraphQLContext: Neo4jGraphQLTranslationContext, varName?: string): Cypher.Clause {
         const context = this.buildQueryASTContext(neo4jGraphQLContext, varName);
-        return Cypher.concat(...this.transpile(context).clauses);
+        return Cypher.utils.concat(...this.transpile(context).clauses);
     }
 
     // TODO: refactor other top level operations to use this method instead of build
@@ -54,7 +54,7 @@ export class QueryAST {
             }
         }
 
-        return Cypher.concat(...clauses, returnClause);
+        return Cypher.utils.concat(...clauses, returnClause);
     }
 
     /**

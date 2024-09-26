@@ -159,7 +159,7 @@ export class ReadOperation extends Operation {
         // This weird condition is just for cypher compatibility
         const shouldAddWithForAuth = authFilterSubqueries.length || authFiltersPredicate.length;
         if (filterSubqueries.length || shouldAddWithForAuth) {
-            filterSubqueriesClause = Cypher.concat(...filterSubqueries);
+            filterSubqueriesClause = Cypher.utils.concat(...filterSubqueries);
             if (!isCreateSelection || authFilterSubqueries.length) {
                 filterSubqueryWith = new Cypher.With("*");
             }
@@ -168,26 +168,32 @@ export class ReadOperation extends Operation {
         let sortAndLimitBlock: Cypher.Clause | undefined;
         let subqueries: Cypher.Clause;
         if (this.relationship) {
-            subqueries = Cypher.concat(...fieldSubqueries, ...cypherFieldSubqueries, ...sortSubqueries);
+            subqueries = Cypher.utils.concat(...fieldSubqueries, ...cypherFieldSubqueries, ...sortSubqueries);
         } else {
-            subqueries = Cypher.concat(...fieldSubqueries);
+            subqueries = Cypher.utils.concat(...fieldSubqueries);
 
             let sortClause: Cypher.With | undefined;
             if (this.sortFields.length || this.pagination) {
                 sortClause = new Cypher.With("*");
                 this.addSortToClause(nestedContext, nestedContext.target, sortClause);
             }
-            const sortBlock = Cypher.concat(...sortSubqueries, sortClause);
+            const sortBlock = Cypher.utils.concat(...sortSubqueries, sortClause);
 
             sortAndLimitBlock = this.hasCypherSort()
-                ? Cypher.concat(...cypherFieldSubqueries, sortBlock)
-                : Cypher.concat(sortBlock, ...cypherFieldSubqueries);
+                ? Cypher.utils.concat(...cypherFieldSubqueries, sortBlock)
+                : Cypher.utils.concat(sortBlock, ...cypherFieldSubqueries);
         }
 
         let clause: Cypher.Clause;
         if (isCreateSelection && !this.relationship) {
             // Top-level read part of a mutation does not contain the MATCH clause as it's implicit in the mutation.
-            clause = Cypher.concat(filterSubqueriesClause, filterSubqueryWith, sortAndLimitBlock, subqueries, ret);
+            clause = Cypher.utils.concat(
+                filterSubqueriesClause,
+                filterSubqueryWith,
+                sortAndLimitBlock,
+                subqueries,
+                ret
+            );
         } else {
             const extraMatches: SelectionClause[] = this.getChildren().flatMap((f) => f.getSelection(nestedContext));
             let extraMatchesWith: Cypher.With | undefined;
@@ -209,7 +215,7 @@ export class ReadOperation extends Operation {
             }
             matchBlock.push(...extraMatches, extraMatchesWith);
 
-            clause = Cypher.concat(
+            clause = Cypher.utils.concat(
                 ...matchBlock,
                 ...authFilterSubqueries,
                 filterSubqueriesClause,

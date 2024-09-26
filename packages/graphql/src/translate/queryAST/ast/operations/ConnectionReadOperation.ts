@@ -182,7 +182,7 @@ export class ConnectionReadOperation extends Operation {
 
         return {
             clauses: [
-                Cypher.concat(
+                Cypher.utils.concat(
                     ...extraMatches,
                     selectionClause,
                     ...filtersSubqueries,
@@ -239,7 +239,7 @@ export class ConnectionReadOperation extends Operation {
         const paginationWith = this.generateSortAndPaginationClause(context);
 
         return new Cypher.Call(
-            Cypher.concat(
+            Cypher.utils.concat(
                 unwindClause,
                 ...prePaginationSubqueries,
                 paginationWith,
