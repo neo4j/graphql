@@ -27,9 +27,8 @@ import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphq
 import { fromGlobalId } from "../../../utils/global-ids";
 import { asArray, filterTruthy } from "../../../utils/utils";
 import { isLogicalOperator } from "../../utils/logical-operators";
-import type { RelationshipWhereOperator } from "../../where/types";
 import { ConnectionFilter } from "../ast/filters/ConnectionFilter";
-import type { Filter, FilterOperator } from "../ast/filters/Filter";
+import type { Filter, FilterOperator, RelationshipWhereOperator } from "../ast/filters/Filter";
 import { isRelationshipOperator } from "../ast/filters/Filter";
 import { LogicalFilter } from "../ast/filters/LogicalFilter";
 import { RelationshipFilter } from "../ast/filters/RelationshipFilter";
@@ -183,10 +182,7 @@ export class FilterFactory {
         isNot: boolean;
         attachedTo?: "node" | "relationship";
     }): PropertyFilter | CypherFilter {
-        const filterOperator = operator;
-        if (!filterOperator) {
-            throw new Error(`${attribute.name}Please use _EQ`);
-        }
+        const filterOperator = operator ?? "EQ";
         if (attribute.annotations.cypher) {
             const selection = new CustomCypherSelection({
                 operationField: attribute,

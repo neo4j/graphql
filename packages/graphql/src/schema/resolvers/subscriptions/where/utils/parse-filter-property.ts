@@ -17,17 +17,30 @@
  * limitations under the License.
  */
 
-import type { WhereRegexGroups } from "../../../../../translate/where/utils";
-import { whereRegEx } from "../../../../../translate/where/utils";
+import { parseWhereField } from "../../../../../translate/queryAST/factory/parsers/parse-where-field";
 
 export function parseFilterProperty(key: string): { fieldName: string; operator: string | undefined } {
-    const match = whereRegEx.exec(key);
-    if (!match) {
-        throw new Error(`Failed to match key in filter: ${key}`);
+    // eslint-disable-next-line prefer-const
+    let { fieldName: stuff, operator: operatorStuff, isNot } = parseWhereField(key);
+
+    // These conversions are only temporary necessary until the the _NOT operator exists, after that we can just return the output of parseWhereField
+    if (operatorStuff === "EQ") {
+        operatorStuff = undefined;
     }
-    const { fieldName, operator } = match.groups as WhereRegexGroups;
-    if (!fieldName) {
-        throw new Error(`Failed to find field name in filter: ${key}`);
+    if (isNot) {
+        if (operatorStuff && isAPossibleNotOperator(operatorStuff)) {
+            operatorStuff = `NOT_${operatorStuff}`;
+        } else {
+            operatorStuff = "NOT";
+        }
     }
-    return { fieldName, operator };
+    return { fieldName: stuff, operator: operatorStuff };
+}
+
+function isAPossibleNotOperator(
+    operator: string
+): operator is "CONTAINS" | "STARTS_WITH" | "ENDS_WITH" | "IN" | "INCLUDES" {
+    return (["CONTAINS", "STARTS_WITH", "ENDS_WITH", "IN", "INCLUDES"] as const).includes(
+        operator as "CONTAINS" | "STARTS_WITH" | "ENDS_WITH" | "IN" | "INCLUDES"
+    );
 }
