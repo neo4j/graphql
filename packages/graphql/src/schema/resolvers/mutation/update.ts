@@ -30,14 +30,6 @@ import type { Neo4jFeaturesSettings } from "../../../types";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { execute } from "../../../utils";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
-import {
-    DEPRECATE_UPDATE_CONNECT_INPUT_FIELD,
-    DEPRECATE_UPDATE_CONNECT_OR_CREATE_INPUT_FIELD,
-    DEPRECATE_UPDATE_CREATE_INPUT_FIELD,
-    DEPRECATE_UPDATE_DELETE_INPUT_FIELD,
-    DEPRECATE_UPDATE_DISCONNECT_INPUT_FIELD,
-} from "../../constants";
-import { shouldAddDeprecatedFields } from "../../generation/utils";
 import { publishEventsToSubscriptionMechanism } from "../../subscriptions/publish-events-to-subscription-mechanism";
 import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
 
@@ -99,39 +91,6 @@ export function updateResolver({
     }
 
     const relationFields: Record<string, string | ObjectTypeComposerArgumentConfigAsObjectDefinition> = {};
-
-    if (shouldAddDeprecatedFields(features, "nestedUpdateOperationsFields")) {
-        if (composer.has(concreteEntityAdapter.operations.updateMutationArgumentNames.connect)) {
-            relationFields.connect = {
-                type: concreteEntityAdapter.operations.updateMutationArgumentNames.connect,
-                directives: [DEPRECATE_UPDATE_CONNECT_INPUT_FIELD],
-            };
-        }
-        if (composer.has(concreteEntityAdapter.operations.updateMutationArgumentNames.disconnect)) {
-            relationFields.disconnect = {
-                type: concreteEntityAdapter.operations.updateMutationArgumentNames.disconnect,
-                directives: [DEPRECATE_UPDATE_DISCONNECT_INPUT_FIELD],
-            };
-        }
-        if (composer.has(concreteEntityAdapter.operations.updateMutationArgumentNames.create)) {
-            relationFields.create = {
-                type: concreteEntityAdapter.operations.updateMutationArgumentNames.create,
-                directives: [DEPRECATE_UPDATE_CREATE_INPUT_FIELD],
-            };
-        }
-        if (composer.has(concreteEntityAdapter.operations.updateMutationArgumentNames.delete)) {
-            relationFields.delete = {
-                type: concreteEntityAdapter.operations.updateMutationArgumentNames.delete,
-                directives: [DEPRECATE_UPDATE_DELETE_INPUT_FIELD],
-            };
-        }
-        if (composer.has(concreteEntityAdapter.operations.updateMutationArgumentNames.connectOrCreate)) {
-            relationFields.connectOrCreate = {
-                type: concreteEntityAdapter.operations.updateMutationArgumentNames.connectOrCreate,
-                directives: [DEPRECATE_UPDATE_CONNECT_OR_CREATE_INPUT_FIELD],
-            };
-        }
-    }
 
     return {
         type: `${concreteEntityAdapter.operations.mutationResponseTypeNames.update}!`,
