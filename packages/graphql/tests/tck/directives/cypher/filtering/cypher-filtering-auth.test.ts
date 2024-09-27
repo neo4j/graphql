@@ -76,7 +76,7 @@ describe("cypher directive filtering - Auth", () => {
                 RETURN this0 AS var1
             }
             WITH *
-            WHERE ($isAuthenticated = true AND ($jwt.custom_value IS NOT NULL AND var1 = $jwt.custom_value))
+            WHERE ($isAuthenticated = true AND ($jwt.custom_value IS NOT NULL AND var1 IS NOT NULL AND var1 = $jwt.custom_value))
             RETURN this { .title } AS this"
         `);
 
@@ -248,7 +248,7 @@ describe("cypher directive filtering - Auth", () => {
                     RETURN this1 AS var2
                 }
                 WITH *
-                WHERE ($jwt.custom_value IS NOT NULL AND var2 = $jwt.custom_value)
+                WHERE ($jwt.custom_value IS NOT NULL AND var2 IS NOT NULL AND var2 = $jwt.custom_value)
                 RETURN count(this0) > 0 AS var3
             }
             WITH *
@@ -321,7 +321,7 @@ describe("cypher directive filtering - Auth", () => {
                 RETURN this0 AS var1
             }
             WITH *
-            WHERE ($isAuthenticated = true AND ($jwt.custom_value IS NOT NULL AND var1 = $jwt.custom_value))
+            WHERE ($isAuthenticated = true AND ($jwt.custom_value IS NOT NULL AND var1 IS NOT NULL AND var1 = $jwt.custom_value))
             RETURN this { .title } AS this"
         `);
 
@@ -392,7 +392,7 @@ describe("cypher directive filtering - Auth", () => {
                 RETURN this0 AS var1
             }
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.custom_value IS NOT NULL AND var1 = $jwt.custom_value)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.custom_value IS NOT NULL AND var1 IS NOT NULL AND var1 = $jwt.custom_value)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .title } AS this"
         `);
 

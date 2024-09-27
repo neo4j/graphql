@@ -86,7 +86,7 @@ export class CypherFilter extends Filter {
         });
 
         if (this.checkIsNotNull) {
-            return Cypher.and(Cypher.isNotNull(this.comparisonValue), operation);
+            return Cypher.and(Cypher.isNotNull(this.comparisonValue), Cypher.isNotNull(this.returnVariable), operation);
         }
 
         return operation;
