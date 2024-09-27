@@ -62,7 +62,7 @@ export class CompositeReadOperation extends Operation {
 
             let clauses = result.clauses;
             if (parentNode) {
-                clauses = clauses.map((sq) => Cypher.concat(new Cypher.With("*"), sq));
+                clauses = clauses.map((sq) => Cypher.utils.concat(new Cypher.With("*"), sq));
             }
             return clauses;
         });

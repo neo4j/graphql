@@ -34,8 +34,10 @@ import type { RelationshipFilter } from "../ast/filters/RelationshipFilter";
 import { AuthConnectionFilter } from "../ast/filters/authorization-filters/AuthConnectionFilter";
 import { AuthRelationshipFilter } from "../ast/filters/authorization-filters/AuthRelationshipFilter";
 import { JWTFilter } from "../ast/filters/authorization-filters/JWTFilter";
+import { CypherFilter } from "../ast/filters/property-filters/CypherFilter";
 import { ParamPropertyFilter } from "../ast/filters/property-filters/ParamPropertyFilter";
 import { PropertyFilter } from "../ast/filters/property-filters/PropertyFilter";
+import { CustomCypherSelection } from "../ast/selection/CustomCypherSelection";
 import { FilterFactory } from "./FilterFactory";
 import { parseWhereField } from "./parsers/parse-where-field";
 
@@ -138,8 +140,40 @@ export class AuthFilterFactory extends FilterFactory {
         isNot: boolean;
         attachedTo?: "node" | "relationship";
         relationship?: RelationshipAdapter;
-    }): PropertyFilter {
+    }): CypherFilter | PropertyFilter {
         const filterOperator = operator ?? "EQ";
+
+        const isCypherVariable =
+            comparisonValue instanceof Cypher.Variable ||
+            comparisonValue instanceof Cypher.Property ||
+            comparisonValue instanceof Cypher.Param;
+
+        if (attribute.annotations.cypher) {
+            const selection = new CustomCypherSelection({
+                operationField: attribute,
+                rawArguments: {},
+                isNested: true,
+            });
+
+            if (isCypherVariable) {
+                return new CypherFilter({
+                    selection,
+                    attribute,
+                    comparisonValue: comparisonValue,
+                    operator: filterOperator,
+                    checkIsNotNull: true,
+                });
+            }
+
+            const comparisonValueParam = new Cypher.Param(comparisonValue);
+
+            return new CypherFilter({
+                selection,
+                attribute,
+                comparisonValue: comparisonValueParam,
+                operator: filterOperator,
+            });
+        }
 
         // This is probably not needed, but avoid changing the cypher
         if (typeof comparisonValue === "boolean") {
@@ -152,11 +186,6 @@ export class AuthFilterFactory extends FilterFactory {
                 attachedTo,
             });
         }
-
-        const isCypherVariable =
-            comparisonValue instanceof Cypher.Variable ||
-            comparisonValue instanceof Cypher.Property ||
-            comparisonValue instanceof Cypher.Param;
 
         if (isCypherVariable) {
             return new ParamPropertyFilter({

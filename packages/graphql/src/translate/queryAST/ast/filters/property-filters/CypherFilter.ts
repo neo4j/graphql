@@ -35,24 +35,28 @@ export class CypherFilter extends Filter {
     private attribute: AttributeAdapter;
     private selection: CustomCypherSelection;
     private operator: FilterOperator;
-    protected comparisonValue: unknown;
+    protected comparisonValue: Cypher.Param | Cypher.Variable | Cypher.Property;
+    private checkIsNotNull: boolean;
 
     constructor({
         selection,
         attribute,
         operator,
         comparisonValue,
+        checkIsNotNull = false,
     }: {
         selection: CustomCypherSelection;
         attribute: AttributeAdapter;
         operator: FilterOperator;
-        comparisonValue: unknown;
+        comparisonValue: Cypher.Param | Cypher.Variable | Cypher.Property;
+        checkIsNotNull?: boolean;
     }) {
         super();
         this.selection = selection;
         this.attribute = attribute;
         this.operator = operator;
         this.comparisonValue = comparisonValue;
+        this.checkIsNotNull = checkIsNotNull;
     }
 
     public getChildren(): QueryASTNode[] {
@@ -66,10 +70,7 @@ export class CypherFilter extends Filter {
     public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
         const { selection: cypherSubquery, nestedContext } = this.selection.apply(context);
 
-        const clause = Cypher.concat(
-            cypherSubquery,
-            new Cypher.Return([nestedContext.returnVariable, this.returnVariable])
-        );
+        const clause = cypherSubquery.return([nestedContext.returnVariable, this.returnVariable]);
 
         return [clause];
     }
@@ -78,8 +79,12 @@ export class CypherFilter extends Filter {
         const operation = this.createBaseOperation({
             operator: this.operator,
             property: this.returnVariable,
-            param: new Cypher.Param(this.comparisonValue),
+            param: this.comparisonValue,
         });
+
+        if (this.checkIsNotNull) {
+            return Cypher.and(Cypher.isNotNull(this.comparisonValue), operation);
+        }
 
         return operation;
     }
@@ -105,7 +110,7 @@ export class CypherFilter extends Filter {
             return createDurationOperation({
                 operator,
                 property: coalesceProperty,
-                param: new Cypher.Param(this.comparisonValue),
+                param: this.comparisonValue,
             });
         }
 
@@ -113,7 +118,7 @@ export class CypherFilter extends Filter {
             return createPointOperation({
                 operator,
                 property: coalesceProperty,
-                param: new Cypher.Param(this.comparisonValue),
+                param: this.comparisonValue,
                 attribute: this.attribute,
             });
         }

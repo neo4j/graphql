@@ -74,6 +74,14 @@ export function withUniqueWhereInputType({
     return uniqueWhereInputType;
 }
 
+export function addLogicalOperatorsToWhereInputType(type: InputTypeComposer): void {
+    type.addFields({
+        OR: type.NonNull.List,
+        AND: type.NonNull.List,
+        NOT: type,
+    });
+}
+
 export function withWhereInputType({
     entityAdapter,
     userDefinedFieldDirectives,
@@ -82,6 +90,7 @@ export function withWhereInputType({
     typeName = entityAdapter.operations.whereInputTypeName,
     returnUndefinedIfEmpty = false,
     alwaysAllowNesting,
+    ignoreCypherFieldFilters = false,
 }: {
     entityAdapter: EntityAdapter | RelationshipAdapter;
     typeName?: string;
@@ -91,11 +100,17 @@ export function withWhereInputType({
     interfaceOnTypeName?: string;
     returnUndefinedIfEmpty?: boolean;
     alwaysAllowNesting?: boolean;
+    ignoreCypherFieldFilters?: boolean;
 }): InputTypeComposer | undefined {
     if (composer.has(typeName)) {
         return composer.getITC(typeName);
     }
-    const whereFields = makeWhereFields({ entityAdapter, userDefinedFieldDirectives, features });
+    const whereFields = makeWhereFields({
+        entityAdapter,
+        userDefinedFieldDirectives,
+        features,
+        ignoreCypherFieldFilters,
+    });
     if (returnUndefinedIfEmpty && isEmptyObject(whereFields)) {
         return undefined;
     }
@@ -111,11 +126,7 @@ export function withWhereInputType({
         entityAdapter instanceof InterfaceEntityAdapter;
 
     if (allowNesting) {
-        whereInputType.addFields({
-            OR: whereInputType.NonNull.List,
-            AND: whereInputType.NonNull.List,
-            NOT: whereInputType,
-        });
+        addLogicalOperatorsToWhereInputType(whereInputType);
     }
     if (entityAdapter instanceof ConcreteEntityAdapter && entityAdapter.isGlobalNode()) {
         whereInputType.addFields({ id: GraphQLID });
@@ -142,10 +153,12 @@ function makeWhereFields({
     entityAdapter,
     userDefinedFieldDirectives,
     features,
+    ignoreCypherFieldFilters,
 }: {
     entityAdapter: EntityAdapter | RelationshipAdapter;
     userDefinedFieldDirectives?: Map<string, DirectiveNode[]>;
     features: Neo4jFeaturesSettings | undefined;
+    ignoreCypherFieldFilters: boolean;
 }): InputTypeComposerFieldConfigMapDefinition {
     if (entityAdapter instanceof UnionEntityAdapter) {
         const fields: InputTypeComposerFieldConfigMapDefinition = {};
@@ -159,6 +172,7 @@ function makeWhereFields({
         attributes: entityAdapter.whereFields,
         userDefinedFieldDirectives,
         features,
+        ignoreCypherFieldFilters,
     });
 }
 

@@ -134,7 +134,7 @@ export class UnwindCreateOperation extends MutationOperation {
             context: nestedContext.neo4jGraphQLContext,
             varName: nestedContext.target,
         });
-        const unwindCreateClauses = Cypher.concat(
+        const unwindCreateClauses = Cypher.utils.concat(
             createClause,
             mergeClause,
             ...nestedSubqueries,
@@ -144,13 +144,13 @@ export class UnwindCreateOperation extends MutationOperation {
 
         let subQueryClause: Cypher.Clause;
         if (this.isNested) {
-            subQueryClause = Cypher.concat(
+            subQueryClause = Cypher.utils.concat(
                 unwindCreateClauses,
                 new Cypher.Return([Cypher.collect(Cypher.Null), new Cypher.Variable()])
             );
         } else {
             subQueryClause = new Cypher.Call(
-                Cypher.concat(unwindCreateClauses, new Cypher.Return(nestedContext.target))
+                Cypher.utils.concat(unwindCreateClauses, new Cypher.Return(nestedContext.target))
             ).importWith(this.unwindVariable);
         }
         const projectionContext = new QueryASTContext({
@@ -159,7 +159,11 @@ export class UnwindCreateOperation extends MutationOperation {
             returnVariable: new Cypher.NamedVariable("data"),
             shouldCollect: true,
         });
-        const clauses = Cypher.concat(unwindClause, subQueryClause, ...this.getProjectionClause(projectionContext));
+        const clauses = Cypher.utils.concat(
+            unwindClause,
+            subQueryClause,
+            ...this.getProjectionClause(projectionContext)
+        );
         return { projectionExpr: nestedContext.returnVariable, clauses: [clauses] };
     }
 
@@ -251,7 +255,7 @@ export class UnwindCreateOperation extends MutationOperation {
             return [new Cypher.Return(emptyProjection)];
         }
         return this.projectionOperations.map((operationField) => {
-            return Cypher.concat(...operationField.transpile(context).clauses);
+            return Cypher.utils.concat(...operationField.transpile(context).clauses);
         });
     }
 }

@@ -638,6 +638,7 @@ function generateObjectType({
                 node,
                 composer,
                 concreteEntityAdapter,
+                features,
             }),
         });
         composer.Mutation.setFieldDirectives(

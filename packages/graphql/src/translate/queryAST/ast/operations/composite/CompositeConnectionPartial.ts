@@ -116,7 +116,7 @@ export class CompositeConnectionPartial extends ConnectionReadOperation {
 
         const projectionClauses = new Cypher.With([edgeProjectionMap, edgeVar]).return(context.returnVariable);
 
-        const subClause = Cypher.concat(
+        const subClause = Cypher.utils.concat(
             // ...preSelection,
             ...extraMatches,
             ...filterSubqueries,

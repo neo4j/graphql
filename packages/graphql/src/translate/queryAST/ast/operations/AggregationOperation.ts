@@ -270,7 +270,7 @@ export class AggregationOperation extends Operation {
             this.addSortToClause(nestedContext, targetVar, sortClause);
         }
 
-        return Cypher.concat(
+        return Cypher.utils.concat(
             matchClause,
             ...selectionClauses,
             ...nestedSubqueries,

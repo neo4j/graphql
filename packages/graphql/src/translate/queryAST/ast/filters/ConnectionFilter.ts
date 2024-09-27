@@ -224,7 +224,7 @@ export class ConnectionFilter extends Filter {
         const withPredicateReturn = new Cypher.With("*")
             .where(Cypher.and(...innerFiltersPredicates))
             .return([countComparisonPredicate, returnVar]);
-        return [Cypher.concat(match, ...subqueries, withPredicateReturn)];
+        return [Cypher.utils.concat(match, ...subqueries, withPredicateReturn)];
     }
 
     // This method has a big deal of complexity due to a couple of factors:
@@ -278,7 +278,7 @@ export class ConnectionFilter extends Filter {
         const truthyPredicates = truthyFilters.map((v) => Cypher.eq(v, Cypher.true));
         this.subqueryPredicate = Cypher.and(...falsyPredicates, ...truthyPredicates);
 
-        return [Cypher.concat(match, ...subqueries), Cypher.concat(match2, ...subqueries2)];
+        return [Cypher.utils.concat(match, ...subqueries), Cypher.utils.concat(match2, ...subqueries2)];
     }
 
     private wrapInNotIfNeeded(predicate: Cypher.Predicate): Cypher.Predicate {

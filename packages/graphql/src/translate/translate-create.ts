@@ -57,7 +57,7 @@ export default async function translateCreate({
     const callbackBucket: CallbackBucket = new CallbackBucket(context);
 
     const metaNames: string[] = [];
-    
+
     // TODO: after the createCreateAndParams refactor, remove varNameStrs and only use Cypher Variables
     const varNameStrs = mutationInputs.map((_, i) => `this${i}`);
     const varNameVariables = varNameStrs.map((varName) => new Cypher.NamedNode(varName));
@@ -127,7 +127,7 @@ export default async function translateCreate({
      * Currently, the create projections are resolved separately for each input,
      * the following block reuses the same ReadOperation for each of the variable names generated during the create operations.
      **/
-    const projectionClause = Cypher.concat(
+    const projectionClause = Cypher.utils.concat(
         ...filterTruthy(
             varNameVariables.map((varName): Cypher.Clause | undefined => {
                 const queryASTContext = new QueryASTContext({
@@ -139,7 +139,7 @@ export default async function translateCreate({
                 const queryASTResult = queryAST.transpile(queryASTContext);
                 if (queryASTResult.clauses.length) {
                     projectedVariables.push(queryASTResult.projectionExpr as Cypher.Node);
-                    const clause = Cypher.concat(...queryASTResult.clauses);
+                    const clause = Cypher.utils.concat(...queryASTResult.clauses);
                     return new Cypher.Call(clause).importWith(varName);
                 }
             })

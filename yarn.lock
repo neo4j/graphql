@@ -85,21 +85,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/composition@npm:2.9.0":
-  version: 2.9.0
-  resolution: "@apollo/composition@npm:2.9.0"
+"@apollo/composition@npm:2.9.1":
+  version: 2.9.1
+  resolution: "@apollo/composition@npm:2.9.1"
   dependencies:
-    "@apollo/federation-internals": "npm:2.9.0"
-    "@apollo/query-graphs": "npm:2.9.0"
+    "@apollo/federation-internals": "npm:2.9.1"
+    "@apollo/query-graphs": "npm:2.9.1"
   peerDependencies:
     graphql: ^16.5.0
-  checksum: 10c0/c0f82b724b618e308126c3bf1a3565796edabcd66580dc67bf1de3b06fdd46de9da4980d33817341184952bdff4894aecc8bc352cd6c1f7984279f9a2116852b
+  checksum: 10c0/3694f7e352e330b0ad37e3ce35986ce0ee67a60abdf1715f535285aa86785ae9541088cdda12e67450dc7ad9ee4f80400860fcbd439449acc5b659f5119d6c77
   languageName: node
   linkType: hard
 
-"@apollo/federation-internals@npm:2.9.0":
-  version: 2.9.0
-  resolution: "@apollo/federation-internals@npm:2.9.0"
+"@apollo/federation-internals@npm:2.9.1":
+  version: 2.9.1
+  resolution: "@apollo/federation-internals@npm:2.9.1"
   dependencies:
     "@types/uuid": "npm:^9.0.0"
     chalk: "npm:^4.1.0"
@@ -107,7 +107,7 @@ __metadata:
     uuid: "npm:^9.0.0"
   peerDependencies:
     graphql: ^16.5.0
-  checksum: 10c0/d3ed207e8c9f70ecc7698309951bda4e63a7b8566b114427162c7a0e179e930066d1a1aa4f08b8ce92aae33e2707e23116eb568ec699af3a3f2f4dcbc81652ff
+  checksum: 10c0/b4d0eac1ded64034230c24c6231de36fc20a01d41f2d735f7613276e9ef075524efab5e7b5f8c540e4d29cd1712272427c2dcd9997776384cb53e915effefd6a
   languageName: node
   linkType: hard
 
@@ -141,13 +141,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/gateway@npm:2.9.0":
-  version: 2.9.0
-  resolution: "@apollo/gateway@npm:2.9.0"
+"@apollo/gateway@npm:2.9.1":
+  version: 2.9.1
+  resolution: "@apollo/gateway@npm:2.9.1"
   dependencies:
-    "@apollo/composition": "npm:2.9.0"
-    "@apollo/federation-internals": "npm:2.9.0"
-    "@apollo/query-planner": "npm:2.9.0"
+    "@apollo/composition": "npm:2.9.1"
+    "@apollo/federation-internals": "npm:2.9.1"
+    "@apollo/query-planner": "npm:2.9.1"
     "@apollo/server-gateway-interface": "npm:^1.1.0"
     "@apollo/usage-reporting-protobuf": "npm:^4.1.0"
     "@apollo/utils.createhash": "npm:^2.0.0"
@@ -165,7 +165,7 @@ __metadata:
     node-fetch: "npm:^2.6.7"
   peerDependencies:
     graphql: ^16.5.0
-  checksum: 10c0/fcfd3278df90f799484943b0398d5ed4ae165a47f4cbeefba2b6886513008fa2e645a8041d238a58153f739695619ffdb3965203180c6435702829d5cd9cc02b
+  checksum: 10c0/3af263056b26bff27216f510ccc932f633522e0a453478b373ff87905386e07ee70e8a673a668c5f7555c21a26589328d5a5ed6d6fa759d64b7464d0101d69e9
   languageName: node
   linkType: hard
 
@@ -192,33 +192,33 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/query-graphs@npm:2.9.0":
-  version: 2.9.0
-  resolution: "@apollo/query-graphs@npm:2.9.0"
+"@apollo/query-graphs@npm:2.9.1":
+  version: 2.9.1
+  resolution: "@apollo/query-graphs@npm:2.9.1"
   dependencies:
-    "@apollo/federation-internals": "npm:2.9.0"
+    "@apollo/federation-internals": "npm:2.9.1"
     deep-equal: "npm:^2.0.5"
     ts-graphviz: "npm:^1.5.4"
     uuid: "npm:^9.0.0"
   peerDependencies:
     graphql: ^16.5.0
-  checksum: 10c0/f1cf1bb86c8070b6bfce910d857ef24a779904081493d15fa92b6e1426e87e042d07982245191ccf385dc5598e2801b965538de67d9fed72747d8c39c8e27afa
+  checksum: 10c0/c8defcc777ecc6ee479f57e0e8bc9d4fd54d10dfd789b3dda85b991cc9bed5066e6e54e1978d5e7c507b821bd06edca37364fcef8f633189f41437b0124c0819
   languageName: node
   linkType: hard
 
-"@apollo/query-planner@npm:2.9.0":
-  version: 2.9.0
-  resolution: "@apollo/query-planner@npm:2.9.0"
+"@apollo/query-planner@npm:2.9.1":
+  version: 2.9.1
+  resolution: "@apollo/query-planner@npm:2.9.1"
   dependencies:
-    "@apollo/federation-internals": "npm:2.9.0"
-    "@apollo/query-graphs": "npm:2.9.0"
+    "@apollo/federation-internals": "npm:2.9.1"
+    "@apollo/query-graphs": "npm:2.9.1"
     "@apollo/utils.keyvaluecache": "npm:^2.1.0"
     chalk: "npm:^4.1.0"
     deep-equal: "npm:^2.0.5"
     pretty-format: "npm:^29.0.0"
   peerDependencies:
     graphql: ^16.5.0
-  checksum: 10c0/256bf9c5f783aac9c941fff9bc7f983c61eea7aff6e22e584ef697f0ccba0c30e2f24bc43880b79de5b35c50724793972547e63ae7faccf5bd40a3faf9671cb8
+  checksum: 10c0/efffcd2e9a5e895e63f1cdb40569ed1734a20dd97c8217b5b0589d78251c2c66a23e199efddaa87ee29c624d217621d97d373a409075c86b24106fb0869816da
   languageName: node
   linkType: hard
 
@@ -285,14 +285,14 @@ __metadata:
   linkType: hard
 
 "@apollo/subgraph@npm:^2.2.3":
-  version: 2.9.0
-  resolution: "@apollo/subgraph@npm:2.9.0"
+  version: 2.9.1
+  resolution: "@apollo/subgraph@npm:2.9.1"
   dependencies:
     "@apollo/cache-control-types": "npm:^1.0.2"
-    "@apollo/federation-internals": "npm:2.9.0"
+    "@apollo/federation-internals": "npm:2.9.1"
   peerDependencies:
     graphql: ^16.5.0
-  checksum: 10c0/92a19bba11707da079e8cf2bec84b0bba89b48080fc0edadf71cc46d712bc041d6092549d33168de78ea5f173d4f3d90425379fbaedbbb7e41e83974f6fdf0ed
+  checksum: 10c0/fb7ef8018fa1f19cb03cd9f312f4a35de27005049694eb2ab73bbc85cdff824ed0e02ccae25db96d18304a649788b9fe6a32c53c1823c71eea6f06c9fe794cf5
   languageName: node
   linkType: hard
 
@@ -1732,10 +1732,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/js@npm:8.57.0":
-  version: 8.57.0
-  resolution: "@eslint/js@npm:8.57.0"
-  checksum: 10c0/9a518bb8625ba3350613903a6d8c622352ab0c6557a59fe6ff6178bf882bf57123f9d92aa826ee8ac3ee74b9c6203fe630e9ee00efb03d753962dcf65ee4bd94
+"@eslint/js@npm:8.57.1":
+  version: 8.57.1
+  resolution: "@eslint/js@npm:8.57.1"
+  checksum: 10c0/b489c474a3b5b54381c62e82b3f7f65f4b8a5eaaed126546520bf2fede5532a8ed53212919fed1e9048dcf7f37167c8561d58d0ba4492a4244004e7793805223
   languageName: node
   linkType: hard
 
@@ -2262,14 +2262,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@humanwhocodes/config-array@npm:^0.11.14":
-  version: 0.11.14
-  resolution: "@humanwhocodes/config-array@npm:0.11.14"
+"@humanwhocodes/config-array@npm:^0.13.0":
+  version: 0.13.0
+  resolution: "@humanwhocodes/config-array@npm:0.13.0"
   dependencies:
-    "@humanwhocodes/object-schema": "npm:^2.0.2"
+    "@humanwhocodes/object-schema": "npm:^2.0.3"
     debug: "npm:^4.3.1"
     minimatch: "npm:^3.0.5"
-  checksum: 10c0/66f725b4ee5fdd8322c737cb5013e19fac72d4d69c8bf4b7feb192fcb83442b035b92186f8e9497c220e58b2d51a080f28a73f7899bc1ab288c3be172c467541
+  checksum: 10c0/205c99e756b759f92e1f44a3dc6292b37db199beacba8f26c2165d4051fe73a4ae52fdcfd08ffa93e7e5cb63da7c88648f0e84e197d154bbbbe137b2e0dd332e
   languageName: node
   linkType: hard
 
@@ -2280,7 +2280,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@humanwhocodes/object-schema@npm:^2.0.2":
+"@humanwhocodes/object-schema@npm:^2.0.3":
   version: 2.0.3
   resolution: "@humanwhocodes/object-schema@npm:2.0.3"
   checksum: 10c0/80520eabbfc2d32fe195a93557cef50dfe8c8905de447f022675aaf66abc33ae54098f5ea78548d925aa671cd4ab7c7daa5ad704fe42358c9b5e7db60f80696c
@@ -2781,10 +2781,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j/cypher-builder@npm:^1.17.1":
-  version: 1.20.0
-  resolution: "@neo4j/cypher-builder@npm:1.20.0"
-  checksum: 10c0/e728688327e6728adefac7750be6bd33b713263a66225787ec899296aff525c9c1c9185aadbfae17fc3b8e4e8ef77d63f624a565ecb0af2ac3399a41fc3fa769
+"@neo4j/cypher-builder@npm:^1.20.1":
+  version: 1.20.1
+  resolution: "@neo4j/cypher-builder@npm:1.20.1"
+  checksum: 10c0/25c594ecebd9ed1cd5a4ed7f961f6bed634f767c512fa1bc2566829b233a9013f2a7cec44224d27336724cc3f824f846e216072da520f226a32db1a81834032e
   languageName: node
   linkType: hard
 
@@ -2799,7 +2799,7 @@ __metadata:
     "@types/cors": "npm:2.8.17"
     "@types/debug": "npm:4.1.12"
     "@types/jest": "npm:29.5.13"
-    "@types/node": "npm:20.16.5"
+    "@types/node": "npm:20.16.6"
     amqplib: "npm:0.10.4"
     body-parser: "npm:^1.20.2"
     camelcase: "npm:6.3.0"
@@ -2828,7 +2828,7 @@ __metadata:
     "@graphql-tools/merge": "npm:^9.0.0"
     "@neo4j/graphql": "npm:^5.6.2"
     "@types/jest": "npm:29.5.13"
-    "@types/node": "npm:20.16.5"
+    "@types/node": "npm:20.16.6"
     camelcase: "npm:6.3.0"
     jest: "npm:29.7.0"
     jsonwebtoken: "npm:9.0.2"
@@ -2854,19 +2854,19 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
-    "@apollo/gateway": "npm:2.9.0"
+    "@apollo/gateway": "npm:2.9.1"
     "@apollo/server": "npm:4.11.0"
     "@apollo/subgraph": "npm:^2.2.3"
     "@graphql-tools/merge": "npm:^9.0.0"
     "@graphql-tools/resolvers-composition": "npm:^7.0.0"
     "@graphql-tools/schema": "npm:10.0.4"
     "@graphql-tools/utils": "npm:^10.0.0"
-    "@neo4j/cypher-builder": "npm:^1.17.1"
+    "@neo4j/cypher-builder": "npm:^1.20.1"
     "@types/deep-equal": "npm:1.0.4"
     "@types/is-uuid": "npm:1.0.2"
     "@types/jest": "npm:29.5.13"
-    "@types/jsonwebtoken": "npm:9.0.6"
-    "@types/node": "npm:20.16.5"
+    "@types/jsonwebtoken": "npm:9.0.7"
+    "@types/node": "npm:20.16.6"
     "@types/pluralize": "npm:0.0.33"
     "@types/randomstring": "npm:1.3.0"
     "@types/semver": "npm:7.5.8"
@@ -2913,7 +2913,7 @@ __metadata:
   dependencies:
     "@neo4j/graphql": "npm:^5.3.4"
     "@types/jest": "npm:29.5.13"
-    "@types/node": "npm:20.16.5"
+    "@types/node": "npm:20.16.6"
     "@types/pluralize": "npm:0.0.33"
     camelcase: "npm:^6.3.0"
     debug: "npm:^4.3.4"
@@ -4581,7 +4581,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jsonwebtoken@npm:9.0.6, @types/jsonwebtoken@npm:^9.0.2":
+"@types/jsonwebtoken@npm:9.0.7":
+  version: 9.0.7
+  resolution: "@types/jsonwebtoken@npm:9.0.7"
+  dependencies:
+    "@types/node": "npm:*"
+  checksum: 10c0/e1cd0e48fcae21b1d4378887a23453bd7212b480a131b11bcda2cdeb0687d03c9646ee5ba592e04cfaf76f7cc80f179950e627cdb3ebc90a5923bce49a35631a
+  languageName: node
+  linkType: hard
+
+"@types/jsonwebtoken@npm:^9.0.2":
   version: 9.0.6
   resolution: "@types/jsonwebtoken@npm:9.0.6"
   dependencies:
@@ -4653,12 +4662,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:20.16.5":
-  version: 20.16.5
-  resolution: "@types/node@npm:20.16.5"
+"@types/node@npm:20.16.6":
+  version: 20.16.6
+  resolution: "@types/node@npm:20.16.6"
   dependencies:
     undici-types: "npm:~6.19.2"
-  checksum: 10c0/6af7994129815010bcbc4cf8221865559c8116ff43e74a6549525c2108267596fc2d18aff5d5ecfe089fb60a119f975631343e2c65c52bfa0955ed9dc56733d6
+  checksum: 10c0/a3bd104b4061451625ed3b320c88e01e1261d41dbcaa7248d376f60a1a831e1cbc4362eef5be3445ccc1ea2d0a9178fc1ddd5e55a4f5df571dce78e5d91375a8
   languageName: node
   linkType: hard
 
@@ -9695,15 +9704,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:8.57.0":
-  version: 8.57.0
-  resolution: "eslint@npm:8.57.0"
+"eslint@npm:8.57.1":
+  version: 8.57.1
+  resolution: "eslint@npm:8.57.1"
   dependencies:
     "@eslint-community/eslint-utils": "npm:^4.2.0"
     "@eslint-community/regexpp": "npm:^4.6.1"
     "@eslint/eslintrc": "npm:^2.1.4"
-    "@eslint/js": "npm:8.57.0"
-    "@humanwhocodes/config-array": "npm:^0.11.14"
+    "@eslint/js": "npm:8.57.1"
+    "@humanwhocodes/config-array": "npm:^0.13.0"
     "@humanwhocodes/module-importer": "npm:^1.0.1"
     "@nodelib/fs.walk": "npm:^1.2.8"
     "@ungap/structured-clone": "npm:^1.2.0"
@@ -9739,7 +9748,7 @@ __metadata:
     text-table: "npm:^0.2.0"
   bin:
     eslint: bin/eslint.js
-  checksum: 10c0/00bb96fd2471039a312435a6776fe1fd557c056755eaa2b96093ef3a8508c92c8775d5f754768be6b1dddd09fdd3379ddb231eeb9b6c579ee17ea7d68000a529
+  checksum: 10c0/1fd31533086c1b72f86770a4d9d7058ee8b4643fd1cfd10c7aac1ecb8725698e88352a87805cf4b2ce890aa35947df4b4da9655fb7fdfa60dbb448a43f6ebcf1
   languageName: node
   linkType: hard
 
@@ -13182,9 +13191,9 @@ __metadata:
   linkType: hard
 
 "jose@npm:^5.0.0":
-  version: 5.9.2
-  resolution: "jose@npm:5.9.2"
-  checksum: 10c0/0727bc21777e54f9b1e690ad9461c12f5d642b40ffd4e4e3adc7169277e31d9d979c1bc667ba30627a13795dca6cfa61bc5d169bb3f91a6da1f67350d094c3e6
+  version: 5.9.3
+  resolution: "jose@npm:5.9.3"
+  checksum: 10c0/8e77b7324743c0f2b8db5de6aee17384fb41b4f24407979433a908d1bb12771043eec2efe4123ae814dcb2811414ebe53c84dfc94b5f57a5d981690e0dcc2729
   languageName: node
   linkType: hard
 
@@ -15337,7 +15346,7 @@ __metadata:
     "@typescript-eslint/parser": "npm:7.18.0"
     concurrently: "npm:8.2.2"
     dotenv: "npm:16.4.5"
-    eslint: "npm:8.57.0"
+    eslint: "npm:8.57.1"
     eslint-config-prettier: "npm:9.1.0"
     eslint-formatter-summary: "npm:1.1.0"
     eslint-import-resolver-typescript: "npm:3.6.3"
