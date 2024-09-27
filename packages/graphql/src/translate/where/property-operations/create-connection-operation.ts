@@ -124,7 +124,7 @@ export function createConnectionWherePropertyOperation({
     return {
         predicate: Cypher.and(...filterTruthy(params)),
         preComputedSubqueries: preComputedSubqueriesResult.length
-            ? Cypher.concat(...preComputedSubqueriesResult)
+            ? Cypher.utils.concat(...preComputedSubqueriesResult)
             : undefined,
     };
 }

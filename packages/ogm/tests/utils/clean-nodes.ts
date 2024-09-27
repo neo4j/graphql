@@ -32,7 +32,7 @@ export async function cleanNodes(session: Session, labels: Array<string | Unique
 
     const nodeHasAnyLabelPredicate = Cypher.or(...nodeHasLabelPredicates);
 
-    const query = new Cypher.Match(nodeRef).where(nodeHasAnyLabelPredicate).detachDelete(nodeRef);
+    const query = new Cypher.Match(new Cypher.Pattern(nodeRef)).where(nodeHasAnyLabelPredicate).detachDelete(nodeRef);
     const { cypher } = query.build();
     return runCypher(session, cypher);
 }
