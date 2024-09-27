@@ -167,10 +167,6 @@ describe("Union Interface Relationships", () => {
               movies: [ActorMoviesConnectFieldInput!]
             }
 
-            input ActorConnectOrCreateInput {
-              movies: [ActorMoviesConnectOrCreateFieldInput!]
-            }
-
             input ActorConnectOrCreateWhere {
               node: ActorUniqueWhere!
             }
@@ -387,10 +383,6 @@ describe("Union Interface Relationships", () => {
               Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [ActorSort!]
-            }
-
-            input ActorRelationInput {
-              movies: [ActorMoviesCreateFieldInput!]
             }
 
             \\"\\"\\"
@@ -859,11 +851,6 @@ describe("Union Interface Relationships", () => {
               reviewers: [MovieReviewersConnectFieldInput!]
             }
 
-            input MovieConnectOrCreateInput {
-              actors: [MovieActorsConnectOrCreateFieldInput!]
-              directors: MovieDirectorsConnectOrCreateInput
-            }
-
             input MovieConnectOrCreateWhere {
               node: MovieUniqueWhere!
             }
@@ -953,11 +940,6 @@ describe("Union Interface Relationships", () => {
               Person: [MovieDirectorsPersonConnectFieldInput!]
             }
 
-            input MovieDirectorsConnectOrCreateInput {
-              Actor: [MovieDirectorsActorConnectOrCreateFieldInput!]
-              Person: [MovieDirectorsPersonConnectOrCreateFieldInput!]
-            }
-
             type MovieDirectorsConnection {
               edges: [MovieDirectorsRelationship!]!
               pageInfo: PageInfo!
@@ -971,11 +953,6 @@ describe("Union Interface Relationships", () => {
             input MovieDirectorsConnectionWhere {
               Actor: MovieDirectorsActorConnectionWhere
               Person: MovieDirectorsPersonConnectionWhere
-            }
-
-            input MovieDirectorsCreateFieldInput {
-              Actor: [MovieDirectorsActorCreateFieldInput!]
-              Person: [MovieDirectorsPersonCreateFieldInput!]
             }
 
             input MovieDirectorsCreateInput {
@@ -1089,12 +1066,6 @@ describe("Union Interface Relationships", () => {
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [MovieSort!]
-            }
-
-            input MovieRelationInput {
-              actors: [MovieActorsCreateFieldInput!]
-              directors: MovieDirectorsCreateFieldInput
-              reviewers: [MovieReviewersCreateFieldInput!]
             }
 
             type MovieReviewerReviewersAggregationSelection {
@@ -1395,10 +1366,10 @@ describe("Union Interface Relationships", () => {
               deleteInfluencers(where: InfluencerWhere): DeleteInfo!
               deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
               deletePeople(delete: PersonDeleteInput, where: PersonWhere): DeleteInfo!
-              updateActors(connect: ActorConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), connectOrCreate: ActorConnectOrCreateInput @deprecated(reason: \\"Top level connectOrCreate input argument in update is deprecated. Use the nested connectOrCreate field in the relationship within the update argument\\"), create: ActorRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: ActorDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: ActorDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+              updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
               updateInfluencers(update: InfluencerUpdateInput, where: InfluencerWhere): UpdateInfluencersMutationResponse!
-              updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), connectOrCreate: MovieConnectOrCreateInput @deprecated(reason: \\"Top level connectOrCreate input argument in update is deprecated. Use the nested connectOrCreate field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-              updatePeople(connect: PersonConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), connectOrCreate: PersonConnectOrCreateInput @deprecated(reason: \\"Top level connectOrCreate input argument in update is deprecated. Use the nested connectOrCreate field in the relationship within the update argument\\"), create: PersonRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: PersonDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: PersonDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
+              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+              updatePeople(update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -1435,10 +1406,6 @@ describe("Union Interface Relationships", () => {
 
             input PersonConnectInput {
               movies: [PersonMoviesConnectFieldInput!]
-            }
-
-            input PersonConnectOrCreateInput {
-              movies: [PersonMoviesConnectOrCreateFieldInput!]
             }
 
             input PersonConnectOrCreateWhere {
@@ -1661,10 +1628,6 @@ describe("Union Interface Relationships", () => {
               Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [PersonSort!]
-            }
-
-            input PersonRelationInput {
-              movies: [PersonMoviesCreateFieldInput!]
             }
 
             \\"\\"\\"

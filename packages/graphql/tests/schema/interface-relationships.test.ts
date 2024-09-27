@@ -255,10 +255,6 @@ describe("Interface Relationships", () => {
               name: StringAggregateSelection!
             }
 
-            input ActorConnectInput {
-              actedIn: [ActorActedInConnectFieldInput!]
-            }
-
             input ActorCreateInput {
               actedIn: ActorActedInFieldInput
               name: String!
@@ -266,10 +262,6 @@ describe("Interface Relationships", () => {
 
             input ActorDeleteInput {
               actedIn: [ActorActedInDeleteFieldInput!]
-            }
-
-            input ActorDisconnectInput {
-              actedIn: [ActorActedInDisconnectFieldInput!]
             }
 
             type ActorEdge {
@@ -298,10 +290,6 @@ describe("Interface Relationships", () => {
 
             type ActorProductionActedInNodeAggregateSelection {
               title: StringAggregateSelection!
-            }
-
-            input ActorRelationInput {
-              actedIn: [ActorActedInCreateFieldInput!]
             }
 
             \\"\\"\\"
@@ -492,7 +480,7 @@ describe("Interface Relationships", () => {
               deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
               deleteMovies(where: MovieWhere): DeleteInfo!
               deleteSeries(where: SeriesWhere): DeleteInfo!
-              updateActors(connect: ActorConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: ActorRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: ActorDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: ActorDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+              updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
               updateSeries(update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
             }
@@ -1005,10 +993,6 @@ describe("Interface Relationships", () => {
               title: StringAggregateSelection!
             }
 
-            input ActorRelationInput {
-              actedIn: [ActorActedInCreateFieldInput!]
-            }
-
             \\"\\"\\"
             Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
             \\"\\"\\"
@@ -1156,10 +1140,6 @@ describe("Interface Relationships", () => {
               Specify one or more EpisodeSort objects to sort Episodes by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [EpisodeSort!]
-            }
-
-            input EpisodeRelationInput {
-              series: EpisodeSeriesCreateFieldInput
             }
 
             input EpisodeSeriesAggregateInput {
@@ -1477,10 +1457,6 @@ describe("Interface Relationships", () => {
               title: StringAggregateSelection!
             }
 
-            input MovieConnectInput {
-              actors: [MovieActorsConnectFieldInput!]
-            }
-
             input MovieCreateInput {
               actors: MovieActorsFieldInput
               runtime: Int!
@@ -1489,10 +1465,6 @@ describe("Interface Relationships", () => {
 
             input MovieDeleteInput {
               actors: [ProductionActorsDeleteFieldInput!]
-            }
-
-            input MovieDisconnectInput {
-              actors: [ProductionActorsDisconnectFieldInput!]
             }
 
             type MovieEdge {
@@ -1507,10 +1479,6 @@ describe("Interface Relationships", () => {
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [MovieSort!]
-            }
-
-            input MovieRelationInput {
-              actors: [MovieActorsCreateFieldInput!]
             }
 
             \\"\\"\\"
@@ -1599,10 +1567,10 @@ describe("Interface Relationships", () => {
               deleteEpisodes(delete: EpisodeDeleteInput, where: EpisodeWhere): DeleteInfo!
               deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
               deleteSeries(delete: SeriesDeleteInput, where: SeriesWhere): DeleteInfo!
-              updateActors(connect: ActorConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: ActorRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: ActorDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: ActorDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
-              updateEpisodes(connect: EpisodeConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: EpisodeRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: EpisodeDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: EpisodeDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: EpisodeUpdateInput, where: EpisodeWhere): UpdateEpisodesMutationResponse!
-              updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-              updateSeries(connect: SeriesConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: SeriesRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: SeriesDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: SeriesDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
+              updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+              updateEpisodes(update: EpisodeUpdateInput, where: EpisodeWhere): UpdateEpisodesMutationResponse!
+              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+              updateSeries(update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -2195,11 +2163,6 @@ describe("Interface Relationships", () => {
               sort: [SeriesSort!]
             }
 
-            input SeriesRelationInput {
-              actors: [SeriesActorsCreateFieldInput!]
-              episodes: [SeriesEpisodesCreateFieldInput!]
-            }
-
             \\"\\"\\"
             Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.
             \\"\\"\\"
@@ -2645,10 +2608,6 @@ describe("Interface Relationships", () => {
               title: StringAggregateSelection!
             }
 
-            input ActorRelationInput {
-              actedIn: [ActorActedInCreateFieldInput!]
-            }
-
             \\"\\"\\"
             Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
             \\"\\"\\"
@@ -2796,10 +2755,6 @@ describe("Interface Relationships", () => {
               Specify one or more EpisodeSort objects to sort Episodes by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [EpisodeSort!]
-            }
-
-            input EpisodeRelationInput {
-              series: EpisodeSeriesCreateFieldInput
             }
 
             input EpisodeSeriesAggregateInput {
@@ -3117,10 +3072,6 @@ describe("Interface Relationships", () => {
               title: StringAggregateSelection!
             }
 
-            input MovieConnectInput {
-              actors: [MovieActorsConnectFieldInput!]
-            }
-
             input MovieCreateInput {
               actors: MovieActorsFieldInput
               runtime: Int!
@@ -3129,10 +3080,6 @@ describe("Interface Relationships", () => {
 
             input MovieDeleteInput {
               actors: [ProductionActorsDeleteFieldInput!]
-            }
-
-            input MovieDisconnectInput {
-              actors: [ProductionActorsDisconnectFieldInput!]
             }
 
             type MovieEdge {
@@ -3147,10 +3094,6 @@ describe("Interface Relationships", () => {
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [MovieSort!]
-            }
-
-            input MovieRelationInput {
-              actors: [MovieActorsCreateFieldInput!]
             }
 
             \\"\\"\\"
@@ -3239,10 +3182,10 @@ describe("Interface Relationships", () => {
               deleteEpisodes(delete: EpisodeDeleteInput, where: EpisodeWhere): DeleteInfo!
               deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
               deleteSeries(delete: SeriesDeleteInput, where: SeriesWhere): DeleteInfo!
-              updateActors(connect: ActorConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: ActorRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: ActorDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: ActorDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
-              updateEpisodes(connect: EpisodeConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: EpisodeRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: EpisodeDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: EpisodeDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: EpisodeUpdateInput, where: EpisodeWhere): UpdateEpisodesMutationResponse!
-              updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-              updateSeries(connect: SeriesConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: SeriesRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: SeriesDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: SeriesDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
+              updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+              updateEpisodes(update: EpisodeUpdateInput, where: EpisodeWhere): UpdateEpisodesMutationResponse!
+              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+              updateSeries(update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -3853,11 +3796,6 @@ describe("Interface Relationships", () => {
               Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [SeriesSort!]
-            }
-
-            input SeriesRelationInput {
-              actors: [SeriesActorsCreateFieldInput!]
-              episodes: [SeriesEpisodesCreateFieldInput!]
             }
 
             \\"\\"\\"
@@ -4474,10 +4412,10 @@ describe("Interface Relationships", () => {
               deleteType1s(delete: Type1DeleteInput, where: Type1Where): DeleteInfo!
               deleteType2Interface1s(delete: Type2Interface1DeleteInput, where: Type2Interface1Where): DeleteInfo!
               deleteType2Interface2s(where: Type2Interface2Where): DeleteInfo!
-              updateType1Interface1s(connect: Type1Interface1ConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: Type1Interface1RelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: Type1Interface1DeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: Type1Interface1DisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: Type1Interface1UpdateInput, where: Type1Interface1Where): UpdateType1Interface1sMutationResponse!
+              updateType1Interface1s(update: Type1Interface1UpdateInput, where: Type1Interface1Where): UpdateType1Interface1sMutationResponse!
               updateType1Interface2s(update: Type1Interface2UpdateInput, where: Type1Interface2Where): UpdateType1Interface2sMutationResponse!
-              updateType1s(connect: Type1ConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: Type1RelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: Type1DeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: Type1DisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: Type1UpdateInput, where: Type1Where): UpdateType1sMutationResponse!
-              updateType2Interface1s(connect: Type2Interface1ConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: Type2Interface1RelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: Type2Interface1DeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: Type2Interface1DisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: Type2Interface1UpdateInput, where: Type2Interface1Where): UpdateType2Interface1sMutationResponse!
+              updateType1s(update: Type1UpdateInput, where: Type1Where): UpdateType1sMutationResponse!
+              updateType2Interface1s(update: Type2Interface1UpdateInput, where: Type2Interface1Where): UpdateType2Interface1sMutationResponse!
               updateType2Interface2s(update: Type2Interface2UpdateInput, where: Type2Interface2Where): UpdateType2Interface2sMutationResponse!
             }
 
@@ -4538,10 +4476,6 @@ describe("Interface Relationships", () => {
               field1: StringAggregateSelection!
             }
 
-            input Type1ConnectInput {
-              interface1: [Type1Interface1ConnectFieldInput!]
-            }
-
             input Type1CreateInput {
               field1: String!
               interface1: Type1Interface1FieldInput
@@ -4549,10 +4483,6 @@ describe("Interface Relationships", () => {
 
             input Type1DeleteInput {
               interface1: [Type1Interface1DeleteFieldInput!]
-            }
-
-            input Type1DisconnectInput {
-              interface1: [Type1Interface1DisconnectFieldInput!]
             }
 
             type Type1Edge {
@@ -4587,10 +4517,6 @@ describe("Interface Relationships", () => {
             input Type1Interface1ConnectFieldInput {
               connect: Interface1ConnectInput
               where: Interface1ConnectWhere
-            }
-
-            input Type1Interface1ConnectInput {
-              interface2: [Type1Interface1Interface2ConnectFieldInput!]
             }
 
             type Type1Interface1Connection {
@@ -4632,10 +4558,6 @@ describe("Interface Relationships", () => {
             input Type1Interface1DisconnectFieldInput {
               disconnect: Interface1DisconnectInput
               where: Type1Interface1ConnectionWhere
-            }
-
-            input Type1Interface1DisconnectInput {
-              interface2: [Type1Interface1Interface2DisconnectFieldInput!]
             }
 
             type Type1Interface1Edge {
@@ -4803,10 +4725,6 @@ describe("Interface Relationships", () => {
               sort: [Type1Interface1Sort!]
             }
 
-            input Type1Interface1RelationInput {
-              interface2: [Type1Interface1Interface2CreateFieldInput!]
-            }
-
             type Type1Interface1Relationship {
               cursor: String!
               node: Interface1!
@@ -4967,10 +4885,6 @@ describe("Interface Relationships", () => {
               sort: [Type1Sort!]
             }
 
-            input Type1RelationInput {
-              interface1: [Type1Interface1CreateFieldInput!]
-            }
-
             \\"\\"\\"
             Fields to sort Type1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type1Sort object.
             \\"\\"\\"
@@ -5047,10 +4961,6 @@ describe("Interface Relationships", () => {
               field1: StringAggregateSelection!
             }
 
-            input Type2Interface1ConnectInput {
-              interface2: [Type2Interface1Interface2ConnectFieldInput!]
-            }
-
             input Type2Interface1CreateInput {
               field1: String!
               interface2: Type2Interface1Interface2FieldInput
@@ -5058,10 +4968,6 @@ describe("Interface Relationships", () => {
 
             input Type2Interface1DeleteInput {
               interface2: [Type2Interface1Interface2DeleteFieldInput!]
-            }
-
-            input Type2Interface1DisconnectInput {
-              interface2: [Type2Interface1Interface2DisconnectFieldInput!]
             }
 
             type Type2Interface1Edge {
@@ -5172,10 +5078,6 @@ describe("Interface Relationships", () => {
               Specify one or more Type2Interface1Sort objects to sort Type2Interface1s by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [Type2Interface1Sort!]
-            }
-
-            input Type2Interface1RelationInput {
-              interface2: [Type2Interface1Interface2CreateFieldInput!]
             }
 
             \\"\\"\\"
@@ -5819,10 +5721,10 @@ describe("Interface Relationships", () => {
               deleteType1s(delete: Type1DeleteInput, where: Type1Where): DeleteInfo!
               deleteType2Interface1s(delete: Type2Interface1DeleteInput, where: Type2Interface1Where): DeleteInfo!
               deleteType2Interface2s(where: Type2Interface2Where): DeleteInfo!
-              updateType1Interface1s(connect: Type1Interface1ConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: Type1Interface1RelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: Type1Interface1DeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: Type1Interface1DisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: Type1Interface1UpdateInput, where: Type1Interface1Where): UpdateType1Interface1sMutationResponse!
+              updateType1Interface1s(update: Type1Interface1UpdateInput, where: Type1Interface1Where): UpdateType1Interface1sMutationResponse!
               updateType1Interface2s(update: Type1Interface2UpdateInput, where: Type1Interface2Where): UpdateType1Interface2sMutationResponse!
-              updateType1s(connect: Type1ConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: Type1RelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: Type1DeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: Type1DisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: Type1UpdateInput, where: Type1Where): UpdateType1sMutationResponse!
-              updateType2Interface1s(connect: Type2Interface1ConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: Type2Interface1RelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: Type2Interface1DeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: Type2Interface1DisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: Type2Interface1UpdateInput, where: Type2Interface1Where): UpdateType2Interface1sMutationResponse!
+              updateType1s(update: Type1UpdateInput, where: Type1Where): UpdateType1sMutationResponse!
+              updateType2Interface1s(update: Type2Interface1UpdateInput, where: Type2Interface1Where): UpdateType2Interface1sMutationResponse!
               updateType2Interface2s(update: Type2Interface2UpdateInput, where: Type2Interface2Where): UpdateType2Interface2sMutationResponse!
             }
 
@@ -5952,10 +5854,6 @@ describe("Interface Relationships", () => {
               field1: StringAggregateSelection!
             }
 
-            input Type1ConnectInput {
-              interface1: [Type1Interface1ConnectFieldInput!]
-            }
-
             input Type1CreateInput {
               field1: String!
               interface1: Type1Interface1FieldInput
@@ -5963,10 +5861,6 @@ describe("Interface Relationships", () => {
 
             input Type1DeleteInput {
               interface1: [Type1Interface1DeleteFieldInput!]
-            }
-
-            input Type1DisconnectInput {
-              interface1: [Type1Interface1DisconnectFieldInput!]
             }
 
             type Type1Edge {
@@ -6001,10 +5895,6 @@ describe("Interface Relationships", () => {
             input Type1Interface1ConnectFieldInput {
               connect: Interface1ConnectInput
               where: Interface1ConnectWhere
-            }
-
-            input Type1Interface1ConnectInput {
-              interface2: [Type1Interface1Interface2ConnectFieldInput!]
             }
 
             type Type1Interface1Connection {
@@ -6046,10 +5936,6 @@ describe("Interface Relationships", () => {
             input Type1Interface1DisconnectFieldInput {
               disconnect: Interface1DisconnectInput
               where: Type1Interface1ConnectionWhere
-            }
-
-            input Type1Interface1DisconnectInput {
-              interface2: [Type1Interface1Interface2DisconnectFieldInput!]
             }
 
             type Type1Interface1Edge {
@@ -6226,10 +6112,6 @@ describe("Interface Relationships", () => {
               sort: [Type1Interface1Sort!]
             }
 
-            input Type1Interface1RelationInput {
-              interface2: [Type1Interface1Interface2CreateFieldInput!]
-            }
-
             type Type1Interface1Relationship {
               cursor: String!
               node: Interface1!
@@ -6390,10 +6272,6 @@ describe("Interface Relationships", () => {
               sort: [Type1Sort!]
             }
 
-            input Type1RelationInput {
-              interface1: [Type1Interface1CreateFieldInput!]
-            }
-
             \\"\\"\\"
             Fields to sort Type1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type1Sort object.
             \\"\\"\\"
@@ -6470,10 +6348,6 @@ describe("Interface Relationships", () => {
               field1: StringAggregateSelection!
             }
 
-            input Type2Interface1ConnectInput {
-              interface2: [Type2Interface1Interface2ConnectFieldInput!]
-            }
-
             input Type2Interface1CreateInput {
               field1: String!
               interface2: Type2Interface1Interface2FieldInput
@@ -6481,10 +6355,6 @@ describe("Interface Relationships", () => {
 
             input Type2Interface1DeleteInput {
               interface2: [Type2Interface1Interface2DeleteFieldInput!]
-            }
-
-            input Type2Interface1DisconnectInput {
-              interface2: [Type2Interface1Interface2DisconnectFieldInput!]
             }
 
             type Type2Interface1Edge {
@@ -6604,10 +6474,6 @@ describe("Interface Relationships", () => {
               Specify one or more Type2Interface1Sort objects to sort Type2Interface1s by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [Type2Interface1Sort!]
-            }
-
-            input Type2Interface1RelationInput {
-              interface2: [Type2Interface1Interface2CreateFieldInput!]
             }
 
             \\"\\"\\"
@@ -7277,10 +7143,10 @@ describe("Interface Relationships", () => {
               deleteType1s(delete: Type1DeleteInput, where: Type1Where): DeleteInfo!
               deleteType2Interface1s(delete: Type2Interface1DeleteInput, where: Type2Interface1Where): DeleteInfo!
               deleteType2Interface2s(where: Type2Interface2Where): DeleteInfo!
-              updateType1Interface1s(connect: Type1Interface1ConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: Type1Interface1RelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: Type1Interface1DeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: Type1Interface1DisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: Type1Interface1UpdateInput, where: Type1Interface1Where): UpdateType1Interface1sMutationResponse!
+              updateType1Interface1s(update: Type1Interface1UpdateInput, where: Type1Interface1Where): UpdateType1Interface1sMutationResponse!
               updateType1Interface2s(update: Type1Interface2UpdateInput, where: Type1Interface2Where): UpdateType1Interface2sMutationResponse!
-              updateType1s(connect: Type1ConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: Type1RelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: Type1DeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: Type1DisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: Type1UpdateInput, where: Type1Where): UpdateType1sMutationResponse!
-              updateType2Interface1s(connect: Type2Interface1ConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: Type2Interface1RelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: Type2Interface1DeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: Type2Interface1DisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: Type2Interface1UpdateInput, where: Type2Interface1Where): UpdateType2Interface1sMutationResponse!
+              updateType1s(update: Type1UpdateInput, where: Type1Where): UpdateType1sMutationResponse!
+              updateType2Interface1s(update: Type2Interface1UpdateInput, where: Type2Interface1Where): UpdateType2Interface1sMutationResponse!
               updateType2Interface2s(update: Type2Interface2UpdateInput, where: Type2Interface2Where): UpdateType2Interface2sMutationResponse!
             }
 
@@ -7341,10 +7207,6 @@ describe("Interface Relationships", () => {
               field1: StringAggregateSelection!
             }
 
-            input Type1ConnectInput {
-              interface1: [Type1Interface1ConnectFieldInput!]
-            }
-
             input Type1CreateInput {
               field1: String!
               interface1: Type1Interface1FieldInput
@@ -7352,10 +7214,6 @@ describe("Interface Relationships", () => {
 
             input Type1DeleteInput {
               interface1: [Type1Interface1DeleteFieldInput!]
-            }
-
-            input Type1DisconnectInput {
-              interface1: [Type1Interface1DisconnectFieldInput!]
             }
 
             type Type1Edge {
@@ -7390,10 +7248,6 @@ describe("Interface Relationships", () => {
             input Type1Interface1ConnectFieldInput {
               connect: Interface1ConnectInput
               where: Interface1ConnectWhere
-            }
-
-            input Type1Interface1ConnectInput {
-              interface2: [Type1Interface1Interface2ConnectFieldInput!]
             }
 
             type Type1Interface1Connection {
@@ -7435,10 +7289,6 @@ describe("Interface Relationships", () => {
             input Type1Interface1DisconnectFieldInput {
               disconnect: Interface1DisconnectInput
               where: Type1Interface1ConnectionWhere
-            }
-
-            input Type1Interface1DisconnectInput {
-              interface2: [Type1Interface1Interface2DisconnectFieldInput!]
             }
 
             type Type1Interface1Edge {
@@ -7613,10 +7463,6 @@ describe("Interface Relationships", () => {
               Specify one or more Type1Interface1Sort objects to sort Type1Interface1s by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [Type1Interface1Sort!]
-            }
-
-            input Type1Interface1RelationInput {
-              interface2: [Type1Interface1Interface2CreateFieldInput!]
             }
 
             type Type1Interface1Relationship {
@@ -7847,10 +7693,6 @@ describe("Interface Relationships", () => {
               type1Field_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
-            input Type1RelationInput {
-              interface1: [Type1Interface1CreateFieldInput!]
-            }
-
             \\"\\"\\"
             Fields to sort Type1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type1Sort object.
             \\"\\"\\"
@@ -7927,10 +7769,6 @@ describe("Interface Relationships", () => {
               field1: StringAggregateSelection!
             }
 
-            input Type2Interface1ConnectInput {
-              interface2: [Type2Interface1Interface2ConnectFieldInput!]
-            }
-
             input Type2Interface1CreateInput {
               field1: String!
               interface2: Type2Interface1Interface2FieldInput
@@ -7938,10 +7776,6 @@ describe("Interface Relationships", () => {
 
             input Type2Interface1DeleteInput {
               interface2: [Type2Interface1Interface2DeleteFieldInput!]
-            }
-
-            input Type2Interface1DisconnectInput {
-              interface2: [Type2Interface1Interface2DisconnectFieldInput!]
             }
 
             type Type2Interface1Edge {
@@ -8061,10 +7895,6 @@ describe("Interface Relationships", () => {
               Specify one or more Type2Interface1Sort objects to sort Type2Interface1s by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [Type2Interface1Sort!]
-            }
-
-            input Type2Interface1RelationInput {
-              interface2: [Type2Interface1Interface2CreateFieldInput!]
             }
 
             \\"\\"\\"
@@ -8619,11 +8449,6 @@ describe("Interface Relationships", () => {
               where: CommentPostConnectionWhere
             }
 
-            input CommentRelationInput {
-              creator: CommentCreatorCreateFieldInput
-              post: CommentPostCreateFieldInput
-            }
-
             \\"\\"\\"
             Fields to sort Comments by. The order in which sorts are applied is not guaranteed when specifying many fields in one CommentSort object.
             \\"\\"\\"
@@ -8958,9 +8783,9 @@ describe("Interface Relationships", () => {
               deleteComments(delete: CommentDeleteInput, where: CommentWhere): DeleteInfo!
               deletePosts(delete: PostDeleteInput, where: PostWhere): DeleteInfo!
               deleteUsers(delete: UserDeleteInput, where: UserWhere): DeleteInfo!
-              updateComments(connect: CommentConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: CommentRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: CommentDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: CommentDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: CommentUpdateInput, where: CommentWhere): UpdateCommentsMutationResponse!
-              updatePosts(connect: PostConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: PostRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: PostDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: PostDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: PostUpdateInput, where: PostWhere): UpdatePostsMutationResponse!
-              updateUsers(connect: UserConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: UserRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: UserDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: UserDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
+              updateComments(update: CommentUpdateInput, where: CommentWhere): UpdateCommentsMutationResponse!
+              updatePosts(update: PostUpdateInput, where: PostWhere): UpdatePostsMutationResponse!
+              updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -9239,11 +9064,6 @@ describe("Interface Relationships", () => {
               Specify one or more PostSort objects to sort Posts by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [PostSort!]
-            }
-
-            input PostRelationInput {
-              comments: [PostCommentsCreateFieldInput!]
-              creator: PostCreatorCreateFieldInput
             }
 
             \\"\\"\\"
@@ -9565,10 +9385,6 @@ describe("Interface Relationships", () => {
               Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [UserSort!]
-            }
-
-            input UserRelationInput {
-              content: [UserContentCreateFieldInput!]
             }
 
             \\"\\"\\"
@@ -9934,10 +9750,6 @@ describe("Interface Relationships", () => {
               sort: [ActorSort!]
             }
 
-            input ActorRelationInput {
-              actedIn: [ActorActedInCreateFieldInput!]
-            }
-
             type ActorShowActedInAggregationSelection {
               count: Int!
               edge: ActorShowActedInEdgeAggregateSelection
@@ -10172,10 +9984,6 @@ describe("Interface Relationships", () => {
               title: StringAggregateSelection!
             }
 
-            input MovieConnectInput {
-              actors: [MovieActorsConnectFieldInput!]
-            }
-
             input MovieCreateInput {
               actors: MovieActorsFieldInput
               runtime: Int!
@@ -10184,10 +9992,6 @@ describe("Interface Relationships", () => {
 
             input MovieDeleteInput {
               actors: [ShowActorsDeleteFieldInput!]
-            }
-
-            input MovieDisconnectInput {
-              actors: [ShowActorsDisconnectFieldInput!]
             }
 
             type MovieEdge {
@@ -10202,10 +10006,6 @@ describe("Interface Relationships", () => {
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [MovieSort!]
-            }
-
-            input MovieRelationInput {
-              actors: [MovieActorsCreateFieldInput!]
             }
 
             \\"\\"\\"
@@ -10292,9 +10092,9 @@ describe("Interface Relationships", () => {
               deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
               deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
               deleteSeries(delete: SeriesDeleteInput, where: SeriesWhere): DeleteInfo!
-              updateActors(connect: ActorConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: ActorRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: ActorDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: ActorDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
-              updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-              updateSeries(connect: SeriesConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: SeriesRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: SeriesDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: SeriesDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
+              updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+              updateSeries(update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -10499,10 +10299,6 @@ describe("Interface Relationships", () => {
               title: StringAggregateSelection!
             }
 
-            input SeriesConnectInput {
-              actors: [SeriesActorsConnectFieldInput!]
-            }
-
             type SeriesConnection {
               edges: [SeriesEdge!]!
               pageInfo: PageInfo!
@@ -10519,10 +10315,6 @@ describe("Interface Relationships", () => {
               actors: [ShowActorsDeleteFieldInput!]
             }
 
-            input SeriesDisconnectInput {
-              actors: [ShowActorsDisconnectFieldInput!]
-            }
-
             type SeriesEdge {
               cursor: String!
               node: Series!
@@ -10535,10 +10327,6 @@ describe("Interface Relationships", () => {
               Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [SeriesSort!]
-            }
-
-            input SeriesRelationInput {
-              actors: [SeriesActorsCreateFieldInput!]
             }
 
             \\"\\"\\"

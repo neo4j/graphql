@@ -98,16 +98,6 @@ describe("Connect Or Create", () => {
               name: String!
             }
 
-            input ActorActedInConnectInput {
-              Movie: [ActorActedInMovieConnectFieldInput!]
-              Series: [ActorActedInSeriesConnectFieldInput!]
-            }
-
-            input ActorActedInConnectOrCreateInput {
-              Movie: [ActorActedInMovieConnectOrCreateFieldInput!]
-              Series: [ActorActedInSeriesConnectOrCreateFieldInput!]
-            }
-
             type ActorActedInConnection {
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
@@ -123,11 +113,6 @@ describe("Connect Or Create", () => {
               Series: ActorActedInSeriesConnectionWhere
             }
 
-            input ActorActedInCreateFieldInput {
-              Movie: [ActorActedInMovieCreateFieldInput!]
-              Series: [ActorActedInSeriesCreateFieldInput!]
-            }
-
             input ActorActedInCreateInput {
               Movie: ActorActedInMovieFieldInput
               Series: ActorActedInSeriesFieldInput
@@ -136,11 +121,6 @@ describe("Connect Or Create", () => {
             input ActorActedInDeleteInput {
               Movie: [ActorActedInMovieDeleteFieldInput!]
               Series: [ActorActedInSeriesDeleteFieldInput!]
-            }
-
-            input ActorActedInDisconnectInput {
-              Movie: [ActorActedInMovieDisconnectFieldInput!]
-              Series: [ActorActedInSeriesDisconnectFieldInput!]
             }
 
             input ActorActedInMovieConnectFieldInput {
@@ -277,14 +257,6 @@ describe("Connect Or Create", () => {
               name: StringAggregateSelection!
             }
 
-            input ActorConnectInput {
-              actedIn: ActorActedInConnectInput
-            }
-
-            input ActorConnectOrCreateInput {
-              actedIn: ActorActedInConnectOrCreateInput
-            }
-
             input ActorCreateInput {
               actedIn: ActorActedInCreateInput
               name: String!
@@ -292,10 +264,6 @@ describe("Connect Or Create", () => {
 
             input ActorDeleteInput {
               actedIn: ActorActedInDeleteInput
-            }
-
-            input ActorDisconnectInput {
-              actedIn: ActorActedInDisconnectInput
             }
 
             type ActorEdge {
@@ -310,10 +278,6 @@ describe("Connect Or Create", () => {
               Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [ActorSort!]
-            }
-
-            input ActorRelationInput {
-              actedIn: ActorActedInCreateFieldInput
             }
 
             \\"\\"\\"
@@ -514,7 +478,7 @@ describe("Connect Or Create", () => {
               deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
               deleteMovies(where: MovieWhere): DeleteInfo!
               deleteSeries(where: SeriesWhere): DeleteInfo!
-              updateActors(connect: ActorConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), connectOrCreate: ActorConnectOrCreateInput @deprecated(reason: \\"Top level connectOrCreate input argument in update is deprecated. Use the nested connectOrCreate field in the relationship within the update argument\\"), create: ActorRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: ActorDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: ActorDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+              updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
               updateSeries(update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
             }

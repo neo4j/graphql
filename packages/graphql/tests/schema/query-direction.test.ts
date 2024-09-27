@@ -66,7 +66,7 @@ describe("Query Direction", () => {
             type Mutation {
               createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
               deleteUsers(delete: UserDeleteInput, where: UserWhere): DeleteInfo!
-              updateUsers(connect: UserConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: UserRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: UserDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: UserDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
+              updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -276,10 +276,6 @@ describe("Query Direction", () => {
               sort: [UserSort!]
             }
 
-            input UserRelationInput {
-              friends: [UserFriendsCreateFieldInput!]
-            }
-
             \\"\\"\\"
             Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
             \\"\\"\\"
@@ -397,7 +393,7 @@ describe("Query Direction", () => {
             type Mutation {
               createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
               deleteUsers(delete: UserDeleteInput, where: UserWhere): DeleteInfo!
-              updateUsers(connect: UserConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: UserRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: UserDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: UserDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
+              updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -605,10 +601,6 @@ describe("Query Direction", () => {
               Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [UserSort!]
-            }
-
-            input UserRelationInput {
-              friends: [UserFriendsCreateFieldInput!]
             }
 
             \\"\\"\\"
@@ -728,7 +720,7 @@ describe("Query Direction", () => {
             type Mutation {
               createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
               deleteUsers(delete: UserDeleteInput, where: UserWhere): DeleteInfo!
-              updateUsers(connect: UserConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: UserRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: UserDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: UserDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
+              updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -936,10 +928,6 @@ describe("Query Direction", () => {
               Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [UserSort!]
-            }
-
-            input UserRelationInput {
-              friends: [UserFriendsCreateFieldInput!]
             }
 
             \\"\\"\\"

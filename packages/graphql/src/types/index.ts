@@ -484,7 +484,6 @@ export type Neo4jFeaturesSettings = {
         arrayFilters?: boolean;
         stringAggregation?: boolean;
         aggregationFilters?: boolean;
-        nestedUpdateOperationsFields?: boolean;
     };
     vector?: Neo4jVectorSettings;
 };

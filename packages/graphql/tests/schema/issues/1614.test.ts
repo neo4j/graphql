@@ -82,20 +82,12 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               count: Int!
             }
 
-            input CrewMemberConnectInput {
-              movies: CrewMemberMoviesConnectFieldInput
-            }
-
             input CrewMemberCreateInput {
               movies: CrewMemberMoviesFieldInput
             }
 
             input CrewMemberDeleteInput {
               movies: CrewMemberMoviesDeleteFieldInput
-            }
-
-            input CrewMemberDisconnectInput {
-              movies: CrewMemberMoviesDisconnectFieldInput
             }
 
             type CrewMemberEdge {
@@ -238,10 +230,6 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               offset: Int
             }
 
-            input CrewMemberRelationInput {
-              movies: CrewMemberMoviesCreateFieldInput
-            }
-
             input CrewMemberUpdateInput {
               movies: CrewMemberMoviesUpdateFieldInput
             }
@@ -379,7 +367,7 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
               deleteCrewMembers(delete: CrewMemberDeleteInput, where: CrewMemberWhere): DeleteInfo!
               deleteMovies(where: MovieWhere): DeleteInfo!
-              updateCrewMembers(connect: CrewMemberConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: CrewMemberRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: CrewMemberDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: CrewMemberDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: CrewMemberUpdateInput, where: CrewMemberWhere): UpdateCrewMembersMutationResponse!
+              updateCrewMembers(update: CrewMemberUpdateInput, where: CrewMemberWhere): UpdateCrewMembersMutationResponse!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 

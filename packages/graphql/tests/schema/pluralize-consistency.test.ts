@@ -77,7 +77,7 @@ describe("Pluralize consistency", () => {
               deleteSuperFriends(where: super_friendWhere): DeleteInfo!
               deleteSuperUsers(delete: super_userDeleteInput, where: super_userWhere): DeleteInfo!
               updateSuperFriends(update: super_friendUpdateInput, where: super_friendWhere): UpdateSuperFriendsMutationResponse!
-              updateSuperUsers(connect: super_userConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: super_userRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: super_userDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: super_userDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: super_userUpdateInput, where: super_userWhere): UpdateSuperUsersMutationResponse!
+              updateSuperUsers(update: super_userUpdateInput, where: super_userWhere): UpdateSuperUsersMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -214,10 +214,6 @@ describe("Pluralize consistency", () => {
               name: StringAggregateSelection!
             }
 
-            input super_userConnectInput {
-              my_friend: [super_userMy_friendConnectFieldInput!]
-            }
-
             input super_userCreateInput {
               my_friend: super_userMy_friendFieldInput
               name: String!
@@ -225,10 +221,6 @@ describe("Pluralize consistency", () => {
 
             input super_userDeleteInput {
               my_friend: [super_userMy_friendDeleteFieldInput!]
-            }
-
-            input super_userDisconnectInput {
-              my_friend: [super_userMy_friendDisconnectFieldInput!]
             }
 
             type super_userEdge {
@@ -357,10 +349,6 @@ describe("Pluralize consistency", () => {
               Specify one or more super_userSort objects to sort SuperUsers by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [super_userSort!]
-            }
-
-            input super_userRelationInput {
-              my_friend: [super_userMy_friendCreateFieldInput!]
             }
 
             \\"\\"\\"

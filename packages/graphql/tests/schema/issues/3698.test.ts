@@ -382,10 +382,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               where: GenreProductConnectionWhere
             }
 
-            input GenreRelationInput {
-              product: [GenreProductCreateFieldInput!]
-            }
-
             type GenreRelationshipCreatedEvent {
               createdRelationship: GenreConnectedRelationships!
               event: EventType!
@@ -676,14 +672,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               name: StringAggregateSelection!
             }
 
-            input MovieConnectInput {
-              genre: MovieGenreConnectFieldInput
-            }
-
-            input MovieConnectOrCreateInput {
-              genre: MovieGenreConnectOrCreateFieldInput
-            }
-
             type MovieConnectedRelationships {
               genre: MovieGenreConnectedRelationship
             }
@@ -708,10 +696,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               deletedMovie: MovieEventPayload!
               event: EventType!
               timestamp: Float!
-            }
-
-            input MovieDisconnectInput {
-              genre: MovieGenreDisconnectFieldInput
             }
 
             type MovieEdge {
@@ -878,10 +862,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               sort: [MovieSort!]
             }
 
-            input MovieRelationInput {
-              genre: MovieGenreCreateFieldInput
-            }
-
             type MovieRelationshipCreatedEvent {
               createdRelationship: MovieConnectedRelationships!
               event: EventType!
@@ -1011,8 +991,8 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
               deleteGenres(delete: GenreDeleteInput, where: GenreWhere): DeleteInfo!
               deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
-              updateGenres(connect: GenreConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: GenreRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: GenreDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: GenreDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: GenreUpdateInput, where: GenreWhere): UpdateGenresMutationResponse!
-              updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), connectOrCreate: MovieConnectOrCreateInput @deprecated(reason: \\"Top level connectOrCreate input argument in update is deprecated. Use the nested connectOrCreate field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+              updateGenres(update: GenreUpdateInput, where: GenreWhere): UpdateGenresMutationResponse!
+              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -1442,10 +1422,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               disconnect: [GenreProductDisconnectFieldInput!]
               update: GenreProductUpdateConnectionInput
               where: GenreProductConnectionWhere
-            }
-
-            input GenreRelationInput {
-              product: [GenreProductCreateFieldInput!]
             }
 
             type GenreRelationshipCreatedEvent {
@@ -1879,14 +1855,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               name: StringAggregateSelection!
             }
 
-            input MovieConnectInput {
-              genre: MovieGenreConnectFieldInput
-            }
-
-            input MovieConnectOrCreateInput {
-              genre: MovieGenreConnectOrCreateFieldInput
-            }
-
             type MovieConnectedRelationships {
               genre: MovieGenreConnectedRelationship
             }
@@ -1911,10 +1879,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               deletedMovie: MovieEventPayload!
               event: EventType!
               timestamp: Float!
-            }
-
-            input MovieDisconnectInput {
-              genre: IProductGenreDisconnectFieldInput
             }
 
             type MovieEdge {
@@ -2048,10 +2012,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               sort: [MovieSort!]
             }
 
-            input MovieRelationInput {
-              genre: MovieGenreCreateFieldInput
-            }
-
             type MovieRelationshipCreatedEvent {
               createdRelationship: MovieConnectedRelationships!
               event: EventType!
@@ -2181,8 +2141,8 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
               deleteGenres(delete: GenreDeleteInput, where: GenreWhere): DeleteInfo!
               deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
-              updateGenres(connect: GenreConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: GenreRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: GenreDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: GenreDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: GenreUpdateInput, where: GenreWhere): UpdateGenresMutationResponse!
-              updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), connectOrCreate: MovieConnectOrCreateInput @deprecated(reason: \\"Top level connectOrCreate input argument in update is deprecated. Use the nested connectOrCreate field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+              updateGenres(update: GenreUpdateInput, where: GenreWhere): UpdateGenresMutationResponse!
+              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -2627,10 +2587,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               where: GenreProductConnectionWhere
             }
 
-            input GenreRelationInput {
-              product: [GenreProductCreateFieldInput!]
-            }
-
             type GenreRelationshipCreatedEvent {
               createdRelationship: GenreConnectedRelationships!
               event: EventType!
@@ -3064,14 +3020,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               name: StringAggregateSelection!
             }
 
-            input MovieConnectInput {
-              genre: MovieGenreConnectFieldInput
-            }
-
-            input MovieConnectOrCreateInput {
-              genre: MovieGenreConnectOrCreateFieldInput
-            }
-
             type MovieConnectedRelationships {
               genre: MovieGenreConnectedRelationship
             }
@@ -3096,10 +3044,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               deletedMovie: MovieEventPayload!
               event: EventType!
               timestamp: Float!
-            }
-
-            input MovieDisconnectInput {
-              genre: IProductGenreDisconnectFieldInput
             }
 
             type MovieEdge {
@@ -3233,10 +3177,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               sort: [MovieSort!]
             }
 
-            input MovieRelationInput {
-              genre: MovieGenreCreateFieldInput
-            }
-
             type MovieRelationshipCreatedEvent {
               createdRelationship: MovieConnectedRelationships!
               event: EventType!
@@ -3368,9 +3308,9 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               deleteGenres(delete: GenreDeleteInput, where: GenreWhere): DeleteInfo!
               deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
               deleteSeries(delete: SeriesDeleteInput, where: SeriesWhere): DeleteInfo!
-              updateGenres(connect: GenreConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: GenreRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: GenreDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: GenreDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: GenreUpdateInput, where: GenreWhere): UpdateGenresMutationResponse!
-              updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), connectOrCreate: MovieConnectOrCreateInput @deprecated(reason: \\"Top level connectOrCreate input argument in update is deprecated. Use the nested connectOrCreate field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-              updateSeries(connect: SeriesConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), connectOrCreate: SeriesConnectOrCreateInput @deprecated(reason: \\"Top level connectOrCreate input argument in update is deprecated. Use the nested connectOrCreate field in the relationship within the update argument\\"), create: SeriesRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: SeriesDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: SeriesDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
+              updateGenres(update: GenreUpdateInput, where: GenreWhere): UpdateGenresMutationResponse!
+              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+              updateSeries(update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -3412,14 +3352,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               name: StringAggregateSelection!
             }
 
-            input SeriesConnectInput {
-              genre: SeriesGenreConnectFieldInput
-            }
-
-            input SeriesConnectOrCreateInput {
-              genre: SeriesGenreConnectOrCreateFieldInput
-            }
-
             type SeriesConnectedRelationships {
               genre: SeriesGenreConnectedRelationship
             }
@@ -3451,10 +3383,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               deletedSeries: SeriesEventPayload!
               event: EventType!
               timestamp: Float!
-            }
-
-            input SeriesDisconnectInput {
-              genre: IProductGenreDisconnectFieldInput
             }
 
             type SeriesEdge {
@@ -3587,10 +3515,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [SeriesSort!]
-            }
-
-            input SeriesRelationInput {
-              genre: SeriesGenreCreateFieldInput
             }
 
             type SeriesRelationshipCreatedEvent {

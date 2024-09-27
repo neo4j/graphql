@@ -367,10 +367,6 @@ describe("Subscriptions", () => {
               id: IDAggregateSelection!
             }
 
-            input MovieConnectInput {
-              actors: [MovieActorsConnectFieldInput!]
-            }
-
             type MovieConnectedRelationships {
               actors: MovieActorsConnectedRelationship
             }
@@ -399,10 +395,6 @@ describe("Subscriptions", () => {
               timestamp: Float!
             }
 
-            input MovieDisconnectInput {
-              actors: [MovieActorsDisconnectFieldInput!]
-            }
-
             type MovieEdge {
               cursor: String!
               node: Movie!
@@ -422,10 +414,6 @@ describe("Subscriptions", () => {
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [MovieSort!]
-            }
-
-            input MovieRelationInput {
-              actors: [MovieActorsCreateFieldInput!]
             }
 
             type MovieRelationshipCreatedEvent {
@@ -612,7 +600,7 @@ describe("Subscriptions", () => {
               deleteActors(where: ActorWhere): DeleteInfo!
               deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
               updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
-              updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -916,10 +904,6 @@ describe("Subscriptions", () => {
               offset: Int
             }
 
-            input ActorRelationInput {
-              movies: [ActorMoviesCreateFieldInput!]
-            }
-
             type ActorRelationshipCreatedEvent {
               createdRelationship: ActorConnectedRelationships!
               event: EventType!
@@ -1204,10 +1188,6 @@ describe("Subscriptions", () => {
               sort: [MovieSort!]
             }
 
-            input MovieRelationInput {
-              actors: [MovieActorsCreateFieldInput!]
-            }
-
             type MovieRelationshipCreatedEvent {
               event: EventType!
               movie: MovieEventPayload!
@@ -1383,8 +1363,8 @@ describe("Subscriptions", () => {
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
               deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
               deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
-              updateActors(connect: ActorConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: ActorRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: ActorDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: ActorDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
-              updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+              updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -1576,11 +1556,6 @@ describe("Subscriptions", () => {
               Star: MovieActorsStarConnectionWhere
             }
 
-            input MovieActorsCreateFieldInput {
-              Person: [MovieActorsPersonCreateFieldInput!]
-              Star: [MovieActorsStarCreateFieldInput!]
-            }
-
             input MovieActorsCreateInput {
               Person: MovieActorsPersonFieldInput
               Star: MovieActorsStarFieldInput
@@ -1760,10 +1735,6 @@ describe("Subscriptions", () => {
               sort: [MovieSort!]
             }
 
-            input MovieRelationInput {
-              actors: MovieActorsCreateFieldInput
-            }
-
             type MovieRelationshipCreatedEvent {
               event: EventType!
               movie: MovieEventPayload!
@@ -1940,9 +1911,9 @@ describe("Subscriptions", () => {
               deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
               deletePeople(delete: PersonDeleteInput, where: PersonWhere): DeleteInfo!
               deleteStars(delete: StarDeleteInput, where: StarWhere): DeleteInfo!
-              updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-              updatePeople(connect: PersonConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: PersonRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: PersonDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: PersonDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
-              updateStars(connect: StarConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: StarRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: StarDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: StarDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: StarUpdateInput, where: StarWhere): UpdateStarsMutationResponse!
+              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+              updatePeople(update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
+              updateStars(update: StarUpdateInput, where: StarWhere): UpdateStarsMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -2163,10 +2134,6 @@ describe("Subscriptions", () => {
             input PersonOptions {
               limit: Int
               offset: Int
-            }
-
-            input PersonRelationInput {
-              movies: [PersonMoviesCreateFieldInput!]
             }
 
             type PersonRelationshipCreatedEvent {
@@ -2474,10 +2441,6 @@ describe("Subscriptions", () => {
             input StarOptions {
               limit: Int
               offset: Int
-            }
-
-            input StarRelationInput {
-              movies: [StarMoviesCreateFieldInput!]
             }
 
             type StarRelationshipCreatedEvent {
@@ -2930,10 +2893,6 @@ describe("Subscriptions", () => {
               offset: Int
             }
 
-            input ActorRelationInput {
-              movies: [ActorMoviesCreateFieldInput!]
-            }
-
             type ActorRelationshipCreatedEvent {
               createdRelationship: ActorConnectedRelationships!
               event: EventType!
@@ -3246,10 +3205,6 @@ describe("Subscriptions", () => {
               sort: [MovieSort!]
             }
 
-            input MovieRelationInput {
-              actors: [MovieActorsCreateFieldInput!]
-            }
-
             type MovieRelationshipCreatedEvent {
               createdRelationship: MovieConnectedRelationships!
               event: EventType!
@@ -3433,8 +3388,8 @@ describe("Subscriptions", () => {
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
               deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
               deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
-              updateActors(connect: ActorConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: ActorRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: ActorDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: ActorDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
-              updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+              updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -3827,10 +3782,6 @@ describe("Subscriptions", () => {
               id: IDAggregateSelection!
             }
 
-            input MovieConnectInput {
-              actors: [MovieActorsConnectFieldInput!]
-            }
-
             input MovieCreateInput {
               actorCount: Int
               actors: MovieActorsFieldInput
@@ -3841,10 +3792,6 @@ describe("Subscriptions", () => {
 
             input MovieDeleteInput {
               actors: [MovieActorsDeleteFieldInput!]
-            }
-
-            input MovieDisconnectInput {
-              actors: [MovieActorsDisconnectFieldInput!]
             }
 
             type MovieEdge {
@@ -3859,10 +3806,6 @@ describe("Subscriptions", () => {
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [MovieSort!]
-            }
-
-            input MovieRelationInput {
-              actors: [MovieActorsCreateFieldInput!]
             }
 
             \\"\\"\\"
@@ -3968,7 +3911,7 @@ describe("Subscriptions", () => {
               deleteActors(where: ActorWhere): DeleteInfo!
               deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
               updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
-              updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -4071,10 +4014,6 @@ describe("Subscriptions", () => {
               name: StringAggregateSelection!
             }
 
-            input AgreementConnectInput {
-              owner: AgreementOwnerConnectFieldInput
-            }
-
             type AgreementConnectedRelationships {
               owner: AgreementOwnerConnectedRelationship
             }
@@ -4099,10 +4038,6 @@ describe("Subscriptions", () => {
               deletedAgreement: AgreementEventPayload!
               event: EventType!
               timestamp: Float!
-            }
-
-            input AgreementDisconnectInput {
-              owner: AgreementOwnerDisconnectFieldInput
             }
 
             type AgreementEdge {
@@ -4281,10 +4216,6 @@ describe("Subscriptions", () => {
               where: AgreementOwnerConnectionWhere
             }
 
-            input AgreementRelationInput {
-              owner: AgreementOwnerCreateFieldInput
-            }
-
             type AgreementRelationshipCreatedEvent {
               agreement: AgreementEventPayload!
               createdRelationship: AgreementConnectedRelationships!
@@ -4458,7 +4389,7 @@ describe("Subscriptions", () => {
             type Mutation {
               createAgreements(input: [AgreementCreateInput!]!): CreateAgreementsMutationResponse!
               deleteAgreements(delete: AgreementDeleteInput, where: AgreementWhere): DeleteInfo!
-              updateAgreements(connect: AgreementConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: AgreementRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: AgreementDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: AgreementDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: AgreementUpdateInput, where: AgreementWhere): UpdateAgreementsMutationResponse!
+              updateAgreements(update: AgreementUpdateInput, where: AgreementWhere): UpdateAgreementsMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -4759,11 +4690,6 @@ describe("Subscriptions", () => {
               Star: MovieActorsStarConnectionWhere
             }
 
-            input MovieActorsCreateFieldInput {
-              Person: [MovieActorsPersonCreateFieldInput!]
-              Star: [MovieActorsStarCreateFieldInput!]
-            }
-
             input MovieActorsCreateInput {
               Person: MovieActorsPersonFieldInput
               Star: MovieActorsStarFieldInput
@@ -4943,10 +4869,6 @@ describe("Subscriptions", () => {
               sort: [MovieSort!]
             }
 
-            input MovieRelationInput {
-              actors: MovieActorsCreateFieldInput
-            }
-
             type MovieRelationshipCreatedEvent {
               event: EventType!
               movie: MovieEventPayload!
@@ -5123,9 +5045,9 @@ describe("Subscriptions", () => {
               deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
               deletePeople(delete: PersonDeleteInput, where: PersonWhere): DeleteInfo!
               deleteStars(delete: StarDeleteInput, where: StarWhere): DeleteInfo!
-              updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-              updatePeople(connect: PersonConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: PersonRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: PersonDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: PersonDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
-              updateStars(connect: StarConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: StarRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: StarDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: StarDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: StarUpdateInput, where: StarWhere): UpdateStarsMutationResponse!
+              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+              updatePeople(update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
+              updateStars(update: StarUpdateInput, where: StarWhere): UpdateStarsMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -5346,10 +5268,6 @@ describe("Subscriptions", () => {
             input PersonOptions {
               limit: Int
               offset: Int
-            }
-
-            input PersonRelationInput {
-              movies: [PersonMoviesCreateFieldInput!]
             }
 
             type PersonRelationshipCreatedEvent {
@@ -5635,10 +5553,6 @@ describe("Subscriptions", () => {
             input StarOptions {
               limit: Int
               offset: Int
-            }
-
-            input StarRelationInput {
-              movies: [StarMoviesCreateFieldInput!]
             }
 
             input StarUpdateInput {
@@ -5978,10 +5892,6 @@ describe("Subscriptions", () => {
               title: StringAggregateSelection!
             }
 
-            input MovieConnectInput {
-              director: MovieDirectorConnectFieldInput
-            }
-
             input MovieCreateInput {
               director: MovieDirectorFieldInput
               id: ID
@@ -6044,10 +5954,6 @@ describe("Subscriptions", () => {
               where: ProductionDirectorConnectionWhere
             }
 
-            input MovieDisconnectInput {
-              director: MovieDirectorDisconnectFieldInput
-            }
-
             type MovieEdge {
               cursor: String!
               node: Movie!
@@ -6060,10 +5966,6 @@ describe("Subscriptions", () => {
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [MovieSort!]
-            }
-
-            input MovieRelationInput {
-              director: MovieDirectorCreateFieldInput
             }
 
             \\"\\"\\"
@@ -6126,9 +6028,9 @@ describe("Subscriptions", () => {
               deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
               deletePeople(delete: PersonDeleteInput, where: PersonWhere): DeleteInfo!
               deleteSeries(delete: SeriesDeleteInput, where: SeriesWhere): DeleteInfo!
-              updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-              updatePeople(connect: PersonConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: PersonRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: PersonDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: PersonDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
-              updateSeries(connect: SeriesConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: SeriesRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: SeriesDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: SeriesDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
+              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+              updatePeople(update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
+              updateSeries(update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -6155,10 +6057,6 @@ describe("Subscriptions", () => {
               count: Int!
             }
 
-            input PersonConnectInput {
-              movies: PersonMoviesConnectFieldInput
-            }
-
             type PersonConnectedRelationships {
               movies: PersonMoviesConnectedRelationship
             }
@@ -6179,10 +6077,6 @@ describe("Subscriptions", () => {
             type PersonDeletedEvent {
               event: EventType!
               timestamp: Float!
-            }
-
-            input PersonDisconnectInput {
-              movies: PersonMoviesDisconnectFieldInput
             }
 
             type PersonEdge {
@@ -6266,10 +6160,6 @@ describe("Subscriptions", () => {
 
             type PersonProductionMoviesNodeAggregateSelection {
               id: IDAggregateSelection!
-            }
-
-            input PersonRelationInput {
-              movies: PersonMoviesCreateFieldInput
             }
 
             type PersonRelationshipCreatedEvent {
@@ -6532,10 +6422,6 @@ describe("Subscriptions", () => {
               title: StringAggregateSelection!
             }
 
-            input SeriesConnectInput {
-              director: SeriesDirectorConnectFieldInput
-            }
-
             type SeriesConnection {
               edges: [SeriesEdge!]!
               pageInfo: PageInfo!
@@ -6617,10 +6503,6 @@ describe("Subscriptions", () => {
               where: ProductionDirectorConnectionWhere
             }
 
-            input SeriesDisconnectInput {
-              director: SeriesDirectorDisconnectFieldInput
-            }
-
             type SeriesEdge {
               cursor: String!
               node: Series!
@@ -6639,10 +6521,6 @@ describe("Subscriptions", () => {
               Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [SeriesSort!]
-            }
-
-            input SeriesRelationInput {
-              director: SeriesDirectorCreateFieldInput
             }
 
             type SeriesRelationshipCreatedEvent {

@@ -329,10 +329,6 @@ describe("Alias", () => {
               name: StringAggregateSelection!
             }
 
-            input ActorConnectInput {
-              actedIn: [ActorActedInConnectFieldInput!]
-            }
-
             input ActorCreateInput {
               actedIn: ActorActedInFieldInput
               city: String
@@ -341,10 +337,6 @@ describe("Alias", () => {
 
             input ActorDeleteInput {
               actedIn: [ActorActedInDeleteFieldInput!]
-            }
-
-            input ActorDisconnectInput {
-              actedIn: [ActorActedInDisconnectFieldInput!]
             }
 
             type ActorEdge {
@@ -375,10 +367,6 @@ describe("Alias", () => {
               Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [ActorSort!]
-            }
-
-            input ActorRelationInput {
-              actedIn: [ActorActedInCreateFieldInput!]
             }
 
             \\"\\"\\"
@@ -588,7 +576,7 @@ describe("Alias", () => {
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
               deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
               deleteMovies(where: MovieWhere): DeleteInfo!
-              updateActors(connect: ActorConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: ActorRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: ActorDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: ActorDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+              updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 

@@ -770,20 +770,12 @@ describe("@settable", () => {
                   name: StringAggregateSelection!
                 }
 
-                input ActorConnectInput {
-                  actedIn: [ActorActedInConnectFieldInput!]
-                }
-
                 input ActorCreateInput {
                   name: String!
                 }
 
                 input ActorDeleteInput {
                   actedIn: [ActorActedInDeleteFieldInput!]
-                }
-
-                input ActorDisconnectInput {
-                  actedIn: [ActorActedInDisconnectFieldInput!]
                 }
 
                 type ActorEdge {
@@ -808,10 +800,6 @@ describe("@settable", () => {
                   Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [ActorSort!]
-                }
-
-                input ActorRelationInput {
-                  actedIn: [ActorActedInCreateFieldInput!]
                 }
 
                 \\"\\"\\"
@@ -992,7 +980,7 @@ describe("@settable", () => {
                   createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
                   deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
                   deleteMovies(where: MovieWhere): DeleteInfo!
-                  updateActors(connect: ActorConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: ActorRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: ActorDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: ActorDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+                  updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
                   updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                 }
 
@@ -1124,10 +1112,6 @@ describe("@settable", () => {
                   where: ActorActedInConnectionWhere
                 }
 
-                input ActorActedInDisconnectFieldInput {
-                  where: ActorActedInConnectionWhere
-                }
-
                 input ActorActedInFieldInput {
                   connect: [ActorActedInConnectFieldInput!]
                   create: [ActorActedInCreateFieldInput!]
@@ -1219,10 +1203,6 @@ describe("@settable", () => {
                   name: StringAggregateSelection!
                 }
 
-                input ActorConnectInput {
-                  actedIn: [ActorActedInConnectFieldInput!]
-                }
-
                 input ActorCreateInput {
                   actedIn: ActorActedInFieldInput
                   name: String!
@@ -1230,10 +1210,6 @@ describe("@settable", () => {
 
                 input ActorDeleteInput {
                   actedIn: [ActorActedInDeleteFieldInput!]
-                }
-
-                input ActorDisconnectInput {
-                  actedIn: [ActorActedInDisconnectFieldInput!]
                 }
 
                 type ActorEdge {
@@ -1258,10 +1234,6 @@ describe("@settable", () => {
                   Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [ActorSort!]
-                }
-
-                input ActorRelationInput {
-                  actedIn: [ActorActedInCreateFieldInput!]
                 }
 
                 \\"\\"\\"
@@ -1441,7 +1413,7 @@ describe("@settable", () => {
                   createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
                   deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
                   deleteMovies(where: MovieWhere): DeleteInfo!
-                  updateActors(connect: ActorConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: ActorRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: ActorDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: ActorDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+                  updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
                   updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                 }
 
@@ -1715,10 +1687,6 @@ describe("@settable", () => {
                   sort: [ActorSort!]
                 }
 
-                input ActorRelationInput {
-                  actedIn: [ActorActedInCreateFieldInput!]
-                }
-
                 \\"\\"\\"
                 Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
                 \\"\\"\\"
@@ -1986,10 +1954,6 @@ describe("@settable", () => {
                   sort: [MovieSort!]
                 }
 
-                input MovieRelationInput {
-                  actors: [MovieActorsCreateFieldInput!]
-                }
-
                 \\"\\"\\"
                 Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
                 \\"\\"\\"
@@ -2072,8 +2036,8 @@ describe("@settable", () => {
                   createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
                   deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
                   deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
-                  updateActors(connect: ActorConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: ActorRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: ActorDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: ActorDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
-                  updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                  updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+                  updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                 }
 
                 \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -2353,10 +2317,6 @@ describe("@settable", () => {
                   sort: [ActorSort!]
                 }
 
-                input ActorRelationInput {
-                  actedIn: [ActorActedInCreateFieldInput!]
-                }
-
                 \\"\\"\\"
                 Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
                 \\"\\"\\"
@@ -2625,10 +2585,6 @@ describe("@settable", () => {
                   sort: [MovieSort!]
                 }
 
-                input MovieRelationInput {
-                  actors: [MovieActorsCreateFieldInput!]
-                }
-
                 \\"\\"\\"
                 Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
                 \\"\\"\\"
@@ -2711,8 +2667,8 @@ describe("@settable", () => {
                   createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
                   deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
                   deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
-                  updateActors(connect: ActorConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: ActorRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: ActorDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: ActorDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
-                  updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                  updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+                  updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                 }
 
                 \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -2804,11 +2760,6 @@ describe("@settable", () => {
                   name: String!
                 }
 
-                input ActorActedInConnectInput {
-                  Movie: [ActorActedInMovieConnectFieldInput!]
-                  Series: [ActorActedInSeriesConnectFieldInput!]
-                }
-
                 type ActorActedInConnection {
                   edges: [ActorActedInRelationship!]!
                   pageInfo: PageInfo!
@@ -2820,19 +2771,9 @@ describe("@settable", () => {
                   Series: ActorActedInSeriesConnectionWhere
                 }
 
-                input ActorActedInCreateFieldInput {
-                  Movie: [ActorActedInMovieCreateFieldInput!]
-                  Series: [ActorActedInSeriesCreateFieldInput!]
-                }
-
                 input ActorActedInDeleteInput {
                   Movie: [ActorActedInMovieDeleteFieldInput!]
                   Series: [ActorActedInSeriesDeleteFieldInput!]
-                }
-
-                input ActorActedInDisconnectInput {
-                  Movie: [ActorActedInMovieDisconnectFieldInput!]
-                  Series: [ActorActedInSeriesDisconnectFieldInput!]
                 }
 
                 input ActorActedInMovieConnectFieldInput {
@@ -2924,20 +2865,12 @@ describe("@settable", () => {
                   name: StringAggregateSelection!
                 }
 
-                input ActorConnectInput {
-                  actedIn: ActorActedInConnectInput
-                }
-
                 input ActorCreateInput {
                   name: String!
                 }
 
                 input ActorDeleteInput {
                   actedIn: ActorActedInDeleteInput
-                }
-
-                input ActorDisconnectInput {
-                  actedIn: ActorActedInDisconnectInput
                 }
 
                 type ActorEdge {
@@ -2952,10 +2885,6 @@ describe("@settable", () => {
                   Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [ActorSort!]
-                }
-
-                input ActorRelationInput {
-                  actedIn: ActorActedInCreateFieldInput
                 }
 
                 \\"\\"\\"
@@ -3142,7 +3071,7 @@ describe("@settable", () => {
                   deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
                   deleteMovies(where: MovieWhere): DeleteInfo!
                   deleteSeries(where: SeriesWhere): DeleteInfo!
-                  updateActors(connect: ActorConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: ActorRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: ActorDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: ActorDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+                  updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
                   updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                   updateSeries(update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
                 }
@@ -3338,11 +3267,6 @@ describe("@settable", () => {
                   name: String!
                 }
 
-                input ActorActedInConnectInput {
-                  Movie: [ActorActedInMovieConnectFieldInput!]
-                  Series: [ActorActedInSeriesConnectFieldInput!]
-                }
-
                 type ActorActedInConnection {
                   edges: [ActorActedInRelationship!]!
                   pageInfo: PageInfo!
@@ -3354,11 +3278,6 @@ describe("@settable", () => {
                   Series: ActorActedInSeriesConnectionWhere
                 }
 
-                input ActorActedInCreateFieldInput {
-                  Movie: [ActorActedInMovieCreateFieldInput!]
-                  Series: [ActorActedInSeriesCreateFieldInput!]
-                }
-
                 input ActorActedInCreateInput {
                   Movie: ActorActedInMovieFieldInput
                   Series: ActorActedInSeriesFieldInput
@@ -3367,11 +3286,6 @@ describe("@settable", () => {
                 input ActorActedInDeleteInput {
                   Movie: [ActorActedInMovieDeleteFieldInput!]
                   Series: [ActorActedInSeriesDeleteFieldInput!]
-                }
-
-                input ActorActedInDisconnectInput {
-                  Movie: [ActorActedInMovieDisconnectFieldInput!]
-                  Series: [ActorActedInSeriesDisconnectFieldInput!]
                 }
 
                 input ActorActedInMovieConnectFieldInput {
@@ -3391,10 +3305,6 @@ describe("@settable", () => {
                 }
 
                 input ActorActedInMovieDeleteFieldInput {
-                  where: ActorActedInMovieConnectionWhere
-                }
-
-                input ActorActedInMovieDisconnectFieldInput {
                   where: ActorActedInMovieConnectionWhere
                 }
 
@@ -3428,10 +3338,6 @@ describe("@settable", () => {
                   where: ActorActedInSeriesConnectionWhere
                 }
 
-                input ActorActedInSeriesDisconnectFieldInput {
-                  where: ActorActedInSeriesConnectionWhere
-                }
-
                 input ActorActedInSeriesFieldInput {
                   connect: [ActorActedInSeriesConnectFieldInput!]
                   create: [ActorActedInSeriesCreateFieldInput!]
@@ -3442,10 +3348,6 @@ describe("@settable", () => {
                   name: StringAggregateSelection!
                 }
 
-                input ActorConnectInput {
-                  actedIn: ActorActedInConnectInput
-                }
-
                 input ActorCreateInput {
                   actedIn: ActorActedInCreateInput
                   name: String!
@@ -3453,10 +3355,6 @@ describe("@settable", () => {
 
                 input ActorDeleteInput {
                   actedIn: ActorActedInDeleteInput
-                }
-
-                input ActorDisconnectInput {
-                  actedIn: ActorActedInDisconnectInput
                 }
 
                 type ActorEdge {
@@ -3471,10 +3369,6 @@ describe("@settable", () => {
                   Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [ActorSort!]
-                }
-
-                input ActorRelationInput {
-                  actedIn: ActorActedInCreateFieldInput
                 }
 
                 \\"\\"\\"
@@ -3660,7 +3554,7 @@ describe("@settable", () => {
                   deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
                   deleteMovies(where: MovieWhere): DeleteInfo!
                   deleteSeries(where: SeriesWhere): DeleteInfo!
-                  updateActors(connect: ActorConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: ActorRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: ActorDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: ActorDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+                  updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
                   updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                   updateSeries(update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
                 }
@@ -3871,11 +3765,6 @@ describe("@settable", () => {
                   Series: ActorActedInSeriesConnectionWhere
                 }
 
-                input ActorActedInCreateFieldInput {
-                  Movie: [ActorActedInMovieCreateFieldInput!]
-                  Series: [ActorActedInSeriesCreateFieldInput!]
-                }
-
                 input ActorActedInCreateInput {
                   Movie: ActorActedInMovieFieldInput
                   Series: ActorActedInSeriesFieldInput
@@ -3995,10 +3884,6 @@ describe("@settable", () => {
                   Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [ActorSort!]
-                }
-
-                input ActorRelationInput {
-                  actedIn: ActorActedInCreateFieldInput
                 }
 
                 \\"\\"\\"
@@ -4272,10 +4157,6 @@ describe("@settable", () => {
                   sort: [MovieSort!]
                 }
 
-                input MovieRelationInput {
-                  actors: [MovieActorsCreateFieldInput!]
-                }
-
                 \\"\\"\\"
                 Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
                 \\"\\"\\"
@@ -4360,8 +4241,8 @@ describe("@settable", () => {
                   deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
                   deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
                   deleteSeries(where: SeriesWhere): DeleteInfo!
-                  updateActors(connect: ActorConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: ActorRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: ActorDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: ActorDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
-                  updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                  updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+                  updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                   updateSeries(update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
                 }
 
@@ -4571,11 +4452,6 @@ describe("@settable", () => {
                   Series: ActorActedInSeriesConnectionWhere
                 }
 
-                input ActorActedInCreateFieldInput {
-                  Movie: [ActorActedInMovieCreateFieldInput!]
-                  Series: [ActorActedInSeriesCreateFieldInput!]
-                }
-
                 input ActorActedInDeleteInput {
                   Movie: [ActorActedInMovieDeleteFieldInput!]
                   Series: [ActorActedInSeriesDeleteFieldInput!]
@@ -4710,10 +4586,6 @@ describe("@settable", () => {
                   Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [ActorSort!]
-                }
-
-                input ActorRelationInput {
-                  actedIn: ActorActedInCreateFieldInput
                 }
 
                 \\"\\"\\"
@@ -4988,10 +4860,6 @@ describe("@settable", () => {
                   sort: [MovieSort!]
                 }
 
-                input MovieRelationInput {
-                  actors: [MovieActorsCreateFieldInput!]
-                }
-
                 \\"\\"\\"
                 Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
                 \\"\\"\\"
@@ -5076,8 +4944,8 @@ describe("@settable", () => {
                   deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
                   deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
                   deleteSeries(where: SeriesWhere): DeleteInfo!
-                  updateActors(connect: ActorConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: ActorRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: ActorDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: ActorDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
-                  updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                  updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+                  updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                   updateSeries(update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
                 }
 
@@ -5423,20 +5291,12 @@ describe("@settable", () => {
                   name: StringAggregateSelection!
                 }
 
-                input ActorConnectInput {
-                  actedIn: [ActorActedInConnectFieldInput!]
-                }
-
                 input ActorCreateInput {
                   name: String!
                 }
 
                 input ActorDeleteInput {
                   actedIn: [ActorActedInDeleteFieldInput!]
-                }
-
-                input ActorDisconnectInput {
-                  actedIn: [ActorActedInDisconnectFieldInput!]
                 }
 
                 type ActorEdge {
@@ -5461,10 +5321,6 @@ describe("@settable", () => {
                 type ActorProductionActedInNodeAggregateSelection {
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
-                }
-
-                input ActorRelationInput {
-                  actedIn: [ActorActedInCreateFieldInput!]
                 }
 
                 \\"\\"\\"
@@ -5648,7 +5504,7 @@ describe("@settable", () => {
                   deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
                   deleteMovies(where: MovieWhere): DeleteInfo!
                   deleteSeries(where: SeriesWhere): DeleteInfo!
-                  updateActors(connect: ActorConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: ActorRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: ActorDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: ActorDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+                  updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
                   updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                   updateSeries(update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
                 }
@@ -5962,10 +5818,6 @@ describe("@settable", () => {
                   where: ActorActedInConnectionWhere
                 }
 
-                input ActorActedInDisconnectFieldInput {
-                  where: ActorActedInConnectionWhere
-                }
-
                 input ActorActedInFieldInput {
                   connect: [ActorActedInConnectFieldInput!]
                   create: [ActorActedInCreateFieldInput!]
@@ -6057,10 +5909,6 @@ describe("@settable", () => {
                   name: StringAggregateSelection!
                 }
 
-                input ActorConnectInput {
-                  actedIn: [ActorActedInConnectFieldInput!]
-                }
-
                 input ActorCreateInput {
                   actedIn: ActorActedInFieldInput
                   name: String!
@@ -6068,10 +5916,6 @@ describe("@settable", () => {
 
                 input ActorDeleteInput {
                   actedIn: [ActorActedInDeleteFieldInput!]
-                }
-
-                input ActorDisconnectInput {
-                  actedIn: [ActorActedInDisconnectFieldInput!]
                 }
 
                 type ActorEdge {
@@ -6096,10 +5940,6 @@ describe("@settable", () => {
                 type ActorProductionActedInNodeAggregateSelection {
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
-                }
-
-                input ActorRelationInput {
-                  actedIn: [ActorActedInCreateFieldInput!]
                 }
 
                 \\"\\"\\"
@@ -6282,7 +6122,7 @@ describe("@settable", () => {
                   deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
                   deleteMovies(where: MovieWhere): DeleteInfo!
                   deleteSeries(where: SeriesWhere): DeleteInfo!
-                  updateActors(connect: ActorConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: ActorRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: ActorDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: ActorDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+                  updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
                   updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                   updateSeries(update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
                 }
@@ -6735,10 +6575,6 @@ describe("@settable", () => {
                   title: StringAggregateSelection!
                 }
 
-                input ActorRelationInput {
-                  actedIn: [ActorActedInCreateFieldInput!]
-                }
-
                 \\"\\"\\"
                 Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
                 \\"\\"\\"
@@ -6942,10 +6778,6 @@ describe("@settable", () => {
                   title: StringAggregateSelection!
                 }
 
-                input MovieConnectInput {
-                  actors: [MovieActorsConnectFieldInput!]
-                }
-
                 input MovieCreateInput {
                   actors: MovieActorsFieldInput
                   description: String
@@ -6954,10 +6786,6 @@ describe("@settable", () => {
 
                 input MovieDeleteInput {
                   actors: [ProductionActorsDeleteFieldInput!]
-                }
-
-                input MovieDisconnectInput {
-                  actors: [ProductionActorsDisconnectFieldInput!]
                 }
 
                 type MovieEdge {
@@ -6972,10 +6800,6 @@ describe("@settable", () => {
                   Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [MovieSort!]
-                }
-
-                input MovieRelationInput {
-                  actors: [MovieActorsCreateFieldInput!]
                 }
 
                 \\"\\"\\"
@@ -7062,9 +6886,9 @@ describe("@settable", () => {
                   deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
                   deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
                   deleteSeries(delete: SeriesDeleteInput, where: SeriesWhere): DeleteInfo!
-                  updateActors(connect: ActorConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: ActorRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: ActorDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: ActorDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
-                  updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-                  updateSeries(connect: SeriesConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: SeriesRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: SeriesDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: SeriesDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
+                  updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+                  updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                  updateSeries(update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
                 }
 
                 \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -7417,10 +7241,6 @@ describe("@settable", () => {
                   title: StringAggregateSelection!
                 }
 
-                input SeriesConnectInput {
-                  actors: [SeriesActorsConnectFieldInput!]
-                }
-
                 type SeriesConnection {
                   edges: [SeriesEdge!]!
                   pageInfo: PageInfo!
@@ -7437,10 +7257,6 @@ describe("@settable", () => {
                   actors: [ProductionActorsDeleteFieldInput!]
                 }
 
-                input SeriesDisconnectInput {
-                  actors: [ProductionActorsDisconnectFieldInput!]
-                }
-
                 type SeriesEdge {
                   cursor: String!
                   node: Series!
@@ -7453,10 +7269,6 @@ describe("@settable", () => {
                   Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [SeriesSort!]
-                }
-
-                input SeriesRelationInput {
-                  actors: [SeriesActorsCreateFieldInput!]
                 }
 
                 \\"\\"\\"
@@ -7803,10 +7615,6 @@ describe("@settable", () => {
                   title: StringAggregateSelection!
                 }
 
-                input ActorRelationInput {
-                  actedIn: [ActorActedInCreateFieldInput!]
-                }
-
                 \\"\\"\\"
                 Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
                 \\"\\"\\"
@@ -8011,10 +7819,6 @@ describe("@settable", () => {
                   title: StringAggregateSelection!
                 }
 
-                input MovieConnectInput {
-                  actors: [MovieActorsConnectFieldInput!]
-                }
-
                 input MovieCreateInput {
                   actors: MovieActorsFieldInput
                   description: String
@@ -8023,10 +7827,6 @@ describe("@settable", () => {
 
                 input MovieDeleteInput {
                   actors: [ProductionActorsDeleteFieldInput!]
-                }
-
-                input MovieDisconnectInput {
-                  actors: [ProductionActorsDisconnectFieldInput!]
                 }
 
                 type MovieEdge {
@@ -8041,10 +7841,6 @@ describe("@settable", () => {
                   Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [MovieSort!]
-                }
-
-                input MovieRelationInput {
-                  actors: [MovieActorsCreateFieldInput!]
                 }
 
                 \\"\\"\\"
@@ -8131,9 +7927,9 @@ describe("@settable", () => {
                   deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
                   deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
                   deleteSeries(delete: SeriesDeleteInput, where: SeriesWhere): DeleteInfo!
-                  updateActors(connect: ActorConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: ActorRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: ActorDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: ActorDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
-                  updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-                  updateSeries(connect: SeriesConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: SeriesRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: SeriesDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: SeriesDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
+                  updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+                  updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                  updateSeries(update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
                 }
 
                 \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -8509,10 +8305,6 @@ describe("@settable", () => {
                   title: StringAggregateSelection!
                 }
 
-                input SeriesConnectInput {
-                  actors: [SeriesActorsConnectFieldInput!]
-                }
-
                 type SeriesConnection {
                   edges: [SeriesEdge!]!
                   pageInfo: PageInfo!
@@ -8529,10 +8321,6 @@ describe("@settable", () => {
                   actors: [ProductionActorsDeleteFieldInput!]
                 }
 
-                input SeriesDisconnectInput {
-                  actors: [ProductionActorsDisconnectFieldInput!]
-                }
-
                 type SeriesEdge {
                   cursor: String!
                   node: Series!
@@ -8545,10 +8333,6 @@ describe("@settable", () => {
                   Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [SeriesSort!]
-                }
-
-                input SeriesRelationInput {
-                  actors: [SeriesActorsCreateFieldInput!]
                 }
 
                 \\"\\"\\"

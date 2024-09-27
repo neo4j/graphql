@@ -92,7 +92,7 @@ describe("https://github.com/neo4j/graphql/issues/5435", () => {
               createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
               deletePosts(delete: PostDeleteInput, where: PostWhere): DeleteInfo!
               deleteUsers(where: UserWhere): DeleteInfo!
-              updatePosts(connect: PostConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: PostRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: PostDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: PostDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: PostUpdateInput, where: PostWhere): UpdatePostsMutationResponse!
+              updatePosts(update: PostUpdateInput, where: PostWhere): UpdatePostsMutationResponse!
               updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
             }
 
@@ -198,10 +198,6 @@ describe("https://github.com/neo4j/graphql/issues/5435", () => {
               where: PostAuthorConnectionWhere
             }
 
-            input PostConnectInput {
-              author: PostAuthorConnectFieldInput
-            }
-
             input PostCreateInput {
               author: PostAuthorFieldInput
               content: String!
@@ -210,10 +206,6 @@ describe("https://github.com/neo4j/graphql/issues/5435", () => {
 
             input PostDeleteInput {
               author: PostAuthorDeleteFieldInput
-            }
-
-            input PostDisconnectInput {
-              author: PostAuthorDisconnectFieldInput
             }
 
             type PostEdge {
@@ -228,10 +220,6 @@ describe("https://github.com/neo4j/graphql/issues/5435", () => {
               Specify one or more PostSort objects to sort Posts by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [PostSort!]
-            }
-
-            input PostRelationInput {
-              author: PostAuthorCreateFieldInput
             }
 
             \\"\\"\\"

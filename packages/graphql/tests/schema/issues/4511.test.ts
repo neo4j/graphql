@@ -269,10 +269,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               title: StringAggregateSelection!
             }
 
-            input MovieConnectInput {
-              director: MovieDirectorConnectFieldInput
-            }
-
             input MovieCreateInput {
               director: MovieDirectorFieldInput
               id: ID
@@ -335,10 +331,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               where: ProductionDirectorConnectionWhere
             }
 
-            input MovieDisconnectInput {
-              director: MovieDirectorDisconnectFieldInput
-            }
-
             type MovieEdge {
               cursor: String!
               node: Movie!
@@ -351,10 +343,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [MovieSort!]
-            }
-
-            input MovieRelationInput {
-              director: MovieDirectorCreateFieldInput
             }
 
             \\"\\"\\"
@@ -417,9 +405,9 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
               deletePeople(delete: PersonDeleteInput, where: PersonWhere): DeleteInfo!
               deleteSeries(delete: SeriesDeleteInput, where: SeriesWhere): DeleteInfo!
-              updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-              updatePeople(connect: PersonConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: PersonRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: PersonDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: PersonDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
-              updateSeries(connect: SeriesConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: SeriesRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: SeriesDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: SeriesDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
+              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+              updatePeople(update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
+              updateSeries(update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -446,10 +434,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               count: Int!
             }
 
-            input PersonConnectInput {
-              movies: PersonMoviesConnectFieldInput
-            }
-
             type PersonConnectedRelationships {
               movies: PersonMoviesConnectedRelationship
             }
@@ -470,10 +454,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             type PersonDeletedEvent {
               event: EventType!
               timestamp: Float!
-            }
-
-            input PersonDisconnectInput {
-              movies: PersonMoviesDisconnectFieldInput
             }
 
             type PersonEdge {
@@ -557,10 +537,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
 
             type PersonProductionMoviesNodeAggregateSelection {
               id: IDAggregateSelection!
-            }
-
-            input PersonRelationInput {
-              movies: PersonMoviesCreateFieldInput
             }
 
             type PersonRelationshipCreatedEvent {
@@ -823,10 +799,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               title: StringAggregateSelection!
             }
 
-            input SeriesConnectInput {
-              director: SeriesDirectorConnectFieldInput
-            }
-
             type SeriesConnection {
               edges: [SeriesEdge!]!
               pageInfo: PageInfo!
@@ -908,10 +880,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               where: ProductionDirectorConnectionWhere
             }
 
-            input SeriesDisconnectInput {
-              director: SeriesDirectorDisconnectFieldInput
-            }
-
             type SeriesEdge {
               cursor: String!
               node: Series!
@@ -930,10 +898,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [SeriesSort!]
-            }
-
-            input SeriesRelationInput {
-              director: SeriesDirectorCreateFieldInput
             }
 
             type SeriesRelationshipCreatedEvent {

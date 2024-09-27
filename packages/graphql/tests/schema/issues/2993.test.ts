@@ -141,7 +141,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             type Mutation {
               createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
               deleteUsers(delete: UserDeleteInput, where: UserWhere): DeleteInfo!
-              updateUsers(connect: UserConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: UserRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: UserDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: UserDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
+              updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -289,10 +289,6 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               userName: StringAggregateSelection!
             }
 
-            input UserConnectInput {
-              following: [UserFollowingConnectFieldInput!]
-            }
-
             input UserCreateInput {
               following: UserFollowingFieldInput
               userName: String!
@@ -300,10 +296,6 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
 
             input UserDeleteInput {
               following: [UserFollowingDeleteFieldInput!]
-            }
-
-            input UserDisconnectInput {
-              following: [UserFollowingDisconnectFieldInput!]
             }
 
             type UserEdge {
@@ -450,10 +442,6 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             type UserProfileFollowingNodeAggregateSelection {
               id: IDAggregateSelection!
               userName: StringAggregateSelection!
-            }
-
-            input UserRelationInput {
-              following: [UserFollowingCreateFieldInput!]
             }
 
             \\"\\"\\"

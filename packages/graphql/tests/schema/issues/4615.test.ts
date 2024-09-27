@@ -301,10 +301,6 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               sort: [ActorSort!]
             }
 
-            input ActorRelationInput {
-              actedIn: [ActorActedInCreateFieldInput!]
-            }
-
             type ActorShowActedInAggregationSelection {
               count: Int!
               edge: ActorShowActedInEdgeAggregateSelection
@@ -549,10 +545,6 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               title: StringAggregateSelection!
             }
 
-            input MovieConnectInput {
-              actors: [MovieActorsConnectFieldInput!]
-            }
-
             input MovieCreateInput {
               actors: MovieActorsFieldInput
               release: DateTime!
@@ -562,10 +554,6 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
 
             input MovieDeleteInput {
               actors: [ShowActorsDeleteFieldInput!]
-            }
-
-            input MovieDisconnectInput {
-              actors: [ShowActorsDisconnectFieldInput!]
             }
 
             type MovieEdge {
@@ -580,10 +568,6 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [MovieSort!]
-            }
-
-            input MovieRelationInput {
-              actors: [MovieActorsCreateFieldInput!]
             }
 
             \\"\\"\\"
@@ -681,9 +665,9 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
               deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
               deleteSeries(delete: SeriesDeleteInput, where: SeriesWhere): DeleteInfo!
-              updateActors(connect: ActorConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: ActorRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: ActorDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: ActorDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
-              updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-              updateSeries(connect: SeriesConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: SeriesRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: SeriesDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: SeriesDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
+              updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+              updateSeries(update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -825,10 +809,6 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               title: StringAggregateSelection!
             }
 
-            input SeriesConnectInput {
-              actors: [SeriesActorsConnectFieldInput!]
-            }
-
             type SeriesConnection {
               edges: [SeriesEdge!]!
               pageInfo: PageInfo!
@@ -845,10 +825,6 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               actors: [ShowActorsDeleteFieldInput!]
             }
 
-            input SeriesDisconnectInput {
-              actors: [ShowActorsDisconnectFieldInput!]
-            }
-
             type SeriesEdge {
               cursor: String!
               node: Series!
@@ -861,10 +837,6 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [SeriesSort!]
-            }
-
-            input SeriesRelationInput {
-              actors: [SeriesActorsCreateFieldInput!]
             }
 
             \\"\\"\\"

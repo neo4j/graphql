@@ -171,11 +171,6 @@ describe("Unions", () => {
               Journal: AuthorPublicationsJournalConnectionWhere
             }
 
-            input AuthorPublicationsCreateFieldInput {
-              Book: [AuthorPublicationsBookCreateFieldInput!]
-              Journal: [AuthorPublicationsJournalCreateFieldInput!]
-            }
-
             input AuthorPublicationsCreateInput {
               Book: AuthorPublicationsBookFieldInput
               Journal: AuthorPublicationsJournalFieldInput
@@ -250,10 +245,6 @@ describe("Unions", () => {
             input AuthorPublicationsUpdateInput {
               Book: [AuthorPublicationsBookUpdateFieldInput!]
               Journal: [AuthorPublicationsJournalUpdateFieldInput!]
-            }
-
-            input AuthorRelationInput {
-              publications: AuthorPublicationsCreateFieldInput
             }
 
             \\"\\"\\"
@@ -507,10 +498,6 @@ describe("Unions", () => {
               Specify one or more BookSort objects to sort Books by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [BookSort!]
-            }
-
-            input BookRelationInput {
-              author: [BookAuthorCreateFieldInput!]
             }
 
             \\"\\"\\"
@@ -803,10 +790,6 @@ describe("Unions", () => {
               sort: [JournalSort!]
             }
 
-            input JournalRelationInput {
-              author: [JournalAuthorCreateFieldInput!]
-            }
-
             \\"\\"\\"
             Fields to sort Journals by. The order in which sorts are applied is not guaranteed when specifying many fields in one JournalSort object.
             \\"\\"\\"
@@ -878,9 +861,9 @@ describe("Unions", () => {
               deleteAuthors(delete: AuthorDeleteInput, where: AuthorWhere): DeleteInfo!
               deleteBooks(delete: BookDeleteInput, where: BookWhere): DeleteInfo!
               deleteJournals(delete: JournalDeleteInput, where: JournalWhere): DeleteInfo!
-              updateAuthors(connect: AuthorConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: AuthorRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: AuthorDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: AuthorDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: AuthorUpdateInput, where: AuthorWhere): UpdateAuthorsMutationResponse!
-              updateBooks(connect: BookConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: BookRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: BookDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: BookDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: BookUpdateInput, where: BookWhere): UpdateBooksMutationResponse!
-              updateJournals(connect: JournalConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: JournalRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: JournalDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: JournalDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: JournalUpdateInput, where: JournalWhere): UpdateJournalsMutationResponse!
+              updateAuthors(update: AuthorUpdateInput, where: AuthorWhere): UpdateAuthorsMutationResponse!
+              updateBooks(update: BookUpdateInput, where: BookWhere): UpdateBooksMutationResponse!
+              updateJournals(update: JournalUpdateInput, where: JournalWhere): UpdateJournalsMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"

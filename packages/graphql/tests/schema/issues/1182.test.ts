@@ -376,14 +376,6 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
               title: StringAggregateSelection!
             }
 
-            input MovieConnectInput {
-              actors: [MovieActorsConnectFieldInput!]
-            }
-
-            input MovieConnectOrCreateInput {
-              actors: [MovieActorsConnectOrCreateFieldInput!]
-            }
-
             input MovieCreateInput {
               actors: MovieActorsFieldInput
               title: String!
@@ -391,10 +383,6 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
 
             input MovieDeleteInput {
               actors: [MovieActorsDeleteFieldInput!]
-            }
-
-            input MovieDisconnectInput {
-              actors: [MovieActorsDisconnectFieldInput!]
             }
 
             type MovieEdge {
@@ -409,10 +397,6 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [MovieSort!]
-            }
-
-            input MovieRelationInput {
-              actors: [MovieActorsCreateFieldInput!]
             }
 
             \\"\\"\\"
@@ -497,7 +481,7 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
               deleteActors(where: ActorWhere): DeleteInfo!
               deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
               updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
-              updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), connectOrCreate: MovieConnectOrCreateInput @deprecated(reason: \\"Top level connectOrCreate input argument in update is deprecated. Use the nested connectOrCreate field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"

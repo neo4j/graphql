@@ -76,8 +76,8 @@ describe("Sort", () => {
               createNode2s(input: [Node2CreateInput!]!): CreateNode2sMutationResponse!
               deleteNode1s(delete: Node1DeleteInput, where: Node1Where): DeleteInfo!
               deleteNode2s(delete: Node2DeleteInput, where: Node2Where): DeleteInfo!
-              updateNode1s(connect: Node1ConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: Node1RelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: Node1DeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: Node1DisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: Node1UpdateInput, where: Node1Where): UpdateNode1sMutationResponse!
-              updateNode2s(connect: Node2ConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: Node2RelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: Node2DeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: Node2DisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: Node2UpdateInput, where: Node2Where): UpdateNode2sMutationResponse!
+              updateNode1s(update: Node1UpdateInput, where: Node1Where): UpdateNode1sMutationResponse!
+              updateNode2s(update: Node2UpdateInput, where: Node2Where): UpdateNode2sMutationResponse!
             }
 
             type Node1 {
@@ -200,10 +200,6 @@ describe("Sort", () => {
               disconnect: [Node1RelatedToDisconnectFieldInput!]
               update: Node1RelatedToUpdateConnectionInput
               where: Node1RelatedToConnectionWhere
-            }
-
-            input Node1RelationInput {
-              relatedTo: [Node1RelatedToCreateFieldInput!]
             }
 
             \\"\\"\\"
@@ -434,10 +430,6 @@ describe("Sort", () => {
               disconnect: [Node2RelatedToDisconnectFieldInput!]
               update: Node2RelatedToUpdateConnectionInput
               where: Node2RelatedToConnectionWhere
-            }
-
-            input Node2RelationInput {
-              relatedTo: [Node2RelatedToCreateFieldInput!]
             }
 
             input Node2UpdateInput {

@@ -56,14 +56,6 @@ describe("connect or create with id", () => {
               name: StringAggregateSelection!
             }
 
-            input ActorConnectInput {
-              movies: [ActorMoviesConnectFieldInput!]
-            }
-
-            input ActorConnectOrCreateInput {
-              movies: [ActorMoviesConnectOrCreateFieldInput!]
-            }
-
             input ActorCreateInput {
               movies: ActorMoviesFieldInput
               name: String!
@@ -71,10 +63,6 @@ describe("connect or create with id", () => {
 
             input ActorDeleteInput {
               movies: [ActorMoviesDeleteFieldInput!]
-            }
-
-            input ActorDisconnectInput {
-              movies: [ActorMoviesDisconnectFieldInput!]
             }
 
             type ActorEdge {
@@ -225,10 +213,6 @@ describe("connect or create with id", () => {
               Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [ActorSort!]
-            }
-
-            input ActorRelationInput {
-              movies: [ActorMoviesCreateFieldInput!]
             }
 
             \\"\\"\\"
@@ -425,7 +409,7 @@ describe("connect or create with id", () => {
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
               deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
               deleteMovies(where: MovieWhere): DeleteInfo!
-              updateActors(connect: ActorConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), connectOrCreate: ActorConnectOrCreateInput @deprecated(reason: \\"Top level connectOrCreate input argument in update is deprecated. Use the nested connectOrCreate field in the relationship within the update argument\\"), create: ActorRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: ActorDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: ActorDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+              updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
@@ -552,8 +536,8 @@ describe("connect or create with id", () => {
               createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
               deletePosts(delete: PostDeleteInput, where: PostWhere): DeleteInfo!
               deleteUsers(delete: UserDeleteInput, where: UserWhere): DeleteInfo!
-              updatePosts(connect: PostConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), connectOrCreate: PostConnectOrCreateInput @deprecated(reason: \\"Top level connectOrCreate input argument in update is deprecated. Use the nested connectOrCreate field in the relationship within the update argument\\"), create: PostRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: PostDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: PostDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: PostUpdateInput, where: PostWhere): UpdatePostsMutationResponse!
-              updateUsers(connect: UserConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), connectOrCreate: UserConnectOrCreateInput @deprecated(reason: \\"Top level connectOrCreate input argument in update is deprecated. Use the nested connectOrCreate field in the relationship within the update argument\\"), create: UserRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: UserDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: UserDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
+              updatePosts(update: PostUpdateInput, where: PostWhere): UpdatePostsMutationResponse!
+              updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -582,10 +566,6 @@ describe("connect or create with id", () => {
 
             input PostConnectInput {
               creator: PostCreatorConnectFieldInput
-            }
-
-            input PostConnectOrCreateInput {
-              creator: PostCreatorConnectOrCreateFieldInput
             }
 
             input PostConnectOrCreateWhere {
@@ -760,10 +740,6 @@ describe("connect or create with id", () => {
               sort: [PostSort!]
             }
 
-            input PostRelationInput {
-              creator: PostCreatorCreateFieldInput
-            }
-
             \\"\\"\\"
             Fields to sort Posts by. The order in which sorts are applied is not guaranteed when specifying many fields in one PostSort object.
             \\"\\"\\"
@@ -902,10 +878,6 @@ describe("connect or create with id", () => {
 
             input UserConnectInput {
               posts: [UserPostsConnectFieldInput!]
-            }
-
-            input UserConnectOrCreateInput {
-              posts: [UserPostsConnectOrCreateFieldInput!]
             }
 
             input UserConnectOrCreateWhere {
@@ -1100,10 +1072,6 @@ describe("connect or create with id", () => {
               disconnect: [UserPostsDisconnectFieldInput!]
               update: UserPostsUpdateConnectionInput
               where: UserPostsConnectionWhere
-            }
-
-            input UserRelationInput {
-              posts: [UserPostsCreateFieldInput!]
             }
 
             \\"\\"\\"

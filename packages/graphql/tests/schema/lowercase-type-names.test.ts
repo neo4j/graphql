@@ -110,8 +110,8 @@ describe("lower case type names", () => {
               createMovies(input: [movieCreateInput!]!): CreateMoviesMutationResponse!
               deleteActors(delete: actorDeleteInput, where: actorWhere): DeleteInfo!
               deleteMovies(delete: movieDeleteInput, where: movieWhere): DeleteInfo!
-              updateActors(connect: actorConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: actorRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: actorDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: actorDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: actorUpdateInput, where: actorWhere): UpdateActorsMutationResponse!
-              updateMovies(connect: movieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: movieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: movieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: movieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: movieUpdateInput, where: movieWhere): UpdateMoviesMutationResponse!
+              updateActors(update: actorUpdateInput, where: actorWhere): UpdateActorsMutationResponse!
+              updateMovies(update: movieUpdateInput, where: movieWhere): UpdateMoviesMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -408,10 +408,6 @@ describe("lower case type names", () => {
               Specify one or more actorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [actorSort!]
-            }
-
-            input actorRelationInput {
-              movies: [actorMoviesCreateFieldInput!]
             }
 
             \\"\\"\\"
@@ -719,10 +715,6 @@ describe("lower case type names", () => {
               Specify one or more movieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [movieSort!]
-            }
-
-            input movieRelationInput {
-              actors: [movieActorsCreateFieldInput!]
             }
 
             \\"\\"\\"
