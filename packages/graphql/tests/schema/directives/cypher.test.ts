@@ -500,6 +500,127 @@ describe("Cypher", () => {
         `);
     });
 
+    test("Filters should not be generated on list custom cypher fields", async () => {
+        const typeDefs = gql`
+            type Movie {
+                custom_cypher_string_list: [String]
+                    @cypher(statement: "RETURN ['a','b','c'] as list", columnName: "list")
+            }
+        `;
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
+
+        expect(printedSchema).toMatchInlineSnapshot(`
+            "schema {
+              query: Query
+              mutation: Mutation
+            }
+
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
+            type CreateInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            type CreateMoviesMutationResponse {
+              info: CreateInfo!
+              movies: [Movie!]!
+            }
+
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
+            type DeleteInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type Movie {
+              custom_cypher_string_list: [String]
+            }
+
+            type MovieAggregateSelection {
+              count: Int!
+            }
+
+            input MovieCreateInput {
+              \\"\\"\\"
+              Appears because this input type would be empty otherwise because this type is composed of just generated and/or relationship properties. See https://neo4j.com/docs/graphql-manual/current/troubleshooting/faqs/
+              \\"\\"\\"
+              _emptyInput: Boolean
+            }
+
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
+            input MovieOptions {
+              limit: Int
+              offset: Int
+            }
+
+            input MovieUpdateInput {
+              \\"\\"\\"
+              Appears because this input type would be empty otherwise because this type is composed of just generated and/or relationship properties. See https://neo4j.com/docs/graphql-manual/current/troubleshooting/faqs/
+              \\"\\"\\"
+              _emptyInput: Boolean
+            }
+
+            input MovieWhere {
+              AND: [MovieWhere!]
+              NOT: MovieWhere
+              OR: [MovieWhere!]
+            }
+
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type Mutation {
+              createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
+              deleteMovies(where: MovieWhere): DeleteInfo!
+              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+            }
+
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
+            type Query {
+              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, first: Int, where: MovieWhere): MoviesConnection!
+            }
+
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
+            type UpdateInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type UpdateMoviesMutationResponse {
+              info: UpdateInfo!
+              movies: [Movie!]!
+            }"
+        `);
+    });
+
     test("Filters should not be generated on custom cypher fields with arguments", async () => {
         const typeDefs = gql`
             type Movie {
