@@ -119,7 +119,7 @@ describe("Relationship properties - connect", () => {
             mutation ($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
                 ${Movie.operations.update}(
                     where: { title_EQ: $movieTitle }
-                    connect: { actors: { where: { node: { name_EQ: $actorName } }, edge: { screenTime: $screenTime } } }
+                    update: { actors: { connect: { where: { node: { name_EQ: $actorName } }, edge: { screenTime: $screenTime } } } }
                 ) {
                     ${Movie.plural} {
                         title
