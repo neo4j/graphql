@@ -2888,7 +2888,7 @@ __metadata:
     jwks-rsa: "npm:3.1.0"
     koa: "npm:2.15.3"
     koa-jwt: "npm:4.0.4"
-    koa-router: "npm:12.0.1"
+    koa-router: "npm:13.0.1"
     mock-jwks: "npm:1.0.10"
     nock: "npm:13.5.5"
     pluralize: "npm:^8.0.0"
@@ -13552,16 +13552,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"koa-router@npm:12.0.1":
-  version: 12.0.1
-  resolution: "koa-router@npm:12.0.1"
+"koa-router@npm:13.0.1":
+  version: 13.0.1
+  resolution: "koa-router@npm:13.0.1"
   dependencies:
-    debug: "npm:^4.3.4"
     http-errors: "npm:^2.0.0"
     koa-compose: "npm:^4.1.0"
-    methods: "npm:^1.1.2"
-    path-to-regexp: "npm:^6.2.1"
-  checksum: 10c0/061a6205d304e7f100b5c262f7a8b69d116f53680b3114e006d638211b377ea1abc5a1849c6eecc652388514569f44776b7ff5247ff17dcb1ff046a2e19850a9
+    path-to-regexp: "npm:^8.1.0"
+  checksum: 10c0/f99fc92c1a88cd8ad2bd7d319397453400cfbab9cef4e7933d0aa6d824f773c7eed904969334e37d82aad187740b07e5665dee9f30d718cd2c92d1b529abb5e8
   languageName: node
   linkType: hard
 
@@ -16473,10 +16471,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"path-to-regexp@npm:^6.2.1":
-  version: 6.2.2
-  resolution: "path-to-regexp@npm:6.2.2"
-  checksum: 10c0/4b60852d3501fd05ca9dd08c70033d73844e5eca14e41f499f069afa8364f780f15c5098002f93bd42af8b3514de62ac6e82a53b5662de881d2b08c9ef21ea6b
+"path-to-regexp@npm:^8.1.0":
+  version: 8.2.0
+  resolution: "path-to-regexp@npm:8.2.0"
+  checksum: 10c0/ef7d0a887b603c0a142fad16ccebdcdc42910f0b14830517c724466ad676107476bba2fe9fffd28fd4c141391ccd42ea426f32bb44c2c82ecaefe10c37b90f5a
   languageName: node
   linkType: hard
 
