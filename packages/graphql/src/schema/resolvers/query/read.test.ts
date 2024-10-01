@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { SchemaComposer } from "graphql-compose";
 import { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { findResolver } from "./read";
@@ -34,12 +35,22 @@ describe("Read resolver", () => {
         });
         const concreteEntityAdapter = new ConcreteEntityAdapter(concreteEntity);
 
-        const result = findResolver({ entityAdapter: concreteEntityAdapter });
+        const result = findResolver({ entityAdapter: concreteEntityAdapter, composer: new SchemaComposer() });
         expect(result.type).toBe(`[Movie!]!`);
         expect(result.resolve).toBeInstanceOf(Function);
         expect(result.args).toMatchObject({
             where: `MovieWhere`,
-            options: `MovieOptions`,
+            options: {
+                directives: [
+                    {
+                        args: {
+                            reason: "Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.",
+                        },
+                        name: "deprecated",
+                    },
+                ],
+                type: "MovieOptions",
+            },
         });
     });
 });

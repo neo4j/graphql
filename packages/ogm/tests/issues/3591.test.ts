@@ -100,6 +100,9 @@ describe("issues/3591", () => {
 
             export type QueryUsersArgs = {
               where?: InputMaybe<UserWhere>;
+              limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              sort?: InputMaybe<Array<UserSort>>;
               options?: InputMaybe<UserOptions>;
             };
 
@@ -107,7 +110,7 @@ describe("issues/3591", () => {
               first?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               after?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               where?: InputMaybe<UserWhere>;
-              sort?: InputMaybe<Array<InputMaybe<UserSort>>>;
+              sort?: InputMaybe<Array<UserSort>>;
             };
 
             export type QueryUsersAggregateArgs = {
@@ -116,6 +119,9 @@ describe("issues/3591", () => {
 
             export type QueryCompaniesArgs = {
               where?: InputMaybe<CompanyWhere>;
+              limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              sort?: InputMaybe<Array<CompanySort>>;
               options?: InputMaybe<CompanyOptions>;
             };
 
@@ -123,7 +129,7 @@ describe("issues/3591", () => {
               first?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               after?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               where?: InputMaybe<CompanyWhere>;
-              sort?: InputMaybe<Array<InputMaybe<CompanySort>>>;
+              sort?: InputMaybe<Array<CompanySort>>;
             };
 
             export type QueryCompaniesAggregateArgs = {
@@ -132,6 +138,9 @@ describe("issues/3591", () => {
 
             export type QueryRestaurantsArgs = {
               where?: InputMaybe<RestaurantWhere>;
+              limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              sort?: InputMaybe<Array<RestaurantSort>>;
               options?: InputMaybe<RestaurantOptions>;
             };
 
@@ -139,7 +148,7 @@ describe("issues/3591", () => {
               first?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               after?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               where?: InputMaybe<RestaurantWhere>;
-              sort?: InputMaybe<Array<InputMaybe<RestaurantSort>>>;
+              sort?: InputMaybe<Array<RestaurantSort>>;
             };
 
             export type QueryRestaurantsAggregateArgs = {
@@ -369,6 +378,9 @@ describe("issues/3591", () => {
 
             export type UserCompanyArgs = {
               where?: InputMaybe<CompanyWhere>;
+              limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              sort?: InputMaybe<Array<CompanySort>>;
               options?: InputMaybe<CompanyOptions>;
               directed?: InputMaybe<Scalars[\\"Boolean\\"][\\"input\\"]>;
             };
@@ -388,6 +400,9 @@ describe("issues/3591", () => {
 
             export type UserFavoriteRestaurantsArgs = {
               where?: InputMaybe<RestaurantWhere>;
+              limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              sort?: InputMaybe<Array<RestaurantSort>>;
               options?: InputMaybe<RestaurantOptions>;
               directed?: InputMaybe<Scalars[\\"Boolean\\"][\\"input\\"]>;
             };
