@@ -93,7 +93,7 @@ export class DeleteOperation extends MutationOperation {
             statements.push(new Cypher.With("*"), ...nestedOperations);
         }
         statements = this.appendDeleteClause(statements, context);
-        const ret = Cypher.concat(...statements);
+        const ret = Cypher.utils.concat(...statements);
 
         return { clauses: [ret], projectionExpr: context.target };
     }
@@ -131,7 +131,7 @@ export class DeleteOperation extends MutationOperation {
             statements.push(new Cypher.With("*"), ...nestedOperations);
         }
         statements.push(withBeforeDeleteBlock, deleteBlock);
-        const ret = Cypher.concat(...statements);
+        const ret = Cypher.utils.concat(...statements);
         return { clauses: [ret], projectionExpr: Cypher.Null };
     }
 

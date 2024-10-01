@@ -639,7 +639,7 @@ describe("Relationship nested operations", () => {
                   createPeople(input: [PersonCreateInput!]!): CreatePeopleMutationResponse!
                   deleteMovies(where: MovieWhere): DeleteInfo!
                   deletePeople(where: PersonWhere): DeleteInfo!
-                  updateMovies(create: MovieRelationInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                  updateMovies(create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                   updatePeople(update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
                 }
 
@@ -1016,7 +1016,7 @@ describe("Relationship nested operations", () => {
                   createPeople(input: [PersonCreateInput!]!): CreatePeopleMutationResponse!
                   deleteMovies(where: MovieWhere): DeleteInfo!
                   deletePeople(where: PersonWhere): DeleteInfo!
-                  updateMovies(connect: MovieConnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                  updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                   updatePeople(update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
                 }
 
@@ -1752,7 +1752,7 @@ describe("Relationship nested operations", () => {
                   createPeople(input: [PersonCreateInput!]!): CreatePeopleMutationResponse!
                   deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
                   deletePeople(where: PersonWhere): DeleteInfo!
-                  updateMovies(delete: MovieDeleteInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                  updateMovies(delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                   updatePeople(update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
                 }
 
@@ -2120,7 +2120,7 @@ describe("Relationship nested operations", () => {
                   createPeople(input: [PersonCreateInput!]!): CreatePeopleMutationResponse!
                   deleteMovies(where: MovieWhere): DeleteInfo!
                   deletePeople(where: PersonWhere): DeleteInfo!
-                  updateMovies(disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                  updateMovies(disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                   updatePeople(update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
                 }
 
@@ -2857,7 +2857,7 @@ describe("Relationship nested operations", () => {
                   createPeople(input: [PersonCreateInput!]!): CreatePeopleMutationResponse!
                   deleteMovies(where: MovieWhere): DeleteInfo!
                   deletePeople(where: PersonWhere): DeleteInfo!
-                  updateMovies(connectOrCreate: MovieConnectOrCreateInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                  updateMovies(connectOrCreate: MovieConnectOrCreateInput @deprecated(reason: \\"Top level connectOrCreate input argument in update is deprecated. Use the nested connectOrCreate field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                   updatePeople(update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
                 }
 
@@ -3423,7 +3423,7 @@ describe("Relationship nested operations", () => {
                   createPeople(input: [PersonCreateInput!]!): CreatePeopleMutationResponse!
                   deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
                   deletePeople(where: PersonWhere): DeleteInfo!
-                  updateMovies(connect: MovieConnectInput, create: MovieRelationInput, delete: MovieDeleteInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                  updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                   updatePeople(update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
                 }
 
@@ -3932,7 +3932,7 @@ describe("Relationship nested operations", () => {
                   createPeople(input: [PersonCreateInput!]!): CreatePeopleMutationResponse!
                   deleteMovies(where: MovieWhere): DeleteInfo!
                   deletePeople(where: PersonWhere): DeleteInfo!
-                  updateMovies(create: MovieRelationInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                  updateMovies(create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                   updatePeople(update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
                 }
 
@@ -4694,7 +4694,7 @@ describe("Relationship nested operations", () => {
                   deleteMovies(where: MovieWhere): DeleteInfo!
                   deletePersonOnes(where: PersonOneWhere): DeleteInfo!
                   deletePersonTwos(where: PersonTwoWhere): DeleteInfo!
-                  updateMovies(create: MovieRelationInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                  updateMovies(create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                   updatePersonOnes(update: PersonOneUpdateInput, where: PersonOneWhere): UpdatePersonOnesMutationResponse!
                   updatePersonTwos(update: PersonTwoUpdateInput, where: PersonTwoWhere): UpdatePersonTwosMutationResponse!
                 }
@@ -5137,7 +5137,7 @@ describe("Relationship nested operations", () => {
                   deleteMovies(where: MovieWhere): DeleteInfo!
                   deletePersonOnes(where: PersonOneWhere): DeleteInfo!
                   deletePersonTwos(where: PersonTwoWhere): DeleteInfo!
-                  updateMovies(connect: MovieConnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                  updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                   updatePersonOnes(update: PersonOneUpdateInput, where: PersonOneWhere): UpdatePersonOnesMutationResponse!
                   updatePersonTwos(update: PersonTwoUpdateInput, where: PersonTwoWhere): UpdatePersonTwosMutationResponse!
                 }
@@ -5994,7 +5994,7 @@ describe("Relationship nested operations", () => {
                   deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
                   deletePersonOnes(where: PersonOneWhere): DeleteInfo!
                   deletePersonTwos(where: PersonTwoWhere): DeleteInfo!
-                  updateMovies(delete: MovieDeleteInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                  updateMovies(delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                   updatePersonOnes(update: PersonOneUpdateInput, where: PersonOneWhere): UpdatePersonOnesMutationResponse!
                   updatePersonTwos(update: PersonTwoUpdateInput, where: PersonTwoWhere): UpdatePersonTwosMutationResponse!
                 }
@@ -6423,7 +6423,7 @@ describe("Relationship nested operations", () => {
                   deleteMovies(where: MovieWhere): DeleteInfo!
                   deletePersonOnes(where: PersonOneWhere): DeleteInfo!
                   deletePersonTwos(where: PersonTwoWhere): DeleteInfo!
-                  updateMovies(disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                  updateMovies(disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                   updatePersonOnes(update: PersonOneUpdateInput, where: PersonOneWhere): UpdatePersonOnesMutationResponse!
                   updatePersonTwos(update: PersonTwoUpdateInput, where: PersonTwoWhere): UpdatePersonTwosMutationResponse!
                 }
@@ -7276,7 +7276,7 @@ describe("Relationship nested operations", () => {
                   deleteMovies(where: MovieWhere): DeleteInfo!
                   deletePersonOnes(where: PersonOneWhere): DeleteInfo!
                   deletePersonTwos(where: PersonTwoWhere): DeleteInfo!
-                  updateMovies(connectOrCreate: MovieConnectOrCreateInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                  updateMovies(connectOrCreate: MovieConnectOrCreateInput @deprecated(reason: \\"Top level connectOrCreate input argument in update is deprecated. Use the nested connectOrCreate field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                   updatePersonOnes(update: PersonOneUpdateInput, where: PersonOneWhere): UpdatePersonOnesMutationResponse!
                   updatePersonTwos(update: PersonTwoUpdateInput, where: PersonTwoWhere): UpdatePersonTwosMutationResponse!
                 }
@@ -7935,7 +7935,7 @@ describe("Relationship nested operations", () => {
                   deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
                   deletePersonOnes(where: PersonOneWhere): DeleteInfo!
                   deletePersonTwos(where: PersonTwoWhere): DeleteInfo!
-                  updateMovies(connect: MovieConnectInput, create: MovieRelationInput, delete: MovieDeleteInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                  updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                   updatePersonOnes(update: PersonOneUpdateInput, where: PersonOneWhere): UpdatePersonOnesMutationResponse!
                   updatePersonTwos(update: PersonTwoUpdateInput, where: PersonTwoWhere): UpdatePersonTwosMutationResponse!
                 }
@@ -8482,7 +8482,7 @@ describe("Relationship nested operations", () => {
                   deleteMovies(where: MovieWhere): DeleteInfo!
                   deletePersonOnes(where: PersonOneWhere): DeleteInfo!
                   deletePersonTwos(where: PersonTwoWhere): DeleteInfo!
-                  updateMovies(create: MovieRelationInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                  updateMovies(create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                   updatePersonOnes(update: PersonOneUpdateInput, where: PersonOneWhere): UpdatePersonOnesMutationResponse!
                   updatePersonTwos(update: PersonTwoUpdateInput, where: PersonTwoWhere): UpdatePersonTwosMutationResponse!
                 }
@@ -9474,7 +9474,7 @@ describe("Relationship nested operations", () => {
                   deleteMovies(where: MovieWhere): DeleteInfo!
                   deletePersonOnes(where: PersonOneWhere): DeleteInfo!
                   deletePersonTwos(where: PersonTwoWhere): DeleteInfo!
-                  updateMovies(create: MovieRelationInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                  updateMovies(create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                   updatePersonOnes(update: PersonOneUpdateInput, where: PersonOneWhere): UpdatePersonOnesMutationResponse!
                   updatePersonTwos(update: PersonTwoUpdateInput, where: PersonTwoWhere): UpdatePersonTwosMutationResponse!
                 }
@@ -10010,7 +10010,7 @@ describe("Relationship nested operations", () => {
                   deleteMovies(where: MovieWhere): DeleteInfo!
                   deletePersonOnes(where: PersonOneWhere): DeleteInfo!
                   deletePersonTwos(where: PersonTwoWhere): DeleteInfo!
-                  updateMovies(connect: MovieConnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                  updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                   updatePersonOnes(update: PersonOneUpdateInput, where: PersonOneWhere): UpdatePersonOnesMutationResponse!
                   updatePersonTwos(update: PersonTwoUpdateInput, where: PersonTwoWhere): UpdatePersonTwosMutationResponse!
                 }
@@ -11066,7 +11066,7 @@ describe("Relationship nested operations", () => {
                   deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
                   deletePersonOnes(where: PersonOneWhere): DeleteInfo!
                   deletePersonTwos(where: PersonTwoWhere): DeleteInfo!
-                  updateMovies(delete: MovieDeleteInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                  updateMovies(delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                   updatePersonOnes(update: PersonOneUpdateInput, where: PersonOneWhere): UpdatePersonOnesMutationResponse!
                   updatePersonTwos(update: PersonTwoUpdateInput, where: PersonTwoWhere): UpdatePersonTwosMutationResponse!
                 }
@@ -11592,7 +11592,7 @@ describe("Relationship nested operations", () => {
                   deleteMovies(where: MovieWhere): DeleteInfo!
                   deletePersonOnes(where: PersonOneWhere): DeleteInfo!
                   deletePersonTwos(where: PersonTwoWhere): DeleteInfo!
-                  updateMovies(disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                  updateMovies(disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                   updatePersonOnes(update: PersonOneUpdateInput, where: PersonOneWhere): UpdatePersonOnesMutationResponse!
                   updatePersonTwos(update: PersonTwoUpdateInput, where: PersonTwoWhere): UpdatePersonTwosMutationResponse!
                 }
@@ -12285,7 +12285,7 @@ describe("Relationship nested operations", () => {
                   deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
                   deletePersonOnes(where: PersonOneWhere): DeleteInfo!
                   deletePersonTwos(where: PersonTwoWhere): DeleteInfo!
-                  updateMovies(connect: MovieConnectInput, create: MovieRelationInput, delete: MovieDeleteInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                  updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                   updatePersonOnes(update: PersonOneUpdateInput, where: PersonOneWhere): UpdatePersonOnesMutationResponse!
                   updatePersonTwos(update: PersonTwoUpdateInput, where: PersonTwoWhere): UpdatePersonTwosMutationResponse!
                 }
@@ -12971,7 +12971,7 @@ describe("Relationship nested operations", () => {
                   deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
                   deletePersonOnes(where: PersonOneWhere): DeleteInfo!
                   deletePersonTwos(where: PersonTwoWhere): DeleteInfo!
-                  updateMovies(create: MovieRelationInput, delete: MovieDeleteInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                  updateMovies(create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                   updatePersonOnes(update: PersonOneUpdateInput, where: PersonOneWhere): UpdatePersonOnesMutationResponse!
                   updatePersonTwos(update: PersonTwoUpdateInput, where: PersonTwoWhere): UpdatePersonTwosMutationResponse!
                 }

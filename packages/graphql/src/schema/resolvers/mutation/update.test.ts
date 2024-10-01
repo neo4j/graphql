@@ -54,11 +54,61 @@ describe("Update resolver", () => {
         expect(result.args).toMatchObject({
             where: "MovieWhere",
             update: "MovieUpdateInput",
-            connect: "MovieConnectInput",
-            disconnect: "MovieDisconnectInput",
-            create: "MovieRelationInput",
-            delete: "MovieDeleteInput",
-            connectOrCreate: "MovieConnectOrCreateInput",
+            connect: {
+                directives: [
+                    {
+                        args: {
+                            reason: "Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument",
+                        },
+                        name: "deprecated",
+                    },
+                ],
+                type: "MovieConnectInput",
+            },
+            connectOrCreate: {
+                directives: [
+                    {
+                        args: {
+                            reason: "Top level connectOrCreate input argument in update is deprecated. Use the nested connectOrCreate field in the relationship within the update argument",
+                        },
+                        name: "deprecated",
+                    },
+                ],
+                type: "MovieConnectOrCreateInput",
+            },
+            create: {
+                directives: [
+                    {
+                        args: {
+                            reason: "Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument",
+                        },
+                        name: "deprecated",
+                    },
+                ],
+                type: "MovieRelationInput",
+            },
+            delete: {
+                directives: [
+                    {
+                        args: {
+                            reason: "Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument",
+                        },
+                        name: "deprecated",
+                    },
+                ],
+                type: "MovieDeleteInput",
+            },
+            disconnect: {
+                directives: [
+                    {
+                        args: {
+                            reason: "Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument",
+                        },
+                        name: "deprecated",
+                    },
+                ],
+                type: "MovieDisconnectInput",
+            },
         });
     });
     test("should return fewer fields based on number of InputTCs created", () => {
@@ -89,8 +139,28 @@ describe("Update resolver", () => {
         expect(result.args).not.toMatchObject({
             where: "MovieWhere",
             update: "MovieUpdateInput",
-            connect: "MovieConnectInput",
-            disconnect: "MovieDisconnectInput",
+            connect: {
+                directives: [
+                    {
+                        args: {
+                            reason: "Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument",
+                        },
+                        name: "deprecated",
+                    },
+                ],
+                type: "MovieConnectInput",
+            },
+            disconnect: {
+                directives: [
+                    {
+                        args: {
+                            reason: "Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument",
+                        },
+                        name: "deprecated",
+                    },
+                ],
+                type: "MovieDisconnectInput",
+            },
             create: "MovieRelationInput",
             delete: "MovieDeleteInput",
             connectOrCreate: "MovieConnectOrCreateInput",
@@ -98,8 +168,28 @@ describe("Update resolver", () => {
         expect(result.args).toMatchObject({
             where: "MovieWhere",
             update: "MovieUpdateInput",
-            connect: "MovieConnectInput",
-            disconnect: "MovieDisconnectInput",
+            connect: {
+                directives: [
+                    {
+                        args: {
+                            reason: "Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument",
+                        },
+                        name: "deprecated",
+                    },
+                ],
+                type: "MovieConnectInput",
+            },
+            disconnect: {
+                directives: [
+                    {
+                        args: {
+                            reason: "Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument",
+                        },
+                        name: "deprecated",
+                    },
+                ],
+                type: "MovieDisconnectInput",
+            },
         });
     });
 });

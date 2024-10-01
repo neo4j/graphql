@@ -19,13 +19,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
-      - uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4
+      - uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4
         with:
           node-version: 18.13.0
           cache: yarn
       - name: Install dependencies
         run: yarn --immutable
-      - uses: reviewdog/action-eslint@beb7a743eeb10db90a8529b5bc4031be52e90868 # v1.31.0
+      - uses: reviewdog/action-eslint@9a6606695f1ef9709cce821919ca3b2a6d5e6bb5 # v1.32.0
         with:
           fail_on_error: true
           eslint_flags: "."

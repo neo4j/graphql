@@ -127,7 +127,7 @@ export class RelationshipFilter extends Filter {
                 }
 
                 withClause.return([returnCondition, countVar]);
-                return Cypher.concat(relationshipMatch, ...selection, withClause);
+                return Cypher.utils.concat(relationshipMatch, ...selection, withClause);
             })
         );
 
@@ -202,7 +202,7 @@ export class RelationshipFilter extends Filter {
 
                 withAfterSubqueries.return([returnPredicate, returnVar]);
 
-                return [Cypher.concat(match, ...nestedSubqueries, withAfterSubqueries)];
+                return [Cypher.utils.concat(match, ...nestedSubqueries, withAfterSubqueries)];
             }
 
             case "ALL": {
@@ -257,9 +257,9 @@ export class RelationshipFilter extends Filter {
             }
             withClause.return([Cypher.gt(Cypher.count(context.target), new Cypher.Literal(0)), returnVar]); // THis variable needs to be used in predicate
 
-            return Cypher.concat(...nestedSubqueries, withClause);
+            return Cypher.utils.concat(...nestedSubqueries, withClause);
         });
-        return { clause: Cypher.concat(match, ...subqueries), returnVariables };
+        return { clause: Cypher.utils.concat(match, ...subqueries), returnVariables };
     }
 
     private getNestedSubqueryFilter(target: Cypher.Expr): Cypher.Predicate {

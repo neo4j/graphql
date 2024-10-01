@@ -61,12 +61,10 @@ export class AggregationAttributeField extends AggregationField {
 
             const projection = new Cypher.Return([this.createAggregationExpr(listVar), returnVar]);
 
-            return Cypher.concat(
-                new Cypher.With(target)
-                    .orderBy([Cypher.size(aggrProp), "DESC"])
-                    .with([Cypher.collect(aggrProp), listVar]),
-                projection
-            );
+            return new Cypher.With(target)
+                .orderBy([Cypher.size(aggrProp), "DESC"])
+                .with([Cypher.collect(aggrProp), listVar])
+                .return(projection);
         }
 
         return new Cypher.Return([this.getAggregationExpr(target), returnVar]);

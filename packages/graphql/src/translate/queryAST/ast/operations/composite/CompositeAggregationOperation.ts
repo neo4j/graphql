@@ -173,7 +173,7 @@ export class CompositeAggregationOperation extends Operation {
 
             projectionMap.set(field.getProjectionField(nestedContext.returnVariable));
 
-            return Cypher.concat(
+            return Cypher.utils.concat(
                 nestedSubquery,
                 withClause,
                 field.getAggregationProjection(target, nestedContext.returnVariable)
@@ -210,7 +210,7 @@ export class CompositeAggregationOperation extends Operation {
             let clauses = c.getSubqueries(context);
 
             if (parentNode && this.addWith) {
-                clauses = clauses.map((sq) => Cypher.concat(new Cypher.With(parentNode), sq));
+                clauses = clauses.map((sq) => Cypher.utils.concat(new Cypher.With(parentNode), sq));
             }
             return clauses;
         });

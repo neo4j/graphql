@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { int } from "neo4j-driver";
+import { int, isInt } from "neo4j-driver";
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import { getFilteringFn } from "../utils/get-filtering-fn";
 import { multipleConditionsAggregationMap } from "../utils/multiple-conditions-aggregation-map";
@@ -69,42 +69,50 @@ export function filterByProperties<T>({
     return true;
 }
 
-const isFloatOrStringOrIDAsString = (attributeAdapter: AttributeAdapter | undefined, value: string | number) =>
-    attributeAdapter?.typeHelper.isFloat() ||
-    attributeAdapter?.typeHelper.isString() ||
-    (attributeAdapter?.typeHelper.isID() && int(value).toString() !== value);
+/** Checks if field is a string that needs to be parsed as int */
+function shouldParseAsInt(attributeAdapter: AttributeAdapter | undefined, value: string | number) {
+    if (attributeAdapter?.typeHelper.isFloat() || attributeAdapter?.typeHelper.isString()) {
+        return false;
+    }
+
+    if (attributeAdapter?.typeHelper.isBigInt() || attributeAdapter?.typeHelper.isInt()) {
+        return true;
+    }
+
+    if (attributeAdapter?.typeHelper.isID()) {
+        return isInt(value);
+    }
+
+    return false;
+}
 
 const operatorMapOverrides = {
     INCLUDES: (received: [string | number], filtered: string | number, fieldMeta: AttributeAdapter | undefined) => {
-        if (isFloatOrStringOrIDAsString(fieldMeta, filtered)) {
-            return received.some((v) => v === filtered);
+        if (shouldParseAsInt(fieldMeta, filtered)) {
+            const filteredAsNeo4jInteger = int(filtered);
+            return received.some((r) => int(r).equals(filteredAsNeo4jInteger));
         }
-        // int/ bigint
-        const filteredAsNeo4jInteger = int(filtered);
-        return received.some((r) => int(r).equals(filteredAsNeo4jInteger));
+        return received.some((v) => v === filtered);
     },
     NOT_INCLUDES: (received: [string | number], filtered: string | number, fieldMeta: AttributeAdapter | undefined) => {
-        if (isFloatOrStringOrIDAsString(fieldMeta, filtered)) {
-            return !received.some((v) => v === filtered);
+        if (shouldParseAsInt(fieldMeta, filtered)) {
+            const filteredAsNeo4jInteger = int(filtered);
+            return !received.some((r) => int(r).equals(filteredAsNeo4jInteger));
         }
-        // int/ bigint
-        const filteredAsNeo4jInteger = int(filtered);
-        return !received.some((r) => int(r).equals(filteredAsNeo4jInteger));
+        return !received.some((v) => v === filtered);
     },
     IN: (received: string | number, filtered: [string | number], fieldMeta: AttributeAdapter | undefined) => {
-        if (isFloatOrStringOrIDAsString(fieldMeta, received)) {
-            return filtered.some((v) => v === received);
+        if (shouldParseAsInt(fieldMeta, received)) {
+            const receivedAsNeo4jInteger = int(received);
+            return filtered.some((r) => int(r).equals(receivedAsNeo4jInteger));
         }
-        // int/ bigint
-        const receivedAsNeo4jInteger = int(received);
-        return filtered.some((r) => int(r).equals(receivedAsNeo4jInteger));
+        return filtered.some((v) => v === received);
     },
     NOT_IN: (received: string | number, filtered: [string | number], fieldMeta: AttributeAdapter | undefined) => {
-        if (isFloatOrStringOrIDAsString(fieldMeta, received)) {
-            return !filtered.some((v) => v === received);
+        if (shouldParseAsInt(fieldMeta, received)) {
+            const receivedAsNeo4jInteger = int(received);
+            return !filtered.some((r) => int(r).equals(receivedAsNeo4jInteger));
         }
-        // int/ bigint
-        const receivedAsNeo4jInteger = int(received);
-        return !filtered.some((r) => int(r).equals(receivedAsNeo4jInteger));
+        return !filtered.some((v) => v === received);
     },
 };

@@ -51,7 +51,7 @@ export function translateTopLevelMatch({
         where,
     });
 
-    return Cypher.concat(matchClause, preComputedWhereFieldSubqueries, whereClause).build();
+    return Cypher.utils.concat(matchClause, preComputedWhereFieldSubqueries, whereClause).build();
 }
 
 type CreateMatchClauseReturn = {
@@ -149,7 +149,10 @@ function createMatchClause({
         }
 
         if (preComputedSubqueries && !preComputedSubqueries.empty) {
-            preComputedWhereFieldSubqueries = Cypher.concat(preComputedWhereFieldSubqueries, preComputedSubqueries);
+            preComputedWhereFieldSubqueries = Cypher.utils.concat(
+                preComputedWhereFieldSubqueries,
+                preComputedSubqueries
+            );
         }
     }
 

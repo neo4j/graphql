@@ -52,11 +52,10 @@ export class CypherScalarOperation extends Operation {
         } else {
             retProj = [nestedContext.returnVariable, context.returnVariable];
         }
-        const ret = new Cypher.Return(retProj);
         const scope = context.getTargetScope();
         // by setting the return variable of this operation in the attribute scope, we can avoid duplicate the same cypher resolution for sorting and projection purposes
         scope.set(this.cypherAttributeField.name, context.returnVariable);
-        const clause = Cypher.concat(matchClause, ret);
+        const clause = matchClause.return(retProj);
 
         return {
             clauses: [clause],

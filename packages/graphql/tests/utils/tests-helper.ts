@@ -256,7 +256,9 @@ export class TestHelper {
 
         const nodeHasAnyLabelPredicate = Cypher.or(...nodeHasLabelPredicates);
 
-        const query = new Cypher.Match(nodeRef).where(nodeHasAnyLabelPredicate).detachDelete(nodeRef);
+        const query = new Cypher.Match(new Cypher.Pattern(nodeRef))
+            .where(nodeHasAnyLabelPredicate)
+            .detachDelete(nodeRef);
         const { cypher } = query.build();
 
         await driver.executeQuery(cypher, {}, { database: this.database });

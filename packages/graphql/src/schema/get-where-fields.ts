@@ -21,167 +21,10 @@ import type { DirectiveNode } from "graphql";
 import type { Directive } from "graphql-compose";
 import { DEPRECATED } from "../constants";
 import type { AttributeAdapter } from "../schema-model/attribute/model-adapters/AttributeAdapter";
-import type {
-    CustomEnumField,
-    CustomScalarField,
-    Neo4jFeaturesSettings,
-    PointField,
-    PrimitiveField,
-    TemporalField,
-} from "../types";
+import type { Neo4jFeaturesSettings } from "../types";
 import { DEPRECATE_EQUAL_FILTERS, DEPRECATE_NOT } from "./constants";
 import { shouldAddDeprecatedFields } from "./generation/utils";
 import { graphqlDirectivesToCompose } from "./to-compose";
-
-interface Fields {
-    scalarFields: CustomScalarField[];
-    enumFields: CustomEnumField[];
-    primitiveFields: PrimitiveField[];
-    temporalFields: TemporalField[];
-    pointFields: PointField[];
-}
-
-function getWhereFields({
-    typeName,
-    fields,
-    isInterface,
-    features,
-}: {
-    typeName: string;
-    fields: Fields;
-    isInterface?: boolean;
-    features?: Neo4jFeaturesSettings;
-}) {
-    return {
-        ...(isInterface ? {} : { OR: `[${typeName}Where!]`, AND: `[${typeName}Where!]`, NOT: `${typeName}Where` }),
-        ...[
-            ...fields.primitiveFields,
-            ...fields.temporalFields,
-            ...fields.enumFields,
-            ...fields.pointFields,
-            ...fields.scalarFields,
-        ].reduce((res, f) => {
-            if (f.filterableOptions.byValue === false) {
-                return res;
-            }
-
-            const deprecatedDirectives = graphqlDirectivesToCompose(
-                f.otherDirectives.filter((directive) => directive.name.value === DEPRECATED)
-            );
-            if (shouldAddDeprecatedFields(features, "implicitEqualFilters")) {
-                res[f.fieldName] = {
-                    type: f.typeMeta.input.where.pretty,
-                    directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_EQUAL_FILTERS],
-                };
-            }
-            res[`${f.fieldName}_EQ`] = {
-                type: f.typeMeta.input.where.pretty,
-                directives: deprecatedDirectives,
-            };
-
-            if (shouldAddDeprecatedFields(features, "negationFilters")) {
-                res[`${f.fieldName}_NOT`] = {
-                    type: f.typeMeta.input.where.pretty,
-                    directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
-                };
-            }
-
-            if (f.typeMeta.name === "Boolean") {
-                return res;
-            }
-
-            if (f.typeMeta.array) {
-                res[`${f.fieldName}_INCLUDES`] = {
-                    type: f.typeMeta.input.where.type,
-                    directives: deprecatedDirectives,
-                };
-                if (shouldAddDeprecatedFields(features, "negationFilters")) {
-                    res[`${f.fieldName}_NOT_INCLUDES`] = {
-                        type: f.typeMeta.input.where.type,
-                        directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
-                    };
-                }
-                return res;
-            }
-
-            res[`${f.fieldName}_IN`] = {
-                type: `[${f.typeMeta.input.where.pretty}${f.typeMeta.required ? "!" : ""}]`,
-                directives: deprecatedDirectives,
-            };
-            if (shouldAddDeprecatedFields(features, "negationFilters")) {
-                res[`${f.fieldName}_NOT_IN`] = {
-                    type: `[${f.typeMeta.input.where.pretty}${f.typeMeta.required ? "!" : ""}]`,
-                    directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
-                };
-            }
-            if (
-                [
-                    "Float",
-                    "Int",
-                    "BigInt",
-                    "DateTime",
-                    "Date",
-                    "LocalDateTime",
-                    "Time",
-                    "LocalTime",
-                    "Duration",
-                ].includes(f.typeMeta.name)
-            ) {
-                ["_LT", "_LTE", "_GT", "_GTE"].forEach((comparator) => {
-                    res[`${f.fieldName}${comparator}`] = { type: f.typeMeta.name, directives: deprecatedDirectives };
-                });
-                return res;
-            }
-
-            if (["Point", "CartesianPoint"].includes(f.typeMeta.name)) {
-                ["_DISTANCE", "_LT", "_LTE", "_GT", "_GTE"].forEach((comparator) => {
-                    res[`${f.fieldName}${comparator}`] = {
-                        type: `${f.typeMeta.name}Distance`,
-                        directives: deprecatedDirectives,
-                    };
-                });
-                return res;
-            }
-
-            if (["String", "ID"].includes(f.typeMeta.name)) {
-                const stringWhereOperators: Array<{ comparator: string; typeName: string }> = [
-                    { comparator: "_CONTAINS", typeName: f.typeMeta.name },
-                    { comparator: "_STARTS_WITH", typeName: f.typeMeta.name },
-                    { comparator: "_ENDS_WITH", typeName: f.typeMeta.name },
-                ];
-
-                const stringWhereOperatorsNegate = ["_NOT_CONTAINS", "_NOT_STARTS_WITH", "_NOT_ENDS_WITH"];
-
-                Object.entries(features?.filters?.[f.typeMeta.name] || {}).forEach(([filter, enabled]) => {
-                    if (enabled) {
-                        if (filter === "MATCHES") {
-                            stringWhereOperators.push({ comparator: `_${filter}`, typeName: "String" });
-                        } else {
-                            stringWhereOperators.push({ comparator: `_${filter}`, typeName: f.typeMeta.name });
-                        }
-                    }
-                });
-                stringWhereOperators.forEach(({ comparator, typeName }) => {
-                    res[`${f.fieldName}${comparator}`] = { type: typeName, directives: deprecatedDirectives };
-                });
-
-                if (shouldAddDeprecatedFields(features, "negationFilters")) {
-                    stringWhereOperatorsNegate.forEach((comparator) => {
-                        res[`${f.fieldName}${comparator}`] = {
-                            type: f.typeMeta.name,
-                            directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
-                        };
-                    });
-                }
-                return res;
-            }
-
-            return res;
-        }, {}),
-    };
-}
-
-export default getWhereFields;
 
 // TODO: refactoring needed!
 // isWhereField, isFilterable, ... extracted out into attributes category
@@ -189,10 +32,12 @@ export function getWhereFieldsForAttributes({
     attributes,
     userDefinedFieldDirectives,
     features,
+    ignoreCypherFieldFilters,
 }: {
     attributes: AttributeAdapter[];
     userDefinedFieldDirectives?: Map<string, DirectiveNode[]>;
     features: Neo4jFeaturesSettings | undefined;
+    ignoreCypherFieldFilters: boolean;
 }): Record<
     string,
     {
@@ -213,7 +58,25 @@ export function getWhereFieldsForAttributes({
         const deprecatedDirectives = graphqlDirectivesToCompose(
             (userDefinedDirectivesOnField ?? []).filter((directive) => directive.name.value === DEPRECATED)
         );
-        if (shouldAddDeprecatedFields(features, "implicitEqualFilters") && !field.isCypher()) {
+
+        if (field.annotations.cypher) {
+            // If the field is a cypher field and ignoreCypherFieldFilters is true, skip it
+            if (ignoreCypherFieldFilters === true) {
+                continue;
+            }
+
+            // If the field is a cypher field with arguments, skip it
+            if (field.args.length > 0) {
+                continue;
+            }
+
+            // If it's a list, skip it
+            if (field.typeHelper.isList()) {
+                continue;
+            }
+        }
+
+        if (shouldAddDeprecatedFields(features, "implicitEqualFilters")) {
             result[field.name] = {
                 type: field.getInputTypeNames().where.pretty,
                 directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_EQUAL_FILTERS],
@@ -224,7 +87,7 @@ export function getWhereFieldsForAttributes({
             directives: deprecatedDirectives,
         };
 
-        if (shouldAddDeprecatedFields(features, "negationFilters") && !field.isCypher()) {
+        if (shouldAddDeprecatedFields(features, "negationFilters")) {
             result[`${field.name}_NOT`] = {
                 type: field.getInputTypeNames().where.pretty,
                 directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
@@ -257,7 +120,7 @@ export function getWhereFieldsForAttributes({
             type: field.getFilterableInputTypeName(),
             directives: deprecatedDirectives,
         };
-        if (shouldAddDeprecatedFields(features, "negationFilters") && !field.isCypher()) {
+        if (shouldAddDeprecatedFields(features, "negationFilters")) {
             result[`${field.name}_NOT_IN`] = {
                 type: field.getFilterableInputTypeName(),
                 directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],

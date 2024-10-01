@@ -77,7 +77,7 @@ describe("Pluralize consistency", () => {
               deleteSuperFriends(where: super_friendWhere): DeleteInfo!
               deleteSuperUsers(delete: super_userDeleteInput, where: super_userWhere): DeleteInfo!
               updateSuperFriends(update: super_friendUpdateInput, where: super_friendWhere): UpdateSuperFriendsMutationResponse!
-              updateSuperUsers(connect: super_userConnectInput, create: super_userRelationInput, delete: super_userDeleteInput, disconnect: super_userDisconnectInput, update: super_userUpdateInput, where: super_userWhere): UpdateSuperUsersMutationResponse!
+              updateSuperUsers(connect: super_userConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: super_userRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: super_userDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: super_userDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: super_userUpdateInput, where: super_userWhere): UpdateSuperUsersMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"

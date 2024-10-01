@@ -467,7 +467,7 @@ export default async function translateUpdate({
     const queryASTResult = queryAST.transpile(queryASTContext);
 
     const projectionStatements = queryASTResult.clauses.length
-        ? Cypher.concat(...queryASTResult.clauses)
+        ? Cypher.utils.concat(...queryASTResult.clauses)
         : new Cypher.Return(new Cypher.Literal("Query cannot conclude with CALL"));
 
     const relationshipValidationStr = createRelationshipValidationString({ node, context, varName });

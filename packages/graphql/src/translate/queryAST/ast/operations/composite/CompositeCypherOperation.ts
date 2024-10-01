@@ -57,7 +57,7 @@ export class CompositeCypherOperation extends Operation {
         const partialContext = nestedContext.setReturn(returnVariable);
         const partialClauses = this.partials.map((partial) => {
             const { clauses } = partial.transpile(partialContext);
-            return Cypher.concat(new Cypher.With("*"), ...clauses);
+            return Cypher.utils.concat(new Cypher.With("*"), ...clauses);
         });
         const partialsSubquery = new Cypher.Call(new Cypher.Union(...partialClauses)).return(
             partialContext.returnVariable
@@ -68,7 +68,7 @@ export class CompositeCypherOperation extends Operation {
             .importWith(nestedContext.target)
             .return([returnExpr, nestedContext.returnVariable]);
         return {
-            clauses: [Cypher.concat(matchClause, subquery)],
+            clauses: [Cypher.utils.concat(matchClause, subquery)],
             projectionExpr: nestedContext.returnVariable,
         };
     }

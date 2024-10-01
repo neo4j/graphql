@@ -16,6 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import Cypher from "@neo4j/cypher-builder";
 import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
@@ -190,10 +191,12 @@ export class FilterFactory {
                 isNested: true,
             });
 
+            const comparisonValueParam = new Cypher.Param(comparisonValue);
+
             return new CypherFilter({
                 selection,
                 attribute,
-                comparisonValue,
+                comparisonValue: comparisonValueParam,
                 operator: filterOperator,
             });
         }

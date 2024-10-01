@@ -56,7 +56,7 @@ export class UpdateOperation extends Operation {
 
     private getProjectionClause(context: QueryASTContext): Cypher.Clause[] {
         return this.projectionOperations.map((operationField) => {
-            return Cypher.concat(...operationField.transpile(context).clauses);
+            return Cypher.utils.concat(...operationField.transpile(context).clauses);
         });
     }
 }
