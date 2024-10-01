@@ -20,7 +20,7 @@ import { GraphQLInt, type DirectiveNode } from "graphql";
 import type { InputTypeComposer, InputTypeComposerFieldConfigMapDefinition, SchemaComposer } from "graphql-compose";
 import { DEPRECATED } from "../../constants";
 import { SortDirection } from "../../graphql/enums/SortDirection";
-import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { graphqlDirectivesToCompose } from "../to-compose";
@@ -41,7 +41,8 @@ export function withOptionsInputType({
     }
     // TODO: Concrete vs Abstract discrepancy
     // is this intended? For ConcreteEntity is NonNull, for InterfaceEntity is nullable
-    const sortFieldType = entityAdapter instanceof ConcreteEntityAdapter ? sortInput.NonNull.List : sortInput.List;
+    //const sortFieldType = entityAdapter instanceof ConcreteEntityAdapter ? sortInput.NonNull.List : sortInput.List;
+    const sortFieldType = sortInput.NonNull.List;
     optionsInputType.addFields({
         sort: {
             description: `Specify one or more ${entityAdapter.operations.sortInputTypeName} objects to sort ${entityAdapter.upperFirstPlural} by. The sorts will be applied in the order in which they are arranged in the array.`,
@@ -65,8 +66,8 @@ export function withSortInputType({
     //     return undefined;
     // }
     // return makeSortInput({ entityAdapter: relationshipAdapter, userDefinedFieldDirectives, composer });
-
     const sortFields: InputTypeComposerFieldConfigMapDefinition = {};
+
     for (const attribute of relationshipAdapter.attributes.values()) {
         const userDefinedDirectivesOnField = userDefinedFieldDirectives.get(attribute.name) || [];
         const deprecatedDirective = userDefinedDirectivesOnField.filter(
@@ -107,7 +108,7 @@ function makeSortFields({
     return sortFields;
 }
 
-function makeSortInput({
+export function makeSortInput({
     entityAdapter,
     userDefinedFieldDirectives,
     composer,
@@ -120,10 +121,10 @@ function makeSortInput({
     if (!Object.keys(sortFields).length) {
         return;
     }
-    const sortInput = composer.createInputTC({
-        name: entityAdapter.operations.sortInputTypeName,
-        fields: sortFields,
+    const sortInput = composer.getOrCreateITC(entityAdapter.operations.sortInputTypeName, (itc) => {
+        return itc.setFields(sortFields);
     });
+    // TODO: Please CHECK the below!
     if (!(entityAdapter instanceof RelationshipAdapter)) {
         sortInput.setDescription(
             `Fields to sort ${entityAdapter.upperFirstPlural} by. The order in which sorts are applied is not guaranteed when specifying many fields in one ${entityAdapter.operations.sortInputTypeName} object.`

@@ -325,7 +325,13 @@ function createRelationshipFieldsForTarget({
     }
 
     composeNode.addFields(
-        augmentObjectOrInterfaceTypeWithRelationshipField(relationshipAdapter, userDefinedFieldDirectives, subgraph)
+        augmentObjectOrInterfaceTypeWithRelationshipField({
+            relationshipAdapter,
+            userDefinedFieldDirectives,
+            subgraph,
+            features,
+            composer,
+        })
     );
 
     composeNode.addFields(

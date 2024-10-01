@@ -233,11 +233,12 @@ function makeAugmentedSchema({
             def.setDirectives(
                 graphqlDirectivesToCompose(userDefinedDirectivesForUnion.get(unionEntityAdapter.name) || [])
             );
-
             if (unionEntityAdapter.isReadable) {
                 composer.Query.addFields({
                     [unionEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
                         entityAdapter: unionEntityAdapter,
+                        features,
+                        composer,
                     }),
                 });
             }
@@ -567,6 +568,8 @@ function generateObjectType({
         composer.Query.addFields({
             [concreteEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
                 entityAdapter: concreteEntityAdapter,
+                features,
+                composer,
             }),
         });
         composer.Query.setFieldDirectives(
@@ -705,6 +708,8 @@ function generateInterfaceObjectType({
         composer.Query.addFields({
             [interfaceEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
                 entityAdapter: interfaceEntityAdapter,
+                features,
+                composer,
             }),
         });
 

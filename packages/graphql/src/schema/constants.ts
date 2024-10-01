@@ -46,3 +46,10 @@ export const DEPRECATE_INVALID_AGGREGATION_FILTERS = {
         reason: "Aggregation filters that are not relying on an aggregating function will be deprecated.",
     },
 };
+
+export const DEPRECATE_OPTIONS_ARGUMENT = {
+    name: DEPRECATED,
+    args: {
+        reason: "Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.",
+    },
+};
