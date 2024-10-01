@@ -244,10 +244,10 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
             }
 
             type Query {
-              awsAccounts(options: AWSAccountOptions, where: AWSAccountWhere): [AWSAccount!]!
+              awsAccounts(limit: Int, offset: Int, options: AWSAccountOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [AWSAccountSort!], where: AWSAccountWhere): [AWSAccount!]!
               awsAccountsAggregate(where: AWSAccountWhere): AWSAccountAggregateSelection!
               awsAccountsConnection(after: String, first: Int, sort: [AWSAccountSort], where: AWSAccountWhere): AwsAccountsConnection!
-              dnsZones(options: DNSZoneOptions, where: DNSZoneWhere): [DNSZone!]!
+              dnsZones(limit: Int, offset: Int, options: DNSZoneOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [DNSZoneSort!], where: DNSZoneWhere): [DNSZone!]!
               dnsZonesAggregate(where: DNSZoneWhere): DNSZoneAggregateSelection!
               dnsZonesConnection(after: String, first: Int, sort: [DNSZoneSort], where: DNSZoneWhere): DnsZonesConnection!
             }

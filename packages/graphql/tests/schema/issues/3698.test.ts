@@ -110,7 +110,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
 
             type Genre {
               name: String!
-              product(directed: Boolean = true, options: IProductOptions, where: IProductWhere): [IProduct!]!
+              product(directed: Boolean = true, limit: Int, offset: Int, options: IProductOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [IProductSort!], where: IProductWhere): [IProduct!]!
               productAggregate(directed: Boolean = true, where: IProductWhere): GenreIProductProductAggregationSelection
               productConnection(after: String, directed: Boolean = true, first: Int, sort: [GenreProductConnectionSort!], where: GenreProductConnectionWhere): GenreProductConnection!
             }
@@ -557,7 +557,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               \\"\\"\\"
               Specify one or more IProductSort objects to sort IProducts by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [IProductSort]
+              sort: [IProductSort!]
             }
 
             \\"\\"\\"
@@ -662,7 +662,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
 
             type Movie implements IProduct {
-              genre(directed: Boolean = true, options: GenreOptions, where: GenreWhere): Genre!
+              genre(directed: Boolean = true, limit: Int, offset: Int, options: GenreOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [GenreSort!], where: GenreWhere): Genre!
               genreAggregate(directed: Boolean = true, where: GenreWhere): MovieGenreGenreAggregationSelection
               genreConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieGenreConnectionSort!], where: MovieGenreConnectionWhere): MovieGenreConnection!
               id: String!
@@ -1024,13 +1024,13 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
 
             type Query {
-              genres(options: GenreOptions, where: GenreWhere): [Genre!]!
+              genres(limit: Int, offset: Int, options: GenreOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [GenreSort!], where: GenreWhere): [Genre!]!
               genresAggregate(where: GenreWhere): GenreAggregateSelection!
               genresConnection(after: String, first: Int, sort: [GenreSort], where: GenreWhere): GenresConnection!
-              iProducts(options: IProductOptions, where: IProductWhere): [IProduct!]!
+              iProducts(limit: Int, offset: Int, options: IProductOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [IProductSort!], where: IProductWhere): [IProduct!]!
               iProductsAggregate(where: IProductWhere): IProductAggregateSelection!
               iProductsConnection(after: String, first: Int, sort: [IProductSort], where: IProductWhere): IProductsConnection!
-              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
@@ -1169,7 +1169,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
 
             type Genre {
               name: String!
-              product(directed: Boolean = true, options: IProductOptions, where: IProductWhere): [IProduct!]!
+              product(directed: Boolean = true, limit: Int, offset: Int, options: IProductOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [IProductSort!], where: IProductWhere): [IProduct!]!
               productAggregate(directed: Boolean = true, where: IProductWhere): GenreIProductProductAggregationSelection
               productConnection(after: String, directed: Boolean = true, first: Int, sort: [GenreProductConnectionSort!], where: GenreProductConnectionWhere): GenreProductConnection!
             }
@@ -1578,7 +1578,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
 
             interface IProduct {
-              genre(options: GenreOptions, where: GenreWhere): Genre!
+              genre(limit: Int, offset: Int, options: GenreOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [GenreSort!], where: GenreWhere): Genre!
               genreConnection(after: String, first: Int, sort: [IProductGenreConnectionSort!], where: IProductGenreConnectionWhere): IProductGenreConnection!
               id: String!
               info: String!
@@ -1754,7 +1754,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               \\"\\"\\"
               Specify one or more IProductSort objects to sort IProducts by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [IProductSort]
+              sort: [IProductSort!]
             }
 
             \\"\\"\\"
@@ -1865,7 +1865,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
 
             type Movie implements IProduct {
-              genre(directed: Boolean = true, options: GenreOptions, where: GenreWhere): Genre!
+              genre(directed: Boolean = true, limit: Int, offset: Int, options: GenreOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [GenreSort!], where: GenreWhere): Genre!
               genreAggregate(directed: Boolean = true, where: GenreWhere): MovieGenreGenreAggregationSelection
               genreConnection(after: String, directed: Boolean = true, first: Int, sort: [IProductGenreConnectionSort!], where: IProductGenreConnectionWhere): IProductGenreConnection!
               id: String!
@@ -2194,13 +2194,13 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
 
             type Query {
-              genres(options: GenreOptions, where: GenreWhere): [Genre!]!
+              genres(limit: Int, offset: Int, options: GenreOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [GenreSort!], where: GenreWhere): [Genre!]!
               genresAggregate(where: GenreWhere): GenreAggregateSelection!
               genresConnection(after: String, first: Int, sort: [GenreSort], where: GenreWhere): GenresConnection!
-              iProducts(options: IProductOptions, where: IProductWhere): [IProduct!]!
+              iProducts(limit: Int, offset: Int, options: IProductOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [IProductSort!], where: IProductWhere): [IProduct!]!
               iProductsAggregate(where: IProductWhere): IProductAggregateSelection!
               iProductsConnection(after: String, first: Int, sort: [IProductSort], where: IProductWhere): IProductsConnection!
-              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
@@ -2352,7 +2352,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
 
             type Genre {
               name: String!
-              product(directed: Boolean = true, options: IProductOptions, where: IProductWhere): [IProduct!]!
+              product(directed: Boolean = true, limit: Int, offset: Int, options: IProductOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [IProductSort!], where: IProductWhere): [IProduct!]!
               productAggregate(directed: Boolean = true, where: IProductWhere): GenreIProductProductAggregationSelection
               productConnection(after: String, directed: Boolean = true, first: Int, sort: [GenreProductConnectionSort!], where: GenreProductConnectionWhere): GenreProductConnection!
             }
@@ -2761,7 +2761,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
 
             interface IProduct {
-              genre(options: GenreOptions, where: GenreWhere): Genre!
+              genre(limit: Int, offset: Int, options: GenreOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [GenreSort!], where: GenreWhere): Genre!
               genreConnection(after: String, first: Int, sort: [IProductGenreConnectionSort!], where: IProductGenreConnectionWhere): IProductGenreConnection!
               id: String!
               info: String!
@@ -2939,7 +2939,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               \\"\\"\\"
               Specify one or more IProductSort objects to sort IProducts by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [IProductSort]
+              sort: [IProductSort!]
             }
 
             \\"\\"\\"
@@ -3050,7 +3050,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
 
             type Movie implements IProduct {
-              genre(directed: Boolean = true, options: GenreOptions, where: GenreWhere): Genre!
+              genre(directed: Boolean = true, limit: Int, offset: Int, options: GenreOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [GenreSort!], where: GenreWhere): Genre!
               genreAggregate(directed: Boolean = true, where: GenreWhere): MovieGenreGenreAggregationSelection
               genreConnection(after: String, directed: Boolean = true, first: Int, sort: [IProductGenreConnectionSort!], where: IProductGenreConnectionWhere): IProductGenreConnection!
               id: String!
@@ -3382,22 +3382,22 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
 
             type Query {
-              genres(options: GenreOptions, where: GenreWhere): [Genre!]!
+              genres(limit: Int, offset: Int, options: GenreOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [GenreSort!], where: GenreWhere): [Genre!]!
               genresAggregate(where: GenreWhere): GenreAggregateSelection!
               genresConnection(after: String, first: Int, sort: [GenreSort], where: GenreWhere): GenresConnection!
-              iProducts(options: IProductOptions, where: IProductWhere): [IProduct!]!
+              iProducts(limit: Int, offset: Int, options: IProductOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [IProductSort!], where: IProductWhere): [IProduct!]!
               iProductsAggregate(where: IProductWhere): IProductAggregateSelection!
               iProductsConnection(after: String, first: Int, sort: [IProductSort], where: IProductWhere): IProductsConnection!
-              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-              series(options: SeriesOptions, where: SeriesWhere): [Series!]!
+              series(limit: Int, offset: Int, options: SeriesOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [SeriesSort!], where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
             }
 
             type Series implements IProduct {
-              genre(directed: Boolean = true, options: GenreOptions, where: GenreWhere): Genre!
+              genre(directed: Boolean = true, limit: Int, offset: Int, options: GenreOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [GenreSort!], where: GenreWhere): Genre!
               genreAggregate(directed: Boolean = true, where: GenreWhere): SeriesGenreGenreAggregationSelection
               genreConnection(after: String, directed: Boolean = true, first: Int, sort: [IProductGenreConnectionSort!], where: IProductGenreConnectionWhere): IProductGenreConnection!
               id: String!

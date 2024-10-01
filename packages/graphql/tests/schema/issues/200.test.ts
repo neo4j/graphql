@@ -185,7 +185,7 @@ describe("200", () => {
             }
 
             type Query {
-              categories(options: CategoryOptions, where: CategoryWhere): [Category!]!
+              categories(limit: Int, offset: Int, options: CategoryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [CategorySort!], where: CategoryWhere): [Category!]!
               categoriesAggregate(where: CategoryWhere): CategoryAggregateSelection!
               categoriesConnection(after: String, first: Int, sort: [CategorySort], where: CategoryWhere): CategoriesConnection!
             }

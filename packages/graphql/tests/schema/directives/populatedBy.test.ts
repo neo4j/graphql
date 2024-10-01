@@ -310,7 +310,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 type Query {
-                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                 }
@@ -532,7 +532,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 type Query {
-                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                 }
@@ -841,7 +841,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 type Movie {
-                  genres(directed: Boolean = true, options: GenreOptions, where: GenreWhere): [Genre!]!
+                  genres(directed: Boolean = true, limit: Int, offset: Int, options: GenreOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [GenreSort!], where: GenreWhere): [Genre!]!
                   genresAggregate(directed: Boolean = true, where: GenreWhere): MovieGenreGenresAggregationSelection
                   genresConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieGenresConnectionSort!], where: MovieGenresConnectionWhere): MovieGenresConnection!
                   id: ID
@@ -1074,10 +1074,10 @@ describe("@populatedBy tests", () => {
                 }
 
                 type Query {
-                  genres(options: GenreOptions, where: GenreWhere): [Genre!]!
+                  genres(limit: Int, offset: Int, options: GenreOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [GenreSort!], where: GenreWhere): [Genre!]!
                   genresAggregate(where: GenreWhere): GenreAggregateSelection!
                   genresConnection(after: String, first: Int, sort: [GenreSort], where: GenreWhere): GenresConnection!
-                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                 }
@@ -1458,7 +1458,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 type Movie {
-                  genres(directed: Boolean = true, options: GenreOptions, where: GenreWhere): [Genre!]!
+                  genres(directed: Boolean = true, limit: Int, offset: Int, options: GenreOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [GenreSort!], where: GenreWhere): [Genre!]!
                   genresAggregate(directed: Boolean = true, where: GenreWhere): MovieGenreGenresAggregationSelection
                   genresConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieGenresConnectionSort!], where: MovieGenresConnectionWhere): MovieGenresConnection!
                   id: ID
@@ -1691,10 +1691,10 @@ describe("@populatedBy tests", () => {
                 }
 
                 type Query {
-                  genres(options: GenreOptions, where: GenreWhere): [Genre!]!
+                  genres(limit: Int, offset: Int, options: GenreOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [GenreSort!], where: GenreWhere): [Genre!]!
                   genresAggregate(where: GenreWhere): GenreAggregateSelection!
                   genresConnection(after: String, first: Int, sort: [GenreSort], where: GenreWhere): GenresConnection!
-                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                 }

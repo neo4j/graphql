@@ -204,7 +204,10 @@ describe("@fulltext schema", () => {
                 Query a full-text index. Allows for the aggregation of results, but does not return the query score. Use the root full-text query fields if you require the score.
                 \\"\\"\\"
                 fulltext: MovieFulltext
-                options: MovieOptions
+                limit: Int
+                offset: Int
+                options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\")
+                sort: [MovieSort!]
                 where: MovieWhere
               ): [Movie!]!
               moviesAggregate(

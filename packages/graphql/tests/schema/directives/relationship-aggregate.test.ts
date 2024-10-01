@@ -337,7 +337,7 @@ describe("@relationship directive, aggregate argument", () => {
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+                  actors(directed: Boolean = true, limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   title: String
                 }
@@ -613,10 +613,10 @@ describe("@relationship directive, aggregate argument", () => {
                 }
 
                 type Query {
-                  actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+                  actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
                   actorsAggregate(where: ActorWhere): ActorAggregateSelection!
                   actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
-                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                 }
@@ -789,7 +789,7 @@ describe("@relationship directive, aggregate argument", () => {
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+                  actors(directed: Boolean = true, limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
                   actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   title: String
@@ -1076,10 +1076,10 @@ describe("@relationship directive, aggregate argument", () => {
                 }
 
                 type Query {
-                  actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+                  actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
                   actorsAggregate(where: ActorWhere): ActorAggregateSelection!
                   actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
-                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                 }
@@ -1254,7 +1254,7 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type Movie {
-                      actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                      actors(directed: Boolean = true, limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                       actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
                     }
@@ -1565,7 +1565,7 @@ describe("@relationship directive, aggregate argument", () => {
                       \\"\\"\\"
                       Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
-                      sort: [PersonSort]
+                      sort: [PersonSort!]
                     }
 
                     \\"\\"\\"
@@ -1611,13 +1611,13 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type Query {
-                      actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+                      actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
                       actorsAggregate(where: ActorWhere): ActorAggregateSelection!
                       actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
-                      movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                      movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                       moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                      people(options: PersonOptions, where: PersonWhere): [Person!]!
+                      people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                       peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                       peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
                     }
@@ -1790,7 +1790,7 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type Movie {
-                      actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                      actors(directed: Boolean = true, limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                       actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                       actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
@@ -2112,7 +2112,7 @@ describe("@relationship directive, aggregate argument", () => {
                       \\"\\"\\"
                       Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
-                      sort: [PersonSort]
+                      sort: [PersonSort!]
                     }
 
                     \\"\\"\\"
@@ -2158,13 +2158,13 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type Query {
-                      actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+                      actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
                       actorsAggregate(where: ActorWhere): ActorAggregateSelection!
                       actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
-                      movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                      movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                       moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                      people(options: PersonOptions, where: PersonWhere): [Person!]!
+                      people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                       peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                       peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
                     }
@@ -2357,7 +2357,7 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type Movie {
-                      actors(directed: Boolean = true, options: QueryOptions, where: CastMemberWhere): [CastMember!]!
+                      actors(directed: Boolean = true, limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: CastMemberWhere): [CastMember!]!
                       actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
                     }
@@ -2681,14 +2681,14 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type Query {
-                      actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+                      actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
                       actorsAggregate(where: ActorWhere): ActorAggregateSelection!
                       actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
-                      castMembers(options: QueryOptions, where: CastMemberWhere): [CastMember!]!
-                      movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                      castMembers(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: CastMemberWhere): [CastMember!]!
+                      movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                       moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                      people(options: PersonOptions, where: PersonWhere): [Person!]!
+                      people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                       peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                       peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
                     }
@@ -2889,7 +2889,7 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type Movie {
-                      actors(directed: Boolean = true, options: QueryOptions, where: CastMemberWhere): [CastMember!]!
+                      actors(directed: Boolean = true, limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: CastMemberWhere): [CastMember!]!
                       actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
                     }
@@ -3213,14 +3213,14 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type Query {
-                      actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+                      actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
                       actorsAggregate(where: ActorWhere): ActorAggregateSelection!
                       actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
-                      castMembers(options: QueryOptions, where: CastMemberWhere): [CastMember!]!
-                      movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                      castMembers(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: CastMemberWhere): [CastMember!]!
+                      movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                       moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                      people(options: PersonOptions, where: PersonWhere): [Person!]!
+                      people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                       peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                       peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
                     }

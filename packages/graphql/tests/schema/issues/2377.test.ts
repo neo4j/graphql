@@ -141,10 +141,10 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             }
 
             type Query {
-              resourceEntities(options: ResourceEntityOptions, where: ResourceEntityWhere): [ResourceEntity!]!
+              resourceEntities(limit: Int, offset: Int, options: ResourceEntityOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ResourceEntitySort!], where: ResourceEntityWhere): [ResourceEntity!]!
               resourceEntitiesAggregate(where: ResourceEntityWhere): ResourceEntityAggregateSelection!
               resourceEntitiesConnection(after: String, first: Int, sort: [ResourceEntitySort], where: ResourceEntityWhere): ResourceEntitiesConnection!
-              resources(options: ResourceOptions, where: ResourceWhere): [Resource!]!
+              resources(limit: Int, offset: Int, options: ResourceOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ResourceSort!], where: ResourceWhere): [Resource!]!
               resourcesAggregate(where: ResourceWhere): ResourceAggregateSelection!
               resourcesConnection(after: String, first: Int, sort: [ResourceSort], where: ResourceWhere): ResourcesConnection!
             }
@@ -153,7 +153,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               \\"\\"\\"
               Resources encapsulating the given resource (e.g., a github org contains a repo)
               \\"\\"\\"
-              containedBy(directed: Boolean = true, options: ResourceOptions, where: ResourceWhere): [Resource!]!
+              containedBy(directed: Boolean = true, limit: Int, offset: Int, options: ResourceOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ResourceSort!], where: ResourceWhere): [Resource!]!
               containedByAggregate(directed: Boolean = true, where: ResourceWhere): ResourceResourceContainedByAggregationSelection
               containedByConnection(after: String, directed: Boolean = true, first: Int, sort: [ResourceContainedByConnectionSort!], where: ResourceContainedByConnectionWhere): ResourceContainedByConnection!
               createdAt: DateTime!
@@ -411,7 +411,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               \\"\\"\\"
               Specify one or more ResourceEntitySort objects to sort ResourceEntities by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [ResourceEntitySort]
+              sort: [ResourceEntitySort!]
             }
 
             \\"\\"\\"

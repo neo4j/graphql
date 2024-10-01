@@ -137,7 +137,7 @@ describe("609", () => {
             }
 
             type Query {
-              deprecateds(options: DeprecatedOptions, where: DeprecatedWhere): [Deprecated!]!
+              deprecateds(limit: Int, offset: Int, options: DeprecatedOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [DeprecatedSort!], where: DeprecatedWhere): [Deprecated!]!
               deprecatedsAggregate(where: DeprecatedWhere): DeprecatedAggregateSelection!
               deprecatedsConnection(after: String, first: Int, sort: [DeprecatedSort], where: DeprecatedWhere): DeprecatedsConnection!
             }

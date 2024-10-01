@@ -151,7 +151,7 @@ describe("Union Interface Relationships", () => {
 
             type Actor {
               id: Int
-              movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+              movies(directed: Boolean = true, limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String!
@@ -658,13 +658,13 @@ describe("Union Interface Relationships", () => {
             }
 
             type Movie {
-              actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+              actors(directed: Boolean = true, limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
-              directors(directed: Boolean = true, options: QueryOptions, where: DirectorWhere): [Director!]!
+              directors(directed: Boolean = true, limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: DirectorWhere): [Director!]!
               directorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieDirectorsConnectionSort!], where: MovieDirectorsConnectionWhere): MovieDirectorsConnection!
               imdbId: Int
-              reviewers(directed: Boolean = true, options: ReviewerOptions, where: ReviewerWhere): [Reviewer!]!
+              reviewers(directed: Boolean = true, limit: Int, offset: Int, options: ReviewerOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ReviewerSort!], where: ReviewerWhere): [Reviewer!]!
               reviewersAggregate(directed: Boolean = true, where: ReviewerWhere): MovieReviewerReviewersAggregationSelection
               reviewersConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieReviewersConnectionSort!], where: MovieReviewersConnectionWhere): MovieReviewersConnection!
               title: String!
@@ -1417,7 +1417,7 @@ describe("Union Interface Relationships", () => {
 
             type Person implements Reviewer {
               id: Int
-              movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+              movies(directed: Boolean = true, limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(directed: Boolean = true, where: MovieWhere): PersonMovieMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [PersonMoviesConnectionSort!], where: PersonMoviesConnectionWhere): PersonMoviesConnection!
               name: String!
@@ -1772,20 +1772,20 @@ describe("Union Interface Relationships", () => {
             }
 
             type Query {
-              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+              actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
-              directors(options: QueryOptions, where: DirectorWhere): [Director!]!
-              influencers(options: InfluencerOptions, where: InfluencerWhere): [Influencer!]!
+              directors(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: DirectorWhere): [Director!]!
+              influencers(limit: Int, offset: Int, options: InfluencerOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [InfluencerSort!], where: InfluencerWhere): [Influencer!]!
               influencersAggregate(where: InfluencerWhere): InfluencerAggregateSelection!
               influencersConnection(after: String, first: Int, sort: [InfluencerSort], where: InfluencerWhere): InfluencersConnection!
-              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-              people(options: PersonOptions, where: PersonWhere): [Person!]!
+              people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
               peopleAggregate(where: PersonWhere): PersonAggregateSelection!
               peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
-              reviewers(options: ReviewerOptions, where: ReviewerWhere): [Reviewer!]!
+              reviewers(limit: Int, offset: Int, options: ReviewerOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ReviewerSort!], where: ReviewerWhere): [Reviewer!]!
               reviewersAggregate(where: ReviewerWhere): ReviewerAggregateSelection!
               reviewersConnection(after: String, first: Int, sort: [ReviewerSort], where: ReviewerWhere): ReviewersConnection!
             }
@@ -1901,7 +1901,7 @@ describe("Union Interface Relationships", () => {
               \\"\\"\\"
               Specify one or more ReviewerSort objects to sort Reviewers by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [ReviewerSort]
+              sort: [ReviewerSort!]
             }
 
             \\"\\"\\"

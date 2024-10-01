@@ -97,10 +97,10 @@ describe("@customResolver directive", () => {
             }
 
             type Query {
-              userInterfaces(options: UserInterfaceOptions, where: UserInterfaceWhere): [UserInterface!]!
+              userInterfaces(limit: Int, offset: Int, options: UserInterfaceOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserInterfaceSort!], where: UserInterfaceWhere): [UserInterface!]!
               userInterfacesAggregate(where: UserInterfaceWhere): UserInterfaceAggregateSelection!
               userInterfacesConnection(after: String, first: Int, sort: [UserInterfaceSort], where: UserInterfaceWhere): UserInterfacesConnection!
-              users(options: UserOptions, where: UserWhere): [User!]!
+              users(limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
             }
@@ -184,7 +184,7 @@ describe("@customResolver directive", () => {
               \\"\\"\\"
               Specify one or more UserInterfaceSort objects to sort UserInterfaces by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [UserInterfaceSort]
+              sort: [UserInterfaceSort!]
             }
 
             \\"\\"\\"

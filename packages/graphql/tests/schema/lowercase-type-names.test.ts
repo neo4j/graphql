@@ -123,10 +123,10 @@ describe("lower case type names", () => {
             }
 
             type Query {
-              actors(options: actorOptions, where: actorWhere): [actor!]!
+              actors(limit: Int, offset: Int, options: actorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [actorSort!], where: actorWhere): [actor!]!
               actorsAggregate(where: actorWhere): actorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [actorSort], where: actorWhere): ActorsConnection!
-              movies(options: movieOptions, where: movieWhere): [movie!]!
+              movies(limit: Int, offset: Int, options: movieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [movieSort!], where: movieWhere): [movie!]!
               moviesAggregate(where: movieWhere): movieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [movieSort], where: movieWhere): MoviesConnection!
             }
@@ -167,7 +167,7 @@ describe("lower case type names", () => {
 
             type actor {
               createdAt: DateTime
-              movies(directed: Boolean = true, options: movieOptions, where: movieWhere): [movie!]!
+              movies(directed: Boolean = true, limit: Int, offset: Int, options: movieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [movieSort!], where: movieWhere): [movie!]!
               moviesAggregate(directed: Boolean = true, where: movieWhere): actormovieMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [actorMoviesConnectionSort!], where: actorMoviesConnectionWhere): actorMoviesConnection!
               name: String
@@ -509,7 +509,7 @@ describe("lower case type names", () => {
             }
 
             type movie {
-              actors(directed: Boolean = true, options: actorOptions, where: actorWhere): [actor!]!
+              actors(directed: Boolean = true, limit: Int, offset: Int, options: actorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [actorSort!], where: actorWhere): [actor!]!
               actorsAggregate(directed: Boolean = true, where: actorWhere): movieactorActorsAggregationSelection
               actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [movieActorsConnectionSort!], where: movieActorsConnectionWhere): movieActorsConnection!
               createdAt: DateTime
