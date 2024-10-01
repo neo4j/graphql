@@ -69,6 +69,11 @@ export function getWhereFieldsForAttributes({
             if (field.args.length > 0) {
                 continue;
             }
+
+            // If it's a list, skip it
+            if (field.typeHelper.isList()) {
+                continue;
+            }
         }
 
         if (shouldAddDeprecatedFields(features, "implicitEqualFilters")) {
