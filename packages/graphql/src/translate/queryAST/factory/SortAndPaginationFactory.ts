@@ -45,6 +45,7 @@ export class SortAndPaginationFactory {
         context: Neo4jGraphQLTranslationContext,
         scoreVariable?: Cypher.Variable
     ): Sort[] {
+        // SOFT_DEPRECATION: OPTIONS-ARGUMENT
         return (options.sort || [])?.flatMap((s) => {
             return this.createPropertySort({ optionArg: s, entity, context, scoreVariable });
         });
