@@ -144,7 +144,7 @@ export class SortAndPaginationFactory {
                     cypherAttributeField: attribute,
                 });
                 if (!(cypherOperation instanceof CypherScalarOperation)) {
-                    throw new Error("Transpile error: sorting is supported only for scalar properties");
+                    throw new Error("Transpile error: sorting is supported only for @cypher scalar properties");
                 }
                 return new CypherPropertySort({
                     direction: sortDir,
