@@ -27,9 +27,7 @@ import type { QueryASTNode } from "../QueryASTNode";
 import type { AggregationField } from "../fields/aggregation-fields/AggregationField";
 import type { Filter } from "../filters/Filter";
 import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
-import type { Pagination } from "../pagination/Pagination";
 import type { EntitySelection } from "../selection/EntitySelection";
-import type { Sort } from "../sort/Sort";
 import type { OperationTranspileResult } from "./operations";
 import { Operation } from "./operations";
 
@@ -48,8 +46,6 @@ export class AggregationOperation extends Operation {
     public aggregationProjectionMap = new Cypher.Map();
 
     protected filters: Filter[] = [];
-    protected pagination: Pagination | undefined;
-    protected sortFields: Sort[] = [];
 
     constructor({
         entity,
@@ -70,14 +66,6 @@ export class AggregationOperation extends Operation {
         this.fields = fields;
     }
 
-    public addSort(...sort: Sort[]): void {
-        this.sortFields.push(...sort);
-    }
-
-    public addPagination(pagination: Pagination): void {
-        this.pagination = pagination;
-    }
-
     public addFilters(...filters: Filter[]) {
         this.filters.push(...filters);
     }
@@ -92,10 +80,8 @@ export class AggregationOperation extends Operation {
             ...this.nodeFields,
             ...this.edgeFields,
             ...this.filters,
-            ...this.sortFields,
             ...this.authFilters,
             this.selection,
-            this.pagination,
         ]);
     }
 
@@ -138,7 +124,7 @@ export class AggregationOperation extends Operation {
         return filterTruthy(this.authFilters.map((f) => f.getPredicate(context)));
     }
 
-    protected addSortToClause(
+    /*     protected addSortToClause(
         context: QueryASTContext,
         node: Cypher.Variable,
         clause: Cypher.With | Cypher.Return
@@ -154,7 +140,7 @@ export class AggregationOperation extends Operation {
             clause.limit(pagination.limit);
         }
     }
-
+ */
     protected getFieldProjectionClause(
         target: Cypher.Variable,
         returnVariable: Cypher.Variable,
@@ -264,18 +250,18 @@ export class AggregationOperation extends Operation {
 
         const ret = this.getFieldProjectionClause(targetVar, returnVariable, field);
 
-        let sortClause: Cypher.With | undefined;
+        /*   let sortClause: Cypher.With | undefined;
         if (this.sortFields.length > 0 || this.pagination) {
             sortClause = new Cypher.With("*");
             this.addSortToClause(nestedContext, targetVar, sortClause);
-        }
+        } */
 
         return Cypher.concat(
             matchClause,
             ...selectionClauses,
             ...nestedSubqueries,
             extraSelectionWith,
-            sortClause,
+            //  sortClause,
             ret
         );
     }
