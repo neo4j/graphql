@@ -348,7 +348,6 @@ export class OperationsFactory {
         operation.addAuthFilters(...authFilters);
 
         if (paginationArgs) {
-            // SOFT_DEPRECATION: OPTIONS-ARGUMENT
             const paginationOptions = this.getOptions({
                 entity,
                 limitArg: paginationArgs.limit,

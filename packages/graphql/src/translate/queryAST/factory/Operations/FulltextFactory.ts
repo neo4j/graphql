@@ -28,6 +28,7 @@ import { ScoreFilter } from "../../ast/filters/property-filters/ScoreFilter";
 import type { FulltextOptions } from "../../ast/operations/FulltextOperation";
 import { FulltextOperation } from "../../ast/operations/FulltextOperation";
 import { FulltextSelection } from "../../ast/selection/FulltextSelection";
+import { raiseOnMixedPagination } from "../../utils/raise-on-mixed-pagination";
 import type { QueryASTFactory } from "../QueryASTFactory";
 
 export class FulltextFactory {
@@ -85,11 +86,16 @@ export class FulltextFactory {
 
         // Override sort to support score
         // SOFT_DEPRECATION: OPTIONS-ARGUMENT
-        // SOFT_DEPRECATION: OPTIONS-ARGUMENT
         const optionsArg: Record<string, any> = (resolveTree.args.options ?? {}) as Record<string, any>;
         const sortArg = resolveTree.args.sort ?? optionsArg.sort;
         const limitArg = resolveTree.args.limit ?? optionsArg.limit;
         const offsetArg = resolveTree.args.offset ?? optionsArg.offset;
+        raiseOnMixedPagination({
+            optionsArg,
+            sort: resolveTree.args.sort,
+            limit: resolveTree.args.limit,
+            offset: resolveTree.args.offset,
+        });
         const paginationOptions = this.queryASTFactory.operationsFactory.getOptions({
             entity,
             limitArg,

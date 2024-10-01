@@ -35,6 +35,7 @@ import { RelationshipSelection } from "../../ast/selection/RelationshipSelection
 import { getConcreteEntities } from "../../utils/get-concrete-entities";
 import { getConcreteWhere } from "../../utils/get-concrete-where";
 import { isConcreteEntity } from "../../utils/is-concrete-entity";
+import { raiseOnMixedPagination } from "../../utils/raise-on-mixed-pagination";
 import type { QueryASTFactory } from "../QueryASTFactory";
 
 export class ReadFactory {
@@ -162,6 +163,12 @@ export class ReadFactory {
         const sortArg = resolveTree.args.sort ?? optionsArg.sort;
         const limitArg = resolveTree.args.limit ?? optionsArg.limit;
         const offsetArg = resolveTree.args.offset ?? optionsArg.offset;
+        raiseOnMixedPagination({
+            optionsArg,
+            sort: resolveTree.args.sort,
+            limit: resolveTree.args.limit,
+            offset: resolveTree.args.offset,
+        });
 
         const paginationArgs: Record<string, any> = { limit: limitArg, offset: offsetArg, sort: sortArg };
 
@@ -187,6 +194,12 @@ export class ReadFactory {
         const sortArg = resolveTree.args.sort ?? optionsArg.sort;
         const limitArg = resolveTree.args.limit ?? optionsArg.limit;
         const offsetArg = resolveTree.args.offset ?? optionsArg.offset;
+        raiseOnMixedPagination({
+            optionsArg,
+            sort: resolveTree.args.sort,
+            limit: resolveTree.args.limit,
+            offset: resolveTree.args.offset,
+        });
         const options = this.queryASTFactory.operationsFactory.getOptions({ entity, sortArg, limitArg, offsetArg });
         if (options) {
             const sort = this.queryASTFactory.sortAndPaginationFactory.createSortFields(options, entity, context);
