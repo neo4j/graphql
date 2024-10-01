@@ -168,7 +168,7 @@ describe("Bigint", () => {
             type Query {
               files(limit: Int, offset: Int, options: FileOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [FileSort!], where: FileWhere): [File!]!
               filesAggregate(where: FileWhere): FileAggregateSelection!
-              filesConnection(after: String, first: Int, sort: [FileSort], where: FileWhere): FilesConnection!
+              filesConnection(after: String, first: Int, sort: [FileSort!], where: FileWhere): FilesConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"

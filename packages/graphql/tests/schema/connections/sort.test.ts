@@ -496,7 +496,7 @@ describe("Sort", () => {
             type Query {
               node1s(limit: Int, offset: Int, options: Node1Options @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [Node1Sort!], where: Node1Where): [Node1!]!
               node1sAggregate(where: Node1Where): Node1AggregateSelection!
-              node1sConnection(after: String, first: Int, sort: [Node1Sort], where: Node1Where): Node1sConnection!
+              node1sConnection(after: String, first: Int, sort: [Node1Sort!], where: Node1Where): Node1sConnection!
               node2s(limit: Int, offset: Int, options: Node2Options @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: Node2Where): [Node2!]!
               node2sAggregate(where: Node2Where): Node2AggregateSelection!
               node2sConnection(after: String, first: Int, where: Node2Where): Node2sConnection!

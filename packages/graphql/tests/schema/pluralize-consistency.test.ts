@@ -91,10 +91,10 @@ describe("Pluralize consistency", () => {
             type Query {
               superFriends(limit: Int, offset: Int, options: super_friendOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [super_friendSort!], where: super_friendWhere): [super_friend!]!
               superFriendsAggregate(where: super_friendWhere): super_friendAggregateSelection!
-              superFriendsConnection(after: String, first: Int, sort: [super_friendSort], where: super_friendWhere): SuperFriendsConnection!
+              superFriendsConnection(after: String, first: Int, sort: [super_friendSort!], where: super_friendWhere): SuperFriendsConnection!
               superUsers(limit: Int, offset: Int, options: super_userOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [super_userSort!], where: super_userWhere): [super_user!]!
               superUsersAggregate(where: super_userWhere): super_userAggregateSelection!
-              superUsersConnection(after: String, first: Int, sort: [super_userSort], where: super_userWhere): SuperUsersConnection!
+              superUsersConnection(after: String, first: Int, sort: [super_userSort!], where: super_userWhere): SuperUsersConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"

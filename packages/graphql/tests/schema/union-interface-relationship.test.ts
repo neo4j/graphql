@@ -1774,20 +1774,20 @@ describe("Union Interface Relationships", () => {
             type Query {
               actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
+              actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               directors(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: DirectorWhere): [Director!]!
               influencers(limit: Int, offset: Int, options: InfluencerOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [InfluencerSort!], where: InfluencerWhere): [Influencer!]!
               influencersAggregate(where: InfluencerWhere): InfluencerAggregateSelection!
-              influencersConnection(after: String, first: Int, sort: [InfluencerSort], where: InfluencerWhere): InfluencersConnection!
+              influencersConnection(after: String, first: Int, sort: [InfluencerSort!], where: InfluencerWhere): InfluencersConnection!
               movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
               peopleAggregate(where: PersonWhere): PersonAggregateSelection!
-              peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
+              peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
               reviewers(limit: Int, offset: Int, options: ReviewerOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ReviewerSort!], where: ReviewerWhere): [Reviewer!]!
               reviewersAggregate(where: ReviewerWhere): ReviewerAggregateSelection!
-              reviewersConnection(after: String, first: Int, sort: [ReviewerSort], where: ReviewerWhere): ReviewersConnection!
+              reviewersConnection(after: String, first: Int, sort: [ReviewerSort!], where: ReviewerWhere): ReviewersConnection!
             }
 
             \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"

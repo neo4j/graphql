@@ -124,7 +124,6 @@ export function makeSortInput({
     const sortInput = composer.getOrCreateITC(entityAdapter.operations.sortInputTypeName, (itc) => {
         return itc.setFields(sortFields);
     });
-    // TODO: Please CHECK the below!
     if (!(entityAdapter instanceof RelationshipAdapter)) {
         sortInput.setDescription(
             `Fields to sort ${entityAdapter.upperFirstPlural} by. The order in which sorts are applied is not guaranteed when specifying many fields in one ${entityAdapter.operations.sortInputTypeName} object.`

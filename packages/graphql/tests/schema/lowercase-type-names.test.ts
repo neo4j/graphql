@@ -125,10 +125,10 @@ describe("lower case type names", () => {
             type Query {
               actors(limit: Int, offset: Int, options: actorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [actorSort!], where: actorWhere): [actor!]!
               actorsAggregate(where: actorWhere): actorAggregateSelection!
-              actorsConnection(after: String, first: Int, sort: [actorSort], where: actorWhere): ActorsConnection!
+              actorsConnection(after: String, first: Int, sort: [actorSort!], where: actorWhere): ActorsConnection!
               movies(limit: Int, offset: Int, options: movieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [movieSort!], where: movieWhere): [movie!]!
               moviesAggregate(where: movieWhere): movieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [movieSort], where: movieWhere): MoviesConnection!
+              moviesConnection(after: String, first: Int, sort: [movieSort!], where: movieWhere): MoviesConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"

@@ -704,13 +704,13 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             type Query {
               actor2s(limit: Int, offset: Int, options: Actor2Options @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [Actor2Sort!], where: Actor2Where): [Actor2!]!
               actor2sAggregate(where: Actor2Where): Actor2AggregateSelection!
-              actor2sConnection(after: String, first: Int, sort: [Actor2Sort], where: Actor2Where): Actor2sConnection!
+              actor2sConnection(after: String, first: Int, sort: [Actor2Sort!], where: Actor2Where): Actor2sConnection!
               actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
+              actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"

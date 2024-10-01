@@ -143,10 +143,10 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             type Query {
               resourceEntities(limit: Int, offset: Int, options: ResourceEntityOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ResourceEntitySort!], where: ResourceEntityWhere): [ResourceEntity!]!
               resourceEntitiesAggregate(where: ResourceEntityWhere): ResourceEntityAggregateSelection!
-              resourceEntitiesConnection(after: String, first: Int, sort: [ResourceEntitySort], where: ResourceEntityWhere): ResourceEntitiesConnection!
+              resourceEntitiesConnection(after: String, first: Int, sort: [ResourceEntitySort!], where: ResourceEntityWhere): ResourceEntitiesConnection!
               resources(limit: Int, offset: Int, options: ResourceOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ResourceSort!], where: ResourceWhere): [Resource!]!
               resourcesAggregate(where: ResourceWhere): ResourceAggregateSelection!
-              resourcesConnection(after: String, first: Int, sort: [ResourceSort], where: ResourceWhere): ResourcesConnection!
+              resourcesConnection(after: String, first: Int, sort: [ResourceSort!], where: ResourceWhere): ResourcesConnection!
             }
 
             type Resource implements ResourceEntity {

@@ -116,13 +116,13 @@ describe("162", () => {
             type Query {
               tigerJawLevel2Part1s(limit: Int, offset: Int, options: TigerJawLevel2Part1Options @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [TigerJawLevel2Part1Sort!], where: TigerJawLevel2Part1Where): [TigerJawLevel2Part1!]!
               tigerJawLevel2Part1sAggregate(where: TigerJawLevel2Part1Where): TigerJawLevel2Part1AggregateSelection!
-              tigerJawLevel2Part1sConnection(after: String, first: Int, sort: [TigerJawLevel2Part1Sort], where: TigerJawLevel2Part1Where): TigerJawLevel2Part1sConnection!
+              tigerJawLevel2Part1sConnection(after: String, first: Int, sort: [TigerJawLevel2Part1Sort!], where: TigerJawLevel2Part1Where): TigerJawLevel2Part1sConnection!
               tigerJawLevel2s(limit: Int, offset: Int, options: TigerJawLevel2Options @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [TigerJawLevel2Sort!], where: TigerJawLevel2Where): [TigerJawLevel2!]!
               tigerJawLevel2sAggregate(where: TigerJawLevel2Where): TigerJawLevel2AggregateSelection!
-              tigerJawLevel2sConnection(after: String, first: Int, sort: [TigerJawLevel2Sort], where: TigerJawLevel2Where): TigerJawLevel2sConnection!
+              tigerJawLevel2sConnection(after: String, first: Int, sort: [TigerJawLevel2Sort!], where: TigerJawLevel2Where): TigerJawLevel2sConnection!
               tigers(limit: Int, offset: Int, options: TigerOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [TigerSort!], where: TigerWhere): [Tiger!]!
               tigersAggregate(where: TigerWhere): TigerAggregateSelection!
-              tigersConnection(after: String, first: Int, sort: [TigerSort], where: TigerWhere): TigersConnection!
+              tigersConnection(after: String, first: Int, sort: [TigerSort!], where: TigerWhere): TigersConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"

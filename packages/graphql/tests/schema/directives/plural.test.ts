@@ -82,7 +82,7 @@ describe("Plural option", () => {
             type Query {
               techs(limit: Int, offset: Int, options: TechOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [TechSort!], where: TechWhere): [Tech!]!
               techsAggregate(where: TechWhere): TechAggregateSelection!
-              techsConnection(after: String, first: Int, sort: [TechSort], where: TechWhere): TechsConnection!
+              techsConnection(after: String, first: Int, sort: [TechSort!], where: TechWhere): TechsConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -252,7 +252,7 @@ describe("Plural option", () => {
             type Query {
               techs(limit: Int, offset: Int, options: TechOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [TechSort!], where: TechWhere): [Tech!]!
               techsAggregate(where: TechWhere): TechAggregateSelection!
-              techsConnection(after: String, first: Int, sort: [TechSort], where: TechWhere): TechsConnection!
+              techsConnection(after: String, first: Int, sort: [TechSort!], where: TechWhere): TechsConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -422,7 +422,7 @@ describe("Plural option", () => {
             type Query {
               technologies(limit: Int, offset: Int, options: TechOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [TechSort!], where: TechWhere): [Tech!]!
               technologiesAggregate(where: TechWhere): TechAggregateSelection!
-              technologiesConnection(after: String, first: Int, sort: [TechSort], where: TechWhere): TechnologiesConnection!
+              technologiesConnection(after: String, first: Int, sort: [TechSort!], where: TechWhere): TechnologiesConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -592,7 +592,7 @@ describe("Plural option", () => {
             type Query {
               techs(limit: Int, offset: Int, options: TechsOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [TechsSort!], where: TechsWhere): [Techs!]!
               techsAggregate(where: TechsWhere): TechsAggregateSelection!
-              techsConnection(after: String, first: Int, sort: [TechsSort], where: TechsWhere): TechsConnection!
+              techsConnection(after: String, first: Int, sort: [TechsSort!], where: TechsWhere): TechsConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -746,7 +746,7 @@ describe("Plural option", () => {
             type Query {
               techs(limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): [User!]!
               techsAggregate(where: UserWhere): UserAggregateSelection!
-              techsConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): TechsConnection!
+              techsConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): TechsConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -900,7 +900,7 @@ describe("Plural option", () => {
             type Query {
               users(limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
-              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
+              usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -1054,7 +1054,7 @@ describe("Plural option", () => {
             type Query {
               users(limit: Int, offset: Int, options: UsersOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UsersSort!], where: UsersWhere): [Users!]!
               usersAggregate(where: UsersWhere): UsersAggregateSelection!
-              usersConnection(after: String, first: Int, sort: [UsersSort], where: UsersWhere): UsersConnection!
+              usersConnection(after: String, first: Int, sort: [UsersSort!], where: UsersWhere): UsersConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
