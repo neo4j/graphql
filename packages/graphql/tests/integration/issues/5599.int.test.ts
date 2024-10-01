@@ -83,10 +83,12 @@ describe("https://github.com/neo4j/graphql/issues/5599", () => {
 
         const token = createBearerToken(secret, { sub: "1234" });
         const response = await testHelper.executeGraphQLWithToken(query, token);
-        const remainingMovies = await testHelper.executeCypher(`MATCH(m:${LeadActor}|${Extra}) RETURN m`);
+        const remainingLeadActors = await testHelper.executeCypher(`MATCH(m:${LeadActor}) RETURN m`);
+        const remainingExtras = await testHelper.executeCypher(`MATCH(m:${Extra}) RETURN m`);
 
         expect(response.errors).toBeFalsy();
-        expect(remainingMovies.records).toHaveLength(2);
+        expect(remainingLeadActors.records).toHaveLength(1);
+        expect(remainingExtras.records).toHaveLength(1);
         expect(response.data).toEqual({
             [Movie.operations.update]: {
                 [Movie.plural]: [
