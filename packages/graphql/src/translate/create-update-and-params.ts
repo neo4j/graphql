@@ -141,7 +141,6 @@ export default function createUpdateAndParams({
 
             const subqueries: string[] = [];
             const intermediateWithMetaStatements: string[] = [];
-
             refNodes.forEach((refNode, idx) => {
                 const v = relationField.union ? value[refNode.name] : value;
                 const updates = relationField.typeMeta.array ? v : [v];
@@ -155,11 +154,15 @@ export default function createUpdateAndParams({
 
                     if (update.delete) {
                         const innerVarName = `${variableName}_delete`;
+                        let deleteInput = { [key]: update.delete };
+                        if (relationField.union) {
+                            deleteInput = { [key]: { [refNode.name]: update.delete } };
+                        }
 
                         const deleteAndParams = createDeleteAndParams({
                             context,
                             node,
-                            deleteInput: { [key]: update.delete }, // OBJECT ENTIERS key reused twice
+                            deleteInput: deleteInput,
                             varName: innerVarName,
                             chainStr: innerVarName,
                             parentVar,
