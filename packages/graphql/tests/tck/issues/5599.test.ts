@@ -109,4 +109,96 @@ describe("https://github.com/neo4j/graphql/issues/5599", () => {
             }"
         `);
     });
+
+    test("update with nested delete of an union with multiple concrete entities", async () => {
+        const query = /* GraphQL */ `
+            mutation {
+                updateMovies(
+                    update: {
+                        actors: {
+                            LeadActor: [{ delete: [{ where: { node: { name: "Actor1" } } }] }]
+                            Extra: [{ delete: [{ where: { node: { name: "Actor2" } } }] }]
+                        }
+                    }
+                ) {
+                    movies {
+                        title
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Movie)
+            WITH *
+            CALL {
+            WITH *
+            OPTIONAL MATCH (this)<-[this_actors_LeadActor0_delete0_relationship:ACTED_IN]-(this_actors_LeadActor0_delete0:LeadActor)
+            WHERE this_actors_LeadActor0_delete0.name = $updateMovies_args_update_actors0_delete_LeadActor0_where_this_actors_LeadActor0_delete0param0
+            WITH this_actors_LeadActor0_delete0_relationship, collect(DISTINCT this_actors_LeadActor0_delete0) AS this_actors_LeadActor0_delete0_to_delete
+            CALL {
+            	WITH this_actors_LeadActor0_delete0_to_delete
+            	UNWIND this_actors_LeadActor0_delete0_to_delete AS x
+            	DETACH DELETE x
+            }
+            }
+            WITH *
+            CALL {
+            WITH *
+            OPTIONAL MATCH (this)<-[this_actors_Extra0_delete0_relationship:ACTED_IN]-(this_actors_Extra0_delete0:Extra)
+            WHERE this_actors_Extra0_delete0.name = $updateMovies_args_update_actors0_delete_Extra0_where_this_actors_Extra0_delete0param0
+            WITH this_actors_Extra0_delete0_relationship, collect(DISTINCT this_actors_Extra0_delete0) AS this_actors_Extra0_delete0_to_delete
+            CALL {
+            	WITH this_actors_Extra0_delete0_to_delete
+            	UNWIND this_actors_Extra0_delete0_to_delete AS x
+            	DETACH DELETE x
+            }
+            }
+            RETURN collect(DISTINCT this { .title }) AS data"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"updateMovies_args_update_actors0_delete_LeadActor0_where_this_actors_LeadActor0_delete0param0\\": \\"Actor1\\",
+                \\"updateMovies_args_update_actors0_delete_Extra0_where_this_actors_Extra0_delete0param0\\": \\"Actor2\\",
+                \\"updateMovies\\": {
+                    \\"args\\": {
+                        \\"update\\": {
+                            \\"actors\\": {
+                                \\"LeadActor\\": [
+                                    {
+                                        \\"delete\\": [
+                                            {
+                                                \\"where\\": {
+                                                    \\"node\\": {
+                                                        \\"name\\": \\"Actor1\\"
+                                                    }
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ],
+                                \\"Extra\\": [
+                                    {
+                                        \\"delete\\": [
+                                            {
+                                                \\"where\\": {
+                                                    \\"node\\": {
+                                                        \\"name\\": \\"Actor2\\"
+                                                    }
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                \\"resolvedCallbacks\\": {}
+            }"
+        `);
+    });
 });

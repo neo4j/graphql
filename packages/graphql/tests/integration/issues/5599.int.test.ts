@@ -30,7 +30,7 @@ describe("https://github.com/neo4j/graphql/issues/5599", () => {
     let LeadActor: UniqueType;
     let Extra: UniqueType;
 
-    beforeAll(async () => {
+    beforeEach(async () => {
         Movie = testHelper.createUniqueType("Movie");
         LeadActor = testHelper.createUniqueType("LeadActor");
         Extra = testHelper.createUniqueType("Extra");
@@ -58,7 +58,7 @@ describe("https://github.com/neo4j/graphql/issues/5599", () => {
         });
     });
 
-    afterAll(async () => {
+    afterEach(async () => {
         await testHelper.close();
     });
 
@@ -89,6 +89,44 @@ describe("https://github.com/neo4j/graphql/issues/5599", () => {
         expect(response.errors).toBeFalsy();
         expect(remainingLeadActors.records).toHaveLength(1);
         expect(remainingExtras.records).toHaveLength(1);
+        expect(response.data).toEqual({
+            [Movie.operations.update]: {
+                [Movie.plural]: [
+                    {
+                        title: "The Matrix",
+                    },
+                ],
+            },
+        });
+    });
+
+    test("update with nested delete of an union with multiple concrete entities", async () => {
+        await testHelper.executeCypher(`
+        CREATE(m:${Movie} { title: "The Matrix"})<-[:ACTED_IN]-(:${LeadActor} {name: "Actor1"})
+        CREATE(m)<-[:ACTED_IN]-(:${LeadActor} {name: "Actor2"})
+        CREATE(m)<-[:ACTED_IN]-(:${Extra} {name: "Actor2"})
+            `);
+
+        const query = /* GraphQL */ `
+            mutation UpdateMovies {
+                ${Movie.operations.update}(
+                    update: { actors: { ${LeadActor}: [{ delete: [{ where: { node: { name: "Actor1" } } }] }], ${Extra}: [{ delete: [{ where: { node: { name: "Actor2" } } }] }] } }
+                ) {
+                    ${Movie.plural} {
+                        title
+                    }
+                }
+            }
+        `;
+
+        const token = createBearerToken(secret, { sub: "1234" });
+        const response = await testHelper.executeGraphQLWithToken(query, token);
+        const remainingLeadActors = await testHelper.executeCypher(`MATCH(m:${LeadActor}) RETURN m`);
+        const remainingExtras = await testHelper.executeCypher(`MATCH(m:${Extra}) RETURN m`);
+
+        expect(response.errors).toBeFalsy();
+        expect(remainingLeadActors.records).toHaveLength(1);
+        expect(remainingExtras.records).toHaveLength(0);
         expect(response.data).toEqual({
             [Movie.operations.update]: {
                 [Movie.plural]: [
