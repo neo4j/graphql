@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { asArray } from "@graphql-tools/utils";
 import Cypher from "@neo4j/cypher-builder";
 import type { AuthorizationOperation } from "../../../schema-model/annotation/AuthorizationAnnotation";
 import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
@@ -26,6 +25,7 @@ import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-
 import type { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { GraphQLWhereArg } from "../../../types";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
+import { asArray } from "../../../utils/utils";
 import { isLogicalOperator } from "../../utils/logical-operators";
 import type { ConnectionFilter } from "../ast/filters/ConnectionFilter";
 import type { Filter, FilterOperator, RelationshipWhereOperator } from "../ast/filters/Filter";

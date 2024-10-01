@@ -17,13 +17,12 @@
  * limitations under the License.
  */
 
-import { asArray } from "@graphql-tools/utils";
 import Cypher from "@neo4j/cypher-builder";
 import type { AuthorizationOperation } from "../../schema-model/annotation/AuthorizationAnnotation";
 import type { PredicateReturn } from "../../types";
 import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
 import { getEntityAdapterFromNode } from "../../utils/get-entity-adapter-from-node";
-import { filterTruthy } from "../../utils/utils";
+import { asArray } from "../../utils/utils";
 import { QueryASTContext, QueryASTEnv } from "../queryAST/ast/QueryASTContext";
 import { QueryASTFactory } from "../queryAST/factory/QueryASTFactory";
 import { isConcreteEntity } from "../queryAST/utils/is-concrete-entity";
@@ -66,7 +65,7 @@ export function createAuthorizationAfterPredicate({
             when: "AFTER",
         });
         const nodeRawSubqueries = authorizationFilters?.getSubqueries(queryASTContext);
-        const nodeSubqueries = filterTruthy(asArray(nodeRawSubqueries)).map((sq) => wrapSubqueryInCall(sq, matchNode));
+        const nodeSubqueries = asArray(nodeRawSubqueries).map((sq) => wrapSubqueryInCall(sq, matchNode));
         const nodePredicate = authorizationFilters?.getPredicate(queryASTContext);
 
         if (nodePredicate) {

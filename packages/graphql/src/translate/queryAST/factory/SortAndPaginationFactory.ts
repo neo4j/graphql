@@ -23,6 +23,7 @@ import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
 import { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { ConnectionSortArg, GraphQLOptionsArg, GraphQLSortArg, NestedGraphQLSortArg } from "../../../types";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
+import { asArray } from "../../../utils/utils";
 import { CypherScalarOperation } from "../ast/operations/CypherScalarOperation";
 import { Pagination } from "../ast/pagination/Pagination";
 import { CypherPropertySort } from "../ast/sort/CypherPropertySort";
@@ -46,7 +47,7 @@ export class SortAndPaginationFactory {
         scoreVariable?: Cypher.Variable
     ): Sort[] {
         // SOFT_DEPRECATION: OPTIONS-ARGUMENT
-        return (options.sort || [])?.flatMap((s) => {
+        return asArray(options.sort).flatMap((s) => {
             return this.createPropertySort({ optionArg: s, entity, context, scoreVariable });
         });
     }
