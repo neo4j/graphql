@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 5.7.1
+
+### Patch Changes
+
+-   [#5600](https://github.com/neo4j/graphql/pull/5600) [`d3f4679`](https://github.com/neo4j/graphql/commit/d3f4679d32d3760284feae2d230e32385c4dbd61) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Fix: disable schema generation for filtering on list cypher fields
+
 ## 5.7.0
 
 ### Minor Changes
