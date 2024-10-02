@@ -186,7 +186,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               \\"\\"\\"
               Specify one or more ProfileSort objects to sort Profiles by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [ProfileSort]
+              sort: [ProfileSort!]
             }
 
             \\"\\"\\"
@@ -238,12 +238,12 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             type Query {
-              profiles(options: ProfileOptions, where: ProfileWhere): [Profile!]!
+              profiles(limit: Int, offset: Int, options: ProfileOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ProfileSort!], where: ProfileWhere): [Profile!]!
               profilesAggregate(where: ProfileWhere): ProfileAggregateSelection!
-              profilesConnection(after: String, first: Int, sort: [ProfileSort], where: ProfileWhere): ProfilesConnection!
-              users(options: UserOptions, where: UserWhere): [User!]!
+              profilesConnection(after: String, first: Int, sort: [ProfileSort!], where: ProfileWhere): ProfilesConnection!
+              users(limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
-              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
+              usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -276,7 +276,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             type User implements Profile {
-              following(directed: Boolean = true, options: ProfileOptions, where: ProfileWhere): [Profile!]!
+              following(directed: Boolean = true, limit: Int, offset: Int, options: ProfileOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ProfileSort!], where: ProfileWhere): [Profile!]!
               followingAggregate(directed: Boolean = true, where: ProfileWhere): UserProfileFollowingAggregationSelection
               followingConnection(after: String, directed: Boolean = true, first: Int, sort: [UserFollowingConnectionSort!], where: UserFollowingConnectionWhere): UserFollowingConnection!
               id: ID!

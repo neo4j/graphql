@@ -91,6 +91,9 @@ describe("generate", () => {
 
             export type QueryUsersArgs = {
               where?: InputMaybe<UserWhere>;
+              limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              sort?: InputMaybe<Array<UserSort>>;
               options?: InputMaybe<UserOptions>;
             };
 
@@ -98,7 +101,7 @@ describe("generate", () => {
               first?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               after?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               where?: InputMaybe<UserWhere>;
-              sort?: InputMaybe<Array<InputMaybe<UserSort>>>;
+              sort?: InputMaybe<Array<UserSort>>;
             };
 
             export type QueryUsersAggregateArgs = {
@@ -383,15 +386,18 @@ describe("generate", () => {
 
             export type QueryUsersArgs = {
               where?: InputMaybe<UserWhere>;
-              options?: InputMaybe<UserOptions>;
+              limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               fulltext?: InputMaybe<UserFulltext>;
+              sort?: InputMaybe<Array<UserSort>>;
+              options?: InputMaybe<UserOptions>;
             };
 
             export type QueryUsersConnectionArgs = {
               first?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               after?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               where?: InputMaybe<UserWhere>;
-              sort?: InputMaybe<Array<InputMaybe<UserSort>>>;
+              sort?: InputMaybe<Array<UserSort>>;
               fulltext?: InputMaybe<UserFulltext>;
             };
 
@@ -709,6 +715,9 @@ describe("generate", () => {
 
             export type QueryUsersArgs = {
               where?: InputMaybe<UserWhere>;
+              limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              sort?: InputMaybe<Array<UserSort>>;
               options?: InputMaybe<UserOptions>;
             };
 
@@ -716,7 +725,7 @@ describe("generate", () => {
               first?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               after?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               where?: InputMaybe<UserWhere>;
-              sort?: InputMaybe<Array<InputMaybe<UserSort>>>;
+              sort?: InputMaybe<Array<UserSort>>;
             };
 
             export type QueryUsersAggregateArgs = {
@@ -999,6 +1008,9 @@ describe("generate", () => {
 
             export type QueryMoviesArgs = {
               where?: InputMaybe<MovieWhere>;
+              limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              sort?: InputMaybe<Array<MovieSort>>;
               options?: InputMaybe<MovieOptions>;
             };
 
@@ -1006,7 +1018,7 @@ describe("generate", () => {
               first?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               after?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               where?: InputMaybe<MovieWhere>;
-              sort?: InputMaybe<Array<InputMaybe<MovieSort>>>;
+              sort?: InputMaybe<Array<MovieSort>>;
             };
 
             export type QueryMoviesAggregateArgs = {
@@ -1015,6 +1027,9 @@ describe("generate", () => {
 
             export type QueryPeopleArgs = {
               where?: InputMaybe<PersonWhere>;
+              limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              sort?: InputMaybe<Array<PersonSort>>;
               options?: InputMaybe<PersonOptions>;
             };
 
@@ -1022,7 +1037,7 @@ describe("generate", () => {
               first?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               after?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               where?: InputMaybe<PersonWhere>;
-              sort?: InputMaybe<Array<InputMaybe<PersonSort>>>;
+              sort?: InputMaybe<Array<PersonSort>>;
             };
 
             export type QueryPeopleAggregateArgs = {
@@ -1140,6 +1155,9 @@ describe("generate", () => {
 
             export type MovieActorsArgs = {
               where?: InputMaybe<PersonWhere>;
+              limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              sort?: InputMaybe<Array<PersonSort>>;
               options?: InputMaybe<PersonOptions>;
               directed?: InputMaybe<Scalars[\\"Boolean\\"][\\"input\\"]>;
             };
@@ -1799,6 +1817,9 @@ describe("generate", () => {
 
             export type QueryFaqsArgs = {
               where?: InputMaybe<FaqWhere>;
+              limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              sort?: InputMaybe<Array<FaqSort>>;
               options?: InputMaybe<FaqOptions>;
             };
 
@@ -1806,7 +1827,7 @@ describe("generate", () => {
               first?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               after?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               where?: InputMaybe<FaqWhere>;
-              sort?: InputMaybe<Array<InputMaybe<FaqSort>>>;
+              sort?: InputMaybe<Array<FaqSort>>;
             };
 
             export type QueryFaqsAggregateArgs = {
@@ -1815,6 +1836,9 @@ describe("generate", () => {
 
             export type QueryFaqEntriesArgs = {
               where?: InputMaybe<FaqEntryWhere>;
+              limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              sort?: InputMaybe<Array<FaqEntrySort>>;
               options?: InputMaybe<FaqEntryOptions>;
             };
 
@@ -1822,7 +1846,7 @@ describe("generate", () => {
               first?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               after?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               where?: InputMaybe<FaqEntryWhere>;
-              sort?: InputMaybe<Array<InputMaybe<FaqEntrySort>>>;
+              sort?: InputMaybe<Array<FaqEntrySort>>;
             };
 
             export type QueryFaqEntriesAggregateArgs = {
@@ -1932,6 +1956,9 @@ describe("generate", () => {
 
             export type FaqEntriesArgs = {
               where?: InputMaybe<FaqEntryWhere>;
+              limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              sort?: InputMaybe<Array<FaqEntrySort>>;
               options?: InputMaybe<FaqEntryOptions>;
               directed?: InputMaybe<Scalars[\\"Boolean\\"][\\"input\\"]>;
             };
@@ -1995,6 +2022,9 @@ describe("generate", () => {
 
             export type FaqEntryInFaQsArgs = {
               where?: InputMaybe<FaqWhere>;
+              limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              sort?: InputMaybe<Array<FaqSort>>;
               options?: InputMaybe<FaqOptions>;
               directed?: InputMaybe<Scalars[\\"Boolean\\"][\\"input\\"]>;
             };

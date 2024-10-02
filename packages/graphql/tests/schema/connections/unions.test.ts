@@ -57,7 +57,7 @@ describe("Unions", () => {
 
             type Author {
               name: String!
-              publications(directed: Boolean = true, options: QueryOptions, where: PublicationWhere): [Publication!]!
+              publications(directed: Boolean = true, limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PublicationWhere): [Publication!]!
               publicationsConnection(after: String, directed: Boolean = true, first: Int, sort: [AuthorPublicationsConnectionSort!], where: AuthorPublicationsConnectionWhere): AuthorPublicationsConnection!
             }
 
@@ -324,7 +324,7 @@ describe("Unions", () => {
             }
 
             type Book {
-              author(directed: Boolean = true, options: AuthorOptions, where: AuthorWhere): [Author!]!
+              author(directed: Boolean = true, limit: Int, offset: Int, options: AuthorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [AuthorSort!], where: AuthorWhere): [Author!]!
               authorAggregate(directed: Boolean = true, where: AuthorWhere): BookAuthorAuthorAggregationSelection
               authorConnection(after: String, directed: Boolean = true, first: Int, sort: [BookAuthorConnectionSort!], where: BookAuthorConnectionWhere): BookAuthorConnection!
               title: String!
@@ -618,7 +618,7 @@ describe("Unions", () => {
             }
 
             type Journal {
-              author(directed: Boolean = true, options: AuthorOptions, where: AuthorWhere): [Author!]!
+              author(directed: Boolean = true, limit: Int, offset: Int, options: AuthorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [AuthorSort!], where: AuthorWhere): [Author!]!
               authorAggregate(directed: Boolean = true, where: AuthorWhere): JournalAuthorAuthorAggregationSelection
               authorConnection(after: String, directed: Boolean = true, first: Int, sort: [JournalAuthorConnectionSort!], where: JournalAuthorConnectionWhere): JournalAuthorConnection!
               subject: String!
@@ -899,16 +899,16 @@ describe("Unions", () => {
             }
 
             type Query {
-              authors(options: AuthorOptions, where: AuthorWhere): [Author!]!
+              authors(limit: Int, offset: Int, options: AuthorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [AuthorSort!], where: AuthorWhere): [Author!]!
               authorsAggregate(where: AuthorWhere): AuthorAggregateSelection!
-              authorsConnection(after: String, first: Int, sort: [AuthorSort], where: AuthorWhere): AuthorsConnection!
-              books(options: BookOptions, where: BookWhere): [Book!]!
+              authorsConnection(after: String, first: Int, sort: [AuthorSort!], where: AuthorWhere): AuthorsConnection!
+              books(limit: Int, offset: Int, options: BookOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [BookSort!], where: BookWhere): [Book!]!
               booksAggregate(where: BookWhere): BookAggregateSelection!
-              booksConnection(after: String, first: Int, sort: [BookSort], where: BookWhere): BooksConnection!
-              journals(options: JournalOptions, where: JournalWhere): [Journal!]!
+              booksConnection(after: String, first: Int, sort: [BookSort!], where: BookWhere): BooksConnection!
+              journals(limit: Int, offset: Int, options: JournalOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [JournalSort!], where: JournalWhere): [Journal!]!
               journalsAggregate(where: JournalWhere): JournalAggregateSelection!
-              journalsConnection(after: String, first: Int, sort: [JournalSort], where: JournalWhere): JournalsConnection!
-              publications(options: QueryOptions, where: PublicationWhere): [Publication!]!
+              journalsConnection(after: String, first: Int, sort: [JournalSort!], where: JournalWhere): JournalsConnection!
+              publications(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PublicationWhere): [Publication!]!
             }
 
             \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"

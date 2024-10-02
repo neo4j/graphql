@@ -26,8 +26,6 @@ import type { QueryASTNode } from "../../QueryASTNode";
 import type { AggregationField } from "../../fields/aggregation-fields/AggregationField";
 import type { Filter } from "../../filters/Filter";
 import type { AuthorizationFilters } from "../../filters/authorization-filters/AuthorizationFilters";
-import type { Pagination } from "../../pagination/Pagination";
-import type { Sort, SortField } from "../../sort/Sort";
 import type { OperationTranspileResult } from "../operations";
 import { Operation } from "../operations";
 import type { CompositeAggregationPartial } from "./CompositeAggregationPartial";
@@ -44,8 +42,6 @@ export class CompositeAggregationOperation extends Operation {
     protected authFilters: AuthorizationFilters[] = [];
 
     protected filters: Filter[] = [];
-    protected pagination: Pagination | undefined;
-    protected sortFields: Sort[] = [];
     private addWith: boolean = true;
     private aggregationProjectionMap: Cypher.Map = new Cypher.Map();
     private nodeMap = new Cypher.Map();
@@ -72,15 +68,9 @@ export class CompositeAggregationOperation extends Operation {
             ...this.nodeFields,
             ...this.edgeFields,
             ...this.filters,
-            ...this.sortFields,
             ...this.authFilters,
-            this.pagination,
             ...this.children,
         ]);
-    }
-
-    protected getSortFields(context: QueryASTContext, target: Cypher.Variable): SortField[] {
-        return this.sortFields.flatMap((sf) => sf.getSortFields(context, target, false));
     }
 
     public transpile(context: QueryASTContext): OperationTranspileResult {
@@ -110,13 +100,6 @@ export class CompositeAggregationOperation extends Operation {
         this.fields = fields;
     }
 
-    public addSort(...sort: Sort[]): void {
-        this.sortFields.push(...sort);
-    }
-
-    public addPagination(pagination: Pagination): void {
-        this.pagination = pagination;
-    }
     public addFilters(...filters: Filter[]) {
         this.filters.push(...filters);
     }
@@ -139,23 +122,6 @@ export class CompositeAggregationOperation extends Operation {
 
     protected getAuthFilterPredicate(context: QueryASTContext): Cypher.Predicate[] {
         return filterTruthy(this.authFilters.map((f) => f.getPredicate(context)));
-    }
-
-    protected addSortToClause(
-        context: QueryASTContext,
-        node: Cypher.Variable,
-        clause: Cypher.With | Cypher.Return
-    ): void {
-        const orderByFields = this.sortFields.flatMap((f) => f.getSortFields(context, node));
-        const pagination = this.pagination ? this.pagination.getPagination() : undefined;
-        clause.orderBy(...orderByFields);
-
-        if (pagination?.skip) {
-            clause.skip(pagination.skip);
-        }
-        if (pagination?.limit) {
-            clause.limit(pagination.limit);
-        }
     }
 
     protected getFieldProjectionClause(

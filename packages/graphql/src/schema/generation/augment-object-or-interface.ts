@@ -18,6 +18,7 @@
  */
 import { GraphQLInt, GraphQLString, type DirectiveNode, type GraphQLResolveInfo } from "graphql";
 import type { Directive, ObjectTypeComposerArgumentConfigMapDefinition, SchemaComposer } from "graphql-compose";
+
 import type { Subgraph } from "../../classes/Subgraph";
 import { DEPRECATED } from "../../constants";
 import { QueryOptions } from "../../graphql/input-objects/QueryOptions";
@@ -25,6 +26,7 @@ import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/Uni
 import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { ConnectionQueryArgs, Neo4jFeaturesSettings } from "../../types";
+import { DEPRECATE_OPTIONS_ARGUMENT } from "../constants";
 import { addDirectedArgument, getDirectedArgument } from "../directed-argument";
 import { connectionFieldResolver } from "../pagination";
 import { graphqlDirectivesToCompose } from "../to-compose";
@@ -33,12 +35,22 @@ import {
     withConnectionObjectType,
     withConnectionSortInputType,
 } from "./connection-where-input";
+import { makeSortInput } from "./sort-and-options-input";
+import { shouldAddDeprecatedFields } from "./utils";
 
-export function augmentObjectOrInterfaceTypeWithRelationshipField(
-    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter,
-    userDefinedFieldDirectives: Map<string, DirectiveNode[]>,
-    subgraph?: Subgraph | undefined
-): Record<string, { type: string; description?: string; directives: Directive[]; args?: any }> {
+export function augmentObjectOrInterfaceTypeWithRelationshipField({
+    relationshipAdapter,
+    userDefinedFieldDirectives,
+    subgraph,
+    features,
+    composer,
+}: {
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
+    userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
+    subgraph?: Subgraph | undefined;
+    features?: Neo4jFeaturesSettings;
+    composer: SchemaComposer;
+}): Record<string, { type: string; description?: string; directives: Directive[]; args?: any }> {
     const fields = {};
     const relationshipField: { type: string; description?: string; directives: Directive[]; args?: any } = {
         type: relationshipAdapter.operations.getTargetTypePrettyName(),
@@ -69,8 +81,27 @@ export function augmentObjectOrInterfaceTypeWithRelationshipField(
 
         const nodeFieldsArgs = {
             where: whereTypeName,
-            options: optionsTypeName,
+            limit: "Int",
+            offset: "Int",
         };
+        if (!(relationshipTarget instanceof UnionEntityAdapter)) {
+            const sortConfig = makeSortInput({
+                entityAdapter: relationshipTarget,
+                userDefinedFieldDirectives: new Map(),
+                composer,
+            });
+            if (sortConfig) {
+                nodeFieldsArgs["sort"] = sortConfig.NonNull.List;
+            }
+        }
+        // SOFT_DEPRECATION: OPTIONS-ARGUMENT
+        if (shouldAddDeprecatedFields(features, "deprecatedOptionsArgument")) {
+            nodeFieldsArgs["options"] = {
+                type: optionsTypeName,
+                directives: [DEPRECATE_OPTIONS_ARGUMENT],
+            };
+        }
+
         if (relationshipAdapter instanceof RelationshipAdapter) {
             const directedArg = getDirectedArgument(relationshipAdapter);
             if (directedArg) {

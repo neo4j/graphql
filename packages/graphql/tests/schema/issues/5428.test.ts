@@ -78,9 +78,9 @@ describe("https://github.com/neo4j/graphql/issues/5428", () => {
             }
 
             type Query {
-              test(options: TestOptions, where: TestWhere): [Test!]!
+              test(limit: Int, offset: Int, options: TestOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [TestSort!], where: TestWhere): [Test!]!
               testAggregate(where: TestWhere): TestAggregateSelection!
-              testConnection(after: String, first: Int, sort: [TestSort], where: TestWhere): TestConnection!
+              testConnection(after: String, first: Int, sort: [TestSort!], where: TestWhere): TestConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"

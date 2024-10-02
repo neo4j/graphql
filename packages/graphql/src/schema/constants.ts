@@ -47,6 +47,13 @@ export const DEPRECATE_INVALID_AGGREGATION_FILTERS = {
     },
 };
 
+export const DEPRECATE_OPTIONS_ARGUMENT = {
+    name: DEPRECATED,
+    args: {
+        reason: "Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.",
+    },
+};
+
 export const DEPRECATE_UPDATE_CREATE_INPUT_FIELD = {
     name: DEPRECATED,
     args: {

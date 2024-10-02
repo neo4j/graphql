@@ -17,19 +17,19 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { generate } from "randomstring";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 const testLabel = generate({ charset: "alphabetic" });
 
-describe("sort", () => {
+// TODO: separate tests into separate files
+describe("Pagination", () => {
     const testHelper = new TestHelper();
     const movieType = testHelper.createUniqueType("Movie");
     const seriesType = testHelper.createUniqueType("Series");
     const actorType = testHelper.createUniqueType("Actor");
 
-    const typeDefs = gql`
+    const typeDefs = /* GraphQL */ `
         interface Production {
             id: ID!
             title: String!
@@ -113,7 +113,10 @@ describe("sort", () => {
     ] as const;
 
     beforeAll(async () => {
-        await testHelper.initNeo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({
+            typeDefs,
+            features: { excludeDeprecatedFields: { deprecatedOptionsArgument: true } },
+        });
 
         await testHelper.executeCypher(
             `
@@ -145,11 +148,11 @@ describe("sort", () => {
                 });
 
             describe("with field in selection set", () => {
-                const queryWithTitle = `
+                const queryWithTitle = /* GraphQL */ `
                             query ($movieIds: [ID!]!, $direction: SortDirection!) {
                                 ${movieType.plural}(
                                     where: { id_IN: $movieIds },
-                                    options: { sort: [{ title: $direction }] }
+                                    sort: [{ title: $direction }] 
                                 ) {
                                     id
                                     title
@@ -182,11 +185,11 @@ describe("sort", () => {
             });
 
             describe("with field aliased in selection set", () => {
-                const queryWithTitle = `
+                const queryWithTitle = /* GraphQL */ `
                             query ($movieIds: [ID!]!, $direction: SortDirection!) {
                                 ${movieType.plural}(
                                     where: { id_IN: $movieIds },
-                                    options: { sort: [{ title: $direction }] }
+                                    sort: [{ title: $direction }] 
                                 ) {
                                     id
                                     aliased: title
@@ -219,11 +222,11 @@ describe("sort", () => {
             });
 
             describe("with field not in selection set", () => {
-                const queryWithoutTitle = `
+                const queryWithoutTitle = /* GraphQL */ `
                         query ($movieIds: [ID!]!, $direction: SortDirection!) {
                             ${movieType.plural}(
                                 where: { id_IN: $movieIds },
-                                options: { sort: [{ title: $direction }] }
+                                 sort: [{ title: $direction }] 
                             ) {
                                 id
                             }
@@ -253,6 +256,23 @@ describe("sort", () => {
                     expect(gqlMovies[1].id).toBe(movies[0].id);
                 });
             });
+
+            test("sort with skip and limit", async () => {
+                const query = /* GraphQL */ `
+                    query {
+                        ${movieType.plural} (limit: 1, offset: 1, sort: { title: ASC } ) {
+                            title
+                        }
+                    }
+                `;
+
+                const gqlResult = await testHelper.executeGraphQL(query);
+
+                expect(gqlResult.errors).toBeUndefined();
+                expect((gqlResult.data as any)[movieType.plural]).toEqual(
+                    expect.toIncludeSameMembers([{ title: "B" }])
+                );
+            });
         });
 
         describe("cypher fields", () => {
@@ -262,11 +282,11 @@ describe("sort", () => {
                 });
 
             describe("with field in selection set", () => {
-                const queryWithNumberOfActors = `
+                const queryWithNumberOfActors = /* GraphQL */ `
                             query ($movieIds: [ID!]!, $direction: SortDirection!) {
                                 ${movieType.plural}(
                                     where: { id_IN: $movieIds },
-                                    options: { sort: [{ numberOfActors: $direction }] }
+                                     sort: [{ numberOfActors: $direction }] 
                                 ) {
                                     id
                                     numberOfActors
@@ -306,11 +326,11 @@ describe("sort", () => {
             });
 
             describe("with field aliased in selection set", () => {
-                const queryWithNumberOfActors = `
+                const queryWithNumberOfActors = /* GraphQL */ `
                             query ($movieIds: [ID!]!, $direction: SortDirection!) {
                                 ${movieType.plural}(
                                     where: { id_IN: $movieIds },
-                                    options: { sort: [{ numberOfActors: $direction }] }
+                                    sort: [{ numberOfActors: $direction }] 
                                 ) {
                                     id
                                     aliased: numberOfActors
@@ -351,11 +371,11 @@ describe("sort", () => {
             });
 
             describe("with field not in selection set", () => {
-                const queryWithoutNumberOfActors = `
+                const queryWithoutNumberOfActors = /* GraphQL */ `
                         query ($movieIds: [ID!]!, $direction: SortDirection!) {
                             ${movieType.plural}(
                                 where: { id_IN: $movieIds },
-                                options: { sort: [{ numberOfActors: $direction }] }
+                                 sort: [{ numberOfActors: $direction }] 
                             ) {
                                 id
                             }
@@ -391,11 +411,11 @@ describe("sort", () => {
             });
 
             describe("with field not in selection set and multiple sort elements", () => {
-                const queryWithoutNumberOfActors = `
+                const queryWithoutNumberOfActors = /* GraphQL */ `
                         query ($movieIds: [ID!]!, $direction: SortDirection!) {
                             ${movieType.plural}(
                                 where: { id_IN: $movieIds },
-                                options: { sort: [{ numberOfActors: $direction, id: $direction }] }
+                                sort: [{ numberOfActors: $direction, id: $direction }] 
                             ) {
                                 id
                             }
@@ -433,17 +453,17 @@ describe("sort", () => {
 
         describe("primitive fields", () => {
             describe("with field in selection set", () => {
-                const queryWithName = `
-                                query($movieId: ID!, $actorIds: [ID!]!, $direction: SortDirection!) {
-                                    ${movieType.plural}(where: { id_EQ: $movieId }) {
-                                        id
-                                        actors(where: { id_IN: $actorIds }, options: { sort: [{ name: $direction }] }) {
-                                            id
-                                            name
-                                        }
-                                    }
-                                }
-                            `;
+                const queryWithName = /* GraphQL */ `
+                    query($movieId: ID!, $actorIds: [ID!]!, $direction: SortDirection!) {
+                        ${movieType.plural}(where: { id_EQ: $movieId }) {
+                            id
+                            actors(where: { id_IN: $actorIds }, sort: [{ name: $direction }] ) {
+                                id
+                                name
+                            }
+                        }
+                    }
+                `;
                 const gqlResultByType = gqlResultByTypeFromSource(queryWithName);
 
                 test("ASC", async () => {
@@ -477,17 +497,17 @@ describe("sort", () => {
             });
 
             describe("with field aliased in selection set", () => {
-                const queryWithName = `
-                                query($movieId: ID!, $actorIds: [ID!]!, $direction: SortDirection!) {
-                                    ${movieType.plural}(where: { id_EQ: $movieId }) {
-                                        id
-                                        actors(where: { id_IN: $actorIds }, options: { sort: [{ name: $direction }] }) {
-                                            id
-                                            aliased: name
-                                        }
-                                    }
-                                }
-                            `;
+                const queryWithName = /* GraphQL */ `
+                     query($movieId: ID!, $actorIds: [ID!]!, $direction: SortDirection!) {
+                         ${movieType.plural}(where: { id_EQ: $movieId }) {
+                             id
+                             actors(where: { id_IN: $actorIds },  sort: [{ name: $direction }] ) {
+                                 id
+                                 aliased: name
+                             }
+                         }
+                     }
+                 `;
                 const gqlResultByType = gqlResultByTypeFromSource(queryWithName);
 
                 test("ASC", async () => {
@@ -521,16 +541,16 @@ describe("sort", () => {
             });
 
             describe("with field not in selection set", () => {
-                const queryWithoutName = `
-                                query($movieId: ID!, $actorIds: [ID!]!, $direction: SortDirection!) {
-                                    ${movieType.plural}(where: { id_EQ: $movieId }) {
-                                        id
-                                        actors(where: { id_IN: $actorIds }, options: { sort: [{ name: $direction }] }) {
-                                            id
-                                        }
-                                    }
-                                }
-                            `;
+                const queryWithoutName = /* GraphQL */ `
+                     query($movieId: ID!, $actorIds: [ID!]!, $direction: SortDirection!) {
+                         ${movieType.plural}(where: { id_EQ: $movieId }) {
+                             id
+                             actors(where: { id_IN: $actorIds },  sort: [{ name: $direction }] ) {
+                                 id
+                             }
+                         }
+                     }
+                 `;
                 const gqlResultByType = gqlResultByTypeFromSource(queryWithoutName);
                 test("ASC", async () => {
                     const gqlResult = await gqlResultByType("ASC");
@@ -567,11 +587,11 @@ describe("sort", () => {
             // Actor 1 has 3 totalScreenTime
             // Actor 2 has 1 totalScreenTime
             describe("with field in selection set", () => {
-                const queryWithTotalScreenTime = `
+                const queryWithTotalScreenTime = /* GraphQL */ `
                     query($movieId: ID!, $actorIds: [ID!]!, $direction: SortDirection!) {
                         ${movieType.plural}(where: { id_EQ: $movieId }) {
                             id
-                            actors(where: { id_IN: $actorIds }, options: { sort: [{ totalScreenTime: $direction }] }) {
+                            actors(where: { id_IN: $actorIds }, sort: [{ totalScreenTime: $direction }]) {
                                 id
                                 totalScreenTime
                             }
@@ -615,11 +635,11 @@ describe("sort", () => {
             });
 
             describe("with field aliased in selection set", () => {
-                const queryWithTotalScreenTime = `
+                const queryWithTotalScreenTime = /* GraphQL */ `
                     query($movieId: ID!, $actorIds: [ID!]!, $direction: SortDirection!) {
                         ${movieType.plural}(where: { id_EQ: $movieId }) {
                             id
-                            actors(where: { id_IN: $actorIds }, options: { sort: [{ totalScreenTime: $direction }] }) {
+                            actors(where: { id_IN: $actorIds },  sort: [{ totalScreenTime: $direction }] ) {
                                 id
                                 aliased: totalScreenTime
                             }
@@ -662,11 +682,11 @@ describe("sort", () => {
             });
 
             describe("with field not in selection set", () => {
-                const queryWithoutTotalScreenTime = `
+                const queryWithoutTotalScreenTime = /* GraphQL */ `
                     query($movieId: ID!, $actorIds: [ID!]!, $direction: SortDirection!) {
                         ${movieType.plural}(where: { id_EQ: $movieId }) {
                             id
-                            actors(where: { id_IN: $actorIds }, options: { sort: [{ totalScreenTime: $direction }] }) {
+                            actors(where: { id_IN: $actorIds },  sort: [{ totalScreenTime: $direction }] ) {
                                 id
                             }
                         }
@@ -708,11 +728,11 @@ describe("sort", () => {
             });
         });
 
-        it("sort with skip and limit on relationship", async () => {
-            const query = `
+        test("sort with skip and limit on relationship", async () => {
+            const query = /* GraphQL */ `
                 query {
                     ${movieType.plural} {
-                        actors(options: { limit: 1, offset: 1, sort: { name: ASC } }) {
+                        actors(limit: 1, offset: 1, sort: { name: ASC } ) {
                             name
                         }
                     }
@@ -735,11 +755,11 @@ describe("sort", () => {
                     variableValues: { actorId: actors[0].id, direction },
                 });
             describe("with field in selection set", () => {
-                const queryWithSortField = `
+                const queryWithSortField = /* GraphQL */ `
                         query ($actorId: ID!, $direction: SortDirection!) {
                             ${actorType.plural}(where: { id_EQ: $actorId }) {
                                 id
-                                actedIn(options: { sort: [{ title: $direction }] }) {
+                                actedIn( sort: [{ title: $direction }] ) {
                                     id
                                     title
                                 }
@@ -781,11 +801,11 @@ describe("sort", () => {
             });
 
             describe("with field aliased in selection set", () => {
-                const queryWithAliasedSortField = `
+                const queryWithAliasedSortField = /* GraphQL */ `
                     query ($actorId: ID!, $direction: SortDirection!) {
                         ${actorType.plural}(where: { id_EQ: $actorId }) {
                             id
-                            actedIn(options: { sort: [{ title: $direction }] }) {
+                            actedIn(sort: [{ title: $direction }] ) {
                                 id
                                 aliased: title
                             }
@@ -827,11 +847,11 @@ describe("sort", () => {
             });
 
             describe("with field not in selection set", () => {
-                const queryWithOutSortField = `
+                const queryWithOutSortField = /* GraphQL */ `
                     query ($actorId: ID!, $direction: SortDirection!) {
                         ${actorType.plural}(where: { id_EQ: $actorId }) {
                             id
-                            actedIn(options: { sort: [{ title: $direction }] }) {
+                            actedIn(sort: [{ title: $direction }] ) {
                                 id
                             }
                         }

@@ -17,15 +17,15 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQL } from "../../src";
-import { formatCypher, formatParams, translateQuery } from "./utils/tck-test-utils";
+import { Neo4jGraphQL } from "../../../src";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
-describe("Cypher sort tests", () => {
+describe("Cypher sort deprecated", () => {
     let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = `
+        typeDefs = /* GraphQL */ `
             interface Production {
                 id: ID!
                 title: String!
@@ -42,13 +42,13 @@ describe("Cypher sort tests", () => {
                         columnName: "count"
                     )
                 totalGenres: Int!
-                @cypher(
-                    statement: """
-                    MATCH (this)-[:HAS_GENRE]->(genre:Genre)
-                    RETURN count(DISTINCT genre) as result
-                    """
-                    columnName: "result"
-                )
+                    @cypher(
+                        statement: """
+                        MATCH (this)-[:HAS_GENRE]->(genre:Genre)
+                        RETURN count(DISTINCT genre) as result
+                        """
+                        columnName: "result"
+                    )
             }
 
             type Genre @node {
@@ -221,6 +221,7 @@ describe("Cypher sort tests", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
+    
     test("Simple Sort On Cypher Field", async () => {
         const query = /* GraphQL */ `
             {
