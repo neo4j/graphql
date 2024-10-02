@@ -41,7 +41,6 @@ export function withOptionsInputType({
     }
     // TODO: Concrete vs Abstract discrepancy
     // is this intended? For ConcreteEntity is NonNull, for InterfaceEntity is nullable
-    //const sortFieldType = entityAdapter instanceof ConcreteEntityAdapter ? sortInput.NonNull.List : sortInput.List;
     const sortFieldType = sortInput.NonNull.List;
     optionsInputType.addFields({
         sort: {
