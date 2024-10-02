@@ -53,9 +53,6 @@ function augmentWhereInputType({
         fields[fieldName] = {
             type: whereType,
         };
-        fields[`${fieldName}_NOT`] = {
-            type: whereType,
-        };
     }
 
     if (filters) {
@@ -76,15 +73,6 @@ function augmentWhereInputType({
                         {
                             name: DEPRECATED,
                             args: { reason: `Use \`${fieldName}_SOME\` instead.` },
-                        },
-                    ],
-                };
-                fields[`${fieldName}_NOT`] = {
-                    type: whereType,
-                    directives: [
-                        {
-                            name: DEPRECATED,
-                            args: { reason: `Use \`${fieldName}_NONE\` instead.` },
                         },
                     ],
                 };

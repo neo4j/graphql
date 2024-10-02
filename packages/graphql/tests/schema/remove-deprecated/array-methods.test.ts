@@ -46,7 +46,6 @@ describe("Arrays Methods", () => {
             features: {
                 excludeDeprecatedFields: {
                     bookmark: true,
-                    negationFilters: true,
                     arrayFilters: true,
                     stringAggregation: true,
                     aggregationFilters: true,

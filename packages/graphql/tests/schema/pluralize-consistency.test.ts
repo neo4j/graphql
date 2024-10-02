@@ -194,11 +194,6 @@ describe("Pluralize consistency", () => {
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -271,7 +266,6 @@ describe("Pluralize consistency", () => {
               NOT: super_userMy_friendConnectionWhere
               OR: [super_userMy_friendConnectionWhere!]
               node: super_friendWhere
-              node_NOT: super_friendWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input super_userMy_friendCreateFieldInput {
@@ -390,7 +384,6 @@ describe("Pluralize consistency", () => {
               Return super_users where none of the related super_userMy_friendConnections match this filter
               \\"\\"\\"
               my_friendConnection_NONE: super_userMy_friendConnectionWhere
-              my_friendConnection_NOT: super_userMy_friendConnectionWhere @deprecated(reason: \\"Use \`my_friendConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return super_users where one of the related super_userMy_friendConnections match this filter
               \\"\\"\\"
@@ -407,7 +400,6 @@ describe("Pluralize consistency", () => {
               Return super_users where none of the related super_friends match this filter
               \\"\\"\\"
               my_friend_NONE: super_friendWhere
-              my_friend_NOT: super_friendWhere @deprecated(reason: \\"Use \`my_friend_NONE\` instead.\\")
               \\"\\"\\"
               Return super_users where one of the related super_friends match this filter
               \\"\\"\\"
@@ -421,11 +413,6 @@ describe("Pluralize consistency", () => {
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 

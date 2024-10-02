@@ -122,11 +122,6 @@ describe("Subscriptions", () => {
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -150,11 +145,6 @@ describe("Subscriptions", () => {
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -277,7 +267,6 @@ describe("Subscriptions", () => {
               NOT: MovieActorsConnectionWhere
               OR: [MovieActorsConnectionWhere!]
               node: ActorWhere
-              node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input MovieActorsCreateFieldInput {
@@ -485,8 +474,6 @@ describe("Subscriptions", () => {
               actorCount_IN: [Int]
               actorCount_LT: Int
               actorCount_LTE: Int
-              actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               averageRating: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
               averageRating_EQ: Float
               averageRating_GT: Float
@@ -494,22 +481,14 @@ describe("Subscriptions", () => {
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
-              averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               isActive: Boolean @deprecated(reason: \\"Please use the explicit _EQ version\\")
               isActive_EQ: Boolean
-              isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input MovieUpdateInput {
@@ -544,8 +523,6 @@ describe("Subscriptions", () => {
               actorCount_IN: [Int]
               actorCount_LT: Int
               actorCount_LTE: Int
-              actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
@@ -557,7 +534,6 @@ describe("Subscriptions", () => {
               Return Movies where none of the related MovieActorsConnections match this filter
               \\"\\"\\"
               actorsConnection_NONE: MovieActorsConnectionWhere
-              actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Movies where one of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -570,7 +546,6 @@ describe("Subscriptions", () => {
               actors_ALL: ActorWhere
               \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
               actors_NONE: ActorWhere
-              actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
               \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
@@ -582,22 +557,14 @@ describe("Subscriptions", () => {
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
-              averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               isActive: Boolean @deprecated(reason: \\"Please use the explicit _EQ version\\")
               isActive_EQ: Boolean
-              isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type MoviesConnection {
@@ -810,7 +777,6 @@ describe("Subscriptions", () => {
               NOT: ActorMoviesConnectionWhere
               OR: [ActorMoviesConnectionWhere!]
               node: MovieWhere
-              node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input ActorMoviesCreateFieldInput {
@@ -974,7 +940,6 @@ describe("Subscriptions", () => {
               Return Actors where none of the related ActorMoviesConnections match this filter
               \\"\\"\\"
               moviesConnection_NONE: ActorMoviesConnectionWhere
-              moviesConnection_NOT: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Actors where one of the related ActorMoviesConnections match this filter
               \\"\\"\\"
@@ -987,7 +952,6 @@ describe("Subscriptions", () => {
               movies_ALL: MovieWhere
               \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
               movies_NONE: MovieWhere
-              movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
               \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
               movies_SINGLE: MovieWhere
               \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
@@ -1100,7 +1064,6 @@ describe("Subscriptions", () => {
               NOT: MovieActorsConnectionWhere
               OR: [MovieActorsConnectionWhere!]
               node: ActorWhere
-              node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input MovieActorsCreateFieldInput {
@@ -1257,8 +1220,6 @@ describe("Subscriptions", () => {
               actorCount_IN: [Int]
               actorCount_LT: Int
               actorCount_LTE: Int
-              actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               averageRating: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
               averageRating_EQ: Float
               averageRating_GT: Float
@@ -1266,22 +1227,14 @@ describe("Subscriptions", () => {
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
-              averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               isActive: Boolean @deprecated(reason: \\"Please use the explicit _EQ version\\")
               isActive_EQ: Boolean
-              isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input MovieUpdateInput {
@@ -1316,8 +1269,6 @@ describe("Subscriptions", () => {
               actorCount_IN: [Int]
               actorCount_LT: Int
               actorCount_LTE: Int
-              actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
@@ -1329,7 +1280,6 @@ describe("Subscriptions", () => {
               Return Movies where none of the related MovieActorsConnections match this filter
               \\"\\"\\"
               actorsConnection_NONE: MovieActorsConnectionWhere
-              actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Movies where one of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -1342,7 +1292,6 @@ describe("Subscriptions", () => {
               actors_ALL: ActorWhere
               \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
               actors_NONE: ActorWhere
-              actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
               \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
@@ -1354,22 +1303,14 @@ describe("Subscriptions", () => {
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
-              averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               isActive: Boolean @deprecated(reason: \\"Please use the explicit _EQ version\\")
               isActive_EQ: Boolean
-              isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type MoviesConnection {
@@ -1606,7 +1547,6 @@ describe("Subscriptions", () => {
               NOT: MovieActorsPersonConnectionWhere
               OR: [MovieActorsPersonConnectionWhere!]
               node: PersonWhere
-              node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input MovieActorsPersonCreateFieldInput {
@@ -1656,7 +1596,6 @@ describe("Subscriptions", () => {
               NOT: MovieActorsStarConnectionWhere
               OR: [MovieActorsStarConnectionWhere!]
               node: StarWhere
-              node_NOT: StarWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input MovieActorsStarCreateFieldInput {
@@ -1813,8 +1752,6 @@ describe("Subscriptions", () => {
               actorCount_IN: [Int]
               actorCount_LT: Int
               actorCount_LTE: Int
-              actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               averageRating: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
               averageRating_EQ: Float
               averageRating_GT: Float
@@ -1822,22 +1759,14 @@ describe("Subscriptions", () => {
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
-              averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               isActive: Boolean @deprecated(reason: \\"Please use the explicit _EQ version\\")
               isActive_EQ: Boolean
-              isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input MovieUpdateInput {
@@ -1872,8 +1801,6 @@ describe("Subscriptions", () => {
               actorCount_IN: [Int]
               actorCount_LT: Int
               actorCount_LTE: Int
-              actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
               \\"\\"\\"
@@ -1884,7 +1811,6 @@ describe("Subscriptions", () => {
               Return Movies where none of the related MovieActorsConnections match this filter
               \\"\\"\\"
               actorsConnection_NONE: MovieActorsConnectionWhere
-              actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Movies where one of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -1897,7 +1823,6 @@ describe("Subscriptions", () => {
               actors_ALL: ActorWhere
               \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
               actors_NONE: ActorWhere
-              actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
               \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
@@ -1909,22 +1834,14 @@ describe("Subscriptions", () => {
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
-              averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               isActive: Boolean @deprecated(reason: \\"Please use the explicit _EQ version\\")
               isActive_EQ: Boolean
-              isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type MoviesConnection {
@@ -2059,7 +1976,6 @@ describe("Subscriptions", () => {
               NOT: PersonMoviesConnectionWhere
               OR: [PersonMoviesConnectionWhere!]
               node: MovieWhere
-              node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input PersonMoviesCreateFieldInput {
@@ -2223,7 +2139,6 @@ describe("Subscriptions", () => {
               Return People where none of the related PersonMoviesConnections match this filter
               \\"\\"\\"
               moviesConnection_NONE: PersonMoviesConnectionWhere
-              moviesConnection_NOT: PersonMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return People where one of the related PersonMoviesConnections match this filter
               \\"\\"\\"
@@ -2236,7 +2151,6 @@ describe("Subscriptions", () => {
               movies_ALL: MovieWhere
               \\"\\"\\"Return People where none of the related Movies match this filter\\"\\"\\"
               movies_NONE: MovieWhere
-              movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
               \\"\\"\\"Return People where one of the related Movies match this filter\\"\\"\\"
               movies_SINGLE: MovieWhere
               \\"\\"\\"Return People where some of the related Movies match this filter\\"\\"\\"
@@ -2370,7 +2284,6 @@ describe("Subscriptions", () => {
               NOT: StarMoviesConnectionWhere
               OR: [StarMoviesConnectionWhere!]
               node: MovieWhere
-              node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input StarMoviesCreateFieldInput {
@@ -2534,7 +2447,6 @@ describe("Subscriptions", () => {
               Return Stars where none of the related StarMoviesConnections match this filter
               \\"\\"\\"
               moviesConnection_NONE: StarMoviesConnectionWhere
-              moviesConnection_NOT: StarMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Stars where one of the related StarMoviesConnections match this filter
               \\"\\"\\"
@@ -2547,7 +2459,6 @@ describe("Subscriptions", () => {
               movies_ALL: MovieWhere
               \\"\\"\\"Return Stars where none of the related Movies match this filter\\"\\"\\"
               movies_NONE: MovieWhere
-              movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
               \\"\\"\\"Return Stars where one of the related Movies match this filter\\"\\"\\"
               movies_SINGLE: MovieWhere
               \\"\\"\\"Return Stars where some of the related Movies match this filter\\"\\"\\"
@@ -2699,8 +2610,6 @@ describe("Subscriptions", () => {
               screenTime_IN: [Int!]
               screenTime_LT: Int
               screenTime_LTE: Int
-              screenTime_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              screenTime_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input ActedInUpdateInput {
@@ -2720,8 +2629,6 @@ describe("Subscriptions", () => {
               screenTime_IN: [Int!]
               screenTime_LT: Int
               screenTime_LTE: Int
-              screenTime_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              screenTime_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type Actor {
@@ -2824,7 +2731,6 @@ describe("Subscriptions", () => {
               NOT: ActorMoviesConnectionWhere
               OR: [ActorMoviesConnectionWhere!]
               node: MovieWhere
-              node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input ActorMoviesCreateFieldInput {
@@ -2988,7 +2894,6 @@ describe("Subscriptions", () => {
               Return Actors where none of the related ActorMoviesConnections match this filter
               \\"\\"\\"
               moviesConnection_NONE: ActorMoviesConnectionWhere
-              moviesConnection_NOT: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Actors where one of the related ActorMoviesConnections match this filter
               \\"\\"\\"
@@ -3001,7 +2906,6 @@ describe("Subscriptions", () => {
               movies_ALL: MovieWhere
               \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
               movies_NONE: MovieWhere
-              movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
               \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
               movies_SINGLE: MovieWhere
               \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
@@ -3129,9 +3033,7 @@ describe("Subscriptions", () => {
               NOT: MovieActorsConnectionWhere
               OR: [MovieActorsConnectionWhere!]
               edge: ActedInWhere
-              edge_NOT: ActedInWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               node: ActorWhere
-              node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input MovieActorsCreateFieldInput {
@@ -3307,8 +3209,6 @@ describe("Subscriptions", () => {
               actorCount_IN: [Int]
               actorCount_LT: Int
               actorCount_LTE: Int
-              actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               averageRating: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
               averageRating_EQ: Float
               averageRating_GT: Float
@@ -3316,22 +3216,14 @@ describe("Subscriptions", () => {
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
-              averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               isActive: Boolean @deprecated(reason: \\"Please use the explicit _EQ version\\")
               isActive_EQ: Boolean
-              isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input MovieUpdateInput {
@@ -3366,8 +3258,6 @@ describe("Subscriptions", () => {
               actorCount_IN: [Int]
               actorCount_LT: Int
               actorCount_LTE: Int
-              actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
@@ -3379,7 +3269,6 @@ describe("Subscriptions", () => {
               Return Movies where none of the related MovieActorsConnections match this filter
               \\"\\"\\"
               actorsConnection_NONE: MovieActorsConnectionWhere
-              actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Movies where one of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -3392,7 +3281,6 @@ describe("Subscriptions", () => {
               actors_ALL: ActorWhere
               \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
               actors_NONE: ActorWhere
-              actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
               \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
@@ -3404,22 +3292,14 @@ describe("Subscriptions", () => {
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
-              averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               isActive: Boolean @deprecated(reason: \\"Please use the explicit _EQ version\\")
               isActive_EQ: Boolean
-              isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type MoviesConnection {
@@ -3590,11 +3470,6 @@ describe("Subscriptions", () => {
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -3618,11 +3493,6 @@ describe("Subscriptions", () => {
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -3741,7 +3611,6 @@ describe("Subscriptions", () => {
               NOT: MovieActorsConnectionWhere
               OR: [MovieActorsConnectionWhere!]
               node: ActorWhere
-              node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input MovieActorsCreateFieldInput {
@@ -3900,8 +3769,6 @@ describe("Subscriptions", () => {
               actorCount_IN: [Int]
               actorCount_LT: Int
               actorCount_LTE: Int
-              actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
@@ -3913,7 +3780,6 @@ describe("Subscriptions", () => {
               Return Movies where none of the related MovieActorsConnections match this filter
               \\"\\"\\"
               actorsConnection_NONE: MovieActorsConnectionWhere
-              actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Movies where one of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -3926,7 +3792,6 @@ describe("Subscriptions", () => {
               actors_ALL: ActorWhere
               \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
               actors_NONE: ActorWhere
-              actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
               \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
@@ -3938,22 +3803,14 @@ describe("Subscriptions", () => {
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
-              averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               isActive: Boolean @deprecated(reason: \\"Please use the explicit _EQ version\\")
               isActive_EQ: Boolean
-              isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type MoviesConnection {
@@ -4163,7 +4020,6 @@ describe("Subscriptions", () => {
               NOT: AgreementOwnerConnectionWhere
               OR: [AgreementOwnerConnectionWhere!]
               node: UserWhere
-              node_NOT: UserWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input AgreementOwnerCreateFieldInput {
@@ -4340,18 +4196,11 @@ describe("Subscriptions", () => {
               id_IN: [Int!]
               id_LT: Int
               id_LTE: Int
-              id_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -4391,24 +4240,15 @@ describe("Subscriptions", () => {
               id_IN: [Int!]
               id_LT: Int
               id_LTE: Int
-              id_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
               owner: UserWhere
               ownerAggregate: AgreementOwnerAggregateInput
               ownerConnection: AgreementOwnerConnectionWhere
-              ownerConnection_NOT: AgreementOwnerConnectionWhere
-              owner_NOT: UserWhere
             }
 
             type AgreementsConnection {
@@ -4571,22 +4411,12 @@ describe("Subscriptions", () => {
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
               username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               username_CONTAINS: String
               username_ENDS_WITH: String
               username_EQ: String
               username_IN: [String!]
-              username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               username_STARTS_WITH: String
             }
 
@@ -4604,22 +4434,12 @@ describe("Subscriptions", () => {
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
               username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               username_CONTAINS: String
               username_ENDS_WITH: String
               username_EQ: String
               username_IN: [String!]
-              username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               username_STARTS_WITH: String
             }
 
@@ -4789,7 +4609,6 @@ describe("Subscriptions", () => {
               NOT: MovieActorsPersonConnectionWhere
               OR: [MovieActorsPersonConnectionWhere!]
               node: PersonWhere
-              node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input MovieActorsPersonCreateFieldInput {
@@ -4839,7 +4658,6 @@ describe("Subscriptions", () => {
               NOT: MovieActorsStarConnectionWhere
               OR: [MovieActorsStarConnectionWhere!]
               node: StarWhere
-              node_NOT: StarWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input MovieActorsStarCreateFieldInput {
@@ -4996,8 +4814,6 @@ describe("Subscriptions", () => {
               actorCount_IN: [Int]
               actorCount_LT: Int
               actorCount_LTE: Int
-              actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               averageRating: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
               averageRating_EQ: Float
               averageRating_GT: Float
@@ -5005,22 +4821,14 @@ describe("Subscriptions", () => {
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
-              averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               isActive: Boolean @deprecated(reason: \\"Please use the explicit _EQ version\\")
               isActive_EQ: Boolean
-              isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input MovieUpdateInput {
@@ -5055,8 +4863,6 @@ describe("Subscriptions", () => {
               actorCount_IN: [Int]
               actorCount_LT: Int
               actorCount_LTE: Int
-              actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              actorCount_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
               \\"\\"\\"
@@ -5067,7 +4873,6 @@ describe("Subscriptions", () => {
               Return Movies where none of the related MovieActorsConnections match this filter
               \\"\\"\\"
               actorsConnection_NONE: MovieActorsConnectionWhere
-              actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Movies where one of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -5080,7 +4885,6 @@ describe("Subscriptions", () => {
               actors_ALL: ActorWhere
               \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
               actors_NONE: ActorWhere
-              actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
               \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
@@ -5092,22 +4896,14 @@ describe("Subscriptions", () => {
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
-              averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              averageRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               isActive: Boolean @deprecated(reason: \\"Please use the explicit _EQ version\\")
               isActive_EQ: Boolean
-              isActive_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type MoviesConnection {
@@ -5242,7 +5038,6 @@ describe("Subscriptions", () => {
               NOT: PersonMoviesConnectionWhere
               OR: [PersonMoviesConnectionWhere!]
               node: MovieWhere
-              node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input PersonMoviesCreateFieldInput {
@@ -5406,7 +5201,6 @@ describe("Subscriptions", () => {
               Return People where none of the related PersonMoviesConnections match this filter
               \\"\\"\\"
               moviesConnection_NONE: PersonMoviesConnectionWhere
-              moviesConnection_NOT: PersonMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return People where one of the related PersonMoviesConnections match this filter
               \\"\\"\\"
@@ -5419,7 +5213,6 @@ describe("Subscriptions", () => {
               movies_ALL: MovieWhere
               \\"\\"\\"Return People where none of the related Movies match this filter\\"\\"\\"
               movies_NONE: MovieWhere
-              movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
               \\"\\"\\"Return People where one of the related Movies match this filter\\"\\"\\"
               movies_SINGLE: MovieWhere
               \\"\\"\\"Return People where some of the related Movies match this filter\\"\\"\\"
@@ -5535,7 +5328,6 @@ describe("Subscriptions", () => {
               NOT: StarMoviesConnectionWhere
               OR: [StarMoviesConnectionWhere!]
               node: MovieWhere
-              node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input StarMoviesCreateFieldInput {
@@ -5660,7 +5452,6 @@ describe("Subscriptions", () => {
               Return Stars where none of the related StarMoviesConnections match this filter
               \\"\\"\\"
               moviesConnection_NONE: StarMoviesConnectionWhere
-              moviesConnection_NOT: StarMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Stars where one of the related StarMoviesConnections match this filter
               \\"\\"\\"
@@ -5673,7 +5464,6 @@ describe("Subscriptions", () => {
               movies_ALL: MovieWhere
               \\"\\"\\"Return Stars where none of the related Movies match this filter\\"\\"\\"
               movies_NONE: MovieWhere
-              movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
               \\"\\"\\"Return Stars where one of the related Movies match this filter\\"\\"\\"
               movies_SINGLE: MovieWhere
               \\"\\"\\"Return Stars where some of the related Movies match this filter\\"\\"\\"
@@ -5866,7 +5656,6 @@ describe("Subscriptions", () => {
               NOT: CreatureMoviesConnectionWhere
               OR: [CreatureMoviesConnectionWhere!]
               node: ProductionWhere
-              node_NOT: ProductionWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input CreatureMoviesCreateFieldInput {
@@ -5924,8 +5713,6 @@ describe("Subscriptions", () => {
               movies: ProductionWhere
               moviesAggregate: CreatureMoviesAggregateInput
               moviesConnection: CreatureMoviesConnectionWhere
-              moviesConnection_NOT: CreatureMoviesConnectionWhere
-              movies_NOT: ProductionWhere
               typename_IN: [CreatureImplementation!]
             }
 
@@ -6087,29 +5874,17 @@ describe("Subscriptions", () => {
               director: CreatureWhere
               directorAggregate: MovieDirectorAggregateInput
               directorConnection: ProductionDirectorConnectionWhere
-              directorConnection_NOT: ProductionDirectorConnectionWhere
-              director_NOT: CreatureWhere
               id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
               title_IN: [String!]
-              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 
@@ -6318,8 +6093,6 @@ describe("Subscriptions", () => {
               movies: ProductionWhere
               moviesAggregate: PersonMoviesAggregateInput
               moviesConnection: CreatureMoviesConnectionWhere
-              moviesConnection_NOT: CreatureMoviesConnectionWhere
-              movies_NOT: ProductionWhere
             }
 
             interface Production {
@@ -6377,7 +6150,6 @@ describe("Subscriptions", () => {
               NOT: ProductionDirectorConnectionWhere
               OR: [ProductionDirectorConnectionWhere!]
               node: CreatureWhere
-              node_NOT: CreatureWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input ProductionDirectorCreateFieldInput {
@@ -6455,11 +6227,6 @@ describe("Subscriptions", () => {
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               typename_IN: [ProductionImplementation!]
             }
@@ -6476,18 +6243,11 @@ describe("Subscriptions", () => {
               director: CreatureWhere
               directorAggregate: ProductionDirectorAggregateInput
               directorConnection: ProductionDirectorConnectionWhere
-              directorConnection_NOT: ProductionDirectorConnectionWhere
-              director_NOT: CreatureWhere
               id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               typename_IN: [ProductionImplementation!]
             }
@@ -6693,29 +6453,17 @@ describe("Subscriptions", () => {
               episode_IN: [Int!]
               episode_LT: Int
               episode_LTE: Int
-              episode_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              episode_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
               title_IN: [String!]
-              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 
@@ -6742,8 +6490,6 @@ describe("Subscriptions", () => {
               director: CreatureWhere
               directorAggregate: SeriesDirectorAggregateInput
               directorConnection: ProductionDirectorConnectionWhere
-              directorConnection_NOT: ProductionDirectorConnectionWhere
-              director_NOT: CreatureWhere
               episode: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
               episode_EQ: Int
               episode_GT: Int
@@ -6751,29 +6497,17 @@ describe("Subscriptions", () => {
               episode_IN: [Int!]
               episode_LT: Int
               episode_LTE: Int
-              episode_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              episode_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
               title_IN: [String!]
-              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 

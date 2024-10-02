@@ -40,8 +40,4 @@ export class ListAdapter {
     getIncludes(): string {
         return `${this.AttributeAdapter.name}_INCLUDES`;
     }
-
-    getNotIncludes(): string {
-        return `${this.AttributeAdapter.name}_NOT_INCLUDES`;
-    }
 }

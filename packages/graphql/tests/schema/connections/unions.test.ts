@@ -112,9 +112,7 @@ describe("Unions", () => {
               NOT: AuthorPublicationsBookConnectionWhere
               OR: [AuthorPublicationsBookConnectionWhere!]
               edge: WroteWhere
-              edge_NOT: WroteWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               node: BookWhere
-              node_NOT: BookWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input AuthorPublicationsBookCreateFieldInput {
@@ -202,9 +200,7 @@ describe("Unions", () => {
               NOT: AuthorPublicationsJournalConnectionWhere
               OR: [AuthorPublicationsJournalConnectionWhere!]
               edge: WroteWhere
-              edge_NOT: WroteWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               node: JournalWhere
-              node_NOT: JournalWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input AuthorPublicationsJournalCreateFieldInput {
@@ -277,11 +273,6 @@ describe("Unions", () => {
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
               publications: PublicationWhere @deprecated(reason: \\"Use \`publications_SOME\` instead.\\")
               publicationsConnection: AuthorPublicationsConnectionWhere @deprecated(reason: \\"Use \`publicationsConnection_SOME\` instead.\\")
@@ -293,7 +284,6 @@ describe("Unions", () => {
               Return Authors where none of the related AuthorPublicationsConnections match this filter
               \\"\\"\\"
               publicationsConnection_NONE: AuthorPublicationsConnectionWhere
-              publicationsConnection_NOT: AuthorPublicationsConnectionWhere @deprecated(reason: \\"Use \`publicationsConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Authors where one of the related AuthorPublicationsConnections match this filter
               \\"\\"\\"
@@ -308,7 +298,6 @@ describe("Unions", () => {
               Return Authors where none of the related Publications match this filter
               \\"\\"\\"
               publications_NONE: PublicationWhere
-              publications_NOT: PublicationWhere @deprecated(reason: \\"Use \`publications_NONE\` instead.\\")
               \\"\\"\\"Return Authors where one of the related Publications match this filter\\"\\"\\"
               publications_SINGLE: PublicationWhere
               \\"\\"\\"
@@ -388,9 +377,7 @@ describe("Unions", () => {
               NOT: BookAuthorConnectionWhere
               OR: [BookAuthorConnectionWhere!]
               edge: WroteWhere
-              edge_NOT: WroteWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               node: AuthorWhere
-              node_NOT: AuthorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input BookAuthorCreateFieldInput {
@@ -540,7 +527,6 @@ describe("Unions", () => {
               Return Books where none of the related BookAuthorConnections match this filter
               \\"\\"\\"
               authorConnection_NONE: BookAuthorConnectionWhere
-              authorConnection_NOT: BookAuthorConnectionWhere @deprecated(reason: \\"Use \`authorConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Books where one of the related BookAuthorConnections match this filter
               \\"\\"\\"
@@ -553,7 +539,6 @@ describe("Unions", () => {
               author_ALL: AuthorWhere
               \\"\\"\\"Return Books where none of the related Authors match this filter\\"\\"\\"
               author_NONE: AuthorWhere
-              author_NOT: AuthorWhere @deprecated(reason: \\"Use \`author_NONE\` instead.\\")
               \\"\\"\\"Return Books where one of the related Authors match this filter\\"\\"\\"
               author_SINGLE: AuthorWhere
               \\"\\"\\"Return Books where some of the related Authors match this filter\\"\\"\\"
@@ -563,11 +548,6 @@ describe("Unions", () => {
               title_ENDS_WITH: String
               title_EQ: String
               title_IN: [String!]
-              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 
@@ -682,9 +662,7 @@ describe("Unions", () => {
               NOT: JournalAuthorConnectionWhere
               OR: [JournalAuthorConnectionWhere!]
               edge: WroteWhere
-              edge_NOT: WroteWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               node: AuthorWhere
-              node_NOT: AuthorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input JournalAuthorCreateFieldInput {
@@ -834,7 +812,6 @@ describe("Unions", () => {
               Return Journals where none of the related JournalAuthorConnections match this filter
               \\"\\"\\"
               authorConnection_NONE: JournalAuthorConnectionWhere
-              authorConnection_NOT: JournalAuthorConnectionWhere @deprecated(reason: \\"Use \`authorConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Journals where one of the related JournalAuthorConnections match this filter
               \\"\\"\\"
@@ -847,7 +824,6 @@ describe("Unions", () => {
               author_ALL: AuthorWhere
               \\"\\"\\"Return Journals where none of the related Authors match this filter\\"\\"\\"
               author_NONE: AuthorWhere
-              author_NOT: AuthorWhere @deprecated(reason: \\"Use \`author_NONE\` instead.\\")
               \\"\\"\\"Return Journals where one of the related Authors match this filter\\"\\"\\"
               author_SINGLE: AuthorWhere
               \\"\\"\\"Return Journals where some of the related Authors match this filter\\"\\"\\"
@@ -857,11 +833,6 @@ describe("Unions", () => {
               subject_ENDS_WITH: String
               subject_EQ: String
               subject_IN: [String!]
-              subject_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              subject_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              subject_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              subject_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              subject_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               subject_STARTS_WITH: String
             }
 
@@ -1022,8 +993,6 @@ describe("Unions", () => {
               words_IN: [Int!]
               words_LT: Int
               words_LTE: Int
-              words_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              words_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }"
         `);
     });

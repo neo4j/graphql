@@ -149,9 +149,7 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               NOT: CrewMemberMoviesConnectionWhere
               OR: [CrewMemberMoviesConnectionWhere!]
               edge: CrewPositionWhere
-              edge_NOT: CrewPositionWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               node: MovieWhere
-              node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input CrewMemberMoviesCreateFieldInput {
@@ -253,8 +251,6 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               movies: MovieWhere
               moviesAggregate: CrewMemberMoviesAggregateInput
               moviesConnection: CrewMemberMoviesConnectionWhere
-              moviesConnection_NOT: CrewMemberMoviesConnectionWhere
-              movies_NOT: MovieWhere
             }
 
             type CrewMembersConnection {
@@ -296,8 +292,6 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               position: CrewPositionType @deprecated(reason: \\"Please use the explicit _EQ version\\")
               position_EQ: CrewPositionType
               position_IN: [CrewPositionType]
-              position_NOT: CrewPositionType @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              position_NOT_IN: [CrewPositionType] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             \\"\\"\\"
@@ -360,11 +354,6 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 

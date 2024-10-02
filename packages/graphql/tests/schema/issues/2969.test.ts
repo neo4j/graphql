@@ -143,7 +143,6 @@ describe("https://github.com/neo4j/graphql/issues/2969", () => {
               NOT: PostAuthorConnectionWhere
               OR: [PostAuthorConnectionWhere!]
               node: UserWhere
-              node_NOT: UserWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input PostAuthorCreateFieldInput {
@@ -293,18 +292,11 @@ describe("https://github.com/neo4j/graphql/issues/2969", () => {
               author: UserWhere
               authorAggregate: PostAuthorAggregateInput
               authorConnection: PostAuthorConnectionWhere
-              authorConnection_NOT: PostAuthorConnectionWhere
-              author_NOT: UserWhere
               content: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               content_CONTAINS: String
               content_ENDS_WITH: String
               content_EQ: String
               content_IN: [String!]
-              content_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              content_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              content_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              content_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              content_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               content_STARTS_WITH: String
             }
 
@@ -452,7 +444,6 @@ describe("https://github.com/neo4j/graphql/issues/2969", () => {
               NOT: UserPostsConnectionWhere
               OR: [UserPostsConnectionWhere!]
               node: PostWhere
-              node_NOT: PostWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input UserPostsCreateFieldInput {
@@ -560,22 +551,12 @@ describe("https://github.com/neo4j/graphql/issues/2969", () => {
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID!]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
               posts: PostWhere @deprecated(reason: \\"Use \`posts_SOME\` instead.\\")
               postsAggregate: UserPostsAggregateInput
@@ -588,7 +569,6 @@ describe("https://github.com/neo4j/graphql/issues/2969", () => {
               Return Users where none of the related UserPostsConnections match this filter
               \\"\\"\\"
               postsConnection_NONE: UserPostsConnectionWhere
-              postsConnection_NOT: UserPostsConnectionWhere @deprecated(reason: \\"Use \`postsConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Users where one of the related UserPostsConnections match this filter
               \\"\\"\\"
@@ -601,7 +581,6 @@ describe("https://github.com/neo4j/graphql/issues/2969", () => {
               posts_ALL: PostWhere
               \\"\\"\\"Return Users where none of the related Posts match this filter\\"\\"\\"
               posts_NONE: PostWhere
-              posts_NOT: PostWhere @deprecated(reason: \\"Use \`posts_NONE\` instead.\\")
               \\"\\"\\"Return Users where one of the related Posts match this filter\\"\\"\\"
               posts_SINGLE: PostWhere
               \\"\\"\\"Return Users where some of the related Posts match this filter\\"\\"\\"
