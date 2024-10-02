@@ -222,24 +222,26 @@ describe("@alias directive", () => {
             mutation {
                 ${typeActor.operations.update}(
                     update: {
-                            name: "Tom Hanks"
-                    },
-                    connectOrCreate: {
+                        name: "Tom Hanks"
                         actedIn: {
                             ${typeMovie.name}: {
-                                where: { node: { isan_EQ: "${movieIsan}" } }
-                                onCreate: {
-                                    edge: { screentime: 105 }
-                                    node: { title: "Forrest Gump", isan: "${movieIsan}" }
+                                connectOrCreate: {
+                                    where: { node: { isan_EQ: "${movieIsan}" } }
+                                    onCreate: {
+                                        edge: { screentime: 105 }
+                                        node: { title: "Forrest Gump", isan: "${movieIsan}" }
+                                    }
                                 }
                             }
                             ${typeSeries.name}: {
-                                where: { node: { isan_EQ: "${seriesIsan}" } }
-                                onCreate: {
-                                    edge: { screentime: 126 }
-                                    node: {
-                                        title: "Band of Brothers"
-                                        isan: "${seriesIsan}"
+                                connectOrCreate: {
+                                    where: { node: { isan_EQ: "${seriesIsan}" } }
+                                    onCreate: {
+                                        edge: { screentime: 126 }
+                                        node: {
+                                            title: "Band of Brothers"
+                                            isan: "${seriesIsan}"
+                                        }
                                     }
                                 }
                             }
@@ -255,6 +257,7 @@ describe("@alias directive", () => {
         const gqlResult = await testHelper.executeGraphQL(query);
         expect(gqlResult.errors).toBeUndefined();
     });
+
     test("Create mutation with top-level connectOrCreate, alias referring to existing field, include both fields as inputs - first rel type", async () => {
         const movieIsan = "0000-0000-03B6-0000-O-0000-0006-P";
         const seriesIsan = "0000-0001-ECC5-0000-8-0000-0001-B";
@@ -263,24 +266,26 @@ describe("@alias directive", () => {
             mutation {
                 ${typeActor.operations.update}(
                     update: {
-                            name: "Tom Hanks"
-                    },
-                    connectOrCreate: {
+                        name: "Tom Hanks"
                         actedIn: {
                             ${typeMovie.name}: {
-                                where: { node: { isan_EQ: "${movieIsan}" } }
-                                onCreate: {
-                                    edge: { screentime: 105 }
-                                    node: { title: "Forrest Gump", titleAgain: "oops", isan: "${movieIsan}" }
+                                connectOrCreate: {
+                                    where: { node: { isan_EQ: "${movieIsan}" } }
+                                    onCreate: {
+                                        edge: { screentime: 105 }
+                                        node: { title: "Forrest Gump", titleAgain: "oops", isan: "${movieIsan}" }
+                                    }
                                 }
                             }
                             ${typeSeries.name}: {
-                                where: { node: { isan_EQ: "${seriesIsan}" } }
-                                onCreate: {
-                                    edge: { screentime: 126 }
-                                    node: {
-                                        title: "Band of Brothers"
-                                        isan: "${seriesIsan}"
+                                connectOrCreate: {
+                                    where: { node: { isan_EQ: "${seriesIsan}" } }
+                                    onCreate: {
+                                        edge: { screentime: 126 }
+                                        node: {
+                                            title: "Band of Brothers"
+                                            isan: "${seriesIsan}"
+                                        }
                                     }
                                 }
                             }
@@ -302,6 +307,7 @@ describe("@alias directive", () => {
         );
         expect(gqlResult?.data?.[typeActor.operations.update]?.[typeActor.plural]).toBeUndefined();
     });
+
     test("Create mutation with top-level connectOrCreate, alias referring to existing field, include both fields as inputs - second rel type", async () => {
         const movieIsan = "0000-0000-03B6-0000-O-0000-0006-P";
         const seriesIsan = "0000-0001-ECC5-0000-8-0000-0001-B";
@@ -310,20 +316,21 @@ describe("@alias directive", () => {
             mutation {
                 ${typeActor.operations.update}(
                     update: {
-                            name: "Tom Hanks"
-                    },
-                    connectOrCreate: {
+                        name: "Tom Hanks"
                         actedIn: {
                             ${typeMovie.name}: {
-                                where: { node: { isan_EQ: "${movieIsan}" } }
-                                onCreate: {
-                                    edge: { screentime: 105 }
-                                    node: { title: "Forrest Gump", isan: "${movieIsan}" }
+                                connectOrCreate: {
+                                    where: { node: { isan_EQ: "${movieIsan}" } }
+                                    onCreate: {
+                                        edge: { screentime: 105 }
+                                        node: { title: "Forrest Gump", isan: "${movieIsan}" }
+                                    }
                                 }
                             }
                             ${typeSeries.name}: {
-                                where: { node: { isan_EQ: "${seriesIsan}" } }
-                                onCreate: {
+                                connectOrCreate: {
+                                    where: { node: { isan_EQ: "${seriesIsan}" } }
+                                    onCreate: {
                                     edge: { screentime: 126 }
                                     node: {
                                         title: "Band of Brothers",
@@ -331,8 +338,9 @@ describe("@alias directive", () => {
                                         isan: "${seriesIsan}"
                                     }
                                 }
-                            }
+                            }   
                         }
+                    }
                 }){
                     ${typeActor.plural} {
                         name
@@ -358,25 +366,27 @@ describe("@alias directive", () => {
             mutation {
                 ${typeActor.operations.update}(
                     update: {
-                            name: "Tom Hanks",
-                            nameAgain: "oops"
-                    },
-                    connectOrCreate: {
+                        nameAgain: "oops"
+                        name: "Tom Hanks",
                         actedIn: {
                             ${typeMovie.name}: {
-                                where: { node: { isan_EQ: "${movieIsan}" } }
-                                onCreate: {
-                                    edge: { screentime: 105 }
-                                    node: { title: "Forrest Gump", isan: "${movieIsan}" }
+                                connectOrCreate: {
+                                    where: { node: { isan_EQ: "${movieIsan}" } }
+                                    onCreate: {
+                                        edge: { screentime: 105 }
+                                        node: { title: "Forrest Gump", isan: "${movieIsan}" }
+                                    }
                                 }
                             }
                             ${typeSeries.name}: {
-                                where: { node: { isan_EQ: "${seriesIsan}" } }
-                                onCreate: {
-                                    edge: { screentime: 126 }
-                                    node: {
-                                        title: "Band of Brothers",
-                                        isan: "${seriesIsan}"
+                                connectOrCreate: {
+                                    where: { node: { isan_EQ: "${seriesIsan}" } }
+                                    onCreate: {
+                                        edge: { screentime: 126 }
+                                        node: {
+                                            title: "Band of Brothers",
+                                            isan: "${seriesIsan}"
+                                        }
                                     }
                                 }
                             }

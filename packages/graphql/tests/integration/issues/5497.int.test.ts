@@ -82,8 +82,12 @@ describe("https://github.com/neo4j/graphql/issues/5467", () => {
             mutation ($fileId: ID!, $newCategoryId: ID) {
                 ${File.operations.update}(
                     where: { id_EQ: $fileId }
-                    disconnect: { category: { where: { node: { NOT: { id_EQ: $newCategoryId } } } } }
-                    connect: { category: { where: { node: { id_EQ: $newCategoryId } } } }
+                    update: {
+                        category: {
+                            disconnect: { where: { node: { NOT: { id_EQ: $newCategoryId } } } } 
+                            connect: { where: { node: { id_EQ: $newCategoryId } } } 
+                        }
+                    }
                 ) {
                     info {
                         relationshipsDeleted

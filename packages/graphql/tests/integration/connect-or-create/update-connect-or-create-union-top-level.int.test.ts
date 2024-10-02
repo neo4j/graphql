@@ -69,23 +69,25 @@ describe("Update -> ConnectOrCreate union top level", () => {
                 ${typeActor.operations.update}(
                     update: {
                             name: "Tom Hanks"
-                    },
-                    connectOrCreate: {
                         actedIn: {
                             ${typeMovie.name}: {
-                                where: { node: { isan_EQ: "${movieIsan}" } }
-                                onCreate: {
-                                    edge: { screentime: 105 }
-                                    node: { title: "Forrest Gump", isan: "${movieIsan}" }
+                                connectOrCreate: {
+                                    where: { node: { isan_EQ: "${movieIsan}" } }
+                                    onCreate: {
+                                        edge: { screentime: 105 }
+                                        node: { title: "Forrest Gump", isan: "${movieIsan}" }
+                                    }
                                 }
                             }
                             ${typeSeries.name}: {
-                                where: { node: { isan_EQ: "${seriesIsan}" } }
-                                onCreate: {
-                                    edge: { screentime: 126 }
-                                    node: {
-                                        title: "Band of Brothers"
-                                        isan: "${seriesIsan}"
+                                connectOrCreate: {
+                                    where: { node: { isan_EQ: "${seriesIsan}" } }
+                                    onCreate: {
+                                        edge: { screentime: 126 }
+                                        node: {
+                                            title: "Band of Brothers"
+                                            isan: "${seriesIsan}"
+                                        }
                                     }
                                 }
                             }
@@ -155,25 +157,27 @@ describe("Update -> ConnectOrCreate union top level", () => {
                 ${typeActor.operations.update}(
                     update: {
                             name: "${actorName}"
-                    },
-                    connectOrCreate: {
                         actedIn: {
                             ${typeMovie.name}: {
-                                where: { node: { isan_EQ: "${movieIsan}" } }
-                                onCreate: {
-                                    edge: { screentime: 105 }
-                                    node: { title: "Forrest Gump", isan: "${movieIsan}" }
-                                }
+                                connectOrCreate: {
+                                    where: { node: { isan_EQ: "${movieIsan}" } }
+                                    onCreate: {
+                                        edge: { screentime: 105 }
+                                        node: { title: "Forrest Gump", isan: "${movieIsan}" }
+                                    }
+                                }   
                             }
                             ${typeSeries.name}: {
-                                where: { node: { isan_EQ: "${seriesIsan}" } }
-                                onCreate: {
-                                    edge: { screentime: 126 }
-                                    node: {
-                                        title: "Band of Brothers"
-                                        isan: "${seriesIsan}"
+                                connectOrCreate: {
+                                    where: { node: { isan_EQ: "${seriesIsan}" } }
+                                    onCreate: {
+                                        edge: { screentime: 126 }
+                                        node: {
+                                            title: "Band of Brothers"
+                                            isan: "${seriesIsan}"
+                                        }
                                     }
-                                }
+                                }   
                             }
                         }
                 }

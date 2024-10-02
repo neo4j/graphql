@@ -60,12 +60,12 @@ describe("Update -> ConnectOrCreate Top Level", () => {
               ${typeActor.operations.update}(
                 update: {
                     name: "Tom Hanks 2"
-                },
-                connectOrCreate: {
                     ${typeMovie.plural}: {
-                    where: { node: { id_EQ: 5 } }
-                    onCreate: { edge: { screentime: 105 }, node: { title: "The Terminal", id: 5 } }
-                  }
+                      connectOrCreate: {
+                        where: { node: { id_EQ: 5 } }
+                        onCreate: { edge: { screentime: 105 }, node: { title: "The Terminal", id: 5 } }
+                      }
+                    }
                 }
                 where: { name_EQ: "Tom Hanks"}
               ) {
@@ -112,12 +112,12 @@ describe("Update -> ConnectOrCreate Top Level", () => {
             mutation {
               ${typeActor.operations.update}(
                 update: {
-                    name: "${updatedActorName}"
-                },
-                connectOrCreate: {
-                ${typeMovie.plural}: {
-                    where: { node: { id_EQ: 2222 } }
-                    onCreate: { edge: { screentime: 105 }, node: { title: "The Terminal", id: 22224 } }
+                  name: "${updatedActorName}"
+                  ${typeMovie.plural}: {
+                    connectOrCreate: {
+                      where: { node: { id_EQ: 2222 } }
+                      onCreate: { edge: { screentime: 105 }, node: { title: "The Terminal", id: 22224 } }
+                    }
                   }
               }
                 where: { name_EQ: "${testActorName}"}
