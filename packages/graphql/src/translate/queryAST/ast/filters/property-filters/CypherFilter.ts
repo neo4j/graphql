@@ -70,7 +70,11 @@ export class CypherFilter extends Filter {
     public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
         const { selection: cypherSubquery, nestedContext } = this.selection.apply(context);
 
-        const clause = cypherSubquery.return([nestedContext.returnVariable, this.returnVariable]);
+        const nestedReturnVariable = this.attribute.typeHelper.isList()
+            ? Cypher.collect(nestedContext.returnVariable)
+            : nestedContext.returnVariable;
+
+        const clause: Cypher.Clause = cypherSubquery.return([nestedReturnVariable, this.returnVariable]);
 
         return [clause];
     }
