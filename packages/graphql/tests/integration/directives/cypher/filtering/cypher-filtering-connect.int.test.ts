@@ -30,7 +30,7 @@ describe("cypher directive filtering", () => {
         const Movie = testHelper.createUniqueType("Movie");
         const Actor = testHelper.createUniqueType("Actor");
 
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${Movie} @node {
                 title: String
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
@@ -62,7 +62,7 @@ describe("cypher directive filtering", () => {
             {}
         );
 
-        const query = `
+        const query = /* GraphQL */ `
             mutation {
                 ${Movie.operations.create}(
                     input: [

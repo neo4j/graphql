@@ -97,7 +97,7 @@ describe("cypher directive filtering", () => {
             cypherStatement: "RETURN [localtime('12:00:00'), localtime('13:00:00')] as list",
         },
     ] as const)("$title", async ({ filter, type, cypherStatement }) => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${CustomType} @node {
                 title: String
                 custom_cypher_list: [${type}] @cypher(statement: "${cypherStatement}", columnName: "list")
@@ -107,7 +107,7 @@ describe("cypher directive filtering", () => {
         await testHelper.initNeo4jGraphQL({ typeDefs });
         await testHelper.executeCypher(`CREATE (m:${CustomType} { title: "test" })`, {});
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 ${CustomType.plural}(where: { ${filter} }) {
                     title

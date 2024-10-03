@@ -34,7 +34,7 @@ describe("cypher directive filtering", () => {
     });
 
     test("DateTime cypher field", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${CustomType} @node {
                 title: String
                 special_time: DateTime
@@ -50,7 +50,7 @@ describe("cypher directive filtering", () => {
         await testHelper.initNeo4jGraphQL({ typeDefs });
         await testHelper.executeCypher(`CREATE (m:${CustomType} { title: "test" })`, {});
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 ${CustomType.plural}(
                     where: {
@@ -77,7 +77,7 @@ describe("cypher directive filtering", () => {
     });
 
     test("Duration cypher field", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${CustomType} @node {
                 title: String
                 special_duration: Duration
@@ -93,7 +93,7 @@ describe("cypher directive filtering", () => {
         await testHelper.initNeo4jGraphQL({ typeDefs });
         await testHelper.executeCypher(`CREATE (m:${CustomType} { title: "test" })`, {});
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 ${CustomType.plural}(
                     where: {
@@ -118,7 +118,7 @@ describe("cypher directive filtering", () => {
     });
 
     test("Duration cypher field LT", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${CustomType} @node {
                 title: String
                 special_duration: Duration
@@ -134,7 +134,7 @@ describe("cypher directive filtering", () => {
         await testHelper.initNeo4jGraphQL({ typeDefs });
         await testHelper.executeCypher(`CREATE (m:${CustomType} { title: "test" })`, {});
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 ${CustomType.plural}(
                     where: {
@@ -159,7 +159,7 @@ describe("cypher directive filtering", () => {
     });
 
     test("Duration cypher field LTE", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${CustomType} @node {
                 title: String
                 special_duration: Duration
@@ -175,7 +175,7 @@ describe("cypher directive filtering", () => {
         await testHelper.initNeo4jGraphQL({ typeDefs });
         await testHelper.executeCypher(`CREATE (m:${CustomType} { title: "test" })`, {});
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 ${CustomType.plural}(
                     where: {
@@ -200,7 +200,7 @@ describe("cypher directive filtering", () => {
     });
 
     test("Duration cypher field GT", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${CustomType} @node {
                 title: String
                 special_duration: Duration
@@ -216,7 +216,7 @@ describe("cypher directive filtering", () => {
         await testHelper.initNeo4jGraphQL({ typeDefs });
         await testHelper.executeCypher(`CREATE (m:${CustomType} { title: "test" })`, {});
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 ${CustomType.plural}(
                     where: {
@@ -241,7 +241,7 @@ describe("cypher directive filtering", () => {
     });
 
     test("Duration cypher field GTE", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${CustomType} @node {
                 title: String
                 special_duration: Duration
@@ -257,7 +257,7 @@ describe("cypher directive filtering", () => {
         await testHelper.initNeo4jGraphQL({ typeDefs });
         await testHelper.executeCypher(`CREATE (m:${CustomType} { title: "test" })`, {});
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 ${CustomType.plural}(
                     where: {

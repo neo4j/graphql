@@ -70,7 +70,7 @@ describe("cypher directive filtering - List Auth", () => {
             {}
         );
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 ${Movie.plural} {
                     title
@@ -134,7 +134,7 @@ describe("cypher directive filtering - List Auth", () => {
             {}
         );
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 ${Movie.plural} {
                     title
@@ -198,7 +198,7 @@ describe("cypher directive filtering - List Auth", () => {
             {}
         );
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 ${Movie.plural} {
                     title
@@ -261,7 +261,7 @@ describe("cypher directive filtering - List Auth", () => {
             {}
         );
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 ${Actor.plural} {
                     name
@@ -324,7 +324,7 @@ describe("cypher directive filtering - List Auth", () => {
             {}
         );
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 ${Movie.plural} {
                     title
@@ -390,7 +390,7 @@ describe("cypher directive filtering - List Auth", () => {
             {}
         );
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 ${Movie.plural} {
                     title
@@ -448,7 +448,7 @@ describe("cypher directive filtering - List Auth", () => {
             {}
         );
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 ${Movie.plural} {
                     title

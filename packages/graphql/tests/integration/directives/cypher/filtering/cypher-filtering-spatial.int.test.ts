@@ -34,7 +34,7 @@ describe("cypher directive filtering", () => {
     });
 
     test("Point cypher field", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${CustomType} @node {
                 title: String
                 special_location: Point
@@ -50,7 +50,7 @@ describe("cypher directive filtering", () => {
         await testHelper.initNeo4jGraphQL({ typeDefs });
         await testHelper.executeCypher(`CREATE (m:${CustomType} { title: "test" })`, {});
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 ${CustomType.plural}(
                     where: {
@@ -86,7 +86,7 @@ describe("cypher directive filtering", () => {
     });
 
     test("CartesianPoint cypher field", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${CustomType} @node {
                 title: String
                 special_location: CartesianPoint
@@ -102,7 +102,7 @@ describe("cypher directive filtering", () => {
         await testHelper.initNeo4jGraphQL({ typeDefs });
         await testHelper.executeCypher(`CREATE (m:${CustomType} { title: "test" })`, {});
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 ${CustomType.plural}(
                     where: {

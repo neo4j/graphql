@@ -31,7 +31,7 @@ describe("cypher directive filtering", () => {
         const Movie = testHelper.createUniqueType("Movie");
         const Actor = testHelper.createUniqueType("Actor");
 
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${Movie} @node @authorization(filter: [{ where: { node: { custom_field: "$jwt.custom_value" } } }]) {
                 title: String
                 custom_field: String
@@ -94,7 +94,7 @@ describe("cypher directive filtering", () => {
         const Movie = testHelper.createUniqueType("Movie");
         const Actor = testHelper.createUniqueType("Actor");
 
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${Movie} @node {
                 title: String
                 custom_field: String
@@ -158,7 +158,7 @@ describe("cypher directive filtering", () => {
         const Movie = testHelper.createUniqueType("Movie");
         const Actor = testHelper.createUniqueType("Actor");
 
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${Movie} @node {
                 title: String
                 custom_field: String
@@ -222,7 +222,7 @@ describe("cypher directive filtering", () => {
         const Movie = testHelper.createUniqueType("Movie");
         const Actor = testHelper.createUniqueType("Actor");
 
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${Movie} @node {
                 title: String
                 custom_field: String
@@ -285,7 +285,7 @@ describe("cypher directive filtering", () => {
         const Movie = testHelper.createUniqueType("Movie");
         const Actor = testHelper.createUniqueType("Actor");
 
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${Movie} @node {
                 title: String @authorization(filter: [{ where: { node: { custom_field: "$jwt.custom_value" } } }])
                 custom_field: String
