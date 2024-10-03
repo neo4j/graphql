@@ -19,7 +19,7 @@
 
 import { TestHelper } from "../../../../utils/tests-helper";
 
-describe("cypher directive filtering", () => {
+describe("cypher directive filtering - Misc", () => {
     const testHelper = new TestHelper();
 
     afterEach(async () => {

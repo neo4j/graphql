@@ -20,7 +20,7 @@
 import { createBearerToken } from "../../../../utils/create-bearer-token";
 import { TestHelper } from "../../../../utils/tests-helper";
 
-describe("cypher directive filtering", () => {
+describe("cypher directive filtering - Auth", () => {
     const testHelper = new TestHelper();
 
     afterEach(async () => {
