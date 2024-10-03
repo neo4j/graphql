@@ -32,21 +32,85 @@ describe("Cypher", () => {
             type Movie {
                 id: ID
                 custom_string: String @cypher(statement: "RETURN 'custom!' as c", columnName: "c")
+                list_of_custom_strings: [String]
+                    @cypher(
+                        statement: "RETURN ['a','b','c'] as list_of_custom_strings"
+                        columnName: "list_of_custom_strings"
+                    )
                 custom_int: Int @cypher(statement: "RETURN 42 as n", columnName: "n")
+                list_of_custom_ints: [Int]
+                    @cypher(statement: "RETURN [1,2,3] as list_of_custom_ints", columnName: "list_of_custom_ints")
                 custom_big_int: BigInt @cypher(statement: "RETURN 42 as n", columnName: "n")
+                list_of_custom_big_ints: [BigInt]
+                    @cypher(
+                        statement: "RETURN [1,2,3] as list_of_custom_big_ints"
+                        columnName: "list_of_custom_big_ints"
+                    )
                 custom_float: Float @cypher(statement: "RETURN 3.14 as f", columnName: "f")
+                list_of_custom_floats: [Float]
+                    @cypher(
+                        statement: "RETURN [1.1,2.2,3.3] as list_of_custom_floats"
+                        columnName: "list_of_custom_floats"
+                    )
                 custom_boolean: Boolean @cypher(statement: "RETURN true as b", columnName: "b")
+                list_of_custom_booleans: [Boolean]
+                    @cypher(
+                        statement: "RETURN [true,false,true] as list_of_custom_booleans"
+                        columnName: "list_of_custom_booleans"
+                    )
                 custom_id: ID @cypher(statement: "RETURN 'test-id' as i", columnName: "i")
+                list_custom_of_ids: [ID]
+                    @cypher(statement: "RETURN ['1','2','3'] as list_of_ids", columnName: "list_of_ids")
                 custom_point: Point
                     @cypher(statement: "RETURN point({latitude: 1, longitude: 1}) as p", columnName: "p")
+                list_of_custom_points: [Point]
+                    @cypher(
+                        statement: "RETURN [point({latitude: 1, longitude: 1}), point({latitude: 2, longitude: 2})] as list_of_points"
+                        columnName: "list_of_points"
+                    )
                 custom_cartesian_point: CartesianPoint @cypher(statement: "RETURN {x: 1, y: 1} as cp", columnName: "cp")
+                list_of_custom_cartesian_points: [CartesianPoint]
+                    @cypher(
+                        statement: "RETURN [{x: 1, y: 1}, {x: 2, y: 2}] as list_of_cartesian_points"
+                        columnName: "list_of_cartesian_points"
+                    )
                 custom_date: Date @cypher(statement: "RETURN date('2021-01-01') as d", columnName: "d")
+                list_of_custom_dates: [Date]
+                    @cypher(
+                        statement: "RETURN [date('2021-01-01'), date('2021-01-02')] as list_of_dates"
+                        columnName: "list_of_dates"
+                    )
                 custom_time: Time @cypher(statement: "RETURN localtime() as t", columnName: "t")
+                list_of_custom_times: [Time]
+                    @cypher(
+                        statement: "RETURN [localtime(), localtime()] as list_of_times"
+                        columnName: "list_of_times"
+                    )
                 custom_localtime: LocalTime @cypher(statement: "RETURN localtime() as lt", columnName: "lt")
+                list_of_custom_localtimes: [LocalTime]
+                    @cypher(
+                        statement: "RETURN [localtime(), localtime()] as list_of_localtimes"
+                        columnName: "list_of_localtimes"
+                    )
                 custom_datetime: DateTime @cypher(statement: "RETURN datetime() as dt", columnName: "dt")
+                list_of_custom_datetimes: [DateTime]
+                    @cypher(
+                        statement: "RETURN [localdatetime(), localdatetime()] as list_of_datetimes"
+                        columnName: "list_of_datetimes"
+                    )
                 custom_localdatetime: LocalDateTime
                     @cypher(statement: "RETURN localdatetime() as ldt", columnName: "ldt")
+                list_of_custom_localdatetimes: [LocalDateTime]
+                    @cypher(
+                        statement: "RETURN [localdatetime(), localdatetime()] as list_of_localdatetimes"
+                        columnName: "list_of_localdatetimes"
+                    )
                 custom_duration: Duration @cypher(statement: "RETURN duration({days: 1}) as dur", columnName: "dur")
+                list_of_custom_durations: [Duration]
+                    @cypher(
+                        statement: "RETURN [duration({days: 1}), duration({days: 2})] as list_of_durations"
+                        columnName: "list_of_durations"
+                    )
                 actor: Actor @cypher(statement: "MATCH (this)-[:ACTED_IN]->(a:Actor) RETURN a", columnName: "a")
                 actors(title: String): [Actor]
                     @cypher(
@@ -225,6 +289,20 @@ describe("Cypher", () => {
               custom_string: String
               custom_time: Time
               id: ID
+              list_custom_of_ids: [ID]
+              list_of_custom_big_ints: [BigInt]
+              list_of_custom_booleans: [Boolean]
+              list_of_custom_cartesian_points: [CartesianPoint]
+              list_of_custom_dates: [Date]
+              list_of_custom_datetimes: [DateTime]
+              list_of_custom_durations: [Duration]
+              list_of_custom_floats: [Float]
+              list_of_custom_ints: [Int]
+              list_of_custom_localdatetimes: [LocalDateTime]
+              list_of_custom_localtimes: [LocalTime]
+              list_of_custom_points: [Point]
+              list_of_custom_strings: [String]
+              list_of_custom_times: [Time]
             }
 
             type MovieAggregateSelection {
@@ -402,6 +480,60 @@ describe("Cypher", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
+              list_custom_of_ids: [ID]
+              list_custom_of_ids_INCLUDES: ID
+              list_custom_of_ids_NOT: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              list_custom_of_ids_NOT_INCLUDES: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              list_of_custom_big_ints: [BigInt]
+              list_of_custom_big_ints_INCLUDES: BigInt
+              list_of_custom_big_ints_NOT: [BigInt] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              list_of_custom_big_ints_NOT_INCLUDES: BigInt @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              list_of_custom_booleans: [Boolean]
+              list_of_custom_booleans_NOT: [Boolean] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              list_of_custom_cartesian_points: [CartesianPointInput]
+              list_of_custom_cartesian_points_INCLUDES: CartesianPointInput
+              list_of_custom_cartesian_points_NOT: [CartesianPointInput] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              list_of_custom_cartesian_points_NOT_INCLUDES: CartesianPointInput @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              list_of_custom_dates: [Date]
+              list_of_custom_dates_INCLUDES: Date
+              list_of_custom_dates_NOT: [Date] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              list_of_custom_dates_NOT_INCLUDES: Date @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              list_of_custom_datetimes: [DateTime]
+              list_of_custom_datetimes_INCLUDES: DateTime
+              list_of_custom_datetimes_NOT: [DateTime] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              list_of_custom_datetimes_NOT_INCLUDES: DateTime @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              list_of_custom_durations: [Duration]
+              list_of_custom_durations_INCLUDES: Duration
+              list_of_custom_durations_NOT: [Duration] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              list_of_custom_durations_NOT_INCLUDES: Duration @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              list_of_custom_floats: [Float]
+              list_of_custom_floats_INCLUDES: Float
+              list_of_custom_floats_NOT: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              list_of_custom_floats_NOT_INCLUDES: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              list_of_custom_ints: [Int]
+              list_of_custom_ints_INCLUDES: Int
+              list_of_custom_ints_NOT: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              list_of_custom_ints_NOT_INCLUDES: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              list_of_custom_localdatetimes: [LocalDateTime]
+              list_of_custom_localdatetimes_INCLUDES: LocalDateTime
+              list_of_custom_localdatetimes_NOT: [LocalDateTime] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              list_of_custom_localdatetimes_NOT_INCLUDES: LocalDateTime @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              list_of_custom_localtimes: [LocalTime]
+              list_of_custom_localtimes_INCLUDES: LocalTime
+              list_of_custom_localtimes_NOT: [LocalTime] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              list_of_custom_localtimes_NOT_INCLUDES: LocalTime @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              list_of_custom_points: [PointInput]
+              list_of_custom_points_INCLUDES: PointInput
+              list_of_custom_points_NOT: [PointInput] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              list_of_custom_points_NOT_INCLUDES: PointInput @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              list_of_custom_strings: [String]
+              list_of_custom_strings_INCLUDES: String
+              list_of_custom_strings_NOT: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              list_of_custom_strings_NOT_INCLUDES: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              list_of_custom_times: [Time]
+              list_of_custom_times_INCLUDES: Time
+              list_of_custom_times_NOT: [Time] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              list_of_custom_times_NOT_INCLUDES: Time @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type MoviesConnection {
