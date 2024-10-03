@@ -117,7 +117,7 @@ describe("cypher directive filtering - Auth", () => {
         const query = `
             query {
                 movies {
-                    title
+                    custom_field
                 }
             }
         `;
@@ -135,10 +135,40 @@ describe("cypher directive filtering - Auth", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
-            RETURN this { .title } AS this"
+            CALL {
+                WITH this
+                CALL {
+                    WITH this
+                    WITH this AS this
+                    RETURN \\"hello\\" AS s
+                }
+                WITH s AS this0
+                RETURN this0 AS var1
+            }
+            WITH *
+            WHERE ($isAuthenticated = true AND ($jwt.custom_value IS NOT NULL AND var1 IS NOT NULL AND var1 = $jwt.custom_value))
+            CALL {
+                WITH this
+                CALL {
+                    WITH this
+                    WITH this AS this
+                    RETURN \\"hello\\" AS s
+                }
+                WITH s AS this2
+                RETURN this2 AS var3
+            }
+            RETURN this { custom_field: var3 } AS this"
         `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": [],
+                    \\"custom_value\\": \\"hello\\"
+                }
+            }"
+        `);
     });
 
     test("With authorization on @cypher field using different field return value", async () => {
