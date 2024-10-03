@@ -17,35 +17,6 @@
  * limitations under the License.
  */
 
-/*
-
-Numeric (e.g. Int, Float, BigInt)
-
-min, max, average, sum
-
-Example query
-query {
-  usersAggregate {
-    age {
-      average
-    }
-  }
-}
-Temporal (e.g. DateTime, Time, LocalTime, LocalDateTime, Duration)
-
-min, max
-
-First Post date
-query {
-    postsAggregate {
-        createdAt {
-            min
-        }
-    }
-}
-
-*/
-
 import { TestHelper } from "../../../../utils/tests-helper";
 
 describe("cypher directive filtering - Aggregation", () => {
