@@ -275,7 +275,7 @@ describe.each([
     test("create subscription with where property + OR with filters match 1", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { releasedIn_GTE: 2000, OR: [{ title_NOT_STARTS_WITH: "movie", releasedIn_EQ: 2001}, {title_EQ: "movie4", releasedIn_EQ: 1000}] }) {
+                ${typeMovie.operations.subscribe.deleted}(where: { releasedIn_GTE: 2000, OR: [{ NOT: { title_STARTS_WITH: "movie" }, releasedIn_EQ: 2001}, {title_EQ: "movie4", releasedIn_EQ: 1000}] }) {
                     ${typeMovie.operations.subscribe.payload.deleted} {
                         title
                     }
@@ -584,34 +584,7 @@ describe.each([
             },
         ]);
     });
-    test("subscription with NOT_IN on String", async () => {
-        await wsClient.subscribe(`
-            subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { title_NOT_IN: ["abcd", "sth"] }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
-                        title
-                    }
-                }
-            }
-        `);
 
-        await createMovie({ title: "abcd" });
-        await createMovie({ title: "some_movie" });
-
-        await deleteMovie("title", "abcd");
-        await deleteMovie("title", "some_movie");
-
-        await wsClient.waitForEvents(1);
-
-        expect(wsClient.errors).toEqual([]);
-        expect(wsClient.events).toEqual([
-            {
-                [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.operations.subscribe.payload.deleted]: { title: "some_movie" },
-                },
-            },
-        ]);
-    });
     test("subscription with IN on ID as String", async () => {
         await wsClient.subscribe(`
             subscription {
@@ -640,34 +613,7 @@ describe.each([
             },
         ]);
     });
-    test("subscription with NOT_IN on ID as String", async () => {
-        await wsClient.subscribe(`
-            subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { id_NOT_IN: ["id1", "id111"] }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
-                        id
-                    }
-                }
-            }
-        `);
-
-        await createMovie({ id: "id11" });
-        await createMovie({ id: "id1" });
-
-        await deleteMovie("id", "id11");
-        await deleteMovie("id", "id1");
-
-        await wsClient.waitForEvents(1);
-
-        expect(wsClient.errors).toEqual([]);
-        expect(wsClient.events).toEqual([
-            {
-                [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.operations.subscribe.payload.deleted]: { id: "id11" },
-                },
-            },
-        ]);
-    });
+  
     test("subscription with IN on ID as Int", async () => {
         await wsClient.subscribe(`
             subscription {
@@ -701,34 +647,7 @@ describe.each([
             },
         ]);
     });
-    test("subscription with NOT_IN on ID as Int", async () => {
-        await wsClient.subscribe(`
-            subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { id_NOT_IN: [420, 42] }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
-                        id
-                    }
-                }
-            }
-        `);
-
-        await createMovie({ id: 4 });
-        await createMovie({ id: 42 });
-
-        await deleteMovie("id", 4);
-        await deleteMovie("id", 42);
-
-        await wsClient.waitForEvents(1);
-
-        expect(wsClient.errors).toEqual([]);
-        expect(wsClient.events).toEqual([
-            {
-                [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.operations.subscribe.payload.deleted]: { id: "4" },
-                },
-            },
-        ]);
-    });
+  
     test("subscription with IN on Int", async () => {
         await wsClient.subscribe(`
             subscription {
@@ -757,34 +676,7 @@ describe.each([
             },
         ]);
     });
-    test("subscription with NOT_IN on Int", async () => {
-        await wsClient.subscribe(`
-            subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { releasedIn_NOT_IN: [2020, 2000] }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
-                        releasedIn
-                    }
-                }
-            }
-        `);
-
-        await createMovie({ releasedIn: 2001 });
-        await createMovie({ releasedIn: 2000 });
-
-        await deleteMovie("releasedIn", 2001);
-        await deleteMovie("releasedIn", 2000);
-
-        await wsClient.waitForEvents(1);
-
-        expect(wsClient.errors).toEqual([]);
-        expect(wsClient.events).toEqual([
-            {
-                [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.operations.subscribe.payload.deleted]: { releasedIn: 2001 },
-                },
-            },
-        ]);
-    });
+  
     test("subscription with IN on Float", async () => {
         await wsClient.subscribe(`
             subscription {
@@ -813,34 +705,7 @@ describe.each([
             },
         ]);
     });
-    test("subscription with NOT_IN on Float", async () => {
-        await wsClient.subscribe(`
-            subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { averageRating_NOT_IN: [4.20, 9.2] }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
-                        averageRating
-                    }
-                }
-            }
-        `);
-
-        await createMovie({ averageRating: 4.21 });
-        await createMovie({ averageRating: 9.2 });
-
-        await deleteMovie("averageRating", 4.21);
-        await deleteMovie("averageRating", 9.2);
-
-        await wsClient.waitForEvents(1);
-
-        expect(wsClient.errors).toEqual([]);
-        expect(wsClient.events).toEqual([
-            {
-                [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.operations.subscribe.payload.deleted]: { averageRating: 4.21 },
-                },
-            },
-        ]);
-    });
+  
     test("subscription with IN on BigInt", async () => {
         await wsClient.subscribe(`
             subscription {
@@ -865,34 +730,6 @@ describe.each([
             {
                 [typeMovie.operations.subscribe.deleted]: {
                     [typeMovie.operations.subscribe.payload.deleted]: { fileSize: "922372036854775608" },
-                },
-            },
-        ]);
-    });
-    test("subscription with NOT_IN on BigInt", async () => {
-        await wsClient.subscribe(`
-            subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { fileSize_NOT_IN: ["922372036854775608"] }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
-                        fileSize
-                    }
-                }
-            }
-        `);
-
-        await createMovie({ fileSize: "922372036854775608" });
-        await createMovie({ fileSize: "100" });
-
-        await deleteMovie("fileSize", "922372036854775608");
-        await deleteMovie("fileSize", "100");
-
-        await wsClient.waitForEvents(1);
-
-        expect(wsClient.errors).toEqual([]);
-        expect(wsClient.events).toEqual([
-            {
-                [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.operations.subscribe.payload.deleted]: { fileSize: "100" },
                 },
             },
         ]);
@@ -922,30 +759,10 @@ describe.each([
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with NOT_IN on Boolean should error", async () => {
-        const onReturnError = jest.fn();
-        await wsClient.subscribe(
-            `
-            subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { isFavorite_NOT_IN: [true] }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
-                        title
-                    }
-                }
-            }
-        `,
-            onReturnError
-        );
 
-        await createMovie({ title: "some_movie3", isFavorite: true });
-        await createMovie({ title: "some_movie4", isFavorite: true });
 
-        await deleteMovie("title", "some_movie3");
-        await deleteMovie("title", "some_movie4");
 
-        expect(onReturnError).toHaveBeenCalled();
-        expect(wsClient.events).toEqual([]);
-    });
+
     test("subscription with IN on Array should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
@@ -970,30 +787,8 @@ describe.each([
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with NOT_IN on Array should error", async () => {
-        const onReturnError = jest.fn();
-        await wsClient.subscribe(
-            `
-            subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { similarTitles_NOT_IN: ["blue"] }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
-                        similarTitles
-                    }
-                }
-            }
-        `,
-            onReturnError
-        );
 
-        await createMovie({ title: "some_movie3", similarTitles: ["blue bus"] });
-        await createMovie({ title: "some_movie4" });
-
-        await deleteMovie("title", "some_movie3");
-        await deleteMovie("title", "some_movie4");
-
-        expect(onReturnError).toHaveBeenCalled();
-        expect(wsClient.events).toEqual([]);
-    });
+    
     // NOT Operator tests
     test("delete subscription with where NOT operator 1 result", async () => {
         await wsClient.subscribe(`
