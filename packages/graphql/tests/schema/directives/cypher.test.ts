@@ -772,6 +772,235 @@ describe("Cypher", () => {
         `);
     });
 
+    test("Filters should not be generated on Relationship/Object custom cypher fields", async () => {
+        const typeDefs = gql`
+            type Movie {
+                actors: [Actor]
+                    @cypher(
+                        statement: """
+                        MATCH (this)-[:ACTED_IN]->(actor:Actor)
+                        RETURN actor
+                        """
+                        columnName: "actor"
+                    )
+            }
+
+            type Actor {
+                name: String
+                movies: [Movie]
+                    @cypher(
+                        statement: """
+                        MATCH (this)-[:ACTED_IN]->(movie:Movie)
+                        RETURN movie
+                        """
+                        columnName: "movie"
+                    )
+            }
+        `;
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
+
+        expect(printedSchema).toMatchInlineSnapshot(`
+            "schema {
+              query: Query
+              mutation: Mutation
+            }
+
+            type Actor {
+              movies: [Movie]
+              name: String
+            }
+
+            type ActorAggregateSelection {
+              count: Int!
+              name: StringAggregateSelection!
+            }
+
+            input ActorCreateInput {
+              name: String
+            }
+
+            type ActorEdge {
+              cursor: String!
+              node: Actor!
+            }
+
+            input ActorOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [ActorSort!]
+            }
+
+            \\"\\"\\"
+            Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
+            \\"\\"\\"
+            input ActorSort {
+              name: SortDirection
+            }
+
+            input ActorUpdateInput {
+              name: String
+            }
+
+            input ActorWhere {
+              AND: [ActorWhere!]
+              NOT: ActorWhere
+              OR: [ActorWhere!]
+              name: String
+              name_CONTAINS: String
+              name_ENDS_WITH: String
+              name_IN: [String]
+              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_STARTS_WITH: String
+            }
+
+            type ActorsConnection {
+              edges: [ActorEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type CreateActorsMutationResponse {
+              actors: [Actor!]!
+              info: CreateInfo!
+            }
+
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
+            type CreateInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            type CreateMoviesMutationResponse {
+              info: CreateInfo!
+              movies: [Movie!]!
+            }
+
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
+            type DeleteInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type Movie {
+              actors: [Actor]
+            }
+
+            type MovieAggregateSelection {
+              count: Int!
+            }
+
+            input MovieCreateInput {
+              \\"\\"\\"
+              Appears because this input type would be empty otherwise because this type is composed of just generated and/or relationship properties. See https://neo4j.com/docs/graphql-manual/current/troubleshooting/faqs/
+              \\"\\"\\"
+              _emptyInput: Boolean
+            }
+
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
+            input MovieOptions {
+              limit: Int
+              offset: Int
+            }
+
+            input MovieUpdateInput {
+              \\"\\"\\"
+              Appears because this input type would be empty otherwise because this type is composed of just generated and/or relationship properties. See https://neo4j.com/docs/graphql-manual/current/troubleshooting/faqs/
+              \\"\\"\\"
+              _emptyInput: Boolean
+            }
+
+            input MovieWhere {
+              AND: [MovieWhere!]
+              NOT: MovieWhere
+              OR: [MovieWhere!]
+            }
+
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type Mutation {
+              createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
+              createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
+              deleteActors(where: ActorWhere): DeleteInfo!
+              deleteMovies(where: MovieWhere): DeleteInfo!
+              updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+            }
+
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
+            type Query {
+              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
+              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, first: Int, where: MovieWhere): MoviesConnection!
+            }
+
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
+
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
+            }
+
+            type UpdateActorsMutationResponse {
+              actors: [Actor!]!
+              info: UpdateInfo!
+            }
+
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
+            type UpdateInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type UpdateMoviesMutationResponse {
+              info: UpdateInfo!
+              movies: [Movie!]!
+            }"
+        `);
+    });
+
     test("Sort On Primitive Field", async () => {
         const typeDefs = gql`
             type Actor {
