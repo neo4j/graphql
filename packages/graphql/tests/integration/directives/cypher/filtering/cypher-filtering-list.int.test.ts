@@ -50,13 +50,16 @@ describe("cypher directive filtering - List", () => {
             CREATE (:${CustomType} { title: "test", custom_data: ['a', 'b', 'c'] })
             CREATE (:${CustomType} { title: "test2", custom_data: ['d', 'e', 'f'] })
         `);
-        const gqlResult = await testHelper.executeGraphQL(/* GraphQL */ `
+
+        const query = /* GraphQL */ `
             query {
                 ${CustomType.plural}(where: { custom_cypher_list_INCLUDES: "a" }) {
                     title
                 }
             }
-        `);
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult?.data).toEqual({
@@ -86,13 +89,16 @@ describe("cypher directive filtering - List", () => {
             CREATE (:${CustomType} { title: "test", custom_data: [1, 2, 3] })
             CREATE (:${CustomType} { title: "test2", custom_data: [4, 5, 6] })
         `);
-        const gqlResult = await testHelper.executeGraphQL(/* GraphQL */ `
+
+        const query = /* GraphQL */ `
             query {
                 ${CustomType.plural}(where: { custom_cypher_list_INCLUDES: 2 }) {
                     title
                 }
             }
-        `);
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult?.data).toEqual({
@@ -122,13 +128,16 @@ describe("cypher directive filtering - List", () => {
             CREATE (:${CustomType} { title: "test", custom_data: [10.0, 20.0, 30.0] })
             CREATE (:${CustomType} { title: "test2", custom_data: [40.0, 50.0, 60.0] })
         `);
-        const gqlResult = await testHelper.executeGraphQL(/* GraphQL */ `
+
+        const query = /* GraphQL */ `
             query {
                 ${CustomType.plural}(where: { custom_cypher_list_INCLUDES: 20.0 }) {
                     title
                 }
             }
-        `);
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult?.data).toEqual({
@@ -158,13 +167,16 @@ describe("cypher directive filtering - List", () => {
             CREATE (:${CustomType} { title: "test", custom_data: [point({ latitude: 1, longitude: 2 }), point({ latitude: 3, longitude: 4 })] })
             CREATE (:${CustomType} { title: "test2", custom_data: [point({ latitude: 5, longitude: 6 }), point({ latitude: 7, longitude: 8 })] })
         `);
-        const gqlResult = await testHelper.executeGraphQL(/* GraphQL */ `
+
+        const query = /* GraphQL */ `
             query {
                 ${CustomType.plural}(where: { custom_cypher_list_INCLUDES: { latitude: 1, longitude: 2 } }) {
                     title
                 }
             }
-        `);
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult?.data).toEqual({
@@ -194,13 +206,16 @@ describe("cypher directive filtering - List", () => {
             CREATE (:${CustomType} { title: "test", custom_data: [point({ x: 1, y: 2, z: 3 }), point({ x: 3, y: 4, z: 5 })] })
             CREATE (:${CustomType} { title: "test2", custom_data: [point({ x: 5, y: 6, z: 7 }), point({ x: 7, y: 8, z: 9 })] })
         `);
-        const gqlResult = await testHelper.executeGraphQL(/* GraphQL */ `
+
+        const query = /* GraphQL */ `
             query {
                 ${CustomType.plural}(where: { custom_cypher_list_INCLUDES: { x: 1, y: 2, z: 3 } }) {
                     title
                 }
             }
-        `);
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult?.data).toEqual({
@@ -230,13 +245,16 @@ describe("cypher directive filtering - List", () => {
             CREATE (:${CustomType} { title: "test", custom_data: [datetime('2021-01-01T00:00:00Z'), datetime('2021-02-01T00:00:00Z')] })
             CREATE (:${CustomType} { title: "test2", custom_data: [datetime('2021-03-01T00:00:00Z'), datetime('2021-04-01T00:00:00Z')] })
         `);
-        const gqlResult = await testHelper.executeGraphQL(/* GraphQL */ `
+
+        const query = /* GraphQL */ `
             query {
                 ${CustomType.plural}(where: { custom_cypher_list_INCLUDES: "2021-01-01T00:00:00Z" }) {
                     title
                 }
             }
-        `);
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult?.data).toEqual({
@@ -266,13 +284,16 @@ describe("cypher directive filtering - List", () => {
             CREATE (:${CustomType} { title: "test", custom_data: [localdatetime('2021-01-01T00:00:00'), localdatetime('2021-02-01T00:00:00')] })
             CREATE (:${CustomType} { title: "test2", custom_data: [localdatetime('2021-03-01T00:00:00'), localdatetime('2021-04-01T00:00:00')] })
         `);
-        const gqlResult = await testHelper.executeGraphQL(/* GraphQL */ `
-            query {
-                ${CustomType.plural}(where: { custom_cypher_list_INCLUDES: "2021-01-01T00:00:00" }) {
-                    title
-                }
+
+        const query = /* GraphQL */ `
+        query {
+            ${CustomType.plural}(where: { custom_cypher_list_INCLUDES: "2021-01-01T00:00:00" }) {
+                title
             }
-        `);
+        }
+    `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult?.data).toEqual({
@@ -302,13 +323,16 @@ describe("cypher directive filtering - List", () => {
             CREATE (:${CustomType} { title: "test", custom_data: [date('2021-01-01'), date('2021-02-01')] })
             CREATE (:${CustomType} { title: "test2", custom_data: [date('2021-03-01'), date('2021-04-01')] })
         `);
-        const gqlResult = await testHelper.executeGraphQL(/* GraphQL */ `
+
+        const query = /* GraphQL */ `
             query {
                 ${CustomType.plural}(where: { custom_cypher_list_INCLUDES: "2021-01-01" }) {
                     title
                 }
             }
-        `);
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult?.data).toEqual({
@@ -338,13 +362,16 @@ describe("cypher directive filtering - List", () => {
             CREATE (:${CustomType} { title: "test", custom_data: [time('12:00:00'), time('13:00:00')] })
             CREATE (:${CustomType} { title: "test2", custom_data: [time('14:00:00'), time('15:00:00')] })
         `);
-        const gqlResult = await testHelper.executeGraphQL(/* GraphQL */ `
+
+        const query = /* GraphQL */ `
             query {
                 ${CustomType.plural}(where: { custom_cypher_list_INCLUDES: "12:00:00" }) {
                     title
                 }
             }
-        `);
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult?.data).toEqual({
@@ -374,13 +401,16 @@ describe("cypher directive filtering - List", () => {
             CREATE (:${CustomType} { title: "test", custom_data: [localtime('12:00:00'), localtime('13:00:00')] })
             CREATE (:${CustomType} { title: "test2", custom_data: [localtime('14:00:00'), localtime('15:00:00')] })
         `);
-        const gqlResult = await testHelper.executeGraphQL(/* GraphQL */ `
+
+        const query = /* GraphQL */ `
             query {
                 ${CustomType.plural}(where: { custom_cypher_list_INCLUDES: "12:00:00" }) {
                     title
                 }
             }
-        `);
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult?.data).toEqual({

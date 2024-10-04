@@ -17,173 +17,27 @@
  * limitations under the License.
  */
 
+import type { UniqueType } from "../../../../utils/graphql-types";
 import { TestHelper } from "../../../../utils/tests-helper";
 
 describe("cypher directive filtering - Aggregation", () => {
     const testHelper = new TestHelper();
-    const Movie = testHelper.createUniqueType("Movie");
+    let Movie: UniqueType;
+
+    beforeEach(() => {
+        Movie = testHelper.createUniqueType("Movie");
+    });
 
     afterEach(async () => {
         await testHelper.close();
     });
 
-    test.each([
-        {
-            title: "String aggregation - shortest, filter on String",
-            customCypherType: "String",
-            createCypher: `
-                CREATE (:${Movie} { title: "The Matrix", released: 1999, custom_field: "hello" })
-                CREATE (:${Movie} { title: "The Matrix Reloaded", released: 2003, custom_field: "hello world" })
-                CREATE (:${Movie} { title: "The", released: 2003, custom_field: "goodbye world" })
-            `,
-            query: /* GraphQL */ `
-                query {
-                    ${Movie.operations.aggregate}(where: { custom_field_STARTS_WITH: "he" }) {
-                        title {
-                            shortest
-                        }
-                    }
-                }
-            `,
-            expectedOutput: {
-                [Movie.operations.aggregate]: {
-                    title: {
-                        shortest: "The Matrix",
-                    },
-                },
-            },
-        },
-        {
-            title: "String aggregation - longest, filter on Int",
-            customCypherType: "Int",
-            createCypher: `
-                CREATE (:${Movie} { title: "The Matrix", released: 1999, custom_field: 1 })
-                CREATE (:${Movie} { title: "The Matrix Reloaded", released: 2003, custom_field: 0 })
-                CREATE (:${Movie} { title: "The", released: 2003, custom_field: 2 })
-            `,
-            query: `
-                query {
-                    ${Movie.operations.aggregate}(where: { custom_field_GT: 0 }) {
-                        title {
-                            longest
-                        }
-                    }
-                }
-            `,
-            expectedOutput: {
-                [Movie.operations.aggregate]: {
-                    title: {
-                        longest: "The Matrix",
-                    },
-                },
-            },
-        },
-        {
-            title: "Int aggregation - max, filter on String",
-            customCypherType: "String",
-            createCypher: `
-                CREATE (:${Movie} { title: "The Matrix", released: 1999, custom_field: "Test" })
-                CREATE (:${Movie} { title: "The Matrix Reloaded", released: 2003, custom_field: "Rest" })
-                CREATE (:${Movie} { title: "The", released: 2003, custom_field: "Nope" })
-            `,
-            query: /* GraphQL */ `
-                query {
-                    ${Movie.operations.aggregate}(where: { custom_field_CONTAINS: "es" }) {
-                        released {
-                            max
-                        }
-                    }
-                }
-            `,
-            expectedOutput: {
-                [Movie.operations.aggregate]: {
-                    released: {
-                        max: 2003,
-                    },
-                },
-            },
-        },
-        {
-            title: "Int aggregation - min, filter on Int",
-            customCypherType: "Int",
-            createCypher: `
-                CREATE (:${Movie} { title: "The Matrix", released: 1999, custom_field: 1 })
-                CREATE (:${Movie} { title: "The Matrix Reloaded", released: 2003, custom_field: 2 })
-                CREATE (:${Movie} { title: "The", released: 2003, custom_field: 0 })
-            `,
-            query: /* GraphQL */ `
-                query {
-                    ${Movie.operations.aggregate}(where: { custom_field_GT: 0 }) {
-                        released {
-                            min
-                        }
-                    }
-                }
-            `,
-            expectedOutput: {
-                [Movie.operations.aggregate]: {
-                    released: {
-                        min: 1999,
-                    },
-                },
-            },
-        },
-        {
-            title: "String aggregation - min, filter on [Int]",
-            customCypherType: "[Int]",
-            createCypher: `
-                CREATE (:${Movie} { title: "The Matrix", released: 1999, custom_field: [1,2,3,4,5] })
-                CREATE (:${Movie} { title: "The Matrix Reloaded", released: 2003, custom_field: [1, 4, 8] })
-                CREATE (:${Movie} { title: "The", released: 2003, custom_field: "goodbye world" })
-            `,
-            query: /* GraphQL */ `
-                query {
-                    ${Movie.operations.aggregate}(where: { custom_field_INCLUDES: 1 }) {
-                        title {
-                            shortest
-                        }
-                    }
-                }
-            `,
-            expectedOutput: {
-                [Movie.operations.aggregate]: {
-                    title: {
-                        shortest: "The Matrix",
-                    },
-                },
-            },
-        },
-        {
-            title: "String aggregation - min, filter on [String]",
-            customCypherType: "[String]",
-            createCypher: `
-                CREATE (:${Movie} { title: "The Matrix", released: 1999, custom_field: ['a','b','c'] })
-                CREATE (:${Movie} { title: "The Matrix Reloaded", released: 2003, custom_field: ['a','b','c'] })
-                CREATE (:${Movie} { title: "The", released: 2003, custom_field: ['a','b','d'] })
-            `,
-            query: /* GraphQL */ `
-                query {
-                    ${Movie.operations.aggregate}(where: { custom_field_INCLUDES: "c" }) {
-                        title {
-                            shortest
-                        }
-                    }
-                }
-            `,
-            expectedOutput: {
-                [Movie.operations.aggregate]: {
-                    title: {
-                        shortest: "The Matrix",
-                    },
-                },
-            },
-        },
-    ])("$title", async ({ customCypherType, createCypher, query, expectedOutput }) => {
+    test("String aggregation - shortest, filter on String", async () => {
         const typeDefs = /* GraphQL */ `
             type ${Movie} @node {
                 title: String
                 released: Int
-                custom_field: ${customCypherType}
+                custom_field: String
                     @cypher(
                         statement: """
                         MATCH (this)
@@ -198,11 +52,289 @@ describe("cypher directive filtering - Aggregation", () => {
             typeDefs,
         });
 
-        await testHelper.executeCypher(createCypher, {});
+        await testHelper.executeCypher(
+            `
+            CREATE (:${Movie} { title: "The Matrix", released: 1999, custom_field: "hello" })
+            CREATE (:${Movie} { title: "The Matrix Reloaded", released: 2003, custom_field: "hello world" })
+            CREATE (:${Movie} { title: "The", released: 2003, custom_field: "goodbye world" })
+        `,
+            {}
+        );
+
+        const query = /* GraphQL */ `
+            query {
+                ${Movie.operations.aggregate}(where: { custom_field_STARTS_WITH: "he" }) {
+                    title {
+                        shortest
+                    }
+                }
+            }
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeFalsy();
-        expect(gqlResult?.data).toEqual(expectedOutput);
+        expect(gqlResult?.data).toEqual({
+            [Movie.operations.aggregate]: {
+                title: {
+                    shortest: "The Matrix",
+                },
+            },
+        });
+    });
+
+    test("String aggregation - longest, filter on Int", async () => {
+        const typeDefs = /* GraphQL */ `
+            type ${Movie} @node {
+                title: String
+                released: Int
+                custom_field: Int
+                    @cypher(
+                        statement: """
+                        MATCH (this)
+                        RETURN this.custom_field as s
+                        """
+                        columnName: "s"
+                    )
+            }
+        `;
+
+        await testHelper.initNeo4jGraphQL({
+            typeDefs,
+        });
+
+        await testHelper.executeCypher(
+            `
+            CREATE (:${Movie} { title: "The Matrix", released: 1999, custom_field: 1 })
+            CREATE (:${Movie} { title: "The Matrix Reloaded", released: 2003, custom_field: 0 })
+            CREATE (:${Movie} { title: "The", released: 2003, custom_field: 2 })
+        `,
+            {}
+        );
+
+        const query = /* GraphQL */ `
+            query {
+                ${Movie.operations.aggregate}(where: { custom_field_GT: 0 }) {
+                    title {
+                        longest
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult?.data).toEqual({
+            [Movie.operations.aggregate]: {
+                title: {
+                    longest: "The Matrix",
+                },
+            },
+        });
+    });
+
+    test("Int aggregation - max, filter on String", async () => {
+        const typeDefs = /* GraphQL */ `
+            type ${Movie} @node {
+                title: String
+                released: Int
+                custom_field: String
+                    @cypher(
+                        statement: """
+                        MATCH (this)
+                        RETURN this.custom_field as s
+                        """
+                        columnName: "s"
+                    )
+            }
+        `;
+
+        await testHelper.initNeo4jGraphQL({
+            typeDefs,
+        });
+
+        await testHelper.executeCypher(
+            `
+            CREATE (:${Movie} { title: "The Matrix", released: 1999, custom_field: "Test" })
+            CREATE (:${Movie} { title: "The Matrix Reloaded", released: 2003, custom_field: "Rest" })
+            CREATE (:${Movie} { title: "The", released: 2003, custom_field: "Nope" })
+        `,
+            {}
+        );
+
+        const query = /* GraphQL */ `
+            query {
+                ${Movie.operations.aggregate}(where: { custom_field_CONTAINS: "es" }) {
+                    released {
+                        max
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult?.data).toEqual({
+            [Movie.operations.aggregate]: {
+                released: {
+                    max: 2003,
+                },
+            },
+        });
+    });
+
+    test("Int aggregation - min, filter on Int", async () => {
+        const typeDefs = /* GraphQL */ `
+            type ${Movie} @node {
+                title: String
+                released: Int
+                custom_field: Int
+                    @cypher(
+                        statement: """
+                        MATCH (this)
+                        RETURN this.custom_field as s
+                        """
+                        columnName: "s"
+                    )
+            }
+        `;
+
+        await testHelper.initNeo4jGraphQL({
+            typeDefs,
+        });
+
+        await testHelper.executeCypher(
+            `
+            CREATE (:${Movie} { title: "The Matrix", released: 1999, custom_field: 1 })
+            CREATE (:${Movie} { title: "The Matrix Reloaded", released: 2003, custom_field: 2 })
+            CREATE (:${Movie} { title: "The", released: 2003, custom_field: 0 })
+        `,
+            {}
+        );
+
+        const query = /* GraphQL */ `
+            query {
+                ${Movie.operations.aggregate}(where: { custom_field_GT: 0 }) {
+                    released {
+                        min
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult?.data).toEqual({
+            [Movie.operations.aggregate]: {
+                released: {
+                    min: 1999,
+                },
+            },
+        });
+    });
+
+    test("String aggregation - min, filter on [Int]", async () => {
+        const typeDefs = /* GraphQL */ `
+            type ${Movie} @node {
+                title: String
+                released: Int
+                custom_field: [Int]
+                    @cypher(
+                        statement: """
+                        MATCH (this)
+                        RETURN this.custom_field as s
+                        """
+                        columnName: "s"
+                    )
+            }
+        `;
+
+        await testHelper.initNeo4jGraphQL({
+            typeDefs,
+        });
+
+        await testHelper.executeCypher(
+            `
+            CREATE (:${Movie} { title: "The Matrix", released: 1999, custom_field: [1,2,3,4,5] })
+            CREATE (:${Movie} { title: "The Matrix Reloaded", released: 2003, custom_field: [1, 4, 8] })
+            CREATE (:${Movie} { title: "The", released: 2003, custom_field: "goodbye world" })
+        `,
+            {}
+        );
+
+        const query = /* GraphQL */ `
+            query {
+                ${Movie.operations.aggregate}(where: { custom_field_INCLUDES: 1 }) {
+                    title {
+                        shortest
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult?.data).toEqual({
+            [Movie.operations.aggregate]: {
+                title: {
+                    shortest: "The Matrix",
+                },
+            },
+        });
+    });
+
+    test("String aggregation - min, filter on [String]", async () => {
+        const typeDefs = /* GraphQL */ `
+            type ${Movie} @node {
+                title: String
+                released: Int
+                custom_field: [String]
+                    @cypher(
+                        statement: """
+                        MATCH (this)
+                        RETURN this.custom_field as s
+                        """
+                        columnName: "s"
+                    )
+            }
+        `;
+
+        await testHelper.initNeo4jGraphQL({
+            typeDefs,
+        });
+
+        await testHelper.executeCypher(
+            `
+            CREATE (:${Movie} { title: "The Matrix", released: 1999, custom_field: ['a','b','c'] })
+            CREATE (:${Movie} { title: "The Matrix Reloaded", released: 2003, custom_field: ['a','b','c'] })
+            CREATE (:${Movie} { title: "The", released: 2003, custom_field: ['a','b','d'] })
+        `,
+            {}
+        );
+
+        const query = /* GraphQL */ `
+            query {
+                ${Movie.operations.aggregate}(where: { custom_field_INCLUDES: "c" }) {
+                    title {
+                        shortest
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult?.data).toEqual({
+            [Movie.operations.aggregate]: {
+                title: {
+                    shortest: "The Matrix",
+                },
+            },
+        });
     });
 });
