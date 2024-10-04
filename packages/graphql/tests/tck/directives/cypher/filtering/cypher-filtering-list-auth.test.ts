@@ -31,7 +31,8 @@ describe("cypher directive filtering - List Auth", () => {
                 custom_list: [String]
                     @cypher(
                         statement: """
-                        RETURN ['a', 'b', 'c'] as list
+                        MATCH (this)
+                        RETURN this.custom_field as list
                         """
                         columnName: "list"
                     )
@@ -72,7 +73,8 @@ describe("cypher directive filtering - List Auth", () => {
                 CALL {
                     WITH this
                     WITH this AS this
-                    RETURN ['a', 'b', 'c'] as list
+                    MATCH (this)
+                    RETURN this.custom_field as list
                 }
                 UNWIND list AS var0
                 WITH var0 AS this1
@@ -101,7 +103,8 @@ describe("cypher directive filtering - List Auth", () => {
                 custom_list: [String]
                     @cypher(
                         statement: """
-                        RETURN ['a', 'b', 'c'] as list
+                        MATCH (this)
+                        RETURN this.custom_field as list
                         """
                         columnName: "list"
                     )
@@ -143,7 +146,8 @@ describe("cypher directive filtering - List Auth", () => {
                 CALL {
                     WITH this
                     WITH this AS this
-                    RETURN ['a', 'b', 'c'] as list
+                    MATCH (this)
+                    RETURN this.custom_field as list
                 }
                 UNWIND list AS var0
                 WITH var0 AS this1
@@ -156,7 +160,8 @@ describe("cypher directive filtering - List Auth", () => {
                 CALL {
                     WITH this
                     WITH this AS this
-                    RETURN ['a', 'b', 'c'] as list
+                    MATCH (this)
+                    RETURN this.custom_field as list
                 }
                 UNWIND list AS var3
                 WITH var3 AS this4
@@ -183,7 +188,8 @@ describe("cypher directive filtering - List Auth", () => {
                 custom_list: [String]
                     @cypher(
                         statement: """
-                        RETURN ['a', 'b', 'c'] as list
+                        MATCH (this)
+                        RETURN this.custom_field as list
                         """
                         columnName: "list"
                     )
@@ -233,7 +239,8 @@ describe("cypher directive filtering - List Auth", () => {
                 custom_list: [String]
                     @cypher(
                         statement: """
-                        RETURN ['a', 'b', 'c'] as list
+                        MATCH (this)
+                        RETURN this.custom_field as list
                         """
                         columnName: "list"
                     )
@@ -278,7 +285,8 @@ describe("cypher directive filtering - List Auth", () => {
                     CALL {
                         WITH this0
                         WITH this0 AS this
-                        RETURN ['a', 'b', 'c'] as list
+                        MATCH (this)
+                        RETURN this.custom_field as list
                     }
                     UNWIND list AS var1
                     WITH var1 AS this2
@@ -312,7 +320,8 @@ describe("cypher directive filtering - List Auth", () => {
                 custom_list: [String]
                     @cypher(
                         statement: """
-                        RETURN ['a', 'b', 'c'] as list
+                        MATCH (this)
+                        RETURN this.custom_field as list
                         """
                         columnName: "list"
                     )
@@ -353,7 +362,8 @@ describe("cypher directive filtering - List Auth", () => {
                 CALL {
                     WITH this
                     WITH this AS this
-                    RETURN ['a', 'b', 'c'] as list
+                    MATCH (this)
+                    RETURN this.custom_field as list
                 }
                 UNWIND list AS var0
                 WITH var0 AS this1
