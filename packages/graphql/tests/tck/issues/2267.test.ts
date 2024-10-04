@@ -55,7 +55,7 @@ describe("https://github.com/neo4j/graphql/issues/2267", () => {
     test("sort should be correct when querying interface relationship field", async () => {
         const query = /* GraphQL */ `
             query {
-                places(options: { sort: { displayName: ASC } }) {
+                places(sort: { displayName: ASC }) {
                     displayName
                     activity {
                         name

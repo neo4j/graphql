@@ -321,16 +321,16 @@ describe("Time", () => {
                 );
 
                 const query = /* GraphQL */ `
-                            query ($where: ${Movie.name}Where!) {
-                                ${Movie.plural}(
-                                    where: $where
-                                    options: { sort: [{ time: ASC }]}
-                                ) {
-                                    id
-                                    time
-                                }
-                            }
-                        `;
+                    query ($where: ${Movie.name}Where!) {
+                        ${Movie.plural}(
+                            where: $where
+                            sort: [{ time: ASC }]
+                        ) {
+                            id
+                            time
+                        }
+                    }
+                `;
 
                 const graphqlResult = await testHelper.executeGraphQL(query, {
                     variableValues: {
@@ -439,7 +439,7 @@ describe("Time", () => {
 
             const query = /* GraphQL */ `
                 query ($futureId: ID!, $presentId: ID!, $pastId: ID!, $sort: SortDirection!) {
-                    ${Movie.plural}(where: { id_IN: [$futureId, $presentId, $pastId] }, options: { sort: [{ time: $sort }] }) {
+                    ${Movie.plural}(where: { id_IN: [$futureId, $presentId, $pastId] }, sort: [{ time: $sort }]) {
                         id
                         time
                     }

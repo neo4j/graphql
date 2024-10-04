@@ -235,12 +235,10 @@ describe("unions", () => {
             resolvers: {},
         });
 
-        const query = `
+        const query = /* GraphQL */ `
         {
             ${MovieType.plural}(where: { title_EQ:"originalMovie" }) {
-                search(
-                    options: { offset: 1, limit: 3 }
-                ) {
+                search(offset: 1, limit: 3) {
                     ... on ${MovieType} {
                         title
                     }

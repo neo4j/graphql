@@ -492,13 +492,13 @@ describe("@fulltext directive", () => {
                 return;
             }
 
-            const query = `
+            const query = /* GraphQL */ `
                 query {
                     ${queryType}(phrase: "a different name", where: { ${personTypeLowerFirst}: { actedInMovies_SOME: { title_EQ: "${movie1.title}" } } }) {
                         score
                         ${personTypeLowerFirst} {
                             name
-                            actedInMovies(options: { sort: [{ released: DESC }] }) {
+                            actedInMovies( sort: [{ released: DESC }] ) {
                                 title
                                 released
                             }
@@ -876,12 +876,12 @@ describe("@fulltext directive", () => {
                 return;
             }
 
-            const query = `
+            const query = /* GraphQL */ `
                 query {
                     ${queryType}(phrase: "a name") {
                         ${personTypeLowerFirst} {
                             name
-                            actedInMovies(options: { sort: [{ released: ASC }] }) {
+                            actedInMovies(sort: [{ released: ASC }]) {
                                 title
                                 released
                             }

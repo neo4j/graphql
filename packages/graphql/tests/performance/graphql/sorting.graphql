@@ -1,5 +1,5 @@
 query SortMultipleTypes {
-    movies(options: { sort: { title: ASC }, limit: 10 }) {
+    movies(sort: { title: ASC }, limit: 10) {
         title
         actorsConnection {
             edges {
@@ -19,7 +19,7 @@ query SortMultipleTypes {
 }
 
 query SortMultipleTypesWithCypherWithCypher {
-    movies(options: { sort: { oneActorName: ASC }, limit: 10 }) {
+    movies(sort: { oneActorName: ASC }, limit: 10) {
         title
         actorsConnection {
             edges {
@@ -40,7 +40,7 @@ query SortMultipleTypesWithCypherWithCypher {
 
 query SortOnNestedFields {
     movies {
-        actors(options: { sort: { name: ASC } }) {
+        actors(sort: { name: ASC }) {
             name
         }
     }
@@ -49,8 +49,8 @@ query SortOnNestedFields {
 query SortDeeplyNestedFields {
     movies {
         title
-        actors(options: { sort: { name: ASC } }) {
-            movies(options: { sort: { released: DESC } }) {
+        actors(sort: { name: ASC }) {
+            movies(sort: { released: DESC }) {
                 released
             }
         }

@@ -67,11 +67,11 @@ describe("cypher directive filtering", () => {
             {}
         );
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 ${Movie.plural}(
                     where: { custom_field_STARTS_WITH: "The Matrix" }
-                    options: { sort: [{ custom_field: DESC }] }
+                     sort: [{ custom_field: DESC }] 
                 ) {
                     title
                     actors {
@@ -149,11 +149,11 @@ describe("cypher directive filtering", () => {
             {}
         );
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 ${Movie.plural}(
                     where: { custom_field_EQ: "hello world!" }
-                    options: { sort: [{ title: DESC }] }
+                     sort: [{ title: DESC }] 
                 ) {
                     title
                     actors {

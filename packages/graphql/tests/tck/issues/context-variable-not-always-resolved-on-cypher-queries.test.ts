@@ -50,10 +50,7 @@ describe("context-variable-not-always-resolved-on-cypher-queries", () => {
             @limit(default: 100, max: 1000) {
             iri: ID! @id @alias(property: "uri")
         }
-        type coreRoot
-            @node(labels: ["coreRoot", "Resource"])
-            @mutation(operations: [])
-            @limit(default: 100, max: 300) {
+        type coreRoot @node(labels: ["coreRoot", "Resource"]) @mutation(operations: []) @limit(default: 100, max: 300) {
             iri: ID! @id @alias(property: "uri")
         }
 
@@ -75,7 +72,7 @@ describe("context-variable-not-always-resolved-on-cypher-queries", () => {
             query {
                 exprs(
                     where: { realizationOf: { hasResourceType: { iri_EQ: "http://data.somesite.com/crown/test-id" } } }
-                    options: { limit: 1 }
+                    limit: 1
                 ) {
                     iri
                 }
@@ -118,7 +115,7 @@ describe("context-variable-not-always-resolved-on-cypher-queries", () => {
             query {
                 exprs(
                     where: { realizationOf: { hasResourceType: { iri_EQ: "http://data.somesite.com/crown/test-id" } } }
-                    options: { limit: 1 }
+                    limit: 1
                 ) {
                     iri
                     relToUnion {
@@ -182,7 +179,7 @@ describe("context-variable-not-always-resolved-on-cypher-queries", () => {
             query {
                 exprs(
                     where: { realizationOf: { hasResourceType: { iri_EQ: "http://data.somesite.com/crown/test-id" } } }
-                    options: { limit: 1 }
+                    limit: 1
                 ) {
                     iri
                     relToInterface {

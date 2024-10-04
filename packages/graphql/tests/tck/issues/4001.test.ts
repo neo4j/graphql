@@ -58,7 +58,7 @@ describe("https://github.com/neo4j/graphql/issues/4001", () => {
         const query = /* GraphQL */ `
             query {
                 series {
-                    allEpisodes(options: { limit: 10, offset: 0 }) {
+                    allEpisodes(limit: 10, offset: 0) {
                         id
                     }
                 }

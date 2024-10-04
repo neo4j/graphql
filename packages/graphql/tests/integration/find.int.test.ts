@@ -100,9 +100,9 @@ describe("find", () => {
             charset: "alphabetic",
         });
 
-        const query = `
+        const query = /* GraphQL */ `
             query($id: ID){
-                ${Movie.plural}(where: {id_EQ: $id}, options: {limit: 2}){
+                ${Movie.plural}(where: {id_EQ: $id}, limit: 2 ){
                     id
                 }
             }

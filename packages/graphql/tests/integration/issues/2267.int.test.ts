@@ -72,9 +72,9 @@ describe("https://github.com/neo4j/graphql/issues/2267", () => {
     });
 
     test("should correctly order when requesting only top-level fields", async () => {
-        const query = `
+        const query = /* GraphQL */ `
         query {
-            ${Place.plural}(options: {sort: {displayName: ASC}}) {
+            ${Place.plural}(sort: { displayName: ASC }) {
               displayName
             }
           }
@@ -105,9 +105,9 @@ describe("https://github.com/neo4j/graphql/issues/2267", () => {
     });
 
     test("should correctly order when requesting nested interface level fields", async () => {
-        const query = `
+        const query = /* GraphQL */ `
         query {
-            ${Place.plural}(options: {sort: {displayName: ASC}}) {
+            ${Place.plural}(sort: { displayName: ASC }) {
               displayName
               activity{
                 name

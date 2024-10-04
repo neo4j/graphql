@@ -333,7 +333,7 @@ describe("Duration", () => {
 
                 const query = /* GraphQL */ `
                         query ($where: ${Movie.name}Where!) {
-                            ${Movie.plural}(where: $where, options: { sort: [{ duration: ASC }] }) {
+                            ${Movie.plural}(where: $where, sort: [{ duration: ASC }]) {
                                 id
                                 duration
                             }

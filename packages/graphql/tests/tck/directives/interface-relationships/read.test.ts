@@ -146,7 +146,7 @@ describe("Interface Relationships", () => {
         const query = /* GraphQL */ `
             query {
                 actors {
-                    actedIn(options: { offset: 5, limit: 10, sort: [{ title: DESC }] }) {
+                    actedIn(offset: 5, limit: 10, sort: [{ title: DESC }]) {
                         title
                         ... on Movie {
                             runtime
