@@ -37,7 +37,8 @@ describe("cypher directive filtering - List Auth", () => {
                 custom_field: [String]
                     @cypher(
                         statement: """
-                        RETURN ['a', 'b', 'c'] as list
+                        MATCH (this)
+                        RETURN this.custom_field as list
                         """
                         columnName: "list"
                     )
@@ -63,9 +64,11 @@ describe("cypher directive filtering - List Auth", () => {
 
         await testHelper.executeCypher(
             `
-            CREATE (m:${Movie} { title: "The Matrix" })
-            CREATE (a:${Actor} { name: "Keanu Reeves" })
+            CREATE (m:${Movie} { title: "The Matrix", custom_field: ['a','b','c'] })
+            CREATE (m2:${Movie} { title: "The Matrix Reloaded", custom_field: ['d','e','f'] })
+            CREATE (a:${Actor} { name: "Keanu Reeves"} )
             CREATE (a)-[:ACTED_IN]->(m)
+            CREATE (a)-[:ACTED_IN]->(m2)
             `,
             {}
         );
