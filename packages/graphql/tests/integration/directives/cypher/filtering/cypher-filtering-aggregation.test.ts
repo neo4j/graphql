@@ -34,6 +34,7 @@ describe("cypher directive filtering - Aggregation", () => {
             createCypher: `
                 CREATE (:${Movie} { title: "The Matrix", released: 1999, custom_field: "hello" })
                 CREATE (:${Movie} { title: "The Matrix Reloaded", released: 2003, custom_field: "hello world" })
+                CREATE (:${Movie} { title: "The", released: 2003, custom_field: "goodbye world" })
             `,
             query: /* GraphQL */ `
                 query {
@@ -58,6 +59,7 @@ describe("cypher directive filtering - Aggregation", () => {
             createCypher: `
                 CREATE (:${Movie} { title: "The Matrix", released: 1999, custom_field: 1 })
                 CREATE (:${Movie} { title: "The Matrix Reloaded", released: 2003, custom_field: 0 })
+                CREATE (:${Movie} { title: "The", released: 2003, custom_field: 2 })
             `,
             query: `
                 query {
@@ -82,6 +84,7 @@ describe("cypher directive filtering - Aggregation", () => {
             createCypher: `
                 CREATE (:${Movie} { title: "The Matrix", released: 1999, custom_field: "Test" })
                 CREATE (:${Movie} { title: "The Matrix Reloaded", released: 2003, custom_field: "Rest" })
+                CREATE (:${Movie} { title: "The", released: 2003, custom_field: "Nope" })
             `,
             query: /* GraphQL */ `
                 query {
@@ -106,6 +109,7 @@ describe("cypher directive filtering - Aggregation", () => {
             createCypher: `
                 CREATE (:${Movie} { title: "The Matrix", released: 1999, custom_field: 1 })
                 CREATE (:${Movie} { title: "The Matrix Reloaded", released: 2003, custom_field: 2 })
+                CREATE (:${Movie} { title: "The", released: 2003, custom_field: 0 })
             `,
             query: /* GraphQL */ `
                 query {
@@ -130,6 +134,7 @@ describe("cypher directive filtering - Aggregation", () => {
             createCypher: `
                 CREATE (:${Movie} { title: "The Matrix", released: 1999, custom_field: [1,2,3,4,5] })
                 CREATE (:${Movie} { title: "The Matrix Reloaded", released: 2003, custom_field: [1, 4, 8] })
+                CREATE (:${Movie} { title: "The", released: 2003, custom_field: "goodbye world" })
             `,
             query: /* GraphQL */ `
                 query {
@@ -154,6 +159,7 @@ describe("cypher directive filtering - Aggregation", () => {
             createCypher: `
                 CREATE (:${Movie} { title: "The Matrix", released: 1999, custom_field: ['a','b','c'] })
                 CREATE (:${Movie} { title: "The Matrix Reloaded", released: 2003, custom_field: ['a','b','c'] })
+                CREATE (:${Movie} { title: "The", released: 2003, custom_field: ['a','b','d'] })
             `,
             query: /* GraphQL */ `
                 query {
