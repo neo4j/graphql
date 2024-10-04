@@ -22,7 +22,93 @@ import { createBearerToken } from "../../../../utils/create-bearer-token";
 import { formatCypher, formatParams, translateQuery } from "../../../utils/tck-test-utils";
 
 describe("cypher directive filtering - List Auth", () => {
-    test("With authorization on type using @cypher return value", async () => {
+    test("With authorization on type, selecting field", async () => {
+        const typeDefs = /* GraphQL */ `
+            type Movie
+                @node
+                @authorization(filter: [{ where: { node: { custom_list_INCLUDES: "$jwt.custom_value" } } }]) {
+                title: String
+                custom_list: [String]
+                    @cypher(
+                        statement: """
+                        MATCH (this)
+                        RETURN this.custom_field as list
+                        """
+                        columnName: "list"
+                    )
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+            }
+
+            type Actor {
+                name: String
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+            }
+        `;
+
+        const token = createBearerToken("secret", { custom_value: "a" });
+
+        const query = /* GraphQL */ `
+            query {
+                movies {
+                    custom_list
+                }
+            }
+        `;
+
+        const neoSchema: Neo4jGraphQL = new Neo4jGraphQL({
+            typeDefs,
+            features: {
+                authorization: {
+                    key: "secret",
+                },
+            },
+        });
+
+        const result = await translateQuery(neoSchema, query, { token });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Movie)
+            CALL {
+                WITH this
+                CALL {
+                    WITH this
+                    WITH this AS this
+                    MATCH (this)
+                    RETURN this.custom_field as list
+                }
+                UNWIND list AS var0
+                WITH var0 AS this1
+                RETURN collect(this1) AS var2
+            }
+            WITH *
+            WHERE ($isAuthenticated = true AND ($jwt.custom_value IS NOT NULL AND var2 IS NOT NULL AND $jwt.custom_value IN var2))
+            CALL {
+                WITH this
+                CALL {
+                    WITH this
+                    WITH this AS this
+                    MATCH (this)
+                    RETURN this.custom_field as list
+                }
+                UNWIND list AS var3
+                WITH var3 AS this4
+                RETURN collect(this4) AS var5
+            }
+            RETURN this { custom_list: var5 } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": [],
+                    \\"custom_value\\": \\"a\\"
+                }
+            }"
+        `);
+    });
+
+    test("With authorization on type, selecting title", async () => {
         const typeDefs = /* GraphQL */ `
             type Movie
                 @node
@@ -96,7 +182,7 @@ describe("cypher directive filtering - List Auth", () => {
         `);
     });
 
-    test("With authorization on @cypher field using @cypher return value", async () => {
+    test("With authorization on @cypher field, selecting @cypher field", async () => {
         const typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
@@ -181,7 +267,7 @@ describe("cypher directive filtering - List Auth", () => {
         `);
     });
 
-    test("With authorization on @cypher field using different field return value", async () => {
+    test("With authorization on @cypher field using, selecting title (no authorization required)", async () => {
         const typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
@@ -193,7 +279,7 @@ describe("cypher directive filtering - List Auth", () => {
                         """
                         columnName: "list"
                     )
-                    @authorization(filter: [{ where: { node: { title: "$jwt.custom_value" } } }])
+                    @authorization(filter: [{ where: { node: { custom_list: "$jwt.custom_value" } } }])
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
