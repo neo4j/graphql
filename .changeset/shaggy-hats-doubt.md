@@ -1,5 +1,5 @@
 ---
-"@neo4j/graphql": Major
+"@neo4j/graphql": major
 ---
 
 Changed the generated `sort` argument on the top-level Connection field as a list of non-nullable elements in case the target is an Interface.
