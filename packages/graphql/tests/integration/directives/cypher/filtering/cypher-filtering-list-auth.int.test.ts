@@ -27,7 +27,7 @@ describe("cypher directive filtering - List Auth", () => {
         await testHelper.close();
     });
 
-    test("With authorization on type, selecting @cypher field", async () => {
+    test("With authorization on type", async () => {
         const Movie = testHelper.createUniqueType("Movie");
         const Actor = testHelper.createUniqueType("Actor");
 
@@ -77,71 +77,6 @@ describe("cypher directive filtering - List Auth", () => {
             query {
                 ${Movie.plural} {
                     custom_field
-                }
-            }
-        `;
-
-        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
-
-        expect(gqlResult.errors).toBeFalsy();
-        expect(gqlResult?.data).toEqual({
-            [Movie.plural]: [
-                {
-                    custom_field: ["a", "b", "c"],
-                },
-            ],
-        });
-    });
-
-    test("With authorization on type, selecting title", async () => {
-        const Movie = testHelper.createUniqueType("Movie");
-        const Actor = testHelper.createUniqueType("Actor");
-
-        const typeDefs = /* GraphQL */ `
-            type ${Movie} @node @authorization(filter: [{ where: { node: { custom_field_INCLUDES: "$jwt.custom_value" } } }]) {
-                title: String
-                custom_field: [String]
-                    @cypher(
-                        statement: """
-                        MATCH (this)
-                        RETURN this.custom_field as list
-                        """
-                        columnName: "list"
-                    )
-                actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
-            }
-
-            type ${Actor} @node {
-                name: String
-                movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
-            }
-        `;
-
-        await testHelper.initNeo4jGraphQL({
-            typeDefs,
-            features: {
-                authorization: {
-                    key: "secret",
-                },
-            },
-        });
-
-        const token = createBearerToken("secret", { custom_value: "a" });
-
-        await testHelper.executeCypher(
-            `
-            CREATE (m:${Movie} { title: "The Matrix", custom_field: ['a','b','c'] })
-            CREATE (m2:${Movie} { title: "The Matrix Reloaded", custom_field: ['d','e','f'] })
-            CREATE (a:${Actor} { name: "Keanu Reeves"} )
-            CREATE (a)-[:ACTED_IN]->(m)
-            CREATE (a)-[:ACTED_IN]->(m2)
-            `,
-            {}
-        );
-
-        const query = /* GraphQL */ `
-            query {
-                ${Movie.plural} {
                     title
                 }
             }
@@ -154,6 +89,7 @@ describe("cypher directive filtering - List Auth", () => {
             [Movie.plural]: [
                 {
                     title: "The Matrix",
+                    custom_field: ["a", "b", "c"],
                 },
             ],
         });
