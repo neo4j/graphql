@@ -77,7 +77,7 @@ describe("cypher directive filtering - Aggregation", () => {
             },
         },
         {
-            title: "Int aggregation - min, filter on String",
+            title: "Int aggregation - max, filter on String",
             customCypherType: "String",
             createCypher: `
                 CREATE (:${Movie} { title: "The Matrix", released: 1999, custom_field: "Test" })
