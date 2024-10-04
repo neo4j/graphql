@@ -66,9 +66,11 @@ describe("cypher directive filtering - List Auth", () => {
             `
             CREATE (m:${Movie} { title: "The Matrix", custom_field: ['a','b','c'] })
             CREATE (m2:${Movie} { title: "The Matrix Reloaded", custom_field: ['d','e','f'] })
+            CREATE (m3:${Movie} { title: "The Matrix Revolutions", custom_field: ['bbb','a','bbb'] })
             CREATE (a:${Actor} { name: "Keanu Reeves"} )
             CREATE (a)-[:ACTED_IN]->(m)
             CREATE (a)-[:ACTED_IN]->(m2)
+            CREATE (a)-[:ACTED_IN]->(m3)
             `,
             {}
         );
@@ -86,12 +88,16 @@ describe("cypher directive filtering - List Auth", () => {
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult?.data).toEqual({
-            [Movie.plural]: [
+            [Movie.plural]: expect.toIncludeSameMembers([
                 {
                     title: "The Matrix",
                     custom_field: ["a", "b", "c"],
                 },
-            ],
+                {
+                    title: "The Matrix Revolutions",
+                    custom_field: ["bbb", "a", "bbb"],
+                },
+            ]),
         });
     });
 
@@ -135,6 +141,7 @@ describe("cypher directive filtering - List Auth", () => {
             `
             CREATE (m:${Movie} { title: "The Matrix", custom_field: ['a','b','c'] })
             CREATE (m2:${Movie} { title: "The Matrix Reloaded", custom_field: ['d','e','f'] })
+            CREATE (m3:${Movie} { title: "The Matrix Revolutions", custom_field: ['bbb','a','bbb'] })
             CREATE (a:${Actor} { name: "Keanu Reeves" })
             CREATE (a)-[:ACTED_IN]->(m)
             CREATE (a)-[:ACTED_IN]->(m2)
@@ -157,6 +164,9 @@ describe("cypher directive filtering - List Auth", () => {
             [Movie.plural]: [
                 {
                     custom_field: ["a", "b", "c"],
+                },
+                {
+                    custom_field: ["bbb", "a", "bbb"],
                 },
             ],
         });
@@ -232,7 +242,7 @@ describe("cypher directive filtering - List Auth", () => {
         });
     });
 
-    test("With authorization on Actor type field using nested Movie's @cypher field return value", async () => {
+    test("With authorization on Actor type field using nested Movie @cypher field return value", async () => {
         const Movie = testHelper.createUniqueType("Movie");
         const Actor = testHelper.createUniqueType("Actor");
 
@@ -242,7 +252,8 @@ describe("cypher directive filtering - List Auth", () => {
                 custom_field: [String]
                     @cypher(
                         statement: """
-                        RETURN ['a', 'b', 'c'] as list
+                        MATCH (this)
+                        RETURN this.custom_field as list
                         """
                         columnName: "list"
                     )
@@ -268,9 +279,13 @@ describe("cypher directive filtering - List Auth", () => {
 
         await testHelper.executeCypher(
             `
-            CREATE (m:${Movie} { title: "The Matrix" })
+            CREATE (m:${Movie} { title: "The Matrix", custom_field: ['a','b','c'] })
+            CREATE (m2:${Movie} { title: "The Matrix Reloaded", custom_field: ['d','e','f'] })
             CREATE (a:${Actor} { name: "Keanu Reeves" })
+            CREATE (a2:${Actor} { name: "Jada Pinkett Smith" })
             CREATE (a)-[:ACTED_IN]->(m)
+            CREATE (a)-[:ACTED_IN]->(m2)
+            CREATE (a2)-[:ACTED_IN]->(m2)
             `,
             {}
         );
@@ -305,7 +320,8 @@ describe("cypher directive filtering - List Auth", () => {
                 custom_field: [String]
                     @cypher(
                         statement: """
-                        RETURN ['a', 'b', 'c'] as list
+                        MATCH (this)
+                        RETURN this.custom_field as list
                         """
                         columnName: "list"
                     )
@@ -331,9 +347,14 @@ describe("cypher directive filtering - List Auth", () => {
 
         await testHelper.executeCypher(
             `
-            CREATE (m:${Movie} { title: "The Matrix" })
+            CREATE (m:${Movie} { title: "The Matrix", custom_field: ['a','b','c'] })
+            CREATE (m2:${Movie} { title: "The Matrix Reloaded", custom_field: ['d','e','f'] })
             CREATE (a:${Actor} { name: "Keanu Reeves" })
+            CREATE (a2:${Actor} { name: "Carrie-Anne Moss" })
             CREATE (a)-[:ACTED_IN]->(m)
+            CREATE (a)-[:ACTED_IN]->(m2)
+            CREATE (a2)-[:ACTED_IN]->(m)
+            CREATE (a2)-[:ACTED_IN]->(m2)
             `,
             {}
         );
@@ -395,11 +416,13 @@ describe("cypher directive filtering - List Auth", () => {
 
         await testHelper.executeCypher(
             `
-            CREATE (m:${Movie} { title: "The Matrix" })
-            CREATE (m2:${Movie} { title: "The Matrix 2", custom_field: ['a','b','c'] })
-            CREATE (m3:${Movie} { title: "The Matrix 3" })
+            CREATE (m:${Movie} { title: "The Matrix", custom_field: ['a','b','c'] })
+            CREATE (m2:${Movie} { title: "The Matrix Reloaded", custom_field: ['c','c','c'] })
+            CREATE (m3:${Movie} { title: "The Matrix Revolutions", custom_field: ['b','b','b'] })
             CREATE (a:${Actor} { name: "Keanu Reeves" })
             CREATE (a)-[:ACTED_IN]->(m)
+            CREATE (a)-[:ACTED_IN]->(m2)
+            CREATE (a)-[:ACTED_IN]->(m3)
             `,
             {}
         );
@@ -455,9 +478,13 @@ describe("cypher directive filtering - List Auth", () => {
 
         await testHelper.executeCypher(
             `
-            CREATE (m2:${Movie} { title: "The Matrix", custom_field: ['a','b','c'] })
+            CREATE (m:${Movie} { title: "The Matrix", custom_field: ['a','b','c'] })
+            CREATE (m2:${Movie} { title: "The Matrix Reloaded", custom_field: ['a'] })
+            CREATE (m3:${Movie} { title: "The Matrix Revolutions", custom_field: ['a','b','c'] })
             CREATE (a:${Actor} { name: "Keanu Reeves" })
             CREATE (a)-[:ACTED_IN]->(m)
+            CREATE (a)-[:ACTED_IN]->(m2)
+            CREATE (a)-[:ACTED_IN]->(m3)
             `,
             {}
         );
@@ -474,11 +501,17 @@ describe("cypher directive filtering - List Auth", () => {
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult?.data).toEqual({
-            [Movie.plural]: [
+            [Movie.plural]: expect.toIncludeSameMembers([
+                {
+                    title: "The Matrix Reloaded",
+                },
+                {
+                    title: "The Matrix Revolutions",
+                },
                 {
                     title: "The Matrix",
                 },
-            ],
+            ]),
         });
     });
 });
