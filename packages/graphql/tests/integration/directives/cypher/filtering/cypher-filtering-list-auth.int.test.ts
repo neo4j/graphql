@@ -285,14 +285,14 @@ describe("cypher directive filtering - List Auth", () => {
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult?.data).toEqual({
-            [Movie.plural]: [
+            [Movie.plural]: expect.toIncludeSameMembers([
                 {
                     title: "The Matrix",
                 },
                 {
                     title: "The Matrix Reloaded",
                 },
-            ],
+            ]),
         });
     });
 
