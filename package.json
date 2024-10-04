@@ -33,7 +33,7 @@
         "eslint-formatter-summary": "1.1.0",
         "eslint-import-resolver-typescript": "3.6.3",
         "eslint-plugin-eslint-comments": "3.2.0",
-        "eslint-plugin-import": "2.30.0",
+        "eslint-plugin-import": "2.31.0",
         "eslint-plugin-jest": "28.8.3",
         "eslint-plugin-jsx-a11y": "6.10.0",
         "eslint-plugin-react": "7.37.1",
