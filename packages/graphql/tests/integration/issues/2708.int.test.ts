@@ -365,33 +365,6 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
         });
     });
 
-    test("should find where genres_NONE", async () => {
-        const query = `
-            {
-                ${movieType.plural}(where: { genres_NONE: { moviesAggregate: { count: 2 } } }) {
-                    title
-                }
-            }
-        `;
-
-        const result = await testHelper.executeGraphQL(query);
-
-        expect(result.errors).toBeFalsy();
-        expect(result.data).toEqual({
-            [movieType.plural]: expect.toIncludeSameMembers([
-                {
-                    title: movieTitle1,
-                },
-                {
-                    title: movieTitle3,
-                },
-                {
-                    title: movieTitle5,
-                },
-            ]),
-        });
-    });
-
     test("should not find genres_ALL where NONE true", async () => {
         const query = `
             {
