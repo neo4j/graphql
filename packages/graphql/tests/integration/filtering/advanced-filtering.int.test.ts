@@ -170,58 +170,6 @@ describe("Advanced Filtering", () => {
             expect((gqlResult.data as any)[randomType.plural][0].property).toEqual(value);
         });
 
-        test("should find Movies NOT_IN strings", async () => {
-            const randomType = testHelper.createUniqueType("Movie");
-
-            const typeDefs = `
-                        type ${randomType.name} @node {
-                            property: ${type}
-                        }
-                    `;
-
-            await testHelper.initNeo4jGraphQL({ typeDefs });
-
-            const value = generate({
-                readable: true,
-                charset: "alphabetic",
-            });
-
-            const randomValue1 = generate({
-                readable: true,
-                charset: "alphabetic",
-            });
-
-            const randomValue2 = generate({
-                readable: true,
-                charset: "alphabetic",
-            });
-
-            await testHelper.executeCypher(
-                `
-                            CREATE (:${randomType.name} {property: $value})
-                            CREATE (:${randomType.name} {property: $randomValue1})
-                            CREATE (:${randomType.name} {property: $randomValue2})
-                        `,
-                { value, randomValue1, randomValue2 }
-            );
-
-            const query = `
-                            {
-                                ${randomType.plural}(where: { property_NOT_IN: ["${randomValue1}", "${randomValue2}"] }) {
-                                    property
-                                }
-                            }
-                        `;
-
-            const gqlResult = await testHelper.executeGraphQL(query);
-
-            expect(gqlResult.errors).toBeUndefined();
-
-            expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
-
-            expect((gqlResult.data as any)[randomType.plural][0].property).toEqual(value);
-        });
-
         test("should find Movies CONTAINS string", async () => {
             const randomType = testHelper.createUniqueType("Movie");
 
@@ -264,53 +212,6 @@ describe("Advanced Filtering", () => {
             expect((gqlResult.data as any)[randomType.plural]).toHaveLength(3);
 
             expect((gqlResult.data as any)[randomType.plural][0].property).toEqual(superValue);
-        });
-
-        test("should find Movies NOT_CONTAINS string", async () => {
-            const randomType = testHelper.createUniqueType("Movie");
-
-            const typeDefs = `
-                        type ${randomType.name} @node {
-                            property: ${type}
-                        }
-                    `;
-
-            await testHelper.initNeo4jGraphQL({ typeDefs });
-
-            const value = generate({
-                readable: true,
-                charset: "alphabetic",
-            });
-
-            const notValue = generate({
-                readable: true,
-                charset: "alphabetic",
-            });
-
-            await testHelper.executeCypher(
-                `
-                            CREATE (:${randomType.name} {property: $value})
-                            CREATE (:${randomType.name} {property: $notValue})
-                            CREATE (:${randomType.name} {property: $notValue})
-                        `,
-                { value, notValue }
-            );
-
-            const query = `
-                            {
-                                ${randomType.plural}(where: { property_NOT_CONTAINS: "${notValue}" }) {
-                                    property
-                                }
-                            }
-                        `;
-
-            const gqlResult = await testHelper.executeGraphQL(query);
-
-            expect(gqlResult.errors).toBeUndefined();
-
-            expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
-
-            expect((gqlResult.data as any)[randomType.plural][0].property).toEqual(value);
         });
 
         test("should find Movies STARTS_WITH string", async () => {
@@ -359,51 +260,6 @@ describe("Advanced Filtering", () => {
             });
         });
 
-        test("should find Movies NOT_STARTS_WITH string", async () => {
-            const randomType = testHelper.createUniqueType("Movie");
-
-            const typeDefs = `
-                        type ${randomType.name} @node {
-                            property: ${type}
-                        }
-                    `;
-
-            await testHelper.initNeo4jGraphQL({ typeDefs });
-
-            const value = generate({
-                readable: true,
-                charset: "alphabetic",
-            });
-
-            const notValue = generate({
-                readable: true,
-                charset: "alphabetic",
-            });
-
-            await testHelper.executeCypher(
-                `
-                            CREATE (:${randomType.name} {property: $value})
-                            CREATE (:${randomType.name} {property: $notValue})
-                            CREATE (:${randomType.name} {property: $notValue})
-                        `,
-                { value, notValue }
-            );
-
-            const query = `
-                            {
-                                ${randomType.plural}(where: { property_NOT_STARTS_WITH: "${notValue}" }) {
-                                    property
-                                }
-                            }
-                        `;
-
-            const gqlResult = await testHelper.executeGraphQL(query);
-
-            expect(gqlResult.errors).toBeUndefined();
-
-            expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
-        });
-
         test("should find Movies ENDS_WITH string", async () => {
             const randomType = testHelper.createUniqueType("Movie");
 
@@ -449,54 +305,6 @@ describe("Advanced Filtering", () => {
             expect(gqlResult.errors).toBeUndefined();
 
             expect((gqlResult.data as any)[randomType.plural]).toHaveLength(2);
-        });
-
-        test("should find Movies NOT_ENDS_WITH string", async () => {
-            const randomType = testHelper.createUniqueType("Movie");
-
-            const typeDefs = `
-                        type ${randomType.name} @node {
-                            property: ${type}
-                        }
-                    `;
-
-            await testHelper.initNeo4jGraphQL({ typeDefs });
-
-            const value = generate({
-                readable: true,
-                charset: "alphabetic",
-            });
-
-            const notValue = generate({
-                readable: true,
-                charset: "alphabetic",
-            });
-
-            const superValue = `${value}${value}`;
-
-            await testHelper.executeCypher(
-                `
-                            CREATE (:${randomType.name} {property: $value})
-                            CREATE (:${randomType.name} {property: $notValue})
-                            CREATE (:${randomType.name} {property: $superValue})
-                        `,
-                { value, notValue, superValue }
-            );
-
-            const query = `
-                            {
-                                ${randomType.plural}(where: { property_NOT_ENDS_WITH: "${value}" }) {
-                                    property
-                                }
-                            }
-                        `;
-
-            const gqlResult = await testHelper.executeGraphQL(query);
-
-            expect(gqlResult.errors).toBeUndefined();
-
-            expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
-            expect((gqlResult.data as any)[randomType.plural][0].property).toEqual(notValue);
         });
     });
 
@@ -941,66 +749,6 @@ describe("Advanced Filtering", () => {
             const query = `
                             {
                                 ${randomType.plural}(where: { property_IN: [${value}, ${randomValue1}, ${randomValue2}] }) {
-                                    property
-                                }
-                            }
-                        `;
-
-            const gqlResult = await testHelper.executeGraphQL(query);
-
-            expect(gqlResult.errors).toBeUndefined();
-
-            expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
-            expect((gqlResult.data as any)[randomType.plural][0].property).toEqual(value);
-        });
-
-        test("should find Movies NOT_IN numbers", async () => {
-            const randomType = testHelper.createUniqueType("Movie");
-
-            const typeDefs = `
-                        type ${randomType.name} @node {
-                            property: ${type}
-                        }
-                    `;
-
-            await testHelper.initNeo4jGraphQL({ typeDefs });
-
-            let value: number;
-
-            if (type === "Int") {
-                value = Math.floor(Math.random() * 9999);
-            } else {
-                value = Math.floor(Math.random() * 9999) + 0.5;
-            }
-
-            let randomValue1: number;
-
-            if (type === "Int") {
-                randomValue1 = Math.floor(Math.random() * 99999);
-            } else {
-                randomValue1 = Math.floor(Math.random() * 99999) + 0.5;
-            }
-
-            let randomValue2: number;
-
-            if (type === "Int") {
-                randomValue2 = Math.floor(Math.random() * 99999);
-            } else {
-                randomValue2 = Math.floor(Math.random() * 99999) + 0.5;
-            }
-
-            await testHelper.executeCypher(
-                `
-                            CREATE (:${randomType.name} {property: $value})
-                            CREATE (:${randomType.name} {property: $randomValue1})
-                            CREATE (:${randomType.name} {property: $randomValue2})
-                        `,
-                { value, randomValue1, randomValue2 }
-            );
-
-            const query = `
-                            {
-                                ${randomType.plural}(where: { property_NOT_IN: [${randomValue1}, ${randomValue2}] }) {
                                     property
                                 }
                             }
@@ -1582,67 +1330,6 @@ describe("Advanced Filtering", () => {
                 });
             });
 
-            test("should find using NOT on connections", async () => {
-                const randomType1 = testHelper.createUniqueType("Movie");
-                const randomType2 = testHelper.createUniqueType("Genre");
-
-                const typeDefs = `
-                        type ${randomType1.name} @node {
-                            id: ID
-                            ${randomType2.plural}: [${randomType2.name}!]! @relationship(type: "IN_GENRE", direction: OUT)
-                        }
-
-                        type ${randomType2.name} @node {
-                            id: ID
-                        }
-                `;
-
-                await testHelper.initNeo4jGraphQL({ typeDefs });
-
-                const rootId1 = generate({
-                    charset: "alphabetic",
-                });
-                const rootId2 = generate({
-                    charset: "alphabetic",
-                });
-
-                const relationId1 = generate({
-                    charset: "alphabetic",
-                });
-                const relationId2 = generate({
-                    charset: "alphabetic",
-                });
-
-                await testHelper.executeCypher(
-                    `
-                            CREATE (root1:${randomType1.name} {id: $rootId1})-[:IN_GENRE]->(relation1:${randomType2.name} {id: $relationId1})
-                            CREATE (root2:${randomType1.name} {id: $rootId2})-[:IN_GENRE]->(relation2:${randomType2.name} {id: $relationId2})
-                        `,
-                    { rootId1, rootId2, relationId1, relationId2 }
-                );
-
-                const query = `
-                        {
-                            ${randomType1.plural}(where: { ${randomType2.plural}Connection_NOT: { node: { id_EQ: "${relationId2}" } } }) {
-                                id
-                                ${randomType2.plural} {
-                                    id
-                                }
-                            }
-                        }
-                    `;
-
-                const gqlResult = await testHelper.executeGraphQL(query);
-
-                expect(gqlResult.errors).toBeUndefined();
-
-                expect((gqlResult.data as any)[randomType1.plural]).toHaveLength(1);
-                expect((gqlResult.data as any)[randomType1.plural][0]).toMatchObject({
-                    id: rootId1,
-                    [randomType2.plural]: [{ id: relationId1 }],
-                });
-            });
-
             test("should find using relationship properties and connections", async () => {
                 const randomType1 = testHelper.createUniqueType("Movie");
                 const randomType2 = testHelper.createUniqueType("Genre");
@@ -1691,7 +1378,7 @@ describe("Advanced Filtering", () => {
 
                 const query = `
                         {
-                            ${randomType1.plural}(where: { ${randomType2.plural}Connection_NOT: { edge: { id_EQ: "${actedInId}" } } }) {
+                            ${randomType1.plural}(where: { ${randomType2.plural}Connection_NONE: { edge: { id_EQ: "${actedInId}" } } }) {
                                 id
                                 ${randomType2.plural} {
                                     id
@@ -2170,25 +1857,6 @@ describe("Advanced Filtering", () => {
             expect((nullResult.data as any)[randomType1.plural]).toHaveLength(1);
             expect((nullResult.data as any)[randomType1.plural][0]).toMatchObject({
                 id: randomId,
-            });
-
-            // Test not null checking (nodes without any related nodes on the specified field)
-
-            const notNullQuery = `
-                    {
-                        ${randomType1.plural}(where: { ${randomType2.plural}_NOT: null }) {
-                            id
-                        }
-                    }
-                `;
-
-            const notNullResult = await testHelper.executeGraphQL(notNullQuery);
-
-            expect(notNullResult.errors).toBeUndefined();
-
-            expect((notNullResult.data as any)[randomType1.plural]).toHaveLength(1);
-            expect((notNullResult.data as any)[randomType1.plural][0]).toMatchObject({
-                id: rootId,
             });
         });
     });

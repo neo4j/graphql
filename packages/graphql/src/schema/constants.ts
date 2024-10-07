@@ -19,13 +19,6 @@
 
 import { DEPRECATED } from "../constants";
 
-export const DEPRECATE_NOT = {
-    name: DEPRECATED,
-    args: {
-        reason: "Negation filters will be deprecated, use the NOT operator to achieve the same behavior",
-    },
-};
-
 export const DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS = {
     name: DEPRECATED,
     args: {

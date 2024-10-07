@@ -108,10 +108,10 @@ describe("https://github.com/neo4j/graphql/issues/488", () => {
         `);
     });
 
-    test("Should replicate issue and return correct cypher (using not)", async () => {
+    test("Should replicate issue and return correct cypher (using NONE)", async () => {
         const query = /* GraphQL */ `
             query {
-                journalists(where: { keywordsConnection_NOT: { Emoji: { node: { type_EQ: "Smile" } } } }) {
+                journalists(where: { keywordsConnection_NONE: { Emoji: { node: { type_EQ: "Smile" } } } }) {
                     name
                     keywords {
                         ... on Emoji {

@@ -251,22 +251,12 @@ describe("@default directive", () => {
               fromInterface_ENDS_WITH: String
               fromInterface_EQ: String
               fromInterface_IN: [String!]
-              fromInterface_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              fromInterface_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              fromInterface_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              fromInterface_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              fromInterface_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               fromInterface_STARTS_WITH: String
               toBeOverridden: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               toBeOverridden_CONTAINS: String
               toBeOverridden_ENDS_WITH: String
               toBeOverridden_EQ: String
               toBeOverridden_IN: [String!]
-              toBeOverridden_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              toBeOverridden_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              toBeOverridden_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              toBeOverridden_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              toBeOverridden_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               toBeOverridden_STARTS_WITH: String
               typename_IN: [UserInterfaceImplementation!]
             }
@@ -328,38 +318,21 @@ describe("@default directive", () => {
               fromInterface_ENDS_WITH: String
               fromInterface_EQ: String
               fromInterface_IN: [String!]
-              fromInterface_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              fromInterface_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              fromInterface_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              fromInterface_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              fromInterface_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               fromInterface_STARTS_WITH: String
               id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID!]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               location: Location @deprecated(reason: \\"Please use the explicit _EQ version\\")
               location_EQ: Location
               location_IN: [Location!]
-              location_NOT: Location @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              location_NOT_IN: [Location!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
               numberOfFriends: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
               numberOfFriends_EQ: Int
@@ -368,8 +341,6 @@ describe("@default directive", () => {
               numberOfFriends_IN: [Int!]
               numberOfFriends_LT: Int
               numberOfFriends_LTE: Int
-              numberOfFriends_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              numberOfFriends_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               rating: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
               rating_EQ: Float
               rating_GT: Float
@@ -377,18 +348,11 @@ describe("@default directive", () => {
               rating_IN: [Float!]
               rating_LT: Float
               rating_LTE: Float
-              rating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              rating_NOT_IN: [Float!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               toBeOverridden: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               toBeOverridden_CONTAINS: String
               toBeOverridden_ENDS_WITH: String
               toBeOverridden_EQ: String
               toBeOverridden_IN: [String!]
-              toBeOverridden_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              toBeOverridden_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              toBeOverridden_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              toBeOverridden_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              toBeOverridden_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               toBeOverridden_STARTS_WITH: String
               verified: Boolean @deprecated(reason: \\"Please use the explicit _EQ version\\")
               verifiedDate: DateTime @deprecated(reason: \\"Please use the explicit _EQ version\\")
@@ -398,10 +362,7 @@ describe("@default directive", () => {
               verifiedDate_IN: [DateTime!]
               verifiedDate_LT: DateTime
               verifiedDate_LTE: DateTime
-              verifiedDate_NOT: DateTime @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              verifiedDate_NOT_IN: [DateTime!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               verified_EQ: Boolean
-              verified_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type UsersConnection {

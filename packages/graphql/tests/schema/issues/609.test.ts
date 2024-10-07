@@ -108,11 +108,6 @@ describe("609", () => {
               deprecatedField_ENDS_WITH: String @deprecated
               deprecatedField_EQ: String @deprecated
               deprecatedField_IN: [String] @deprecated
-              deprecatedField_NOT: String @deprecated
-              deprecatedField_NOT_CONTAINS: String @deprecated
-              deprecatedField_NOT_ENDS_WITH: String @deprecated
-              deprecatedField_NOT_IN: [String] @deprecated
-              deprecatedField_NOT_STARTS_WITH: String @deprecated
               deprecatedField_STARTS_WITH: String @deprecated
             }
 

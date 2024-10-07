@@ -103,62 +103,6 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Arrays", () => {
         `);
     });
 
-    test("NOT_IN", async () => {
-        const query = /* GraphQL */ `
-            query {
-                movies {
-                    title
-                    actorsConnection(where: { edge: { screenTime_NOT_IN: [60, 70] } }) {
-                        edges {
-                            properties {
-                                screenTime
-                            }
-                            node {
-                                name
-                            }
-                        }
-                    }
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            CALL {
-                WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WHERE NOT (this0.screenTime IN $param0)
-                WITH collect({ node: this1, relationship: this0 }) AS edges
-                WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
-                    UNWIND edges AS edge
-                    WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: this1.name, __resolveType: \\"Actor\\" } }) AS var2
-                }
-                RETURN { edges: var2, totalCount: totalCount } AS var3
-            }
-            RETURN this { .title, actorsConnection: var3 } AS this"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": [
-                    {
-                        \\"low\\": 60,
-                        \\"high\\": 0
-                    },
-                    {
-                        \\"low\\": 70,
-                        \\"high\\": 0
-                    }
-                ]
-            }"
-        `);
-    });
-
     test("INCLUDES", async () => {
         const query = /* GraphQL */ `
             query {
@@ -186,53 +130,6 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Arrays", () => {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE $param0 IN this0.quotes
-                WITH collect({ node: this1, relationship: this0 }) AS edges
-                WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
-                    UNWIND edges AS edge
-                    WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: this1.name, __resolveType: \\"Actor\\" } }) AS var2
-                }
-                RETURN { edges: var2, totalCount: totalCount } AS var3
-            }
-            RETURN this { .title, actorsConnection: var3 } AS this"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": \\"Life is like a box of chocolates\\"
-            }"
-        `);
-    });
-
-    test("NOT_INCLUDES", async () => {
-        const query = /* GraphQL */ `
-            query {
-                movies {
-                    title
-                    actorsConnection(where: { edge: { quotes_NOT_INCLUDES: "Life is like a box of chocolates" } }) {
-                        edges {
-                            properties {
-                                screenTime
-                            }
-                            node {
-                                name
-                            }
-                        }
-                    }
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            CALL {
-                WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WHERE NOT ($param0 IN this0.quotes)
                 WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
                 CALL {

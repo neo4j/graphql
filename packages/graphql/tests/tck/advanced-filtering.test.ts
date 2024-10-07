@@ -182,31 +182,6 @@ describe("Cypher Advanced Filtering", () => {
         `);
     });
 
-    test("NOT_IN", async () => {
-        const query = /* GraphQL */ `
-            {
-                movies(where: { id_NOT_IN: ["123"] }) {
-                    id
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE NOT (this.id IN $param0)
-            RETURN this { .id } AS this"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": [
-                    \\"123\\"
-                ]
-            }"
-        `);
-    });
 
     test("CONTAINS", async () => {
         const query = /* GraphQL */ `
@@ -232,30 +207,7 @@ describe("Cypher Advanced Filtering", () => {
         `);
     });
 
-    test("NOT_CONTAINS", async () => {
-        const query = /* GraphQL */ `
-            {
-                movies(where: { id_NOT_CONTAINS: "123" }) {
-                    id
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE NOT (this.id CONTAINS $param0)
-            RETURN this { .id } AS this"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": \\"123\\"
-            }"
-        `);
-    });
-
+    
     test("STARTS_WITH", async () => {
         const query = /* GraphQL */ `
             {
@@ -280,30 +232,7 @@ describe("Cypher Advanced Filtering", () => {
         `);
     });
 
-    test("NOT_STARTS_WITH", async () => {
-        const query = /* GraphQL */ `
-            {
-                movies(where: { id_NOT_STARTS_WITH: "123" }) {
-                    id
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE NOT (this.id STARTS WITH $param0)
-            RETURN this { .id } AS this"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": \\"123\\"
-            }"
-        `);
-    });
-
+ 
     test("ENDS_WITH", async () => {
         const query = /* GraphQL */ `
             {
@@ -328,29 +257,7 @@ describe("Cypher Advanced Filtering", () => {
         `);
     });
 
-    test("NOT_ENDS_WITH", async () => {
-        const query = /* GraphQL */ `
-            {
-                movies(where: { id_NOT_ENDS_WITH: "123" }) {
-                    id
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE NOT (this.id ENDS WITH $param0)
-            RETURN this { .id } AS this"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": \\"123\\"
-            }"
-        `);
-    });
+   
 
     test("LT", async () => {
         const query = /* GraphQL */ `
@@ -688,10 +595,10 @@ describe("Cypher Advanced Filtering", () => {
             `);
         });
 
-        test("NOT", async () => {
+        test("NONE", async () => {
             const query = /* GraphQL */ `
                 {
-                    movies(where: { genres_NOT: { name_EQ: "some genre" } }) {
+                    movies(where: { genres_NONE: { name_EQ: "some genre" } }) {
                         actorCount
                     }
                 }
@@ -833,10 +740,10 @@ describe("Cypher Advanced Filtering", () => {
             `);
         });
 
-        test("Node and relationship properties NOT", async () => {
+        test("Node and relationship properties NONE", async () => {
             const query = /* GraphQL */ `
                 {
-                    movies(where: { genresConnection_NOT: { node: { name_EQ: "some genre" } } }) {
+                    movies(where: { genresConnection_NONE: { node: { name_EQ: "some genre" } } }) {
                         actorCount
                     }
                 }

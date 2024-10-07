@@ -249,9 +249,7 @@ export interface GraphQLWhereArg {
 
 export interface ConnectionWhereArg {
     node?: GraphQLWhereArg;
-    node_NOT?: GraphQLWhereArg;
     edge?: GraphQLWhereArg;
-    edge_NOT?: GraphQLWhereArg;
     AND?: ConnectionWhereArg[];
     OR?: ConnectionWhereArg[];
     NOT?: ConnectionWhereArg;
@@ -480,7 +478,6 @@ export type Neo4jFeaturesSettings = {
     excludeDeprecatedFields?: {
         bookmark?: boolean;
         implicitEqualFilters?: boolean;
-        negationFilters?: boolean;
         arrayFilters?: boolean;
         stringAggregation?: boolean;
         aggregationFilters?: boolean;

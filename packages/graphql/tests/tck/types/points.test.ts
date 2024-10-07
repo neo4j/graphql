@@ -133,36 +133,6 @@ describe("Cypher Points", () => {
         `);
     });
 
-    test("Simple Points NOT INCLUDES query", async () => {
-        const query = /* GraphQL */ `
-            {
-                pointContainers(where: { points_NOT_INCLUDES: { longitude: 1.0, latitude: 2.0 } }) {
-                    points {
-                        longitude
-                        latitude
-                        crs
-                    }
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:PointContainer)
-            WHERE NOT (point($param0) IN this.points)
-            RETURN this { .points } AS this"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": {
-                    \\"longitude\\": 1,
-                    \\"latitude\\": 2
-                }
-            }"
-        `);
-    });
 
     test("Simple Points create mutation", async () => {
         const query = /* GraphQL */ `

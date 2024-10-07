@@ -240,7 +240,6 @@ describe("inheritance", () => {
               Return Actors where none of the related PersonFriendsConnections match this filter
               \\"\\"\\"
               friendsConnection_NONE: PersonFriendsConnectionWhere
-              friendsConnection_NOT: PersonFriendsConnectionWhere @deprecated(reason: \\"Use \`friendsConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Actors where one of the related PersonFriendsConnections match this filter
               \\"\\"\\"
@@ -253,7 +252,6 @@ describe("inheritance", () => {
               friends_ALL: PersonWhere
               \\"\\"\\"Return Actors where none of the related People match this filter\\"\\"\\"
               friends_NONE: PersonWhere
-              friends_NOT: PersonWhere @deprecated(reason: \\"Use \`friends_NONE\` instead.\\")
               \\"\\"\\"Return Actors where one of the related People match this filter\\"\\"\\"
               friends_SINGLE: PersonWhere
               \\"\\"\\"Return Actors where some of the related People match this filter\\"\\"\\"
@@ -263,11 +261,6 @@ describe("inheritance", () => {
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -364,8 +357,6 @@ describe("inheritance", () => {
               since_IN: [Int]
               since_LT: Int
               since_LTE: Int
-              since_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              since_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type IntAggregateSelection {
@@ -466,9 +457,7 @@ describe("inheritance", () => {
               NOT: PersonFriendsConnectionWhere
               OR: [PersonFriendsConnectionWhere!]
               edge: PersonFriendsEdgeWhere
-              edge_NOT: PersonFriendsEdgeWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               node: PersonWhere
-              node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input PersonFriendsCreateFieldInput {
@@ -629,7 +618,6 @@ describe("inheritance", () => {
               Return People where none of the related PersonFriendsConnections match this filter
               \\"\\"\\"
               friendsConnection_NONE: PersonFriendsConnectionWhere
-              friendsConnection_NOT: PersonFriendsConnectionWhere @deprecated(reason: \\"Use \`friendsConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return People where one of the related PersonFriendsConnections match this filter
               \\"\\"\\"
@@ -642,7 +630,6 @@ describe("inheritance", () => {
               friends_ALL: PersonWhere
               \\"\\"\\"Return People where none of the related People match this filter\\"\\"\\"
               friends_NONE: PersonWhere
-              friends_NOT: PersonWhere @deprecated(reason: \\"Use \`friends_NONE\` instead.\\")
               \\"\\"\\"Return People where one of the related People match this filter\\"\\"\\"
               friends_SINGLE: PersonWhere
               \\"\\"\\"Return People where some of the related People match this filter\\"\\"\\"
@@ -652,11 +639,6 @@ describe("inheritance", () => {
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
               typename_IN: [PersonImplementation!]
             }

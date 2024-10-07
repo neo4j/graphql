@@ -645,7 +645,7 @@ subscription SubscriptionMovie {
     });
 
     test("node filter on union type - both types", async () => {
-        const where = `{createdRelationship: { directors: { ${typePerson.name}: { node: { reputation_GTE: 50 } }, ${typeActor.name}: { node: { name_NOT_IN: ["Keanu", "K"] } } } } }`;
+        const where = `{createdRelationship: { directors: { ${typePerson.name}: { node: { reputation_GTE: 50 } }, ${typeActor.name}: { node: { NOT: { name_IN: ["Keanu", "K"]  } } } } } }`;
 
         await wsClient.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson, where }));
 

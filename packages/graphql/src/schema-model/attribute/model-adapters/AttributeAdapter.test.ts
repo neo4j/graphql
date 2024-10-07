@@ -599,7 +599,6 @@ describe("Attribute", () => {
             expect(listElementAttribute).toBeInstanceOf(AttributeAdapter);
             expect(listElementAttribute.listModel).toBeDefined();
             expect(listElementAttribute.listModel!.getIncludes()).toMatchInlineSnapshot(`"test_INCLUDES"`);
-            expect(listElementAttribute.listModel!.getNotIncludes()).toMatchInlineSnapshot(`"test_NOT_INCLUDES"`);
             expect(listElementAttribute.listModel!.getPop()).toMatchInlineSnapshot(`"test_POP"`);
             expect(listElementAttribute.listModel!.getPush()).toMatchInlineSnapshot(`"test_PUSH"`);
         });
