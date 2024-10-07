@@ -73,8 +73,12 @@ describe("https://github.com/neo4j/graphql/issues/5497", () => {
             mutation ($fileId: ID!, $newCategoryId: ID) {
                 updateFiles(
                     where: { id_EQ: $fileId }
-                    disconnect: { category: { where: { node: { NOT: { id_EQ: $newCategoryId } } } } }
-                    connect: { category: { where: { node: { id_EQ: $newCategoryId } } } }
+                    update: {
+                        category: {
+                            disconnect: { where: { node: { NOT: { id_EQ: $newCategoryId } } } }
+                            connect: { where: { node: { id_EQ: $newCategoryId } } }
+                        }
+                    }
                 ) {
                     info {
                         relationshipsDeleted
@@ -97,10 +101,10 @@ describe("https://github.com/neo4j/graphql/issues/5497", () => {
             WITH this
             CALL {
             WITH this
-            OPTIONAL MATCH (this)<-[this_disconnect_category0_rel:HAS_FILE]-(this_disconnect_category0:Category)
+            OPTIONAL MATCH (this)<-[this_category0_disconnect0_rel:HAS_FILE]-(this_category0_disconnect0:Category)
             CALL {
-                WITH this_disconnect_category0
-                MATCH (this_disconnect_category0)<-[:HAS_CATEGORY]-(authorization__before_this1:Cabinet)
+                WITH this_category0_disconnect0
+                MATCH (this_category0_disconnect0)<-[:HAS_CATEGORY]-(authorization__before_this1:Cabinet)
                 OPTIONAL MATCH (authorization__before_this1)<-[:HAS_CABINET]-(authorization__before_this2:User)
                 WITH *, count(authorization__before_this2) AS userCount
                 WITH *
@@ -108,22 +112,22 @@ describe("https://github.com/neo4j/graphql/issues/5497", () => {
                 RETURN count(authorization__before_this1) = 1 AS authorization__before_var0
             }
             WITH *
-            WHERE NOT (this_disconnect_category0.id = $updateFiles_args_disconnect_category_where_Category_this_disconnect_category0param0) AND ($isAuthenticated = true AND authorization__before_var0 = true)
+            WHERE NOT (this_category0_disconnect0.id = $updateFiles_args_update_category_disconnect_where_Category_this_category0_disconnect0param0) AND ($isAuthenticated = true AND authorization__before_var0 = true)
             CALL {
-            	WITH this_disconnect_category0, this_disconnect_category0_rel, this
-            	WITH collect(this_disconnect_category0) as this_disconnect_category0, this_disconnect_category0_rel, this
-            	UNWIND this_disconnect_category0 as x
-            	DELETE this_disconnect_category0_rel
+            	WITH this_category0_disconnect0, this_category0_disconnect0_rel, this
+            	WITH collect(this_category0_disconnect0) as this_category0_disconnect0, this_category0_disconnect0_rel, this
+            	UNWIND this_category0_disconnect0 as x
+            	DELETE this_category0_disconnect0_rel
             }
-            RETURN count(*) AS disconnect_this_disconnect_category_Category
+            RETURN count(*) AS disconnect_this_category0_disconnect_Category
             }
             WITH *
             CALL {
             	WITH this
-            	OPTIONAL MATCH (this_connect_category0_node:Category)
+            	OPTIONAL MATCH (this_category0_connect0_node:Category)
             CALL {
-                WITH this_connect_category0_node
-                MATCH (this_connect_category0_node)<-[:HAS_CATEGORY]-(authorization__before_this1:Cabinet)
+                WITH this_category0_connect0_node
+                MATCH (this_category0_connect0_node)<-[:HAS_CATEGORY]-(authorization__before_this1:Cabinet)
                 OPTIONAL MATCH (authorization__before_this1)<-[:HAS_CABINET]-(authorization__before_this2:User)
                 WITH *, count(authorization__before_this2) AS userCount
                 WITH *
@@ -131,21 +135,20 @@ describe("https://github.com/neo4j/graphql/issues/5497", () => {
                 RETURN count(authorization__before_this1) = 1 AS authorization__before_var0
             }
             WITH *
-            	WHERE this_connect_category0_node.id = $this_connect_category0_node_param0 AND ($isAuthenticated = true AND authorization__before_var0 = true)
+            	WHERE this_category0_connect0_node.id = $this_category0_connect0_node_param0 AND ($isAuthenticated = true AND authorization__before_var0 = true)
             	CALL {
             		WITH *
-            		WITH collect(this_connect_category0_node) as connectedNodes, collect(this) as parentNodes
+            		WITH collect(this_category0_connect0_node) as connectedNodes, collect(this) as parentNodes
             		CALL {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
-            			UNWIND connectedNodes as this_connect_category0_node
-            			MERGE (this)<-[:HAS_FILE]-(this_connect_category0_node)
+            			UNWIND connectedNodes as this_category0_connect0_node
+            			MERGE (this)<-[:HAS_FILE]-(this_category0_connect0_node)
             		}
             	}
-            WITH this, this_connect_category0_node
-            	RETURN count(*) AS connect_this_connect_category_Category0
+            WITH this, this_category0_connect0_node
+            	RETURN count(*) AS connect_this_category0_connect_Category0
             }
-            WITH *
             WITH *
             CALL {
             	WITH this
@@ -160,18 +163,28 @@ describe("https://github.com/neo4j/graphql/issues/5497", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"old-id\\",
-                \\"updateFiles_args_disconnect_category_where_Category_this_disconnect_category0param0\\": \\"new-id\\",
+                \\"updateFiles_args_update_category_disconnect_where_Category_this_category0_disconnect0param0\\": \\"new-id\\",
                 \\"isAuthenticated\\": false,
                 \\"jwt\\": {},
-                \\"this_connect_category0_node_param0\\": \\"new-id\\",
+                \\"this_category0_connect0_node_param0\\": \\"new-id\\",
                 \\"updateFiles\\": {
                     \\"args\\": {
-                        \\"disconnect\\": {
+                        \\"update\\": {
                             \\"category\\": {
-                                \\"where\\": {
-                                    \\"node\\": {
-                                        \\"NOT\\": {
+                                \\"connect\\": {
+                                    \\"where\\": {
+                                        \\"node\\": {
                                             \\"id_EQ\\": \\"new-id\\"
+                                        }
+                                    },
+                                    \\"overwrite\\": true
+                                },
+                                \\"disconnect\\": {
+                                    \\"where\\": {
+                                        \\"node\\": {
+                                            \\"NOT\\": {
+                                                \\"id_EQ\\": \\"new-id\\"
+                                            }
                                         }
                                     }
                                 }
