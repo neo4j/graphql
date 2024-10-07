@@ -118,8 +118,8 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateAbces(
-                    where: { id_EQ: "TestId" }
-                    connect: { interface: { where: { node: { name_EQ: "childone name connect" } } } }
+                    where: { id: "TestId" }
+                    update: { interface: { connect: { where: { node: { name: "childone name connect" } } } } }
                 ) {
                     abces {
                         id
@@ -138,42 +138,54 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:ABCE)
             WHERE this.id = $param0
+            WITH this
+            CALL {
+            	 WITH this
             WITH *
             WHERE apoc.util.validatePredicate(EXISTS((this)-[:HAS_INTERFACE]->(:ChildOne)) OR EXISTS((this)-[:HAS_INTERFACE]->(:ChildTwo)),'Relationship field \\"%s.%s\\" cannot have more than one node linked',[\\"ABCE\\",\\"interface\\"])
             WITH *
             CALL {
             	WITH this
-            	OPTIONAL MATCH (this_connect_interface0_node:ChildOne)
-            	WHERE this_connect_interface0_node.name = $this_connect_interface0_node_param0
+            	OPTIONAL MATCH (this_interface0_connect0_node:ChildOne)
+            	WHERE this_interface0_connect0_node.name = $this_interface0_connect0_node_param0
             	CALL {
             		WITH *
-            		WITH collect(this_connect_interface0_node) as connectedNodes, collect(this) as parentNodes
+            		WITH collect(this_interface0_connect0_node) as connectedNodes, collect(this) as parentNodes
             		CALL {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
-            			UNWIND connectedNodes as this_connect_interface0_node
-            			MERGE (this)-[:HAS_INTERFACE]->(this_connect_interface0_node)
+            			UNWIND connectedNodes as this_interface0_connect0_node
+            			MERGE (this)-[:HAS_INTERFACE]->(this_interface0_connect0_node)
             		}
             	}
-            WITH this, this_connect_interface0_node
-            	RETURN count(*) AS connect_this_connect_interface_ChildOne0
+            WITH this, this_interface0_connect0_node
+            	RETURN count(*) AS connect_this_interface0_connect_ChildOne0
+            }
+            RETURN count(*) AS update_this_ChildOne
             }
             CALL {
-            		WITH this
-            	OPTIONAL MATCH (this_connect_interface1_node:ChildTwo)
-            	WHERE this_connect_interface1_node.name = $this_connect_interface1_node_param0
+            	 WITH this
+            	WITH *
+            WHERE apoc.util.validatePredicate(EXISTS((this)-[:HAS_INTERFACE]->(:ChildOne)) OR EXISTS((this)-[:HAS_INTERFACE]->(:ChildTwo)),'Relationship field \\"%s.%s\\" cannot have more than one node linked',[\\"ABCE\\",\\"interface\\"])
+            WITH *
+            CALL {
+            	WITH this
+            	OPTIONAL MATCH (this_interface0_connect0_node:ChildTwo)
+            	WHERE this_interface0_connect0_node.name = $this_interface0_connect0_node_param0
             	CALL {
             		WITH *
-            		WITH collect(this_connect_interface1_node) as connectedNodes, collect(this) as parentNodes
+            		WITH collect(this_interface0_connect0_node) as connectedNodes, collect(this) as parentNodes
             		CALL {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
-            			UNWIND connectedNodes as this_connect_interface1_node
-            			MERGE (this)-[:HAS_INTERFACE]->(this_connect_interface1_node)
+            			UNWIND connectedNodes as this_interface0_connect0_node
+            			MERGE (this)-[:HAS_INTERFACE]->(this_interface0_connect0_node)
             		}
             	}
-            WITH this, this_connect_interface1_node
-            	RETURN count(*) AS connect_this_connect_interface_ChildTwo1
+            WITH this, this_interface0_connect0_node
+            	RETURN count(*) AS connect_this_interface0_connect_ChildTwo0
+            }
+            RETURN count(*) AS update_this_ChildTwo
             }
             WITH *
             CALL {
@@ -198,8 +210,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"TestId\\",
-                \\"this_connect_interface0_node_param0\\": \\"childone name connect\\",
-                \\"this_connect_interface1_node_param0\\": \\"childone name connect\\",
+                \\"this_interface0_connect0_node_param0\\": \\"childone name connect\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);
