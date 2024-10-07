@@ -1,5 +1,5 @@
 query TopLevelSortWithCypher {
-    movies(options: { limit: 5, sort: { oneActorName: DESC } }) {
+    movies(limit: 5, sort: { oneActorName: DESC }) {
         title
         oneActorName
     }
@@ -17,7 +17,7 @@ query TopLevelConnectionSortWithCypher {
 }
 
 query TopLevelSortWithCypherWithNested {
-    movies(options: { limit: 5, sort: { oneActorName: DESC } }) {
+    movies(limit: 5, sort: { oneActorName: DESC } ) {
         title
         oneActorName
         actors {
@@ -46,7 +46,7 @@ query TopLevelConnectionSortWithCypherWithNested {
 
 # Expensive Cypher fields not present in sort
 query TopLevelSortWithExpensiveCypher {
-    movies(options: { limit: 5, sort: { oneActorName: DESC } }) {
+    movies(limit: 5, sort: { oneActorName: DESC }) {
         title
         oneActorName
         otherMoviesWhereActorsActedIn {

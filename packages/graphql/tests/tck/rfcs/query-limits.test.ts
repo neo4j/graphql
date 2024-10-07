@@ -110,7 +110,7 @@ describe("tck/rfcs/query-limits", () => {
         test("should limit the top level query with max value the option given is higher", async () => {
             const query = /* GraphQL */ `
                 query {
-                    shows(options: { limit: 5 }) {
+                    shows(limit: 5) {
                         id
                     }
                 }

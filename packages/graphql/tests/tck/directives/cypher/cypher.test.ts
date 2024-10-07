@@ -164,7 +164,7 @@ describe("Cypher directive", () => {
     test("LIMIT happens before custom Cypher if not sorting on the custom Cypher field", async () => {
         const query = /* GraphQL */ `
             {
-                actors(options: { limit: 10 }) {
+                actors(limit: 10) {
                     randomNumber
                 }
             }
@@ -202,7 +202,7 @@ describe("Cypher directive", () => {
     test("LIMIT happens after custom Cypher if sorting on the custom Cypher field", async () => {
         const query = /* GraphQL */ `
             {
-                actors(options: { limit: 10, sort: [{ randomNumber: ASC }] }) {
+                actors(limit: 10, sort: [{ randomNumber: ASC }]) {
                     randomNumber
                 }
             }

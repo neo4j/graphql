@@ -42,12 +42,9 @@ describe("cypher directive filtering", () => {
             }
         `;
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
-                movies(
-                    where: { custom_field_STARTS_WITH: "The Matrix" }
-                    options: { sort: [{ custom_field: DESC }] }
-                ) {
+                movies(where: { custom_field_STARTS_WITH: "The Matrix" }, sort: [{ custom_field: DESC }]) {
                     title
                     actors {
                         name
@@ -126,12 +123,9 @@ describe("cypher directive filtering", () => {
             }
         `;
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
-                movies(
-                    where: { custom_field: "hello world!" }
-                    options: { sort: [{ title: DESC }] }
-                ) {
+                movies(where: { custom_field: "hello world!" }, sort: [{ title: DESC }]) {
                     title
                     actors {
                         name

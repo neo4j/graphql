@@ -175,7 +175,7 @@ describe("interface relationships", () => {
             query Actors($name: String) {
                 ${typeActor.plural}(where: { name_EQ: $name }) {
                     name
-                    actedIn(options: { sort: [{ title: DESC }] }) {
+                    actedIn(sort: [{ title: DESC }]) {
                         title
                         ... on ${typeMovie} {
                             runtime

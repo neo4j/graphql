@@ -291,7 +291,7 @@ describe("LocalTime", () => {
 
                 const query = /* GraphQL */ `
                             query ($where: ${Movie.name}Where!) {
-                                ${Movie.plural}(where: $where, options: { sort: [{ time: ASC }] }) {
+                                ${Movie.plural}(where: $where, sort: [{ time: ASC }]) {
                                     id
                                     time
                                 }
@@ -396,7 +396,7 @@ describe("LocalTime", () => {
                             query ($futureId: ID!, $presentId: ID!, $pastId: ID!, $sort: SortDirection!) {
                                 ${Movie.plural}(
                                     where: { id_IN: [$futureId, $presentId, $pastId] }
-                                    options: { sort: [{ time: $sort }] }
+                                    sort: [{ time: $sort }]
                                 ) {
                                     id
                                     time

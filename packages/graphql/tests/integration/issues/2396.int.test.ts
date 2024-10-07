@@ -708,9 +708,9 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
     });
 
     test("should return 27 results with no pagination arguments", async () => {
-        const query = `
-            query Mandates($where: ${Mandate}Where, $options: ${Mandate}Options) {
-                ${Mandate.plural}(options: $options, where: $where) {
+        const query = /* GraphQL */ `
+            query Mandates($where: ${Mandate}Where, $limit: Int, $offset: Int, $sort: [${Mandate}Sort!]) {
+                ${Mandate.plural}(limit: $limit, offset: $offset, sort: $sort, where: $where) {
                     valuation {
                         estate {
                             uuid
@@ -721,7 +721,9 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
         `;
 
         const variableValues = {
-            options: {},
+            sort: null,
+            limit: null,
+            offset: null,
             where: {
                 price_GTE: 0,
                 valuation: {
@@ -748,9 +750,9 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
     });
 
     test("should return 20 with limit 20", async () => {
-        const query = `
-            query Mandates($where: ${Mandate}Where, $options: ${Mandate}Options) {
-                ${Mandate.plural}(options: $options, where: $where) {
+        const query = /* GraphQL */ `
+            query Mandates($where: ${Mandate}Where, $limit: Int, $offset: Int, $sort: [${Mandate}Sort!]) {
+                ${Mandate.plural}(limit: $limit, offset: $offset, sort: $sort, where: $where) {
                     valuation {
                         estate {
                             uuid
@@ -761,7 +763,8 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
         `;
 
         const variableValues = {
-            options: { offset: 0, limit: 20 },
+            offset: 0,
+            limit: 20,
             where: {
                 price_GTE: 0,
                 valuation: {
@@ -788,9 +791,9 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
     });
 
     test("should return 7 results with offset 20 limit 40", async () => {
-        const query = `
-            query Mandates($where: ${Mandate}Where, $options: ${Mandate}Options) {
-                ${Mandate.plural}(options: $options, where: $where) {
+        const query = /* GraphQL */ `
+            query Mandates($where: ${Mandate}Where, $limit: Int, $offset: Int, $sort: [${Mandate}Sort!]) {
+                ${Mandate.plural}(sort: $sort, limit: $limit, offset: $offset, where: $where) {
                     valuation {
                         estate {
                             uuid
@@ -801,10 +804,8 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
         `;
 
         const variableValues = {
-            options: {
-                offset: 20,
-                limit: 40,
-            },
+            offset: 20,
+            limit: 40,
             where: {
                 price_GTE: 0,
                 valuation: {

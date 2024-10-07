@@ -40,7 +40,7 @@ describe("Cypher pagination tests", () => {
     test("Skipping", async () => {
         const query = /* GraphQL */ `
             {
-                movies(options: { offset: 1 }) {
+                movies(offset: 1) {
                     title
                 }
             }
@@ -68,7 +68,7 @@ describe("Cypher pagination tests", () => {
     test("Limit", async () => {
         const query = /* GraphQL */ `
             {
-                movies(options: { limit: 1 }) {
+                movies(limit: 1) {
                     title
                 }
             }
@@ -96,7 +96,7 @@ describe("Cypher pagination tests", () => {
     test("Skip + Limit", async () => {
         const query = /* GraphQL */ `
             {
-                movies(options: { limit: 1, offset: 2 }) {
+                movies(limit: 1, offset: 2) {
                     title
                 }
             }
@@ -129,7 +129,7 @@ describe("Cypher pagination tests", () => {
     test("Skip + Limit as variables", async () => {
         const query = /* GraphQL */ `
             query ($offset: Int, $limit: Int) {
-                movies(options: { limit: $limit, offset: $offset }) {
+                movies(limit: $limit, offset: $offset) {
                     title
                 }
             }
@@ -164,7 +164,7 @@ describe("Cypher pagination tests", () => {
     test("Skip + Limit with other variables", async () => {
         const query = /* GraphQL */ `
             query ($offset: Int, $limit: Int, $title: String) {
-                movies(options: { limit: $limit, offset: $offset }, where: { title_EQ: $title }) {
+                movies(limit: $limit, offset: $offset, where: { title_EQ: $title }) {
                     title
                 }
             }
