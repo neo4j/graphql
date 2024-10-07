@@ -40,7 +40,8 @@ describe("cypher directive filtering - Spatial", () => {
                 special_location: Point
                     @cypher(
                         statement: """
-                        RETURN point({ longitude: 1.0, latitude: 1.0 }) AS l
+                        MATCH (this)
+                        RETURN this.custom_data AS l
                         """
                         columnName: "l"
                     )
@@ -48,15 +49,22 @@ describe("cypher directive filtering - Spatial", () => {
         `;
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
-        await testHelper.executeCypher(`CREATE (m:${CustomType} { title: "test" })`, {});
+        await testHelper.executeCypher(
+            `
+                CREATE (:${CustomType} { title: "test", custom_data: point({ longitude: 1.0, latitude: 1.0 }) })
+                CREATE (:${CustomType} { title: "test2", custom_data: point({ longitude: 2.0, latitude: 2.0 }) })
+                CREATE (:${CustomType} { title: "test3", custom_data: point({ longitude: 1.0, latitude: 1.0 }) })
+            `,
+            {}
+        );
 
         const query = /* GraphQL */ `
             query {
                 ${CustomType.plural}(
                     where: {
                         special_location_DISTANCE: {
-                            point: { latitude: 1, longitude: 1 }
-                            distance: 0
+                            point: { latitude: 1.0, longitude: 1.0 }
+                            distance: 0.0
                         }
                     }
                 ) {
@@ -73,7 +81,7 @@ describe("cypher directive filtering - Spatial", () => {
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult?.data).toEqual({
-            [CustomType.plural]: [
+            [CustomType.plural]: expect.toIncludeSameMembers([
                 {
                     special_location: {
                         latitude: 1,
@@ -81,7 +89,14 @@ describe("cypher directive filtering - Spatial", () => {
                     },
                     title: "test",
                 },
-            ],
+                {
+                    special_location: {
+                        latitude: 1,
+                        longitude: 1,
+                    },
+                    title: "test3",
+                },
+            ]),
         });
     });
 
@@ -92,7 +107,8 @@ describe("cypher directive filtering - Spatial", () => {
                 special_location: CartesianPoint
                     @cypher(
                         statement: """
-                        RETURN point({ x: 1.0, y: 1.0, z: 1.0 }) AS l
+                        MATCH (this)
+                        RETURN this.custom_data AS l
                         """
                         columnName: "l"
                     )
@@ -100,7 +116,14 @@ describe("cypher directive filtering - Spatial", () => {
         `;
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
-        await testHelper.executeCypher(`CREATE (m:${CustomType} { title: "test" })`, {});
+        await testHelper.executeCypher(
+            `
+                CREATE (:${CustomType} { title: "test", custom_data: point({ x: 1.0, y: 1.0, z: 1.0 }) })
+                CREATE (:${CustomType} { title: "test2", custom_data: point({ x: 2.0, y: 2.0, z: 2.0 }) })
+                CREATE (:${CustomType} { title: "test3", custom_data: point({ x: 0.0, y: 1.0, z: 2.0 }) })
+            `,
+            {}
+        );
 
         const query = /* GraphQL */ `
             query {
@@ -126,7 +149,7 @@ describe("cypher directive filtering - Spatial", () => {
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult?.data).toEqual({
-            [CustomType.plural]: [
+            [CustomType.plural]: expect.toIncludeSameMembers([
                 {
                     special_location: {
                         x: 1,
@@ -135,7 +158,15 @@ describe("cypher directive filtering - Spatial", () => {
                     },
                     title: "test",
                 },
-            ],
+                {
+                    special_location: {
+                        x: 0,
+                        y: 1,
+                        z: 2,
+                    },
+                    title: "test3",
+                },
+            ]),
         });
     });
 });

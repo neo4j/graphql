@@ -36,7 +36,8 @@ describe("cypher directive filtering - Misc", () => {
                 custom_field: String
                     @cypher(
                         statement: """
-                        RETURN "hello world!" AS s
+                        MATCH (this)
+                        RETURN this.custom_data AS s
                         """
                         columnName: "s"
                     )
@@ -52,9 +53,17 @@ describe("cypher directive filtering - Misc", () => {
         await testHelper.initNeo4jGraphQL({ typeDefs });
         await testHelper.executeCypher(
             `
-            CREATE (m:${Movie} { title: "The Matrix" })
+            CREATE (m:${Movie} { title: "The Matrix", custom_data: "hello world!" })
+            CREATE (m2:${Movie} { title: "The Matrix Reloaded", custom_data: "goodbye world!" })
+            CREATE (m3:${Movie} { title: "The Matrix Revolutions", custom_data: "world!" })
             CREATE (a:${Actor} { name: "Keanu Reeves" })
+            CREATE (a2:${Actor} { name: "Carrie-Anne Moss" })
             CREATE (a)-[:ACTED_IN]->(m)
+            CREATE (a2)-[:ACTED_IN]->(m)
+            CREATE (a)-[:ACTED_IN]->(m2)
+            CREATE (a2)-[:ACTED_IN]->(m2)
+            CREATE (a)-[:ACTED_IN]->(m3)
+            CREATE (a2)-[:ACTED_IN]->(m3)
             `,
             {}
         );
@@ -86,11 +95,14 @@ describe("cypher directive filtering - Misc", () => {
                 {
                     custom_field: "hello world!",
                     title: "The Matrix",
-                    actors: [
+                    actors: expect.toIncludeSameMembers([
                         {
                             name: "Keanu Reeves",
                         },
-                    ],
+                        {
+                            name: "Carrie-Anne Moss",
+                        },
+                    ]),
                 },
             ],
         });
@@ -106,7 +118,8 @@ describe("cypher directive filtering - Misc", () => {
                 custom_field: String
                     @cypher(
                         statement: """
-                        RETURN "hello world!" AS s
+                        MATCH (this)
+                        RETURN this.custom_data AS s
                         """
                         columnName: "s"
                     )
@@ -122,9 +135,17 @@ describe("cypher directive filtering - Misc", () => {
         await testHelper.initNeo4jGraphQL({ typeDefs });
         await testHelper.executeCypher(
             `
-            CREATE (m:${Movie} { title: "The Matrix" })
+            CREATE (m:${Movie} { title: "The Matrix", custom_data: "hello world!" })
+            CREATE (m2:${Movie} { title: "The Matrix Reloaded", custom_data: "goodbye world!" })
+            CREATE (m3:${Movie} { title: "The Matrix Revolutions", custom_data: "world!" })
             CREATE (a:${Actor} { name: "Keanu Reeves" })
+            CREATE (a2:${Actor} { name: "Carrie-Anne Moss" })
             CREATE (a)-[:ACTED_IN]->(m)
+            CREATE (a2)-[:ACTED_IN]->(m)
+            CREATE (a)-[:ACTED_IN]->(m2)
+            CREATE (a2)-[:ACTED_IN]->(m2)
+            CREATE (a)-[:ACTED_IN]->(m3)
+            CREATE (a2)-[:ACTED_IN]->(m3)
             `,
             {}
         );
@@ -144,7 +165,7 @@ describe("cypher directive filtering - Misc", () => {
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult?.data).toEqual({
-            [Actor.plural]: [
+            [Actor.plural]: expect.toIncludeSameMembers([
                 {
                     name: "Keanu Reeves",
                     movies: [
@@ -153,7 +174,15 @@ describe("cypher directive filtering - Misc", () => {
                         },
                     ],
                 },
-            ],
+                {
+                    name: "Carrie-Anne Moss",
+                    movies: [
+                        {
+                            title: "The Matrix",
+                        },
+                    ],
+                },
+            ]),
         });
     });
 
@@ -167,7 +196,8 @@ describe("cypher directive filtering - Misc", () => {
                 custom_field: String
                     @cypher(
                         statement: """
-                        RETURN "hello world!" AS s
+                        MATCH (this)
+                        RETURN this.custom_data AS s
                         """
                         columnName: "s"
                     )
@@ -183,9 +213,17 @@ describe("cypher directive filtering - Misc", () => {
         await testHelper.initNeo4jGraphQL({ typeDefs });
         await testHelper.executeCypher(
             `
-            CREATE (m:${Movie} { title: "The Matrix" })
+            CREATE (m:${Movie} { title: "The Matrix", custom_data: "hello world!" })
+            CREATE (m2:${Movie} { title: "The Matrix Reloaded", custom_data: "goodbye world!" })
+            CREATE (m3:${Movie} { title: "The Matrix Revolutions", custom_data: "world!" })
             CREATE (a:${Actor} { name: "Keanu Reeves" })
+            CREATE (a2:${Actor} { name: "Carrie-Anne Moss" })
             CREATE (a)-[:ACTED_IN]->(m)
+            CREATE (a2)-[:ACTED_IN]->(m)
+            CREATE (a)-[:ACTED_IN]->(m2)
+            CREATE (a2)-[:ACTED_IN]->(m2)
+            CREATE (a)-[:ACTED_IN]->(m3)
+            CREATE (a2)-[:ACTED_IN]->(m3)
             `,
             {}
         );
@@ -205,7 +243,7 @@ describe("cypher directive filtering - Misc", () => {
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult?.data).toEqual({
-            [Movie.plural]: [
+            [Movie.plural]: expect.toIncludeSameMembers([
                 {
                     title: "The Matrix",
                     actors: [
@@ -214,11 +252,11 @@ describe("cypher directive filtering - Misc", () => {
                         },
                     ],
                 },
-            ],
+            ]),
         });
     });
 
-    test("With two cypher fields", async () => {
+    test("With several cypher fields", async () => {
         const Movie = testHelper.createUniqueType("Movie");
         const Actor = testHelper.createUniqueType("Actor");
 
@@ -228,14 +266,16 @@ describe("cypher directive filtering - Misc", () => {
                 custom_field: String
                     @cypher(
                         statement: """
-                        RETURN "hello world!" AS s
+                        MATCH (this)
+                        RETURN this.custom_text AS s
                         """
                         columnName: "s"
                     )
                 another_custom_field: Int
                     @cypher(
                         statement: """
-                        RETURN 100 AS i
+                        MATCH (this)
+                        RETURN this.custom_number as i
                         """
                         columnName: "i"
                     )
@@ -247,7 +287,8 @@ describe("cypher directive filtering - Misc", () => {
                 another_custom_field: String
                     @cypher(
                         statement: """
-                        RETURN "goodbye!" AS s
+                        MATCH (this)
+                        RETURN this.custom_data AS s
                         """
                         columnName: "s"
                     )
@@ -258,9 +299,17 @@ describe("cypher directive filtering - Misc", () => {
         await testHelper.initNeo4jGraphQL({ typeDefs });
         await testHelper.executeCypher(
             `
-            CREATE (m:${Movie} { title: "The Matrix" })
-            CREATE (a:${Actor} { name: "Keanu Reeves" })
+            CREATE (m:${Movie} { title: "The Matrix", custom_text: "hello world!", custom_number: 100 })
+            CREATE (m2:${Movie} { title: "The Matrix Reloaded", custom_text: "goodbye world!", custom_number: 50 })
+            CREATE (m3:${Movie} { title: "The Matrix Revolutions", custom_text: "world!", custom_number: 0 })
+            CREATE (a:${Actor} { name: "Keanu Reeves", custom_data: "goodbye!" })
+            CREATE (a2:${Actor} { name: "Carrie-Anne Moss", custom_data: "hello!" })
             CREATE (a)-[:ACTED_IN]->(m)
+            CREATE (a2)-[:ACTED_IN]->(m)
+            CREATE (a)-[:ACTED_IN]->(m2)
+            CREATE (a2)-[:ACTED_IN]->(m2)
+            CREATE (a)-[:ACTED_IN]->(m3)
+            CREATE (a2)-[:ACTED_IN]->(m3)
             `,
             {}
         );
@@ -283,11 +332,14 @@ describe("cypher directive filtering - Misc", () => {
             [Movie.plural]: [
                 {
                     title: "The Matrix",
-                    actors: [
+                    actors: expect.toIncludeSameMembers([
                         {
                             name: "Keanu Reeves",
                         },
-                    ],
+                        {
+                            name: "Carrie-Anne Moss",
+                        },
+                    ]),
                 },
             ],
         });
@@ -303,7 +355,8 @@ describe("cypher directive filtering - Misc", () => {
                 custom_field: String
                     @cypher(
                         statement: """
-                        RETURN "hello world!" AS s
+                        MATCH (this)
+                        RETURN this.custom_text AS s
                         """
                         columnName: "s"
                     )
@@ -315,7 +368,8 @@ describe("cypher directive filtering - Misc", () => {
                 another_custom_field: String
                     @cypher(
                         statement: """
-                        RETURN "goodbye!" AS s
+                        MATCH (this)
+                        RETURN this.custom_data AS s
                         """
                         columnName: "s"
                     )
@@ -326,9 +380,17 @@ describe("cypher directive filtering - Misc", () => {
         await testHelper.initNeo4jGraphQL({ typeDefs });
         await testHelper.executeCypher(
             `
-            CREATE (m:${Movie} { title: "The Matrix" })
-            CREATE (a:${Actor} { name: "Keanu Reeves" })
+            CREATE (m:${Movie} { title: "The Matrix", custom_text: "hello world!" })
+            CREATE (m2:${Movie} { title: "The Matrix Reloaded", custom_text: "goodbye world!" })
+            CREATE (m3:${Movie} { title: "The Matrix Revolutions", custom_text: "world!" })
+            CREATE (a:${Actor} { name: "Keanu Reeves", custom_data: "goodbye!" })
+            CREATE (a2:${Actor} { name: "Carrie-Anne Moss", custom_data: "hello!" })
             CREATE (a)-[:ACTED_IN]->(m)
+            CREATE (a2)-[:ACTED_IN]->(m)
+            CREATE (a)-[:ACTED_IN]->(m2)
+            CREATE (a2)-[:ACTED_IN]->(m2)
+            CREATE (a)-[:ACTED_IN]->(m3)
+            CREATE (a2)-[:ACTED_IN]->(m3)
             `,
             {}
         );

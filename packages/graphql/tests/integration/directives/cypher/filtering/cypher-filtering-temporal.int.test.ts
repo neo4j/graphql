@@ -40,7 +40,8 @@ describe("cypher directive filtering - Temporal", () => {
                 special_time: DateTime
                     @cypher(
                         statement: """
-                        RETURN datetime("2024-09-03T15:30:00Z") AS t
+                        MATCH (this)
+                        RETURN this.custom_data AS t
                         """
                         columnName: "t"
                     )
@@ -48,7 +49,14 @@ describe("cypher directive filtering - Temporal", () => {
         `;
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
-        await testHelper.executeCypher(`CREATE (m:${CustomType} { title: "test" })`, {});
+        await testHelper.executeCypher(
+            `
+                CREATE (:${CustomType} { title: "test", custom_data: datetime("2024-09-03T15:30:00Z") })
+                CREATE (:${CustomType} { title: "test2", custom_data: datetime("2025-09-03T15:30:00Z") })
+                CREATE (:${CustomType} { title: "test3", custom_data: datetime("2023-09-03T15:30:00Z") })
+            `,
+            {}
+        );
 
         const query = /* GraphQL */ `
             query {
@@ -67,12 +75,16 @@ describe("cypher directive filtering - Temporal", () => {
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult?.data).toEqual({
-            [CustomType.plural]: [
+            [CustomType.plural]: expect.toIncludeSameMembers([
                 {
                     special_time: "2024-09-03T15:30:00.000Z",
                     title: "test",
                 },
-            ],
+                {
+                    special_time: "2025-09-03T15:30:00.000Z",
+                    title: "test2",
+                },
+            ]),
         });
     });
 
@@ -83,7 +95,8 @@ describe("cypher directive filtering - Temporal", () => {
                 special_duration: Duration
                     @cypher(
                         statement: """
-                        RETURN duration('P14DT16H12M') AS d
+                        MATCH (this)
+                        RETURN this.custom_data AS d
                         """
                         columnName: "d"
                     )
@@ -91,7 +104,13 @@ describe("cypher directive filtering - Temporal", () => {
         `;
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
-        await testHelper.executeCypher(`CREATE (m:${CustomType} { title: "test" })`, {});
+        await testHelper.executeCypher(
+            `
+                CREATE (:${CustomType} { title: "test",  custom_data: duration("P14DT16H12M") })
+                CREATE (:${CustomType} { title: "test2", custom_data: duration("P14DT16H13M") })
+            `,
+            {}
+        );
 
         const query = /* GraphQL */ `
             query {
@@ -124,7 +143,8 @@ describe("cypher directive filtering - Temporal", () => {
                 special_duration: Duration
                     @cypher(
                         statement: """
-                        RETURN duration('P14DT16H12M') AS d
+                        MATCH (this)
+                        RETURN this.custom_data AS d
                         """
                         columnName: "d"
                     )
@@ -132,7 +152,14 @@ describe("cypher directive filtering - Temporal", () => {
         `;
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
-        await testHelper.executeCypher(`CREATE (m:${CustomType} { title: "test" })`, {});
+        await testHelper.executeCypher(
+            `
+                CREATE (:${CustomType} { title: "test", custom_data: duration('P14DT16H12M') })
+                CREATE (:${CustomType} { title: "test2", custom_data: duration('P14DT16H13M') })    
+                CREATE (:${CustomType} { title: "test3", custom_data: duration('P13DT16H13M') })    
+            `,
+            {}
+        );
 
         const query = /* GraphQL */ `
             query {
@@ -150,11 +177,14 @@ describe("cypher directive filtering - Temporal", () => {
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult?.data).toEqual({
-            [CustomType.plural]: [
+            [CustomType.plural]: expect.toIncludeSameMembers([
                 {
                     title: "test",
                 },
-            ],
+                {
+                    title: "test3",
+                },
+            ]),
         });
     });
 
@@ -165,7 +195,8 @@ describe("cypher directive filtering - Temporal", () => {
                 special_duration: Duration
                     @cypher(
                         statement: """
-                        RETURN duration('P14DT16H12M') AS d
+                        MATCH (this)
+                        RETURN this.custom_data AS d
                         """
                         columnName: "d"
                     )
@@ -173,7 +204,14 @@ describe("cypher directive filtering - Temporal", () => {
         `;
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
-        await testHelper.executeCypher(`CREATE (m:${CustomType} { title: "test" })`, {});
+        await testHelper.executeCypher(
+            `
+                CREATE (:${CustomType} { title: "test", custom_data: duration('P14DT16H12M') })
+                CREATE (:${CustomType} { title: "test2", custom_data: duration('P14DT16H13M') })
+                CREATE (:${CustomType} { title: "test3", custom_data: duration('P13DT16H13M') })
+            `,
+            {}
+        );
 
         const query = /* GraphQL */ `
             query {
@@ -191,11 +229,14 @@ describe("cypher directive filtering - Temporal", () => {
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult?.data).toEqual({
-            [CustomType.plural]: [
+            [CustomType.plural]: expect.toIncludeSameMembers([
                 {
                     title: "test",
                 },
-            ],
+                {
+                    title: "test3",
+                },
+            ]),
         });
     });
 
@@ -206,7 +247,8 @@ describe("cypher directive filtering - Temporal", () => {
                 special_duration: Duration
                     @cypher(
                         statement: """
-                        RETURN duration('P14DT16H12M') AS d
+                        MATCH (this)
+                        RETURN this.custom_data AS d
                         """
                         columnName: "d"
                     )
@@ -214,7 +256,14 @@ describe("cypher directive filtering - Temporal", () => {
         `;
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
-        await testHelper.executeCypher(`CREATE (m:${CustomType} { title: "test" })`, {});
+        await testHelper.executeCypher(
+            `
+                CREATE (:${CustomType} { title: "test", custom_data: duration('P14DT16H12M') })
+                CREATE (:${CustomType} { title: "test2", custom_data: duration('P14DT16H13M') })
+                CREATE (:${CustomType} { title: "test3", custom_data: duration('P13DT16H13M') })
+            `,
+            {}
+        );
 
         const query = /* GraphQL */ `
             query {
@@ -232,11 +281,14 @@ describe("cypher directive filtering - Temporal", () => {
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult?.data).toEqual({
-            [CustomType.plural]: [
+            [CustomType.plural]: expect.toIncludeSameMembers([
                 {
                     title: "test",
                 },
-            ],
+                {
+                    title: "test2",
+                },
+            ]),
         });
     });
 
@@ -247,7 +299,8 @@ describe("cypher directive filtering - Temporal", () => {
                 special_duration: Duration
                     @cypher(
                         statement: """
-                        RETURN duration('P14DT16H12M') AS d
+                        MATCH (this)
+                        RETURN this.custom_data AS d
                         """
                         columnName: "d"
                     )
@@ -255,7 +308,14 @@ describe("cypher directive filtering - Temporal", () => {
         `;
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
-        await testHelper.executeCypher(`CREATE (m:${CustomType} { title: "test" })`, {});
+        await testHelper.executeCypher(
+            `
+                CREATE (:${CustomType} { title: "test", custom_data: duration('P14DT16H12M') })
+                CREATE (:${CustomType} { title: "test2", custom_data: duration('P14DT16H13M') })
+                CREATE (:${CustomType} { title: "test3", custom_data: duration('P13DT16H13M') })    
+            `,
+            {}
+        );
 
         const query = /* GraphQL */ `
             query {
@@ -273,11 +333,14 @@ describe("cypher directive filtering - Temporal", () => {
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult?.data).toEqual({
-            [CustomType.plural]: [
+            [CustomType.plural]: expect.toIncludeSameMembers([
                 {
                     title: "test",
                 },
-            ],
+                {
+                    title: "test2",
+                },
+            ]),
         });
     });
 });
