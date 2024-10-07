@@ -41,7 +41,8 @@ describe("cypher directive filtering - Connect", () => {
                 custom_field: String
                     @cypher(
                         statement: """
-                        RETURN "hello world!" AS s
+                        MATCH (this)
+                        RETURN this.custom_field AS s
                         """
                         columnName: "s"
                     )
@@ -56,7 +57,8 @@ describe("cypher directive filtering - Connect", () => {
         await testHelper.executeCypher(
             `
             CREATE (m:${Movie} { title: "The Matrix" })
-            CREATE (a:${Actor} { name: "Keanu Reeves" })
+            CREATE (m2:${Movie} { title: "The Matrix" })
+            CREATE (a:${Actor} { name: "Keanu Reeves", custom_field: "hello world!" })
             CREATE (a)-[:ACTED_IN]->(m)
             `,
             {}
