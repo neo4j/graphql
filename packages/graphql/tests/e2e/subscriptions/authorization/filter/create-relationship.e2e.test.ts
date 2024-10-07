@@ -230,7 +230,7 @@ describe("Subscriptions authorization with relationship creation events", () => 
             .send({
                 query: `
                     mutation {
-                        ${User.operations.update}(where: { id_EQ: "${user}" }, connect: { follows: { where: { node: { id_EQ: "${follows}" } } } }) {
+                        ${User.operations.update}(where: { id_EQ: "${user}" }, update: { follows: { connect: { where: { node: { id_EQ: "${follows}" } } } } }) {
                             ${User.plural} {
                                 id
                             }

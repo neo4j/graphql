@@ -841,39 +841,44 @@ subscription SubscriptionPerson {
                                 where: {
                                   title_EQ: "John Wick"
                                 },
-                                create: {
+                                update: {
                                     directors: {
                                       ${typeActor.name}: [
                                         {
-                                          edge: {
-                                            year: 2014
-                                          },
-                                          node: {
-                                            movies: {
-                                              create: [
-                                                {
-                                                  edge: {
-                                                    screenTime: 1234
-                                                  },
-                                                  node: {
-                                                    title: "Mulan"
-                                                  }
-                                                }
-                                              ]
+                                            create: {
+                                            edge: {
+                                                year: 2014
                                             },
-                                            name: "Donnie Yen"
-                                          }
+                                            node: {
+                                                movies: {
+                                                create: [
+                                                    {
+                                                    edge: {
+                                                        screenTime: 1234
+                                                    },
+                                                    node: {
+                                                        title: "Mulan"
+                                                    }
+                                                    }
+                                                ]
+                                                },
+                                                name: "Donnie Yen"
+                                            }
+                                            }
                                         }
                                       ],
                                       ${typePerson.name}: [
                                         {
-                                          edge: {
-                                            year: 2014
-                                          },
-                                          node: {
-                                            name: "Chad",
-                                            reputation: 120
-                                          }
+                                            create: {
+
+                                                edge: {
+                                                    year: 2014
+                                                },
+                                                node: {
+                                                    name: "Chad",
+                                                    reputation: 120
+                                                }
+                                            }
                                         }
                                       ]
                                     }
@@ -2459,9 +2464,10 @@ subscription SubscriptionPerson {
                                 where: {
                                   name_EQ: "Keanu Reeves"
                                 },
-                                connect: {
+                                update: {
                                     movies: [
                                       {
+                                        connect: {
                                         edge: {
                                           screenTime: 420
                                         },
@@ -2502,6 +2508,7 @@ subscription SubscriptionPerson {
                                           }
                                         ]
                                       }
+                                    }
                                     ]
                                   }
                         ) {
@@ -3212,53 +3219,59 @@ subscription SubscriptionPerson {
                             where: {
                                 title_EQ: "The Raven"
                             },
-                            connectOrCreate: {
+                            update: {
                                 actors: [
                                     {
-                                        where: {
-                                            node: {
-                                                id_EQ: 111
-                                            }
-                                        },
-                                        onCreate: {
-                                            node: {
-                                                name: "Lenore"
+                                        connectOrCreate: {
+                                            where: {
+                                                node: {
+                                                    id_EQ: 111
+                                                }
                                             },
-                                            edge: {
-                                                screenTime: 100
+                                            onCreate: {
+                                                node: {
+                                                    name: "Lenore"
+                                                },
+                                                edge: {
+                                                    screenTime: 100
+                                                }
                                             }
                                         }
                                     }
                                 ],
                                 directors: {
                                     ${typeActor.name}: [{
-                                        where: {
-                                            node: {
-                                                id_EQ: 112
-                                            }
-                                        },
-                                        onCreate: {
-                                            node: {
-                                                name: "Nevermore"
+                                        connectOrCreate: {
+                                            where: {
+                                                node: {
+                                                    id_EQ: 112
+                                                }
                                             },
-                                            edge: {
-                                                year: 1845
+                                            onCreate: {
+                                                node: {
+                                                    name: "Nevermore"
+                                                },
+                                                edge: {
+                                                    year: 1845
+                                                }
                                             }
                                         }
                                     }],
                                     ${typePerson.name}: [{
-                                        where: {
-                                            node: {
-                                                id_EQ: 113
-                                            }
-                                        },
-                                        onCreate: {
-                                            node: {
-                                                name: "Raven",
-                                                reputation: 99
+                                        connectOrCreate: {
+                                            where: {
+                                                node: {
+                                                    id_EQ: 113
+                                                }
                                             },
-                                            edge: {
-                                                year: 1845
+                                            onCreate: {
+                                                node: {
+                                                    name: "Raven",
+                                                    reputation: 99
+                                                },
+                                                edge: {
+                                                    year: 1845
+                                                }
                                             }
                                         }
                                     }]
@@ -4065,53 +4078,61 @@ subscription SubscriptionPerson {
                             where: {
                                 title_EQ: "The Raven"
                             },
-                            connectOrCreate: {
+                            update: {
                                 actors: [
                                     {
-                                        where: {
-                                            node: {
-                                                id_EQ: 111
-                                            }
-                                        },
-                                        onCreate: {
-                                            node: {
-                                                name: "Lenore"
+                                        connectOrCreate: {
+                                            where: {
+                                                node: {
+                                                    id_EQ: 111
+                                                }
                                             },
-                                            edge: {
-                                                screenTime: 100
+                                            onCreate: {
+                                                node: {
+                                                    name: "Lenore"
+                                                },
+                                                edge: {
+                                                    screenTime: 100
+                                                }
                                             }
                                         }
                                     }
                                 ],
                                 directors: {
                                     ${typeActor.name}: [{
-                                        where: {
-                                            node: {
-                                                id_EQ: 112
-                                            }
-                                        },
-                                        onCreate: {
-                                            node: {
-                                                name: "Nevermore"
+                                        connectOrCreate: {
+
+                                            where: {
+                                                node: {
+                                                    id_EQ: 112
+                                                }
                                             },
-                                            edge: {
-                                                year: 1845
+                                            onCreate: {
+                                                node: {
+                                                    name: "Nevermore"
+                                                },
+                                                edge: {
+                                                    year: 1845
+                                                }
                                             }
                                         }
                                     }],
                                     ${typePerson.name}: [{
-                                        where: {
-                                            node: {
-                                                id_EQ: 113
-                                            }
-                                        },
-                                        onCreate: {
-                                            node: {
-                                                name: "Raven",
-                                                reputation: 99
+                                        connectOrCreate: {
+
+                                            where: {
+                                                node: {
+                                                    id_EQ: 113
+                                                }
                                             },
-                                            edge: {
-                                                year: 1845
+                                            onCreate: {
+                                                node: {
+                                                    name: "Raven",
+                                                    reputation: 99
+                                                },
+                                                edge: {
+                                                    year: 1845
+                                                }
                                             }
                                         }
                                     }]

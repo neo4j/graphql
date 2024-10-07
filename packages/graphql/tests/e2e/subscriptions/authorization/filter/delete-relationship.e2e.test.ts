@@ -202,7 +202,7 @@ describe("Subscriptions authorization with relationship deletion events", () => 
             .send({
                 query: `
                     mutation {
-                        ${User.operations.update}(where: { id_EQ: "${user}" }, connect: { follows: { where: { node: { id_EQ: "${follows}" } } } }) {
+                        ${User.operations.update}(where: { id_EQ: "${user}" }, update: { follows: { connect: { where: { node: { id_EQ: "${follows}" } } } } }) {
                             ${User.plural} {
                                 id
                             }
@@ -220,7 +220,7 @@ describe("Subscriptions authorization with relationship deletion events", () => 
             .send({
                 query: `
                     mutation {
-                        ${User.operations.update}(where: { id_EQ: "${user}" }, disconnect: { follows: { where: { node: { id_EQ: "${unfollows}" } } } }) {
+                        ${User.operations.update}(where: { id_EQ: "${user}" }, update: { follows: { disconnect: { where: { node: { id_EQ: "${unfollows}" } } } } }) {
                             ${User.plural} {
                                 id
                             }
