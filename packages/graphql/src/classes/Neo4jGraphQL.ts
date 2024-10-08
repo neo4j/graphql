@@ -166,6 +166,9 @@ class Neo4jGraphQL {
     }: {
         driver?: Driver;
         sessionConfig?: Neo4jGraphQLSessionConfig;
+        /**
+         * @deprecated The ability to create indexes and constraints will be removed in version 6.0.0
+         */
         options?: AssertIndexesAndConstraintsOptions;
     } = {}): Promise<void> {
         if (!(this.executableSchema || this.subgraphSchema)) {
