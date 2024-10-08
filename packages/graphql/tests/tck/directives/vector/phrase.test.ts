@@ -66,13 +66,11 @@ describe("phrase input - genAI plugin", () => {
         const query = /* GraphQL */ `
             query MovieVectorQuery($phrase: String!) {
                 ${queryName}(phrase: $phrase) {
-                    moviesConnection {
-                        edges {
-                            cursor
-                            score
-                            node {
-                                title
-                            }
+                    edges {
+                        cursor
+                        score
+                        node {
+                            title
                         }
                     }
                 }

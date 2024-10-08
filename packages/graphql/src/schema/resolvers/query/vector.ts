@@ -78,11 +78,11 @@ export function vectorResolver({
         });
 
         return {
-            [entityAdapter.operations.rootTypeFieldNames.connection]: {
-                totalCount,
-                edges: connection.edges,
-                pageInfo: connection.pageInfo,
-            },
+            // [entityAdapter.operations.rootTypeFieldNames.connection]: {
+            totalCount,
+            edges: connection.edges,
+            pageInfo: connection.pageInfo,
+            // },
         };
     };
 }
