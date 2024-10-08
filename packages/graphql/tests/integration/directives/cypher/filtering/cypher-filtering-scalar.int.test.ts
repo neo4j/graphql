@@ -20,7 +20,7 @@
 import type { UniqueType } from "../../../../utils/graphql-types";
 import { TestHelper } from "../../../../utils/tests-helper";
 
-describe("cypher directive filtering", () => {
+describe("cypher directive filtering - Scalar", () => {
     let CustomType: UniqueType;
 
     const testHelper = new TestHelper();
@@ -59,7 +59,7 @@ describe("cypher directive filtering", () => {
             filter: `special_count_IN: [1, 2, 3]`,
         },
     ] as const)("$title", async ({ filter }) => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${CustomType} @node {
                 title: String
                 special_count: Int
@@ -76,7 +76,7 @@ describe("cypher directive filtering", () => {
         await testHelper.initNeo4jGraphQL({ typeDefs });
         await testHelper.executeCypher(`CREATE (m:${CustomType} { title: "test" })`, {});
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 ${CustomType.plural}(where: { ${filter} }) {
                     special_count
@@ -118,7 +118,7 @@ describe("cypher directive filtering", () => {
             filter: `special_word_IN: ["test", "test2"]`,
         },
     ] as const)("$title", async ({ filter }) => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${CustomType} @node {
                 title: String
                 special_word: String
@@ -134,7 +134,7 @@ describe("cypher directive filtering", () => {
         await testHelper.initNeo4jGraphQL({ typeDefs });
         await testHelper.executeCypher(`CREATE (m:${CustomType} { title: "test" })`, {});
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 ${CustomType.plural}(where: { ${filter} }) {
                     title
@@ -155,7 +155,7 @@ describe("cypher directive filtering", () => {
     });
 
     test("Int cypher field AND String title field", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${CustomType} @node {
                 title: String
                 special_count: Int
@@ -183,7 +183,7 @@ describe("cypher directive filtering", () => {
             {}
         );
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 ${CustomType.plural}(where: { special_count_GTE: 1, title: "CustomType One" }) {
                     special_count
@@ -204,7 +204,7 @@ describe("cypher directive filtering", () => {
     });
 
     test("unmatched Int cypher field AND String title field", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${CustomType} @node {
                 title: String
                 special_count: Int
@@ -232,7 +232,7 @@ describe("cypher directive filtering", () => {
             {}
         );
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 ${CustomType.plural}(where: { special_count_GTE: 1, title: "CustomType Unknown" }) {
                     special_count
@@ -249,7 +249,7 @@ describe("cypher directive filtering", () => {
     });
 
     test("Int cypher field, selecting String title field", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${CustomType} @node {
                 title: String
                 special_count: Int
@@ -266,7 +266,7 @@ describe("cypher directive filtering", () => {
         await testHelper.initNeo4jGraphQL({ typeDefs });
         await testHelper.executeCypher(`CREATE (m:${CustomType} { title: "test" })`, {});
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 ${CustomType.plural}(where: { special_count_GTE: 1 }) {
                     title

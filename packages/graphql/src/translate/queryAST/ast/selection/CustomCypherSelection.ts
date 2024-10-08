@@ -90,7 +90,10 @@ export class CustomCypherSelection extends EntitySelection {
 
         let selection: Cypher.With;
         const unwindVariable = new Cypher.Variable();
-        if (this.operationField.typeHelper.isList() && this.operationField.typeHelper.isScalar()) {
+        if (
+            this.operationField.typeHelper.isList() &&
+            (this.operationField.typeHelper.isScalar() || this.operationField.typeHelper.isSpatial())
+        ) {
             selection = statementSubquery.unwind([returnVariable, unwindVariable]).with([unwindVariable, thisVariable]);
         } else {
             selection = statementSubquery.with([returnVariable, thisVariable]);

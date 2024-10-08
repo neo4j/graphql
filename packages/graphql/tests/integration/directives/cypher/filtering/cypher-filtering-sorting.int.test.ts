@@ -19,7 +19,7 @@
 
 import { TestHelper } from "../../../../utils/tests-helper";
 
-describe("cypher directive filtering", () => {
+describe("cypher directive filtering - Sorting", () => {
     const testHelper = new TestHelper();
 
     afterEach(async () => {
@@ -30,7 +30,7 @@ describe("cypher directive filtering", () => {
         const Movie = testHelper.createUniqueType("Movie");
         const Actor = testHelper.createUniqueType("Actor");
 
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${Movie} @node {
                 title: String
                 custom_field: String
@@ -58,16 +58,19 @@ describe("cypher directive filtering", () => {
             `
             CREATE (m1:${Movie} { title: "The Matrix" })
             CREATE (m2:${Movie} { title: "The Matrix Reloaded" })
+            CREATE (m3:${Movie} { title: "The" })
             CREATE (a1:${Actor} { name: "Keanu Reeves" })
             CREATE (a2:${Actor} { name: "Jada Pinkett Smith" })
             CREATE (a1)-[:ACTED_IN]->(m1)
             CREATE (a1)-[:ACTED_IN]->(m2)
             CREATE (a2)-[:ACTED_IN]->(m2)
+            CREATE (a1)-[:ACTED_IN]->(m3)
+            CREATE (a2)-[:ACTED_IN]->(m3)
             `,
             {}
         );
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 ${Movie.plural}(
                     where: { custom_field_STARTS_WITH: "The Matrix" }
@@ -113,13 +116,14 @@ describe("cypher directive filtering", () => {
         const Movie = testHelper.createUniqueType("Movie");
         const Actor = testHelper.createUniqueType("Actor");
 
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${Movie} @node {
                 title: String
                 custom_field: String
                     @cypher(
                         statement: """
-                        RETURN "hello world!" AS s
+                        MATCH (this)
+                        RETURN this.custom_field AS s
                         """
                         columnName: "s"
                     )
@@ -138,18 +142,21 @@ describe("cypher directive filtering", () => {
 
         await testHelper.executeCypher(
             `
-            CREATE (m1:${Movie} { title: "The Matrix" })
-            CREATE (m2:${Movie} { title: "The Matrix Reloaded" })
+            CREATE (m1:${Movie} { title: "The Matrix", custom_field: "hello world!" })
+            CREATE (m2:${Movie} { title: "The Matrix Reloaded", custom_field: "hello world!" })
+            CREATE (m3:${Movie} { title: "The Matrix Revolutions", custom_field: "goodbye world!" })
             CREATE (a1:${Actor} { name: "Keanu Reeves" })
             CREATE (a2:${Actor} { name: "Jada Pinkett Smith" })
             CREATE (a1)-[:ACTED_IN]->(m1)
             CREATE (a1)-[:ACTED_IN]->(m2)
             CREATE (a2)-[:ACTED_IN]->(m2)
+            CREATE (a1)-[:ACTED_IN]->(m3)
+            CREATE (a2)-[:ACTED_IN]->(m3)
             `,
             {}
         );
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 ${Movie.plural}(
                     where: { custom_field: "hello world!" }
