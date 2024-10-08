@@ -102,7 +102,11 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> OR", () => {
     test("OR between edge and node", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { actorsConnection: { OR: [{ node: { name_EQ: "Harry" } }, { edge: { role_EQ: "Tom" } }] } }) {
+                movies(
+                    where: {
+                        actorsConnection_SOME: { OR: [{ node: { name_EQ: "Harry" } }, { edge: { role_EQ: "Tom" } }] }
+                    }
+                ) {
                     title
                 }
             }

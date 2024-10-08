@@ -442,9 +442,7 @@ describe("lower case type names", () => {
               createdAt_IN: [DateTime]
               createdAt_LT: DateTime
               createdAt_LTE: DateTime
-              movies: movieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
               moviesAggregate: actorMoviesAggregateInput
-              moviesConnection: actorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return actors where all of the related actorMoviesConnections match this filter
               \\"\\"\\"
@@ -736,9 +734,7 @@ describe("lower case type names", () => {
               AND: [movieWhere!]
               NOT: movieWhere
               OR: [movieWhere!]
-              actors: actorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: movieActorsAggregateInput
-              actorsConnection: movieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return movies where all of the related movieActorsConnections match this filter
               \\"\\"\\"

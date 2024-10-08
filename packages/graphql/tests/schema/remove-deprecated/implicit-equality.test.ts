@@ -44,7 +44,6 @@ describe("Implicit Equality filters", () => {
                 excludeDeprecatedFields: {
                     implicitEqualFilters: false,
                     bookmark: true,
-                    arrayFilters: true,
                     stringAggregation: true,
                     aggregationFilters: true,
                 },
@@ -390,7 +389,6 @@ describe("Implicit Equality filters", () => {
                 features: {
                     excludeDeprecatedFields: {
                         bookmark: true,
-                        arrayFilters: true,
                         stringAggregation: true,
                         aggregationFilters: true,
                     },
@@ -792,7 +790,6 @@ describe("Implicit Equality filters", () => {
                 features: {
                     excludeDeprecatedFields: {
                         bookmark: true,
-                        arrayFilters: true,
                         stringAggregation: true,
                         aggregationFilters: true,
                     },
@@ -1419,7 +1416,6 @@ describe("Implicit Equality filters", () => {
                 features: {
                     excludeDeprecatedFields: {
                         bookmark: true,
-                        arrayFilters: true,
                         stringAggregation: true,
                         aggregationFilters: true,
                     },

@@ -478,7 +478,6 @@ export type Neo4jFeaturesSettings = {
     excludeDeprecatedFields?: {
         bookmark?: boolean;
         implicitEqualFilters?: boolean;
-        arrayFilters?: boolean;
         stringAggregation?: boolean;
         aggregationFilters?: boolean;
         deprecatedOptionsArgument?: boolean;

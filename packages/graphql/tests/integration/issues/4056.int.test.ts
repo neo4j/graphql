@@ -68,7 +68,7 @@ describe("https://github.com/neo4j/graphql/issues/4056", () => {
             @node
             @authorization(
                 validate: [
-                    { where: { node: { admins: { userId_EQ: "$jwt.id" } } } }
+                    { where: { node: { admins_SOME: { userId_EQ: "$jwt.id" } } } }
                     { where: { jwt: { roles_INCLUDES: "overlord" } } }
                 ]
             ) {
@@ -90,7 +90,7 @@ describe("https://github.com/neo4j/graphql/issues/4056", () => {
             @node
             @authorization(
                 validate: [
-                {  where: { node: {settings: { tenant: { admins: { userId_EQ: "$jwt.id" } } } } } }
+                {  where: { node: {settings: { tenant: { admins_SOME: { userId_EQ: "$jwt.id" } } } } } }
                 { where: { jwt: { roles_INCLUDES: "overlord" } } }
             ]
             ) {

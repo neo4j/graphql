@@ -229,9 +229,7 @@ describe("inheritance", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
-              friends: PersonWhere @deprecated(reason: \\"Use \`friends_SOME\` instead.\\")
               friendsAggregate: ActorFriendsAggregateInput
-              friendsConnection: PersonFriendsConnectionWhere @deprecated(reason: \\"Use \`friendsConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Actors where all of the related PersonFriendsConnections match this filter
               \\"\\"\\"
@@ -607,9 +605,7 @@ describe("inheritance", () => {
               AND: [PersonWhere!]
               NOT: PersonWhere
               OR: [PersonWhere!]
-              friends: PersonWhere @deprecated(reason: \\"Use \`friends_SOME\` instead.\\")
               friendsAggregate: PersonFriendsAggregateInput
-              friendsConnection: PersonFriendsConnectionWhere @deprecated(reason: \\"Use \`friendsConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return People where all of the related PersonFriendsConnections match this filter
               \\"\\"\\"

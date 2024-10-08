@@ -145,7 +145,7 @@ describe("Top-level union query fields", () => {
     test("should read top-level simple query on union with filters on relationship field", async () => {
         const query = /* GraphQL */ `
             query {
-                searches(where: {${MovieType.name}: {searchConnection: {${GenreType.name}: {node: { name_EQ: "Action"} }}}}) {
+                searches(where: {${MovieType.name}: {searchConnection_SOME: {${GenreType.name}: {node: { name_EQ: "Action"} }}}}) {
                     ... on ${GenreType} {
                         name
                     }
@@ -360,7 +360,7 @@ describe("add authorization", () => {
             query {
                 searches(where: {
                     ${MovieType.name}: {
-                        searchConnection: {
+                        searchConnection_SOME: {
                             ${GenreType.name}: {
                                 node: { name_EQ: "Action"} 
                             }

@@ -380,9 +380,7 @@ describe("3817", () => {
               AND: [PersonWhere!]
               NOT: PersonWhere
               OR: [PersonWhere!]
-              friends: PersonWhere @deprecated(reason: \\"Use \`friends_SOME\` instead.\\")
               friendsAggregate: PersonFriendsAggregateInput
-              friendsConnection: PersonFriendsConnectionWhere @deprecated(reason: \\"Use \`friendsConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return People where all of the related PersonFriendsConnections match this filter
               \\"\\"\\"

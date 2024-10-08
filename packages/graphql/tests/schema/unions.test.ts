@@ -343,8 +343,6 @@ describe("Unions", () => {
               id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
-              search: SearchWhere @deprecated(reason: \\"Use \`search_SOME\` instead.\\")
-              searchConnection: MovieSearchConnectionWhere @deprecated(reason: \\"Use \`searchConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Movies where all of the related MovieSearchConnections match this filter
               \\"\\"\\"

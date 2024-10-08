@@ -43,7 +43,7 @@ describe("https://github.com/neo4j/graphql/issues/5080", () => {
                 userId: String! @unique
                 adminAccess: [${Tenant}!]! @relationship(type: "ADMIN_IN", direction: OUT, aggregate: false)
             }
-            type ${Tenant} @authorization(validate: [{ where: { node: { admins: { userId_EQ: "$jwt.id" } } } }]) @node {
+            type ${Tenant} @authorization(validate: [{ where: { node: { admins_SOME: { userId_EQ: "$jwt.id" } } } }]) @node {
                 id: ID! @id
                 admins: [${User}!]! @relationship(type: "ADMIN_IN", direction: IN, aggregate: false)
                 deletedCars: [${DeletedCar}!]! @relationship(type: "OWNED_BY", direction: IN, aggregate: false)
@@ -57,7 +57,7 @@ describe("https://github.com/neo4j/graphql/issues/5080", () => {
          
             type ${Car} @node
                 @mutation(operations: [UPDATE])
-                @authorization(validate: [{ where: { node: { owner: { admins: { userId_EQ: "$jwt.id" } } } } }]) {
+                @authorization(validate: [{ where: { node: { owner: { admins_SOME: { userId_EQ: "$jwt.id" } } } } }]) {
                 id: ID! @id
                 owner: ${Tenant}! @relationship(type: "OWNED_BY", direction: OUT, aggregate: false)
                 name: String!
@@ -67,7 +67,7 @@ describe("https://github.com/neo4j/graphql/issues/5080", () => {
 
             type ${DeletedCar} @node
                 @mutation(operations: [UPDATE])
-                @authorization(validate: [{ where: { node: { owner: { admins: { userId_EQ: "$jwt.id" } } } } }]) {
+                @authorization(validate: [{ where: { node: { owner: { admins_SOME: { userId_EQ: "$jwt.id" } } } } }]) {
                 id: ID! @id
                 owner: ${Tenant}! @relationship(type: "OWNED_BY", direction: OUT, aggregate: false)
                 name: String!

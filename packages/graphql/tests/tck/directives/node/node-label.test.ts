@@ -378,7 +378,10 @@ describe("Label in Node directive", () => {
     test("Update disconnect in Movie with label film", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateMovies(where: { id_EQ: "1" }, disconnect: { actors: [{ where: { node: { name_EQ: "Daniel" } } }] }) {
+                updateMovies(
+                    where: { id_EQ: "1" }
+                    disconnect: { actors: [{ where: { node: { name_EQ: "Daniel" } } }] }
+                ) {
                     movies {
                         id
                     }
@@ -459,7 +462,10 @@ describe("Label in Node directive", () => {
     test("Delete Movies and actors with custom labels", async () => {
         const query = /* GraphQL */ `
             mutation {
-                deleteMovies(where: { id_EQ: 123 }, delete: { actors: { where: { node: { name_EQ: "Actor to delete" } } } }) {
+                deleteMovies(
+                    where: { id_EQ: 123 }
+                    delete: { actors: { where: { node: { name_EQ: "Actor to delete" } } } }
+                ) {
                     nodesDeleted
                 }
             }
@@ -497,7 +503,7 @@ describe("Label in Node directive", () => {
     test("Admin Deletes Post", async () => {
         const query = /* GraphQL */ `
             mutation {
-                deleteMovies(where: { actors: { name_EQ: "tom" } }) {
+                deleteMovies(where: { actors_SOME: { name_EQ: "tom" } }) {
                     nodesDeleted
                 }
             }

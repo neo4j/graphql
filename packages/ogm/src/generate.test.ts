@@ -1491,8 +1491,6 @@ describe("generate", () => {
               OR?: InputMaybe<Array<MovieWhere>>;
               AND?: InputMaybe<Array<MovieWhere>>;
               NOT?: InputMaybe<MovieWhere>;
-              /** @deprecated Use \`actors_SOME\` instead. */
-              actors?: InputMaybe<PersonWhere>;
               /** Return Movies where all of the related People match this filter */
               actors_ALL?: InputMaybe<PersonWhere>;
               /** Return Movies where none of the related People match this filter */
@@ -1501,8 +1499,6 @@ describe("generate", () => {
               actors_SINGLE?: InputMaybe<PersonWhere>;
               /** Return Movies where some of the related People match this filter */
               actors_SOME?: InputMaybe<PersonWhere>;
-              /** @deprecated Use \`actorsConnection_SOME\` instead. */
-              actorsConnection?: InputMaybe<MovieActorsConnectionWhere>;
               /** Return Movies where all of the related MovieActorsConnections match this filter */
               actorsConnection_ALL?: InputMaybe<MovieActorsConnectionWhere>;
               /** Return Movies where none of the related MovieActorsConnections match this filter */
@@ -2634,8 +2630,6 @@ describe("generate", () => {
               OR?: InputMaybe<Array<FaqEntryWhere>>;
               AND?: InputMaybe<Array<FaqEntryWhere>>;
               NOT?: InputMaybe<FaqEntryWhere>;
-              /** @deprecated Use \`inFAQs_SOME\` instead. */
-              inFAQs?: InputMaybe<FaqWhere>;
               /** Return FAQEntries where all of the related FAQS match this filter */
               inFAQs_ALL?: InputMaybe<FaqWhere>;
               /** Return FAQEntries where none of the related FAQS match this filter */
@@ -2644,8 +2638,6 @@ describe("generate", () => {
               inFAQs_SINGLE?: InputMaybe<FaqWhere>;
               /** Return FAQEntries where some of the related FAQS match this filter */
               inFAQs_SOME?: InputMaybe<FaqWhere>;
-              /** @deprecated Use \`inFAQsConnection_SOME\` instead. */
-              inFAQsConnection?: InputMaybe<FaqEntryInFaQsConnectionWhere>;
               /** Return FAQEntries where all of the related FAQEntryInFAQsConnections match this filter */
               inFAQsConnection_ALL?: InputMaybe<FaqEntryInFaQsConnectionWhere>;
               /** Return FAQEntries where none of the related FAQEntryInFAQsConnections match this filter */
@@ -2713,8 +2705,6 @@ describe("generate", () => {
               OR?: InputMaybe<Array<FaqWhere>>;
               AND?: InputMaybe<Array<FaqWhere>>;
               NOT?: InputMaybe<FaqWhere>;
-              /** @deprecated Use \`entries_SOME\` instead. */
-              entries?: InputMaybe<FaqEntryWhere>;
               /** Return FAQS where all of the related FAQEntries match this filter */
               entries_ALL?: InputMaybe<FaqEntryWhere>;
               /** Return FAQS where none of the related FAQEntries match this filter */
@@ -2723,8 +2713,6 @@ describe("generate", () => {
               entries_SINGLE?: InputMaybe<FaqEntryWhere>;
               /** Return FAQS where some of the related FAQEntries match this filter */
               entries_SOME?: InputMaybe<FaqEntryWhere>;
-              /** @deprecated Use \`entriesConnection_SOME\` instead. */
-              entriesConnection?: InputMaybe<FaqEntriesConnectionWhere>;
               /** Return FAQS where all of the related FAQEntriesConnections match this filter */
               entriesConnection_ALL?: InputMaybe<FaqEntriesConnectionWhere>;
               /** Return FAQS where none of the related FAQEntriesConnections match this filter */

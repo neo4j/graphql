@@ -66,10 +66,10 @@ describe("https://github.com/neo4j/graphql/issues/582", () => {
             variableValues: {
                 where: {
                     type_EQ: "Cat",
-                    childrenConnection: {
+                    childrenConnection_SOME: {
                         node: {
                             type_EQ: "Dog",
-                            parentsConnection: {
+                            parentsConnection_SOME: {
                                 node: {
                                     type_EQ: "Bird",
                                 },
@@ -92,13 +92,13 @@ describe("https://github.com/neo4j/graphql/issues/582", () => {
             variableValues: {
                 where: {
                     type_EQ: "Cat",
-                    childrenConnection: {
+                    childrenConnection_SOME: {
                         node: {
                             type_EQ: "Dog",
-                            parentsConnection: {
+                            parentsConnection_SOME: {
                                 node: {
                                     type_EQ: "Bird",
-                                    childrenConnection: {
+                                    childrenConnection_SOME: {
                                         node: {
                                             type_EQ: "Fish",
                                         },

@@ -324,14 +324,12 @@ describe("@filterable directive", () => {
 
             const movieWhereFields = movieWhereType.getFields();
 
-            const actorsConnection = movieWhereFields["actorsConnection"];
             const actorsConnectionALL = movieWhereFields["actorsConnection_ALL"];
             const actorsConnectionNONE = movieWhereFields["actorsConnection_NONE"];
             const actorsConnectionSINGLE = movieWhereFields["actorsConnection_SINGLE"];
             const actorsConnectionSOME = movieWhereFields["actorsConnection_SOME"];
 
             const actorsConnectionFilters = [
-                actorsConnection,
                 actorsConnectionALL,
                 actorsConnectionNONE,
                 actorsConnectionSINGLE,
@@ -374,14 +372,12 @@ describe("@filterable directive", () => {
 
             const movieWhereFields = movieWhereType.getFields();
 
-            const actorsConnection = movieWhereFields["actorsConnection"];
             const actorsConnectionALL = movieWhereFields["actorsConnection_ALL"];
             const actorsConnectionNONE = movieWhereFields["actorsConnection_NONE"];
             const actorsConnectionSINGLE = movieWhereFields["actorsConnection_SINGLE"];
             const actorsConnectionSOME = movieWhereFields["actorsConnection_SOME"];
 
             const actorsConnectionFilters = [
-                actorsConnection,
                 actorsConnectionALL,
                 actorsConnectionNONE,
                 actorsConnectionSINGLE,
@@ -474,14 +470,12 @@ describe("@filterable directive", () => {
 
             const movieWhereFields = movieWhereType.getFields();
 
-            const actorsConnection = movieWhereFields["actorsConnection"];
             const actorsConnectionALL = movieWhereFields["actorsConnection_ALL"];
             const actorsConnectionNONE = movieWhereFields["actorsConnection_NONE"];
             const actorsConnectionSINGLE = movieWhereFields["actorsConnection_SINGLE"];
             const actorsConnectionSOME = movieWhereFields["actorsConnection_SOME"];
 
             const actorsConnectionFilters = [
-                actorsConnection,
                 actorsConnectionALL,
                 actorsConnectionNONE,
                 actorsConnectionSINGLE,
@@ -528,14 +522,12 @@ describe("@filterable directive", () => {
 
             const movieWhereFields = movieWhereType.getFields();
 
-            const actorsConnection = movieWhereFields["actorsConnection"];
             const actorsConnectionALL = movieWhereFields["actorsConnection_ALL"];
             const actorsConnectionNONE = movieWhereFields["actorsConnection_NONE"];
             const actorsConnectionSINGLE = movieWhereFields["actorsConnection_SINGLE"];
             const actorsConnectionSOME = movieWhereFields["actorsConnection_SOME"];
 
             const actorsConnectionFilters = [
-                actorsConnection,
                 actorsConnectionALL,
                 actorsConnectionNONE,
                 actorsConnectionSINGLE,
@@ -582,14 +574,12 @@ describe("@filterable directive", () => {
 
             const movieWhereFields = movieWhereType.getFields();
 
-            const actorsConnection = movieWhereFields["actorsConnection"];
             const actorsConnectionALL = movieWhereFields["actorsConnection_ALL"];
             const actorsConnectionNONE = movieWhereFields["actorsConnection_NONE"];
             const actorsConnectionSINGLE = movieWhereFields["actorsConnection_SINGLE"];
             const actorsConnectionSOME = movieWhereFields["actorsConnection_SOME"];
 
             const actorsConnectionFilters = [
-                actorsConnection,
                 actorsConnectionALL,
                 actorsConnectionNONE,
                 actorsConnectionSINGLE,
@@ -636,14 +626,12 @@ describe("@filterable directive", () => {
 
             const movieWhereFields = movieWhereType.getFields();
 
-            const actorsConnection = movieWhereFields["actorsConnection"];
             const actorsConnectionALL = movieWhereFields["actorsConnection_ALL"];
             const actorsConnectionNONE = movieWhereFields["actorsConnection_NONE"];
             const actorsConnectionSINGLE = movieWhereFields["actorsConnection_SINGLE"];
             const actorsConnectionSOME = movieWhereFields["actorsConnection_SOME"];
 
             const actorsConnectionFilters = [
-                actorsConnection,
                 actorsConnectionALL,
                 actorsConnectionNONE,
                 actorsConnectionSINGLE,
@@ -748,14 +736,12 @@ describe("@filterable directive", () => {
 
             const movieWhereFields = movieWhereType.getFields();
 
-            const actorsConnection = movieWhereFields["actorsConnection"];
             const actorsConnectionALL = movieWhereFields["actorsConnection_ALL"];
             const actorsConnectionNONE = movieWhereFields["actorsConnection_NONE"];
             const actorsConnectionSINGLE = movieWhereFields["actorsConnection_SINGLE"];
             const actorsConnectionSOME = movieWhereFields["actorsConnection_SOME"];
 
             const actorsConnectionFilters = [
-                actorsConnection,
                 actorsConnectionALL,
                 actorsConnectionNONE,
                 actorsConnectionSINGLE,
@@ -806,14 +792,12 @@ describe("@filterable directive", () => {
 
             const movieWhereFields = movieWhereType.getFields();
 
-            const actorsConnection = movieWhereFields["actorsConnection"];
             const actorsConnectionALL = movieWhereFields["actorsConnection_ALL"];
             const actorsConnectionNONE = movieWhereFields["actorsConnection_NONE"];
             const actorsConnectionSINGLE = movieWhereFields["actorsConnection_SINGLE"];
             const actorsConnectionSOME = movieWhereFields["actorsConnection_SOME"];
 
             const actorsConnectionFilters = [
-                actorsConnection,
                 actorsConnectionALL,
                 actorsConnectionNONE,
                 actorsConnectionSINGLE,
@@ -864,14 +848,12 @@ describe("@filterable directive", () => {
 
             const movieWhereFields = movieWhereType.getFields();
 
-            const actorsConnection = movieWhereFields["actorsConnection"];
             const actorsConnectionALL = movieWhereFields["actorsConnection_ALL"];
             const actorsConnectionNONE = movieWhereFields["actorsConnection_NONE"];
             const actorsConnectionSINGLE = movieWhereFields["actorsConnection_SINGLE"];
             const actorsConnectionSOME = movieWhereFields["actorsConnection_SOME"];
 
             const actorsConnectionFilters = [
-                actorsConnection,
                 actorsConnectionALL,
                 actorsConnectionNONE,
                 actorsConnectionSINGLE,
@@ -1162,9 +1144,7 @@ describe("@filterable directive", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
                       moviesAggregate: ActorMoviesAggregateInput
-                      moviesConnection: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -1556,9 +1536,7 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                       actorsAggregate: MovieActorsAggregateInput
-                      actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -1987,9 +1965,7 @@ describe("@filterable directive", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
                       moviesAggregate: ActorMoviesAggregateInput
-                      moviesConnection: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -2381,9 +2357,7 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                       actorsAggregate: MovieActorsAggregateInput
-                      actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -2802,9 +2776,7 @@ describe("@filterable directive", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
                       moviesAggregate: ActorMoviesAggregateInput
-                      moviesConnection: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -3182,9 +3154,7 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                       actorsAggregate: MovieActorsAggregateInput
-                      actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -3610,9 +3580,7 @@ describe("@filterable directive", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
                       moviesAggregate: ActorMoviesAggregateInput
-                      moviesConnection: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -3916,8 +3884,6 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
-                      actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -4348,9 +4314,7 @@ describe("@filterable directive", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
                       moviesAggregate: ActorMoviesAggregateInput
-                      moviesConnection: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -4742,9 +4706,7 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                       actorsAggregate: MovieActorsAggregateInput
-                      actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -5175,9 +5137,7 @@ describe("@filterable directive", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
                       moviesAggregate: ActorMoviesAggregateInput
-                      moviesConnection: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -5976,9 +5936,7 @@ describe("@filterable directive", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
                       moviesAggregate: ActorMoviesAggregateInput
-                      moviesConnection: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -6282,8 +6240,6 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
-                      actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -6715,9 +6671,7 @@ describe("@filterable directive", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
                       moviesAggregate: ActorMoviesAggregateInput
-                      moviesConnection: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -7013,8 +6967,6 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
-                      actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -7531,9 +7483,7 @@ describe("@filterable directive", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
                       moviesAggregate: ActorMoviesAggregateInput
-                      moviesConnection: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -7882,9 +7832,7 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                       actorsAggregate: MovieActorsAggregateInput
-                      actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -8401,9 +8349,7 @@ describe("@filterable directive", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
                       moviesAggregate: ActorMoviesAggregateInput
-                      moviesConnection: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -8699,8 +8645,6 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
-                      actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -9225,9 +9169,7 @@ describe("@filterable directive", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
                       moviesAggregate: ActorMoviesAggregateInput
-                      moviesConnection: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -9559,9 +9501,7 @@ describe("@filterable directive", () => {
                       AND: [AppearanceWhere!]
                       NOT: AppearanceWhere
                       OR: [AppearanceWhere!]
-                      movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
                       moviesAggregate: AppearanceMoviesAggregateInput
-                      moviesConnection: AppearanceMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Appearances where all of the related AppearanceMoviesConnections match this filter
                       \\"\\"\\"
@@ -9939,8 +9879,6 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
-                      actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -10412,9 +10350,7 @@ describe("@filterable directive", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
                       moviesAggregate: ActorMoviesAggregateInput
-                      moviesConnection: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -10746,9 +10682,7 @@ describe("@filterable directive", () => {
                       AND: [AppearanceWhere!]
                       NOT: AppearanceWhere
                       OR: [AppearanceWhere!]
-                      movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
                       moviesAggregate: AppearanceMoviesAggregateInput
-                      moviesConnection: AppearanceMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Appearances where all of the related AppearanceMoviesConnections match this filter
                       \\"\\"\\"
@@ -11126,8 +11060,6 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
-                      actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -11599,9 +11531,7 @@ describe("@filterable directive", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
                       moviesAggregate: ActorMoviesAggregateInput
-                      moviesConnection: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -11933,9 +11863,7 @@ describe("@filterable directive", () => {
                       AND: [AppearanceWhere!]
                       NOT: AppearanceWhere
                       OR: [AppearanceWhere!]
-                      movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
                       moviesAggregate: AppearanceMoviesAggregateInput
-                      moviesConnection: AppearanceMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Appearances where all of the related AppearanceMoviesConnections match this filter
                       \\"\\"\\"
@@ -12313,8 +12241,6 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
-                      actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
