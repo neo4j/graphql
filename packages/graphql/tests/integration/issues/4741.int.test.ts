@@ -86,38 +86,4 @@ describe("https://github.com/neo4j/graphql/issues/4741", () => {
             },
         });
     });
-
-    test("should return only one Opportunity filering by name length", async () => {
-        const query = /* GraphQL */ `
-            query {
-                ${Opportunity.operations.connection}(first: 10, where: { listsOlisAggregate: { node: { name_LT: 10 } } }) {
-                    edges {
-                        node {
-                            country
-                            listsOlisConnection {
-                                totalCount
-                            }
-                        }
-                    }
-                }
-            }
-        `;
-
-        const queryResults = await testHelper.executeGraphQL(query);
-        expect(queryResults.errors).toBeUndefined();
-        expect(queryResults.data).toEqual({
-            [Opportunity.operations.connection]: {
-                edges: expect.toIncludeSameMembers([
-                    {
-                        node: {
-                            country: "ES",
-                            listsOlisConnection: {
-                                totalCount: 2,
-                            },
-                        },
-                    },
-                ]),
-            },
-        });
-    });
 });

@@ -177,7 +177,16 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               AND: [CreatureMoviesNodeAggregationWhereInput!]
               NOT: CreatureMoviesNodeAggregationWhereInput
               OR: [CreatureMoviesNodeAggregationWhereInput!]
-              id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              id_MAX_EQUAL: ID
+              id_MAX_GT: ID
+              id_MAX_GTE: ID
+              id_MAX_LT: ID
+              id_MAX_LTE: ID
+              id_MIN_EQUAL: ID
+              id_MIN_GT: ID
+              id_MIN_GTE: ID
+              id_MIN_LT: ID
+              id_MIN_LTE: ID
             }
 
             type CreatureMoviesRelationship {
@@ -510,7 +519,16 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               AND: [PersonMoviesNodeAggregationWhereInput!]
               NOT: PersonMoviesNodeAggregationWhereInput
               OR: [PersonMoviesNodeAggregationWhereInput!]
-              id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              id_MAX_EQUAL: ID
+              id_MAX_GT: ID
+              id_MAX_GTE: ID
+              id_MAX_LT: ID
+              id_MAX_LTE: ID
+              id_MIN_EQUAL: ID
+              id_MIN_GT: ID
+              id_MIN_GTE: ID
+              id_MIN_LT: ID
+              id_MIN_LTE: ID
             }
 
             input PersonMoviesRelationshipSubscriptionWhere {

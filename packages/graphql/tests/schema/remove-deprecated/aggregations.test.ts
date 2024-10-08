@@ -595,6 +595,16 @@ describe("Remove deprecated fields for aggregations", () => {
               someFloat_SUM_GTE: Float
               someFloat_SUM_LT: Float
               someFloat_SUM_LTE: Float
+              someId_MAX_EQUAL: ID
+              someId_MAX_GT: ID
+              someId_MAX_GTE: ID
+              someId_MAX_LT: ID
+              someId_MAX_LTE: ID
+              someId_MIN_EQUAL: ID
+              someId_MIN_GT: ID
+              someId_MIN_GTE: ID
+              someId_MIN_LT: ID
+              someId_MIN_LTE: ID
               someInt_AVERAGE_EQUAL: Float
               someInt_AVERAGE_GT: Float
               someInt_AVERAGE_GTE: Float
@@ -980,6 +990,16 @@ describe("Remove deprecated fields for aggregations", () => {
               someFloat_SUM_GTE: Float
               someFloat_SUM_LT: Float
               someFloat_SUM_LTE: Float
+              someId_MAX_EQUAL: ID
+              someId_MAX_GT: ID
+              someId_MAX_GTE: ID
+              someId_MAX_LT: ID
+              someId_MAX_LTE: ID
+              someId_MIN_EQUAL: ID
+              someId_MIN_GT: ID
+              someId_MIN_GTE: ID
+              someId_MIN_LT: ID
+              someId_MIN_LTE: ID
               someInt_AVERAGE_EQUAL: Float
               someInt_AVERAGE_GT: Float
               someInt_AVERAGE_GTE: Float

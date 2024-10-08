@@ -176,7 +176,16 @@ describe("https://github.com/neo4j/graphql/issues/5435", () => {
               AND: [PostAuthorNodeAggregationWhereInput!]
               NOT: PostAuthorNodeAggregationWhereInput
               OR: [PostAuthorNodeAggregationWhereInput!]
-              id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              id_MAX_EQUAL: ID
+              id_MAX_GT: ID
+              id_MAX_GTE: ID
+              id_MAX_LT: ID
+              id_MAX_LTE: ID
+              id_MIN_EQUAL: ID
+              id_MIN_GT: ID
+              id_MIN_GTE: ID
+              id_MIN_LT: ID
+              id_MIN_LTE: ID
             }
 
             type PostAuthorRelationship {
