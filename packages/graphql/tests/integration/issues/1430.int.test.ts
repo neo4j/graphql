@@ -157,8 +157,8 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
 
         const updateMutation = `
             mutation ddfs{
-                ${testAbce.operations.update}(where: { id_EQ: "${abcesId}" }
-                    create: { interface: { node: { ${testChildOne.name}: { name: "childone name2" } } } }
+                ${testAbce.operations.update}(where: { id: "${abcesId}" }
+                    update: { interface: { create: { node: { ${testChildOne.name}: { name: "childone name2" } } } } }
                 ){
                     ${testAbce.plural} {
                         id
@@ -232,10 +232,10 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
         const abcesId = (createMutationResults.data as any)[testAbce.operations.create][testAbce.plural][0].id;
 
         const updateMutation = `
-            mutation {
-                ${testAbce.operations.update}(
-                    where: { id_EQ: "${abcesId}" }
-                    connect: { interface: { where: { node: { name_EQ: "childone name connect" } } } }
+        mutation {
+            ${testAbce.operations.update}(
+                where: { id: "${abcesId}" }
+                update: { interface: { connect: { where: { node: { name: "childone name connect" } } } } }
                 ) {
                     ${testAbce.plural} {
                         id
@@ -311,8 +311,8 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
         const updateMutation = `
             mutation {
                 ${testAbce.operations.update}(
-                    where: { id_EQ: "${abcesId}" }
-                    create: { interface: { node: { ${testChildOne.name}: { name: "childone anme nested create" } } } }
+                    where: { id: "${abcesId}" }
+                    update: { interface: { create: { node: { ${testChildOne.name}: { name: "childone anme nested create" } } } } }
                 ) {
                     ${testAbce.plural} {
                         id

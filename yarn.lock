@@ -1278,9 +1278,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@changesets/cli@npm:2.27.8":
-  version: 2.27.8
-  resolution: "@changesets/cli@npm:2.27.8"
+"@changesets/cli@npm:2.27.9":
+  version: 2.27.9
+  resolution: "@changesets/cli@npm:2.27.9"
   dependencies:
     "@changesets/apply-release-plan": "npm:^7.0.5"
     "@changesets/assemble-release-plan": "npm:^6.0.4"
@@ -1297,14 +1297,12 @@ __metadata:
     "@changesets/types": "npm:^6.0.0"
     "@changesets/write": "npm:^0.3.2"
     "@manypkg/get-packages": "npm:^1.1.3"
-    "@types/semver": "npm:^7.5.0"
     ansi-colors: "npm:^4.1.3"
     ci-info: "npm:^3.7.0"
     enquirer: "npm:^2.3.0"
     external-editor: "npm:^3.1.0"
     fs-extra: "npm:^7.0.1"
     mri: "npm:^1.2.0"
-    outdent: "npm:^0.5.0"
     p-limit: "npm:^2.2.0"
     package-manager-detector: "npm:^0.2.0"
     picocolors: "npm:^1.1.0"
@@ -1314,7 +1312,7 @@ __metadata:
     term-size: "npm:^2.1.0"
   bin:
     changeset: bin.js
-  checksum: 10c0/e3c4443c2fa0e49cc6c2755f4beab7c3152a9b509620ceb8b0425fcf884c59e3a738b0163a8eea6b2a698a789c6d005c0bd4dc787421aa9053458a740acde91d
+  checksum: 10c0/bcd651aa177eb58eaee4c3c86f961c5411dbe7c77a9b421d22cd4a422f4802795d1cd51be6769c16bb30d3f88dc8a06ab4977fc6457430373b680fd5ee59b59a
   languageName: node
   linkType: hard
 
@@ -2806,7 +2804,7 @@ __metadata:
     cors: "npm:^2.8.5"
     graphql-ws: "npm:5.16.0"
     jest: "npm:29.7.0"
-    neo4j-driver: "npm:5.24.1"
+    neo4j-driver: "npm:5.25.0"
     pluralize: "npm:8.0.0"
     randomstring: "npm:1.3.0"
     supertest: "npm:7.0.0"
@@ -4743,7 +4741,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/semver@npm:7.5.8, @types/semver@npm:^7.5.0":
+"@types/semver@npm:7.5.8":
   version: 7.5.8
   resolution: "@types/semver@npm:7.5.8"
   checksum: 10c0/8663ff927234d1c5fcc04b33062cb2b9fcfbe0f5f351ed26c4d1e1581657deebd506b41ff7fdf89e787e3d33ce05854bc01686379b89e9c49b564c4cfa988efa
@@ -5722,7 +5720,7 @@ __metadata:
     ts-loader: "npm:9.5.1"
     tsconfig-paths-webpack-plugin: "npm:4.1.0"
     typescript: "npm:5.1.6"
-    webpack: "npm:5.94.0"
+    webpack: "npm:5.95.0"
   languageName: unknown
   linkType: soft
 
@@ -9532,6 +9530,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eslint-module-utils@npm:^2.12.0":
+  version: 2.12.0
+  resolution: "eslint-module-utils@npm:2.12.0"
+  dependencies:
+    debug: "npm:^3.2.7"
+  peerDependenciesMeta:
+    eslint:
+      optional: true
+  checksum: 10c0/4d8b46dcd525d71276f9be9ffac1d2be61c9d54cc53c992e6333cf957840dee09381842b1acbbb15fc6b255ebab99cd481c5007ab438e5455a14abe1a0468558
+  languageName: node
+  linkType: hard
+
 "eslint-module-utils@npm:^2.8.1":
   version: 2.8.2
   resolution: "eslint-module-utils@npm:2.8.2"
@@ -9541,18 +9551,6 @@ __metadata:
     eslint:
       optional: true
   checksum: 10c0/98c5ca95db75507b148c05d157b287116c677bfc9ca6bef4d5455c8b199eb2c35b9204a15ca7a3497085daef8ca3a3f579bd9e753ad4ad4df6256e4ef1107c51
-  languageName: node
-  linkType: hard
-
-"eslint-module-utils@npm:^2.9.0":
-  version: 2.9.0
-  resolution: "eslint-module-utils@npm:2.9.0"
-  dependencies:
-    debug: "npm:^3.2.7"
-  peerDependenciesMeta:
-    eslint:
-      optional: true
-  checksum: 10c0/7c45c5b54402a969e99315890c10e9bf8c8bee16c7890573343af05dfa04566d61546585678c413e5228af0550e39461be47e35a8ff0d1863e113bdbb28d1d29
   languageName: node
   linkType: hard
 
@@ -9568,9 +9566,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-import@npm:2.30.0":
-  version: 2.30.0
-  resolution: "eslint-plugin-import@npm:2.30.0"
+"eslint-plugin-import@npm:2.31.0":
+  version: 2.31.0
+  resolution: "eslint-plugin-import@npm:2.31.0"
   dependencies:
     "@rtsao/scc": "npm:^1.1.0"
     array-includes: "npm:^3.1.8"
@@ -9580,7 +9578,7 @@ __metadata:
     debug: "npm:^3.2.7"
     doctrine: "npm:^2.1.0"
     eslint-import-resolver-node: "npm:^0.3.9"
-    eslint-module-utils: "npm:^2.9.0"
+    eslint-module-utils: "npm:^2.12.0"
     hasown: "npm:^2.0.2"
     is-core-module: "npm:^2.15.1"
     is-glob: "npm:^4.0.3"
@@ -9589,10 +9587,11 @@ __metadata:
     object.groupby: "npm:^1.0.3"
     object.values: "npm:^1.2.0"
     semver: "npm:^6.3.1"
+    string.prototype.trimend: "npm:^1.0.8"
     tsconfig-paths: "npm:^3.15.0"
   peerDependencies:
-    eslint: ^2 || ^3 || ^4 || ^5 || ^6 || ^7.2.0 || ^8
-  checksum: 10c0/4c9dcb1f27505c4d5dd891d2b551f56c70786d136aa3992a77e785bdc67c9f60200a2c7fb0ce55b7647fe550b12bc433d5dfa59e2c00ab44227791c5ab86badf
+    eslint: ^2 || ^3 || ^4 || ^5 || ^6 || ^7.2.0 || ^8 || ^9
+  checksum: 10c0/e21d116ddd1900e091ad120b3eb68c5dd5437fe2c930f1211781cd38b246f090a6b74d5f3800b8255a0ed29782591521ad44eb21c5534960a8f1fb4040fd913a
   languageName: node
   linkType: hard
 
@@ -9640,9 +9639,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-react@npm:7.36.1":
-  version: 7.36.1
-  resolution: "eslint-plugin-react@npm:7.36.1"
+"eslint-plugin-react@npm:7.37.1":
+  version: 7.37.1
+  resolution: "eslint-plugin-react@npm:7.37.1"
   dependencies:
     array-includes: "npm:^3.1.8"
     array.prototype.findlast: "npm:^1.2.5"
@@ -9664,7 +9663,7 @@ __metadata:
     string.prototype.repeat: "npm:^1.0.0"
   peerDependencies:
     eslint: ^3 || ^4 || ^5 || ^6 || ^7 || ^8 || ^9.7
-  checksum: 10c0/8cb37f7fb351213bc44263580ff77627e14e27870fd81dae593e3de2826340b9bd8bbac7ae00fd5de69751a0660b2e51bd26760596f4ae85548f6b1bd76706e6
+  checksum: 10c0/13cf55666f16d2ca45b14aad1b0e14741d1817679c86d20aff0bc1e802439a8541f40a42c4c8e3486ffb710f1bcc2f3e56697f2b5f724306a7fca174e1ad6433
   languageName: node
   linkType: hard
 
@@ -15304,32 +15303,32 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"neo4j-driver-bolt-connection@npm:5.24.1":
-  version: 5.24.1
-  resolution: "neo4j-driver-bolt-connection@npm:5.24.1"
+"neo4j-driver-bolt-connection@npm:5.25.0":
+  version: 5.25.0
+  resolution: "neo4j-driver-bolt-connection@npm:5.25.0"
   dependencies:
     buffer: "npm:^6.0.3"
-    neo4j-driver-core: "npm:5.24.1"
+    neo4j-driver-core: "npm:5.25.0"
     string_decoder: "npm:^1.3.0"
-  checksum: 10c0/1d154712313b0e1d3c663f2bb042313a129da35cd21aab5d01f0d19354eba3937f41d3154480783ad8635abe6bfcf953040207407647c97842fbe62541c08959
+  checksum: 10c0/f1120ffb57d42e783ae973e3c3435f3c7e15dab1ed5ced65f6667015cd18cdb80d95ee66f68625a6951bdd354fecd13de08f6c9f96d56851dec57629d18c93f0
   languageName: node
   linkType: hard
 
-"neo4j-driver-core@npm:5.24.1":
-  version: 5.24.1
-  resolution: "neo4j-driver-core@npm:5.24.1"
-  checksum: 10c0/2d213c1450ba57553f4363e99aa493bd57664a974124efa93b80e9cf2d885df46b74a72933d4db8a65172934136b44e48764e4cc8ba068eac6424da185235143
+"neo4j-driver-core@npm:5.25.0":
+  version: 5.25.0
+  resolution: "neo4j-driver-core@npm:5.25.0"
+  checksum: 10c0/282fe291a2fe61ff412c59820e8454fcfcfb269ac45b9ae1ba66873bcdf5e6148f8eb73016d0d8d6b24ffa0bd83ee331a175de386422f2940c961027efda3298
   languageName: node
   linkType: hard
 
-"neo4j-driver@npm:5.24.1, neo4j-driver@npm:^5.8.0":
-  version: 5.24.1
-  resolution: "neo4j-driver@npm:5.24.1"
+"neo4j-driver@npm:5.25.0, neo4j-driver@npm:^5.8.0":
+  version: 5.25.0
+  resolution: "neo4j-driver@npm:5.25.0"
   dependencies:
-    neo4j-driver-bolt-connection: "npm:5.24.1"
-    neo4j-driver-core: "npm:5.24.1"
+    neo4j-driver-bolt-connection: "npm:5.25.0"
+    neo4j-driver-core: "npm:5.25.0"
     rxjs: "npm:^7.8.1"
-  checksum: 10c0/f906a7f5bad6dc1a10a813e9228f0471a5c1590aa4bdf9265146ff5d1d9980f1cb42607a1ed69f05e158a1de378f85943d12a9273424f7b2f03f046b41012b81
+  checksum: 10c0/78025002692ec0ea228ccfdef7d47dcd47cfc04017ea14e31c7aa3e0a3585be0669e4701cbd6dd51a8a3abd3d74a8aa6300e049af2d429aac66ca1aca717816d
   languageName: node
   linkType: hard
 
@@ -15338,7 +15337,7 @@ __metadata:
   resolution: "neo4j-graphql@workspace:."
   dependencies:
     "@changesets/changelog-github": "npm:0.5.0"
-    "@changesets/cli": "npm:2.27.8"
+    "@changesets/cli": "npm:2.27.9"
     "@tsconfig/node16": "npm:1.0.4"
     "@typescript-eslint/eslint-plugin": "npm:7.18.0"
     "@typescript-eslint/parser": "npm:7.18.0"
@@ -15349,16 +15348,16 @@ __metadata:
     eslint-formatter-summary: "npm:1.1.0"
     eslint-import-resolver-typescript: "npm:3.6.3"
     eslint-plugin-eslint-comments: "npm:3.2.0"
-    eslint-plugin-import: "npm:2.30.0"
+    eslint-plugin-import: "npm:2.31.0"
     eslint-plugin-jest: "npm:28.8.3"
     eslint-plugin-jsx-a11y: "npm:6.10.0"
-    eslint-plugin-react: "npm:7.36.1"
+    eslint-plugin-react: "npm:7.37.1"
     eslint-plugin-simple-import-sort: "npm:12.1.1"
     graphql: "npm:16.9.0"
     husky: "npm:9.1.6"
     jest: "npm:29.7.0"
     lint-staged: "npm:15.2.10"
-    neo4j-driver: "npm:5.24.1"
+    neo4j-driver: "npm:5.25.0"
     prettier: "npm:2.8.8"
     set-tz: "npm:0.2.0"
     ts-jest: "npm:29.2.5"
@@ -20535,9 +20534,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack@npm:5.94.0":
-  version: 5.94.0
-  resolution: "webpack@npm:5.94.0"
+"webpack@npm:5.95.0":
+  version: 5.95.0
+  resolution: "webpack@npm:5.95.0"
   dependencies:
     "@types/estree": "npm:^1.0.5"
     "@webassemblyjs/ast": "npm:^1.12.1"
@@ -20567,7 +20566,7 @@ __metadata:
       optional: true
   bin:
     webpack: bin/webpack.js
-  checksum: 10c0/b4d1b751f634079bd177a89eef84d80fa5bb8d6fc15d72ab40fc2b9ca5167a79b56585e1a849e9e27e259803ee5c4365cb719e54af70a43c06358ec268ff4ebf
+  checksum: 10c0/b9e6d0f8ebcbf0632494ac0b90fe4acb8f4a9b83f7ace4a67a15545a36fe58599c912ab58e625e1bf58ab3b0916c75fe99da6196d412ee0cab0b5065edd84238
   languageName: node
   linkType: hard
 
