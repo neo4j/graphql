@@ -22,7 +22,7 @@ import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Implicit Equality filters", () => {
-    test("Should remove implicitEqualFilters if specified by the settings", async () => {
+    test("Should remove implicit filters if specified by the setting implicitEqualFilters", async () => {
         const typeDefs = /* GraphQL */ `
             type Actor @node {
                 name: String
