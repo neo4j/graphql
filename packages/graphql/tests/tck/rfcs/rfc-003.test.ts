@@ -620,6 +620,8 @@ describe("tck/rfs/003", () => {
                             "MATCH (this:Movie)
                             WHERE this.id = $param0
                             WITH this
+                            WITH *
+                            WHERE apoc.util.validatePredicate(EXISTS((this)<-[:DIRECTED]-(:Director)),'Relationship field \\"%s.%s\\" cannot have more than one node linked',[\\"Movie\\",\\"director\\"])
                             CREATE (this_director0_create0_node:Director)
                             SET this_director0_create0_node.id = $this_director0_create0_node_id
                             MERGE (this)<-[:DIRECTED]-(this_director0_create0_node)
