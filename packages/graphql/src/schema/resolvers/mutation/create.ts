@@ -34,16 +34,7 @@ export function createResolver({
     node: Node;
     concreteEntityAdapter: ConcreteEntityAdapter;
 }) {
-    async function resolve(
-        _root: any,
-        args: any,
-        context: Neo4jGraphQLComposedContext,
-        info: GraphQLResolveInfo
-    ): Promise<{
-        info: {
-            bookmark: string | null;
-        };
-    }> {
+    async function resolve(_root: any, args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
         const resolveTree = getNeo4jResolveTree(info, { args });
 
         (context as Neo4jGraphQLTranslationContext).resolveTree = resolveTree;
@@ -67,7 +58,6 @@ export function createResolver({
 
         const resolveResult = {
             info: {
-                bookmark: executeResult.bookmark,
                 ...executeResult.statistics,
             },
         };

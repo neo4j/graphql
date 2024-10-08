@@ -60,7 +60,6 @@ describe("info", () => {
             mutation($title: String!, $name: String!) {
                 ${Movie.operations.create}(input: [{ title: $title, actors: { create: [{ node: { name: $name } }] } }]) {
                     info {
-                        bookmark
                         nodesCreated
                         relationshipsCreated
                     }
@@ -80,42 +79,11 @@ describe("info", () => {
 
         expect(gqlResult.errors).toBeFalsy();
 
-        expect(typeof (gqlResult?.data as any)?.[Movie.operations.create].info.bookmark).toBe("string");
         expect((gqlResult?.data as any)?.[Movie.operations.create].info.nodesCreated).toBe(2);
         expect((gqlResult?.data as any)?.[Movie.operations.create].info.relationshipsCreated).toBe(1);
         expect((gqlResult?.data as any)?.[Movie.operations.create][Movie.plural]).toEqual([
             { title, actors: [{ name }] },
         ]);
-    });
-
-    test("should return info from a delete mutation", async () => {
-        const typeDefs = `
-            type ${Movie} @node {
-                id: ID!
-            }
-        `;
-
-        await testHelper.initNeo4jGraphQL({ typeDefs });
-
-        const id = generate({
-            charset: "alphabetic",
-        });
-
-        const query = `
-            mutation($id: ID!) {
-                ${Movie.operations.delete}(where: { id_EQ: $id }) {
-                    bookmark
-                }
-            }
-        `;
-
-        const gqlResult = await testHelper.executeGraphQL(query, {
-            variableValues: { id },
-        });
-
-        expect(gqlResult.errors).toBeFalsy();
-
-        expect(typeof (gqlResult?.data as any)?.[Movie.operations.delete].bookmark).toBe("string");
     });
 
     test("should return info from an update mutation", async () => {
@@ -134,9 +102,6 @@ describe("info", () => {
         const query = `
             mutation($id: ID!) {
                 ${Movie.operations.update}(where: { id_EQ: $id }) {
-                    info {
-                        bookmark
-                    }
                     ${Movie.plural} {
                         id
                     }
@@ -149,7 +114,5 @@ describe("info", () => {
         });
 
         expect(gqlResult.errors).toBeFalsy();
-
-        expect(typeof (gqlResult?.data as any)[Movie.operations.update].info.bookmark).toBe("string");
     });
 });

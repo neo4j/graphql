@@ -57,7 +57,7 @@ export function deleteResolver({
 
         publishEventsToSubscriptionMechanism(executeResult, context.features?.subscriptions, context.schemaModel);
 
-        return { bookmark: executeResult.bookmark, ...executeResult.statistics };
+        return executeResult.statistics;
     }
 
     const hasDeleteInput = composer.has(concreteEntityAdapter.operations.deleteInputTypeName);
