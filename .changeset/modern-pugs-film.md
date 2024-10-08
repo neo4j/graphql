@@ -2,7 +2,7 @@
 "@neo4j/graphql": minor
 ---
 
-Remove connection wrapper on vector queries
+Remove connection wrapper on vector queries.
 
 _Previous:_
 
@@ -37,3 +37,5 @@ query MovieVectorQuery($vector: [Float!]!) {
     }
 }
 ```
+
+Vector index is now a stable feature.
