@@ -43,7 +43,7 @@ describe("https://github.com/neo4j/graphql/issues/4477", () => {
             query {
                 brands {
                     name
-                    services(where: { collectionAggregate: { count: 0 } }) {
+                    services(where: { collectionAggregate: { count_EQ: 0 } }) {
                         collectionAggregate {
                             count
                         }

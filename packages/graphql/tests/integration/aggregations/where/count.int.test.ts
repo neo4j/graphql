@@ -62,7 +62,7 @@ describe("aggregations-where-count", () => {
 
         const query = /* GraphQL */ `
                 {
-                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { count: 1 } }) {
+                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { count_EQ: 1 } }) {
                         testString
                         likes {
                             testString
@@ -305,7 +305,7 @@ describe("aggregations-where-count  interface relationships of concrete types", 
 
         const query = `
                 {
-                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { count: 1 } }) {
+                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { count_EQ: 1 } }) {
                         testString
                         likes {
                             testString

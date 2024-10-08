@@ -88,7 +88,7 @@ describe("Update using aggregate where", () => {
                             where: { 
                                 node: {
                                     likesAggregate: {
-                                        count: 2
+                                        count_EQ: 2
                                     }
                                 } 
                             } 
@@ -161,7 +161,7 @@ describe("Update using aggregate where", () => {
                                     likesAggregate: {
                                        OR: [
                                        {
-                                           count: 2
+                                           count_EQ: 2
                                            
                                        },
                                        {
@@ -246,7 +246,7 @@ describe("Update using aggregate where", () => {
                                         node: {
                                             name_SHORTEST_LT: 10 
                                         }
-                                        count: 1
+                                        count_EQ: 1
                                     }
                                 }
                             }
