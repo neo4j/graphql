@@ -331,7 +331,10 @@ describe("Label in Node directive", () => {
     test("Update connection in Movie with label film", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateMovies(where: { id_EQ: "1" }, connect: { actors: [{ where: { node: { name_EQ: "Daniel" } } }] }) {
+                updateMovies(
+                    where: { id_EQ: "1" }
+                    update: { actors: { connect: [{ where: { node: { name_EQ: "Daniel" } } }] } }
+                ) {
                     movies {
                         id
                     }
@@ -347,29 +350,28 @@ describe("Label in Node directive", () => {
             WITH *
             CALL {
             	WITH this
-            	OPTIONAL MATCH (this_connect_actors0_node:Person)
-            	WHERE this_connect_actors0_node.name = $this_connect_actors0_node_param0
+            	OPTIONAL MATCH (this_actors0_connect0_node:Person)
+            	WHERE this_actors0_connect0_node.name = $this_actors0_connect0_node_param0
             	CALL {
             		WITH *
-            		WITH collect(this_connect_actors0_node) as connectedNodes, collect(this) as parentNodes
+            		WITH collect(this_actors0_connect0_node) as connectedNodes, collect(this) as parentNodes
             		CALL {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
-            			UNWIND connectedNodes as this_connect_actors0_node
-            			MERGE (this)<-[:ACTED_IN]-(this_connect_actors0_node)
+            			UNWIND connectedNodes as this_actors0_connect0_node
+            			MERGE (this)<-[:ACTED_IN]-(this_actors0_connect0_node)
             		}
             	}
-            WITH this, this_connect_actors0_node
-            	RETURN count(*) AS connect_this_connect_actors_Actor0
+            WITH this, this_actors0_connect0_node
+            	RETURN count(*) AS connect_this_actors0_connect_Actor0
             }
-            WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
-                \\"this_connect_actors0_node_param0\\": \\"Daniel\\",
+                \\"this_actors0_connect0_node_param0\\": \\"Daniel\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -378,7 +380,10 @@ describe("Label in Node directive", () => {
     test("Update disconnect in Movie with label film", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateMovies(where: { id_EQ: "1" }, disconnect: { actors: [{ where: { node: { name_EQ: "Daniel" } } }] }) {
+                updateMovies(
+                    where: { id_EQ: "1" }
+                    update: { actors: { disconnect: [{ where: { node: { name_EQ: "Daniel" } } }] } }
+                ) {
                     movies {
                         id
                     }
@@ -394,34 +399,37 @@ describe("Label in Node directive", () => {
             WITH this
             CALL {
             WITH this
-            OPTIONAL MATCH (this)<-[this_disconnect_actors0_rel:ACTED_IN]-(this_disconnect_actors0:Person)
-            WHERE this_disconnect_actors0.name = $updateMovies_args_disconnect_actors0_where_Actor_this_disconnect_actors0param0
+            OPTIONAL MATCH (this)<-[this_actors0_disconnect0_rel:ACTED_IN]-(this_actors0_disconnect0:Person)
+            WHERE this_actors0_disconnect0.name = $updateMovies_args_update_actors0_disconnect0_where_Actor_this_actors0_disconnect0param0
             CALL {
-            	WITH this_disconnect_actors0, this_disconnect_actors0_rel, this
-            	WITH collect(this_disconnect_actors0) as this_disconnect_actors0, this_disconnect_actors0_rel, this
-            	UNWIND this_disconnect_actors0 as x
-            	DELETE this_disconnect_actors0_rel
+            	WITH this_actors0_disconnect0, this_actors0_disconnect0_rel, this
+            	WITH collect(this_actors0_disconnect0) as this_actors0_disconnect0, this_actors0_disconnect0_rel, this
+            	UNWIND this_actors0_disconnect0 as x
+            	DELETE this_actors0_disconnect0_rel
             }
-            RETURN count(*) AS disconnect_this_disconnect_actors_Actor
+            RETURN count(*) AS disconnect_this_actors0_disconnect_Actor
             }
-            WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
-                \\"updateMovies_args_disconnect_actors0_where_Actor_this_disconnect_actors0param0\\": \\"Daniel\\",
+                \\"updateMovies_args_update_actors0_disconnect0_where_Actor_this_actors0_disconnect0param0\\": \\"Daniel\\",
                 \\"updateMovies\\": {
                     \\"args\\": {
-                        \\"disconnect\\": {
+                        \\"update\\": {
                             \\"actors\\": [
                                 {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"name_EQ\\": \\"Daniel\\"
+                                    \\"disconnect\\": [
+                                        {
+                                            \\"where\\": {
+                                                \\"node\\": {
+                                                    \\"name_EQ\\": \\"Daniel\\"
+                                                }
+                                            }
                                         }
-                                    }
+                                    ]
                                 }
                             ]
                         }
@@ -459,7 +467,10 @@ describe("Label in Node directive", () => {
     test("Delete Movies and actors with custom labels", async () => {
         const query = /* GraphQL */ `
             mutation {
-                deleteMovies(where: { id_EQ: 123 }, delete: { actors: { where: { node: { name_EQ: "Actor to delete" } } } }) {
+                deleteMovies(
+                    where: { id_EQ: 123 }
+                    delete: { actors: { where: { node: { name_EQ: "Actor to delete" } } } }
+                ) {
                     nodesDeleted
                 }
             }
