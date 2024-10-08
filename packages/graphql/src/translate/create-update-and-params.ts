@@ -343,6 +343,30 @@ export default function createUpdateAndParams({
                     }
 
                     if (update.connect) {
+                        if (relationField.interface) {
+                            if (!relationField.typeMeta.array) {
+                                const inStr = relationField.direction === "IN" ? "<-" : "-";
+                                const outStr = relationField.direction === "OUT" ? "->" : "-";
+
+                                const validatePredicates: string[] = [];
+                                refNodes.forEach((refNode) => {
+                                    const validateRelationshipExistence = `EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${refNode.name}))`;
+                                    validatePredicates.push(validateRelationshipExistence);
+                                });
+
+                                if (validatePredicates.length) {
+                                    subquery.push("WITH *");
+                                    subquery.push(
+                                        `WHERE apoc.util.validatePredicate(${validatePredicates.join(
+                                            " OR "
+                                        )},'Relationship field "%s.%s" cannot have more than one node linked',["${
+                                            relationField.connectionPrefix
+                                        }","${relationField.fieldName}"])`
+                                    );
+                                }
+                            }
+                        }
+
                         const connectAndParams = createConnectAndParams({
                             context,
                             callbackBucket,
@@ -400,6 +424,37 @@ export default function createUpdateAndParams({
                                 createNodeInput = {
                                     input: nodeFields,
                                 };
+                            }
+
+                            if (!relationField.typeMeta.array) {
+                                subquery.push("WITH *");
+
+                                const validatePredicateTemplate = (condition: string) =>
+                                    `WHERE apoc.util.validatePredicate(${condition},'Relationship field "%s.%s" cannot have more than one node linked',["${relationField.connectionPrefix}","${relationField.fieldName}"])`;
+
+                                const singleCardinalityValidationTemplate = (nodeName) =>
+                                    `EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${nodeName}))`;
+
+                                if (relationField.union && relationField.union.nodes) {
+                                    const validateRelationshipExistence = relationField.union.nodes.map(
+                                        singleCardinalityValidationTemplate
+                                    );
+                                    subquery.push(
+                                        validatePredicateTemplate(validateRelationshipExistence.join(" OR "))
+                                    );
+                                } else if (relationField.interface && relationField.interface.implementations) {
+                                    const validateRelationshipExistence = relationField.interface.implementations.map(
+                                        singleCardinalityValidationTemplate
+                                    );
+                                    subquery.push(
+                                        validatePredicateTemplate(validateRelationshipExistence.join(" OR "))
+                                    );
+                                } else {
+                                    const validateRelationshipExistence = singleCardinalityValidationTemplate(
+                                        refNode.name
+                                    );
+                                    subquery.push(validatePredicateTemplate(validateRelationshipExistence));
+                                }
                             }
 
                             const {
