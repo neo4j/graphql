@@ -19,13 +19,6 @@
 
 import { DEPRECATED } from "../constants";
 
-export const DEPRECATE_NOT = {
-    name: DEPRECATED,
-    args: {
-        reason: "Negation filters will be deprecated, use the NOT operator to achieve the same behavior",
-    },
-};
-
 export const DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS = {
     name: DEPRECATED,
     args: {
@@ -44,5 +37,12 @@ export const DEPRECATE_INVALID_AGGREGATION_FILTERS = {
     name: DEPRECATED,
     args: {
         reason: "Aggregation filters that are not relying on an aggregating function will be deprecated.",
+    },
+};
+
+export const DEPRECATE_OPTIONS_ARGUMENT = {
+    name: DEPRECATED,
+    args: {
+        reason: "Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.",
     },
 };

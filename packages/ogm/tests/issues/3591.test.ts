@@ -100,6 +100,9 @@ describe("issues/3591", () => {
 
             export type QueryUsersArgs = {
               where?: InputMaybe<UserWhere>;
+              limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              sort?: InputMaybe<Array<UserSort>>;
               options?: InputMaybe<UserOptions>;
             };
 
@@ -107,7 +110,7 @@ describe("issues/3591", () => {
               first?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               after?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               where?: InputMaybe<UserWhere>;
-              sort?: InputMaybe<Array<InputMaybe<UserSort>>>;
+              sort?: InputMaybe<Array<UserSort>>;
             };
 
             export type QueryUsersAggregateArgs = {
@@ -116,6 +119,9 @@ describe("issues/3591", () => {
 
             export type QueryCompaniesArgs = {
               where?: InputMaybe<CompanyWhere>;
+              limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              sort?: InputMaybe<Array<CompanySort>>;
               options?: InputMaybe<CompanyOptions>;
             };
 
@@ -123,7 +129,7 @@ describe("issues/3591", () => {
               first?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               after?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               where?: InputMaybe<CompanyWhere>;
-              sort?: InputMaybe<Array<InputMaybe<CompanySort>>>;
+              sort?: InputMaybe<Array<CompanySort>>;
             };
 
             export type QueryCompaniesAggregateArgs = {
@@ -132,6 +138,9 @@ describe("issues/3591", () => {
 
             export type QueryRestaurantsArgs = {
               where?: InputMaybe<RestaurantWhere>;
+              limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              sort?: InputMaybe<Array<RestaurantSort>>;
               options?: InputMaybe<RestaurantOptions>;
             };
 
@@ -139,7 +148,7 @@ describe("issues/3591", () => {
               first?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               after?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               where?: InputMaybe<RestaurantWhere>;
-              sort?: InputMaybe<Array<InputMaybe<RestaurantSort>>>;
+              sort?: InputMaybe<Array<RestaurantSort>>;
             };
 
             export type QueryRestaurantsAggregateArgs = {
@@ -369,6 +378,9 @@ describe("issues/3591", () => {
 
             export type UserCompanyArgs = {
               where?: InputMaybe<CompanyWhere>;
+              limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              sort?: InputMaybe<Array<CompanySort>>;
               options?: InputMaybe<CompanyOptions>;
               directed?: InputMaybe<Scalars[\\"Boolean\\"][\\"input\\"]>;
             };
@@ -388,6 +400,9 @@ describe("issues/3591", () => {
 
             export type UserFavoriteRestaurantsArgs = {
               where?: InputMaybe<RestaurantWhere>;
+              limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              sort?: InputMaybe<Array<RestaurantSort>>;
               options?: InputMaybe<RestaurantOptions>;
               directed?: InputMaybe<Scalars[\\"Boolean\\"][\\"input\\"]>;
             };
@@ -505,71 +520,31 @@ describe("issues/3591", () => {
               /** @deprecated Please use the explicit _EQ version */
               id?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               id_EQ?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              id_NOT?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               id_IN?: InputMaybe<Array<Scalars[\\"ID\\"][\\"input\\"]>>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              id_NOT_IN?: InputMaybe<Array<Scalars[\\"ID\\"][\\"input\\"]>>;
               id_CONTAINS?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               id_STARTS_WITH?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               id_ENDS_WITH?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              id_NOT_CONTAINS?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              id_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              id_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _EQ version */
               field1?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               field1_EQ?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              field1_NOT?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               field1_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"][\\"input\\"]>>>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              field1_NOT_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"][\\"input\\"]>>>;
               field1_CONTAINS?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               field1_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               field1_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              field1_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              field1_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              field1_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _EQ version */
               field2?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               field2_EQ?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              field2_NOT?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               field2_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"][\\"input\\"]>>>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              field2_NOT_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"][\\"input\\"]>>>;
               field2_CONTAINS?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               field2_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               field2_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              field2_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              field2_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              field2_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _EQ version */
               field3?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               field3_EQ?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              field3_NOT?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               field3_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"][\\"input\\"]>>>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              field3_NOT_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"][\\"input\\"]>>>;
               field3_CONTAINS?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               field3_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               field3_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              field3_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              field3_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              field3_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               OR?: InputMaybe<Array<CompanyWhere>>;
               AND?: InputMaybe<Array<CompanyWhere>>;
               NOT?: InputMaybe<CompanyWhere>;
@@ -603,20 +578,10 @@ describe("issues/3591", () => {
               /** @deprecated Please use the explicit _EQ version */
               name?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               name_EQ?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              name_NOT?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               name_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"][\\"input\\"]>>>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              name_NOT_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"][\\"input\\"]>>>;
               name_CONTAINS?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               name_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               name_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              name_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              name_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              name_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               OR?: InputMaybe<Array<RestaurantWhere>>;
               AND?: InputMaybe<Array<RestaurantWhere>>;
               NOT?: InputMaybe<RestaurantWhere>;
@@ -649,8 +614,6 @@ describe("issues/3591", () => {
               OR?: InputMaybe<Array<UserCompanyConnectionWhere>>;
               NOT?: InputMaybe<UserCompanyConnectionWhere>;
               node?: InputMaybe<CompanyWhere>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              node_NOT?: InputMaybe<CompanyWhere>;
             };
 
             export type UserCompanyCreateFieldInput = {
@@ -909,8 +872,6 @@ describe("issues/3591", () => {
               OR?: InputMaybe<Array<UserFavoriteRestaurantsConnectionWhere>>;
               NOT?: InputMaybe<UserFavoriteRestaurantsConnectionWhere>;
               node?: InputMaybe<RestaurantWhere>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              node_NOT?: InputMaybe<RestaurantWhere>;
             };
 
             export type UserFavoriteRestaurantsCreateFieldInput = {
@@ -1034,27 +995,15 @@ describe("issues/3591", () => {
               /** @deprecated Please use the explicit _EQ version */
               id?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               id_EQ?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              id_NOT?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               id_IN?: InputMaybe<Array<Scalars[\\"ID\\"][\\"input\\"]>>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              id_NOT_IN?: InputMaybe<Array<Scalars[\\"ID\\"][\\"input\\"]>>;
               id_CONTAINS?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               id_STARTS_WITH?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               id_ENDS_WITH?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              id_NOT_CONTAINS?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              id_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              id_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               OR?: InputMaybe<Array<UserWhere>>;
               AND?: InputMaybe<Array<UserWhere>>;
               NOT?: InputMaybe<UserWhere>;
               /** @deprecated Use \`company_SOME\` instead. */
               company?: InputMaybe<CompanyWhere>;
-              /** @deprecated Use \`company_NONE\` instead. */
-              company_NOT?: InputMaybe<CompanyWhere>;
               /** Return Users where all of the related Companies match this filter */
               company_ALL?: InputMaybe<CompanyWhere>;
               /** Return Users where none of the related Companies match this filter */
@@ -1065,8 +1014,6 @@ describe("issues/3591", () => {
               company_SOME?: InputMaybe<CompanyWhere>;
               /** @deprecated Use \`companyConnection_SOME\` instead. */
               companyConnection?: InputMaybe<UserCompanyConnectionWhere>;
-              /** @deprecated Use \`companyConnection_NONE\` instead. */
-              companyConnection_NOT?: InputMaybe<UserCompanyConnectionWhere>;
               /** Return Users where all of the related UserCompanyConnections match this filter */
               companyConnection_ALL?: InputMaybe<UserCompanyConnectionWhere>;
               /** Return Users where none of the related UserCompanyConnections match this filter */
@@ -1078,8 +1025,6 @@ describe("issues/3591", () => {
               companyAggregate?: InputMaybe<UserCompanyAggregateInput>;
               /** @deprecated Use \`favoriteRestaurants_SOME\` instead. */
               favoriteRestaurants?: InputMaybe<RestaurantWhere>;
-              /** @deprecated Use \`favoriteRestaurants_NONE\` instead. */
-              favoriteRestaurants_NOT?: InputMaybe<RestaurantWhere>;
               /** Return Users where all of the related Restaurants match this filter */
               favoriteRestaurants_ALL?: InputMaybe<RestaurantWhere>;
               /** Return Users where none of the related Restaurants match this filter */
@@ -1090,8 +1035,6 @@ describe("issues/3591", () => {
               favoriteRestaurants_SOME?: InputMaybe<RestaurantWhere>;
               /** @deprecated Use \`favoriteRestaurantsConnection_SOME\` instead. */
               favoriteRestaurantsConnection?: InputMaybe<UserFavoriteRestaurantsConnectionWhere>;
-              /** @deprecated Use \`favoriteRestaurantsConnection_NONE\` instead. */
-              favoriteRestaurantsConnection_NOT?: InputMaybe<UserFavoriteRestaurantsConnectionWhere>;
               /** Return Users where all of the related UserFavoriteRestaurantsConnections match this filter */
               favoriteRestaurantsConnection_ALL?: InputMaybe<UserFavoriteRestaurantsConnectionWhere>;
               /** Return Users where none of the related UserFavoriteRestaurantsConnections match this filter */

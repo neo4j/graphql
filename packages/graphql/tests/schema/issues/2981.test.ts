@@ -55,7 +55,7 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
             type Book {
               isbn: String!
               originalTitle: String!
-              translatedTitle(directed: Boolean = true, options: QueryOptions, where: BookTitleWhere): BookTitle
+              translatedTitle(directed: Boolean = true, limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: BookTitleWhere): BookTitle
               translatedTitleConnection(after: String, directed: Boolean = true, first: Int, where: BookTranslatedTitleConnectionWhere): BookTranslatedTitleConnection!
             }
 
@@ -129,7 +129,7 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
             }
 
             type BookTitle_EN {
-              book(directed: Boolean = true, options: BookOptions, where: BookWhere): Book!
+              book(directed: Boolean = true, limit: Int, offset: Int, options: BookOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [BookSort!], where: BookWhere): Book!
               bookAggregate(directed: Boolean = true, where: BookWhere): BookTitle_ENBookBookAggregationSelection
               bookConnection(after: String, directed: Boolean = true, first: Int, sort: [BookTitle_ENBookConnectionSort!], where: BookTitle_ENBookConnectionWhere): BookTitle_ENBookConnection!
               value: String!
@@ -186,7 +186,6 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               NOT: BookTitle_ENBookConnectionWhere
               OR: [BookTitle_ENBookConnectionWhere!]
               node: BookWhere
-              node_NOT: BookWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input BookTitle_ENBookCreateFieldInput {
@@ -356,23 +355,16 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               book: BookWhere
               bookAggregate: BookTitle_ENBookAggregateInput
               bookConnection: BookTitle_ENBookConnectionWhere
-              bookConnection_NOT: BookTitle_ENBookConnectionWhere
-              book_NOT: BookWhere
               value: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               value_CONTAINS: String
               value_ENDS_WITH: String
               value_EQ: String
               value_IN: [String!]
-              value_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              value_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              value_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              value_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              value_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               value_STARTS_WITH: String
             }
 
             type BookTitle_SV {
-              book(directed: Boolean = true, options: BookOptions, where: BookWhere): Book!
+              book(directed: Boolean = true, limit: Int, offset: Int, options: BookOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [BookSort!], where: BookWhere): Book!
               bookAggregate(directed: Boolean = true, where: BookWhere): BookTitle_SVBookBookAggregationSelection
               bookConnection(after: String, directed: Boolean = true, first: Int, sort: [BookTitle_SVBookConnectionSort!], where: BookTitle_SVBookConnectionWhere): BookTitle_SVBookConnection!
               value: String!
@@ -429,7 +421,6 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               NOT: BookTitle_SVBookConnectionWhere
               OR: [BookTitle_SVBookConnectionWhere!]
               node: BookWhere
-              node_NOT: BookWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input BookTitle_SVBookCreateFieldInput {
@@ -599,18 +590,11 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               book: BookWhere
               bookAggregate: BookTitle_SVBookAggregateInput
               bookConnection: BookTitle_SVBookConnectionWhere
-              bookConnection_NOT: BookTitle_SVBookConnectionWhere
-              book_NOT: BookWhere
               value: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               value_CONTAINS: String
               value_ENDS_WITH: String
               value_EQ: String
               value_IN: [String!]
-              value_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              value_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              value_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              value_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              value_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               value_STARTS_WITH: String
             }
 
@@ -624,7 +608,6 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               NOT: BookTranslatedTitleBookTitle_ENConnectionWhere
               OR: [BookTranslatedTitleBookTitle_ENConnectionWhere!]
               node: BookTitle_ENWhere
-              node_NOT: BookTitle_ENWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input BookTranslatedTitleBookTitle_ENCreateFieldInput {
@@ -669,7 +652,6 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               NOT: BookTranslatedTitleBookTitle_SVConnectionWhere
               OR: [BookTranslatedTitleBookTitle_SVConnectionWhere!]
               node: BookTitle_SVWhere
-              node_NOT: BookTitle_SVWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input BookTranslatedTitleBookTitle_SVCreateFieldInput {
@@ -760,27 +742,15 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               isbn_ENDS_WITH: String
               isbn_EQ: String
               isbn_IN: [String!]
-              isbn_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              isbn_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              isbn_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              isbn_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              isbn_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               isbn_STARTS_WITH: String
               originalTitle: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               originalTitle_CONTAINS: String
               originalTitle_ENDS_WITH: String
               originalTitle_EQ: String
               originalTitle_IN: [String!]
-              originalTitle_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              originalTitle_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              originalTitle_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              originalTitle_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              originalTitle_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               originalTitle_STARTS_WITH: String
               translatedTitle: BookTitleWhere
               translatedTitleConnection: BookTranslatedTitleConnectionWhere
-              translatedTitleConnection_NOT: BookTranslatedTitleConnectionWhere
-              translatedTitle_NOT: BookTitleWhere
             }
 
             type BooksConnection {
@@ -843,16 +813,16 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
             }
 
             type Query {
-              bookTitleEns(options: BookTitle_ENOptions, where: BookTitle_ENWhere): [BookTitle_EN!]!
+              bookTitleEns(limit: Int, offset: Int, options: BookTitle_ENOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [BookTitle_ENSort!], where: BookTitle_ENWhere): [BookTitle_EN!]!
               bookTitleEnsAggregate(where: BookTitle_ENWhere): BookTitle_ENAggregateSelection!
-              bookTitleEnsConnection(after: String, first: Int, sort: [BookTitle_ENSort], where: BookTitle_ENWhere): BookTitleEnsConnection!
-              bookTitleSvs(options: BookTitle_SVOptions, where: BookTitle_SVWhere): [BookTitle_SV!]!
+              bookTitleEnsConnection(after: String, first: Int, sort: [BookTitle_ENSort!], where: BookTitle_ENWhere): BookTitleEnsConnection!
+              bookTitleSvs(limit: Int, offset: Int, options: BookTitle_SVOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [BookTitle_SVSort!], where: BookTitle_SVWhere): [BookTitle_SV!]!
               bookTitleSvsAggregate(where: BookTitle_SVWhere): BookTitle_SVAggregateSelection!
-              bookTitleSvsConnection(after: String, first: Int, sort: [BookTitle_SVSort], where: BookTitle_SVWhere): BookTitleSvsConnection!
-              bookTitles(options: QueryOptions, where: BookTitleWhere): [BookTitle!]!
-              books(options: BookOptions, where: BookWhere): [Book!]!
+              bookTitleSvsConnection(after: String, first: Int, sort: [BookTitle_SVSort!], where: BookTitle_SVWhere): BookTitleSvsConnection!
+              bookTitles(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: BookTitleWhere): [BookTitle!]!
+              books(limit: Int, offset: Int, options: BookOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [BookSort!], where: BookWhere): [Book!]!
               booksAggregate(where: BookWhere): BookAggregateSelection!
-              booksConnection(after: String, first: Int, sort: [BookSort], where: BookWhere): BooksConnection!
+              booksConnection(after: String, first: Int, sort: [BookSort!], where: BookWhere): BooksConnection!
             }
 
             \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"

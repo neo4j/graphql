@@ -23,6 +23,7 @@ import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
 import { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { ConnectionSortArg, GraphQLOptionsArg, GraphQLSortArg, NestedGraphQLSortArg } from "../../../types";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
+import { asArray } from "../../../utils/utils";
 import { CypherScalarOperation } from "../ast/operations/CypherScalarOperation";
 import { Pagination } from "../ast/pagination/Pagination";
 import { CypherPropertySort } from "../ast/sort/CypherPropertySort";
@@ -45,7 +46,8 @@ export class SortAndPaginationFactory {
         context: Neo4jGraphQLTranslationContext,
         scoreVariable?: Cypher.Variable
     ): Sort[] {
-        return (options.sort || [])?.flatMap((s) => {
+        // SOFT_DEPRECATION: OPTIONS-ARGUMENT
+        return asArray(options.sort).flatMap((s) => {
             return this.createPropertySort({ optionArg: s, entity, context, scoreVariable });
         });
     }
@@ -143,7 +145,7 @@ export class SortAndPaginationFactory {
                     cypherAttributeField: attribute,
                 });
                 if (!(cypherOperation instanceof CypherScalarOperation)) {
-                    throw new Error("Transpile error: sorting is supported only for scalar properties");
+                    throw new Error("Transpile error: sorting is supported only for @cypher scalar properties");
                 }
                 return new CypherPropertySort({
                     direction: sortDir,

@@ -122,8 +122,8 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
 
     test("nested relationship filter", async () => {
         const query = /* GraphQL */ `
-            query Mandates($where: MandateWhere, $options: MandateOptions) {
-                mandates(options: $options, where: $where) {
+            query Mandates($where: MandateWhere, $sort: [MandateSort!], $limit: Int, $offset: Int) {
+                mandates(limit: $limit, offset: $offset, sort: $sort, where: $where) {
                     valuation {
                         estate {
                             uuid
@@ -134,7 +134,9 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
         `;
 
         const variableValues = {
-            options: {},
+            sort: null,
+            limit: null,
+            offset: null,
             where: {
                 valuation: {
                     estate: {
@@ -187,8 +189,8 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
 
     test("nested relationship filter with AND", async () => {
         const query = /* GraphQL */ `
-            query Mandates($where: MandateWhere, $options: MandateOptions) {
-                mandates(options: $options, where: $where) {
+            query Mandates($where: MandateWhere, $sort: [MandateSort!], $limit: Int, $offset: Int) {
+                mandates(limit: $limit, offset: $offset, sort: $sort, where: $where) {
                     valuation {
                         estate {
                             uuid
@@ -199,7 +201,9 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
         `;
 
         const variableValues = {
-            options: {},
+            sort: null,
+            limit: null,
+            offset: null,
             where: {
                 price_GTE: 0,
                 valuation: {
@@ -254,8 +258,8 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
 
     test("query should not contain skip or limit", async () => {
         const query = /* GraphQL */ `
-            query Mandates($where: MandateWhere, $options: MandateOptions) {
-                mandates(options: $options, where: $where) {
+            query Mandates($where: MandateWhere, $sort: [MandateSort!], $limit: Int, $offset: Int) {
+                mandates(limit: $limit, offset: $offset, sort: $sort, where: $where) {
                     valuation {
                         estate {
                             uuid
@@ -266,7 +270,9 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
         `;
 
         const variableValues = {
-            options: {},
+            sort: null,
+            limit: null,
+            offset: null,
             where: {
                 price_GTE: 0,
                 valuation: {
@@ -356,8 +362,8 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
 
     test("query should contain offset of 0 and limit of 20", async () => {
         const query = /* GraphQL */ `
-            query Mandates($where: MandateWhere, $options: MandateOptions) {
-                mandates(options: $options, where: $where) {
+            query Mandates($where: MandateWhere, $sort: [MandateSort!], $limit: Int, $offset: Int) {
+                mandates(limit: $limit, offset: $offset, sort: $sort, where: $where) {
                     valuation {
                         estate {
                             uuid
@@ -368,10 +374,9 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
         `;
 
         const variableValues = {
-            options: {
-                offset: 0,
-                limit: 20,
-            },
+            offset: 0,
+            limit: 20,
+            sort: null,
             where: {
                 price_GTE: 0,
                 valuation: {
@@ -472,8 +477,8 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
 
     test("query should contain offset of 20 and limit of 40", async () => {
         const query = /* GraphQL */ `
-            query Mandates($where: MandateWhere, $options: MandateOptions) {
-                mandates(options: $options, where: $where) {
+            query Mandates($where: MandateWhere, $sort: [MandateSort!], $limit: Int, $offset: Int) {
+                mandates(limit: $limit, offset: $offset, sort: $sort, where: $where) {
                     valuation {
                         estate {
                             uuid
@@ -484,10 +489,9 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
         `;
 
         const variableValues = {
-            options: {
-                offset: 20,
-                limit: 40,
-            },
+            offset: 20,
+            limit: 40,
+            sort: null,
             where: {
                 price_GTE: 0,
                 valuation: {

@@ -65,7 +65,7 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
     test("should sort elements by aliased field", async () => {
         const query = `#graphql
             query listProducts {
-                ${Product.plural}(options: { sort: { partNumber: DESC } }) {
+                ${Product.plural}(sort: { partNumber: DESC } ) {
                     id
                     partNumber
                     description
@@ -94,7 +94,7 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
         const query = `#graphql
             query listProducts {
                 ${Employee.plural} {
-                    products(options: { sort: { partNumber: DESC } }) {
+                    products(sort: { partNumber: DESC }) {
                         id
                         partNumber
                         description

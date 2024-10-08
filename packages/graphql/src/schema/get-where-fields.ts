@@ -22,7 +22,7 @@ import type { Directive } from "graphql-compose";
 import { DEPRECATED } from "../constants";
 import type { AttributeAdapter } from "../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { Neo4jFeaturesSettings } from "../types";
-import { DEPRECATE_EQUAL_FILTERS, DEPRECATE_NOT } from "./constants";
+import { DEPRECATE_EQUAL_FILTERS } from "./constants";
 import { shouldAddDeprecatedFields } from "./generation/utils";
 import { graphqlDirectivesToCompose } from "./to-compose";
 
@@ -87,12 +87,6 @@ export function getWhereFieldsForAttributes({
             directives: deprecatedDirectives,
         };
 
-        if (shouldAddDeprecatedFields(features, "negationFilters")) {
-            result[`${field.name}_NOT`] = {
-                type: field.getInputTypeNames().where.pretty,
-                directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
-            };
-        }
         // If the field is a boolean, skip it
         // This is done here because the previous additions are still added for boolean fields
         if (field.typeHelper.isBoolean()) {
@@ -106,12 +100,7 @@ export function getWhereFieldsForAttributes({
                 type: field.getInputTypeNames().where.type,
                 directives: deprecatedDirectives,
             };
-            if (shouldAddDeprecatedFields(features, "negationFilters")) {
-                result[`${field.name}_NOT_INCLUDES`] = {
-                    type: field.getInputTypeNames().where.type,
-                    directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
-                };
-            }
+
             continue;
         }
 
@@ -120,12 +109,7 @@ export function getWhereFieldsForAttributes({
             type: field.getFilterableInputTypeName(),
             directives: deprecatedDirectives,
         };
-        if (shouldAddDeprecatedFields(features, "negationFilters")) {
-            result[`${field.name}_NOT_IN`] = {
-                type: field.getFilterableInputTypeName(),
-                directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
-            };
-        }
+
         // If the field is a number or temporal, add the comparison operators
         if (field.isNumericalOrTemporal()) {
             ["_LT", "_LTE", "_GT", "_GTE"].forEach((comparator) => {
@@ -173,15 +157,6 @@ export function getWhereFieldsForAttributes({
             stringWhereOperators.forEach(({ comparator, typeName }) => {
                 result[`${field.name}${comparator}`] = { type: typeName, directives: deprecatedDirectives };
             });
-
-            if (shouldAddDeprecatedFields(features, "negationFilters")) {
-                ["_NOT_CONTAINS", "_NOT_STARTS_WITH", "_NOT_ENDS_WITH"].forEach((comparator) => {
-                    result[`${field.name}${comparator}`] = {
-                        type: field.getInputTypeNames().where.type,
-                        directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
-                    };
-                });
-            }
         }
     }
 

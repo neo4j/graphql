@@ -121,11 +121,6 @@ describe("Directive-preserve", () => {
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
             }
 
@@ -150,9 +145,9 @@ describe("Directive-preserve", () => {
             }
 
             type Query {
-              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -240,7 +235,7 @@ describe("Directive-preserve", () => {
             }
 
             type Genre {
-              movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+              movies(directed: Boolean = true, limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(directed: Boolean = true, where: MovieWhere): GenreMovieMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [GenreMoviesConnectionSort!], where: GenreMoviesConnectionWhere): GenreMoviesConnection!
               name: String
@@ -324,7 +319,6 @@ describe("Directive-preserve", () => {
               NOT: GenreMoviesConnectionWhere
               OR: [GenreMoviesConnectionWhere!]
               node: MovieWhere
-              node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input GenreMoviesCreateFieldInput {
@@ -491,7 +485,6 @@ describe("Directive-preserve", () => {
               Return Genres where none of the related GenreMoviesConnections match this filter
               \\"\\"\\"
               moviesConnection_NONE: GenreMoviesConnectionWhere
-              moviesConnection_NOT: GenreMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Genres where one of the related GenreMoviesConnections match this filter
               \\"\\"\\"
@@ -504,7 +497,6 @@ describe("Directive-preserve", () => {
               movies_ALL: MovieWhere
               \\"\\"\\"Return Genres where none of the related Movies match this filter\\"\\"\\"
               movies_NONE: MovieWhere
-              movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
               \\"\\"\\"Return Genres where one of the related Movies match this filter\\"\\"\\"
               movies_SINGLE: MovieWhere
               \\"\\"\\"Return Genres where some of the related Movies match this filter\\"\\"\\"
@@ -514,11 +506,6 @@ describe("Directive-preserve", () => {
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -536,7 +523,7 @@ describe("Directive-preserve", () => {
             }
 
             type Movie {
-              genres(directed: Boolean = true, options: GenreOptions, where: GenreWhere): [Genre!]! @deprecated(reason: \\"Do not use\\")
+              genres(directed: Boolean = true, limit: Int, offset: Int, options: GenreOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [GenreSort!], where: GenreWhere): [Genre!]! @deprecated(reason: \\"Do not use\\")
               genresAggregate(directed: Boolean = true, where: GenreWhere): MovieGenreGenresAggregationSelection @deprecated(reason: \\"Do not use\\")
               genresConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieGenresConnectionSort!], where: MovieGenresConnectionWhere): MovieGenresConnection! @deprecated(reason: \\"Do not use\\")
               imdbRating: Float
@@ -624,7 +611,6 @@ describe("Directive-preserve", () => {
               NOT: MovieGenresConnectionWhere
               OR: [MovieGenresConnectionWhere!]
               node: GenreWhere
-              node_NOT: GenreWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input MovieGenresCreateFieldInput {
@@ -751,7 +737,6 @@ describe("Directive-preserve", () => {
               Return Movies where none of the related MovieGenresConnections match this filter
               \\"\\"\\"
               genresConnection_NONE: MovieGenresConnectionWhere @deprecated(reason: \\"Do not use\\")
-              genresConnection_NOT: MovieGenresConnectionWhere @deprecated(reason: \\"Use \`genresConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Movies where one of the related MovieGenresConnections match this filter
               \\"\\"\\"
@@ -764,7 +749,6 @@ describe("Directive-preserve", () => {
               genres_ALL: GenreWhere @deprecated(reason: \\"Do not use\\")
               \\"\\"\\"Return Movies where none of the related Genres match this filter\\"\\"\\"
               genres_NONE: GenreWhere @deprecated(reason: \\"Do not use\\")
-              genres_NOT: GenreWhere @deprecated(reason: \\"Use \`genres_NONE\` instead.\\")
               \\"\\"\\"Return Movies where one of the related Genres match this filter\\"\\"\\"
               genres_SINGLE: GenreWhere @deprecated(reason: \\"Do not use\\")
               \\"\\"\\"Return Movies where some of the related Genres match this filter\\"\\"\\"
@@ -776,18 +760,11 @@ describe("Directive-preserve", () => {
               imdbRating_IN: [Float]
               imdbRating_LT: Float
               imdbRating_LTE: Float
-              imdbRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              imdbRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
               title_IN: [String]
-              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
               year: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
               year_EQ: Int
@@ -796,8 +773,6 @@ describe("Directive-preserve", () => {
               year_IN: [Int]
               year_LT: Int
               year_LTE: Int
-              year_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              year_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type MoviesConnection {
@@ -824,12 +799,12 @@ describe("Directive-preserve", () => {
             }
 
             type Query {
-              genres(options: GenreOptions, where: GenreWhere): [Genre!]!
+              genres(limit: Int, offset: Int, options: GenreOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [GenreSort!], where: GenreWhere): [Genre!]!
               genresAggregate(where: GenreWhere): GenreAggregateSelection!
-              genresConnection(after: String, first: Int, sort: [GenreSort], where: GenreWhere): GenresConnection!
-              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              genresConnection(after: String, first: Int, sort: [GenreSort!], where: GenreWhere): GenresConnection!
+              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -988,16 +963,11 @@ describe("Directive-preserve", () => {
               role_ENDS_WITH: String
               role_EQ: String
               role_IN: [String!]
-              role_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              role_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              role_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              role_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              role_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               role_STARTS_WITH: String
             }
 
             type Actor {
-              actedIn(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): [Production!]!
+              actedIn(directed: Boolean = true, limit: Int, offset: Int, options: ProductionOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ProductionSort!], where: ProductionWhere): [Production!]!
               actedInAggregate(directed: Boolean = true, where: ProductionWhere): ActorProductionActedInAggregationSelection
               actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
@@ -1038,9 +1008,7 @@ describe("Directive-preserve", () => {
               NOT: ActorActedInConnectionWhere
               OR: [ActorActedInConnectionWhere!]
               edge: ActedInWhere
-              edge_NOT: ActedInWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               node: ProductionWhere
-              node_NOT: ProductionWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input ActorActedInCreateFieldInput {
@@ -1205,7 +1173,6 @@ describe("Directive-preserve", () => {
               Return Actors where none of the related ActorActedInConnections match this filter
               \\"\\"\\"
               actedInConnection_NONE: ActorActedInConnectionWhere
-              actedInConnection_NOT: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Actors where one of the related ActorActedInConnections match this filter
               \\"\\"\\"
@@ -1218,7 +1185,6 @@ describe("Directive-preserve", () => {
               actedIn_ALL: ProductionWhere
               \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
               actedIn_NONE: ProductionWhere
-              actedIn_NOT: ProductionWhere @deprecated(reason: \\"Use \`actedIn_NONE\` instead.\\")
               \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
               actedIn_SINGLE: ProductionWhere
               \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
@@ -1228,11 +1194,6 @@ describe("Directive-preserve", () => {
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -1283,7 +1244,7 @@ describe("Directive-preserve", () => {
             }
 
             type Movie implements Production {
-              actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]! @deprecated(reason: \\"Do not use\\")
+              actors(directed: Boolean = true, limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]! @deprecated(reason: \\"Do not use\\")
               actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Do not use\\")
               actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection! @deprecated(reason: \\"Do not use\\")
               runtime: Int!
@@ -1453,7 +1414,6 @@ describe("Directive-preserve", () => {
               Return Movies where none of the related ProductionActorsConnections match this filter
               \\"\\"\\"
               actorsConnection_NONE: ProductionActorsConnectionWhere @deprecated(reason: \\"Do not use\\")
-              actorsConnection_NOT: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Movies where one of the related ProductionActorsConnections match this filter
               \\"\\"\\"
@@ -1466,7 +1426,6 @@ describe("Directive-preserve", () => {
               actors_ALL: ActorWhere @deprecated(reason: \\"Do not use\\")
               \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
               actors_NONE: ActorWhere @deprecated(reason: \\"Do not use\\")
-              actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
               \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
               actors_SINGLE: ActorWhere @deprecated(reason: \\"Do not use\\")
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
@@ -1478,18 +1437,11 @@ describe("Directive-preserve", () => {
               runtime_IN: [Int!]
               runtime_LT: Int
               runtime_LTE: Int
-              runtime_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              runtime_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
               title_IN: [String!]
-              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 
@@ -1520,7 +1472,7 @@ describe("Directive-preserve", () => {
             }
 
             interface Production {
-              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+              actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
               title: String!
             }
@@ -1564,9 +1516,7 @@ describe("Directive-preserve", () => {
               NOT: ProductionActorsConnectionWhere
               OR: [ProductionActorsConnectionWhere!]
               edge: ProductionActorsEdgeWhere
-              edge_NOT: ProductionActorsEdgeWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               node: ActorWhere
-              node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input ProductionActorsCreateFieldInput {
@@ -1734,7 +1684,7 @@ describe("Directive-preserve", () => {
               \\"\\"\\"
               Specify one or more ProductionSort objects to sort Productions by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [ProductionSort]
+              sort: [ProductionSort!]
             }
 
             \\"\\"\\"
@@ -1764,7 +1714,6 @@ describe("Directive-preserve", () => {
               Return Productions where none of the related ProductionActorsConnections match this filter
               \\"\\"\\"
               actorsConnection_NONE: ProductionActorsConnectionWhere
-              actorsConnection_NOT: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Productions where one of the related ProductionActorsConnections match this filter
               \\"\\"\\"
@@ -1777,7 +1726,6 @@ describe("Directive-preserve", () => {
               actors_ALL: ActorWhere
               \\"\\"\\"Return Productions where none of the related Actors match this filter\\"\\"\\"
               actors_NONE: ActorWhere
-              actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
               \\"\\"\\"Return Productions where one of the related Actors match this filter\\"\\"\\"
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Productions where some of the related Actors match this filter\\"\\"\\"
@@ -1787,11 +1735,6 @@ describe("Directive-preserve", () => {
               title_ENDS_WITH: String
               title_EQ: String
               title_IN: [String!]
-              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
               typename_IN: [ProductionImplementation!]
             }
@@ -1803,22 +1746,22 @@ describe("Directive-preserve", () => {
             }
 
             type Query {
-              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+              actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
-              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
+              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-              productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
+              moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+              productions(limit: Int, offset: Int, options: ProductionOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ProductionSort!], where: ProductionWhere): [Production!]!
               productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
-              productionsConnection(after: String, first: Int, sort: [ProductionSort], where: ProductionWhere): ProductionsConnection!
-              series(options: SeriesOptions, where: SeriesWhere): [Series!]!
+              productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
+              series(limit: Int, offset: Int, options: SeriesOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [SeriesSort!], where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
-              seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
+              seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
             }
 
             type Series implements Production {
-              actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+              actors(directed: Boolean = true, limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorsAggregate(directed: Boolean = true, where: ActorWhere): SeriesActorActorsAggregationSelection
               actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
               episodes: Int!
@@ -1994,7 +1937,6 @@ describe("Directive-preserve", () => {
               Return Series where none of the related ProductionActorsConnections match this filter
               \\"\\"\\"
               actorsConnection_NONE: ProductionActorsConnectionWhere
-              actorsConnection_NOT: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Series where one of the related ProductionActorsConnections match this filter
               \\"\\"\\"
@@ -2007,7 +1949,6 @@ describe("Directive-preserve", () => {
               actors_ALL: ActorWhere
               \\"\\"\\"Return Series where none of the related Actors match this filter\\"\\"\\"
               actors_NONE: ActorWhere
-              actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
               \\"\\"\\"Return Series where one of the related Actors match this filter\\"\\"\\"
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
@@ -2019,18 +1960,11 @@ describe("Directive-preserve", () => {
               episodes_IN: [Int!]
               episodes_LT: Int
               episodes_LTE: Int
-              episodes_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              episodes_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
               title_IN: [String!]
-              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 
@@ -2196,16 +2130,11 @@ describe("Directive-preserve", () => {
               role_ENDS_WITH: String
               role_EQ: String
               role_IN: [String!]
-              role_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              role_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              role_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              role_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              role_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               role_STARTS_WITH: String
             }
 
             type Actor {
-              actedIn(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): [Production!]!
+              actedIn(directed: Boolean = true, limit: Int, offset: Int, options: ProductionOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ProductionSort!], where: ProductionWhere): [Production!]!
               actedInAggregate(directed: Boolean = true, where: ProductionWhere): ActorProductionActedInAggregationSelection
               actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
@@ -2245,9 +2174,7 @@ describe("Directive-preserve", () => {
               NOT: ActorActedInConnectionWhere
               OR: [ActorActedInConnectionWhere!]
               edge: ActedInWhere
-              edge_NOT: ActedInWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               node: ProductionWhere
-              node_NOT: ProductionWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input ActorActedInCreateFieldInput {
@@ -2410,7 +2337,6 @@ describe("Directive-preserve", () => {
               Return Actors where none of the related ActorActedInConnections match this filter
               \\"\\"\\"
               actedInConnection_NONE: ActorActedInConnectionWhere
-              actedInConnection_NOT: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Actors where one of the related ActorActedInConnections match this filter
               \\"\\"\\"
@@ -2423,7 +2349,6 @@ describe("Directive-preserve", () => {
               actedIn_ALL: ProductionWhere
               \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
               actedIn_NONE: ProductionWhere
-              actedIn_NOT: ProductionWhere @deprecated(reason: \\"Use \`actedIn_NONE\` instead.\\")
               \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
               actedIn_SINGLE: ProductionWhere
               \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
@@ -2433,11 +2358,6 @@ describe("Directive-preserve", () => {
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -2488,7 +2408,7 @@ describe("Directive-preserve", () => {
             }
 
             type Movie implements Production {
-              actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]! @deprecated(reason: \\"Do not use\\")
+              actors(directed: Boolean = true, limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]! @deprecated(reason: \\"Do not use\\")
               actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Do not use\\")
               actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection! @deprecated(reason: \\"Do not use\\")
               runtime: Int!
@@ -2548,9 +2468,7 @@ describe("Directive-preserve", () => {
               NOT: MovieActorsConnectionWhere
               OR: [MovieActorsConnectionWhere!]
               edge: ActedInWhere
-              edge_NOT: ActedInWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               node: ActorWhere
-              node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input MovieActorsCreateFieldInput {
@@ -2695,7 +2613,6 @@ describe("Directive-preserve", () => {
               Return Movies where none of the related MovieActorsConnections match this filter
               \\"\\"\\"
               actorsConnection_NONE: MovieActorsConnectionWhere @deprecated(reason: \\"Do not use\\")
-              actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Movies where one of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -2708,7 +2625,6 @@ describe("Directive-preserve", () => {
               actors_ALL: ActorWhere @deprecated(reason: \\"Do not use\\")
               \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
               actors_NONE: ActorWhere @deprecated(reason: \\"Do not use\\")
-              actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
               \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
               actors_SINGLE: ActorWhere @deprecated(reason: \\"Do not use\\")
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
@@ -2720,18 +2636,11 @@ describe("Directive-preserve", () => {
               runtime_IN: [Int!]
               runtime_LT: Int
               runtime_LTE: Int
-              runtime_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              runtime_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
               title_IN: [String!]
-              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 
@@ -2796,7 +2705,7 @@ describe("Directive-preserve", () => {
               \\"\\"\\"
               Specify one or more ProductionSort objects to sort Productions by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [ProductionSort]
+              sort: [ProductionSort!]
             }
 
             \\"\\"\\"
@@ -2819,11 +2728,6 @@ describe("Directive-preserve", () => {
               title_ENDS_WITH: String
               title_EQ: String
               title_IN: [String!]
-              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
               typename_IN: [ProductionImplementation!]
             }
@@ -2835,22 +2739,22 @@ describe("Directive-preserve", () => {
             }
 
             type Query {
-              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+              actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
-              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
+              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-              productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
+              moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+              productions(limit: Int, offset: Int, options: ProductionOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ProductionSort!], where: ProductionWhere): [Production!]!
               productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
-              productionsConnection(after: String, first: Int, sort: [ProductionSort], where: ProductionWhere): ProductionsConnection!
-              series(options: SeriesOptions, where: SeriesWhere): [Series!]!
+              productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
+              series(limit: Int, offset: Int, options: SeriesOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [SeriesSort!], where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
-              seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
+              seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
             }
 
             type Series implements Production {
-              actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+              actors(directed: Boolean = true, limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorsAggregate(directed: Boolean = true, where: ActorWhere): SeriesActorActorsAggregationSelection
               actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [SeriesActorsConnectionSort!], where: SeriesActorsConnectionWhere): SeriesActorsConnection!
               episodes: Int!
@@ -2910,9 +2814,7 @@ describe("Directive-preserve", () => {
               NOT: SeriesActorsConnectionWhere
               OR: [SeriesActorsConnectionWhere!]
               edge: ActedInWhere
-              edge_NOT: ActedInWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               node: ActorWhere
-              node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input SeriesActorsCreateFieldInput {
@@ -3063,7 +2965,6 @@ describe("Directive-preserve", () => {
               Return Series where none of the related SeriesActorsConnections match this filter
               \\"\\"\\"
               actorsConnection_NONE: SeriesActorsConnectionWhere
-              actorsConnection_NOT: SeriesActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Series where one of the related SeriesActorsConnections match this filter
               \\"\\"\\"
@@ -3076,7 +2977,6 @@ describe("Directive-preserve", () => {
               actors_ALL: ActorWhere
               \\"\\"\\"Return Series where none of the related Actors match this filter\\"\\"\\"
               actors_NONE: ActorWhere
-              actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
               \\"\\"\\"Return Series where one of the related Actors match this filter\\"\\"\\"
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
@@ -3088,18 +2988,11 @@ describe("Directive-preserve", () => {
               episodes_IN: [Int!]
               episodes_LT: Int
               episodes_LTE: Int
-              episodes_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              episodes_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
               title_IN: [String!]
-              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 
@@ -3253,16 +3146,11 @@ describe("Directive-preserve", () => {
               role_ENDS_WITH: String
               role_EQ: String
               role_IN: [String!]
-              role_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              role_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              role_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              role_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              role_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               role_STARTS_WITH: String
             }
 
             type Actor {
-              actedIn(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): [Production!]!
+              actedIn(directed: Boolean = true, limit: Int, offset: Int, options: ProductionOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ProductionSort!], where: ProductionWhere): [Production!]!
               actedInAggregate(directed: Boolean = true, where: ProductionWhere): ActorProductionActedInAggregationSelection
               actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
@@ -3302,9 +3190,7 @@ describe("Directive-preserve", () => {
               NOT: ActorActedInConnectionWhere
               OR: [ActorActedInConnectionWhere!]
               edge: ActedInWhere
-              edge_NOT: ActedInWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               node: ProductionWhere
-              node_NOT: ProductionWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input ActorActedInCreateFieldInput {
@@ -3467,7 +3353,6 @@ describe("Directive-preserve", () => {
               Return Actors where none of the related ActorActedInConnections match this filter
               \\"\\"\\"
               actedInConnection_NONE: ActorActedInConnectionWhere
-              actedInConnection_NOT: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Actors where one of the related ActorActedInConnections match this filter
               \\"\\"\\"
@@ -3480,7 +3365,6 @@ describe("Directive-preserve", () => {
               actedIn_ALL: ProductionWhere
               \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
               actedIn_NONE: ProductionWhere
-              actedIn_NOT: ProductionWhere @deprecated(reason: \\"Use \`actedIn_NONE\` instead.\\")
               \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
               actedIn_SINGLE: ProductionWhere
               \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
@@ -3490,11 +3374,6 @@ describe("Directive-preserve", () => {
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -3545,7 +3424,7 @@ describe("Directive-preserve", () => {
             }
 
             type Movie implements Production {
-              actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+              actors(directed: Boolean = true, limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               runtime: Int!
@@ -3605,9 +3484,7 @@ describe("Directive-preserve", () => {
               NOT: MovieActorsConnectionWhere
               OR: [MovieActorsConnectionWhere!]
               edge: ActedInWhere
-              edge_NOT: ActedInWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               node: ActorWhere
-              node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input MovieActorsCreateFieldInput {
@@ -3752,7 +3629,6 @@ describe("Directive-preserve", () => {
               Return Movies where none of the related MovieActorsConnections match this filter
               \\"\\"\\"
               actorsConnection_NONE: MovieActorsConnectionWhere
-              actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Movies where one of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -3765,7 +3641,6 @@ describe("Directive-preserve", () => {
               actors_ALL: ActorWhere
               \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
               actors_NONE: ActorWhere
-              actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
               \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
@@ -3777,18 +3652,11 @@ describe("Directive-preserve", () => {
               runtime_IN: [Int!]
               runtime_LT: Int
               runtime_LTE: Int
-              runtime_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              runtime_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
               title_IN: [String!]
-              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 
@@ -3853,7 +3721,7 @@ describe("Directive-preserve", () => {
               \\"\\"\\"
               Specify one or more ProductionSort objects to sort Productions by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [ProductionSort]
+              sort: [ProductionSort!]
             }
 
             \\"\\"\\"
@@ -3876,11 +3744,6 @@ describe("Directive-preserve", () => {
               title_ENDS_WITH: String
               title_EQ: String
               title_IN: [String!]
-              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
               typename_IN: [ProductionImplementation!]
             }
@@ -3892,22 +3755,22 @@ describe("Directive-preserve", () => {
             }
 
             type Query {
-              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+              actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
-              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
+              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-              productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
+              moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+              productions(limit: Int, offset: Int, options: ProductionOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ProductionSort!], where: ProductionWhere): [Production!]!
               productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
-              productionsConnection(after: String, first: Int, sort: [ProductionSort], where: ProductionWhere): ProductionsConnection!
-              series(options: SeriesOptions, where: SeriesWhere): [Series!]!
+              productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
+              series(limit: Int, offset: Int, options: SeriesOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [SeriesSort!], where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
-              seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
+              seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
             }
 
             type Series implements Production {
-              actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+              actors(directed: Boolean = true, limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorsAggregate(directed: Boolean = true, where: ActorWhere): SeriesActorActorsAggregationSelection
               actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [SeriesActorsConnectionSort!], where: SeriesActorsConnectionWhere): SeriesActorsConnection!
               episodes: Int!
@@ -3967,9 +3830,7 @@ describe("Directive-preserve", () => {
               NOT: SeriesActorsConnectionWhere
               OR: [SeriesActorsConnectionWhere!]
               edge: ActedInWhere
-              edge_NOT: ActedInWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               node: ActorWhere
-              node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input SeriesActorsCreateFieldInput {
@@ -4120,7 +3981,6 @@ describe("Directive-preserve", () => {
               Return Series where none of the related SeriesActorsConnections match this filter
               \\"\\"\\"
               actorsConnection_NONE: SeriesActorsConnectionWhere
-              actorsConnection_NOT: SeriesActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Series where one of the related SeriesActorsConnections match this filter
               \\"\\"\\"
@@ -4133,7 +3993,6 @@ describe("Directive-preserve", () => {
               actors_ALL: ActorWhere
               \\"\\"\\"Return Series where none of the related Actors match this filter\\"\\"\\"
               actors_NONE: ActorWhere
-              actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
               \\"\\"\\"Return Series where one of the related Actors match this filter\\"\\"\\"
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
@@ -4145,18 +4004,11 @@ describe("Directive-preserve", () => {
               episodes_IN: [Int!]
               episodes_LT: Int
               episodes_LTE: Int
-              episodes_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              episodes_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
               title_IN: [String!]
-              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 
@@ -4232,7 +4084,7 @@ describe("Directive-preserve", () => {
             }
 
             type Blog {
-              posts(directed: Boolean = true, options: PostOptions, where: PostWhere): [Post!]!
+              posts(directed: Boolean = true, limit: Int, offset: Int, options: PostOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PostSort!], where: PostWhere): [Post!]!
               postsAggregate(directed: Boolean = true, where: PostWhere): BlogPostPostsAggregationSelection
               postsConnection(after: String, directed: Boolean = true, first: Int, sort: [BlogPostsConnectionSort!], where: BlogPostsConnectionWhere): BlogPostsConnection!
               title: String
@@ -4322,7 +4174,6 @@ describe("Directive-preserve", () => {
               NOT: BlogPostsConnectionWhere
               OR: [BlogPostsConnectionWhere!]
               node: PostWhere
-              node_NOT: PostWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input BlogPostsCreateFieldInput {
@@ -4428,7 +4279,6 @@ describe("Directive-preserve", () => {
               Return Blogs where none of the related BlogPostsConnections match this filter
               \\"\\"\\"
               postsConnection_NONE: BlogPostsConnectionWhere
-              postsConnection_NOT: BlogPostsConnectionWhere @deprecated(reason: \\"Use \`postsConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Blogs where one of the related BlogPostsConnections match this filter
               \\"\\"\\"
@@ -4441,7 +4291,6 @@ describe("Directive-preserve", () => {
               posts_ALL: PostWhere
               \\"\\"\\"Return Blogs where none of the related Posts match this filter\\"\\"\\"
               posts_NONE: PostWhere
-              posts_NOT: PostWhere @deprecated(reason: \\"Use \`posts_NONE\` instead.\\")
               \\"\\"\\"Return Blogs where one of the related Posts match this filter\\"\\"\\"
               posts_SINGLE: PostWhere
               \\"\\"\\"Return Blogs where some of the related Posts match this filter\\"\\"\\"
@@ -4451,11 +4300,6 @@ describe("Directive-preserve", () => {
               title_ENDS_WITH: String
               title_EQ: String
               title_IN: [String]
-              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 
@@ -4560,7 +4404,7 @@ describe("Directive-preserve", () => {
             Fields to sort Posts by. The order in which sorts are applied is not guaranteed when specifying many fields in one PostSort object.
             \\"\\"\\"
             input PostSort {
-              content: SortDirection @deprecated(reason: \\"Do not use post.content\\")
+              content: SortDirection
             }
 
             input PostUpdateInput {
@@ -4576,11 +4420,6 @@ describe("Directive-preserve", () => {
               content_ENDS_WITH: String @deprecated(reason: \\"Do not use post.content\\")
               content_EQ: String @deprecated(reason: \\"Do not use post.content\\")
               content_IN: [String] @deprecated(reason: \\"Do not use post.content\\")
-              content_NOT: String @deprecated(reason: \\"Do not use post.content\\")
-              content_NOT_CONTAINS: String @deprecated(reason: \\"Do not use post.content\\")
-              content_NOT_ENDS_WITH: String @deprecated(reason: \\"Do not use post.content\\")
-              content_NOT_IN: [String] @deprecated(reason: \\"Do not use post.content\\")
-              content_NOT_STARTS_WITH: String @deprecated(reason: \\"Do not use post.content\\")
               content_STARTS_WITH: String @deprecated(reason: \\"Do not use post.content\\")
             }
 
@@ -4591,16 +4430,16 @@ describe("Directive-preserve", () => {
             }
 
             type Query {
-              blogs(options: BlogOptions, where: BlogWhere): [Blog!]!
+              blogs(limit: Int, offset: Int, options: BlogOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [BlogSort!], where: BlogWhere): [Blog!]!
               blogsAggregate(where: BlogWhere): BlogAggregateSelection!
-              blogsConnection(after: String, first: Int, sort: [BlogSort], where: BlogWhere): BlogsConnection!
-              contents(options: QueryOptions, where: ContentWhere): [Content!]!
-              posts(options: PostOptions, where: PostWhere): [Post!]!
+              blogsConnection(after: String, first: Int, sort: [BlogSort!], where: BlogWhere): BlogsConnection!
+              contents(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: ContentWhere): [Content!]!
+              posts(limit: Int, offset: Int, options: PostOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PostSort!], where: PostWhere): [Post!]!
               postsAggregate(where: PostWhere): PostAggregateSelection!
-              postsConnection(after: String, first: Int, sort: [PostSort], where: PostWhere): PostsConnection!
-              users(options: UserOptions, where: UserWhere): [User!]!
+              postsConnection(after: String, first: Int, sort: [PostSort!], where: PostWhere): PostsConnection!
+              users(limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
-              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
+              usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
             \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
@@ -4649,7 +4488,7 @@ describe("Directive-preserve", () => {
             }
 
             type User {
-              content(directed: Boolean = true, options: QueryOptions, where: ContentWhere): [Content!]! @deprecated(reason: \\"Do not use user.content\\")
+              content(directed: Boolean = true, limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: ContentWhere): [Content!]! @deprecated(reason: \\"Do not use user.content\\")
               contentConnection(after: String, directed: Boolean = true, first: Int, where: UserContentConnectionWhere): UserContentConnection! @deprecated(reason: \\"Do not use user.content\\")
               name: String
             }
@@ -4669,7 +4508,6 @@ describe("Directive-preserve", () => {
               NOT: UserContentBlogConnectionWhere
               OR: [UserContentBlogConnectionWhere!]
               node: BlogWhere
-              node_NOT: BlogWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input UserContentBlogCreateFieldInput {
@@ -4734,7 +4572,6 @@ describe("Directive-preserve", () => {
               NOT: UserContentPostConnectionWhere
               OR: [UserContentPostConnectionWhere!]
               node: PostWhere
-              node_NOT: PostWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input UserContentPostCreateFieldInput {
@@ -4826,7 +4663,6 @@ describe("Directive-preserve", () => {
               Return Users where none of the related UserContentConnections match this filter
               \\"\\"\\"
               contentConnection_NONE: UserContentConnectionWhere @deprecated(reason: \\"Do not use user.content\\")
-              contentConnection_NOT: UserContentConnectionWhere @deprecated(reason: \\"Use \`contentConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Users where one of the related UserContentConnections match this filter
               \\"\\"\\"
@@ -4839,7 +4675,6 @@ describe("Directive-preserve", () => {
               content_ALL: ContentWhere @deprecated(reason: \\"Do not use user.content\\")
               \\"\\"\\"Return Users where none of the related Contents match this filter\\"\\"\\"
               content_NONE: ContentWhere @deprecated(reason: \\"Do not use user.content\\")
-              content_NOT: ContentWhere @deprecated(reason: \\"Use \`content_NONE\` instead.\\")
               \\"\\"\\"Return Users where one of the related Contents match this filter\\"\\"\\"
               content_SINGLE: ContentWhere @deprecated(reason: \\"Do not use user.content\\")
               \\"\\"\\"Return Users where some of the related Contents match this filter\\"\\"\\"
@@ -4849,11 +4684,6 @@ describe("Directive-preserve", () => {
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 

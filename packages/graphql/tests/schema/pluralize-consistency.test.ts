@@ -89,12 +89,12 @@ describe("Pluralize consistency", () => {
             }
 
             type Query {
-              superFriends(options: super_friendOptions, where: super_friendWhere): [super_friend!]!
+              superFriends(limit: Int, offset: Int, options: super_friendOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [super_friendSort!], where: super_friendWhere): [super_friend!]!
               superFriendsAggregate(where: super_friendWhere): super_friendAggregateSelection!
-              superFriendsConnection(after: String, first: Int, sort: [super_friendSort], where: super_friendWhere): SuperFriendsConnection!
-              superUsers(options: super_userOptions, where: super_userWhere): [super_user!]!
+              superFriendsConnection(after: String, first: Int, sort: [super_friendSort!], where: super_friendWhere): SuperFriendsConnection!
+              superUsers(limit: Int, offset: Int, options: super_userOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [super_userSort!], where: super_userWhere): [super_user!]!
               superUsersAggregate(where: super_userWhere): super_userAggregateSelection!
-              superUsersConnection(after: String, first: Int, sort: [super_userSort], where: super_userWhere): SuperUsersConnection!
+              superUsersConnection(after: String, first: Int, sort: [super_userSort!], where: super_userWhere): SuperUsersConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -194,16 +194,11 @@ describe("Pluralize consistency", () => {
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
             type super_user {
-              my_friend(directed: Boolean = true, options: super_friendOptions, where: super_friendWhere): [super_friend!]!
+              my_friend(directed: Boolean = true, limit: Int, offset: Int, options: super_friendOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [super_friendSort!], where: super_friendWhere): [super_friend!]!
               my_friendAggregate(directed: Boolean = true, where: super_friendWhere): super_usersuper_friendMy_friendAggregationSelection
               my_friendConnection(after: String, directed: Boolean = true, first: Int, sort: [super_userMy_friendConnectionSort!], where: super_userMy_friendConnectionWhere): super_userMy_friendConnection!
               name: String!
@@ -263,7 +258,6 @@ describe("Pluralize consistency", () => {
               NOT: super_userMy_friendConnectionWhere
               OR: [super_userMy_friendConnectionWhere!]
               node: super_friendWhere
-              node_NOT: super_friendWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input super_userMy_friendCreateFieldInput {
@@ -378,7 +372,6 @@ describe("Pluralize consistency", () => {
               Return super_users where none of the related super_userMy_friendConnections match this filter
               \\"\\"\\"
               my_friendConnection_NONE: super_userMy_friendConnectionWhere
-              my_friendConnection_NOT: super_userMy_friendConnectionWhere @deprecated(reason: \\"Use \`my_friendConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return super_users where one of the related super_userMy_friendConnections match this filter
               \\"\\"\\"
@@ -395,7 +388,6 @@ describe("Pluralize consistency", () => {
               Return super_users where none of the related super_friends match this filter
               \\"\\"\\"
               my_friend_NONE: super_friendWhere
-              my_friend_NOT: super_friendWhere @deprecated(reason: \\"Use \`my_friend_NONE\` instead.\\")
               \\"\\"\\"
               Return super_users where one of the related super_friends match this filter
               \\"\\"\\"
@@ -409,11 +401,6 @@ describe("Pluralize consistency", () => {
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 

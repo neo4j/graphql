@@ -62,28 +62,5 @@ describe("Cypher Arrays", () => {
         `);
     });
 
-    test("WHERE NOT INCLUDES", async () => {
-        const query = /* GraphQL */ `
-            {
-                movies(where: { ratings_NOT_INCLUDES: 4.0 }) {
-                    title
-                    ratings
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE NOT ($param0 IN this.ratings)
-            RETURN this { .title, .ratings } AS this"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": 4
-            }"
-        `);
-    });
+   
 });

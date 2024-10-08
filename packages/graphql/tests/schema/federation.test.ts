@@ -162,7 +162,6 @@ describe("Apollo Federation", () => {
               NOT: PostAuthorConnectionWhere
               OR: [PostAuthorConnectionWhere!]
               node: UserWhere
-              node_NOT: UserWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input PostAuthorCreateFieldInput {
@@ -306,18 +305,11 @@ describe("Apollo Federation", () => {
               author: UserWhere
               authorAggregate: PostAuthorAggregateInput
               authorConnection: PostAuthorConnectionWhere
-              authorConnection_NOT: PostAuthorConnectionWhere
-              author_NOT: UserWhere
               content: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               content_CONTAINS: String
               content_ENDS_WITH: String
               content_EQ: String
               content_IN: [String!]
-              content_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              content_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              content_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              content_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              content_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               content_STARTS_WITH: String
             }
 
@@ -329,12 +321,12 @@ describe("Apollo Federation", () => {
 
             type Query {
               _service: _Service!
-              posts(options: PostOptions, where: PostWhere): [Post!]!
+              posts(limit: Int, offset: Int, options: PostOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PostSort!], where: PostWhere): [Post!]!
               postsAggregate(where: PostWhere): PostAggregateSelection!
-              postsConnection(after: String, first: Int, sort: [PostSort], where: PostWhere): PostsConnection!
-              users(options: UserOptions, where: UserWhere): [User!]! @shareable
+              postsConnection(after: String, first: Int, sort: [PostSort!], where: PostWhere): PostsConnection!
+              users(limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): [User!]! @shareable
               usersAggregate(where: UserWhere): UserAggregateSelection! @shareable
-              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection! @shareable
+              usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection! @shareable
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -373,7 +365,7 @@ describe("Apollo Federation", () => {
 
             type User @shareable {
               name: String!
-              posts(directed: Boolean = true, options: PostOptions, where: PostWhere): [Post!]!
+              posts(directed: Boolean = true, limit: Int, offset: Int, options: PostOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PostSort!], where: PostWhere): [Post!]!
               postsAggregate(directed: Boolean = true, where: PostWhere): UserPostPostsAggregationSelection
               postsConnection(after: String, directed: Boolean = true, first: Int, sort: [UserPostsConnectionSort!], where: UserPostsConnectionWhere): UserPostsConnection!
             }
@@ -463,7 +455,6 @@ describe("Apollo Federation", () => {
               NOT: UserPostsConnectionWhere
               OR: [UserPostsConnectionWhere!]
               node: PostWhere
-              node_NOT: PostWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input UserPostsCreateFieldInput {
@@ -565,11 +556,6 @@ describe("Apollo Federation", () => {
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
               posts: PostWhere @deprecated(reason: \\"Use \`posts_SOME\` instead.\\")
               postsAggregate: UserPostsAggregateInput
@@ -582,7 +568,6 @@ describe("Apollo Federation", () => {
               Return Users where none of the related UserPostsConnections match this filter
               \\"\\"\\"
               postsConnection_NONE: UserPostsConnectionWhere
-              postsConnection_NOT: UserPostsConnectionWhere @deprecated(reason: \\"Use \`postsConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Users where one of the related UserPostsConnections match this filter
               \\"\\"\\"
@@ -595,7 +580,6 @@ describe("Apollo Federation", () => {
               posts_ALL: PostWhere
               \\"\\"\\"Return Users where none of the related Posts match this filter\\"\\"\\"
               posts_NONE: PostWhere
-              posts_NOT: PostWhere @deprecated(reason: \\"Use \`posts_NONE\` instead.\\")
               \\"\\"\\"Return Users where one of the related Posts match this filter\\"\\"\\"
               posts_SINGLE: PostWhere
               \\"\\"\\"Return Users where some of the related Posts match this filter\\"\\"\\"
@@ -768,7 +752,6 @@ describe("Apollo Federation", () => {
               NOT: PostAuthorConnectionWhere
               OR: [PostAuthorConnectionWhere!]
               node: UserWhere
-              node_NOT: UserWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input PostAuthorCreateFieldInput {
@@ -898,18 +881,11 @@ describe("Apollo Federation", () => {
               author: UserWhere
               authorAggregate: PostAuthorAggregateInput
               authorConnection: PostAuthorConnectionWhere
-              authorConnection_NOT: PostAuthorConnectionWhere
-              author_NOT: UserWhere
               content: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               content_CONTAINS: String
               content_ENDS_WITH: String
               content_EQ: String
               content_IN: [String!]
-              content_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              content_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              content_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              content_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              content_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               content_STARTS_WITH: String
             }
 
@@ -922,12 +898,12 @@ describe("Apollo Federation", () => {
             type Query {
               _entities(representations: [_Any!]!): [_Entity]!
               _service: _Service!
-              posts(options: PostOptions, where: PostWhere): [Post!]!
+              posts(limit: Int, offset: Int, options: PostOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PostSort!], where: PostWhere): [Post!]!
               postsAggregate(where: PostWhere): PostAggregateSelection!
-              postsConnection(after: String, first: Int, sort: [PostSort], where: PostWhere): PostsConnection!
-              users(options: UserOptions, where: UserWhere): [User!]!
+              postsConnection(after: String, first: Int, sort: [PostSort!], where: PostWhere): PostsConnection!
+              users(limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
-              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
+              usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -1015,11 +991,6 @@ describe("Apollo Federation", () => {
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 

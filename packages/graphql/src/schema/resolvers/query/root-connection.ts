@@ -116,7 +116,7 @@ export function rootConnectionResolver({
             first: GraphQLInt,
             after: GraphQLString,
             where: entityAdapter.operations.whereInputTypeName,
-            ...(sortArg ? { sort: sortArg.List } : {}),
+            ...(sortArg ? { sort: sortArg.NonNull.List } : {}),
             ...(entityAdapter.annotations.fulltext
                 ? {
                       fulltext: {

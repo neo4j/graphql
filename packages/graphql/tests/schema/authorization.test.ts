@@ -98,7 +98,7 @@ describe("Authorization", () => {
             }
 
             type Post {
-              author(directed: Boolean = true, options: UserOptions, where: UserWhere): User!
+              author(directed: Boolean = true, limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): User!
               authorAggregate(directed: Boolean = true, where: UserWhere): PostUserAuthorAggregationSelection
               authorConnection(after: String, directed: Boolean = true, first: Int, sort: [PostAuthorConnectionSort!], where: PostAuthorConnectionWhere): PostAuthorConnection!
               id: ID!
@@ -147,7 +147,6 @@ describe("Authorization", () => {
               NOT: PostAuthorConnectionWhere
               OR: [PostAuthorConnectionWhere!]
               node: UserWhere
-              node_NOT: UserWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input PostAuthorCreateFieldInput {
@@ -284,29 +283,17 @@ describe("Authorization", () => {
               author: UserWhere
               authorAggregate: PostAuthorAggregateInput
               authorConnection: PostAuthorConnectionWhere
-              authorConnection_NOT: PostAuthorConnectionWhere
-              author_NOT: UserWhere
               id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID!]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -317,12 +304,12 @@ describe("Authorization", () => {
             }
 
             type Query {
-              posts(options: PostOptions, where: PostWhere): [Post!]!
+              posts(limit: Int, offset: Int, options: PostOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PostSort!], where: PostWhere): [Post!]!
               postsAggregate(where: PostWhere): PostAggregateSelection!
-              postsConnection(after: String, first: Int, sort: [PostSort], where: PostWhere): PostsConnection!
-              users(options: UserOptions, where: UserWhere): [User!]!
+              postsConnection(after: String, first: Int, sort: [PostSort!], where: PostWhere): PostsConnection!
+              users(limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
-              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
+              usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -362,7 +349,7 @@ describe("Authorization", () => {
             type User {
               id: ID!
               name: String!
-              posts(directed: Boolean = true, options: UserOptions, where: UserWhere): [User!]!
+              posts(directed: Boolean = true, limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): [User!]!
               postsAggregate(directed: Boolean = true, where: UserWhere): UserUserPostsAggregationSelection
               postsConnection(after: String, directed: Boolean = true, first: Int, sort: [UserPostsConnectionSort!], where: UserPostsConnectionWhere): UserPostsConnection!
             }
@@ -445,7 +432,6 @@ describe("Authorization", () => {
               NOT: UserPostsConnectionWhere
               OR: [UserPostsConnectionWhere!]
               node: UserWhere
-              node_NOT: UserWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input UserPostsCreateFieldInput {
@@ -560,22 +546,12 @@ describe("Authorization", () => {
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID!]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
               posts: UserWhere @deprecated(reason: \\"Use \`posts_SOME\` instead.\\")
               postsAggregate: UserPostsAggregateInput
@@ -588,7 +564,6 @@ describe("Authorization", () => {
               Return Users where none of the related UserPostsConnections match this filter
               \\"\\"\\"
               postsConnection_NONE: UserPostsConnectionWhere
-              postsConnection_NOT: UserPostsConnectionWhere @deprecated(reason: \\"Use \`postsConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Users where one of the related UserPostsConnections match this filter
               \\"\\"\\"
@@ -601,7 +576,6 @@ describe("Authorization", () => {
               posts_ALL: UserWhere
               \\"\\"\\"Return Users where none of the related Users match this filter\\"\\"\\"
               posts_NONE: UserWhere
-              posts_NOT: UserWhere @deprecated(reason: \\"Use \`posts_NONE\` instead.\\")
               \\"\\"\\"Return Users where one of the related Users match this filter\\"\\"\\"
               posts_SINGLE: UserWhere
               \\"\\"\\"Return Users where some of the related Users match this filter\\"\\"\\"

@@ -115,11 +115,6 @@ describe("Cypher", () => {
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -288,11 +283,8 @@ describe("Cypher", () => {
               custom_big_int_IN: [BigInt]
               custom_big_int_LT: BigInt
               custom_big_int_LTE: BigInt
-              custom_big_int_NOT: BigInt @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              custom_big_int_NOT_IN: [BigInt] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               custom_boolean: Boolean @deprecated(reason: \\"Please use the explicit _EQ version\\")
               custom_boolean_EQ: Boolean
-              custom_boolean_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               custom_cartesian_point: CartesianPointInput @deprecated(reason: \\"Please use the explicit _EQ version\\")
               custom_cartesian_point_DISTANCE: CartesianPointDistance
               custom_cartesian_point_EQ: CartesianPointInput
@@ -301,8 +293,6 @@ describe("Cypher", () => {
               custom_cartesian_point_IN: [CartesianPointInput]
               custom_cartesian_point_LT: CartesianPointDistance
               custom_cartesian_point_LTE: CartesianPointDistance
-              custom_cartesian_point_NOT: CartesianPointInput @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              custom_cartesian_point_NOT_IN: [CartesianPointInput] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               custom_date: Date @deprecated(reason: \\"Please use the explicit _EQ version\\")
               custom_date_EQ: Date
               custom_date_GT: Date
@@ -310,8 +300,6 @@ describe("Cypher", () => {
               custom_date_IN: [Date]
               custom_date_LT: Date
               custom_date_LTE: Date
-              custom_date_NOT: Date @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              custom_date_NOT_IN: [Date] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               custom_datetime: DateTime @deprecated(reason: \\"Please use the explicit _EQ version\\")
               custom_datetime_EQ: DateTime
               custom_datetime_GT: DateTime
@@ -319,8 +307,6 @@ describe("Cypher", () => {
               custom_datetime_IN: [DateTime]
               custom_datetime_LT: DateTime
               custom_datetime_LTE: DateTime
-              custom_datetime_NOT: DateTime @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              custom_datetime_NOT_IN: [DateTime] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               custom_duration: Duration @deprecated(reason: \\"Please use the explicit _EQ version\\")
               custom_duration_EQ: Duration
               custom_duration_GT: Duration
@@ -328,8 +314,6 @@ describe("Cypher", () => {
               custom_duration_IN: [Duration]
               custom_duration_LT: Duration
               custom_duration_LTE: Duration
-              custom_duration_NOT: Duration @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              custom_duration_NOT_IN: [Duration] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               custom_float: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
               custom_float_EQ: Float
               custom_float_GT: Float
@@ -337,18 +321,11 @@ describe("Cypher", () => {
               custom_float_IN: [Float]
               custom_float_LT: Float
               custom_float_LTE: Float
-              custom_float_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              custom_float_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               custom_id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               custom_id_CONTAINS: ID
               custom_id_ENDS_WITH: ID
               custom_id_EQ: ID
               custom_id_IN: [ID]
-              custom_id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              custom_id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              custom_id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              custom_id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              custom_id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               custom_id_STARTS_WITH: ID
               custom_int: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
               custom_int_EQ: Int
@@ -357,8 +334,6 @@ describe("Cypher", () => {
               custom_int_IN: [Int]
               custom_int_LT: Int
               custom_int_LTE: Int
-              custom_int_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              custom_int_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               custom_localdatetime: LocalDateTime @deprecated(reason: \\"Please use the explicit _EQ version\\")
               custom_localdatetime_EQ: LocalDateTime
               custom_localdatetime_GT: LocalDateTime
@@ -366,8 +341,6 @@ describe("Cypher", () => {
               custom_localdatetime_IN: [LocalDateTime]
               custom_localdatetime_LT: LocalDateTime
               custom_localdatetime_LTE: LocalDateTime
-              custom_localdatetime_NOT: LocalDateTime @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              custom_localdatetime_NOT_IN: [LocalDateTime] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               custom_localtime: LocalTime @deprecated(reason: \\"Please use the explicit _EQ version\\")
               custom_localtime_EQ: LocalTime
               custom_localtime_GT: LocalTime
@@ -375,8 +348,6 @@ describe("Cypher", () => {
               custom_localtime_IN: [LocalTime]
               custom_localtime_LT: LocalTime
               custom_localtime_LTE: LocalTime
-              custom_localtime_NOT: LocalTime @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              custom_localtime_NOT_IN: [LocalTime] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               custom_point: PointInput @deprecated(reason: \\"Please use the explicit _EQ version\\")
               custom_point_DISTANCE: PointDistance
               custom_point_EQ: PointInput
@@ -385,18 +356,11 @@ describe("Cypher", () => {
               custom_point_IN: [PointInput]
               custom_point_LT: PointDistance
               custom_point_LTE: PointDistance
-              custom_point_NOT: PointInput @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              custom_point_NOT_IN: [PointInput] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               custom_string: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               custom_string_CONTAINS: String
               custom_string_ENDS_WITH: String
               custom_string_EQ: String
               custom_string_IN: [String]
-              custom_string_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              custom_string_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              custom_string_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              custom_string_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              custom_string_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               custom_string_STARTS_WITH: String
               custom_time: Time @deprecated(reason: \\"Please use the explicit _EQ version\\")
               custom_time_EQ: Time
@@ -405,18 +369,11 @@ describe("Cypher", () => {
               custom_time_IN: [Time]
               custom_time_LT: Time
               custom_time_LTE: Time
-              custom_time_NOT: Time @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              custom_time_NOT_IN: [Time] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
             }
 
@@ -469,12 +426,12 @@ describe("Cypher", () => {
             }
 
             type Query {
-              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+              actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
-              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
+              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -614,7 +571,7 @@ describe("Cypher", () => {
             }
 
             type Query {
-              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, where: MovieWhere): MoviesConnection!
             }
@@ -746,9 +703,9 @@ describe("Cypher", () => {
             }
 
             type Query {
-              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -862,11 +819,6 @@ describe("Cypher", () => {
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
               totalScreenTime: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
               totalScreenTime_EQ: Int
@@ -875,8 +827,6 @@ describe("Cypher", () => {
               totalScreenTime_IN: [Int!]
               totalScreenTime_LT: Int
               totalScreenTime_LTE: Int
-              totalScreenTime_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              totalScreenTime_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type ActorsConnection {
@@ -966,11 +916,6 @@ describe("Cypher", () => {
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
             }
 
@@ -998,12 +943,12 @@ describe("Cypher", () => {
             }
 
             type Query {
-              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+              actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
-              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
+              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -1152,11 +1097,6 @@ describe("Cypher", () => {
               title_ENDS_WITH: String
               title_EQ: String
               title_IN: [String]
-              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 
@@ -1180,22 +1120,12 @@ describe("Cypher", () => {
               custom_title_ENDS_WITH: String
               custom_title_EQ: String
               custom_title_IN: [String]
-              custom_title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              custom_title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              custom_title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              custom_title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              custom_title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               custom_title_STARTS_WITH: String
               title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
               title_IN: [String]
-              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 
@@ -1220,9 +1150,9 @@ describe("Cypher", () => {
             }
 
             type Query {
-              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"

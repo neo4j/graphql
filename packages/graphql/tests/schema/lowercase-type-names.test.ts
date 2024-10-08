@@ -123,12 +123,12 @@ describe("lower case type names", () => {
             }
 
             type Query {
-              actors(options: actorOptions, where: actorWhere): [actor!]!
+              actors(limit: Int, offset: Int, options: actorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [actorSort!], where: actorWhere): [actor!]!
               actorsAggregate(where: actorWhere): actorAggregateSelection!
-              actorsConnection(after: String, first: Int, sort: [actorSort], where: actorWhere): ActorsConnection!
-              movies(options: movieOptions, where: movieWhere): [movie!]!
+              actorsConnection(after: String, first: Int, sort: [actorSort!], where: actorWhere): ActorsConnection!
+              movies(limit: Int, offset: Int, options: movieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [movieSort!], where: movieWhere): [movie!]!
               moviesAggregate(where: movieWhere): movieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [movieSort], where: movieWhere): MoviesConnection!
+              moviesConnection(after: String, first: Int, sort: [movieSort!], where: movieWhere): MoviesConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -167,7 +167,7 @@ describe("lower case type names", () => {
 
             type actor {
               createdAt: DateTime
-              movies(directed: Boolean = true, options: movieOptions, where: movieWhere): [movie!]!
+              movies(directed: Boolean = true, limit: Int, offset: Int, options: movieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [movieSort!], where: movieWhere): [movie!]!
               moviesAggregate(directed: Boolean = true, where: movieWhere): actormovieMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [actorMoviesConnectionSort!], where: actorMoviesConnectionWhere): actorMoviesConnection!
               name: String
@@ -245,7 +245,6 @@ describe("lower case type names", () => {
               NOT: actorMoviesConnectionWhere
               OR: [actorMoviesConnectionWhere!]
               node: movieWhere
-              node_NOT: movieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input actorMoviesCreateFieldInput {
@@ -439,8 +438,6 @@ describe("lower case type names", () => {
               createdAt_IN: [DateTime]
               createdAt_LT: DateTime
               createdAt_LTE: DateTime
-              createdAt_NOT: DateTime @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              createdAt_NOT_IN: [DateTime] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               movies: movieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
               moviesAggregate: actorMoviesAggregateInput
               moviesConnection: actorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
@@ -452,7 +449,6 @@ describe("lower case type names", () => {
               Return actors where none of the related actorMoviesConnections match this filter
               \\"\\"\\"
               moviesConnection_NONE: actorMoviesConnectionWhere
-              moviesConnection_NOT: actorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return actors where one of the related actorMoviesConnections match this filter
               \\"\\"\\"
@@ -465,7 +461,6 @@ describe("lower case type names", () => {
               movies_ALL: movieWhere
               \\"\\"\\"Return actors where none of the related movies match this filter\\"\\"\\"
               movies_NONE: movieWhere
-              movies_NOT: movieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
               \\"\\"\\"Return actors where one of the related movies match this filter\\"\\"\\"
               movies_SINGLE: movieWhere
               \\"\\"\\"Return actors where some of the related movies match this filter\\"\\"\\"
@@ -475,11 +470,6 @@ describe("lower case type names", () => {
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
               year: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
               year_EQ: Int
@@ -488,8 +478,6 @@ describe("lower case type names", () => {
               year_IN: [Int]
               year_LT: Int
               year_LTE: Int
-              year_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              year_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type actormovieMoviesAggregationSelection {
@@ -505,7 +493,7 @@ describe("lower case type names", () => {
             }
 
             type movie {
-              actors(directed: Boolean = true, options: actorOptions, where: actorWhere): [actor!]!
+              actors(directed: Boolean = true, limit: Int, offset: Int, options: actorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [actorSort!], where: actorWhere): [actor!]!
               actorsAggregate(directed: Boolean = true, where: actorWhere): movieactorActorsAggregationSelection
               actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [movieActorsConnectionSort!], where: movieActorsConnectionWhere): movieActorsConnection!
               createdAt: DateTime
@@ -550,7 +538,6 @@ describe("lower case type names", () => {
               NOT: movieActorsConnectionWhere
               OR: [movieActorsConnectionWhere!]
               node: actorWhere
-              node_NOT: actorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input movieActorsCreateFieldInput {
@@ -752,7 +739,6 @@ describe("lower case type names", () => {
               Return movies where none of the related movieActorsConnections match this filter
               \\"\\"\\"
               actorsConnection_NONE: movieActorsConnectionWhere
-              actorsConnection_NOT: movieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return movies where one of the related movieActorsConnections match this filter
               \\"\\"\\"
@@ -765,7 +751,6 @@ describe("lower case type names", () => {
               actors_ALL: actorWhere
               \\"\\"\\"Return movies where none of the related actors match this filter\\"\\"\\"
               actors_NONE: actorWhere
-              actors_NOT: actorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
               \\"\\"\\"Return movies where one of the related actors match this filter\\"\\"\\"
               actors_SINGLE: actorWhere
               \\"\\"\\"Return movies where some of the related actors match this filter\\"\\"\\"
@@ -777,29 +762,17 @@ describe("lower case type names", () => {
               createdAt_IN: [DateTime]
               createdAt_LT: DateTime
               createdAt_LTE: DateTime
-              createdAt_NOT: DateTime @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              createdAt_NOT_IN: [DateTime] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
               testId: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               testId_CONTAINS: String
               testId_ENDS_WITH: String
               testId_EQ: String
               testId_IN: [String]
-              testId_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              testId_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              testId_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              testId_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              testId_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               testId_STARTS_WITH: String
               year: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
               year_EQ: Int
@@ -808,8 +781,6 @@ describe("lower case type names", () => {
               year_IN: [Int]
               year_LT: Int
               year_LTE: Int
-              year_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              year_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type movieactorActorsAggregationSelection {

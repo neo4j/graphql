@@ -78,9 +78,9 @@ describe("https://github.com/neo4j/graphql/issues/5428", () => {
             }
 
             type Query {
-              test(options: TestOptions, where: TestWhere): [Test!]!
+              test(limit: Int, offset: Int, options: TestOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [TestSort!], where: TestWhere): [Test!]!
               testAggregate(where: TestWhere): TestAggregateSelection!
-              testConnection(after: String, first: Int, sort: [TestSort], where: TestWhere): TestConnection!
+              testConnection(after: String, first: Int, sort: [TestSort!], where: TestWhere): TestConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -148,11 +148,6 @@ describe("https://github.com/neo4j/graphql/issues/5428", () => {
               Name_ENDS_WITH: String
               Name_EQ: String
               Name_IN: [String]
-              Name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              Name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              Name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              Name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              Name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               Name_STARTS_WITH: String
               OR: [TestWhere!]
             }

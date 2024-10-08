@@ -84,7 +84,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                  actors(directed: Boolean = true, limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                   actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
@@ -117,7 +117,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieActorsConnectionWhere
                   OR: [MovieActorsConnectionWhere!]
                   node: PersonWhere
-                  node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieActorsNodeAggregationWhereInput {
@@ -224,7 +223,6 @@ describe("Relationship nested operations", () => {
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_NONE: MovieActorsConnectionWhere
-                  actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -237,7 +235,6 @@ describe("Relationship nested operations", () => {
                   actors_ALL: PersonWhere
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
                   actors_NONE: PersonWhere
-                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
@@ -247,11 +244,6 @@ describe("Relationship nested operations", () => {
                   id_ENDS_WITH: ID
                   id_EQ: ID
                   id_IN: [ID]
-                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
                 }
 
@@ -331,21 +323,16 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                 }
 
                 type Query {
-                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                  people(options: PersonOptions, where: PersonWhere): [Person!]!
+                  moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+                  people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                   peopleAggregate(where: PersonWhere): PersonAggregateSelection!
-                  peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
+                  peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                 }
 
                 \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -438,7 +425,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                  actors(directed: Boolean = true, limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                   actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
@@ -471,7 +458,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieActorsConnectionWhere
                   OR: [MovieActorsConnectionWhere!]
                   node: PersonWhere
-                  node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieActorsCreateFieldInput {
@@ -593,7 +579,6 @@ describe("Relationship nested operations", () => {
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_NONE: MovieActorsConnectionWhere
-                  actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -606,7 +591,6 @@ describe("Relationship nested operations", () => {
                   actors_ALL: PersonWhere
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
                   actors_NONE: PersonWhere
-                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
@@ -616,11 +600,6 @@ describe("Relationship nested operations", () => {
                   id_ENDS_WITH: ID
                   id_EQ: ID
                   id_IN: [ID]
-                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
                 }
 
@@ -700,21 +679,16 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                 }
 
                 type Query {
-                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                  people(options: PersonOptions, where: PersonWhere): [Person!]!
+                  moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+                  people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                   peopleAggregate(where: PersonWhere): PersonAggregateSelection!
-                  peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
+                  peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                 }
 
                 \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -807,7 +781,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                  actors(directed: Boolean = true, limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                   actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
@@ -848,7 +822,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieActorsConnectionWhere
                   OR: [MovieActorsConnectionWhere!]
                   node: PersonWhere
-                  node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieActorsFieldInput {
@@ -966,7 +939,6 @@ describe("Relationship nested operations", () => {
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_NONE: MovieActorsConnectionWhere
-                  actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -979,7 +951,6 @@ describe("Relationship nested operations", () => {
                   actors_ALL: PersonWhere
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
                   actors_NONE: PersonWhere
-                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
@@ -989,11 +960,6 @@ describe("Relationship nested operations", () => {
                   id_ENDS_WITH: ID
                   id_EQ: ID
                   id_IN: [ID]
-                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
                 }
 
@@ -1077,21 +1043,16 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                 }
 
                 type Query {
-                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                  people(options: PersonOptions, where: PersonWhere): [Person!]!
+                  moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+                  people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                   peopleAggregate(where: PersonWhere): PersonAggregateSelection!
-                  peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
+                  peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                 }
 
                 \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -1184,7 +1145,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                  actors(directed: Boolean = true, limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                   actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
@@ -1217,7 +1178,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieActorsConnectionWhere
                   OR: [MovieActorsConnectionWhere!]
                   node: PersonWhere
-                  node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieActorsNodeAggregationWhereInput {
@@ -1334,7 +1294,6 @@ describe("Relationship nested operations", () => {
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_NONE: MovieActorsConnectionWhere
-                  actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -1347,7 +1306,6 @@ describe("Relationship nested operations", () => {
                   actors_ALL: PersonWhere
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
                   actors_NONE: PersonWhere
-                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
@@ -1357,11 +1315,6 @@ describe("Relationship nested operations", () => {
                   id_ENDS_WITH: ID
                   id_EQ: ID
                   id_IN: [ID]
-                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
                 }
 
@@ -1441,21 +1394,16 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                 }
 
                 type Query {
-                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                  people(options: PersonOptions, where: PersonWhere): [Person!]!
+                  moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+                  people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                   peopleAggregate(where: PersonWhere): PersonAggregateSelection!
-                  peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
+                  peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                 }
 
                 \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -1548,7 +1496,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                  actors(directed: Boolean = true, limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                   actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
@@ -1581,7 +1529,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieActorsConnectionWhere
                   OR: [MovieActorsConnectionWhere!]
                   node: PersonWhere
-                  node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieActorsDeleteFieldInput {
@@ -1702,7 +1649,6 @@ describe("Relationship nested operations", () => {
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_NONE: MovieActorsConnectionWhere
-                  actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -1715,7 +1661,6 @@ describe("Relationship nested operations", () => {
                   actors_ALL: PersonWhere
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
                   actors_NONE: PersonWhere
-                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
@@ -1725,11 +1670,6 @@ describe("Relationship nested operations", () => {
                   id_ENDS_WITH: ID
                   id_EQ: ID
                   id_IN: [ID]
-                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
                 }
 
@@ -1809,21 +1749,16 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                 }
 
                 type Query {
-                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                  people(options: PersonOptions, where: PersonWhere): [Person!]!
+                  moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+                  people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                   peopleAggregate(where: PersonWhere): PersonAggregateSelection!
-                  peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
+                  peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                 }
 
                 \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -1916,7 +1851,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                  actors(directed: Boolean = true, limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                   actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
@@ -1949,7 +1884,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieActorsConnectionWhere
                   OR: [MovieActorsConnectionWhere!]
                   node: PersonWhere
-                  node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieActorsDisconnectFieldInput {
@@ -2066,7 +2000,6 @@ describe("Relationship nested operations", () => {
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_NONE: MovieActorsConnectionWhere
-                  actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -2079,7 +2012,6 @@ describe("Relationship nested operations", () => {
                   actors_ALL: PersonWhere
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
                   actors_NONE: PersonWhere
-                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
@@ -2089,11 +2021,6 @@ describe("Relationship nested operations", () => {
                   id_ENDS_WITH: ID
                   id_EQ: ID
                   id_IN: [ID]
-                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
                 }
 
@@ -2173,21 +2100,16 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                 }
 
                 type Query {
-                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                  people(options: PersonOptions, where: PersonWhere): [Person!]!
+                  moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+                  people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                   peopleAggregate(where: PersonWhere): PersonAggregateSelection!
-                  peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
+                  peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                 }
 
                 \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -2281,7 +2203,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                  actors(directed: Boolean = true, limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                   actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
@@ -2314,7 +2236,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieActorsConnectionWhere
                   OR: [MovieActorsConnectionWhere!]
                   node: PersonWhere
-                  node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieActorsNodeAggregationWhereInput {
@@ -2421,7 +2342,6 @@ describe("Relationship nested operations", () => {
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_NONE: MovieActorsConnectionWhere
-                  actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -2434,7 +2354,6 @@ describe("Relationship nested operations", () => {
                   actors_ALL: PersonWhere
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
                   actors_NONE: PersonWhere
-                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
@@ -2444,11 +2363,6 @@ describe("Relationship nested operations", () => {
                   id_ENDS_WITH: ID
                   id_EQ: ID
                   id_IN: [ID]
-                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
                 }
 
@@ -2528,21 +2442,16 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                 }
 
                 type Query {
-                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                  people(options: PersonOptions, where: PersonWhere): [Person!]!
+                  moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+                  people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                   peopleAggregate(where: PersonWhere): PersonAggregateSelection!
-                  peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
+                  peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                 }
 
                 \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -2637,7 +2546,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                  actors(directed: Boolean = true, limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                   actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
@@ -2679,7 +2588,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieActorsConnectionWhere
                   OR: [MovieActorsConnectionWhere!]
                   node: PersonWhere
-                  node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieActorsFieldInput {
@@ -2799,7 +2707,6 @@ describe("Relationship nested operations", () => {
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_NONE: MovieActorsConnectionWhere
-                  actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -2812,7 +2719,6 @@ describe("Relationship nested operations", () => {
                   actors_ALL: PersonWhere
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
                   actors_NONE: PersonWhere
-                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
@@ -2822,11 +2728,6 @@ describe("Relationship nested operations", () => {
                   id_ENDS_WITH: ID
                   id_EQ: ID
                   id_IN: [ID]
-                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
                 }
 
@@ -2922,32 +2823,22 @@ describe("Relationship nested operations", () => {
                   id_ENDS_WITH: ID
                   id_EQ: ID
                   id_IN: [ID!]
-                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
                   name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   name_CONTAINS: String
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                 }
 
                 type Query {
-                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                  people(options: PersonOptions, where: PersonWhere): [Person!]!
+                  moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+                  people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                   peopleAggregate(where: PersonWhere): PersonAggregateSelection!
-                  peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
+                  peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                 }
 
                 \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -3041,11 +2932,11 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                  actors(directed: Boolean = true, limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                   actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
-                  producers(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                  producers(directed: Boolean = true, limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                   producersAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonProducersAggregationSelection
                   producersConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieProducersConnectionSort!], where: MovieProducersConnectionWhere): MovieProducersConnection!
                 }
@@ -3085,7 +2976,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieActorsConnectionWhere
                   OR: [MovieActorsConnectionWhere!]
                   node: PersonWhere
-                  node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieActorsCreateFieldInput {
@@ -3237,7 +3127,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieProducersConnectionWhere
                   OR: [MovieProducersConnectionWhere!]
                   node: PersonWhere
-                  node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieProducersDisconnectFieldInput {
@@ -3323,7 +3212,6 @@ describe("Relationship nested operations", () => {
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_NONE: MovieActorsConnectionWhere
-                  actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -3336,7 +3224,6 @@ describe("Relationship nested operations", () => {
                   actors_ALL: PersonWhere
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
                   actors_NONE: PersonWhere
-                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
@@ -3346,11 +3233,6 @@ describe("Relationship nested operations", () => {
                   id_ENDS_WITH: ID
                   id_EQ: ID
                   id_IN: [ID]
-                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
                   producers: PersonWhere @deprecated(reason: \\"Use \`producers_SOME\` instead.\\")
                   producersAggregate: MovieProducersAggregateInput
@@ -3363,7 +3245,6 @@ describe("Relationship nested operations", () => {
                   Return Movies where none of the related MovieProducersConnections match this filter
                   \\"\\"\\"
                   producersConnection_NONE: MovieProducersConnectionWhere
-                  producersConnection_NOT: MovieProducersConnectionWhere @deprecated(reason: \\"Use \`producersConnection_NONE\` instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieProducersConnections match this filter
                   \\"\\"\\"
@@ -3376,7 +3257,6 @@ describe("Relationship nested operations", () => {
                   producers_ALL: PersonWhere
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
                   producers_NONE: PersonWhere
-                  producers_NOT: PersonWhere @deprecated(reason: \\"Use \`producers_NONE\` instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
                   producers_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
@@ -3463,21 +3343,16 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                 }
 
                 type Query {
-                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                  people(options: PersonOptions, where: PersonWhere): [Person!]!
+                  moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+                  people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                   peopleAggregate(where: PersonWhere): PersonAggregateSelection!
-                  peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
+                  peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                 }
 
                 \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -3571,11 +3446,11 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                  actors(directed: Boolean = true, limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                   actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
-                  producers(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                  producers(directed: Boolean = true, limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                   producersAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonProducersAggregationSelection
                   producersConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieProducersConnectionSort!], where: MovieProducersConnectionWhere): MovieProducersConnection!
                 }
@@ -3607,7 +3482,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieActorsConnectionWhere
                   OR: [MovieActorsConnectionWhere!]
                   node: PersonWhere
-                  node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieActorsCreateFieldInput {
@@ -3738,7 +3612,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieProducersConnectionWhere
                   OR: [MovieProducersConnectionWhere!]
                   node: PersonWhere
-                  node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieProducersDisconnectFieldInput {
@@ -3824,7 +3697,6 @@ describe("Relationship nested operations", () => {
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_NONE: MovieActorsConnectionWhere
-                  actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -3837,7 +3709,6 @@ describe("Relationship nested operations", () => {
                   actors_ALL: PersonWhere
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
                   actors_NONE: PersonWhere
-                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
@@ -3847,11 +3718,6 @@ describe("Relationship nested operations", () => {
                   id_ENDS_WITH: ID
                   id_EQ: ID
                   id_IN: [ID]
-                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
                   producers: PersonWhere @deprecated(reason: \\"Use \`producers_SOME\` instead.\\")
                   producersAggregate: MovieProducersAggregateInput
@@ -3864,7 +3730,6 @@ describe("Relationship nested operations", () => {
                   Return Movies where none of the related MovieProducersConnections match this filter
                   \\"\\"\\"
                   producersConnection_NONE: MovieProducersConnectionWhere
-                  producersConnection_NOT: MovieProducersConnectionWhere @deprecated(reason: \\"Use \`producersConnection_NONE\` instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieProducersConnections match this filter
                   \\"\\"\\"
@@ -3877,7 +3742,6 @@ describe("Relationship nested operations", () => {
                   producers_ALL: PersonWhere
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
                   producers_NONE: PersonWhere
-                  producers_NOT: PersonWhere @deprecated(reason: \\"Use \`producers_NONE\` instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
                   producers_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
@@ -3960,21 +3824,16 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                 }
 
                 type Query {
-                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                  people(options: PersonOptions, where: PersonWhere): [Person!]!
+                  moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+                  people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                   peopleAggregate(where: PersonWhere): PersonAggregateSelection!
-                  peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
+                  peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                 }
 
                 \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -4085,7 +3944,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
+                  actors(directed: Boolean = true, limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -4106,7 +3965,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieActorsPersonOneConnectionWhere
                   OR: [MovieActorsPersonOneConnectionWhere!]
                   node: PersonOneWhere
-                  node_NOT: PersonOneWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieActorsPersonTwoConnectionWhere {
@@ -4114,7 +3972,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieActorsPersonTwoConnectionWhere
                   OR: [MovieActorsPersonTwoConnectionWhere!]
                   node: PersonTwoWhere
-                  node_NOT: PersonTwoWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 type MovieActorsRelationship {
@@ -4170,7 +4027,6 @@ describe("Relationship nested operations", () => {
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_NONE: MovieActorsConnectionWhere
-                  actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -4183,7 +4039,6 @@ describe("Relationship nested operations", () => {
                   actors_ALL: PersonWhere
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
                   actors_NONE: PersonWhere
-                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
@@ -4193,11 +4048,6 @@ describe("Relationship nested operations", () => {
                   id_ENDS_WITH: ID
                   id_EQ: ID
                   id_IN: [ID]
-                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
                 }
 
@@ -4276,11 +4126,6 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                 }
 
@@ -4337,11 +4182,6 @@ describe("Relationship nested operations", () => {
                   nameTwo_ENDS_WITH: String
                   nameTwo_EQ: String
                   nameTwo_IN: [String]
-                  nameTwo_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  nameTwo_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  nameTwo_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  nameTwo_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  nameTwo_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   nameTwo_STARTS_WITH: String
                 }
 
@@ -4357,16 +4197,16 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Query {
-                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                  people(options: QueryOptions, where: PersonWhere): [Person!]!
-                  personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
+                  moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+                  people(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
+                  personOnes(limit: Int, offset: Int, options: PersonOneOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
-                  personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
-                  personTwos(options: PersonTwoOptions, where: PersonTwoWhere): [PersonTwo!]!
+                  personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
+                  personTwos(limit: Int, offset: Int, options: PersonTwoOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
                   personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
-                  personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
+                  personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
                 \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
@@ -4481,7 +4321,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
+                  actors(directed: Boolean = true, limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -4507,7 +4347,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieActorsPersonOneConnectionWhere
                   OR: [MovieActorsPersonOneConnectionWhere!]
                   node: PersonOneWhere
-                  node_NOT: PersonOneWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieActorsPersonOneCreateFieldInput {
@@ -4528,7 +4367,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieActorsPersonTwoConnectionWhere
                   OR: [MovieActorsPersonTwoConnectionWhere!]
                   node: PersonTwoWhere
-                  node_NOT: PersonTwoWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieActorsPersonTwoCreateFieldInput {
@@ -4604,7 +4442,6 @@ describe("Relationship nested operations", () => {
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_NONE: MovieActorsConnectionWhere
-                  actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -4617,7 +4454,6 @@ describe("Relationship nested operations", () => {
                   actors_ALL: PersonWhere
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
                   actors_NONE: PersonWhere
-                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
@@ -4627,11 +4463,6 @@ describe("Relationship nested operations", () => {
                   id_ENDS_WITH: ID
                   id_EQ: ID
                   id_IN: [ID]
-                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
                 }
 
@@ -4710,11 +4541,6 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                 }
 
@@ -4771,11 +4597,6 @@ describe("Relationship nested operations", () => {
                   nameTwo_ENDS_WITH: String
                   nameTwo_EQ: String
                   nameTwo_IN: [String]
-                  nameTwo_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  nameTwo_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  nameTwo_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  nameTwo_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  nameTwo_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   nameTwo_STARTS_WITH: String
                 }
 
@@ -4791,16 +4612,16 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Query {
-                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                  people(options: QueryOptions, where: PersonWhere): [Person!]!
-                  personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
+                  moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+                  people(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
+                  personOnes(limit: Int, offset: Int, options: PersonOneOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
-                  personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
-                  personTwos(options: PersonTwoOptions, where: PersonTwoWhere): [PersonTwo!]!
+                  personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
+                  personTwos(limit: Int, offset: Int, options: PersonTwoOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
                   personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
-                  personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
+                  personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
                 \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
@@ -4915,7 +4736,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
+                  actors(directed: Boolean = true, limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -4945,7 +4766,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieActorsPersonOneConnectionWhere
                   OR: [MovieActorsPersonOneConnectionWhere!]
                   node: PersonOneWhere
-                  node_NOT: PersonOneWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieActorsPersonOneFieldInput {
@@ -4966,7 +4786,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieActorsPersonTwoConnectionWhere
                   OR: [MovieActorsPersonTwoConnectionWhere!]
                   node: PersonTwoWhere
-                  node_NOT: PersonTwoWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieActorsPersonTwoFieldInput {
@@ -5038,7 +4857,6 @@ describe("Relationship nested operations", () => {
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_NONE: MovieActorsConnectionWhere
-                  actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -5051,7 +4869,6 @@ describe("Relationship nested operations", () => {
                   actors_ALL: PersonWhere
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
                   actors_NONE: PersonWhere
-                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
@@ -5061,11 +4878,6 @@ describe("Relationship nested operations", () => {
                   id_ENDS_WITH: ID
                   id_EQ: ID
                   id_IN: [ID]
-                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
                 }
 
@@ -5148,11 +4960,6 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                 }
 
@@ -5213,11 +5020,6 @@ describe("Relationship nested operations", () => {
                   nameTwo_ENDS_WITH: String
                   nameTwo_EQ: String
                   nameTwo_IN: [String]
-                  nameTwo_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  nameTwo_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  nameTwo_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  nameTwo_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  nameTwo_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   nameTwo_STARTS_WITH: String
                 }
 
@@ -5233,16 +5035,16 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Query {
-                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                  people(options: QueryOptions, where: PersonWhere): [Person!]!
-                  personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
+                  moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+                  people(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
+                  personOnes(limit: Int, offset: Int, options: PersonOneOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
-                  personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
-                  personTwos(options: PersonTwoOptions, where: PersonTwoWhere): [PersonTwo!]!
+                  personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
+                  personTwos(limit: Int, offset: Int, options: PersonTwoOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
                   personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
-                  personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
+                  personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
                 \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
@@ -5357,7 +5159,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
+                  actors(directed: Boolean = true, limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -5378,7 +5180,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieActorsPersonOneConnectionWhere
                   OR: [MovieActorsPersonOneConnectionWhere!]
                   node: PersonOneWhere
-                  node_NOT: PersonOneWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieActorsPersonOneUpdateConnectionInput {
@@ -5395,7 +5196,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieActorsPersonTwoConnectionWhere
                   OR: [MovieActorsPersonTwoConnectionWhere!]
                   node: PersonTwoWhere
-                  node_NOT: PersonTwoWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieActorsPersonTwoUpdateConnectionInput {
@@ -5466,7 +5266,6 @@ describe("Relationship nested operations", () => {
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_NONE: MovieActorsConnectionWhere
-                  actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -5479,7 +5278,6 @@ describe("Relationship nested operations", () => {
                   actors_ALL: PersonWhere
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
                   actors_NONE: PersonWhere
-                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
@@ -5489,11 +5287,6 @@ describe("Relationship nested operations", () => {
                   id_ENDS_WITH: ID
                   id_EQ: ID
                   id_IN: [ID]
-                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
                 }
 
@@ -5572,11 +5365,6 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                 }
 
@@ -5633,11 +5421,6 @@ describe("Relationship nested operations", () => {
                   nameTwo_ENDS_WITH: String
                   nameTwo_EQ: String
                   nameTwo_IN: [String]
-                  nameTwo_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  nameTwo_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  nameTwo_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  nameTwo_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  nameTwo_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   nameTwo_STARTS_WITH: String
                 }
 
@@ -5653,16 +5436,16 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Query {
-                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                  people(options: QueryOptions, where: PersonWhere): [Person!]!
-                  personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
+                  moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+                  people(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
+                  personOnes(limit: Int, offset: Int, options: PersonOneOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
-                  personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
-                  personTwos(options: PersonTwoOptions, where: PersonTwoWhere): [PersonTwo!]!
+                  personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
+                  personTwos(limit: Int, offset: Int, options: PersonTwoOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
                   personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
-                  personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
+                  personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
                 \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
@@ -5777,7 +5560,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
+                  actors(directed: Boolean = true, limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -5803,7 +5586,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieActorsPersonOneConnectionWhere
                   OR: [MovieActorsPersonOneConnectionWhere!]
                   node: PersonOneWhere
-                  node_NOT: PersonOneWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieActorsPersonOneDeleteFieldInput {
@@ -5820,7 +5602,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieActorsPersonTwoConnectionWhere
                   OR: [MovieActorsPersonTwoConnectionWhere!]
                   node: PersonTwoWhere
-                  node_NOT: PersonTwoWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieActorsPersonTwoDeleteFieldInput {
@@ -5895,7 +5676,6 @@ describe("Relationship nested operations", () => {
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_NONE: MovieActorsConnectionWhere
-                  actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -5908,7 +5688,6 @@ describe("Relationship nested operations", () => {
                   actors_ALL: PersonWhere
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
                   actors_NONE: PersonWhere
-                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
@@ -5918,11 +5697,6 @@ describe("Relationship nested operations", () => {
                   id_ENDS_WITH: ID
                   id_EQ: ID
                   id_IN: [ID]
-                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
                 }
 
@@ -6001,11 +5775,6 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                 }
 
@@ -6062,11 +5831,6 @@ describe("Relationship nested operations", () => {
                   nameTwo_ENDS_WITH: String
                   nameTwo_EQ: String
                   nameTwo_IN: [String]
-                  nameTwo_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  nameTwo_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  nameTwo_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  nameTwo_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  nameTwo_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   nameTwo_STARTS_WITH: String
                 }
 
@@ -6082,16 +5846,16 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Query {
-                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                  people(options: QueryOptions, where: PersonWhere): [Person!]!
-                  personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
+                  moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+                  people(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
+                  personOnes(limit: Int, offset: Int, options: PersonOneOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
-                  personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
-                  personTwos(options: PersonTwoOptions, where: PersonTwoWhere): [PersonTwo!]!
+                  personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
+                  personTwos(limit: Int, offset: Int, options: PersonTwoOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
                   personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
-                  personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
+                  personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
                 \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
@@ -6206,7 +5970,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
+                  actors(directed: Boolean = true, limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -6227,7 +5991,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieActorsPersonOneConnectionWhere
                   OR: [MovieActorsPersonOneConnectionWhere!]
                   node: PersonOneWhere
-                  node_NOT: PersonOneWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieActorsPersonOneDisconnectFieldInput {
@@ -6244,7 +6007,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieActorsPersonTwoConnectionWhere
                   OR: [MovieActorsPersonTwoConnectionWhere!]
                   node: PersonTwoWhere
-                  node_NOT: PersonTwoWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieActorsPersonTwoDisconnectFieldInput {
@@ -6315,7 +6077,6 @@ describe("Relationship nested operations", () => {
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_NONE: MovieActorsConnectionWhere
-                  actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -6328,7 +6089,6 @@ describe("Relationship nested operations", () => {
                   actors_ALL: PersonWhere
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
                   actors_NONE: PersonWhere
-                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
@@ -6338,11 +6098,6 @@ describe("Relationship nested operations", () => {
                   id_ENDS_WITH: ID
                   id_EQ: ID
                   id_IN: [ID]
-                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
                 }
 
@@ -6421,11 +6176,6 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                 }
 
@@ -6482,11 +6232,6 @@ describe("Relationship nested operations", () => {
                   nameTwo_ENDS_WITH: String
                   nameTwo_EQ: String
                   nameTwo_IN: [String]
-                  nameTwo_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  nameTwo_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  nameTwo_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  nameTwo_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  nameTwo_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   nameTwo_STARTS_WITH: String
                 }
 
@@ -6502,16 +6247,16 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Query {
-                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                  people(options: QueryOptions, where: PersonWhere): [Person!]!
-                  personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
+                  moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+                  people(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
+                  personOnes(limit: Int, offset: Int, options: PersonOneOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
-                  personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
-                  personTwos(options: PersonTwoOptions, where: PersonTwoWhere): [PersonTwo!]!
+                  personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
+                  personTwos(limit: Int, offset: Int, options: PersonTwoOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
                   personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
-                  personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
+                  personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
                 \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
@@ -6627,7 +6372,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
+                  actors(directed: Boolean = true, limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -6648,7 +6393,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieActorsPersonOneConnectionWhere
                   OR: [MovieActorsPersonOneConnectionWhere!]
                   node: PersonOneWhere
-                  node_NOT: PersonOneWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieActorsPersonTwoConnectionWhere {
@@ -6656,7 +6400,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieActorsPersonTwoConnectionWhere
                   OR: [MovieActorsPersonTwoConnectionWhere!]
                   node: PersonTwoWhere
-                  node_NOT: PersonTwoWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 type MovieActorsRelationship {
@@ -6712,7 +6455,6 @@ describe("Relationship nested operations", () => {
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_NONE: MovieActorsConnectionWhere
-                  actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -6725,7 +6467,6 @@ describe("Relationship nested operations", () => {
                   actors_ALL: PersonWhere
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
                   actors_NONE: PersonWhere
-                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
@@ -6735,11 +6476,6 @@ describe("Relationship nested operations", () => {
                   id_ENDS_WITH: ID
                   id_EQ: ID
                   id_IN: [ID]
-                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
                 }
 
@@ -6818,11 +6554,6 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                 }
 
@@ -6879,11 +6610,6 @@ describe("Relationship nested operations", () => {
                   nameTwo_ENDS_WITH: String
                   nameTwo_EQ: String
                   nameTwo_IN: [String]
-                  nameTwo_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  nameTwo_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  nameTwo_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  nameTwo_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  nameTwo_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   nameTwo_STARTS_WITH: String
                 }
 
@@ -6899,16 +6625,16 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Query {
-                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                  people(options: QueryOptions, where: PersonWhere): [Person!]!
-                  personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
+                  moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+                  people(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
+                  personOnes(limit: Int, offset: Int, options: PersonOneOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
-                  personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
-                  personTwos(options: PersonTwoOptions, where: PersonTwoWhere): [PersonTwo!]!
+                  personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
+                  personTwos(limit: Int, offset: Int, options: PersonTwoOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
                   personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
-                  personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
+                  personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
                 \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
@@ -7026,7 +6752,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
+                  actors(directed: Boolean = true, limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -7061,7 +6787,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieActorsPersonOneConnectionWhere
                   OR: [MovieActorsPersonOneConnectionWhere!]
                   node: PersonOneWhere
-                  node_NOT: PersonOneWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieActorsPersonOneFieldInput {
@@ -7087,7 +6812,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieActorsPersonTwoConnectionWhere
                   OR: [MovieActorsPersonTwoConnectionWhere!]
                   node: PersonTwoWhere
-                  node_NOT: PersonTwoWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieActorsPersonTwoFieldInput {
@@ -7159,7 +6883,6 @@ describe("Relationship nested operations", () => {
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_NONE: MovieActorsConnectionWhere
-                  actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -7172,7 +6895,6 @@ describe("Relationship nested operations", () => {
                   actors_ALL: PersonWhere
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
                   actors_NONE: PersonWhere
-                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
@@ -7182,11 +6904,6 @@ describe("Relationship nested operations", () => {
                   id_ENDS_WITH: ID
                   id_EQ: ID
                   id_IN: [ID]
-                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
                 }
 
@@ -7281,22 +6998,12 @@ describe("Relationship nested operations", () => {
                   id_ENDS_WITH: ID
                   id_EQ: ID
                   id_IN: [ID!]
-                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
                   name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   name_CONTAINS: String
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                 }
 
@@ -7369,22 +7076,12 @@ describe("Relationship nested operations", () => {
                   id_ENDS_WITH: ID
                   id_EQ: ID
                   id_IN: [ID!]
-                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
                   nameTwo: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   nameTwo_CONTAINS: String
                   nameTwo_ENDS_WITH: String
                   nameTwo_EQ: String
                   nameTwo_IN: [String]
-                  nameTwo_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  nameTwo_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  nameTwo_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  nameTwo_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  nameTwo_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   nameTwo_STARTS_WITH: String
                 }
 
@@ -7400,16 +7097,16 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Query {
-                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                  people(options: QueryOptions, where: PersonWhere): [Person!]!
-                  personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
+                  moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+                  people(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
+                  personOnes(limit: Int, offset: Int, options: PersonOneOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
-                  personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
-                  personTwos(options: PersonTwoOptions, where: PersonTwoWhere): [PersonTwo!]!
+                  personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
+                  personTwos(limit: Int, offset: Int, options: PersonTwoOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
                   personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
-                  personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
+                  personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
                 \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
@@ -7525,10 +7222,10 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
+                  actors(directed: Boolean = true, limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
-                  producers(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
+                  producers(directed: Boolean = true, limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
                   producersConnection(after: String, directed: Boolean = true, first: Int, where: MovieProducersConnectionWhere): MovieProducersConnection!
                 }
 
@@ -7562,7 +7259,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieActorsPersonOneConnectionWhere
                   OR: [MovieActorsPersonOneConnectionWhere!]
                   node: PersonOneWhere
-                  node_NOT: PersonOneWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieActorsPersonOneCreateFieldInput {
@@ -7604,7 +7300,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieActorsPersonTwoConnectionWhere
                   OR: [MovieActorsPersonTwoConnectionWhere!]
                   node: PersonTwoWhere
-                  node_NOT: PersonTwoWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieActorsPersonTwoCreateFieldInput {
@@ -7691,7 +7386,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieProducersPersonOneConnectionWhere
                   OR: [MovieProducersPersonOneConnectionWhere!]
                   node: PersonOneWhere
-                  node_NOT: PersonOneWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieProducersPersonOneDisconnectFieldInput {
@@ -7708,7 +7402,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieProducersPersonTwoConnectionWhere
                   OR: [MovieProducersPersonTwoConnectionWhere!]
                   node: PersonTwoWhere
-                  node_NOT: PersonTwoWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieProducersPersonTwoDisconnectFieldInput {
@@ -7757,7 +7450,6 @@ describe("Relationship nested operations", () => {
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_NONE: MovieActorsConnectionWhere
-                  actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -7770,7 +7462,6 @@ describe("Relationship nested operations", () => {
                   actors_ALL: PersonWhere
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
                   actors_NONE: PersonWhere
-                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
@@ -7780,11 +7471,6 @@ describe("Relationship nested operations", () => {
                   id_ENDS_WITH: ID
                   id_EQ: ID
                   id_IN: [ID]
-                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
                   producers: PersonWhere @deprecated(reason: \\"Use \`producers_SOME\` instead.\\")
                   producersConnection: MovieProducersConnectionWhere @deprecated(reason: \\"Use \`producersConnection_SOME\` instead.\\")
@@ -7796,7 +7482,6 @@ describe("Relationship nested operations", () => {
                   Return Movies where none of the related MovieProducersConnections match this filter
                   \\"\\"\\"
                   producersConnection_NONE: MovieProducersConnectionWhere
-                  producersConnection_NOT: MovieProducersConnectionWhere @deprecated(reason: \\"Use \`producersConnection_NONE\` instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieProducersConnections match this filter
                   \\"\\"\\"
@@ -7809,7 +7494,6 @@ describe("Relationship nested operations", () => {
                   producers_ALL: PersonWhere
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
                   producers_NONE: PersonWhere
-                  producers_NOT: PersonWhere @deprecated(reason: \\"Use \`producers_NONE\` instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
                   producers_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
@@ -7895,11 +7579,6 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                 }
 
@@ -7960,11 +7639,6 @@ describe("Relationship nested operations", () => {
                   nameTwo_ENDS_WITH: String
                   nameTwo_EQ: String
                   nameTwo_IN: [String]
-                  nameTwo_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  nameTwo_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  nameTwo_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  nameTwo_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  nameTwo_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   nameTwo_STARTS_WITH: String
                 }
 
@@ -7980,16 +7654,16 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Query {
-                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                  people(options: QueryOptions, where: PersonWhere): [Person!]!
-                  personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
+                  moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+                  people(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
+                  personOnes(limit: Int, offset: Int, options: PersonOneOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
-                  personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
-                  personTwos(options: PersonTwoOptions, where: PersonTwoWhere): [PersonTwo!]!
+                  personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
+                  personTwos(limit: Int, offset: Int, options: PersonTwoOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
                   personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
-                  personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
+                  personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
                 \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
@@ -8105,10 +7779,10 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
+                  actors(directed: Boolean = true, limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
-                  producers(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
+                  producers(directed: Boolean = true, limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
                   producersConnection(after: String, directed: Boolean = true, first: Int, where: MovieProducersConnectionWhere): MovieProducersConnection!
                 }
 
@@ -8133,7 +7807,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieActorsPersonOneConnectionWhere
                   OR: [MovieActorsPersonOneConnectionWhere!]
                   node: PersonOneWhere
-                  node_NOT: PersonOneWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieActorsPersonOneCreateFieldInput {
@@ -8154,7 +7827,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieActorsPersonTwoConnectionWhere
                   OR: [MovieActorsPersonTwoConnectionWhere!]
                   node: PersonTwoWhere
-                  node_NOT: PersonTwoWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieActorsPersonTwoCreateFieldInput {
@@ -8220,7 +7892,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieProducersPersonOneConnectionWhere
                   OR: [MovieProducersPersonOneConnectionWhere!]
                   node: PersonOneWhere
-                  node_NOT: PersonOneWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieProducersPersonOneDisconnectFieldInput {
@@ -8237,7 +7908,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieProducersPersonTwoConnectionWhere
                   OR: [MovieProducersPersonTwoConnectionWhere!]
                   node: PersonTwoWhere
-                  node_NOT: PersonTwoWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieProducersPersonTwoDisconnectFieldInput {
@@ -8286,7 +7956,6 @@ describe("Relationship nested operations", () => {
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_NONE: MovieActorsConnectionWhere
-                  actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -8299,7 +7968,6 @@ describe("Relationship nested operations", () => {
                   actors_ALL: PersonWhere
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
                   actors_NONE: PersonWhere
-                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
@@ -8309,11 +7977,6 @@ describe("Relationship nested operations", () => {
                   id_ENDS_WITH: ID
                   id_EQ: ID
                   id_IN: [ID]
-                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
                   producers: PersonWhere @deprecated(reason: \\"Use \`producers_SOME\` instead.\\")
                   producersConnection: MovieProducersConnectionWhere @deprecated(reason: \\"Use \`producersConnection_SOME\` instead.\\")
@@ -8325,7 +7988,6 @@ describe("Relationship nested operations", () => {
                   Return Movies where none of the related MovieProducersConnections match this filter
                   \\"\\"\\"
                   producersConnection_NONE: MovieProducersConnectionWhere
-                  producersConnection_NOT: MovieProducersConnectionWhere @deprecated(reason: \\"Use \`producersConnection_NONE\` instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieProducersConnections match this filter
                   \\"\\"\\"
@@ -8338,7 +8000,6 @@ describe("Relationship nested operations", () => {
                   producers_ALL: PersonWhere
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
                   producers_NONE: PersonWhere
-                  producers_NOT: PersonWhere @deprecated(reason: \\"Use \`producers_NONE\` instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
                   producers_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
@@ -8420,11 +8081,6 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                 }
 
@@ -8481,11 +8137,6 @@ describe("Relationship nested operations", () => {
                   nameTwo_ENDS_WITH: String
                   nameTwo_EQ: String
                   nameTwo_IN: [String]
-                  nameTwo_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  nameTwo_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  nameTwo_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  nameTwo_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  nameTwo_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   nameTwo_STARTS_WITH: String
                 }
 
@@ -8501,16 +8152,16 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Query {
-                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                  people(options: QueryOptions, where: PersonWhere): [Person!]!
-                  personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
+                  moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+                  people(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
+                  personOnes(limit: Int, offset: Int, options: PersonOneOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
-                  personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
-                  personTwos(options: PersonTwoOptions, where: PersonTwoWhere): [PersonTwo!]!
+                  personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
+                  personTwos(limit: Int, offset: Int, options: PersonTwoOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
                   personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
-                  personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
+                  personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
                 \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
@@ -8635,7 +8286,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                  actors(directed: Boolean = true, limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                   actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
@@ -8668,7 +8319,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieActorsConnectionWhere
                   OR: [MovieActorsConnectionWhere!]
                   node: PersonWhere
-                  node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieActorsNodeAggregationWhereInput {
@@ -8775,7 +8425,6 @@ describe("Relationship nested operations", () => {
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_NONE: MovieActorsConnectionWhere
-                  actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -8788,7 +8437,6 @@ describe("Relationship nested operations", () => {
                   actors_ALL: PersonWhere
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
                   actors_NONE: PersonWhere
-                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
@@ -8798,11 +8446,6 @@ describe("Relationship nested operations", () => {
                   id_ENDS_WITH: ID
                   id_EQ: ID
                   id_IN: [ID]
-                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
                 }
 
@@ -8909,17 +8552,10 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                   someExtraProp: [Int!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   someExtraProp_EQ: [Int!]
                   someExtraProp_INCLUDES: Int
-                  someExtraProp_NOT: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  someExtraProp_NOT_INCLUDES: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 type PersonOnesConnection {
@@ -8934,7 +8570,7 @@ describe("Relationship nested operations", () => {
                   \\"\\"\\"
                   Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [PersonSort]
+                  sort: [PersonSort!]
                 }
 
                 \\"\\"\\"
@@ -8991,11 +8627,6 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                 }
 
@@ -9014,28 +8645,23 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                   typename_IN: [PersonImplementation!]
                 }
 
                 type Query {
-                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                  people(options: PersonOptions, where: PersonWhere): [Person!]!
+                  moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+                  people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                   peopleAggregate(where: PersonWhere): PersonAggregateSelection!
-                  peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
-                  personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
+                  peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
+                  personOnes(limit: Int, offset: Int, options: PersonOneOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
-                  personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
-                  personTwos(options: PersonTwoOptions, where: PersonTwoWhere): [PersonTwo!]!
+                  personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
+                  personTwos(limit: Int, offset: Int, options: PersonTwoOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
                   personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
-                  personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
+                  personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
                 \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -9147,7 +8773,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                  actors(directed: Boolean = true, limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                   actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
@@ -9180,7 +8806,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieActorsConnectionWhere
                   OR: [MovieActorsConnectionWhere!]
                   node: PersonWhere
-                  node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieActorsCreateFieldInput {
@@ -9302,7 +8927,6 @@ describe("Relationship nested operations", () => {
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_NONE: MovieActorsConnectionWhere
-                  actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -9315,7 +8939,6 @@ describe("Relationship nested operations", () => {
                   actors_ALL: PersonWhere
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
                   actors_NONE: PersonWhere
-                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
@@ -9325,11 +8948,6 @@ describe("Relationship nested operations", () => {
                   id_ENDS_WITH: ID
                   id_EQ: ID
                   id_IN: [ID]
-                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
                 }
 
@@ -9441,17 +9059,10 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                   someExtraProp: [Int!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   someExtraProp_EQ: [Int!]
                   someExtraProp_INCLUDES: Int
-                  someExtraProp_NOT: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  someExtraProp_NOT_INCLUDES: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 type PersonOnesConnection {
@@ -9466,7 +9077,7 @@ describe("Relationship nested operations", () => {
                   \\"\\"\\"
                   Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [PersonSort]
+                  sort: [PersonSort!]
                 }
 
                 \\"\\"\\"
@@ -9523,11 +9134,6 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                 }
 
@@ -9546,28 +9152,23 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                   typename_IN: [PersonImplementation!]
                 }
 
                 type Query {
-                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                  people(options: PersonOptions, where: PersonWhere): [Person!]!
+                  moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+                  people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                   peopleAggregate(where: PersonWhere): PersonAggregateSelection!
-                  peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
-                  personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
+                  peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
+                  personOnes(limit: Int, offset: Int, options: PersonOneOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
-                  personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
-                  personTwos(options: PersonTwoOptions, where: PersonTwoWhere): [PersonTwo!]!
+                  personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
+                  personTwos(limit: Int, offset: Int, options: PersonTwoOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
                   personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
-                  personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
+                  personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
                 \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -9679,7 +9280,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                  actors(directed: Boolean = true, limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                   actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
@@ -9716,7 +9317,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieActorsConnectionWhere
                   OR: [MovieActorsConnectionWhere!]
                   node: PersonWhere
-                  node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieActorsFieldInput {
@@ -9834,7 +9434,6 @@ describe("Relationship nested operations", () => {
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_NONE: MovieActorsConnectionWhere
-                  actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -9847,7 +9446,6 @@ describe("Relationship nested operations", () => {
                   actors_ALL: PersonWhere
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
                   actors_NONE: PersonWhere
-                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
@@ -9857,11 +9455,6 @@ describe("Relationship nested operations", () => {
                   id_ENDS_WITH: ID
                   id_EQ: ID
                   id_IN: [ID]
-                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
                 }
 
@@ -9972,17 +9565,10 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                   someExtraProp: [Int!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   someExtraProp_EQ: [Int!]
                   someExtraProp_INCLUDES: Int
-                  someExtraProp_NOT: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  someExtraProp_NOT_INCLUDES: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 type PersonOnesConnection {
@@ -9997,7 +9583,7 @@ describe("Relationship nested operations", () => {
                   \\"\\"\\"
                   Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [PersonSort]
+                  sort: [PersonSort!]
                 }
 
                 \\"\\"\\"
@@ -10054,11 +9640,6 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                 }
 
@@ -10077,28 +9658,23 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                   typename_IN: [PersonImplementation!]
                 }
 
                 type Query {
-                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                  people(options: PersonOptions, where: PersonWhere): [Person!]!
+                  moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+                  people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                   peopleAggregate(where: PersonWhere): PersonAggregateSelection!
-                  peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
-                  personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
+                  peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
+                  personOnes(limit: Int, offset: Int, options: PersonOneOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
-                  personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
-                  personTwos(options: PersonTwoOptions, where: PersonTwoWhere): [PersonTwo!]!
+                  personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
+                  personTwos(limit: Int, offset: Int, options: PersonTwoOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
                   personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
-                  personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
+                  personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
                 \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -10210,7 +9786,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                  actors(directed: Boolean = true, limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                   actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
@@ -10243,7 +9819,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieActorsConnectionWhere
                   OR: [MovieActorsConnectionWhere!]
                   node: PersonWhere
-                  node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieActorsNodeAggregationWhereInput {
@@ -10360,7 +9935,6 @@ describe("Relationship nested operations", () => {
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_NONE: MovieActorsConnectionWhere
-                  actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -10373,7 +9947,6 @@ describe("Relationship nested operations", () => {
                   actors_ALL: PersonWhere
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
                   actors_NONE: PersonWhere
-                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
@@ -10383,11 +9956,6 @@ describe("Relationship nested operations", () => {
                   id_ENDS_WITH: ID
                   id_EQ: ID
                   id_IN: [ID]
-                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
                 }
 
@@ -10494,17 +10062,10 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                   someExtraProp: [Int!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   someExtraProp_EQ: [Int!]
                   someExtraProp_INCLUDES: Int
-                  someExtraProp_NOT: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  someExtraProp_NOT_INCLUDES: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 type PersonOnesConnection {
@@ -10519,7 +10080,7 @@ describe("Relationship nested operations", () => {
                   \\"\\"\\"
                   Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [PersonSort]
+                  sort: [PersonSort!]
                 }
 
                 \\"\\"\\"
@@ -10576,11 +10137,6 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                 }
 
@@ -10603,28 +10159,23 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                   typename_IN: [PersonImplementation!]
                 }
 
                 type Query {
-                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                  people(options: PersonOptions, where: PersonWhere): [Person!]!
+                  moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+                  people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                   peopleAggregate(where: PersonWhere): PersonAggregateSelection!
-                  peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
-                  personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
+                  peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
+                  personOnes(limit: Int, offset: Int, options: PersonOneOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
-                  personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
-                  personTwos(options: PersonTwoOptions, where: PersonTwoWhere): [PersonTwo!]!
+                  personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
+                  personTwos(limit: Int, offset: Int, options: PersonTwoOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
                   personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
-                  personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
+                  personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
                 \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -10736,7 +10287,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                  actors(directed: Boolean = true, limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                   actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
@@ -10769,7 +10320,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieActorsConnectionWhere
                   OR: [MovieActorsConnectionWhere!]
                   node: PersonWhere
-                  node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieActorsDeleteFieldInput {
@@ -10890,7 +10440,6 @@ describe("Relationship nested operations", () => {
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_NONE: MovieActorsConnectionWhere
-                  actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -10903,7 +10452,6 @@ describe("Relationship nested operations", () => {
                   actors_ALL: PersonWhere
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
                   actors_NONE: PersonWhere
-                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
@@ -10913,11 +10461,6 @@ describe("Relationship nested operations", () => {
                   id_ENDS_WITH: ID
                   id_EQ: ID
                   id_IN: [ID]
-                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
                 }
 
@@ -11024,17 +10567,10 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                   someExtraProp: [Int!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   someExtraProp_EQ: [Int!]
                   someExtraProp_INCLUDES: Int
-                  someExtraProp_NOT: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  someExtraProp_NOT_INCLUDES: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 type PersonOnesConnection {
@@ -11049,7 +10585,7 @@ describe("Relationship nested operations", () => {
                   \\"\\"\\"
                   Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [PersonSort]
+                  sort: [PersonSort!]
                 }
 
                 \\"\\"\\"
@@ -11106,11 +10642,6 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                 }
 
@@ -11129,28 +10660,23 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                   typename_IN: [PersonImplementation!]
                 }
 
                 type Query {
-                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                  people(options: PersonOptions, where: PersonWhere): [Person!]!
+                  moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+                  people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                   peopleAggregate(where: PersonWhere): PersonAggregateSelection!
-                  peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
-                  personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
+                  peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
+                  personOnes(limit: Int, offset: Int, options: PersonOneOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
-                  personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
-                  personTwos(options: PersonTwoOptions, where: PersonTwoWhere): [PersonTwo!]!
+                  personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
+                  personTwos(limit: Int, offset: Int, options: PersonTwoOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
                   personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
-                  personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
+                  personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
                 \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -11262,7 +10788,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                  actors(directed: Boolean = true, limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                   actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
@@ -11295,7 +10821,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieActorsConnectionWhere
                   OR: [MovieActorsConnectionWhere!]
                   node: PersonWhere
-                  node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieActorsDisconnectFieldInput {
@@ -11412,7 +10937,6 @@ describe("Relationship nested operations", () => {
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_NONE: MovieActorsConnectionWhere
-                  actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -11425,7 +10949,6 @@ describe("Relationship nested operations", () => {
                   actors_ALL: PersonWhere
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
                   actors_NONE: PersonWhere
-                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
@@ -11435,11 +10958,6 @@ describe("Relationship nested operations", () => {
                   id_ENDS_WITH: ID
                   id_EQ: ID
                   id_IN: [ID]
-                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
                 }
 
@@ -11546,17 +11064,10 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                   someExtraProp: [Int!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   someExtraProp_EQ: [Int!]
                   someExtraProp_INCLUDES: Int
-                  someExtraProp_NOT: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  someExtraProp_NOT_INCLUDES: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 type PersonOnesConnection {
@@ -11571,7 +11082,7 @@ describe("Relationship nested operations", () => {
                   \\"\\"\\"
                   Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [PersonSort]
+                  sort: [PersonSort!]
                 }
 
                 \\"\\"\\"
@@ -11628,11 +11139,6 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                 }
 
@@ -11651,28 +11157,23 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                   typename_IN: [PersonImplementation!]
                 }
 
                 type Query {
-                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                  people(options: PersonOptions, where: PersonWhere): [Person!]!
+                  moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+                  people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                   peopleAggregate(where: PersonWhere): PersonAggregateSelection!
-                  peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
-                  personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
+                  peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
+                  personOnes(limit: Int, offset: Int, options: PersonOneOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
-                  personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
-                  personTwos(options: PersonTwoOptions, where: PersonTwoWhere): [PersonTwo!]!
+                  personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
+                  personTwos(limit: Int, offset: Int, options: PersonTwoOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
                   personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
-                  personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
+                  personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
                 \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -11785,11 +11286,11 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                  actors(directed: Boolean = true, limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                   actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
-                  producers(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                  producers(directed: Boolean = true, limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                   producersAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonProducersAggregationSelection
                   producersConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieProducersConnectionSort!], where: MovieProducersConnectionWhere): MovieProducersConnection!
                 }
@@ -11825,7 +11326,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieActorsConnectionWhere
                   OR: [MovieActorsConnectionWhere!]
                   node: PersonWhere
-                  node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieActorsCreateFieldInput {
@@ -11977,7 +11477,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieProducersConnectionWhere
                   OR: [MovieProducersConnectionWhere!]
                   node: PersonWhere
-                  node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieProducersDisconnectFieldInput {
@@ -12063,7 +11562,6 @@ describe("Relationship nested operations", () => {
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_NONE: MovieActorsConnectionWhere
-                  actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -12076,7 +11574,6 @@ describe("Relationship nested operations", () => {
                   actors_ALL: PersonWhere
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
                   actors_NONE: PersonWhere
-                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
@@ -12086,11 +11583,6 @@ describe("Relationship nested operations", () => {
                   id_ENDS_WITH: ID
                   id_EQ: ID
                   id_IN: [ID]
-                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
                   producers: PersonWhere @deprecated(reason: \\"Use \`producers_SOME\` instead.\\")
                   producersAggregate: MovieProducersAggregateInput
@@ -12103,7 +11595,6 @@ describe("Relationship nested operations", () => {
                   Return Movies where none of the related MovieProducersConnections match this filter
                   \\"\\"\\"
                   producersConnection_NONE: MovieProducersConnectionWhere
-                  producersConnection_NOT: MovieProducersConnectionWhere @deprecated(reason: \\"Use \`producersConnection_NONE\` instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieProducersConnections match this filter
                   \\"\\"\\"
@@ -12116,7 +11607,6 @@ describe("Relationship nested operations", () => {
                   producers_ALL: PersonWhere
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
                   producers_NONE: PersonWhere
-                  producers_NOT: PersonWhere @deprecated(reason: \\"Use \`producers_NONE\` instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
                   producers_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
@@ -12235,17 +11725,10 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                   someExtraProp: [Int!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   someExtraProp_EQ: [Int!]
                   someExtraProp_INCLUDES: Int
-                  someExtraProp_NOT: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  someExtraProp_NOT_INCLUDES: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 type PersonOnesConnection {
@@ -12260,7 +11743,7 @@ describe("Relationship nested operations", () => {
                   \\"\\"\\"
                   Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [PersonSort]
+                  sort: [PersonSort!]
                 }
 
                 \\"\\"\\"
@@ -12317,11 +11800,6 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                 }
 
@@ -12344,28 +11822,23 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                   typename_IN: [PersonImplementation!]
                 }
 
                 type Query {
-                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                  people(options: PersonOptions, where: PersonWhere): [Person!]!
+                  moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+                  people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                   peopleAggregate(where: PersonWhere): PersonAggregateSelection!
-                  peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
-                  personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
+                  peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
+                  personOnes(limit: Int, offset: Int, options: PersonOneOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
-                  personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
-                  personTwos(options: PersonTwoOptions, where: PersonTwoWhere): [PersonTwo!]!
+                  personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
+                  personTwos(limit: Int, offset: Int, options: PersonTwoOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
                   personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
-                  personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
+                  personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
                 \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -12479,11 +11952,11 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                  actors(directed: Boolean = true, limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                   actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
-                  producers(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                  producers(directed: Boolean = true, limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                   producersAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonProducersAggregationSelection
                   producersConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieProducersConnectionSort!], where: MovieProducersConnectionWhere): MovieProducersConnection!
                 }
@@ -12515,7 +11988,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieActorsConnectionWhere
                   OR: [MovieActorsConnectionWhere!]
                   node: PersonWhere
-                  node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieActorsCreateFieldInput {
@@ -12655,7 +12127,6 @@ describe("Relationship nested operations", () => {
                   NOT: MovieProducersConnectionWhere
                   OR: [MovieProducersConnectionWhere!]
                   node: PersonWhere
-                  node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 input MovieProducersDisconnectFieldInput {
@@ -12741,7 +12212,6 @@ describe("Relationship nested operations", () => {
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
                   actorsConnection_NONE: MovieActorsConnectionWhere
-                  actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -12754,7 +12224,6 @@ describe("Relationship nested operations", () => {
                   actors_ALL: PersonWhere
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
                   actors_NONE: PersonWhere
-                  actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
                   actors_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
@@ -12764,11 +12233,6 @@ describe("Relationship nested operations", () => {
                   id_ENDS_WITH: ID
                   id_EQ: ID
                   id_IN: [ID]
-                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   id_STARTS_WITH: ID
                   producers: PersonWhere @deprecated(reason: \\"Use \`producers_SOME\` instead.\\")
                   producersAggregate: MovieProducersAggregateInput
@@ -12781,7 +12245,6 @@ describe("Relationship nested operations", () => {
                   Return Movies where none of the related MovieProducersConnections match this filter
                   \\"\\"\\"
                   producersConnection_NONE: MovieProducersConnectionWhere
-                  producersConnection_NOT: MovieProducersConnectionWhere @deprecated(reason: \\"Use \`producersConnection_NONE\` instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieProducersConnections match this filter
                   \\"\\"\\"
@@ -12794,7 +12257,6 @@ describe("Relationship nested operations", () => {
                   producers_ALL: PersonWhere
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
                   producers_NONE: PersonWhere
-                  producers_NOT: PersonWhere @deprecated(reason: \\"Use \`producers_NONE\` instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
                   producers_SINGLE: PersonWhere
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
@@ -12909,17 +12371,10 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                   someExtraProp: [Int!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
                   someExtraProp_EQ: [Int!]
                   someExtraProp_INCLUDES: Int
-                  someExtraProp_NOT: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  someExtraProp_NOT_INCLUDES: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
                 type PersonOnesConnection {
@@ -12934,7 +12389,7 @@ describe("Relationship nested operations", () => {
                   \\"\\"\\"
                   Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
-                  sort: [PersonSort]
+                  sort: [PersonSort!]
                 }
 
                 \\"\\"\\"
@@ -12991,11 +12446,6 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                 }
 
@@ -13014,28 +12464,23 @@ describe("Relationship nested operations", () => {
                   name_ENDS_WITH: String
                   name_EQ: String
                   name_IN: [String]
-                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
                   typename_IN: [PersonImplementation!]
                 }
 
                 type Query {
-                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                  people(options: PersonOptions, where: PersonWhere): [Person!]!
+                  moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+                  people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                   peopleAggregate(where: PersonWhere): PersonAggregateSelection!
-                  peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
-                  personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
+                  peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
+                  personOnes(limit: Int, offset: Int, options: PersonOneOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
-                  personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
-                  personTwos(options: PersonTwoOptions, where: PersonTwoWhere): [PersonTwo!]!
+                  personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
+                  personTwos(limit: Int, offset: Int, options: PersonTwoOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
                   personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
-                  personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
+                  personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
                 \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"

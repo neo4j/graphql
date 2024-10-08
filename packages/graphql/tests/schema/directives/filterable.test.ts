@@ -918,7 +918,7 @@ describe("@filterable directive", () => {
                     }
 
                     type Actor {
-                      movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+                      movies(directed: Boolean = true, limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                       moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
                       moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
@@ -1027,7 +1027,6 @@ describe("@filterable directive", () => {
                       NOT: ActorMoviesConnectionWhere
                       OR: [ActorMoviesConnectionWhere!]
                       node: MovieWhere
-                      node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                     }
 
                     input ActorMoviesCreateFieldInput {
@@ -1133,22 +1132,12 @@ describe("@filterable directive", () => {
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
-                      password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
                       username_IN: [String!]
-                      username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
 
@@ -1180,7 +1169,6 @@ describe("@filterable directive", () => {
                       Return Actors where none of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
                       moviesConnection_NONE: ActorMoviesConnectionWhere
-                      moviesConnection_NOT: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
                       \\"\\"\\"
                       Return Actors where one of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -1193,7 +1181,6 @@ describe("@filterable directive", () => {
                       movies_ALL: MovieWhere
                       \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
                       movies_NONE: MovieWhere
-                      movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
                       \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
                       movies_SINGLE: MovieWhere
                       \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
@@ -1203,22 +1190,12 @@ describe("@filterable directive", () => {
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
-                      password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
                       username_IN: [String!]
-                      username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
 
@@ -1265,7 +1242,7 @@ describe("@filterable directive", () => {
                     }
 
                     type Movie {
-                      actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+                      actors(directed: Boolean = true, limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
                       actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
                       actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
@@ -1321,7 +1298,6 @@ describe("@filterable directive", () => {
                       NOT: MovieActorsConnectionWhere
                       OR: [MovieActorsConnectionWhere!]
                       node: ActorWhere
-                      node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                     }
 
                     input MovieActorsCreateFieldInput {
@@ -1553,11 +1529,6 @@ describe("@filterable directive", () => {
                       title_ENDS_WITH: String
                       title_EQ: String
                       title_IN: [String]
-                      title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       title_STARTS_WITH: String
                     }
 
@@ -1588,7 +1559,6 @@ describe("@filterable directive", () => {
                       Return Movies where none of the related MovieActorsConnections match this filter
                       \\"\\"\\"
                       actorsConnection_NONE: MovieActorsConnectionWhere
-                      actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                       \\"\\"\\"
                       Return Movies where one of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -1601,7 +1571,6 @@ describe("@filterable directive", () => {
                       actors_ALL: ActorWhere
                       \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
                       actors_NONE: ActorWhere
-                      actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
                       \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
                       actors_SINGLE: ActorWhere
                       \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
@@ -1611,11 +1580,6 @@ describe("@filterable directive", () => {
                       title_ENDS_WITH: String
                       title_EQ: String
                       title_IN: [String]
-                      title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       title_STARTS_WITH: String
                     }
 
@@ -1643,12 +1607,12 @@ describe("@filterable directive", () => {
                     }
 
                     type Query {
-                      actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+                      actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
                       actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-                      actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
-                      movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                      actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
+                      movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                       moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                      moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                      moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                     }
 
                     \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -1729,7 +1693,7 @@ describe("@filterable directive", () => {
                     }
 
                     type Actor {
-                      movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+                      movies(directed: Boolean = true, limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                       moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
                       moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
@@ -1839,7 +1803,6 @@ describe("@filterable directive", () => {
                       NOT: ActorMoviesConnectionWhere
                       OR: [ActorMoviesConnectionWhere!]
                       node: MovieWhere
-                      node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                     }
 
                     input ActorMoviesCreateFieldInput {
@@ -1986,22 +1949,12 @@ describe("@filterable directive", () => {
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
-                      password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
                       username_IN: [String!]
-                      username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
 
@@ -2033,7 +1986,6 @@ describe("@filterable directive", () => {
                       Return Actors where none of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
                       moviesConnection_NONE: ActorMoviesConnectionWhere
-                      moviesConnection_NOT: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
                       \\"\\"\\"
                       Return Actors where one of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -2046,7 +1998,6 @@ describe("@filterable directive", () => {
                       movies_ALL: MovieWhere
                       \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
                       movies_NONE: MovieWhere
-                      movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
                       \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
                       movies_SINGLE: MovieWhere
                       \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
@@ -2056,22 +2007,12 @@ describe("@filterable directive", () => {
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
-                      password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
                       username_IN: [String!]
-                      username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
 
@@ -2118,7 +2059,7 @@ describe("@filterable directive", () => {
                     }
 
                     type Movie {
-                      actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+                      actors(directed: Boolean = true, limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
                       actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
                       actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
@@ -2174,7 +2115,6 @@ describe("@filterable directive", () => {
                       NOT: MovieActorsConnectionWhere
                       OR: [MovieActorsConnectionWhere!]
                       node: ActorWhere
-                      node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                     }
 
                     input MovieActorsCreateFieldInput {
@@ -2406,11 +2346,6 @@ describe("@filterable directive", () => {
                       title_ENDS_WITH: String
                       title_EQ: String
                       title_IN: [String]
-                      title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       title_STARTS_WITH: String
                     }
 
@@ -2441,7 +2376,6 @@ describe("@filterable directive", () => {
                       Return Movies where none of the related MovieActorsConnections match this filter
                       \\"\\"\\"
                       actorsConnection_NONE: MovieActorsConnectionWhere
-                      actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                       \\"\\"\\"
                       Return Movies where one of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -2454,7 +2388,6 @@ describe("@filterable directive", () => {
                       actors_ALL: ActorWhere
                       \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
                       actors_NONE: ActorWhere
-                      actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
                       \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
                       actors_SINGLE: ActorWhere
                       \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
@@ -2464,11 +2397,6 @@ describe("@filterable directive", () => {
                       title_ENDS_WITH: String
                       title_EQ: String
                       title_IN: [String]
-                      title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       title_STARTS_WITH: String
                     }
 
@@ -2496,12 +2424,12 @@ describe("@filterable directive", () => {
                     }
 
                     type Query {
-                      actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+                      actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
                       actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-                      actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
-                      movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                      actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
+                      movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                       moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                      moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                      moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                     }
 
                     \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -2582,7 +2510,7 @@ describe("@filterable directive", () => {
                     }
 
                     type Actor {
-                      movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+                      movies(directed: Boolean = true, limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                       moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
                       moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
@@ -2692,7 +2620,6 @@ describe("@filterable directive", () => {
                       NOT: ActorMoviesConnectionWhere
                       OR: [ActorMoviesConnectionWhere!]
                       node: MovieWhere
-                      node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                     }
 
                     input ActorMoviesCreateFieldInput {
@@ -2829,22 +2756,12 @@ describe("@filterable directive", () => {
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
-                      password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
                       username_IN: [String!]
-                      username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
 
@@ -2876,7 +2793,6 @@ describe("@filterable directive", () => {
                       Return Actors where none of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
                       moviesConnection_NONE: ActorMoviesConnectionWhere
-                      moviesConnection_NOT: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
                       \\"\\"\\"
                       Return Actors where one of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -2889,7 +2805,6 @@ describe("@filterable directive", () => {
                       movies_ALL: MovieWhere
                       \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
                       movies_NONE: MovieWhere
-                      movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
                       \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
                       movies_SINGLE: MovieWhere
                       \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
@@ -2899,22 +2814,12 @@ describe("@filterable directive", () => {
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
-                      password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
                       username_IN: [String!]
-                      username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
 
@@ -2961,7 +2866,7 @@ describe("@filterable directive", () => {
                     }
 
                     type Movie {
-                      actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+                      actors(directed: Boolean = true, limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
                       actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
                       actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
@@ -3017,7 +2922,6 @@ describe("@filterable directive", () => {
                       NOT: MovieActorsConnectionWhere
                       OR: [MovieActorsConnectionWhere!]
                       node: ActorWhere
-                      node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                     }
 
                     input MovieActorsCreateFieldInput {
@@ -3265,7 +3169,6 @@ describe("@filterable directive", () => {
                       Return Movies where none of the related MovieActorsConnections match this filter
                       \\"\\"\\"
                       actorsConnection_NONE: MovieActorsConnectionWhere
-                      actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                       \\"\\"\\"
                       Return Movies where one of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -3278,7 +3181,6 @@ describe("@filterable directive", () => {
                       actors_ALL: ActorWhere
                       \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
                       actors_NONE: ActorWhere
-                      actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
                       \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
                       actors_SINGLE: ActorWhere
                       \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
@@ -3309,12 +3211,12 @@ describe("@filterable directive", () => {
                     }
 
                     type Query {
-                      actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+                      actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
                       actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-                      actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
-                      movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                      actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
+                      movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                       moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                      moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                      moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                     }
 
                     \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -3398,7 +3300,7 @@ describe("@filterable directive", () => {
                     }
 
                     type Actor {
-                      movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+                      movies(directed: Boolean = true, limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                       moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
                       moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
@@ -3508,7 +3410,6 @@ describe("@filterable directive", () => {
                       NOT: ActorMoviesConnectionWhere
                       OR: [ActorMoviesConnectionWhere!]
                       node: MovieWhere
-                      node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                     }
 
                     input ActorMoviesCreateFieldInput {
@@ -3655,22 +3556,12 @@ describe("@filterable directive", () => {
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
-                      password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
                       username_IN: [String!]
-                      username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
 
@@ -3702,7 +3593,6 @@ describe("@filterable directive", () => {
                       Return Actors where none of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
                       moviesConnection_NONE: ActorMoviesConnectionWhere
-                      moviesConnection_NOT: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
                       \\"\\"\\"
                       Return Actors where one of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -3715,7 +3605,6 @@ describe("@filterable directive", () => {
                       movies_ALL: MovieWhere
                       \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
                       movies_NONE: MovieWhere
-                      movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
                       \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
                       movies_SINGLE: MovieWhere
                       \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
@@ -3725,22 +3614,12 @@ describe("@filterable directive", () => {
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
-                      password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
                       username_IN: [String!]
-                      username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
 
@@ -3787,7 +3666,7 @@ describe("@filterable directive", () => {
                     }
 
                     type Movie {
-                      actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+                      actors(directed: Boolean = true, limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
                       actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
                       actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
@@ -3831,7 +3710,6 @@ describe("@filterable directive", () => {
                       NOT: MovieActorsConnectionWhere
                       OR: [MovieActorsConnectionWhere!]
                       node: ActorWhere
-                      node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                     }
 
                     input MovieActorsCreateFieldInput {
@@ -3987,11 +3865,6 @@ describe("@filterable directive", () => {
                       title_ENDS_WITH: String
                       title_EQ: String
                       title_IN: [String]
-                      title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       title_STARTS_WITH: String
                     }
 
@@ -4021,7 +3894,6 @@ describe("@filterable directive", () => {
                       Return Movies where none of the related MovieActorsConnections match this filter
                       \\"\\"\\"
                       actorsConnection_NONE: MovieActorsConnectionWhere
-                      actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                       \\"\\"\\"
                       Return Movies where one of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -4034,7 +3906,6 @@ describe("@filterable directive", () => {
                       actors_ALL: ActorWhere
                       \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
                       actors_NONE: ActorWhere
-                      actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
                       \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
                       actors_SINGLE: ActorWhere
                       \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
@@ -4044,11 +3915,6 @@ describe("@filterable directive", () => {
                       title_ENDS_WITH: String
                       title_EQ: String
                       title_IN: [String]
-                      title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       title_STARTS_WITH: String
                     }
 
@@ -4076,12 +3942,12 @@ describe("@filterable directive", () => {
                     }
 
                     type Query {
-                      actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+                      actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
                       actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-                      actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
-                      movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                      actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
+                      movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                       moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                      moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                      moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                     }
 
                     \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -4164,7 +4030,7 @@ describe("@filterable directive", () => {
                     }
 
                     type Actor {
-                      movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+                      movies(directed: Boolean = true, limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                       moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
                       moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
@@ -4274,7 +4140,6 @@ describe("@filterable directive", () => {
                       NOT: ActorMoviesConnectionWhere
                       OR: [ActorMoviesConnectionWhere!]
                       node: MovieWhere
-                      node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                     }
 
                     input ActorMoviesCreateFieldInput {
@@ -4421,22 +4286,12 @@ describe("@filterable directive", () => {
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
-                      password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
                       username_IN: [String!]
-                      username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
 
@@ -4468,7 +4323,6 @@ describe("@filterable directive", () => {
                       Return Actors where none of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
                       moviesConnection_NONE: ActorMoviesConnectionWhere
-                      moviesConnection_NOT: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
                       \\"\\"\\"
                       Return Actors where one of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -4481,7 +4335,6 @@ describe("@filterable directive", () => {
                       movies_ALL: MovieWhere
                       \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
                       movies_NONE: MovieWhere
-                      movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
                       \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
                       movies_SINGLE: MovieWhere
                       \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
@@ -4491,22 +4344,12 @@ describe("@filterable directive", () => {
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
-                      password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
                       username_IN: [String!]
-                      username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
 
@@ -4553,7 +4396,7 @@ describe("@filterable directive", () => {
                     }
 
                     type Movie {
-                      actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+                      actors(directed: Boolean = true, limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
                       actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
                       actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
@@ -4609,7 +4452,6 @@ describe("@filterable directive", () => {
                       NOT: MovieActorsConnectionWhere
                       OR: [MovieActorsConnectionWhere!]
                       node: ActorWhere
-                      node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                     }
 
                     input MovieActorsCreateFieldInput {
@@ -4841,11 +4683,6 @@ describe("@filterable directive", () => {
                       title_ENDS_WITH: String
                       title_EQ: String
                       title_IN: [String]
-                      title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       title_STARTS_WITH: String
                     }
 
@@ -4876,7 +4713,6 @@ describe("@filterable directive", () => {
                       Return Movies where none of the related MovieActorsConnections match this filter
                       \\"\\"\\"
                       actorsConnection_NONE: MovieActorsConnectionWhere
-                      actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                       \\"\\"\\"
                       Return Movies where one of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -4889,7 +4725,6 @@ describe("@filterable directive", () => {
                       actors_ALL: ActorWhere
                       \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
                       actors_NONE: ActorWhere
-                      actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
                       \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
                       actors_SINGLE: ActorWhere
                       \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
@@ -4899,11 +4734,6 @@ describe("@filterable directive", () => {
                       title_ENDS_WITH: String
                       title_EQ: String
                       title_IN: [String]
-                      title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       title_STARTS_WITH: String
                     }
 
@@ -4931,12 +4761,12 @@ describe("@filterable directive", () => {
                     }
 
                     type Query {
-                      actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+                      actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
                       actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-                      actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
-                      movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                      actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
+                      movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                       moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                      moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                      moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                     }
 
                     \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -5019,7 +4849,7 @@ describe("@filterable directive", () => {
                     }
 
                     type Actor {
-                      movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+                      movies(directed: Boolean = true, limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                       moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
                       moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
@@ -5129,7 +4959,6 @@ describe("@filterable directive", () => {
                       NOT: ActorMoviesConnectionWhere
                       OR: [ActorMoviesConnectionWhere!]
                       node: MovieWhere
-                      node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                     }
 
                     input ActorMoviesCreateFieldInput {
@@ -5276,22 +5105,12 @@ describe("@filterable directive", () => {
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
-                      password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
                       username_IN: [String!]
-                      username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
 
@@ -5323,7 +5142,6 @@ describe("@filterable directive", () => {
                       Return Actors where none of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
                       moviesConnection_NONE: ActorMoviesConnectionWhere
-                      moviesConnection_NOT: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
                       \\"\\"\\"
                       Return Actors where one of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -5336,7 +5154,6 @@ describe("@filterable directive", () => {
                       movies_ALL: MovieWhere
                       \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
                       movies_NONE: MovieWhere
-                      movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
                       \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
                       movies_SINGLE: MovieWhere
                       \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
@@ -5346,22 +5163,12 @@ describe("@filterable directive", () => {
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
-                      password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
                       username_IN: [String!]
-                      username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
 
@@ -5408,7 +5215,7 @@ describe("@filterable directive", () => {
                     }
 
                     type Movie {
-                      actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+                      actors(directed: Boolean = true, limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
                       actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
                       actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
@@ -5464,7 +5271,6 @@ describe("@filterable directive", () => {
                       NOT: MovieActorsConnectionWhere
                       OR: [MovieActorsConnectionWhere!]
                       node: ActorWhere
-                      node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                     }
 
                     input MovieActorsCreateFieldInput {
@@ -5696,11 +5502,6 @@ describe("@filterable directive", () => {
                       title_ENDS_WITH: String
                       title_EQ: String
                       title_IN: [String]
-                      title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       title_STARTS_WITH: String
                     }
 
@@ -5726,11 +5527,6 @@ describe("@filterable directive", () => {
                       title_ENDS_WITH: String
                       title_EQ: String
                       title_IN: [String]
-                      title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       title_STARTS_WITH: String
                     }
 
@@ -5758,12 +5554,12 @@ describe("@filterable directive", () => {
                     }
 
                     type Query {
-                      actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+                      actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
                       actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-                      actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
-                      movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                      actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
+                      movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                       moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                      moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                      moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                     }
 
                     \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -5846,7 +5642,7 @@ describe("@filterable directive", () => {
                     }
 
                     type Actor {
-                      movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+                      movies(directed: Boolean = true, limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                       moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
                       moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
@@ -5956,7 +5752,6 @@ describe("@filterable directive", () => {
                       NOT: ActorMoviesConnectionWhere
                       OR: [ActorMoviesConnectionWhere!]
                       node: MovieWhere
-                      node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                     }
 
                     input ActorMoviesCreateFieldInput {
@@ -6103,22 +5898,12 @@ describe("@filterable directive", () => {
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
-                      password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
                       username_IN: [String!]
-                      username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
 
@@ -6150,7 +5935,6 @@ describe("@filterable directive", () => {
                       Return Actors where none of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
                       moviesConnection_NONE: ActorMoviesConnectionWhere
-                      moviesConnection_NOT: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
                       \\"\\"\\"
                       Return Actors where one of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -6163,7 +5947,6 @@ describe("@filterable directive", () => {
                       movies_ALL: MovieWhere
                       \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
                       movies_NONE: MovieWhere
-                      movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
                       \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
                       movies_SINGLE: MovieWhere
                       \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
@@ -6173,22 +5956,12 @@ describe("@filterable directive", () => {
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
-                      password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
                       username_IN: [String!]
-                      username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
 
@@ -6235,7 +6008,7 @@ describe("@filterable directive", () => {
                     }
 
                     type Movie {
-                      actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+                      actors(directed: Boolean = true, limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
                       actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
                       actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
@@ -6279,7 +6052,6 @@ describe("@filterable directive", () => {
                       NOT: MovieActorsConnectionWhere
                       OR: [MovieActorsConnectionWhere!]
                       node: ActorWhere
-                      node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                     }
 
                     input MovieActorsCreateFieldInput {
@@ -6435,11 +6207,6 @@ describe("@filterable directive", () => {
                       title_ENDS_WITH: String
                       title_EQ: String
                       title_IN: [String]
-                      title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       title_STARTS_WITH: String
                     }
 
@@ -6469,7 +6236,6 @@ describe("@filterable directive", () => {
                       Return Movies where none of the related MovieActorsConnections match this filter
                       \\"\\"\\"
                       actorsConnection_NONE: MovieActorsConnectionWhere
-                      actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                       \\"\\"\\"
                       Return Movies where one of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -6482,7 +6248,6 @@ describe("@filterable directive", () => {
                       actors_ALL: ActorWhere
                       \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
                       actors_NONE: ActorWhere
-                      actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
                       \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
                       actors_SINGLE: ActorWhere
                       \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
@@ -6492,11 +6257,6 @@ describe("@filterable directive", () => {
                       title_ENDS_WITH: String
                       title_EQ: String
                       title_IN: [String]
-                      title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       title_STARTS_WITH: String
                     }
 
@@ -6524,12 +6284,12 @@ describe("@filterable directive", () => {
                     }
 
                     type Query {
-                      actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+                      actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
                       actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-                      actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
-                      movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                      actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
+                      movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                       moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                      moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                      moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                     }
 
                     \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -6617,7 +6377,7 @@ describe("@filterable directive", () => {
                     }
 
                     type Actor implements Person {
-                      movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+                      movies(directed: Boolean = true, limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                       moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
                       moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
@@ -6715,7 +6475,6 @@ describe("@filterable directive", () => {
                       NOT: ActorMoviesConnectionWhere
                       OR: [ActorMoviesConnectionWhere!]
                       node: MovieWhere
-                      node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                     }
 
                     input ActorMoviesCreateFieldInput {
@@ -6862,22 +6621,12 @@ describe("@filterable directive", () => {
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
-                      password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
                       username_IN: [String!]
-                      username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
 
@@ -6909,7 +6658,6 @@ describe("@filterable directive", () => {
                       Return Actors where none of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
                       moviesConnection_NONE: ActorMoviesConnectionWhere
-                      moviesConnection_NOT: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
                       \\"\\"\\"
                       Return Actors where one of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -6922,7 +6670,6 @@ describe("@filterable directive", () => {
                       movies_ALL: MovieWhere
                       \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
                       movies_NONE: MovieWhere
-                      movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
                       \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
                       movies_SINGLE: MovieWhere
                       \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
@@ -6932,22 +6679,12 @@ describe("@filterable directive", () => {
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
-                      password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
                       username_IN: [String!]
-                      username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
 
@@ -6994,7 +6731,7 @@ describe("@filterable directive", () => {
                     }
 
                     type Movie {
-                      actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                      actors(directed: Boolean = true, limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                       actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                       actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
@@ -7023,7 +6760,6 @@ describe("@filterable directive", () => {
                       NOT: MovieActorsConnectionWhere
                       OR: [MovieActorsConnectionWhere!]
                       node: PersonWhere
-                      node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                     }
 
                     input MovieActorsCreateFieldInput {
@@ -7186,11 +6922,6 @@ describe("@filterable directive", () => {
                       title_ENDS_WITH: String
                       title_EQ: String
                       title_IN: [String]
-                      title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       title_STARTS_WITH: String
                     }
 
@@ -7220,7 +6951,6 @@ describe("@filterable directive", () => {
                       Return Movies where none of the related MovieActorsConnections match this filter
                       \\"\\"\\"
                       actorsConnection_NONE: MovieActorsConnectionWhere
-                      actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                       \\"\\"\\"
                       Return Movies where one of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -7233,7 +6963,6 @@ describe("@filterable directive", () => {
                       actors_ALL: PersonWhere
                       \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
                       actors_NONE: PersonWhere
-                      actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
                       \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
                       actors_SINGLE: PersonWhere
                       \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
@@ -7243,11 +6972,6 @@ describe("@filterable directive", () => {
                       title_ENDS_WITH: String
                       title_EQ: String
                       title_IN: [String]
-                      title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       title_STARTS_WITH: String
                     }
 
@@ -7316,7 +7040,7 @@ describe("@filterable directive", () => {
                       \\"\\"\\"
                       Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
-                      sort: [PersonSort]
+                      sort: [PersonSort!]
                     }
 
                     \\"\\"\\"
@@ -7336,11 +7060,6 @@ describe("@filterable directive", () => {
                       username_ENDS_WITH: String
                       username_EQ: String
                       username_IN: [String!]
-                      username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
 
@@ -7358,24 +7077,19 @@ describe("@filterable directive", () => {
                       username_ENDS_WITH: String
                       username_EQ: String
                       username_IN: [String!]
-                      username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
 
                     type Query {
-                      actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+                      actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
                       actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-                      actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
-                      movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                      actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
+                      movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                       moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                      moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                      people(options: PersonOptions, where: PersonWhere): [Person!]!
+                      moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+                      people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                       peopleAggregate(where: PersonWhere): PersonAggregateSelection!
-                      peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
+                      peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                     }
 
                     \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -7463,7 +7177,7 @@ describe("@filterable directive", () => {
                     }
 
                     type Actor implements Person {
-                      movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+                      movies(directed: Boolean = true, limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                       moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
                       moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
@@ -7561,7 +7275,6 @@ describe("@filterable directive", () => {
                       NOT: ActorMoviesConnectionWhere
                       OR: [ActorMoviesConnectionWhere!]
                       node: MovieWhere
-                      node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                     }
 
                     input ActorMoviesCreateFieldInput {
@@ -7708,22 +7421,12 @@ describe("@filterable directive", () => {
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
-                      password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
                       username_IN: [String!]
-                      username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
 
@@ -7755,7 +7458,6 @@ describe("@filterable directive", () => {
                       Return Actors where none of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
                       moviesConnection_NONE: ActorMoviesConnectionWhere
-                      moviesConnection_NOT: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
                       \\"\\"\\"
                       Return Actors where one of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -7768,7 +7470,6 @@ describe("@filterable directive", () => {
                       movies_ALL: MovieWhere
                       \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
                       movies_NONE: MovieWhere
-                      movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
                       \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
                       movies_SINGLE: MovieWhere
                       \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
@@ -7778,22 +7479,12 @@ describe("@filterable directive", () => {
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
-                      password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
                       username_IN: [String!]
-                      username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
 
@@ -7840,7 +7531,7 @@ describe("@filterable directive", () => {
                     }
 
                     type Movie {
-                      actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                      actors(directed: Boolean = true, limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                       actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                       actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
@@ -7881,7 +7572,6 @@ describe("@filterable directive", () => {
                       NOT: MovieActorsConnectionWhere
                       OR: [MovieActorsConnectionWhere!]
                       node: PersonWhere
-                      node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                     }
 
                     input MovieActorsCreateFieldInput {
@@ -8085,11 +7775,6 @@ describe("@filterable directive", () => {
                       title_ENDS_WITH: String
                       title_EQ: String
                       title_IN: [String]
-                      title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       title_STARTS_WITH: String
                     }
 
@@ -8120,7 +7805,6 @@ describe("@filterable directive", () => {
                       Return Movies where none of the related MovieActorsConnections match this filter
                       \\"\\"\\"
                       actorsConnection_NONE: MovieActorsConnectionWhere
-                      actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                       \\"\\"\\"
                       Return Movies where one of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -8133,7 +7817,6 @@ describe("@filterable directive", () => {
                       actors_ALL: PersonWhere
                       \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
                       actors_NONE: PersonWhere
-                      actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
                       \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
                       actors_SINGLE: PersonWhere
                       \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
@@ -8143,11 +7826,6 @@ describe("@filterable directive", () => {
                       title_ENDS_WITH: String
                       title_EQ: String
                       title_IN: [String]
-                      title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       title_STARTS_WITH: String
                     }
 
@@ -8216,7 +7894,7 @@ describe("@filterable directive", () => {
                       \\"\\"\\"
                       Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
-                      sort: [PersonSort]
+                      sort: [PersonSort!]
                     }
 
                     \\"\\"\\"
@@ -8236,11 +7914,6 @@ describe("@filterable directive", () => {
                       username_ENDS_WITH: String
                       username_EQ: String
                       username_IN: [String!]
-                      username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
 
@@ -8258,24 +7931,19 @@ describe("@filterable directive", () => {
                       username_ENDS_WITH: String
                       username_EQ: String
                       username_IN: [String!]
-                      username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
 
                     type Query {
-                      actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+                      actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
                       actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-                      actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
-                      movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                      actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
+                      movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                       moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                      moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                      people(options: PersonOptions, where: PersonWhere): [Person!]!
+                      moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+                      people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                       peopleAggregate(where: PersonWhere): PersonAggregateSelection!
-                      peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
+                      peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                     }
 
                     \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -8363,7 +8031,7 @@ describe("@filterable directive", () => {
                     }
 
                     type Actor implements Person {
-                      movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+                      movies(directed: Boolean = true, limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                       moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
                       moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
@@ -8461,7 +8129,6 @@ describe("@filterable directive", () => {
                       NOT: ActorMoviesConnectionWhere
                       OR: [ActorMoviesConnectionWhere!]
                       node: MovieWhere
-                      node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                     }
 
                     input ActorMoviesCreateFieldInput {
@@ -8608,22 +8275,12 @@ describe("@filterable directive", () => {
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
-                      password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
                       username_IN: [String!]
-                      username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
 
@@ -8655,7 +8312,6 @@ describe("@filterable directive", () => {
                       Return Actors where none of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
                       moviesConnection_NONE: ActorMoviesConnectionWhere
-                      moviesConnection_NOT: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
                       \\"\\"\\"
                       Return Actors where one of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -8668,7 +8324,6 @@ describe("@filterable directive", () => {
                       movies_ALL: MovieWhere
                       \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
                       movies_NONE: MovieWhere
-                      movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
                       \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
                       movies_SINGLE: MovieWhere
                       \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
@@ -8678,22 +8333,12 @@ describe("@filterable directive", () => {
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
-                      password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
                       username_IN: [String!]
-                      username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
 
@@ -8740,7 +8385,7 @@ describe("@filterable directive", () => {
                     }
 
                     type Movie {
-                      actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                      actors(directed: Boolean = true, limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                       actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                       actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
@@ -8769,7 +8414,6 @@ describe("@filterable directive", () => {
                       NOT: MovieActorsConnectionWhere
                       OR: [MovieActorsConnectionWhere!]
                       node: PersonWhere
-                      node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                     }
 
                     input MovieActorsCreateFieldInput {
@@ -8932,11 +8576,6 @@ describe("@filterable directive", () => {
                       title_ENDS_WITH: String
                       title_EQ: String
                       title_IN: [String]
-                      title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       title_STARTS_WITH: String
                     }
 
@@ -8966,7 +8605,6 @@ describe("@filterable directive", () => {
                       Return Movies where none of the related MovieActorsConnections match this filter
                       \\"\\"\\"
                       actorsConnection_NONE: MovieActorsConnectionWhere
-                      actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                       \\"\\"\\"
                       Return Movies where one of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -8979,7 +8617,6 @@ describe("@filterable directive", () => {
                       actors_ALL: PersonWhere
                       \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
                       actors_NONE: PersonWhere
-                      actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
                       \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
                       actors_SINGLE: PersonWhere
                       \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
@@ -8989,11 +8626,6 @@ describe("@filterable directive", () => {
                       title_ENDS_WITH: String
                       title_EQ: String
                       title_IN: [String]
-                      title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       title_STARTS_WITH: String
                     }
 
@@ -9062,7 +8694,7 @@ describe("@filterable directive", () => {
                       \\"\\"\\"
                       Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
-                      sort: [PersonSort]
+                      sort: [PersonSort!]
                     }
 
                     \\"\\"\\"
@@ -9082,11 +8714,6 @@ describe("@filterable directive", () => {
                       username_ENDS_WITH: String
                       username_EQ: String
                       username_IN: [String!]
-                      username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
 
@@ -9104,24 +8731,19 @@ describe("@filterable directive", () => {
                       username_ENDS_WITH: String
                       username_EQ: String
                       username_IN: [String!]
-                      username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
 
                     type Query {
-                      actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+                      actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
                       actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-                      actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
-                      movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                      actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
+                      movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                       moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                      moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                      people(options: PersonOptions, where: PersonWhere): [Person!]!
+                      moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+                      people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
                       peopleAggregate(where: PersonWhere): PersonAggregateSelection!
-                      peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
+                      peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                     }
 
                     \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -9213,7 +8835,7 @@ describe("@filterable directive", () => {
                     }
 
                     type Actor {
-                      movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+                      movies(directed: Boolean = true, limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                       moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
                       moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
@@ -9323,7 +8945,6 @@ describe("@filterable directive", () => {
                       NOT: ActorMoviesConnectionWhere
                       OR: [ActorMoviesConnectionWhere!]
                       node: MovieWhere
-                      node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                     }
 
                     input ActorMoviesCreateFieldInput {
@@ -9470,22 +9091,12 @@ describe("@filterable directive", () => {
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
-                      password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
                       username_IN: [String!]
-                      username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
 
@@ -9517,7 +9128,6 @@ describe("@filterable directive", () => {
                       Return Actors where none of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
                       moviesConnection_NONE: ActorMoviesConnectionWhere
-                      moviesConnection_NOT: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
                       \\"\\"\\"
                       Return Actors where one of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -9530,7 +9140,6 @@ describe("@filterable directive", () => {
                       movies_ALL: MovieWhere
                       \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
                       movies_NONE: MovieWhere
-                      movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
                       \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
                       movies_SINGLE: MovieWhere
                       \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
@@ -9540,22 +9149,12 @@ describe("@filterable directive", () => {
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
-                      password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
                       username_IN: [String!]
-                      username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
 
@@ -9566,7 +9165,7 @@ describe("@filterable directive", () => {
                     }
 
                     type Appearance {
-                      movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+                      movies(directed: Boolean = true, limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                       moviesAggregate(directed: Boolean = true, where: MovieWhere): AppearanceMovieMoviesAggregationSelection
                       moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [AppearanceMoviesConnectionSort!], where: AppearanceMoviesConnectionWhere): AppearanceMoviesConnection!
                       password: String!
@@ -9676,7 +9275,6 @@ describe("@filterable directive", () => {
                       NOT: AppearanceMoviesConnectionWhere
                       OR: [AppearanceMoviesConnectionWhere!]
                       node: MovieWhere
-                      node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                     }
 
                     input AppearanceMoviesCreateFieldInput {
@@ -9823,22 +9421,12 @@ describe("@filterable directive", () => {
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
-                      password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
                       username_IN: [String!]
-                      username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
 
@@ -9870,7 +9458,6 @@ describe("@filterable directive", () => {
                       Return Appearances where none of the related AppearanceMoviesConnections match this filter
                       \\"\\"\\"
                       moviesConnection_NONE: AppearanceMoviesConnectionWhere
-                      moviesConnection_NOT: AppearanceMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
                       \\"\\"\\"
                       Return Appearances where one of the related AppearanceMoviesConnections match this filter
                       \\"\\"\\"
@@ -9883,7 +9470,6 @@ describe("@filterable directive", () => {
                       movies_ALL: MovieWhere
                       \\"\\"\\"Return Appearances where none of the related Movies match this filter\\"\\"\\"
                       movies_NONE: MovieWhere
-                      movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
                       \\"\\"\\"Return Appearances where one of the related Movies match this filter\\"\\"\\"
                       movies_SINGLE: MovieWhere
                       \\"\\"\\"Return Appearances where some of the related Movies match this filter\\"\\"\\"
@@ -9893,22 +9479,12 @@ describe("@filterable directive", () => {
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
-                      password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
                       username_IN: [String!]
-                      username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
 
@@ -9960,7 +9536,7 @@ describe("@filterable directive", () => {
                     }
 
                     type Movie {
-                      actors(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
+                      actors(directed: Boolean = true, limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
                       actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
                     }
@@ -9975,7 +9551,6 @@ describe("@filterable directive", () => {
                       NOT: MovieActorsActorConnectionWhere
                       OR: [MovieActorsActorConnectionWhere!]
                       node: ActorWhere
-                      node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                     }
 
                     input MovieActorsActorCreateFieldInput {
@@ -10024,7 +9599,6 @@ describe("@filterable directive", () => {
                       NOT: MovieActorsAppearanceConnectionWhere
                       OR: [MovieActorsAppearanceConnectionWhere!]
                       node: AppearanceWhere
-                      node_NOT: AppearanceWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                     }
 
                     input MovieActorsAppearanceCreateFieldInput {
@@ -10225,11 +9799,6 @@ describe("@filterable directive", () => {
                       title_ENDS_WITH: String
                       title_EQ: String
                       title_IN: [String]
-                      title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       title_STARTS_WITH: String
                     }
 
@@ -10259,7 +9828,6 @@ describe("@filterable directive", () => {
                       Return Movies where none of the related MovieActorsConnections match this filter
                       \\"\\"\\"
                       actorsConnection_NONE: MovieActorsConnectionWhere
-                      actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                       \\"\\"\\"
                       Return Movies where one of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -10272,7 +9840,6 @@ describe("@filterable directive", () => {
                       actors_ALL: PersonWhere
                       \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
                       actors_NONE: PersonWhere
-                      actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
                       \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
                       actors_SINGLE: PersonWhere
                       \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
@@ -10282,11 +9849,6 @@ describe("@filterable directive", () => {
                       title_ENDS_WITH: String
                       title_EQ: String
                       title_IN: [String]
-                      title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       title_STARTS_WITH: String
                     }
 
@@ -10326,16 +9888,16 @@ describe("@filterable directive", () => {
                     }
 
                     type Query {
-                      actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+                      actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
                       actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-                      actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
-                      appearances(options: AppearanceOptions, where: AppearanceWhere): [Appearance!]!
+                      actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
+                      appearances(limit: Int, offset: Int, options: AppearanceOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [AppearanceSort!], where: AppearanceWhere): [Appearance!]!
                       appearancesAggregate(where: AppearanceWhere): AppearanceAggregateSelection!
-                      appearancesConnection(after: String, first: Int, sort: [AppearanceSort], where: AppearanceWhere): AppearancesConnection!
-                      movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                      appearancesConnection(after: String, first: Int, sort: [AppearanceSort!], where: AppearanceWhere): AppearancesConnection!
+                      movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                       moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                      moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                      people(options: QueryOptions, where: PersonWhere): [Person!]!
+                      moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+                      people(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
                     }
 
                     \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
@@ -10443,7 +10005,7 @@ describe("@filterable directive", () => {
                     }
 
                     type Actor {
-                      movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+                      movies(directed: Boolean = true, limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                       moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
                       moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
@@ -10553,7 +10115,6 @@ describe("@filterable directive", () => {
                       NOT: ActorMoviesConnectionWhere
                       OR: [ActorMoviesConnectionWhere!]
                       node: MovieWhere
-                      node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                     }
 
                     input ActorMoviesCreateFieldInput {
@@ -10700,22 +10261,12 @@ describe("@filterable directive", () => {
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
-                      password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
                       username_IN: [String!]
-                      username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
 
@@ -10747,7 +10298,6 @@ describe("@filterable directive", () => {
                       Return Actors where none of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
                       moviesConnection_NONE: ActorMoviesConnectionWhere
-                      moviesConnection_NOT: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
                       \\"\\"\\"
                       Return Actors where one of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -10760,7 +10310,6 @@ describe("@filterable directive", () => {
                       movies_ALL: MovieWhere
                       \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
                       movies_NONE: MovieWhere
-                      movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
                       \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
                       movies_SINGLE: MovieWhere
                       \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
@@ -10770,22 +10319,12 @@ describe("@filterable directive", () => {
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
-                      password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
                       username_IN: [String!]
-                      username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
 
@@ -10796,7 +10335,7 @@ describe("@filterable directive", () => {
                     }
 
                     type Appearance {
-                      movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+                      movies(directed: Boolean = true, limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                       moviesAggregate(directed: Boolean = true, where: MovieWhere): AppearanceMovieMoviesAggregationSelection
                       moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [AppearanceMoviesConnectionSort!], where: AppearanceMoviesConnectionWhere): AppearanceMoviesConnection!
                       password: String!
@@ -10906,7 +10445,6 @@ describe("@filterable directive", () => {
                       NOT: AppearanceMoviesConnectionWhere
                       OR: [AppearanceMoviesConnectionWhere!]
                       node: MovieWhere
-                      node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                     }
 
                     input AppearanceMoviesCreateFieldInput {
@@ -11053,22 +10591,12 @@ describe("@filterable directive", () => {
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
-                      password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
                       username_IN: [String!]
-                      username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
 
@@ -11100,7 +10628,6 @@ describe("@filterable directive", () => {
                       Return Appearances where none of the related AppearanceMoviesConnections match this filter
                       \\"\\"\\"
                       moviesConnection_NONE: AppearanceMoviesConnectionWhere
-                      moviesConnection_NOT: AppearanceMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
                       \\"\\"\\"
                       Return Appearances where one of the related AppearanceMoviesConnections match this filter
                       \\"\\"\\"
@@ -11113,7 +10640,6 @@ describe("@filterable directive", () => {
                       movies_ALL: MovieWhere
                       \\"\\"\\"Return Appearances where none of the related Movies match this filter\\"\\"\\"
                       movies_NONE: MovieWhere
-                      movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
                       \\"\\"\\"Return Appearances where one of the related Movies match this filter\\"\\"\\"
                       movies_SINGLE: MovieWhere
                       \\"\\"\\"Return Appearances where some of the related Movies match this filter\\"\\"\\"
@@ -11123,22 +10649,12 @@ describe("@filterable directive", () => {
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
-                      password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
                       username_IN: [String!]
-                      username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
 
@@ -11190,7 +10706,7 @@ describe("@filterable directive", () => {
                     }
 
                     type Movie {
-                      actors(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
+                      actors(directed: Boolean = true, limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
                       actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
                     }
@@ -11205,7 +10721,6 @@ describe("@filterable directive", () => {
                       NOT: MovieActorsActorConnectionWhere
                       OR: [MovieActorsActorConnectionWhere!]
                       node: ActorWhere
-                      node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                     }
 
                     input MovieActorsActorCreateFieldInput {
@@ -11254,7 +10769,6 @@ describe("@filterable directive", () => {
                       NOT: MovieActorsAppearanceConnectionWhere
                       OR: [MovieActorsAppearanceConnectionWhere!]
                       node: AppearanceWhere
-                      node_NOT: AppearanceWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                     }
 
                     input MovieActorsAppearanceCreateFieldInput {
@@ -11455,11 +10969,6 @@ describe("@filterable directive", () => {
                       title_ENDS_WITH: String
                       title_EQ: String
                       title_IN: [String]
-                      title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       title_STARTS_WITH: String
                     }
 
@@ -11489,7 +10998,6 @@ describe("@filterable directive", () => {
                       Return Movies where none of the related MovieActorsConnections match this filter
                       \\"\\"\\"
                       actorsConnection_NONE: MovieActorsConnectionWhere
-                      actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                       \\"\\"\\"
                       Return Movies where one of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -11502,7 +11010,6 @@ describe("@filterable directive", () => {
                       actors_ALL: PersonWhere
                       \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
                       actors_NONE: PersonWhere
-                      actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
                       \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
                       actors_SINGLE: PersonWhere
                       \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
@@ -11512,11 +11019,6 @@ describe("@filterable directive", () => {
                       title_ENDS_WITH: String
                       title_EQ: String
                       title_IN: [String]
-                      title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       title_STARTS_WITH: String
                     }
 
@@ -11556,16 +11058,16 @@ describe("@filterable directive", () => {
                     }
 
                     type Query {
-                      actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+                      actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
                       actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-                      actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
-                      appearances(options: AppearanceOptions, where: AppearanceWhere): [Appearance!]!
+                      actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
+                      appearances(limit: Int, offset: Int, options: AppearanceOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [AppearanceSort!], where: AppearanceWhere): [Appearance!]!
                       appearancesAggregate(where: AppearanceWhere): AppearanceAggregateSelection!
-                      appearancesConnection(after: String, first: Int, sort: [AppearanceSort], where: AppearanceWhere): AppearancesConnection!
-                      movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                      appearancesConnection(after: String, first: Int, sort: [AppearanceSort!], where: AppearanceWhere): AppearancesConnection!
+                      movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                       moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                      moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                      people(options: QueryOptions, where: PersonWhere): [Person!]!
+                      moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+                      people(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
                     }
 
                     \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
@@ -11673,7 +11175,7 @@ describe("@filterable directive", () => {
                     }
 
                     type Actor {
-                      movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+                      movies(directed: Boolean = true, limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                       moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
                       moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
@@ -11783,7 +11285,6 @@ describe("@filterable directive", () => {
                       NOT: ActorMoviesConnectionWhere
                       OR: [ActorMoviesConnectionWhere!]
                       node: MovieWhere
-                      node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                     }
 
                     input ActorMoviesCreateFieldInput {
@@ -11930,22 +11431,12 @@ describe("@filterable directive", () => {
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
-                      password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
                       username_IN: [String!]
-                      username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
 
@@ -11977,7 +11468,6 @@ describe("@filterable directive", () => {
                       Return Actors where none of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
                       moviesConnection_NONE: ActorMoviesConnectionWhere
-                      moviesConnection_NOT: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
                       \\"\\"\\"
                       Return Actors where one of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -11990,7 +11480,6 @@ describe("@filterable directive", () => {
                       movies_ALL: MovieWhere
                       \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
                       movies_NONE: MovieWhere
-                      movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
                       \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
                       movies_SINGLE: MovieWhere
                       \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
@@ -12000,22 +11489,12 @@ describe("@filterable directive", () => {
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
-                      password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
                       username_IN: [String!]
-                      username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
 
@@ -12026,7 +11505,7 @@ describe("@filterable directive", () => {
                     }
 
                     type Appearance {
-                      movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+                      movies(directed: Boolean = true, limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                       moviesAggregate(directed: Boolean = true, where: MovieWhere): AppearanceMovieMoviesAggregationSelection
                       moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [AppearanceMoviesConnectionSort!], where: AppearanceMoviesConnectionWhere): AppearanceMoviesConnection!
                       password: String!
@@ -12136,7 +11615,6 @@ describe("@filterable directive", () => {
                       NOT: AppearanceMoviesConnectionWhere
                       OR: [AppearanceMoviesConnectionWhere!]
                       node: MovieWhere
-                      node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                     }
 
                     input AppearanceMoviesCreateFieldInput {
@@ -12283,22 +11761,12 @@ describe("@filterable directive", () => {
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
-                      password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
                       username_IN: [String!]
-                      username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
 
@@ -12330,7 +11798,6 @@ describe("@filterable directive", () => {
                       Return Appearances where none of the related AppearanceMoviesConnections match this filter
                       \\"\\"\\"
                       moviesConnection_NONE: AppearanceMoviesConnectionWhere
-                      moviesConnection_NOT: AppearanceMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
                       \\"\\"\\"
                       Return Appearances where one of the related AppearanceMoviesConnections match this filter
                       \\"\\"\\"
@@ -12343,7 +11810,6 @@ describe("@filterable directive", () => {
                       movies_ALL: MovieWhere
                       \\"\\"\\"Return Appearances where none of the related Movies match this filter\\"\\"\\"
                       movies_NONE: MovieWhere
-                      movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
                       \\"\\"\\"Return Appearances where one of the related Movies match this filter\\"\\"\\"
                       movies_SINGLE: MovieWhere
                       \\"\\"\\"Return Appearances where some of the related Movies match this filter\\"\\"\\"
@@ -12353,22 +11819,12 @@ describe("@filterable directive", () => {
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
-                      password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
                       username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
                       username_IN: [String!]
-                      username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       username_STARTS_WITH: String
                     }
 
@@ -12420,7 +11876,7 @@ describe("@filterable directive", () => {
                     }
 
                     type Movie {
-                      actors(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
+                      actors(directed: Boolean = true, limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
                       actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
                     }
@@ -12435,7 +11891,6 @@ describe("@filterable directive", () => {
                       NOT: MovieActorsActorConnectionWhere
                       OR: [MovieActorsActorConnectionWhere!]
                       node: ActorWhere
-                      node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                     }
 
                     input MovieActorsActorCreateFieldInput {
@@ -12484,7 +11939,6 @@ describe("@filterable directive", () => {
                       NOT: MovieActorsAppearanceConnectionWhere
                       OR: [MovieActorsAppearanceConnectionWhere!]
                       node: AppearanceWhere
-                      node_NOT: AppearanceWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                     }
 
                     input MovieActorsAppearanceCreateFieldInput {
@@ -12685,11 +12139,6 @@ describe("@filterable directive", () => {
                       title_ENDS_WITH: String
                       title_EQ: String
                       title_IN: [String]
-                      title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       title_STARTS_WITH: String
                     }
 
@@ -12719,7 +12168,6 @@ describe("@filterable directive", () => {
                       Return Movies where none of the related MovieActorsConnections match this filter
                       \\"\\"\\"
                       actorsConnection_NONE: MovieActorsConnectionWhere
-                      actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
                       \\"\\"\\"
                       Return Movies where one of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -12732,7 +12180,6 @@ describe("@filterable directive", () => {
                       actors_ALL: PersonWhere
                       \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
                       actors_NONE: PersonWhere
-                      actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
                       \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
                       actors_SINGLE: PersonWhere
                       \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
@@ -12742,11 +12189,6 @@ describe("@filterable directive", () => {
                       title_ENDS_WITH: String
                       title_EQ: String
                       title_IN: [String]
-                      title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       title_STARTS_WITH: String
                     }
 
@@ -12786,16 +12228,16 @@ describe("@filterable directive", () => {
                     }
 
                     type Query {
-                      actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+                      actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
                       actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-                      actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
-                      appearances(options: AppearanceOptions, where: AppearanceWhere): [Appearance!]!
+                      actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
+                      appearances(limit: Int, offset: Int, options: AppearanceOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [AppearanceSort!], where: AppearanceWhere): [Appearance!]!
                       appearancesAggregate(where: AppearanceWhere): AppearanceAggregateSelection!
-                      appearancesConnection(after: String, first: Int, sort: [AppearanceSort], where: AppearanceWhere): AppearancesConnection!
-                      movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                      appearancesConnection(after: String, first: Int, sort: [AppearanceSort!], where: AppearanceWhere): AppearancesConnection!
+                      movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
                       moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-                      moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-                      people(options: QueryOptions, where: PersonWhere): [Person!]!
+                      moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+                      people(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
                     }
 
                     \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"

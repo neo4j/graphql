@@ -352,47 +352,6 @@ describe("Subscriptions to spatial types", () => {
                 crs: "wgs-84",
             },
         });
-
-        // Test NOT_IN functionality
-        const notInFilterQuery = `
-                query MoviesNotIn($locations: [PointInput!]) {
-                    ${typeMovie.plural}(where: { filmedIn_NOT_IN: $locations }) {
-                        title
-                        filmedIn {
-                            latitude
-                            longitude
-                            height
-                            crs
-                        }
-                    }
-                }
-            `;
-
-        const notInResult = await testHelper.executeGraphQL(notInFilterQuery, {
-            variableValues: {
-                locations: [
-                    {
-                        longitude: parseFloat("12.4692"),
-                        latitude: parseFloat("55.2318"),
-                    },
-                    {
-                        longitude: parseFloat("162.6476"),
-                        latitude: parseFloat("-10.2548"),
-                    },
-                ],
-            },
-        });
-
-        expect(notInResult.errors).toBeFalsy();
-        expect((notInResult.data as any)[typeMovie.plural]).toContainEqual({
-            title: "Up",
-            filmedIn: {
-                latitude,
-                longitude,
-                height: null,
-                crs: "wgs-84",
-            },
-        });
     });
 
     test("create type with CartesianPoint field", async () => {
@@ -682,47 +641,6 @@ describe("Subscriptions to spatial types", () => {
 
         expect(inResult.errors).toBeFalsy();
         expect((inResult.data as any)[typeMovie.plural]).toContainEqual({
-            title: "Up",
-            location: {
-                x,
-                y,
-                z: null,
-                crs: "cartesian",
-            },
-        });
-
-        // Test NOT_IN functionality
-        const notInFilterQuery = `
-                query MoviesNotIn($locations: [CartesianPointInput!]) {
-                    ${typeMovie.plural}(where: { location_NOT_IN: $locations }) {
-                        title
-                        location {
-                            x
-                            y
-                            z
-                            crs
-                        }
-                    }
-                }
-            `;
-
-        const notInResult = await testHelper.executeGraphQL(notInFilterQuery, {
-            variableValues: {
-                locations: [
-                    {
-                        x: 0.13677962007932365,
-                        y: 0.05952018848620355,
-                    },
-                    {
-                        x: 0.993210831657052,
-                        y: 0.3956587021239102,
-                    },
-                ],
-            },
-        });
-
-        expect(notInResult.errors).toBeFalsy();
-        expect((notInResult.data as any)[typeMovie.plural]).toContainEqual({
             title: "Up",
             location: {
                 x,

@@ -17,13 +17,12 @@
  * limitations under the License.
  */
 
-import { asArray } from "@graphql-tools/utils";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { UnionEntityAdapter } from "../../../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../../../../types/neo4j-graphql-translation-context";
-import { filterTruthy, isRecord } from "../../../../utils/utils";
+import { asArray, filterTruthy, isRecord } from "../../../../utils/utils";
 import { checkEntityAuthentication } from "../../../authorization/check-authentication";
 import type { Filter } from "../../ast/filters/Filter";
 import { DeleteOperation } from "../../ast/operations/DeleteOperation";

@@ -504,46 +504,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
         `);
     });
 
-    test("should find where genres_NOT", async () => {
-        const query = /* GraphQL */ `
-            {
-                movies(where: { genres_NOT: { moviesAggregate: { count: 2 } } }) {
-                    title
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            CALL {
-                WITH this
-                MATCH (this)-[:IN_GENRE]->(this0:Genre)
-                CALL {
-                    WITH this0
-                    MATCH (this0)<-[this1:IN_GENRE]-(this2:Movie)
-                    RETURN count(this2) = $param0 AS var3
-                }
-                WITH *
-                WHERE var3 = true
-                RETURN count(this0) > 0 AS var4
-            }
-            WITH *
-            WHERE var4 = false
-            RETURN this { .title } AS this"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": {
-                    \\"low\\": 2,
-                    \\"high\\": 0
-                }
-            }"
-        `);
-    });
-
+    
     test("should not find genres_ALL where NONE true", async () => {
         const query = /* GraphQL */ `
             {

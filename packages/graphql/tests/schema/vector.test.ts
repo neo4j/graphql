@@ -154,22 +154,12 @@ describe("@vector schema", () => {
               description_ENDS_WITH: String
               description_EQ: String
               description_IN: [String]
-              description_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              description_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              description_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              description_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              description_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               description_STARTS_WITH: String
               title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
               title_IN: [String]
-              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 
@@ -201,9 +191,9 @@ describe("@vector schema", () => {
 
             type Query {
               descriptionQuery(after: String, first: Int, sort: [MovieVectorSort!], vector: [Float!], where: MovieVectorWhere): MovieVectorResult!
-              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               titleQuery(after: String, first: Int, sort: [MovieVectorSort!], vector: [Float!], where: MovieVectorWhere): MovieVectorResult!
             }
 

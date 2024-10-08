@@ -121,22 +121,12 @@ describe("Node Interface Types", () => {
               imdb_ENDS_WITH: ID
               imdb_EQ: ID
               imdb_IN: [ID!]
-              imdb_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              imdb_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              imdb_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              imdb_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              imdb_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               imdb_STARTS_WITH: ID
               title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
               title_IN: [String!]
-              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 
@@ -167,9 +157,9 @@ describe("Node Interface Types", () => {
             }
 
             type Query {
-              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               \\"\\"\\"Fetches an object given its ID\\"\\"\\"
               node(
                 \\"\\"\\"The ID of an object\\"\\"\\"

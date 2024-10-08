@@ -400,49 +400,6 @@ describe("Point", () => {
             },
         });
 
-        // Test NOT IN functionality
-        const photographsNotInQuery = /* GraphQL */ `
-            query Photographs($locations: [PointInput!]) {
-                ${Photograph.plural}(where: { location_NOT_IN: $locations }) {
-                    id
-                    size
-                    location {
-                        latitude
-                        longitude
-                        height
-                        crs
-                    }
-                }
-            }
-        `;
-
-        const notInResult = await testHelper.executeGraphQL(photographsNotInQuery, {
-            variableValues: {
-                locations: [
-                    {
-                        longitude: parseFloat("147.0866"),
-                        latitude: parseFloat("-64.3432"),
-                    },
-                    {
-                        longitude: parseFloat("-97.4775"),
-                        latitude: parseFloat("-61.2485"),
-                    },
-                ],
-            },
-        });
-
-        expect(notInResult.errors).toBeFalsy();
-        expect((notInResult.data as any)[Photograph.plural]).toContainEqual({
-            id,
-            size,
-            location: {
-                latitude,
-                longitude,
-                height: null,
-                crs: "wgs-84",
-            },
-        });
-
         // Test less than
         const photographsLessThanQuery = /* GraphQL */ `
             query Photographs($longitude: Float!, $latitude: Float!) {

@@ -105,7 +105,7 @@ describe("https://github.com/neo4j/graphql/issues/5435", () => {
             }
 
             type Post {
-              author(directed: Boolean = true, options: UserOptions, where: UserWhere): User!
+              author(directed: Boolean = true, limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): User!
               authorAggregate(directed: Boolean = true, where: UserWhere): PostUserAuthorAggregationSelection
               authorConnection(after: String, directed: Boolean = true, first: Int, sort: [PostAuthorConnectionSort!], where: PostAuthorConnectionWhere): PostAuthorConnection!
               content: String!
@@ -153,7 +153,6 @@ describe("https://github.com/neo4j/graphql/issues/5435", () => {
               NOT: PostAuthorConnectionWhere
               OR: [PostAuthorConnectionWhere!]
               node: UserWhere
-              node_NOT: UserWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input PostAuthorCreateFieldInput {
@@ -252,29 +251,17 @@ describe("https://github.com/neo4j/graphql/issues/5435", () => {
               author: UserWhere
               authorAggregate: PostAuthorAggregateInput
               authorConnection: PostAuthorConnectionWhere
-              authorConnection_NOT: PostAuthorConnectionWhere
-              author_NOT: UserWhere
               content: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               content_CONTAINS: String
               content_ENDS_WITH: String
               content_EQ: String
               content_IN: [String!]
-              content_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              content_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              content_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              content_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              content_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               content_STARTS_WITH: String
               title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
               title_IN: [String!]
-              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 
@@ -285,12 +272,12 @@ describe("https://github.com/neo4j/graphql/issues/5435", () => {
             }
 
             type Query {
-              posts(options: PostOptions, where: PostWhere): [Post!]!
+              posts(limit: Int, offset: Int, options: PostOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PostSort!], where: PostWhere): [Post!]!
               postsAggregate(where: PostWhere): PostAggregateSelection!
-              postsConnection(after: String, first: Int, sort: [PostSort], where: PostWhere): PostsConnection!
-              users(options: UserOptions, where: UserWhere): [User!]!
+              postsConnection(after: String, first: Int, sort: [PostSort!], where: PostWhere): PostsConnection!
+              users(limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
-              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
+              usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -384,11 +371,6 @@ describe("https://github.com/neo4j/graphql/issues/5435", () => {
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID!]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
             }
 

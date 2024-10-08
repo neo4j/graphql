@@ -51,7 +51,7 @@ describe("Alias", () => {
             }
 
             type Actor {
-              actedIn(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+              actedIn(directed: Boolean = true, limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               actedInAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieActedInAggregationSelection
               actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               city: String
@@ -96,9 +96,7 @@ describe("Alias", () => {
               NOT: ActorActedInConnectionWhere
               OR: [ActorActedInConnectionWhere!]
               edge: ActorActedInPropsWhere
-              edge_NOT: ActorActedInPropsWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               node: MovieWhere
-              node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input ActorActedInCreateFieldInput {
@@ -286,11 +284,6 @@ describe("Alias", () => {
               character_ENDS_WITH: String
               character_EQ: String
               character_IN: [String!]
-              character_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              character_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              character_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              character_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              character_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               character_STARTS_WITH: String
               screenTime: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
               screenTime_EQ: Int
@@ -299,8 +292,6 @@ describe("Alias", () => {
               screenTime_IN: [Int]
               screenTime_LT: Int
               screenTime_LTE: Int
-              screenTime_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              screenTime_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type ActorActedInRelationship {
@@ -398,7 +389,6 @@ describe("Alias", () => {
               Return Actors where none of the related ActorActedInConnections match this filter
               \\"\\"\\"
               actedInConnection_NONE: ActorActedInConnectionWhere
-              actedInConnection_NOT: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Actors where one of the related ActorActedInConnections match this filter
               \\"\\"\\"
@@ -411,7 +401,6 @@ describe("Alias", () => {
               actedIn_ALL: MovieWhere
               \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
               actedIn_NONE: MovieWhere
-              actedIn_NOT: MovieWhere @deprecated(reason: \\"Use \`actedIn_NONE\` instead.\\")
               \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
               actedIn_SINGLE: MovieWhere
               \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
@@ -421,22 +410,12 @@ describe("Alias", () => {
               city_ENDS_WITH: String
               city_EQ: String
               city_IN: [String]
-              city_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              city_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              city_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              city_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              city_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               city_STARTS_WITH: String
               name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -550,18 +529,11 @@ describe("Alias", () => {
               rating_IN: [Float]
               rating_LT: Float
               rating_LTE: Float
-              rating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              rating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
               title_IN: [String!]
-              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 
@@ -589,12 +561,12 @@ describe("Alias", () => {
             }
 
             type Query {
-              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+              actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
-              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
+              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"

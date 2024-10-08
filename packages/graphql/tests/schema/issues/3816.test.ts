@@ -74,7 +74,7 @@ describe("https://github.com/neo4j/graphql/issues/3816", () => {
             }
 
             type Genre {
-              movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+              movies(directed: Boolean = true, limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(directed: Boolean = true, where: MovieWhere): GenreMovieMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [GenreMoviesConnectionSort!], where: GenreMoviesConnectionWhere): GenreMoviesConnection!
               name: String!
@@ -156,7 +156,6 @@ describe("https://github.com/neo4j/graphql/issues/3816", () => {
               NOT: GenreMoviesConnectionWhere
               OR: [GenreMoviesConnectionWhere!]
               node: MovieWhere
-              node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input GenreMoviesCreateFieldInput {
@@ -272,7 +271,6 @@ describe("https://github.com/neo4j/graphql/issues/3816", () => {
               Return Genres where none of the related GenreMoviesConnections match this filter
               \\"\\"\\"
               moviesConnection_NONE: GenreMoviesConnectionWhere
-              moviesConnection_NOT: GenreMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Genres where one of the related GenreMoviesConnections match this filter
               \\"\\"\\"
@@ -285,7 +283,6 @@ describe("https://github.com/neo4j/graphql/issues/3816", () => {
               movies_ALL: MovieWhere
               \\"\\"\\"Return Genres where none of the related Movies match this filter\\"\\"\\"
               movies_NONE: MovieWhere
-              movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
               \\"\\"\\"Return Genres where one of the related Movies match this filter\\"\\"\\"
               movies_SINGLE: MovieWhere
               \\"\\"\\"Return Genres where some of the related Movies match this filter\\"\\"\\"
@@ -295,11 +292,6 @@ describe("https://github.com/neo4j/graphql/issues/3816", () => {
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -310,7 +302,7 @@ describe("https://github.com/neo4j/graphql/issues/3816", () => {
             }
 
             type Movie {
-              genre(directed: Boolean = true, options: GenreOptions, where: GenreWhere): Genre!
+              genre(directed: Boolean = true, limit: Int, offset: Int, options: GenreOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [GenreSort!], where: GenreWhere): Genre!
               genreAggregate(directed: Boolean = true, where: GenreWhere): MovieGenreGenreAggregationSelection
               genreConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieGenreConnectionSort!], where: MovieGenreConnectionWhere): MovieGenreConnection!
               name: String!
@@ -379,7 +371,6 @@ describe("https://github.com/neo4j/graphql/issues/3816", () => {
               NOT: MovieGenreConnectionWhere
               OR: [MovieGenreConnectionWhere!]
               node: GenreWhere
-              node_NOT: GenreWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input MovieGenreDisconnectFieldInput {
@@ -480,18 +471,11 @@ describe("https://github.com/neo4j/graphql/issues/3816", () => {
               genre: GenreWhere
               genreAggregate: MovieGenreAggregateInput
               genreConnection: MovieGenreConnectionWhere
-              genreConnection_NOT: MovieGenreConnectionWhere
-              genre_NOT: GenreWhere
               name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -519,12 +503,12 @@ describe("https://github.com/neo4j/graphql/issues/3816", () => {
             }
 
             type Query {
-              genres(options: GenreOptions, where: GenreWhere): [Genre!]!
+              genres(limit: Int, offset: Int, options: GenreOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [GenreSort!], where: GenreWhere): [Genre!]!
               genresAggregate(where: GenreWhere): GenreAggregateSelection!
-              genresConnection(after: String, first: Int, sort: [GenreSort], where: GenreWhere): GenresConnection!
-              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              genresConnection(after: String, first: Int, sort: [GenreSort!], where: GenreWhere): GenresConnection!
+              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -614,7 +598,7 @@ describe("https://github.com/neo4j/graphql/issues/3816", () => {
             }
 
             type Genre {
-              movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+              movies(directed: Boolean = true, limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(directed: Boolean = true, where: MovieWhere): GenreMovieMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [GenreMoviesConnectionSort!], where: GenreMoviesConnectionWhere): GenreMoviesConnection!
               name: String!
@@ -683,7 +667,6 @@ describe("https://github.com/neo4j/graphql/issues/3816", () => {
               NOT: GenreMoviesConnectionWhere
               OR: [GenreMoviesConnectionWhere!]
               node: MovieWhere
-              node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input GenreMoviesCreateFieldInput {
@@ -798,7 +781,6 @@ describe("https://github.com/neo4j/graphql/issues/3816", () => {
               Return Genres where none of the related GenreMoviesConnections match this filter
               \\"\\"\\"
               moviesConnection_NONE: GenreMoviesConnectionWhere
-              moviesConnection_NOT: GenreMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Genres where one of the related GenreMoviesConnections match this filter
               \\"\\"\\"
@@ -811,7 +793,6 @@ describe("https://github.com/neo4j/graphql/issues/3816", () => {
               movies_ALL: MovieWhere
               \\"\\"\\"Return Genres where none of the related Movies match this filter\\"\\"\\"
               movies_NONE: MovieWhere
-              movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
               \\"\\"\\"Return Genres where one of the related Movies match this filter\\"\\"\\"
               movies_SINGLE: MovieWhere
               \\"\\"\\"Return Genres where some of the related Movies match this filter\\"\\"\\"
@@ -821,11 +802,6 @@ describe("https://github.com/neo4j/graphql/issues/3816", () => {
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -836,7 +812,7 @@ describe("https://github.com/neo4j/graphql/issues/3816", () => {
             }
 
             type Movie {
-              genre(directed: Boolean = true, options: GenreOptions, where: GenreWhere): Genre!
+              genre(directed: Boolean = true, limit: Int, offset: Int, options: GenreOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [GenreSort!], where: GenreWhere): Genre!
               genreAggregate(directed: Boolean = true, where: GenreWhere): MovieGenreGenreAggregationSelection
               genreConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieGenreConnectionSort!], where: MovieGenreConnectionWhere): MovieGenreConnection!
               name: String!
@@ -887,7 +863,6 @@ describe("https://github.com/neo4j/graphql/issues/3816", () => {
               NOT: MovieGenreConnectionWhere
               OR: [MovieGenreConnectionWhere!]
               node: GenreWhere
-              node_NOT: GenreWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type MovieGenreGenreAggregationSelection {
@@ -972,18 +947,11 @@ describe("https://github.com/neo4j/graphql/issues/3816", () => {
               genre: GenreWhere
               genreAggregate: MovieGenreAggregateInput
               genreConnection: MovieGenreConnectionWhere
-              genreConnection_NOT: MovieGenreConnectionWhere
-              genre_NOT: GenreWhere
               name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -1011,12 +979,12 @@ describe("https://github.com/neo4j/graphql/issues/3816", () => {
             }
 
             type Query {
-              genres(options: GenreOptions, where: GenreWhere): [Genre!]!
+              genres(limit: Int, offset: Int, options: GenreOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [GenreSort!], where: GenreWhere): [Genre!]!
               genresAggregate(where: GenreWhere): GenreAggregateSelection!
-              genresConnection(after: String, first: Int, sort: [GenreSort], where: GenreWhere): GenresConnection!
-              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              genresConnection(after: String, first: Int, sort: [GenreSort!], where: GenreWhere): GenresConnection!
+              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"

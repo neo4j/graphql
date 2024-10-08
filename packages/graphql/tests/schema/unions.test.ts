@@ -125,11 +125,6 @@ describe("Unions", () => {
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
             }
 
@@ -146,7 +141,7 @@ describe("Unions", () => {
 
             type Movie {
               id: ID
-              search(directed: Boolean = true, options: QueryOptions, where: SearchWhere): [Search!]!
+              search(directed: Boolean = true, limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: SearchWhere): [Search!]!
               searchConnection(after: String, directed: Boolean = true, first: Int, where: MovieSearchConnectionWhere): MovieSearchConnection!
               searchNoDirective: Search
             }
@@ -231,7 +226,6 @@ describe("Unions", () => {
               NOT: MovieSearchGenreConnectionWhere
               OR: [MovieSearchGenreConnectionWhere!]
               node: GenreWhere
-              node_NOT: GenreWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input MovieSearchGenreCreateFieldInput {
@@ -274,7 +268,6 @@ describe("Unions", () => {
               NOT: MovieSearchMovieConnectionWhere
               OR: [MovieSearchMovieConnectionWhere!]
               node: MovieWhere
-              node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input MovieSearchMovieCreateFieldInput {
@@ -340,11 +333,6 @@ describe("Unions", () => {
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               search: SearchWhere @deprecated(reason: \\"Use \`search_SOME\` instead.\\")
               searchConnection: MovieSearchConnectionWhere @deprecated(reason: \\"Use \`searchConnection_SOME\` instead.\\")
@@ -356,7 +344,6 @@ describe("Unions", () => {
               Return Movies where none of the related MovieSearchConnections match this filter
               \\"\\"\\"
               searchConnection_NONE: MovieSearchConnectionWhere
-              searchConnection_NOT: MovieSearchConnectionWhere @deprecated(reason: \\"Use \`searchConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Movies where one of the related MovieSearchConnections match this filter
               \\"\\"\\"
@@ -369,7 +356,6 @@ describe("Unions", () => {
               search_ALL: SearchWhere
               \\"\\"\\"Return Movies where none of the related Searches match this filter\\"\\"\\"
               search_NONE: SearchWhere
-              search_NOT: SearchWhere @deprecated(reason: \\"Use \`search_NONE\` instead.\\")
               \\"\\"\\"Return Movies where one of the related Searches match this filter\\"\\"\\"
               search_SINGLE: SearchWhere
               \\"\\"\\"Return Movies where some of the related Searches match this filter\\"\\"\\"
@@ -400,13 +386,13 @@ describe("Unions", () => {
             }
 
             type Query {
-              genres(options: GenreOptions, where: GenreWhere): [Genre!]!
+              genres(limit: Int, offset: Int, options: GenreOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [GenreSort!], where: GenreWhere): [Genre!]!
               genresAggregate(where: GenreWhere): GenreAggregateSelection!
-              genresConnection(after: String, first: Int, sort: [GenreSort], where: GenreWhere): GenresConnection!
-              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              genresConnection(after: String, first: Int, sort: [GenreSort!], where: GenreWhere): GenresConnection!
+              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-              searches(options: QueryOptions, where: SearchWhere): [Search!]!
+              moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+              searches(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: SearchWhere): [Search!]!
             }
 
             \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"

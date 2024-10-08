@@ -78,9 +78,9 @@ describe("Query Direction", () => {
             }
 
             type Query {
-              users(options: UserOptions, where: UserWhere): [User!]!
+              users(limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
-              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
+              usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -113,7 +113,7 @@ describe("Query Direction", () => {
             }
 
             type User {
-              friends(directed: Boolean = false, options: UserOptions, where: UserWhere): [User!]!
+              friends(directed: Boolean = false, limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): [User!]!
               friendsAggregate(directed: Boolean = false, where: UserWhere): UserUserFriendsAggregationSelection
               friendsConnection(after: String, directed: Boolean = false, first: Int, sort: [UserFriendsConnectionSort!], where: UserFriendsConnectionWhere): UserFriendsConnection!
               name: String!
@@ -186,7 +186,6 @@ describe("Query Direction", () => {
               NOT: UserFriendsConnectionWhere
               OR: [UserFriendsConnectionWhere!]
               node: UserWhere
-              node_NOT: UserWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input UserFriendsCreateFieldInput {
@@ -312,7 +311,6 @@ describe("Query Direction", () => {
               Return Users where none of the related UserFriendsConnections match this filter
               \\"\\"\\"
               friendsConnection_NONE: UserFriendsConnectionWhere
-              friendsConnection_NOT: UserFriendsConnectionWhere @deprecated(reason: \\"Use \`friendsConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Users where one of the related UserFriendsConnections match this filter
               \\"\\"\\"
@@ -325,7 +323,6 @@ describe("Query Direction", () => {
               friends_ALL: UserWhere
               \\"\\"\\"Return Users where none of the related Users match this filter\\"\\"\\"
               friends_NONE: UserWhere
-              friends_NOT: UserWhere @deprecated(reason: \\"Use \`friends_NONE\` instead.\\")
               \\"\\"\\"Return Users where one of the related Users match this filter\\"\\"\\"
               friends_SINGLE: UserWhere
               \\"\\"\\"Return Users where some of the related Users match this filter\\"\\"\\"
@@ -335,11 +332,6 @@ describe("Query Direction", () => {
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -405,9 +397,9 @@ describe("Query Direction", () => {
             }
 
             type Query {
-              users(options: UserOptions, where: UserWhere): [User!]!
+              users(limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
-              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
+              usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -440,7 +432,7 @@ describe("Query Direction", () => {
             }
 
             type User {
-              friends(options: UserOptions, where: UserWhere): [User!]!
+              friends(limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): [User!]!
               friendsAggregate(where: UserWhere): UserUserFriendsAggregationSelection
               friendsConnection(after: String, first: Int, sort: [UserFriendsConnectionSort!], where: UserFriendsConnectionWhere): UserFriendsConnection!
               name: String!
@@ -513,7 +505,6 @@ describe("Query Direction", () => {
               NOT: UserFriendsConnectionWhere
               OR: [UserFriendsConnectionWhere!]
               node: UserWhere
-              node_NOT: UserWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input UserFriendsCreateFieldInput {
@@ -639,7 +630,6 @@ describe("Query Direction", () => {
               Return Users where none of the related UserFriendsConnections match this filter
               \\"\\"\\"
               friendsConnection_NONE: UserFriendsConnectionWhere
-              friendsConnection_NOT: UserFriendsConnectionWhere @deprecated(reason: \\"Use \`friendsConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Users where one of the related UserFriendsConnections match this filter
               \\"\\"\\"
@@ -652,7 +642,6 @@ describe("Query Direction", () => {
               friends_ALL: UserWhere
               \\"\\"\\"Return Users where none of the related Users match this filter\\"\\"\\"
               friends_NONE: UserWhere
-              friends_NOT: UserWhere @deprecated(reason: \\"Use \`friends_NONE\` instead.\\")
               \\"\\"\\"Return Users where one of the related Users match this filter\\"\\"\\"
               friends_SINGLE: UserWhere
               \\"\\"\\"Return Users where some of the related Users match this filter\\"\\"\\"
@@ -662,11 +651,6 @@ describe("Query Direction", () => {
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -732,9 +716,9 @@ describe("Query Direction", () => {
             }
 
             type Query {
-              users(options: UserOptions, where: UserWhere): [User!]!
+              users(limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
-              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
+              usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -767,7 +751,7 @@ describe("Query Direction", () => {
             }
 
             type User {
-              friends(options: UserOptions, where: UserWhere): [User!]!
+              friends(limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): [User!]!
               friendsAggregate(where: UserWhere): UserUserFriendsAggregationSelection
               friendsConnection(after: String, first: Int, sort: [UserFriendsConnectionSort!], where: UserFriendsConnectionWhere): UserFriendsConnection!
               name: String!
@@ -840,7 +824,6 @@ describe("Query Direction", () => {
               NOT: UserFriendsConnectionWhere
               OR: [UserFriendsConnectionWhere!]
               node: UserWhere
-              node_NOT: UserWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input UserFriendsCreateFieldInput {
@@ -966,7 +949,6 @@ describe("Query Direction", () => {
               Return Users where none of the related UserFriendsConnections match this filter
               \\"\\"\\"
               friendsConnection_NONE: UserFriendsConnectionWhere
-              friendsConnection_NOT: UserFriendsConnectionWhere @deprecated(reason: \\"Use \`friendsConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Users where one of the related UserFriendsConnections match this filter
               \\"\\"\\"
@@ -979,7 +961,6 @@ describe("Query Direction", () => {
               friends_ALL: UserWhere
               \\"\\"\\"Return Users where none of the related Users match this filter\\"\\"\\"
               friends_NONE: UserWhere
-              friends_NOT: UserWhere @deprecated(reason: \\"Use \`friends_NONE\` instead.\\")
               \\"\\"\\"Return Users where one of the related Users match this filter\\"\\"\\"
               friends_SINGLE: UserWhere
               \\"\\"\\"Return Users where some of the related Users match this filter\\"\\"\\"
@@ -989,11 +970,6 @@ describe("Query Direction", () => {
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 

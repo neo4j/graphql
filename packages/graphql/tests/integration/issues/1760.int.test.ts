@@ -88,17 +88,17 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
     });
 
     test("provided query does not result in an error", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             query getApplicationVariants {
                 ${ApplicationVariant.plural}(where: {
                     current_EQ: true,
-                }, options: {
+                }, 
                     sort: {
                         relatedId: ASC,
                     },
                     offset: 0,
                     limit: 50,
-                },) {
+                ) {
                     relatedId
                     nameDetailsConnection {
                         edges {

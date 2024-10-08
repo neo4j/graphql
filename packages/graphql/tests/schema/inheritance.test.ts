@@ -59,7 +59,7 @@ describe("inheritance", () => {
             directive @customDirectiveObj on OBJECT
 
             type Actor implements Person @customDirectiveObj {
-              friends(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+              friends(directed: Boolean = true, limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
               friendsAggregate(directed: Boolean = true, where: PersonWhere): ActorPersonFriendsAggregationSelection
               friendsConnection(after: String, directed: Boolean = true, first: Int, sort: [PersonFriendsConnectionSort!], where: PersonFriendsConnectionWhere): PersonFriendsConnection!
               name: String
@@ -228,7 +228,6 @@ describe("inheritance", () => {
               Return Actors where none of the related PersonFriendsConnections match this filter
               \\"\\"\\"
               friendsConnection_NONE: PersonFriendsConnectionWhere
-              friendsConnection_NOT: PersonFriendsConnectionWhere @deprecated(reason: \\"Use \`friendsConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Actors where one of the related PersonFriendsConnections match this filter
               \\"\\"\\"
@@ -241,7 +240,6 @@ describe("inheritance", () => {
               friends_ALL: PersonWhere
               \\"\\"\\"Return Actors where none of the related People match this filter\\"\\"\\"
               friends_NONE: PersonWhere
-              friends_NOT: PersonWhere @deprecated(reason: \\"Use \`friends_NONE\` instead.\\")
               \\"\\"\\"Return Actors where one of the related People match this filter\\"\\"\\"
               friends_SINGLE: PersonWhere
               \\"\\"\\"Return Actors where some of the related People match this filter\\"\\"\\"
@@ -251,11 +249,6 @@ describe("inheritance", () => {
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -352,8 +345,6 @@ describe("inheritance", () => {
               since_IN: [Int]
               since_LT: Int
               since_LTE: Int
-              since_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              since_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type IntAggregateSelection {
@@ -384,7 +375,7 @@ describe("inheritance", () => {
             }
 
             interface Person @customDirectiveInter {
-              friends(options: PersonOptions, where: PersonWhere): [Person!]! @customDirectiveField
+              friends(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]! @customDirectiveField
               friendsConnection(after: String, first: Int, sort: [PersonFriendsConnectionSort!], where: PersonFriendsConnectionWhere): PersonFriendsConnection!
               name: String @customDirectiveField
             }
@@ -454,9 +445,7 @@ describe("inheritance", () => {
               NOT: PersonFriendsConnectionWhere
               OR: [PersonFriendsConnectionWhere!]
               edge: PersonFriendsEdgeWhere
-              edge_NOT: PersonFriendsEdgeWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               node: PersonWhere
-              node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input PersonFriendsCreateFieldInput {
@@ -587,7 +576,7 @@ describe("inheritance", () => {
               \\"\\"\\"
               Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [PersonSort]
+              sort: [PersonSort!]
             }
 
             \\"\\"\\"
@@ -617,7 +606,6 @@ describe("inheritance", () => {
               Return People where none of the related PersonFriendsConnections match this filter
               \\"\\"\\"
               friendsConnection_NONE: PersonFriendsConnectionWhere
-              friendsConnection_NOT: PersonFriendsConnectionWhere @deprecated(reason: \\"Use \`friendsConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return People where one of the related PersonFriendsConnections match this filter
               \\"\\"\\"
@@ -630,7 +618,6 @@ describe("inheritance", () => {
               friends_ALL: PersonWhere
               \\"\\"\\"Return People where none of the related People match this filter\\"\\"\\"
               friends_NONE: PersonWhere
-              friends_NOT: PersonWhere @deprecated(reason: \\"Use \`friends_NONE\` instead.\\")
               \\"\\"\\"Return People where one of the related People match this filter\\"\\"\\"
               friends_SINGLE: PersonWhere
               \\"\\"\\"Return People where some of the related People match this filter\\"\\"\\"
@@ -640,22 +627,17 @@ describe("inheritance", () => {
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
               typename_IN: [PersonImplementation!]
             }
 
             type Query {
-              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+              actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
-              people(options: PersonOptions, where: PersonWhere): [Person!]!
+              actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
+              people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
               peopleAggregate(where: PersonWhere): PersonAggregateSelection!
-              peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
+              peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/1628", () => {
     const testHelper = new TestHelper();
@@ -48,9 +48,9 @@ describe("https://github.com/neo4j/graphql/issues/1628", () => {
     });
 
     test("Nested filter with limit cypher should be composed correctly", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             {
-                ${workType.plural}(options: { limit: 1 }, where: { title: { value_CONTAINS: "0777" } }) {
+                ${workType.plural}(limit: 1, where: { title: { value_CONTAINS: "0777" } }) {
                     title(where: { value_CONTAINS: "0777" }) {
                         value
                     }

@@ -114,15 +114,15 @@ describe("162", () => {
             }
 
             type Query {
-              tigerJawLevel2Part1s(options: TigerJawLevel2Part1Options, where: TigerJawLevel2Part1Where): [TigerJawLevel2Part1!]!
+              tigerJawLevel2Part1s(limit: Int, offset: Int, options: TigerJawLevel2Part1Options @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [TigerJawLevel2Part1Sort!], where: TigerJawLevel2Part1Where): [TigerJawLevel2Part1!]!
               tigerJawLevel2Part1sAggregate(where: TigerJawLevel2Part1Where): TigerJawLevel2Part1AggregateSelection!
-              tigerJawLevel2Part1sConnection(after: String, first: Int, sort: [TigerJawLevel2Part1Sort], where: TigerJawLevel2Part1Where): TigerJawLevel2Part1sConnection!
-              tigerJawLevel2s(options: TigerJawLevel2Options, where: TigerJawLevel2Where): [TigerJawLevel2!]!
+              tigerJawLevel2Part1sConnection(after: String, first: Int, sort: [TigerJawLevel2Part1Sort!], where: TigerJawLevel2Part1Where): TigerJawLevel2Part1sConnection!
+              tigerJawLevel2s(limit: Int, offset: Int, options: TigerJawLevel2Options @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [TigerJawLevel2Sort!], where: TigerJawLevel2Where): [TigerJawLevel2!]!
               tigerJawLevel2sAggregate(where: TigerJawLevel2Where): TigerJawLevel2AggregateSelection!
-              tigerJawLevel2sConnection(after: String, first: Int, sort: [TigerJawLevel2Sort], where: TigerJawLevel2Where): TigerJawLevel2sConnection!
-              tigers(options: TigerOptions, where: TigerWhere): [Tiger!]!
+              tigerJawLevel2sConnection(after: String, first: Int, sort: [TigerJawLevel2Sort!], where: TigerJawLevel2Where): TigerJawLevel2sConnection!
+              tigers(limit: Int, offset: Int, options: TigerOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [TigerSort!], where: TigerWhere): [Tiger!]!
               tigersAggregate(where: TigerWhere): TigerAggregateSelection!
-              tigersConnection(after: String, first: Int, sort: [TigerSort], where: TigerWhere): TigersConnection!
+              tigersConnection(after: String, first: Int, sort: [TigerSort!], where: TigerWhere): TigersConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -157,7 +157,7 @@ describe("162", () => {
 
             type TigerJawLevel2 {
               id: ID
-              part1(directed: Boolean = true, options: TigerJawLevel2Part1Options, where: TigerJawLevel2Part1Where): TigerJawLevel2Part1!
+              part1(directed: Boolean = true, limit: Int, offset: Int, options: TigerJawLevel2Part1Options @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [TigerJawLevel2Part1Sort!], where: TigerJawLevel2Part1Where): TigerJawLevel2Part1!
               part1Aggregate(directed: Boolean = true, where: TigerJawLevel2Part1Where): TigerJawLevel2TigerJawLevel2Part1Part1AggregationSelection
               part1Connection(after: String, directed: Boolean = true, first: Int, sort: [TigerJawLevel2Part1ConnectionSort!], where: TigerJawLevel2Part1ConnectionWhere): TigerJawLevel2Part1Connection!
             }
@@ -192,7 +192,7 @@ describe("162", () => {
 
             type TigerJawLevel2Part1 {
               id: ID
-              tiger(directed: Boolean = true, options: TigerOptions, where: TigerWhere): Tiger!
+              tiger(directed: Boolean = true, limit: Int, offset: Int, options: TigerOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [TigerSort!], where: TigerWhere): Tiger!
               tigerAggregate(directed: Boolean = true, where: TigerWhere): TigerJawLevel2Part1TigerTigerAggregationSelection
               tigerConnection(after: String, directed: Boolean = true, first: Int, sort: [TigerJawLevel2Part1TigerConnectionSort!], where: TigerJawLevel2Part1TigerConnectionWhere): TigerJawLevel2Part1TigerConnection!
             }
@@ -246,7 +246,6 @@ describe("162", () => {
               NOT: TigerJawLevel2Part1ConnectionWhere
               OR: [TigerJawLevel2Part1ConnectionWhere!]
               node: TigerJawLevel2Part1Where
-              node_NOT: TigerJawLevel2Part1Where @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input TigerJawLevel2Part1CreateFieldInput {
@@ -349,7 +348,6 @@ describe("162", () => {
               NOT: TigerJawLevel2Part1TigerConnectionWhere
               OR: [TigerJawLevel2Part1TigerConnectionWhere!]
               node: TigerWhere
-              node_NOT: TigerWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input TigerJawLevel2Part1TigerCreateFieldInput {
@@ -454,17 +452,10 @@ describe("162", () => {
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               tiger: TigerWhere
               tigerAggregate: TigerJawLevel2Part1TigerAggregateInput
               tigerConnection: TigerJawLevel2Part1TigerConnectionWhere
-              tigerConnection_NOT: TigerJawLevel2Part1TigerConnectionWhere
-              tiger_NOT: TigerWhere
             }
 
             type TigerJawLevel2Part1sConnection {
@@ -503,17 +494,10 @@ describe("162", () => {
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               part1: TigerJawLevel2Part1Where
               part1Aggregate: TigerJawLevel2Part1AggregateInput
               part1Connection: TigerJawLevel2Part1ConnectionWhere
-              part1Connection_NOT: TigerJawLevel2Part1ConnectionWhere
-              part1_NOT: TigerJawLevel2Part1Where
             }
 
             type TigerJawLevel2sConnection {
@@ -555,8 +539,6 @@ describe("162", () => {
               x_IN: [Int]
               x_LT: Int
               x_LTE: Int
-              x_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              x_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type TigersConnection {

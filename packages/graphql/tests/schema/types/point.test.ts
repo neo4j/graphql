@@ -110,8 +110,6 @@ describe("Point", () => {
               filmedAt_IN: [PointInput!]
               filmedAt_LT: PointDistance
               filmedAt_LTE: PointDistance
-              filmedAt_NOT: PointInput @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              filmedAt_NOT_IN: [PointInput!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type MoviesConnection {
@@ -160,9 +158,9 @@ describe("Point", () => {
             }
 
             type Query {
-              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -302,8 +300,6 @@ describe("Point", () => {
               partLocation_IN: [CartesianPointInput!]
               partLocation_LT: CartesianPointDistance
               partLocation_LTE: CartesianPointDistance
-              partLocation_NOT: CartesianPointInput @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              partLocation_NOT_IN: [CartesianPointInput!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type MachinesConnection {
@@ -327,9 +323,9 @@ describe("Point", () => {
             }
 
             type Query {
-              machines(options: MachineOptions, where: MachineWhere): [Machine!]!
+              machines(limit: Int, offset: Int, options: MachineOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MachineSort!], where: MachineWhere): [Machine!]!
               machinesAggregate(where: MachineWhere): MachineAggregateSelection!
-              machinesConnection(after: String, first: Int, sort: [MachineSort], where: MachineWhere): MachinesConnection!
+              machinesConnection(after: String, first: Int, sort: [MachineSort!], where: MachineWhere): MachinesConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -431,8 +427,6 @@ describe("Point", () => {
               filmedAt: [PointInput!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
               filmedAt_EQ: [PointInput!]
               filmedAt_INCLUDES: PointInput
-              filmedAt_NOT: [PointInput!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              filmedAt_NOT_INCLUDES: PointInput @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type MoviesConnection {
@@ -474,7 +468,7 @@ describe("Point", () => {
             }
 
             type Query {
-              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, where: MovieWhere): MoviesConnection!
             }
@@ -588,8 +582,6 @@ describe("Point", () => {
               partLocations: [CartesianPointInput!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
               partLocations_EQ: [CartesianPointInput!]
               partLocations_INCLUDES: CartesianPointInput
-              partLocations_NOT: [CartesianPointInput!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              partLocations_NOT_INCLUDES: CartesianPointInput @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type MachinesConnection {
@@ -613,7 +605,7 @@ describe("Point", () => {
             }
 
             type Query {
-              machines(options: MachineOptions, where: MachineWhere): [Machine!]!
+              machines(limit: Int, offset: Int, options: MachineOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: MachineWhere): [Machine!]!
               machinesAggregate(where: MachineWhere): MachineAggregateSelection!
               machinesConnection(after: String, first: Int, where: MachineWhere): MachinesConnection!
             }

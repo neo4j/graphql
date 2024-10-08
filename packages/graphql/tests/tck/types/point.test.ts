@@ -131,39 +131,6 @@ describe("Cypher Points", () => {
         `);
     });
 
-    test("Simple Point NOT IN query", async () => {
-        const query = /* GraphQL */ `
-            {
-                pointContainers(where: { point_NOT_IN: [{ longitude: 1.0, latitude: 2.0 }] }) {
-                    point {
-                        longitude
-                        latitude
-                        crs
-                    }
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:PointContainer)
-            WHERE NOT (this.point IN [var0 IN $param0 | point(var0)])
-            RETURN this { .point } AS this"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": [
-                    {
-                        \\"longitude\\": 1,
-                        \\"latitude\\": 2
-                    }
-                ]
-            }"
-        `);
-    });
-
     describe("tests using describe or point.describe", () => {
         test("Simple Point LT query", async () => {
             const query = /* GraphQL */ `

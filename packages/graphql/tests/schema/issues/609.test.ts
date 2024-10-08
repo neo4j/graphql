@@ -108,11 +108,6 @@ describe("609", () => {
               deprecatedField_ENDS_WITH: String @deprecated
               deprecatedField_EQ: String @deprecated
               deprecatedField_IN: [String] @deprecated
-              deprecatedField_NOT: String @deprecated
-              deprecatedField_NOT_CONTAINS: String @deprecated
-              deprecatedField_NOT_ENDS_WITH: String @deprecated
-              deprecatedField_NOT_IN: [String] @deprecated
-              deprecatedField_NOT_STARTS_WITH: String @deprecated
               deprecatedField_STARTS_WITH: String @deprecated
             }
 
@@ -137,9 +132,9 @@ describe("609", () => {
             }
 
             type Query {
-              deprecateds(options: DeprecatedOptions, where: DeprecatedWhere): [Deprecated!]!
+              deprecateds(limit: Int, offset: Int, options: DeprecatedOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [DeprecatedSort!], where: DeprecatedWhere): [Deprecated!]!
               deprecatedsAggregate(where: DeprecatedWhere): DeprecatedAggregateSelection!
-              deprecatedsConnection(after: String, first: Int, sort: [DeprecatedSort], where: DeprecatedWhere): DeprecatedsConnection!
+              deprecatedsConnection(after: String, first: Int, sort: [DeprecatedSort!], where: DeprecatedWhere): DeprecatedsConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"

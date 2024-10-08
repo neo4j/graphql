@@ -88,7 +88,7 @@ describe("Connection with interfaces", () => {
 
             interface Creature {
               id: ID
-              movies(options: ProductionOptions, where: ProductionWhere): Production!
+              movies(limit: Int, offset: Int, options: ProductionOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ProductionSort!], where: ProductionWhere): Production!
               moviesConnection(after: String, first: Int, sort: [CreatureMoviesConnectionSort!], where: CreatureMoviesConnectionWhere): CreatureMoviesConnection!
             }
 
@@ -158,7 +158,6 @@ describe("Connection with interfaces", () => {
               NOT: CreatureMoviesConnectionWhere
               OR: [CreatureMoviesConnectionWhere!]
               node: ProductionWhere
-              node_NOT: ProductionWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input CreatureMoviesCreateFieldInput {
@@ -206,7 +205,7 @@ describe("Connection with interfaces", () => {
               \\"\\"\\"
               Specify one or more CreatureSort objects to sort Creatures by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [CreatureSort]
+              sort: [CreatureSort!]
             }
 
             \\"\\"\\"
@@ -230,17 +229,10 @@ describe("Connection with interfaces", () => {
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               movies: ProductionWhere
               moviesAggregate: CreatureMoviesAggregateInput
               moviesConnection: CreatureMoviesConnectionWhere
-              moviesConnection_NOT: CreatureMoviesConnectionWhere
-              movies_NOT: ProductionWhere
               typename_IN: [CreatureImplementation!]
             }
 
@@ -272,7 +264,7 @@ describe("Connection with interfaces", () => {
             }
 
             type Movie implements Production {
-              director(directed: Boolean = true, options: CreatureOptions, where: CreatureWhere): [Creature!]!
+              director(directed: Boolean = true, limit: Int, offset: Int, options: CreatureOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [CreatureSort!], where: CreatureWhere): [Creature!]!
               directorAggregate(directed: Boolean = true, where: CreatureWhere): MovieCreatureDirectorAggregationSelection
               directorConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionDirectorConnectionSort!], where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
               id: ID
@@ -403,7 +395,6 @@ describe("Connection with interfaces", () => {
               Return Movies where none of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
               directorConnection_NONE: ProductionDirectorConnectionWhere
-              directorConnection_NOT: ProductionDirectorConnectionWhere @deprecated(reason: \\"Use \`directorConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Movies where one of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
@@ -416,7 +407,6 @@ describe("Connection with interfaces", () => {
               director_ALL: CreatureWhere
               \\"\\"\\"Return Movies where none of the related Creatures match this filter\\"\\"\\"
               director_NONE: CreatureWhere
-              director_NOT: CreatureWhere @deprecated(reason: \\"Use \`director_NONE\` instead.\\")
               \\"\\"\\"Return Movies where one of the related Creatures match this filter\\"\\"\\"
               director_SINGLE: CreatureWhere
               \\"\\"\\"Return Movies where some of the related Creatures match this filter\\"\\"\\"
@@ -426,22 +416,12 @@ describe("Connection with interfaces", () => {
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
               title_IN: [String!]
-              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 
@@ -479,7 +459,7 @@ describe("Connection with interfaces", () => {
 
             type Person implements Creature {
               id: ID
-              movies(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): Production!
+              movies(directed: Boolean = true, limit: Int, offset: Int, options: ProductionOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ProductionSort!], where: ProductionWhere): Production!
               moviesAggregate(directed: Boolean = true, where: ProductionWhere): PersonProductionMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [CreatureMoviesConnectionSort!], where: CreatureMoviesConnectionWhere): CreatureMoviesConnection!
             }
@@ -598,21 +578,14 @@ describe("Connection with interfaces", () => {
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               movies: ProductionWhere
               moviesAggregate: PersonMoviesAggregateInput
               moviesConnection: CreatureMoviesConnectionWhere
-              moviesConnection_NOT: CreatureMoviesConnectionWhere
-              movies_NOT: ProductionWhere
             }
 
             interface Production {
-              director(options: CreatureOptions, where: CreatureWhere): [Creature!]!
+              director(limit: Int, offset: Int, options: CreatureOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [CreatureSort!], where: CreatureWhere): [Creature!]!
               directorConnection(after: String, first: Int, sort: [ProductionDirectorConnectionSort!], where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
               id: ID
             }
@@ -671,7 +644,6 @@ describe("Connection with interfaces", () => {
               NOT: ProductionDirectorConnectionWhere
               OR: [ProductionDirectorConnectionWhere!]
               node: CreatureWhere
-              node_NOT: CreatureWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input ProductionDirectorCreateFieldInput {
@@ -733,7 +705,7 @@ describe("Connection with interfaces", () => {
               \\"\\"\\"
               Specify one or more ProductionSort objects to sort Productions by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [ProductionSort]
+              sort: [ProductionSort!]
             }
 
             \\"\\"\\"
@@ -763,7 +735,6 @@ describe("Connection with interfaces", () => {
               Return Productions where none of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
               directorConnection_NONE: ProductionDirectorConnectionWhere
-              directorConnection_NOT: ProductionDirectorConnectionWhere @deprecated(reason: \\"Use \`directorConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Productions where one of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
@@ -780,7 +751,6 @@ describe("Connection with interfaces", () => {
               Return Productions where none of the related Creatures match this filter
               \\"\\"\\"
               director_NONE: CreatureWhere
-              director_NOT: CreatureWhere @deprecated(reason: \\"Use \`director_NONE\` instead.\\")
               \\"\\"\\"
               Return Productions where one of the related Creatures match this filter
               \\"\\"\\"
@@ -794,11 +764,6 @@ describe("Connection with interfaces", () => {
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               typename_IN: [ProductionImplementation!]
             }
@@ -810,25 +775,25 @@ describe("Connection with interfaces", () => {
             }
 
             type Query {
-              creatures(options: CreatureOptions, where: CreatureWhere): [Creature!]!
+              creatures(limit: Int, offset: Int, options: CreatureOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [CreatureSort!], where: CreatureWhere): [Creature!]!
               creaturesAggregate(where: CreatureWhere): CreatureAggregateSelection!
-              creaturesConnection(after: String, first: Int, sort: [CreatureSort], where: CreatureWhere): CreaturesConnection!
-              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              creaturesConnection(after: String, first: Int, sort: [CreatureSort!], where: CreatureWhere): CreaturesConnection!
+              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-              people(options: PersonOptions, where: PersonWhere): [Person!]!
+              moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+              people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
               peopleAggregate(where: PersonWhere): PersonAggregateSelection!
-              peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
-              productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
+              peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
+              productions(limit: Int, offset: Int, options: ProductionOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ProductionSort!], where: ProductionWhere): [Production!]!
               productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
-              productionsConnection(after: String, first: Int, sort: [ProductionSort], where: ProductionWhere): ProductionsConnection!
-              series(options: SeriesOptions, where: SeriesWhere): [Series!]!
+              productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
+              series(limit: Int, offset: Int, options: SeriesOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [SeriesSort!], where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
-              seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
+              seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
             }
 
             type Series implements Production {
-              director(directed: Boolean = true, options: CreatureOptions, where: CreatureWhere): [Creature!]!
+              director(directed: Boolean = true, limit: Int, offset: Int, options: CreatureOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [CreatureSort!], where: CreatureWhere): [Creature!]!
               directorAggregate(directed: Boolean = true, where: CreatureWhere): SeriesCreatureDirectorAggregationSelection
               directorConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionDirectorConnectionSort!], where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
               episode: Int!
@@ -972,7 +937,6 @@ describe("Connection with interfaces", () => {
               Return Series where none of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
               directorConnection_NONE: ProductionDirectorConnectionWhere
-              directorConnection_NOT: ProductionDirectorConnectionWhere @deprecated(reason: \\"Use \`directorConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Series where one of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
@@ -985,7 +949,6 @@ describe("Connection with interfaces", () => {
               director_ALL: CreatureWhere
               \\"\\"\\"Return Series where none of the related Creatures match this filter\\"\\"\\"
               director_NONE: CreatureWhere
-              director_NOT: CreatureWhere @deprecated(reason: \\"Use \`director_NONE\` instead.\\")
               \\"\\"\\"Return Series where one of the related Creatures match this filter\\"\\"\\"
               director_SINGLE: CreatureWhere
               \\"\\"\\"Return Series where some of the related Creatures match this filter\\"\\"\\"
@@ -997,29 +960,17 @@ describe("Connection with interfaces", () => {
               episode_IN: [Int!]
               episode_LT: Int
               episode_LTE: Int
-              episode_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              episode_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
               title_IN: [String!]
-              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 

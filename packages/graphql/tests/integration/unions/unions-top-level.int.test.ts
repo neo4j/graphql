@@ -91,7 +91,7 @@ describe("Top-level union query fields", () => {
     });
 
     test("should read top-level simple query on union with filters", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 searches(where: {${MovieType.name}: { NOT: { title_EQ: "The Matrix" } }, ${GenreType.name}: {}}) {
                     ... on ${GenreType} {
@@ -117,7 +117,7 @@ describe("Top-level union query fields", () => {
     });
 
     test("should read top-level simple query on union with filters - only specifying a filter for one constituent automatically filters-out the other constituents from the return data", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 searches(where: {${MovieType.name}:  { NOT: { title_EQ: "The Matrix" } } }) {
                     ... on ${GenreType} {
@@ -143,7 +143,7 @@ describe("Top-level union query fields", () => {
     });
 
     test("should read top-level simple query on union with filters on relationship field", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 searches(where: {${MovieType.name}: {searchConnection: {${GenreType.name}: {node: { name_EQ: "Action"} }}}}) {
                     ... on ${GenreType} {
@@ -171,9 +171,9 @@ describe("Top-level union query fields", () => {
     });
 
     test("should read top-level simple query on union sorted", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             query {
-                searches(options: {limit: 1, offset: 1}) {
+                searches(limit: 1, offset: 1) {
                     ... on ${GenreType} {
                         name
                     }

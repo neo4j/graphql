@@ -44,7 +44,7 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
     test("should sort by aliased field", async () => {
         const query = /* GraphQL */ `
             query listProducts {
-                products(options: { sort: { partNumber: DESC } }) {
+                products(sort: { partNumber: DESC }) {
                     id
                     partNumber
                     description
@@ -68,7 +68,7 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
         const query = /* GraphQL */ `
             query listProducts {
                 employees {
-                    products(options: { sort: { partNumber: DESC } }) {
+                    products(sort: { partNumber: DESC }) {
                         id
                         partNumber
                         description

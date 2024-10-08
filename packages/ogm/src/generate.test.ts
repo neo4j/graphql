@@ -91,6 +91,9 @@ describe("generate", () => {
 
             export type QueryUsersArgs = {
               where?: InputMaybe<UserWhere>;
+              limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              sort?: InputMaybe<Array<UserSort>>;
               options?: InputMaybe<UserOptions>;
             };
 
@@ -98,7 +101,7 @@ describe("generate", () => {
               first?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               after?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               where?: InputMaybe<UserWhere>;
-              sort?: InputMaybe<Array<InputMaybe<UserSort>>>;
+              sort?: InputMaybe<Array<UserSort>>;
             };
 
             export type QueryUsersAggregateArgs = {
@@ -237,20 +240,10 @@ describe("generate", () => {
               /** @deprecated Please use the explicit _EQ version */
               name?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               name_EQ?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              name_NOT?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               name_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"][\\"input\\"]>>>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              name_NOT_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"][\\"input\\"]>>>;
               name_CONTAINS?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               name_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               name_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              name_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              name_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              name_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               OR?: InputMaybe<Array<UserWhere>>;
               AND?: InputMaybe<Array<UserWhere>>;
               NOT?: InputMaybe<UserWhere>;
@@ -383,15 +376,18 @@ describe("generate", () => {
 
             export type QueryUsersArgs = {
               where?: InputMaybe<UserWhere>;
-              options?: InputMaybe<UserOptions>;
+              limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               fulltext?: InputMaybe<UserFulltext>;
+              sort?: InputMaybe<Array<UserSort>>;
+              options?: InputMaybe<UserOptions>;
             };
 
             export type QueryUsersConnectionArgs = {
               first?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               after?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               where?: InputMaybe<UserWhere>;
-              sort?: InputMaybe<Array<InputMaybe<UserSort>>>;
+              sort?: InputMaybe<Array<UserSort>>;
               fulltext?: InputMaybe<UserFulltext>;
             };
 
@@ -565,20 +561,10 @@ describe("generate", () => {
               /** @deprecated Please use the explicit _EQ version */
               name?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               name_EQ?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              name_NOT?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               name_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"][\\"input\\"]>>>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              name_NOT_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"][\\"input\\"]>>>;
               name_CONTAINS?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               name_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               name_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              name_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              name_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              name_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               OR?: InputMaybe<Array<UserWhere>>;
               AND?: InputMaybe<Array<UserWhere>>;
               NOT?: InputMaybe<UserWhere>;
@@ -709,6 +695,9 @@ describe("generate", () => {
 
             export type QueryUsersArgs = {
               where?: InputMaybe<UserWhere>;
+              limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              sort?: InputMaybe<Array<UserSort>>;
               options?: InputMaybe<UserOptions>;
             };
 
@@ -716,7 +705,7 @@ describe("generate", () => {
               first?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               after?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               where?: InputMaybe<UserWhere>;
-              sort?: InputMaybe<Array<InputMaybe<UserSort>>>;
+              sort?: InputMaybe<Array<UserSort>>;
             };
 
             export type QueryUsersAggregateArgs = {
@@ -855,20 +844,10 @@ describe("generate", () => {
               /** @deprecated Please use the explicit _EQ version */
               name?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               name_EQ?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              name_NOT?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               name_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"][\\"input\\"]>>>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              name_NOT_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"][\\"input\\"]>>>;
               name_CONTAINS?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               name_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               name_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              name_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              name_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              name_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               OR?: InputMaybe<Array<UserWhere>>;
               AND?: InputMaybe<Array<UserWhere>>;
               NOT?: InputMaybe<UserWhere>;
@@ -999,6 +978,9 @@ describe("generate", () => {
 
             export type QueryMoviesArgs = {
               where?: InputMaybe<MovieWhere>;
+              limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              sort?: InputMaybe<Array<MovieSort>>;
               options?: InputMaybe<MovieOptions>;
             };
 
@@ -1006,7 +988,7 @@ describe("generate", () => {
               first?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               after?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               where?: InputMaybe<MovieWhere>;
-              sort?: InputMaybe<Array<InputMaybe<MovieSort>>>;
+              sort?: InputMaybe<Array<MovieSort>>;
             };
 
             export type QueryMoviesAggregateArgs = {
@@ -1015,6 +997,9 @@ describe("generate", () => {
 
             export type QueryPeopleArgs = {
               where?: InputMaybe<PersonWhere>;
+              limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              sort?: InputMaybe<Array<PersonSort>>;
               options?: InputMaybe<PersonOptions>;
             };
 
@@ -1022,7 +1007,7 @@ describe("generate", () => {
               first?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               after?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               where?: InputMaybe<PersonWhere>;
-              sort?: InputMaybe<Array<InputMaybe<PersonSort>>>;
+              sort?: InputMaybe<Array<PersonSort>>;
             };
 
             export type QueryPeopleAggregateArgs = {
@@ -1140,6 +1125,9 @@ describe("generate", () => {
 
             export type MovieActorsArgs = {
               where?: InputMaybe<PersonWhere>;
+              limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              sort?: InputMaybe<Array<PersonSort>>;
               options?: InputMaybe<PersonOptions>;
               directed?: InputMaybe<Scalars[\\"Boolean\\"][\\"input\\"]>;
             };
@@ -1318,11 +1306,7 @@ describe("generate", () => {
               /** @deprecated Please use the explicit _EQ version */
               screenTime?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               screenTime_EQ?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              screenTime_NOT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               screenTime_IN?: InputMaybe<Array<Scalars[\\"Int\\"][\\"input\\"]>>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              screenTime_NOT_IN?: InputMaybe<Array<Scalars[\\"Int\\"][\\"input\\"]>>;
               screenTime_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               screenTime_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               screenTime_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
@@ -1362,11 +1346,7 @@ describe("generate", () => {
               OR?: InputMaybe<Array<MovieActorsConnectionWhere>>;
               NOT?: InputMaybe<MovieActorsConnectionWhere>;
               node?: InputMaybe<PersonWhere>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              node_NOT?: InputMaybe<PersonWhere>;
               edge?: InputMaybe<ActedInWhere>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              edge_NOT?: InputMaybe<ActedInWhere>;
             };
 
             export type MovieActorsCreateFieldInput = {
@@ -1504,27 +1484,15 @@ describe("generate", () => {
               /** @deprecated Please use the explicit _EQ version */
               title?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               title_EQ?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              title_NOT?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               title_IN?: InputMaybe<Array<Scalars[\\"String\\"][\\"input\\"]>>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              title_NOT_IN?: InputMaybe<Array<Scalars[\\"String\\"][\\"input\\"]>>;
               title_CONTAINS?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               title_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               title_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              title_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              title_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              title_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               OR?: InputMaybe<Array<MovieWhere>>;
               AND?: InputMaybe<Array<MovieWhere>>;
               NOT?: InputMaybe<MovieWhere>;
               /** @deprecated Use \`actors_SOME\` instead. */
               actors?: InputMaybe<PersonWhere>;
-              /** @deprecated Use \`actors_NONE\` instead. */
-              actors_NOT?: InputMaybe<PersonWhere>;
               /** Return Movies where all of the related People match this filter */
               actors_ALL?: InputMaybe<PersonWhere>;
               /** Return Movies where none of the related People match this filter */
@@ -1535,8 +1503,6 @@ describe("generate", () => {
               actors_SOME?: InputMaybe<PersonWhere>;
               /** @deprecated Use \`actorsConnection_SOME\` instead. */
               actorsConnection?: InputMaybe<MovieActorsConnectionWhere>;
-              /** @deprecated Use \`actorsConnection_NONE\` instead. */
-              actorsConnection_NOT?: InputMaybe<MovieActorsConnectionWhere>;
               /** Return Movies where all of the related MovieActorsConnections match this filter */
               actorsConnection_ALL?: InputMaybe<MovieActorsConnectionWhere>;
               /** Return Movies where none of the related MovieActorsConnections match this filter */
@@ -1576,20 +1542,10 @@ describe("generate", () => {
               /** @deprecated Please use the explicit _EQ version */
               name?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               name_EQ?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              name_NOT?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               name_IN?: InputMaybe<Array<Scalars[\\"String\\"][\\"input\\"]>>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              name_NOT_IN?: InputMaybe<Array<Scalars[\\"String\\"][\\"input\\"]>>;
               name_CONTAINS?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               name_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               name_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              name_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              name_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              name_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               OR?: InputMaybe<Array<PersonWhere>>;
               AND?: InputMaybe<Array<PersonWhere>>;
               NOT?: InputMaybe<PersonWhere>;
@@ -1799,6 +1755,9 @@ describe("generate", () => {
 
             export type QueryFaqsArgs = {
               where?: InputMaybe<FaqWhere>;
+              limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              sort?: InputMaybe<Array<FaqSort>>;
               options?: InputMaybe<FaqOptions>;
             };
 
@@ -1806,7 +1765,7 @@ describe("generate", () => {
               first?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               after?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               where?: InputMaybe<FaqWhere>;
-              sort?: InputMaybe<Array<InputMaybe<FaqSort>>>;
+              sort?: InputMaybe<Array<FaqSort>>;
             };
 
             export type QueryFaqsAggregateArgs = {
@@ -1815,6 +1774,9 @@ describe("generate", () => {
 
             export type QueryFaqEntriesArgs = {
               where?: InputMaybe<FaqEntryWhere>;
+              limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              sort?: InputMaybe<Array<FaqEntrySort>>;
               options?: InputMaybe<FaqEntryOptions>;
             };
 
@@ -1822,7 +1784,7 @@ describe("generate", () => {
               first?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               after?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               where?: InputMaybe<FaqEntryWhere>;
-              sort?: InputMaybe<Array<InputMaybe<FaqEntrySort>>>;
+              sort?: InputMaybe<Array<FaqEntrySort>>;
             };
 
             export type QueryFaqEntriesAggregateArgs = {
@@ -1932,6 +1894,9 @@ describe("generate", () => {
 
             export type FaqEntriesArgs = {
               where?: InputMaybe<FaqEntryWhere>;
+              limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              sort?: InputMaybe<Array<FaqEntrySort>>;
               options?: InputMaybe<FaqEntryOptions>;
               directed?: InputMaybe<Scalars[\\"Boolean\\"][\\"input\\"]>;
             };
@@ -1995,6 +1960,9 @@ describe("generate", () => {
 
             export type FaqEntryInFaQsArgs = {
               where?: InputMaybe<FaqWhere>;
+              limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              sort?: InputMaybe<Array<FaqSort>>;
               options?: InputMaybe<FaqOptions>;
               directed?: InputMaybe<Scalars[\\"Boolean\\"][\\"input\\"]>;
             };
@@ -2202,11 +2170,7 @@ describe("generate", () => {
               OR?: InputMaybe<Array<FaqEntriesConnectionWhere>>;
               NOT?: InputMaybe<FaqEntriesConnectionWhere>;
               node?: InputMaybe<FaqEntryWhere>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              node_NOT?: InputMaybe<FaqEntryWhere>;
               edge?: InputMaybe<FaqEntryInFaqWhere>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              edge_NOT?: InputMaybe<FaqEntryInFaqWhere>;
             };
 
             export type FaqEntriesConnectOrCreateFieldInput = {
@@ -2474,11 +2438,7 @@ describe("generate", () => {
               OR?: InputMaybe<Array<FaqEntryInFaQsConnectionWhere>>;
               NOT?: InputMaybe<FaqEntryInFaQsConnectionWhere>;
               node?: InputMaybe<FaqWhere>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              node_NOT?: InputMaybe<FaqWhere>;
               edge?: InputMaybe<FaqEntryInFaqWhere>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              edge_NOT?: InputMaybe<FaqEntryInFaqWhere>;
             };
 
             export type FaqEntryInFaQsConnectOrCreateFieldInput = {
@@ -2604,11 +2564,7 @@ describe("generate", () => {
               /** @deprecated Please use the explicit _EQ version */
               position?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               position_EQ?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              position_NOT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               position_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>>>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              position_NOT_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>>>;
               position_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               position_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               position_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
@@ -2657,61 +2613,29 @@ describe("generate", () => {
               /** @deprecated Please use the explicit _EQ version */
               id?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               id_EQ?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              id_NOT?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               id_IN?: InputMaybe<Array<Scalars[\\"ID\\"][\\"input\\"]>>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              id_NOT_IN?: InputMaybe<Array<Scalars[\\"ID\\"][\\"input\\"]>>;
               id_CONTAINS?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               id_STARTS_WITH?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               id_ENDS_WITH?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              id_NOT_CONTAINS?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              id_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              id_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _EQ version */
               title?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               title_EQ?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              title_NOT?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               title_IN?: InputMaybe<Array<Scalars[\\"String\\"][\\"input\\"]>>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              title_NOT_IN?: InputMaybe<Array<Scalars[\\"String\\"][\\"input\\"]>>;
               title_CONTAINS?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               title_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               title_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              title_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              title_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              title_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _EQ version */
               body?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               body_EQ?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              body_NOT?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               body_IN?: InputMaybe<Array<Scalars[\\"String\\"][\\"input\\"]>>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              body_NOT_IN?: InputMaybe<Array<Scalars[\\"String\\"][\\"input\\"]>>;
               body_CONTAINS?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               body_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               body_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              body_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              body_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              body_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               OR?: InputMaybe<Array<FaqEntryWhere>>;
               AND?: InputMaybe<Array<FaqEntryWhere>>;
               NOT?: InputMaybe<FaqEntryWhere>;
               /** @deprecated Use \`inFAQs_SOME\` instead. */
               inFAQs?: InputMaybe<FaqWhere>;
-              /** @deprecated Use \`inFAQs_NONE\` instead. */
-              inFAQs_NOT?: InputMaybe<FaqWhere>;
               /** Return FAQEntries where all of the related FAQS match this filter */
               inFAQs_ALL?: InputMaybe<FaqWhere>;
               /** Return FAQEntries where none of the related FAQS match this filter */
@@ -2722,8 +2646,6 @@ describe("generate", () => {
               inFAQs_SOME?: InputMaybe<FaqWhere>;
               /** @deprecated Use \`inFAQsConnection_SOME\` instead. */
               inFAQsConnection?: InputMaybe<FaqEntryInFaQsConnectionWhere>;
-              /** @deprecated Use \`inFAQsConnection_NONE\` instead. */
-              inFAQsConnection_NOT?: InputMaybe<FaqEntryInFaQsConnectionWhere>;
               /** Return FAQEntries where all of the related FAQEntryInFAQsConnections match this filter */
               inFAQsConnection_ALL?: InputMaybe<FaqEntryInFaQsConnectionWhere>;
               /** Return FAQEntries where none of the related FAQEntryInFAQsConnections match this filter */
@@ -2774,49 +2696,25 @@ describe("generate", () => {
               /** @deprecated Please use the explicit _EQ version */
               id?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               id_EQ?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              id_NOT?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               id_IN?: InputMaybe<Array<Scalars[\\"ID\\"][\\"input\\"]>>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              id_NOT_IN?: InputMaybe<Array<Scalars[\\"ID\\"][\\"input\\"]>>;
               id_CONTAINS?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               id_STARTS_WITH?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               id_ENDS_WITH?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              id_NOT_CONTAINS?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              id_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              id_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _EQ version */
               activated?: InputMaybe<Scalars[\\"Boolean\\"][\\"input\\"]>;
               activated_EQ?: InputMaybe<Scalars[\\"Boolean\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              activated_NOT?: InputMaybe<Scalars[\\"Boolean\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _EQ version */
               name?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               name_EQ?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              name_NOT?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               name_IN?: InputMaybe<Array<Scalars[\\"String\\"][\\"input\\"]>>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              name_NOT_IN?: InputMaybe<Array<Scalars[\\"String\\"][\\"input\\"]>>;
               name_CONTAINS?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               name_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               name_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              name_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              name_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              name_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               OR?: InputMaybe<Array<FaqWhere>>;
               AND?: InputMaybe<Array<FaqWhere>>;
               NOT?: InputMaybe<FaqWhere>;
               /** @deprecated Use \`entries_SOME\` instead. */
               entries?: InputMaybe<FaqEntryWhere>;
-              /** @deprecated Use \`entries_NONE\` instead. */
-              entries_NOT?: InputMaybe<FaqEntryWhere>;
               /** Return FAQS where all of the related FAQEntries match this filter */
               entries_ALL?: InputMaybe<FaqEntryWhere>;
               /** Return FAQS where none of the related FAQEntries match this filter */
@@ -2827,8 +2725,6 @@ describe("generate", () => {
               entries_SOME?: InputMaybe<FaqEntryWhere>;
               /** @deprecated Use \`entriesConnection_SOME\` instead. */
               entriesConnection?: InputMaybe<FaqEntriesConnectionWhere>;
-              /** @deprecated Use \`entriesConnection_NONE\` instead. */
-              entriesConnection_NOT?: InputMaybe<FaqEntriesConnectionWhere>;
               /** Return FAQS where all of the related FAQEntriesConnections match this filter */
               entriesConnection_ALL?: InputMaybe<FaqEntriesConnectionWhere>;
               /** Return FAQS where none of the related FAQEntriesConnections match this filter */

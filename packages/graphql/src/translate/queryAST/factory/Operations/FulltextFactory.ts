@@ -21,13 +21,14 @@ import Cypher from "@neo4j/cypher-builder";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../../../../types/neo4j-graphql-translation-context";
-import { filterTruthy } from "../../../../utils/utils";
+import { asArray } from "../../../../utils/utils";
 import { checkEntityAuthentication } from "../../../authorization/check-authentication";
 import { ScoreField } from "../../ast/fields/ScoreField";
 import { ScoreFilter } from "../../ast/filters/property-filters/ScoreFilter";
 import type { FulltextOptions } from "../../ast/operations/FulltextOperation";
 import { FulltextOperation } from "../../ast/operations/FulltextOperation";
 import { FulltextSelection } from "../../ast/selection/FulltextSelection";
+import { raiseOnMixedPagination } from "../../utils/raise-on-mixed-pagination";
 import type { QueryASTFactory } from "../QueryASTFactory";
 
 export class FulltextFactory {
@@ -36,51 +37,23 @@ export class FulltextFactory {
     constructor(queryASTFactory: QueryASTFactory) {
         this.queryASTFactory = queryASTFactory;
     }
-
-    public createFulltextOperation(
+    /**
+     * @deprecated This method is deprecated an it will be removed when the deprecate fulltext operation will be removed.
+     * The is the factory method that parse the deprecated syntax as movies(fulltext: { phrase: "The Matrix" }) {...}
+     * To parse the new syntax movieFullText(phrase: "The Matrix") {...} use the method createFulltextOperation
+     *
+     **/
+    public createDeprecatedFulltextOperation(
         entity: ConcreteEntityAdapter,
         resolveTree: ResolveTree,
         context: Neo4jGraphQLTranslationContext
     ): FulltextOperation {
-        let resolveTreeWhere: Record<string, any> = this.queryASTFactory.operationsFactory.getWhereArgs(resolveTree);
-        let sortOptions: Record<string, any> = (resolveTree.args.options as Record<string, any>) || {};
-        let fieldsByTypeName = resolveTree.fieldsByTypeName;
-        const fulltextOptions = this.getFulltextOptions(context);
+        const resolveTreeWhere: Record<string, any> = this.queryASTFactory.operationsFactory.getWhereArgs(resolveTree);
+
+        const fieldsByTypeName = resolveTree.fieldsByTypeName;
+        const fullTextOptions = this.getFulltextOptions(context);
         let scoreField: ScoreField | undefined;
         let scoreFilter: ScoreFilter | undefined;
-
-        // Compatibility of top level operations
-        const fulltextOperationDeprecatedFields =
-            resolveTree.fieldsByTypeName[entity.operations.fulltextTypeNames.result];
-
-        if (fulltextOperationDeprecatedFields) {
-            const scoreWhere = resolveTreeWhere.score;
-            resolveTreeWhere = resolveTreeWhere[entity.singular] || {};
-
-            const scoreRawField = fulltextOperationDeprecatedFields.score;
-
-            const nestedResolveTree: Record<string, any> = fulltextOperationDeprecatedFields[entity.singular] || {};
-
-            sortOptions = {
-                limit: sortOptions.limit,
-                offset: sortOptions.offset,
-                sort: filterTruthy((sortOptions.sort || []).map((field) => field[entity.singular] || field)),
-            };
-            fieldsByTypeName = nestedResolveTree.fieldsByTypeName || {};
-            if (scoreRawField) {
-                scoreField = new ScoreField({
-                    alias: scoreRawField.alias,
-                    score: fulltextOptions.score,
-                });
-            }
-            if (scoreWhere) {
-                scoreFilter = new ScoreFilter({
-                    scoreVariable: fulltextOptions.score,
-                    min: scoreWhere.min,
-                    max: scoreWhere.max,
-                });
-            }
-        }
 
         checkEntityAuthentication({
             entity: entity.entity,
@@ -90,8 +63,8 @@ export class FulltextFactory {
 
         const selection = new FulltextSelection({
             target: entity,
-            fulltext: fulltextOptions,
-            scoreVariable: fulltextOptions.score,
+            fulltext: fullTextOptions,
+            scoreVariable: fullTextOptions.score,
         });
         const operation = new FulltextOperation({
             target: entity,
@@ -112,18 +85,135 @@ export class FulltextFactory {
         });
 
         // Override sort to support score
-        const sortOptions2 = this.queryASTFactory.operationsFactory.getOptions(entity, sortOptions);
+        // SOFT_DEPRECATION: OPTIONS-ARGUMENT
+        const optionsArg: Record<string, any> = (resolveTree.args.options ?? {}) as Record<string, any>;
+        const sortArg = resolveTree.args.sort ?? optionsArg.sort;
+        const limitArg = resolveTree.args.limit ?? optionsArg.limit;
+        const offsetArg = resolveTree.args.offset ?? optionsArg.offset;
+        raiseOnMixedPagination({
+            optionsArg,
+            sort: resolveTree.args.sort,
+            limit: resolveTree.args.limit,
+            offset: resolveTree.args.offset,
+        });
+        const paginationOptions = this.queryASTFactory.operationsFactory.getOptions({
+            entity,
+            limitArg,
+            offsetArg,
+            sortArg,
+        });
 
-        if (sortOptions2) {
+        if (paginationOptions) {
             const sort = this.queryASTFactory.sortAndPaginationFactory.createSortFields(
-                sortOptions2,
+                paginationOptions,
                 entity,
                 context,
-                fulltextOptions.score
+                fullTextOptions.score
             );
             operation.addSort(...sort);
 
-            const pagination = this.queryASTFactory.sortAndPaginationFactory.createPagination(sortOptions2);
+            const pagination = this.queryASTFactory.sortAndPaginationFactory.createPagination(paginationOptions);
+            if (pagination) {
+                operation.addPagination(pagination);
+            }
+        }
+
+        return operation;
+    }
+
+    public createFulltextOperation(
+        entity: ConcreteEntityAdapter,
+        resolveTree: ResolveTree,
+        context: Neo4jGraphQLTranslationContext
+    ): FulltextOperation {
+        const fullTextDeprecateOperationFields =
+            resolveTree.fieldsByTypeName[entity.operations.fulltextTypeNames.result];
+
+        if (!fullTextDeprecateOperationFields) {
+            throw new Error("Transpile error: operation not found");
+        }
+        const resolveTreeWhere: Record<string, any> = this.queryASTFactory.operationsFactory.getWhereArgs(resolveTree);
+
+        const fullTextOptions = this.getFulltextOptions(context);
+        let scoreField: ScoreField | undefined;
+        let scoreFilter: ScoreFilter | undefined;
+
+        const scoreWhere = resolveTreeWhere.score;
+        const targetTypeWhere = resolveTreeWhere[entity.singular] ?? {};
+
+        const scoreRawField = fullTextDeprecateOperationFields.score;
+
+        const nestedResolveTree: Record<string, any> = fullTextDeprecateOperationFields[entity.singular] ?? {};
+
+        if (scoreRawField) {
+            scoreField = new ScoreField({
+                alias: scoreRawField.alias,
+                score: fullTextOptions.score,
+            });
+        }
+        if (scoreWhere) {
+            scoreFilter = new ScoreFilter({
+                scoreVariable: fullTextOptions.score,
+                min: scoreWhere.min,
+                max: scoreWhere.max,
+            });
+        }
+
+        checkEntityAuthentication({
+            entity: entity.entity,
+            targetOperations: ["READ"],
+            context,
+        });
+
+        const selection = new FulltextSelection({
+            target: entity,
+            fulltext: fullTextOptions,
+            scoreVariable: fullTextOptions.score,
+        });
+        const operation = new FulltextOperation({
+            target: entity,
+            scoreField,
+            selection,
+        });
+
+        if (scoreFilter) {
+            operation.addFilters(scoreFilter);
+        }
+        const fieldsByTypeName = nestedResolveTree.fieldsByTypeName ?? {};
+        this.queryASTFactory.operationsFactory.hydrateOperation({
+            operation,
+            entity,
+            fieldsByTypeName,
+            context,
+            whereArgs: targetTypeWhere,
+        });
+
+        // SOFT_DEPRECATION: OPTIONS-ARGUMENT
+        const optionsArg: Record<string, any> = (resolveTree.args.options ?? {}) as Record<string, any>;
+        // Override sort to support score and other fields as: { score: "DESC", movie: { title: DESC }}
+        const sortArg = asArray(resolveTree.args.sort ?? optionsArg.sort).map(
+            (field) => field[entity.singular] ?? field
+        );
+        const limitArg = resolveTree.args.limit ?? optionsArg.limit;
+        const offsetArg = resolveTree.args.offset ?? optionsArg.offset;
+
+        const paginationOptions = this.queryASTFactory.operationsFactory.getOptions({
+            entity,
+            limitArg,
+            offsetArg,
+            sortArg,
+        });
+
+        if (paginationOptions) {
+            const sort = this.queryASTFactory.sortAndPaginationFactory.createSortFields(
+                paginationOptions,
+                entity,
+                context,
+                fullTextOptions.score
+            );
+            operation.addSort(...sort);
+
+            const pagination = this.queryASTFactory.sortAndPaginationFactory.createPagination(paginationOptions);
             if (pagination) {
                 operation.addPagination(pagination);
             }

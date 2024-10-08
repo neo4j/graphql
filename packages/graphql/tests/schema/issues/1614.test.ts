@@ -73,7 +73,7 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
             }
 
             type CrewMember {
-              movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): Movie!
+              movies(directed: Boolean = true, limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): Movie!
               moviesAggregate(directed: Boolean = true, where: MovieWhere): CrewMemberMovieMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [CrewMemberMoviesConnectionSort!], where: CrewMemberMoviesConnectionWhere): CrewMemberMoviesConnection!
             }
@@ -141,9 +141,7 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               NOT: CrewMemberMoviesConnectionWhere
               OR: [CrewMemberMoviesConnectionWhere!]
               edge: CrewPositionWhere
-              edge_NOT: CrewPositionWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               node: MovieWhere
-              node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input CrewMemberMoviesCreateFieldInput {
@@ -241,8 +239,6 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               movies: MovieWhere
               moviesAggregate: CrewMemberMoviesAggregateInput
               moviesConnection: CrewMemberMoviesConnectionWhere
-              moviesConnection_NOT: CrewMemberMoviesConnectionWhere
-              movies_NOT: MovieWhere
             }
 
             type CrewMembersConnection {
@@ -284,8 +280,6 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               position: CrewPositionType @deprecated(reason: \\"Please use the explicit _EQ version\\")
               position_EQ: CrewPositionType
               position_IN: [CrewPositionType]
-              position_NOT: CrewPositionType @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              position_NOT_IN: [CrewPositionType] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             \\"\\"\\"
@@ -348,11 +342,6 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -380,12 +369,12 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
             }
 
             type Query {
-              crewMembers(options: CrewMemberOptions, where: CrewMemberWhere): [CrewMember!]!
+              crewMembers(limit: Int, offset: Int, options: CrewMemberOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: CrewMemberWhere): [CrewMember!]!
               crewMembersAggregate(where: CrewMemberWhere): CrewMemberAggregateSelection!
               crewMembersConnection(after: String, first: Int, where: CrewMemberWhere): CrewMembersConnection!
-              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"

@@ -81,12 +81,10 @@ describe("Enums", () => {
               roleType: RoleType @deprecated(reason: \\"Please use the explicit _EQ version\\")
               roleType_EQ: RoleType
               roleType_IN: [RoleType!]
-              roleType_NOT: RoleType @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              roleType_NOT_IN: [RoleType!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type Actor {
-              movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+              movies(directed: Boolean = true, limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String!
@@ -170,9 +168,7 @@ describe("Enums", () => {
               NOT: ActorMoviesConnectionWhere
               OR: [ActorMoviesConnectionWhere!]
               edge: ActedInWhere
-              edge_NOT: ActedInWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               node: MovieWhere
-              node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input ActorMoviesCreateFieldInput {
@@ -292,7 +288,6 @@ describe("Enums", () => {
               Return Actors where none of the related ActorMoviesConnections match this filter
               \\"\\"\\"
               moviesConnection_NONE: ActorMoviesConnectionWhere
-              moviesConnection_NOT: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Actors where one of the related ActorMoviesConnections match this filter
               \\"\\"\\"
@@ -305,7 +300,6 @@ describe("Enums", () => {
               movies_ALL: MovieWhere
               \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
               movies_NONE: MovieWhere
-              movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
               \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
               movies_SINGLE: MovieWhere
               \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
@@ -315,11 +309,6 @@ describe("Enums", () => {
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -358,7 +347,7 @@ describe("Enums", () => {
             }
 
             type Movie {
-              actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+              actors(directed: Boolean = true, limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               title: String!
@@ -411,9 +400,7 @@ describe("Enums", () => {
               NOT: MovieActorsConnectionWhere
               OR: [MovieActorsConnectionWhere!]
               edge: ActedInWhere
-              edge_NOT: ActedInWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               node: ActorWhere
-              node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input MovieActorsCreateFieldInput {
@@ -564,7 +551,6 @@ describe("Enums", () => {
               Return Movies where none of the related MovieActorsConnections match this filter
               \\"\\"\\"
               actorsConnection_NONE: MovieActorsConnectionWhere
-              actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Movies where one of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -577,7 +563,6 @@ describe("Enums", () => {
               actors_ALL: ActorWhere
               \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
               actors_NONE: ActorWhere
-              actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
               \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
@@ -587,11 +572,6 @@ describe("Enums", () => {
               title_ENDS_WITH: String
               title_EQ: String
               title_IN: [String!]
-              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 
@@ -619,12 +599,12 @@ describe("Enums", () => {
             }
 
             type Query {
-              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+              actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
-              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
+              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
             enum RoleType {

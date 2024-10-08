@@ -69,7 +69,7 @@ describe("https://github.com/neo4j/graphql/issues/4196", () => {
     test("querying multiple nested nodes should be sorted correctly", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Foo.plural} (options: {sort: {name: ASC}}) {
+                ${Foo.plural} (sort: { name: ASC }) {
                     name
                     bars {
                         foobars {

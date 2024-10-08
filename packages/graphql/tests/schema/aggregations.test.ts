@@ -243,18 +243,11 @@ describe("Aggregations", () => {
               createdAt_IN: [DateTime]
               createdAt_LT: DateTime
               createdAt_LTE: DateTime
-              createdAt_NOT: DateTime @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              createdAt_NOT_IN: [DateTime] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               imdbRating: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
               imdbRating_EQ: Float
@@ -263,18 +256,11 @@ describe("Aggregations", () => {
               imdbRating_IN: [Float]
               imdbRating_LT: Float
               imdbRating_LTE: Float
-              imdbRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              imdbRating_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               isbn: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               isbn_CONTAINS: String
               isbn_ENDS_WITH: String
               isbn_EQ: String
               isbn_IN: [String!]
-              isbn_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              isbn_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              isbn_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              isbn_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              isbn_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               isbn_STARTS_WITH: String
               screenTime: Duration @deprecated(reason: \\"Please use the explicit _EQ version\\")
               screenTime_EQ: Duration
@@ -283,8 +269,6 @@ describe("Aggregations", () => {
               screenTime_IN: [Duration]
               screenTime_LT: Duration
               screenTime_LTE: Duration
-              screenTime_NOT: Duration @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              screenTime_NOT_IN: [Duration] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               someBigInt: BigInt @deprecated(reason: \\"Please use the explicit _EQ version\\")
               someBigInt_EQ: BigInt
               someBigInt_GT: BigInt
@@ -292,8 +276,6 @@ describe("Aggregations", () => {
               someBigInt_IN: [BigInt]
               someBigInt_LT: BigInt
               someBigInt_LTE: BigInt
-              someBigInt_NOT: BigInt @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someBigInt_NOT_IN: [BigInt] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               someInt: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
               someInt_EQ: Int
               someInt_GT: Int
@@ -301,8 +283,6 @@ describe("Aggregations", () => {
               someInt_IN: [Int]
               someInt_LT: Int
               someInt_LTE: Int
-              someInt_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someInt_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               someLocalDateTime: LocalDateTime @deprecated(reason: \\"Please use the explicit _EQ version\\")
               someLocalDateTime_EQ: LocalDateTime
               someLocalDateTime_GT: LocalDateTime
@@ -310,8 +290,6 @@ describe("Aggregations", () => {
               someLocalDateTime_IN: [LocalDateTime]
               someLocalDateTime_LT: LocalDateTime
               someLocalDateTime_LTE: LocalDateTime
-              someLocalDateTime_NOT: LocalDateTime @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someLocalDateTime_NOT_IN: [LocalDateTime] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               someLocalTime: LocalTime @deprecated(reason: \\"Please use the explicit _EQ version\\")
               someLocalTime_EQ: LocalTime
               someLocalTime_GT: LocalTime
@@ -319,8 +297,6 @@ describe("Aggregations", () => {
               someLocalTime_IN: [LocalTime]
               someLocalTime_LT: LocalTime
               someLocalTime_LTE: LocalTime
-              someLocalTime_NOT: LocalTime @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someLocalTime_NOT_IN: [LocalTime] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               someTime: Time @deprecated(reason: \\"Please use the explicit _EQ version\\")
               someTime_EQ: Time
               someTime_GT: Time
@@ -328,18 +304,11 @@ describe("Aggregations", () => {
               someTime_IN: [Time]
               someTime_LT: Time
               someTime_LTE: Time
-              someTime_NOT: Time @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someTime_NOT_IN: [Time] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
               title_IN: [String]
-              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 
@@ -364,9 +333,9 @@ describe("Aggregations", () => {
             }
 
             type Query {
-              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -797,8 +766,6 @@ describe("Aggregations", () => {
               someBigInt_IN: [BigInt]
               someBigInt_LT: BigInt
               someBigInt_LTE: BigInt
-              someBigInt_NOT: BigInt @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someBigInt_NOT_IN: [BigInt] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               someDateTime: DateTime @deprecated(reason: \\"Please use the explicit _EQ version\\")
               someDateTime_EQ: DateTime
               someDateTime_GT: DateTime
@@ -806,8 +773,6 @@ describe("Aggregations", () => {
               someDateTime_IN: [DateTime]
               someDateTime_LT: DateTime
               someDateTime_LTE: DateTime
-              someDateTime_NOT: DateTime @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someDateTime_NOT_IN: [DateTime] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               someDuration: Duration @deprecated(reason: \\"Please use the explicit _EQ version\\")
               someDuration_EQ: Duration
               someDuration_GT: Duration
@@ -815,8 +780,6 @@ describe("Aggregations", () => {
               someDuration_IN: [Duration]
               someDuration_LT: Duration
               someDuration_LTE: Duration
-              someDuration_NOT: Duration @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someDuration_NOT_IN: [Duration] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               someFloat: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
               someFloat_EQ: Float
               someFloat_GT: Float
@@ -824,18 +787,11 @@ describe("Aggregations", () => {
               someFloat_IN: [Float]
               someFloat_LT: Float
               someFloat_LTE: Float
-              someFloat_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someFloat_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               someId: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               someId_CONTAINS: ID
               someId_ENDS_WITH: ID
               someId_EQ: ID
               someId_IN: [ID]
-              someId_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someId_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someId_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someId_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someId_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               someId_STARTS_WITH: ID
               someInt: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
               someInt_EQ: Int
@@ -844,8 +800,6 @@ describe("Aggregations", () => {
               someInt_IN: [Int]
               someInt_LT: Int
               someInt_LTE: Int
-              someInt_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someInt_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               someLocalDateTime: LocalDateTime @deprecated(reason: \\"Please use the explicit _EQ version\\")
               someLocalDateTime_EQ: LocalDateTime
               someLocalDateTime_GT: LocalDateTime
@@ -853,8 +807,6 @@ describe("Aggregations", () => {
               someLocalDateTime_IN: [LocalDateTime]
               someLocalDateTime_LT: LocalDateTime
               someLocalDateTime_LTE: LocalDateTime
-              someLocalDateTime_NOT: LocalDateTime @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someLocalDateTime_NOT_IN: [LocalDateTime] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               someLocalTime: LocalTime @deprecated(reason: \\"Please use the explicit _EQ version\\")
               someLocalTime_EQ: LocalTime
               someLocalTime_GT: LocalTime
@@ -862,18 +814,11 @@ describe("Aggregations", () => {
               someLocalTime_IN: [LocalTime]
               someLocalTime_LT: LocalTime
               someLocalTime_LTE: LocalTime
-              someLocalTime_NOT: LocalTime @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someLocalTime_NOT_IN: [LocalTime] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               someString: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               someString_CONTAINS: String
               someString_ENDS_WITH: String
               someString_EQ: String
               someString_IN: [String]
-              someString_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someString_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someString_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someString_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someString_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               someString_STARTS_WITH: String
               someTime: Time @deprecated(reason: \\"Please use the explicit _EQ version\\")
               someTime_EQ: Time
@@ -882,8 +827,6 @@ describe("Aggregations", () => {
               someTime_IN: [Time]
               someTime_LT: Time
               someTime_LTE: Time
-              someTime_NOT: Time @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someTime_NOT_IN: [Time] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             \\"\\"\\"A local datetime, represented as 'YYYY-MM-DDTHH:MM:SS'\\"\\"\\"
@@ -922,7 +865,7 @@ describe("Aggregations", () => {
             }
 
             type Post {
-              likes(directed: Boolean = true, options: UserOptions, where: UserWhere): [User!]!
+              likes(directed: Boolean = true, limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): [User!]!
               likesAggregate(directed: Boolean = true, where: UserWhere): PostUserLikesAggregationSelection
               likesConnection(after: String, directed: Boolean = true, first: Int, sort: [PostLikesConnectionSort!], where: PostLikesConnectionWhere): PostLikesConnection!
               title: String
@@ -985,9 +928,7 @@ describe("Aggregations", () => {
               NOT: PostLikesConnectionWhere
               OR: [PostLikesConnectionWhere!]
               edge: LikesWhere
-              edge_NOT: LikesWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               node: UserWhere
-              node_NOT: UserWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input PostLikesCreateFieldInput {
@@ -1293,7 +1234,6 @@ describe("Aggregations", () => {
               Return Posts where none of the related PostLikesConnections match this filter
               \\"\\"\\"
               likesConnection_NONE: PostLikesConnectionWhere
-              likesConnection_NOT: PostLikesConnectionWhere @deprecated(reason: \\"Use \`likesConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Posts where one of the related PostLikesConnections match this filter
               \\"\\"\\"
@@ -1306,7 +1246,6 @@ describe("Aggregations", () => {
               likes_ALL: UserWhere
               \\"\\"\\"Return Posts where none of the related Users match this filter\\"\\"\\"
               likes_NONE: UserWhere
-              likes_NOT: UserWhere @deprecated(reason: \\"Use \`likes_NONE\` instead.\\")
               \\"\\"\\"Return Posts where one of the related Users match this filter\\"\\"\\"
               likes_SINGLE: UserWhere
               \\"\\"\\"Return Posts where some of the related Users match this filter\\"\\"\\"
@@ -1316,11 +1255,6 @@ describe("Aggregations", () => {
               title_ENDS_WITH: String
               title_EQ: String
               title_IN: [String]
-              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 
@@ -1331,12 +1265,12 @@ describe("Aggregations", () => {
             }
 
             type Query {
-              posts(options: PostOptions, where: PostWhere): [Post!]!
+              posts(limit: Int, offset: Int, options: PostOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PostSort!], where: PostWhere): [Post!]!
               postsAggregate(where: PostWhere): PostAggregateSelection!
-              postsConnection(after: String, first: Int, sort: [PostSort], where: PostWhere): PostsConnection!
-              users(options: UserOptions, where: UserWhere): [User!]!
+              postsConnection(after: String, first: Int, sort: [PostSort!], where: PostWhere): PostsConnection!
+              users(limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
-              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
+              usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -1487,8 +1421,6 @@ describe("Aggregations", () => {
               someBigInt_IN: [BigInt]
               someBigInt_LT: BigInt
               someBigInt_LTE: BigInt
-              someBigInt_NOT: BigInt @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someBigInt_NOT_IN: [BigInt] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               someDateTime: DateTime @deprecated(reason: \\"Please use the explicit _EQ version\\")
               someDateTime_EQ: DateTime
               someDateTime_GT: DateTime
@@ -1496,8 +1428,6 @@ describe("Aggregations", () => {
               someDateTime_IN: [DateTime]
               someDateTime_LT: DateTime
               someDateTime_LTE: DateTime
-              someDateTime_NOT: DateTime @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someDateTime_NOT_IN: [DateTime] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               someDuration: Duration @deprecated(reason: \\"Please use the explicit _EQ version\\")
               someDuration_EQ: Duration
               someDuration_GT: Duration
@@ -1505,8 +1435,6 @@ describe("Aggregations", () => {
               someDuration_IN: [Duration]
               someDuration_LT: Duration
               someDuration_LTE: Duration
-              someDuration_NOT: Duration @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someDuration_NOT_IN: [Duration] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               someFloat: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
               someFloat_EQ: Float
               someFloat_GT: Float
@@ -1514,18 +1442,11 @@ describe("Aggregations", () => {
               someFloat_IN: [Float]
               someFloat_LT: Float
               someFloat_LTE: Float
-              someFloat_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someFloat_NOT_IN: [Float] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               someId: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               someId_CONTAINS: ID
               someId_ENDS_WITH: ID
               someId_EQ: ID
               someId_IN: [ID]
-              someId_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someId_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someId_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someId_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someId_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               someId_STARTS_WITH: ID
               someInt: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
               someInt_EQ: Int
@@ -1534,8 +1455,6 @@ describe("Aggregations", () => {
               someInt_IN: [Int]
               someInt_LT: Int
               someInt_LTE: Int
-              someInt_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someInt_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               someLocalDateTime: LocalDateTime @deprecated(reason: \\"Please use the explicit _EQ version\\")
               someLocalDateTime_EQ: LocalDateTime
               someLocalDateTime_GT: LocalDateTime
@@ -1543,8 +1462,6 @@ describe("Aggregations", () => {
               someLocalDateTime_IN: [LocalDateTime]
               someLocalDateTime_LT: LocalDateTime
               someLocalDateTime_LTE: LocalDateTime
-              someLocalDateTime_NOT: LocalDateTime @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someLocalDateTime_NOT_IN: [LocalDateTime] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               someLocalTime: LocalTime @deprecated(reason: \\"Please use the explicit _EQ version\\")
               someLocalTime_EQ: LocalTime
               someLocalTime_GT: LocalTime
@@ -1552,18 +1469,11 @@ describe("Aggregations", () => {
               someLocalTime_IN: [LocalTime]
               someLocalTime_LT: LocalTime
               someLocalTime_LTE: LocalTime
-              someLocalTime_NOT: LocalTime @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someLocalTime_NOT_IN: [LocalTime] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               someString: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               someString_CONTAINS: String
               someString_ENDS_WITH: String
               someString_EQ: String
               someString_IN: [String]
-              someString_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someString_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someString_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someString_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someString_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               someString_STARTS_WITH: String
               someTime: Time @deprecated(reason: \\"Please use the explicit _EQ version\\")
               someTime_EQ: Time
@@ -1572,8 +1482,6 @@ describe("Aggregations", () => {
               someTime_IN: [Time]
               someTime_LT: Time
               someTime_LTE: Time
-              someTime_NOT: Time @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              someTime_NOT_IN: [Time] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type UsersConnection {

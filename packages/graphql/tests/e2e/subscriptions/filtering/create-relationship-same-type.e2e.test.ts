@@ -153,7 +153,6 @@ subscription SubscriptionMovie {
     test("node relationship to self - standard type - OUT", async () => {
         const where = `{createdRelationship: {references: {node: {title_IN: ["art"]}}}}`;
 
-        // const where = `{createdRelationship: {references: {node: {title_NOT_IN: ["a"]}}}}`;
         await wsClient.subscribe(articleSubscriptionQuery({ typeArticle, where }));
 
         await supertest(server.path)

@@ -36,7 +36,7 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
                 nameDetails: NameDetails
             }
 
-            type ApplicationVariant implements BusinessObject 
+            type ApplicationVariant implements BusinessObject
                 @node
                 @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "ALL" } } }])
                 @mutation(operations: []) {
@@ -81,8 +81,13 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
 
     test("Cypher fields should be calculated early in query if needed for sort, sort applied after initial match", async () => {
         const query = /* GraphQL */ `
-            query getApplicationVariants($where: ApplicationVariantWhere, $options: ApplicationVariantOptions) {
-                applicationVariants(where: $where, options: $options) {
+            query getApplicationVariants(
+                $where: ApplicationVariantWhere
+                $limit: Int
+                $offset: Int
+                $sort: [ApplicationVariantSort!]
+            ) {
+                applicationVariants(where: $where, limit: $limit, offset: $offset, sort: $sort) {
                     relatedId
                     nameDetailsConnection {
                         edges {
@@ -119,13 +124,12 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
             where: {
                 current_EQ: true,
             },
-            options: {
-                sort: {
-                    relatedId: "ASC",
-                },
-                offset: 0,
-                limit: 50,
+
+            sort: {
+                relatedId: "ASC",
             },
+            offset: 0,
+            limit: 50,
         };
 
         const result = await translateQuery(neoSchema, query, {

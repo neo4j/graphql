@@ -88,7 +88,7 @@ describe("context-variable-not-always-resolved-on-cypher-queries", () => {
                             }
                         }
                     }
-                    options: { limit: 1 }
+                     limit: 1 
                 ) {
                     iri
                     realizationOf {

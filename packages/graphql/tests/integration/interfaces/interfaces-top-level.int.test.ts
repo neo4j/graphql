@@ -192,9 +192,9 @@ describe("Top-level interface query fields", () => {
                 },
             },
         });
-        const query = `
+        const query = /* GraphQL */ `
             query {
-                myOtherInterfaces(options: {sort: [{ something: DESC }] }) {
+                myOtherInterfaces(sort: [{ something: DESC }]) {
                     id
                     ... on ${SomeNodeType} {
                         id
@@ -243,9 +243,9 @@ describe("Top-level interface query fields", () => {
                 },
             },
         });
-        const query = `
+        const query = /* GraphQL */ `
             query {
-                myOtherInterfaces(options: {sort: [{ something: DESC }], limit: 1 }) {
+                myOtherInterfaces(sort: [{ something: DESC }], limit: 1) {
                     id
                     ... on ${SomeNodeType} {
                         id
@@ -473,7 +473,7 @@ describe("Top-level interface query fields", () => {
         test("Max limit from directive on Interface overwrites the limit argument", async () => {
             const query = /* GraphQL */ `
                 query {
-                    myInterfaces(options: { limit: 6 }) {
+                    myInterfaces(limit: 6) {
                         id
                         ... on ${MyOtherImplementationType.name} {
                             someField
@@ -504,7 +504,7 @@ describe("Top-level interface query fields", () => {
         test("Limit argument overwrites default if lower than max", async () => {
             const query = /* GraphQL */ `
                 query {
-                    myInterfaces(options: { limit: 2 }) {
+                    myInterfaces(limit: 2) {
                         id
                         ... on ${MyOtherImplementationType.name} {
                             someField

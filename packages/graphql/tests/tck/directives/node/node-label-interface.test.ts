@@ -50,7 +50,7 @@ describe("Node directive with interface", () => {
         const query = /* GraphQL */ `
             {
                 movies(where: { title_EQ: "some title" }) {
-                    search(where: { name_EQ: "Horror" }, options: { offset: 1, limit: 10 }) {
+                    search(where: { name_EQ: "Horror" }, offset: 1, limit: 10) {
                         ... on Movie {
                             title
                         }

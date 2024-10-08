@@ -109,7 +109,6 @@ export class OperationsFactory {
         reference?: any;
         resolveAsUnwind?: boolean;
     }): Operation {
-        // Handles deprecated top level fulltext
         if (
             entity &&
             isConcreteEntity(entity) &&
@@ -117,6 +116,7 @@ export class OperationsFactory {
             context.fulltext &&
             context.resolveTree.args.phrase
         ) {
+            // Handles the new FullText operation as moviesFullText(phrase: "The Matrix") {...}
             const indexName = context.fulltext.indexName ?? context.fulltext.name;
             if (indexName === undefined) {
                 throw new Error("The name of the fulltext index should be defined using the indexName argument.");
@@ -128,9 +128,10 @@ export class OperationsFactory {
         const operationMatch = parseTopLevelOperationField(resolveTree.name, context, entity);
         switch (operationMatch) {
             case "READ": {
+                // handle the deprecated way to do FullText search
                 if (context.resolveTree.args.fulltext || context.resolveTree.args.phrase) {
                     assertIsConcreteEntity(entity);
-                    return this.fulltextFactory.createFulltextOperation(entity, resolveTree, context);
+                    return this.fulltextFactory.createDeprecatedFulltextOperation(entity, resolveTree, context);
                 }
                 if (!entity) {
                     throw new Error("Entity is required for top level read operations");
@@ -299,7 +300,7 @@ export class OperationsFactory {
         operation,
         whereArgs,
         context,
-        sortArgs,
+        paginationArgs,
         fieldsByTypeName,
         partialOf,
     }: {
@@ -307,7 +308,7 @@ export class OperationsFactory {
         operation: T;
         context: Neo4jGraphQLTranslationContext;
         whereArgs: Record<string, any>;
-        sortArgs?: Record<string, any>;
+        paginationArgs?: Record<"limit" | "offset" | "sort", any>;
         fieldsByTypeName: FieldsByTypeName;
         partialOf?: UnionEntityAdapter | InterfaceEntityAdapter;
     }): T {
@@ -346,14 +347,19 @@ export class OperationsFactory {
 
         operation.addAuthFilters(...authFilters);
 
-        if (sortArgs) {
-            const sortOptions = this.getOptions(entity, sortArgs);
+        if (paginationArgs) {
+            const paginationOptions = this.getOptions({
+                entity,
+                limitArg: paginationArgs.limit,
+                offsetArg: paginationArgs.offset,
+                sortArg: paginationArgs.sort,
+            });
 
-            if (sortOptions) {
-                const sort = this.sortAndPaginationFactory.createSortFields(sortOptions, entity, context);
+            if (paginationOptions) {
+                const sort = this.sortAndPaginationFactory.createSortFields(paginationOptions, entity, context);
                 operation.addSort(...sort);
 
-                const pagination = this.sortAndPaginationFactory.createPagination(sortOptions);
+                const pagination = this.sortAndPaginationFactory.createPagination(paginationOptions);
                 if (pagination) {
                     operation.addPagination(pagination);
                 }
@@ -362,13 +368,20 @@ export class OperationsFactory {
         return operation;
     }
 
-    public getOptions(entity: EntityAdapter, options?: Record<string, any>): GraphQLOptionsArg | undefined {
-        if (!options) {
-            return undefined;
-        }
+    public getOptions({
+        entity,
+        limitArg,
+        offsetArg,
+        sortArg,
+    }: {
+        entity: EntityAdapter;
+        limitArg: number | Integer;
+        offsetArg: number;
+        sortArg: Record<string, any>[];
+    }): GraphQLOptionsArg | undefined {
         const limitDirective = isUnionEntity(entity) ? undefined : entity.annotations.limit;
 
-        let limit: Integer | number | undefined = options?.limit ?? limitDirective?.default ?? limitDirective?.max;
+        let limit: Integer | number | undefined = limitArg ?? limitDirective?.default ?? limitDirective?.max;
         if (limit instanceof Integer) {
             limit = limit.toNumber();
         }
@@ -377,12 +390,12 @@ export class OperationsFactory {
             limit = Math.min(limit, maxLimit);
         }
 
-        if (limit === undefined && options.offset === undefined && options.sort === undefined) return undefined;
+        if (limit === undefined && offsetArg === undefined && sortArg === undefined) return undefined;
 
         return {
             limit,
-            offset: options.offset,
-            sort: options.sort,
+            offset: offsetArg,
+            sort: sortArg,
         };
     }
 

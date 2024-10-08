@@ -49,7 +49,8 @@ describe("Node directive with unions", () => {
                 movies(where: { title_EQ: "some title" }) {
                     search(
                         where: { Movie: { title_EQ: "The Matrix" }, Genre: { name_EQ: "Horror" } }
-                        options: { offset: 1, limit: 10 }
+                        offset: 1
+                        limit: 10
                     ) {
                         ... on Movie {
                             title

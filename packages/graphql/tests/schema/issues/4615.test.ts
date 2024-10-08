@@ -129,12 +129,10 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               screenTime_IN: [Int]
               screenTime_LT: Int
               screenTime_LTE: Int
-              screenTime_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              screenTime_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type Actor {
-              actedIn(directed: Boolean = true, options: ShowOptions, where: ShowWhere): [Show!]!
+              actedIn(directed: Boolean = true, limit: Int, offset: Int, options: ShowOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ShowSort!], where: ShowWhere): [Show!]!
               actedInAggregate(directed: Boolean = true, where: ShowWhere): ActorShowActedInAggregationSelection
               actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
@@ -175,9 +173,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               NOT: ActorActedInConnectionWhere
               OR: [ActorActedInConnectionWhere!]
               edge: ActedInWhere
-              edge_NOT: ActedInWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               node: ShowWhere
-              node_NOT: ShowWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input ActorActedInCreateFieldInput {
@@ -342,7 +338,6 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               Return Actors where none of the related ActorActedInConnections match this filter
               \\"\\"\\"
               actedInConnection_NONE: ActorActedInConnectionWhere
-              actedInConnection_NOT: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Actors where one of the related ActorActedInConnections match this filter
               \\"\\"\\"
@@ -355,7 +350,6 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               actedIn_ALL: ShowWhere
               \\"\\"\\"Return Actors where none of the related Shows match this filter\\"\\"\\"
               actedIn_NONE: ShowWhere
-              actedIn_NOT: ShowWhere @deprecated(reason: \\"Use \`actedIn_NONE\` instead.\\")
               \\"\\"\\"Return Actors where one of the related Shows match this filter\\"\\"\\"
               actedIn_SINGLE: ShowWhere
               \\"\\"\\"Return Actors where some of the related Shows match this filter\\"\\"\\"
@@ -365,11 +359,6 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
             }
 
@@ -428,7 +417,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
             }
 
             type Movie implements Show {
-              actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+              actors(directed: Boolean = true, limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ShowActorsConnectionSort!], where: ShowActorsConnectionWhere): ShowActorsConnection!
               release: DateTime!
@@ -603,7 +592,6 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               Return Movies where none of the related ShowActorsConnections match this filter
               \\"\\"\\"
               actorsConnection_NONE: ShowActorsConnectionWhere
-              actorsConnection_NOT: ShowActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Movies where one of the related ShowActorsConnections match this filter
               \\"\\"\\"
@@ -616,7 +604,6 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               actors_ALL: ActorWhere
               \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
               actors_NONE: ActorWhere
-              actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
               \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
@@ -628,8 +615,6 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               release_IN: [DateTime!]
               release_LT: DateTime
               release_LTE: DateTime
-              release_NOT: DateTime @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              release_NOT_IN: [DateTime!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               runtime: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
               runtime_EQ: Int
               runtime_GT: Int
@@ -637,18 +622,11 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               runtime_IN: [Int]
               runtime_LT: Int
               runtime_LTE: Int
-              runtime_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              runtime_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
               title_IN: [String!]
-              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 
@@ -679,22 +657,22 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
             }
 
             type Query {
-              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+              actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
-              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
+              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-              series(options: SeriesOptions, where: SeriesWhere): [Series!]!
+              moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+              series(limit: Int, offset: Int, options: SeriesOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [SeriesSort!], where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
-              seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
-              shows(options: ShowOptions, where: ShowWhere): [Show!]!
+              seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
+              shows(limit: Int, offset: Int, options: ShowOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ShowSort!], where: ShowWhere): [Show!]!
               showsAggregate(where: ShowWhere): ShowAggregateSelection!
-              showsConnection(after: String, first: Int, sort: [ShowSort], where: ShowWhere): ShowsConnection!
+              showsConnection(after: String, first: Int, sort: [ShowSort!], where: ShowWhere): ShowsConnection!
             }
 
             type Series implements Show {
-              actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+              actors(directed: Boolean = true, limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorsAggregate(directed: Boolean = true, where: ActorWhere): SeriesActorActorsAggregationSelection
               actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ShowActorsConnectionSort!], where: ShowActorsConnectionWhere): ShowActorsConnection!
               episodes: Int
@@ -870,7 +848,6 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               Return Series where none of the related ShowActorsConnections match this filter
               \\"\\"\\"
               actorsConnection_NONE: ShowActorsConnectionWhere
-              actorsConnection_NOT: ShowActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Series where one of the related ShowActorsConnections match this filter
               \\"\\"\\"
@@ -883,7 +860,6 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               actors_ALL: ActorWhere
               \\"\\"\\"Return Series where none of the related Actors match this filter\\"\\"\\"
               actors_NONE: ActorWhere
-              actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
               \\"\\"\\"Return Series where one of the related Actors match this filter\\"\\"\\"
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
@@ -895,23 +871,16 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               episodes_IN: [Int]
               episodes_LT: Int
               episodes_LTE: Int
-              episodes_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              episodes_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
               title_IN: [String!]
-              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
             }
 
             interface Show {
-              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+              actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorsConnection(after: String, first: Int, sort: [ShowActorsConnectionSort!], where: ShowActorsConnectionWhere): ShowActorsConnection!
               title: String!
             }
@@ -955,9 +924,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               NOT: ShowActorsConnectionWhere
               OR: [ShowActorsConnectionWhere!]
               edge: ShowActorsEdgeWhere
-              edge_NOT: ShowActorsEdgeWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               node: ActorWhere
-              node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input ShowActorsCreateFieldInput {
@@ -1125,7 +1092,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               \\"\\"\\"
               Specify one or more ShowSort objects to sort Shows by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [ShowSort]
+              sort: [ShowSort!]
             }
 
             \\"\\"\\"
@@ -1155,7 +1122,6 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               Return Shows where none of the related ShowActorsConnections match this filter
               \\"\\"\\"
               actorsConnection_NONE: ShowActorsConnectionWhere
-              actorsConnection_NOT: ShowActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Shows where one of the related ShowActorsConnections match this filter
               \\"\\"\\"
@@ -1168,7 +1134,6 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               actors_ALL: ActorWhere
               \\"\\"\\"Return Shows where none of the related Actors match this filter\\"\\"\\"
               actors_NONE: ActorWhere
-              actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
               \\"\\"\\"Return Shows where one of the related Actors match this filter\\"\\"\\"
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Shows where some of the related Actors match this filter\\"\\"\\"
@@ -1178,11 +1143,6 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               title_ENDS_WITH: String
               title_EQ: String
               title_IN: [String!]
-              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
               typename_IN: [ShowImplementation!]
             }

@@ -85,7 +85,7 @@ describe("Interfaces", () => {
             type Movie implements MovieNode {
               customQuery: [Movie]
               id: ID
-              movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+              movies(directed: Boolean = true, limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(directed: Boolean = true, where: MovieWhere): MovieMovieMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieNodeMoviesConnectionSort!], where: MovieNodeMoviesConnectionWhere): MovieNodeMoviesConnection!
               nodes: [MovieNode]
@@ -184,7 +184,7 @@ describe("Interfaces", () => {
             interface MovieNode {
               customQuery: [Movie]
               id: ID
-              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesConnection(after: String, first: Int, sort: [MovieNodeMoviesConnectionSort!], where: MovieNodeMoviesConnectionWhere): MovieNodeMoviesConnection!
             }
 
@@ -229,7 +229,6 @@ describe("Interfaces", () => {
               NOT: MovieNodeMoviesConnectionWhere
               OR: [MovieNodeMoviesConnectionWhere!]
               node: MovieWhere
-              node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input MovieNodeMoviesDeleteFieldInput {
@@ -260,7 +259,7 @@ describe("Interfaces", () => {
               \\"\\"\\"
               Specify one or more MovieNodeSort objects to sort MovieNodes by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [MovieNodeSort]
+              sort: [MovieNodeSort!]
             }
 
             \\"\\"\\"
@@ -279,11 +278,6 @@ describe("Interfaces", () => {
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
               moviesAggregate: MovieNodeMoviesAggregateInput
@@ -296,7 +290,6 @@ describe("Interfaces", () => {
               Return MovieNodes where none of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
               moviesConnection_NONE: MovieNodeMoviesConnectionWhere
-              moviesConnection_NOT: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return MovieNodes where one of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
@@ -309,7 +302,6 @@ describe("Interfaces", () => {
               movies_ALL: MovieWhere
               \\"\\"\\"Return MovieNodes where none of the related Movies match this filter\\"\\"\\"
               movies_NONE: MovieWhere
-              movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
               \\"\\"\\"Return MovieNodes where one of the related Movies match this filter\\"\\"\\"
               movies_SINGLE: MovieWhere
               \\"\\"\\"Return MovieNodes where some of the related Movies match this filter\\"\\"\\"
@@ -353,11 +345,6 @@ describe("Interfaces", () => {
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
               moviesAggregate: MovieMoviesAggregateInput
@@ -370,7 +357,6 @@ describe("Interfaces", () => {
               Return Movies where none of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
               moviesConnection_NONE: MovieNodeMoviesConnectionWhere
-              moviesConnection_NOT: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Movies where one of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
@@ -383,7 +369,6 @@ describe("Interfaces", () => {
               movies_ALL: MovieWhere
               \\"\\"\\"Return Movies where none of the related Movies match this filter\\"\\"\\"
               movies_NONE: MovieWhere
-              movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
               \\"\\"\\"Return Movies where one of the related Movies match this filter\\"\\"\\"
               movies_SINGLE: MovieWhere
               \\"\\"\\"Return Movies where some of the related Movies match this filter\\"\\"\\"
@@ -411,12 +396,12 @@ describe("Interfaces", () => {
             }
 
             type Query {
-              movieNodes(options: MovieNodeOptions, where: MovieNodeWhere): [MovieNode!]!
+              movieNodes(limit: Int, offset: Int, options: MovieNodeOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieNodeSort!], where: MovieNodeWhere): [MovieNode!]!
               movieNodesAggregate(where: MovieNodeWhere): MovieNodeAggregateSelection!
-              movieNodesConnection(after: String, first: Int, sort: [MovieNodeSort], where: MovieNodeWhere): MovieNodesConnection!
-              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              movieNodesConnection(after: String, first: Int, sort: [MovieNodeSort!], where: MovieNodeWhere): MovieNodesConnection!
+              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -510,7 +495,7 @@ describe("Interfaces", () => {
             type Movie implements MovieNode {
               customQuery: [Movie]
               id: ID
-              movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+              movies(directed: Boolean = true, limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(directed: Boolean = true, where: MovieWhere): MovieMovieMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieNodeMoviesConnectionSort!], where: MovieNodeMoviesConnectionWhere): MovieNodeMoviesConnection!
               nodes: [MovieNode]
@@ -609,7 +594,7 @@ describe("Interfaces", () => {
             interface MovieNode @something(something: \\"test\\") {
               customQuery: [Movie]
               id: ID
-              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesConnection(after: String, first: Int, sort: [MovieNodeMoviesConnectionSort!], where: MovieNodeMoviesConnectionWhere): MovieNodeMoviesConnection!
             }
 
@@ -654,7 +639,6 @@ describe("Interfaces", () => {
               NOT: MovieNodeMoviesConnectionWhere
               OR: [MovieNodeMoviesConnectionWhere!]
               node: MovieWhere
-              node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input MovieNodeMoviesDeleteFieldInput {
@@ -685,7 +669,7 @@ describe("Interfaces", () => {
               \\"\\"\\"
               Specify one or more MovieNodeSort objects to sort MovieNodes by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
-              sort: [MovieNodeSort]
+              sort: [MovieNodeSort!]
             }
 
             \\"\\"\\"
@@ -704,11 +688,6 @@ describe("Interfaces", () => {
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
               moviesAggregate: MovieNodeMoviesAggregateInput
@@ -721,7 +700,6 @@ describe("Interfaces", () => {
               Return MovieNodes where none of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
               moviesConnection_NONE: MovieNodeMoviesConnectionWhere
-              moviesConnection_NOT: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return MovieNodes where one of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
@@ -734,7 +712,6 @@ describe("Interfaces", () => {
               movies_ALL: MovieWhere
               \\"\\"\\"Return MovieNodes where none of the related Movies match this filter\\"\\"\\"
               movies_NONE: MovieWhere
-              movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
               \\"\\"\\"Return MovieNodes where one of the related Movies match this filter\\"\\"\\"
               movies_SINGLE: MovieWhere
               \\"\\"\\"Return MovieNodes where some of the related Movies match this filter\\"\\"\\"
@@ -778,11 +755,6 @@ describe("Interfaces", () => {
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
               moviesAggregate: MovieMoviesAggregateInput
@@ -795,7 +767,6 @@ describe("Interfaces", () => {
               Return Movies where none of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
               moviesConnection_NONE: MovieNodeMoviesConnectionWhere
-              moviesConnection_NOT: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Movies where one of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
@@ -808,7 +779,6 @@ describe("Interfaces", () => {
               movies_ALL: MovieWhere
               \\"\\"\\"Return Movies where none of the related Movies match this filter\\"\\"\\"
               movies_NONE: MovieWhere
-              movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
               \\"\\"\\"Return Movies where one of the related Movies match this filter\\"\\"\\"
               movies_SINGLE: MovieWhere
               \\"\\"\\"Return Movies where some of the related Movies match this filter\\"\\"\\"
@@ -836,12 +806,12 @@ describe("Interfaces", () => {
             }
 
             type Query {
-              movieNodes(options: MovieNodeOptions, where: MovieNodeWhere): [MovieNode!]!
+              movieNodes(limit: Int, offset: Int, options: MovieNodeOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieNodeSort!], where: MovieNodeWhere): [MovieNode!]!
               movieNodesAggregate(where: MovieNodeWhere): MovieNodeAggregateSelection!
-              movieNodesConnection(after: String, first: Int, sort: [MovieNodeSort], where: MovieNodeWhere): MovieNodesConnection!
-              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              movieNodesConnection(after: String, first: Int, sort: [MovieNodeSort!], where: MovieNodeWhere): MovieNodesConnection!
+              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
