@@ -113,7 +113,6 @@ describe("@vector directive - Query", () => {
         await neoSchema.assertIndexesAndConstraints({
             driver,
             sessionConfig: { database: databaseName },
-            options: { create: true },
         });
     });
 
