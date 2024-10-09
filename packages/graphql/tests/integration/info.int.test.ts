@@ -86,6 +86,38 @@ describe("info", () => {
         ]);
     });
 
+    test("should return info from a delete mutation", async () => {
+        const typeDefs = `
+            type ${Movie} @node {
+                id: ID!
+            }
+        `;
+
+        await testHelper.initNeo4jGraphQL({ typeDefs });
+
+        const id = generate({
+            charset: "alphabetic",
+        });
+
+        const query = `
+            mutation($id: ID!) {
+                ${Movie.operations.delete}(where: { id_EQ: $id }) {
+                    nodesDeleted
+                    relationshipsDeleted
+                }
+            }
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query, {
+            variableValues: { id },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+
+        expect((gqlResult?.data as any)?.[Movie.operations.delete].nodesDeleted).toBe(0);
+        expect((gqlResult?.data as any)?.[Movie.operations.delete].relationshipsDeleted).toBe(0);
+    });
+
     test("should return info from an update mutation", async () => {
         const typeDefs = `
             type ${Movie} @node {
@@ -105,6 +137,9 @@ describe("info", () => {
                     ${Movie.plural} {
                         id
                     }
+                    info {
+                        nodesCreated
+                    }
                 }
             }
         `;
@@ -114,5 +149,6 @@ describe("info", () => {
         });
 
         expect(gqlResult.errors).toBeFalsy();
+        expect((gqlResult?.data as any)?.[Movie.operations.update].info.nodesCreated).toBe(0);
     });
 });
