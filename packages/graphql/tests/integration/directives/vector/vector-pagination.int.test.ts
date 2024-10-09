@@ -121,7 +121,6 @@ describe("@vector directive - pagination", () => {
         await neoSchema.assertIndexesAndConstraints({
             driver,
             sessionConfig: { database: databaseName },
-            options: { create: true },
         });
     });
 

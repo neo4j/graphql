@@ -134,11 +134,13 @@ describe("@fulltext directive", () => {
             neoSchema = await testHelper.initNeo4jGraphQL({
                 typeDefs,
             });
+
+            await testHelper.createFulltextIndex(`${personType.name}Index`, personType.name, ["name"]);
+
             await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
                 sessionConfig: { database: databaseName },
-                options: { create: true },
             });
 
             await testHelper.executeCypher(
@@ -1244,11 +1246,13 @@ describe("@fulltext directive", () => {
                     },
                 },
             });
+
+            await testHelper.createFulltextIndex(`${personType.name}Index`, personType.name, ["name"]);
+
             await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
                 sessionConfig: { database: databaseName },
-                options: { create: true },
             });
 
             const query = `
@@ -1305,11 +1309,13 @@ describe("@fulltext directive", () => {
                     },
                 },
             });
+
+            await testHelper.createFulltextIndex(`${personType.name}Index`, personType.name, ["name"]);
+
             await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
                 sessionConfig: { database: databaseName },
-                options: { create: true },
             });
 
             const query = `
@@ -1366,11 +1372,13 @@ describe("@fulltext directive", () => {
                     },
                 },
             });
+
+            await testHelper.createFulltextIndex(`${personType.name}Index`, personType.name, ["name"]);
+
             await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
                 sessionConfig: { database: databaseName },
-                options: { create: true },
             });
 
             const query = `
@@ -1442,11 +1450,13 @@ describe("@fulltext directive", () => {
                     },
                 },
             });
+
+            await testHelper.createFulltextIndex(`${personType.name}Index`, personType.name, ["name"]);
+
             await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
                 sessionConfig: { database: databaseName },
-                options: { create: true },
             });
 
             const query = `
@@ -1498,11 +1508,13 @@ describe("@fulltext directive", () => {
                     },
                 },
             });
+
+            await testHelper.createFulltextIndex(`${personType.name}Index`, personType.name, ["name"]);
+
             await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
                 sessionConfig: { database: databaseName },
-                options: { create: true },
             });
 
             const query = `
@@ -1557,11 +1569,13 @@ describe("@fulltext directive", () => {
                     },
                 },
             });
+
+            await testHelper.createFulltextIndex(`${personType.name}Index`, personType.name, ["name"]);
+
             await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
                 sessionConfig: { database: databaseName },
-                options: { create: true },
             });
 
             const query = `
@@ -1617,11 +1631,13 @@ describe("@fulltext directive", () => {
                     },
                 },
             });
+
+            await testHelper.createFulltextIndex(`${personType.name}Index`, personType.name, ["name"]);
+
             await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
                 sessionConfig: { database: databaseName },
-                options: { create: true },
             });
 
             const query = `
@@ -1669,11 +1685,13 @@ describe("@fulltext directive", () => {
             neoSchema = await testHelper.initNeo4jGraphQL({
                 typeDefs,
             });
+
+            await testHelper.createFulltextIndex(`${movieType.name}Index`, movieType.name, ["title", "description"]);
+
             await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
                 sessionConfig: { database: databaseName },
-                options: { create: true },
             });
 
             const query = `
@@ -1736,11 +1754,13 @@ describe("@fulltext directive", () => {
             neoSchema = await testHelper.initNeo4jGraphQL({
                 typeDefs,
             });
+
+            await testHelper.createFulltextIndex(`${personType.name}CustomIndex`, personType.name, ["name"]);
+
             await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
                 sessionConfig: { database: databaseName },
-                options: { create: true },
             });
 
             const query = `
@@ -1793,11 +1813,13 @@ describe("@fulltext directive", () => {
             neoSchema = await testHelper.initNeo4jGraphQL({
                 typeDefs,
             });
+
+            await testHelper.createFulltextIndex(`${movieType.name}Index`, movieType.name, ["title", "description"]);
+
             await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
                 sessionConfig: { database: databaseName },
-                options: { create: true },
             });
 
             const query = `
@@ -1862,11 +1884,14 @@ describe("@fulltext directive", () => {
             neoSchema = await testHelper.initNeo4jGraphQL({
                 typeDefs,
             });
+
+            await testHelper.createFulltextIndex(`${movieType.name}CustomIndex`, movieType.name, ["title"]);
+            await testHelper.createFulltextIndex(`${movieType.name}CustomIndex2`, movieType.name, ["description"]);
+
             await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
                 sessionConfig: { database: databaseName },
-                options: { create: true },
             });
 
             const query1 = `

@@ -161,14 +161,14 @@ describe("cypher directive filtering - List Auth", () => {
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult?.data).toEqual({
-            [Movie.plural]: [
+            [Movie.plural]: expect.toIncludeSameMembers([
                 {
                     custom_field: ["a", "b", "c"],
                 },
                 {
                     custom_field: ["bbb", "a", "bbb"],
                 },
-            ],
+            ]),
         });
     });
 

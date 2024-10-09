@@ -121,7 +121,6 @@ describe("@vector directive - filtering", () => {
         await neoSchema.assertIndexesAndConstraints({
             driver,
             sessionConfig: { database: databaseName },
-            options: { create: true },
         });
     });
 
