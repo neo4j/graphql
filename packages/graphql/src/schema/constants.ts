@@ -26,7 +26,7 @@ export const DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS = {
     },
 };
 
-export const DEPRECATE_EQUAL_FILTERS = {
+export const DEPRECATE_IMPLICIT_EQUAL_FILTERS = {
     name: DEPRECATED,
     args: {
         reason: "Please use the explicit _EQ version",

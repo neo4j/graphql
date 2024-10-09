@@ -148,7 +148,8 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               AND: [BookTitle_ENBookAggregateInput!]
               NOT: BookTitle_ENBookAggregateInput
               OR: [BookTitle_ENBookAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -387,7 +388,8 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               AND: [BookTitle_SVBookAggregateInput!]
               NOT: BookTitle_SVBookAggregateInput
               OR: [BookTitle_SVBookAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int

@@ -189,7 +189,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
                             actors_ALL: {
                                 moviesAggregate: { count_GT: 1 }
                             },
-                            actorsAggregate: { count: 1 }
+                            actorsAggregate: { count_EQ: 1 }
                         }
                     }
                 ) {
@@ -301,7 +301,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
                                     moviesAggregate: { count_GT: 1 }
                                 }
                             },
-                            actorsAggregate: { count: 1 }
+                            actorsAggregate: { count_EQ: 1 }
                         }
                     }
                 ) {
