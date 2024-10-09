@@ -191,7 +191,7 @@ describe("Nested within AND/OR", () => {
                                     }
                                     {
                                         node: {
-                                            testString_EQUAL: "${testString5}"
+                                            testString_SHORTEST_GT: 2
                                         }
                                     }
                                 ]
@@ -211,6 +211,9 @@ describe("Nested within AND/OR", () => {
             [postType.plural]: expect.toIncludeSameMembers([
                 {
                     content: content5,
+                },
+                {
+                    content: content4,
                 },
             ]),
         });
@@ -232,7 +235,7 @@ describe("Nested within AND/OR", () => {
                                     }
                                     {
                                         node: {
-                                            testString_EQUAL: "${testString5}"
+                                            testString_SHORTEST_GT: 2
                                         }
                                     }
                                 ]
@@ -252,6 +255,9 @@ describe("Nested within AND/OR", () => {
             [postType.plural]: expect.toIncludeSameMembers([
                 {
                     content: content5,
+                },
+                {
+                    content: content4,
                 },
             ]),
         });
@@ -273,7 +279,7 @@ describe("Nested within AND/OR", () => {
                                     }
                                     {
                                         node: {
-                                            testString_EQUAL: "${testString5}"
+                                            testString_SHORTEST_GT: 20
                                         }
                                     }
                                 ]
@@ -323,7 +329,7 @@ describe("Nested within AND/OR", () => {
                                     }
                                     {
                                         node: {
-                                            testString_EQUAL: "${testString5}"
+                                            testString_SHORTEST_GT: 20
                                         }
                                     }
                                 ]
@@ -367,7 +373,7 @@ describe("Nested within AND/OR", () => {
                                     }
                                     {
                                         node: {
-                                            testString_EQUAL: "${testString5}"
+                                            testString_SHORTEST_GT: 20
                                         }
                                     }
                                 ]
@@ -411,7 +417,7 @@ describe("Nested within AND/OR", () => {
                                     }
                                     {
                                         node: {
-                                            testString_EQUAL: "${testString5}"
+                                            testString_SHORTEST_GT: 2
                                         }
                                     }
                                 ]
@@ -437,6 +443,9 @@ describe("Nested within AND/OR", () => {
                 },
                 {
                     content: content3,
+                },
+                {
+                    content: content4,
                 },
                 {
                     content: content5,

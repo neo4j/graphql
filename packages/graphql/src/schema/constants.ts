@@ -33,13 +33,6 @@ export const DEPRECATE_IMPLICIT_EQUAL_FILTERS = {
     },
 };
 
-export const DEPRECATE_INVALID_AGGREGATION_FILTERS = {
-    name: DEPRECATED,
-    args: {
-        reason: "Aggregation filters that are not relying on an aggregating function will be deprecated.",
-    },
-};
-
 export const DEPRECATE_OPTIONS_ARGUMENT = {
     name: DEPRECATED,
     args: {
