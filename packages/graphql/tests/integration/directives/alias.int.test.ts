@@ -356,9 +356,6 @@ describe("@alias directive", () => {
                 ${AliasDirectiveTestUser.plural} {
                     id
                 }
-                info {
-                    bookmark
-                }
 
             }
           }

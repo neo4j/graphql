@@ -259,8 +259,6 @@ describe("issues/3591", () => {
             /** Information about the number of nodes and relationships created during a create mutation */
             export type CreateInfo = {
               __typename?: \\"CreateInfo\\";
-              /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
-              bookmark?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
               nodesCreated: Scalars[\\"Int\\"][\\"output\\"];
               relationshipsCreated: Scalars[\\"Int\\"][\\"output\\"];
             };
@@ -280,8 +278,6 @@ describe("issues/3591", () => {
             /** Information about the number of nodes and relationships deleted during a delete mutation */
             export type DeleteInfo = {
               __typename?: \\"DeleteInfo\\";
-              /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
-              bookmark?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
               nodesDeleted: Scalars[\\"Int\\"][\\"output\\"];
               relationshipsDeleted: Scalars[\\"Int\\"][\\"output\\"];
             };
@@ -340,8 +336,6 @@ describe("issues/3591", () => {
             /** Information about the number of nodes and relationships created and deleted during an update mutation */
             export type UpdateInfo = {
               __typename?: \\"UpdateInfo\\";
-              /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
-              bookmark?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
               nodesCreated: Scalars[\\"Int\\"][\\"output\\"];
               nodesDeleted: Scalars[\\"Int\\"][\\"output\\"];
               relationshipsCreated: Scalars[\\"Int\\"][\\"output\\"];

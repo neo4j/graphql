@@ -17,15 +17,12 @@
  * limitations under the License.
  */
 
-import { GraphQLInt, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
+import { GraphQLInt, GraphQLNonNull, GraphQLObjectType } from "graphql";
 
 export const CreateInfo = new GraphQLObjectType({
     name: "CreateInfo",
     description: "Information about the number of nodes and relationships created during a create mutation",
     fields: {
-        bookmark: {
-            type: GraphQLString,
-        },
         nodesCreated: {
             type: new GraphQLNonNull(GraphQLInt),
         },

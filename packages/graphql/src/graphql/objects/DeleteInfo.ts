@@ -17,15 +17,12 @@
  * limitations under the License.
  */
 
-import { GraphQLInt, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
+import { GraphQLInt, GraphQLNonNull, GraphQLObjectType } from "graphql";
 
 export const DeleteInfo = new GraphQLObjectType({
     name: "DeleteInfo",
     description: "Information about the number of nodes and relationships deleted during a delete mutation",
     fields: {
-        bookmark: {
-            type: GraphQLString,
-        },
         nodesDeleted: {
             type: new GraphQLNonNull(GraphQLInt),
         },
