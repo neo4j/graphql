@@ -45,7 +45,6 @@ describe("Remove deprecated fields for aggregations", () => {
                 excludeDeprecatedFields: {
                     bookmark: true,
                     arrayFilters: true,
-                    stringAggregation: true,
                     aggregationFilters: true,
                 },
             },
@@ -423,7 +422,6 @@ describe("Remove deprecated fields for aggregations", () => {
                 excludeDeprecatedFields: {
                     bookmark: true,
                     arrayFilters: true,
-                    stringAggregation: true,
                     aggregationFilters: true,
                 },
             },

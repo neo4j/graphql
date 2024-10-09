@@ -479,7 +479,6 @@ export type Neo4jFeaturesSettings = {
         bookmark?: boolean;
         implicitEqualFilters?: boolean;
         arrayFilters?: boolean;
-        stringAggregation?: boolean;
         aggregationFilters?: boolean;
         deprecatedOptionsArgument?: boolean;
         nestedUpdateOperationsFields?: boolean;

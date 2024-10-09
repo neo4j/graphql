@@ -44,7 +44,6 @@ describe("Implicit Equality filters", () => {
                     implicitEqualFilters: true,
                     bookmark: true,
                     arrayFilters: true,
-                    stringAggregation: true,
                     aggregationFilters: true,
                     deprecatedOptionsArgument: true,
                     nestedUpdateOperationsFields: true,
