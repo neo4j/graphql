@@ -94,7 +94,7 @@ jobs:
         run: yarn --cwd packages/graphql run test:schema --coverage
       - if: ${{ !inputs.disable-coverage-archival }}
         name: Archive coverage report
-        uses: actions/upload-artifact@84480863f228bb9747b473957fcc9e309aa96097 # v4
+        uses: actions/upload-artifact@604373da6381bf24206979c74d06a550515601b9 # v4
         with:
           name: api-library-coverage-graphql
           path: packages/graphql/coverage/
