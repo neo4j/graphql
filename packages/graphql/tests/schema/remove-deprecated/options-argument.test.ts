@@ -56,7 +56,6 @@ describe("Deprecated options argument", () => {
                 excludeDeprecatedFields: {
                     bookmark: true,
                     arrayFilters: true,
-                    stringAggregation: true,
                     aggregationFilters: true,
                     deprecatedOptionsArgument: true,
                 },
