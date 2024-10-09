@@ -19,66 +19,101 @@
 
 import { RelationshipQueryDirectionOption } from "../constants";
 import type { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { DEPRECATE_DIRECTED_ARGUMENT } from "./constants";
 import { addDirectedArgument, getDirectedArgument } from "./directed-argument";
 
 describe("Directed argument", () => {
     describe("getDirectedArgument", () => {
         test("should return default true argument for DEFAULT_DIRECTED", () => {
             expect(
-                getDirectedArgument({
-                    queryDirection: RelationshipQueryDirectionOption.DEFAULT_DIRECTED,
-                } as RelationshipAdapter)
+                getDirectedArgument(
+                    {
+                        queryDirection: RelationshipQueryDirectionOption.DEFAULT_DIRECTED,
+                    } as RelationshipAdapter,
+                    {}
+                )
             ).toEqual({
                 type: "Boolean",
                 defaultValue: true,
+                directives: [DEPRECATE_DIRECTED_ARGUMENT],
             });
         });
 
         test("should return default false argument for DEFAULT_UNDIRECTED", () => {
             expect(
-                getDirectedArgument({
-                    queryDirection: RelationshipQueryDirectionOption.DEFAULT_UNDIRECTED,
-                } as RelationshipAdapter)
+                getDirectedArgument(
+                    {
+                        queryDirection: RelationshipQueryDirectionOption.DEFAULT_UNDIRECTED,
+                    } as RelationshipAdapter,
+                    {}
+                )
             ).toEqual({
                 type: "Boolean",
                 defaultValue: false,
+                directives: [DEPRECATE_DIRECTED_ARGUMENT],
             });
         });
 
         test("should return an undefined argument for DIRECTED_ONLY", () => {
             expect(
-                getDirectedArgument({
-                    queryDirection: RelationshipQueryDirectionOption.DIRECTED_ONLY,
-                } as RelationshipAdapter)
+                getDirectedArgument(
+                    {
+                        queryDirection: RelationshipQueryDirectionOption.DIRECTED_ONLY,
+                    } as RelationshipAdapter,
+                    {}
+                )
             ).toBeUndefined();
         });
 
         test("should return an undefined argument for UNDIRECTED_ONLY", () => {
             expect(
-                getDirectedArgument({
-                    queryDirection: RelationshipQueryDirectionOption.UNDIRECTED_ONLY,
-                } as RelationshipAdapter)
+                getDirectedArgument(
+                    {
+                        queryDirection: RelationshipQueryDirectionOption.UNDIRECTED_ONLY,
+                    } as RelationshipAdapter,
+                    {}
+                )
+            ).toBeUndefined();
+        });
+
+        test("should return undefined if directedArgument in excludeDeprecatedDirectives", () => {
+            expect(
+                getDirectedArgument(
+                    {
+                        queryDirection: RelationshipQueryDirectionOption.DEFAULT_UNDIRECTED,
+                    } as RelationshipAdapter,
+                    { excludeDeprecatedFields: { directedArgument: true } }
+                )
             ).toBeUndefined();
         });
     });
 
     describe("addDirectedArgument", () => {
         test("should add directed argument if DEFAULT_DIRECTED", () => {
-            const args = addDirectedArgument({ arg1: "dsa" }, {
-                queryDirection: RelationshipQueryDirectionOption.DEFAULT_DIRECTED,
-            } as RelationshipAdapter);
+            const args = addDirectedArgument(
+                { arg1: "dsa" },
+                {
+                    queryDirection: RelationshipQueryDirectionOption.DEFAULT_DIRECTED,
+                } as RelationshipAdapter,
+                {}
+            );
             expect(args).toEqual({
                 arg1: "dsa",
                 directed: {
                     type: "Boolean",
                     defaultValue: true,
+                    directives: [DEPRECATE_DIRECTED_ARGUMENT],
                 },
             });
         });
         test("should not add any argument if DIRECTED_ONLY", () => {
-            const args = addDirectedArgument({ arg1: "dsa" }, {
-                queryDirection: RelationshipQueryDirectionOption.DIRECTED_ONLY,
-            } as RelationshipAdapter);
+            const args = addDirectedArgument(
+                { arg1: "dsa" },
+                {
+                    queryDirection: RelationshipQueryDirectionOption.DIRECTED_ONLY,
+                } as RelationshipAdapter,
+                {}
+            );
             expect(args).toEqual({
                 arg1: "dsa",
             });

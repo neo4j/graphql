@@ -74,3 +74,10 @@ export const DEPRECATE_UPDATE_CONNECT_OR_CREATE_INPUT_FIELD = {
         reason: "Top level connectOrCreate input argument in update is deprecated. Use the nested connectOrCreate field in the relationship within the update argument",
     },
 };
+
+export const DEPRECATE_DIRECTED_ARGUMENT = {
+    name: DEPRECATED,
+    args: {
+        reason: "The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server",
+    },
+};

@@ -480,6 +480,7 @@ export type Neo4jFeaturesSettings = {
         aggregationFilters?: boolean;
         deprecatedOptionsArgument?: boolean;
         nestedUpdateOperationsFields?: boolean;
+        directedArgument?: boolean;
     };
     vector?: Neo4jVectorSettings;
 };
