@@ -15,7 +15,6 @@ jobs:
       matrix:
         packages:
           [
-            { package: "ogm", shard: 1/1, coverage_name: 1 },
             { package: "introspector", shard: 1/1, coverage_name: 2 },
             { package: "graphql", shard: 1/4, coverage_name: 3 }, 
             { package: "graphql", shard: 2/4, coverage_name: 4 },

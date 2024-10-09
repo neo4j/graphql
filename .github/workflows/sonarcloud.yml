@@ -14,7 +14,6 @@ jobs:
         package:
           - graphql
           - introspector
-          - ogm
 
     runs-on: ubuntu-latest
 

@@ -1,8 +1,4 @@
 {
     "files": [],
-    "references": [
-        { "path": "./packages/graphql/tsconfig.json" },
-        { "path": "./packages/ogm/tsconfig.json" },
-        { "path": "./packages/introspector/tsconfig.json" }
-    ]
+    "references": [{ "path": "./packages/graphql/tsconfig.json" }, { "path": "./packages/introspector/tsconfig.json" }]
 }
