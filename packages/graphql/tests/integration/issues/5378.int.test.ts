@@ -64,11 +64,13 @@ describe("https://github.com/neo4j/graphql/issues/5378", () => {
             typeDefs,
         });
 
+        await testHelper.createFulltextIndex("fulltext_index_space_name_number", Space.name, ["Name", "Number"]);
+        await testHelper.createUniqueConstraint("unique_constraint_space_id", Space.name, "Id");
+
         await neoSchema.getSchema();
         await neoSchema.assertIndexesAndConstraints({
             driver: await testHelper.getDriver(),
             sessionConfig: { database: databaseName },
-            options: { create: true },
         });
     });
 

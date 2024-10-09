@@ -121,7 +121,6 @@ describe("@vector directive - Query", () => {
         await neoSchema.assertIndexesAndConstraints({
             driver,
             sessionConfig: { database: databaseName },
-            options: { create: true },
         });
     });
 
@@ -148,12 +147,10 @@ describe("@vector directive - Query", () => {
         const query = `
                 query($vector: [Float!]) {
                     ${queryName}(vector: $vector) {
-                        ${Movie.operations.connection}{
-                            edges {
-                                score
-                                node {
-                                    title
-                                }
+                        edges {
+                            score
+                            node {
+                                title
                             }
                         }
                     }
@@ -164,22 +161,20 @@ describe("@vector directive - Query", () => {
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data).toEqual({
             [queryName]: {
-                [Movie.operations.connection]: {
-                    edges: [
-                        {
-                            node: {
-                                title: "Some Title",
-                            },
-                            score: expect.closeTo(1),
+                edges: [
+                    {
+                        node: {
+                            title: "Some Title",
                         },
-                        {
-                            node: {
-                                title: "Another Title",
-                            },
-                            score: expect.closeTo(0.56),
+                        score: expect.closeTo(1),
+                    },
+                    {
+                        node: {
+                            title: "Another Title",
                         },
-                    ],
-                },
+                        score: expect.closeTo(0.56),
+                    },
+                ],
             },
         });
     });
@@ -200,16 +195,14 @@ describe("@vector directive - Query", () => {
         const query = `
                 query($vector: [Float!]) {
                     ${queryName}(vector: $vector) {
-                        ${Movie.operations.connection}{
-                            edges {
-                                score
-                                node {
-                                    title
-                                    actorsConnection {
-                                        edges {
-                                            node {
-                                                name
-                                            }
+                        edges {
+                            score
+                            node {
+                                title
+                                actorsConnection {
+                                    edges {
+                                        node {
+                                            name
                                         }
                                     }
                                 }
@@ -223,34 +216,32 @@ describe("@vector directive - Query", () => {
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data).toEqual({
             [queryName]: {
-                [Movie.operations.connection]: {
-                    edges: [
-                        {
-                            node: {
-                                title: "Some Title",
-                                actorsConnection: {
-                                    edges: [
-                                        {
-                                            node: {
-                                                name: "Keanu",
-                                            },
+                edges: [
+                    {
+                        node: {
+                            title: "Some Title",
+                            actorsConnection: {
+                                edges: [
+                                    {
+                                        node: {
+                                            name: "Keanu",
                                         },
-                                    ],
-                                },
+                                    },
+                                ],
                             },
-                            score: expect.closeTo(1),
                         },
-                        {
-                            node: {
-                                title: "Another Title",
-                                actorsConnection: {
-                                    edges: [],
-                                },
+                        score: expect.closeTo(1),
+                    },
+                    {
+                        node: {
+                            title: "Another Title",
+                            actorsConnection: {
+                                edges: [],
                             },
-                            score: expect.closeTo(0.56),
                         },
-                    ],
-                },
+                        score: expect.closeTo(0.56),
+                    },
+                ],
             },
         });
     });

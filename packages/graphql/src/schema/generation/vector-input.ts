@@ -76,7 +76,7 @@ export function withVectorResultTypeConnection({
     composer: SchemaComposer;
     concreteEntityAdapter: ConcreteEntityAdapter;
 }): ObjectTypeComposer {
-    const typeName = concreteEntityAdapter.operations.vectorTypeNames.result;
+    const typeName = concreteEntityAdapter.operations.vectorTypeNames.connection;
     if (composer.has(typeName)) {
         return composer.getOTC(typeName);
     }
@@ -91,7 +91,7 @@ export function withVectorResultTypeConnection({
     });
 
     const connection = composer.createObjectTC({
-        name: concreteEntityAdapter.operations.vectorTypeNames.connection,
+        name: typeName,
         fields: {
             totalCount: new GraphQLNonNull(GraphQLInt),
             pageInfo: new GraphQLNonNull(PageInfo),
@@ -99,11 +99,5 @@ export function withVectorResultTypeConnection({
         },
     });
 
-    const result = composer.createObjectTC({
-        name: typeName,
-        fields: {
-            [concreteEntityAdapter.operations.rootTypeFieldNames.connection]: connection.NonNull,
-        },
-    });
-    return result;
+    return connection;
 }
