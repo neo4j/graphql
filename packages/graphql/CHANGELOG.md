@@ -1,5 +1,19 @@
 # @neo4j/graphql
 
+## 5.8.0
+
+### Minor Changes
+
+-   [#5619](https://github.com/neo4j/graphql/pull/5619) [`142bc0a`](https://github.com/neo4j/graphql/commit/142bc0af7c36e0190d42710d3d4f0f480602672f) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Add cypher filtering on lists of scalars
+
+### Patch Changes
+
+-   [#5632](https://github.com/neo4j/graphql/pull/5632) [`3c69066`](https://github.com/neo4j/graphql/commit/3c690668e6cab959b6af598c29477dd77f8807cc) Thanks [@darrellwarde](https://github.com/darrellwarde)! - The `options` argument of `assertIndexesAndConstraints` has been deprecated and the creation of indexes and constraints will no longer be support in the next major version of the library.
+
+-   [#5606](https://github.com/neo4j/graphql/pull/5606) [`e4ac1d8`](https://github.com/neo4j/graphql/commit/e4ac1d86009f520eacce26f83585e3fb57cb01ac) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix delete operations inside updates for unions
+
+-   [#5616](https://github.com/neo4j/graphql/pull/5616) [`b7552f8`](https://github.com/neo4j/graphql/commit/b7552f8151d22ae3e4b4e04f4d168128600ebfa8) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix cardinality validation on nested unions
+
 ## 5.7.1
 
 ### Patch Changes
