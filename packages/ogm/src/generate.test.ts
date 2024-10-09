@@ -1036,10 +1036,6 @@ describe("generate", () => {
             export type MutationUpdateMoviesArgs = {
               where?: InputMaybe<MovieWhere>;
               update?: InputMaybe<MovieUpdateInput>;
-              connect?: InputMaybe<MovieConnectInput>;
-              disconnect?: InputMaybe<MovieDisconnectInput>;
-              create?: InputMaybe<MovieRelationInput>;
-              delete?: InputMaybe<MovieDeleteInput>;
             };
 
             export type MutationCreatePeopleArgs = {
@@ -1442,10 +1438,6 @@ describe("generate", () => {
               delete?: InputMaybe<Array<MovieActorsDeleteFieldInput>>;
             };
 
-            export type MovieConnectInput = {
-              actors?: InputMaybe<Array<MovieActorsConnectFieldInput>>;
-            };
-
             export type MovieCreateInput = {
               title: Scalars[\\"String\\"][\\"input\\"];
               actors?: InputMaybe<MovieActorsFieldInput>;
@@ -1455,19 +1447,11 @@ describe("generate", () => {
               actors?: InputMaybe<Array<MovieActorsDeleteFieldInput>>;
             };
 
-            export type MovieDisconnectInput = {
-              actors?: InputMaybe<Array<MovieActorsDisconnectFieldInput>>;
-            };
-
             export type MovieOptions = {
               limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array. */
               sort?: InputMaybe<Array<MovieSort>>;
-            };
-
-            export type MovieRelationInput = {
-              actors?: InputMaybe<Array<MovieActorsCreateFieldInput>>;
             };
 
             /** Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object. */
@@ -1813,11 +1797,6 @@ describe("generate", () => {
             export type MutationUpdateFaqsArgs = {
               where?: InputMaybe<FaqWhere>;
               update?: InputMaybe<FaqUpdateInput>;
-              connect?: InputMaybe<FaqConnectInput>;
-              disconnect?: InputMaybe<FaqDisconnectInput>;
-              create?: InputMaybe<FaqRelationInput>;
-              delete?: InputMaybe<FaqDeleteInput>;
-              connectOrCreate?: InputMaybe<FaqConnectOrCreateInput>;
             };
 
             export type MutationCreateFaqEntriesArgs = {
@@ -1832,11 +1811,6 @@ describe("generate", () => {
             export type MutationUpdateFaqEntriesArgs = {
               where?: InputMaybe<FaqEntryWhere>;
               update?: InputMaybe<FaqEntryUpdateInput>;
-              connect?: InputMaybe<FaqEntryConnectInput>;
-              disconnect?: InputMaybe<FaqEntryDisconnectInput>;
-              create?: InputMaybe<FaqEntryRelationInput>;
-              delete?: InputMaybe<FaqEntryDeleteInput>;
-              connectOrCreate?: InputMaybe<FaqEntryConnectOrCreateInput>;
             };
 
             /** An enum for sorting in either ascending or descending order. */
@@ -2113,10 +2087,6 @@ describe("generate", () => {
               entries?: InputMaybe<Array<FaqEntriesConnectFieldInput>>;
             };
 
-            export type FaqConnectOrCreateInput = {
-              entries?: InputMaybe<Array<FaqEntriesConnectOrCreateFieldInput>>;
-            };
-
             export type FaqConnectOrCreateWhere = {
               node: FaqUniqueWhere;
             };
@@ -2339,10 +2309,6 @@ describe("generate", () => {
 
             export type FaqEntryConnectInput = {
               inFAQs?: InputMaybe<Array<FaqEntryInFaQsConnectFieldInput>>;
-            };
-
-            export type FaqEntryConnectOrCreateInput = {
-              inFAQs?: InputMaybe<Array<FaqEntryInFaQsConnectOrCreateFieldInput>>;
             };
 
             export type FaqEntryConnectOrCreateWhere = {
@@ -2586,10 +2552,6 @@ describe("generate", () => {
               sort?: InputMaybe<Array<FaqEntrySort>>;
             };
 
-            export type FaqEntryRelationInput = {
-              inFAQs?: InputMaybe<Array<FaqEntryInFaQsCreateFieldInput>>;
-            };
-
             /** Fields to sort FaqEntries by. The order in which sorts are applied is not guaranteed when specifying many fields in one FAQEntrySort object. */
             export type FaqEntrySort = {
               id?: InputMaybe<SortDirection>;
@@ -2667,10 +2629,6 @@ describe("generate", () => {
               offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** Specify one or more FAQSort objects to sort Faqs by. The sorts will be applied in the order in which they are arranged in the array. */
               sort?: InputMaybe<Array<FaqSort>>;
-            };
-
-            export type FaqRelationInput = {
-              entries?: InputMaybe<Array<FaqEntriesCreateFieldInput>>;
             };
 
             /** Fields to sort Faqs by. The order in which sorts are applied is not guaranteed when specifying many fields in one FAQSort object. */

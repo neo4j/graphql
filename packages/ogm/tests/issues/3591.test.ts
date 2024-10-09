@@ -180,10 +180,6 @@ describe("issues/3591", () => {
             export type MutationUpdateUsersArgs = {
               where?: InputMaybe<UserWhere>;
               update?: InputMaybe<UserUpdateInput>;
-              connect?: InputMaybe<UserConnectInput>;
-              disconnect?: InputMaybe<UserDisconnectInput>;
-              create?: InputMaybe<UserRelationInput>;
-              delete?: InputMaybe<UserDeleteInput>;
             };
 
             export type MutationCreateCompaniesArgs = {
@@ -819,13 +815,6 @@ describe("issues/3591", () => {
               delete?: InputMaybe<Array<UserCompanyDeleteFieldInput>>;
             };
 
-            export type UserConnectInput = {
-              company?: InputMaybe<Array<UserCompanyConnectFieldInput>>;
-              favoriteRestaurants?: InputMaybe<
-                Array<UserFavoriteRestaurantsConnectFieldInput>
-              >;
-            };
-
             export type UserCreateInput = {
               company?: InputMaybe<UserCompanyFieldInput>;
               favoriteRestaurants?: InputMaybe<UserFavoriteRestaurantsFieldInput>;
@@ -835,13 +824,6 @@ describe("issues/3591", () => {
               company?: InputMaybe<Array<UserCompanyDeleteFieldInput>>;
               favoriteRestaurants?: InputMaybe<
                 Array<UserFavoriteRestaurantsDeleteFieldInput>
-              >;
-            };
-
-            export type UserDisconnectInput = {
-              company?: InputMaybe<Array<UserCompanyDisconnectFieldInput>>;
-              favoriteRestaurants?: InputMaybe<
-                Array<UserFavoriteRestaurantsDisconnectFieldInput>
               >;
             };
 
@@ -970,13 +952,6 @@ describe("issues/3591", () => {
               offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array. */
               sort?: InputMaybe<Array<UserSort>>;
-            };
-
-            export type UserRelationInput = {
-              company?: InputMaybe<Array<UserCompanyCreateFieldInput>>;
-              favoriteRestaurants?: InputMaybe<
-                Array<UserFavoriteRestaurantsCreateFieldInput>
-              >;
             };
 
             /** Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object. */
