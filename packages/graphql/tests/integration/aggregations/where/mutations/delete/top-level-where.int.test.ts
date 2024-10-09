@@ -79,7 +79,7 @@ describe("Delete using top level aggregate where", () => {
             mutation {
                 ${postType.operations.delete}(where: { 
                     likesAggregate: {
-                        count: 3
+                        count_EQ: 3
                         node: {
                             testString_SHORTEST_EQUAL: 3
                         }
@@ -106,7 +106,7 @@ describe("Delete using top level aggregate where", () => {
                 ${postType.operations.delete}(where: { 
                     likesAggregate: {
                         OR: [
-                            { count: 3 }
+                            { count_EQ: 3 }
                             {
                                 node: {
                                     testString_SHORTEST_EQUAL: 3
@@ -136,7 +136,7 @@ describe("Delete using top level aggregate where", () => {
                 ${postType.operations.delete}(where: { 
                     likesAggregate: {
                         AND: [
-                            { count: 3 }
+                            { count_EQ: 3 }
                             {
                                 node: {
                                     testString_SHORTEST_EQUAL: 3

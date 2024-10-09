@@ -213,7 +213,8 @@ describe("lower case type names", () => {
               AND: [actorMoviesAggregateInput!]
               NOT: actorMoviesAggregateInput
               OR: [actorMoviesAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -506,7 +507,8 @@ describe("lower case type names", () => {
               AND: [movieActorsAggregateInput!]
               NOT: movieActorsAggregateInput
               OR: [movieActorsAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
