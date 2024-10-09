@@ -79,7 +79,7 @@ describe("Nested within AND/OR", () => {
             query {
                 ${postType.plural}(where: { 
                     likesAggregate: {
-                        count: 3
+                        count_EQ: 3
                         node: {
                             testString_SHORTEST_EQUAL: 3
                         }
@@ -108,7 +108,7 @@ describe("Nested within AND/OR", () => {
                 ${postType.plural}(where: { 
                     likesAggregate: {
                         OR: [
-                            { count: 3 }
+                            { count_EQ: 3 }
                             {
                                 node: {
                                     testString_SHORTEST_EQUAL: 3
@@ -149,7 +149,7 @@ describe("Nested within AND/OR", () => {
                 ${postType.plural}(where: { 
                     likesAggregate: {
                         AND: [
-                            { count: 3 }
+                            { count_EQ: 3 }
                             {
                                 node: {
                                     testString_SHORTEST_EQUAL: 3

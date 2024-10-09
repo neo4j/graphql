@@ -22,7 +22,7 @@
         "dist/**/*.js.map"
     ],
     "engines": {
-        "node": ">=16.0.0"
+        "node": ">=20.0.0"
     },
     "scripts": {
         "build": "tsc --build src/tsconfig.production.json",

@@ -1307,11 +1307,13 @@ describe("generate", () => {
             };
 
             export type MovieActorsAggregateInput = {
-              count?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              count_EQ?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               count_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               count_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               count_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               count_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              /** @deprecated Please use the explicit _EQ version */
+              count?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               AND?: InputMaybe<Array<MovieActorsAggregateInput>>;
               OR?: InputMaybe<Array<MovieActorsAggregateInput>>;
               NOT?: InputMaybe<MovieActorsAggregateInput>;
@@ -2120,11 +2122,13 @@ describe("generate", () => {
             };
 
             export type FaqEntriesAggregateInput = {
-              count?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              count_EQ?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               count_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               count_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               count_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               count_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              /** @deprecated Please use the explicit _EQ version */
+              count?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               AND?: InputMaybe<Array<FaqEntriesAggregateInput>>;
               OR?: InputMaybe<Array<FaqEntriesAggregateInput>>;
               NOT?: InputMaybe<FaqEntriesAggregateInput>;
@@ -2366,11 +2370,13 @@ describe("generate", () => {
             };
 
             export type FaqEntryInFaQsAggregateInput = {
-              count?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              count_EQ?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               count_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               count_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               count_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               count_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              /** @deprecated Please use the explicit _EQ version */
+              count?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               AND?: InputMaybe<Array<FaqEntryInFaQsAggregateInput>>;
               OR?: InputMaybe<Array<FaqEntryInFaQsAggregateInput>>;
               NOT?: InputMaybe<FaqEntryInFaQsAggregateInput>;
