@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import console from "console";
 import { type Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import type { Neo4jGraphQL } from "../../../../src/classes";
@@ -139,12 +140,10 @@ describe("@vector directive - Query", () => {
         const query = `
                 query($vector: [Float!]) {
                     ${queryName}(vector: $vector, sort: {score: DESC} ) {
-                        ${Movie.operations.connection}{
-                            edges {
-                                score
-                                node {
-                                    title
-                                }
+                        edges {
+                            score
+                            node {
+                                title
                             }
                         }
                     }
@@ -155,22 +154,20 @@ describe("@vector directive - Query", () => {
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data).toEqual({
             [queryName]: {
-                [Movie.operations.connection]: {
-                    edges: [
-                        {
-                            node: {
-                                title: "Some Title",
-                            },
-                            score: expect.closeTo(1),
+                edges: [
+                    {
+                        node: {
+                            title: "Some Title",
                         },
-                        {
-                            node: {
-                                title: "Another Title",
-                            },
-                            score: expect.closeTo(0.56),
+                        score: expect.closeTo(1),
+                    },
+                    {
+                        node: {
+                            title: "Another Title",
                         },
-                    ],
-                },
+                        score: expect.closeTo(0.56),
+                    },
+                ],
             },
         });
     });
@@ -191,12 +188,10 @@ describe("@vector directive - Query", () => {
         const query = `
                 query($vector: [Float!]) {
                     ${queryName}(vector: $vector, sort: {score: ASC} ) {
-                        ${Movie.operations.connection}{
-                            edges {
-                                score
-                                node {
-                                    title
-                                }
+                        edges {
+                            score
+                            node {
+                                title
                             }
                         }
                     }
@@ -207,22 +202,20 @@ describe("@vector directive - Query", () => {
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data).toEqual({
             [queryName]: {
-                [Movie.operations.connection]: {
-                    edges: [
-                        {
-                            node: {
-                                title: "Another Title",
-                            },
-                            score: expect.closeTo(0.56),
+                edges: [
+                    {
+                        node: {
+                            title: "Another Title",
                         },
-                        {
-                            node: {
-                                title: "Some Title",
-                            },
-                            score: expect.closeTo(1),
+                        score: expect.closeTo(0.56),
+                    },
+                    {
+                        node: {
+                            title: "Some Title",
                         },
-                    ],
-                },
+                        score: expect.closeTo(1),
+                    },
+                ],
             },
         });
     });
@@ -243,12 +236,10 @@ describe("@vector directive - Query", () => {
         const query = `
                 query($vector: [Float!]) {
                     ${queryName}(vector: $vector, sort: {node: {title: ASC}} ) {
-                        ${Movie.operations.connection}{
-                            edges {
-                                score
-                                node {
-                                    title
-                                }
+                        edges {
+                            score
+                            node {
+                                title
                             }
                         }
                     }
@@ -259,22 +250,20 @@ describe("@vector directive - Query", () => {
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data).toEqual({
             [queryName]: {
-                [Movie.operations.connection]: {
-                    edges: [
-                        {
-                            node: {
-                                title: "Another Title",
-                            },
-                            score: expect.closeTo(0.56),
+                edges: [
+                    {
+                        node: {
+                            title: "Another Title",
                         },
-                        {
-                            node: {
-                                title: "Some Title",
-                            },
-                            score: expect.closeTo(1),
+                        score: expect.closeTo(0.56),
+                    },
+                    {
+                        node: {
+                            title: "Some Title",
                         },
-                    ],
-                },
+                        score: expect.closeTo(1),
+                    },
+                ],
             },
         });
     });

@@ -40,7 +40,6 @@ type FulltextTypeNames = {
 };
 
 type VectorTypeNames = {
-    result: string;
     connection: string;
     edge: string;
     where: string;
@@ -107,7 +106,6 @@ export class ConcreteEntityOperations extends ImplementingEntityOperations<Concr
 
     public get vectorTypeNames(): VectorTypeNames {
         return {
-            result: `${this.pascalCaseSingular}VectorResult`,
             connection: `${this.pascalCasePlural}VectorConnection`,
             edge: `${this.pascalCaseSingular}VectorEdge`,
             where: `${this.pascalCaseSingular}VectorWhere`,

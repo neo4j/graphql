@@ -149,12 +149,10 @@ describe("@vector directive - pagination", () => {
         const query = `
                 query($vector: [Float!]) {
                     ${queryName}(vector: $vector, first: 2, after: "${cursor}") {
-                        ${Movie.operations.connection}{
-                            edges {
-                                score
-                                node {
-                                    title
-                                }
+                        edges {
+                            score
+                            node {
+                                title
                             }
                         }
                     }
@@ -165,22 +163,20 @@ describe("@vector directive - pagination", () => {
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data).toEqual({
             [queryName]: {
-                [Movie.operations.connection]: {
-                    edges: [
-                        {
-                            node: {
-                                title: "Another Title",
-                            },
-                            score: expect.closeTo(0.56),
+                edges: [
+                    {
+                        node: {
+                            title: "Another Title",
                         },
-                        {
-                            node: {
-                                title: "Another Title: The revenge",
-                            },
-                            score: expect.closeTo(0.48),
+                        score: expect.closeTo(0.56),
+                    },
+                    {
+                        node: {
+                            title: "Another Title: The revenge",
                         },
-                    ],
-                },
+                        score: expect.closeTo(0.48),
+                    },
+                ],
             },
         });
     });

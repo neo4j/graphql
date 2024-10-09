@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import console from "console";
 import type { GraphQLError } from "graphql";
 import { type Driver } from "neo4j-driver";
 import { generate } from "randomstring";
@@ -173,12 +174,10 @@ describe("@vector directive - Auth", () => {
         const query = /* GraphQL */ `
             query($vector: [Float!]) {
                 ${queryName}(vector: $vector) {
-                    ${Person.operations.connection} {
-                        edges {
-                            score
-                            node {
-                                name
-                            }
+                    edges {
+                        score
+                        node {
+                            name
                         }
                     }
                 }
@@ -193,16 +192,14 @@ describe("@vector directive - Auth", () => {
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data).toEqual({
             [queryName]: {
-                [Person.operations.connection]: {
-                    edges: [
-                        {
-                            node: {
-                                name: "this is a name",
-                            },
-                            score: expect.closeTo(1),
+                edges: [
+                    {
+                        node: {
+                            name: "this is a name",
                         },
-                    ],
-                },
+                        score: expect.closeTo(1),
+                    },
+                ],
             },
         });
     });
@@ -252,12 +249,10 @@ describe("@vector directive - Auth", () => {
         const query = /* GraphQL */ `
             query($vector: [Float!]) {
                 ${queryName}(vector: $vector) {
-                    ${Person.operations.connection} {
-                        edges {
-                            score
-                            node {
-                                name
-                            }
+                    edges {
+                        score
+                        node {
+                            name
                         }
                     }
                 }
@@ -273,9 +268,7 @@ describe("@vector directive - Auth", () => {
         // expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(0);
         expect(gqlResult.data).toEqual({
             [queryName]: {
-                [Person.operations.connection]: {
-                    edges: [],
-                },
+                edges: [],
             },
         });
     });
@@ -329,12 +322,10 @@ describe("@vector directive - Auth", () => {
         const query = /* GraphQL */ `
             query($vector: [Float!]) {
                 ${queryName}(vector: $vector) {
-                    ${Person.operations.connection} {
-                        edges {
-                            score
-                            node {
-                                name
-                            }
+                    edges {
+                        score
+                        node {
+                            name
                         }
                     }
                 }
@@ -350,28 +341,26 @@ describe("@vector directive - Auth", () => {
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data).toEqual({
             [queryName]: {
-                [Person.operations.connection]: {
-                    edges: [
-                        {
-                            node: {
-                                name: "this is a name",
-                            },
-                            score: expect.closeTo(1),
+                edges: [
+                    {
+                        node: {
+                            name: "this is a name",
                         },
-                        {
-                            node: {
-                                name: "This is a different name",
-                            },
-                            score: expect.closeTo(0.56),
+                        score: expect.closeTo(1),
+                    },
+                    {
+                        node: {
+                            name: "This is a different name",
                         },
-                        {
-                            node: {
-                                name: "Another name",
-                            },
-                            score: expect.closeTo(0.48),
+                        score: expect.closeTo(0.56),
+                    },
+                    {
+                        node: {
+                            name: "Another name",
                         },
-                    ],
-                },
+                        score: expect.closeTo(0.48),
+                    },
+                ],
             },
         });
     });
@@ -425,12 +414,10 @@ describe("@vector directive - Auth", () => {
         const query = /* GraphQL */ `
             query($vector: [Float!]) {
                 ${queryName}(vector: $vector) {
-                    ${Person.operations.connection} {
-                        edges {
-                            score
-                            node {
-                                name
-                            }
+                    edges {
+                        score
+                        node {
+                            name
                         }
                     }
                 }
@@ -492,12 +479,10 @@ describe("@vector directive - Auth", () => {
         const query = /* GraphQL */ `
             query($vector: [Float!]) {
                 ${queryName}(vector: $vector, where: { node: { name: "${person2.name}" } }) {
-                    ${Person.operations.connection} {
-                        edges {
-                            score
-                            node {
-                                name
-                            }
+                    edges {
+                        score
+                        node {
+                            name
                         }
                     } 
                 }
@@ -513,16 +498,14 @@ describe("@vector directive - Auth", () => {
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data).toEqual({
             [queryName]: {
-                [Person.operations.connection]: {
-                    edges: [
-                        {
-                            node: {
-                                name: "This is a different name",
-                            },
-                            score: expect.closeTo(1),
+                edges: [
+                    {
+                        node: {
+                            name: "This is a different name",
                         },
-                    ],
-                },
+                        score: expect.closeTo(1),
+                    },
+                ],
             },
         });
     });
@@ -572,12 +555,10 @@ describe("@vector directive - Auth", () => {
         const query = /* GraphQL */ `
             query($vector: [Float!]) {
                 ${queryName}(vector: $vector) {
-                    ${Person.operations.connection} {
-                        edges {
-                            score
-                            node {
-                                name
-                            }
+                    edges {
+                        score
+                        node {
+                            name
                         }
                     }
                 }
@@ -643,12 +624,10 @@ describe("@vector directive - Auth", () => {
         const query = /* GraphQL */ `
             query($vector: [Float!]) {
                 ${queryName}(vector: $vector) {
-                    ${Person.operations.connection} {
-                        edges {
-                            score
-                            node {
-                                name
-                            }
+                    edges {
+                        score
+                        node {
+                            name
                         }
                     }
                 }

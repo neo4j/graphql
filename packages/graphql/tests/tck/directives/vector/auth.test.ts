@@ -66,11 +66,9 @@ describe("Cypher -> vector -> Auth", () => {
         const query = /* GraphQL */ `
             query MovieVectorQuery($vector: [Float!]!) {
                 ${queryName}(vector: $vector) {
-                    moviesConnection {
-                        edges {
-                            node {
-                                title
-                            }
+                    edges {
+                        node {
+                            title
                         }
                     }
                 }
@@ -266,11 +264,9 @@ describe("Cypher -> vector -> Auth", () => {
         const query = /* GraphQL */ `
             query MovieVectorQuery($vector: [Float!]!) {
                 ${queryName}(vector: $vector) {
-                    moviesConnection {
-                        edges {
-                            node {
-                                title
-                            }
+                    edges {
+                        node {
+                            title
                         }
                     }
                 }
@@ -468,11 +464,9 @@ describe("Cypher -> vector -> Auth", () => {
         const query = /* GraphQL */ `
             query MovieVectorQuery($vector: [Float!]!) {
                 ${queryName}(vector: $vector) {
-                    moviesConnection {
-                        edges {
-                            node {
-                                title
-                            }
+                    edges {
+                        node {
+                            title
                         }
                     }
                 }
@@ -675,11 +669,9 @@ describe("Cypher -> vector -> Auth", () => {
         const query = /* GraphQL */ `
             query MovieVectorQuery($vector: [Float!]!) {
                 ${queryName}(vector: $vector) {
-                    moviesConnection {
-                        edges {
-                            node {
-                                title
-                            }
+                    edges {
+                        node {
+                            title
                         }
                     }
                 }
@@ -882,11 +874,9 @@ describe("Cypher -> vector -> Auth", () => {
         const query = /* GraphQL */ `
             query MovieVectorQuery($vector: [Float!]!) {
                 ${queryName}(vector: $vector) {
-                    moviesConnection {
-                        edges {
-                            node {
-                                title
-                            }
+                    edges {
+                        node {
+                            title
                         }
                     }
                 }
@@ -1093,11 +1083,9 @@ describe("Cypher -> vector -> Auth", () => {
         const query = /* GraphQL */ `
             query MovieVectorQuery($vector: [Float!]!) {
                 ${queryName}(vector: $vector) {
-                    moviesConnection {
-                        edges {
-                            node {
-                                title
-                            }
+                    edges {
+                        node {
+                            title
                         }
                     }
                 }
@@ -1298,11 +1286,9 @@ describe("Cypher -> vector -> Auth", () => {
         const query = /* GraphQL */ `
             query MovieVectorQuery($vector: [Float!]!) {
                 ${queryName}(vector: $vector) {
-                    moviesConnection {
-                        edges {
-                            node {
-                                title
-                            }
+                    edges {
+                        node {
+                            title
                         }
                     }
                 }
