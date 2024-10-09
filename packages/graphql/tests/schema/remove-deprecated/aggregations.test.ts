@@ -43,7 +43,6 @@ describe("Remove deprecated fields for aggregations", () => {
             typeDefs,
             features: {
                 excludeDeprecatedFields: {
-                    arrayFilters: true,
                     aggregationFilters: true,
                 },
             },
@@ -419,7 +418,6 @@ describe("Remove deprecated fields for aggregations", () => {
             typeDefs,
             features: {
                 excludeDeprecatedFields: {
-                    arrayFilters: true,
                     aggregationFilters: true,
                 },
             },

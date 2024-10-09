@@ -556,9 +556,7 @@ describe("https://github.com/neo4j/graphql/issues/2969", () => {
               name_EQ: String
               name_IN: [String!]
               name_STARTS_WITH: String
-              posts: PostWhere @deprecated(reason: \\"Use \`posts_SOME\` instead.\\")
               postsAggregate: UserPostsAggregateInput
-              postsConnection: UserPostsConnectionWhere @deprecated(reason: \\"Use \`postsConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Users where all of the related UserPostsConnections match this filter
               \\"\\"\\"

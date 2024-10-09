@@ -45,7 +45,6 @@ describe("Arrays Methods", () => {
             typeDefs,
             features: {
                 excludeDeprecatedFields: {
-                    arrayFilters: true,
                     aggregationFilters: true,
                 },
             },

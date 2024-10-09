@@ -1057,7 +1057,7 @@ describe("Advanced Filtering", () => {
 
                 const query = `
                         {
-                            ${randomType1.plural}(where: { ${randomType2.plural}: { id_EQ: "${relationId}" } }) {
+                            ${randomType1.plural}(where: { ${randomType2.plural}_SOME: { id_EQ: "${relationId}" } }) {
                                 id
                                 ${randomType2.plural} {
                                     id
@@ -1111,7 +1111,7 @@ describe("Advanced Filtering", () => {
 
                 const query = `
                         {
-                            ${Movie.plural}(where: { genresConnection: { node: { id_EQ: "${genreId}" } } }) {
+                            ${Movie.plural}(where: { genresConnection_SOME: { node: { id_EQ: "${genreId}" } } }) {
                                 id
                                 genres {
                                     id
@@ -1176,7 +1176,7 @@ describe("Advanced Filtering", () => {
 
                 const query = `
                         {
-                            ${Movie.plural}(where: { genresConnection: { edge: { id_EQ: "${actedInId}" } } }) {
+                            ${Movie.plural}(where: { genresConnection_SOME: { edge: { id_EQ: "${actedInId}" } } }) {
                                 id
                                 genres {
                                     id
@@ -1240,7 +1240,7 @@ describe("Advanced Filtering", () => {
 
                 const query = `
                         {
-                            ${Movie.plural}(where: { genresConnection: { node: { id_EQ: "${genreId}" } edge: { id_EQ: "${actedInId}" } } }) {
+                            ${Movie.plural}(where: { genresConnection_SOME: { node: { id_EQ: "${genreId}" } edge: { id_EQ: "${actedInId}" } } }) {
                                 id
                                 genres {
                                     id
@@ -1310,7 +1310,7 @@ describe("Advanced Filtering", () => {
 
                 const query = /* GraphQL */ `
                         {
-                            ${randomType1.plural}(where: { NOT: { ${randomType2.plural}: { id_EQ: "${relationId2}" } } }) {
+                            ${randomType1.plural}(where: { NOT: { ${randomType2.plural}_SOME: { id_EQ: "${relationId2}" } } }) {
                                 id
                                 ${randomType2.plural} {
                                     id
@@ -1842,7 +1842,7 @@ describe("Advanced Filtering", () => {
 
             const nullQuery = `
                     {
-                        ${randomType1.plural}(where: { ${randomType2.plural}: null }) {
+                        ${randomType1.plural}(where: { ${randomType2.plural}_SOME: null }) {
                             id
                         }
                     }

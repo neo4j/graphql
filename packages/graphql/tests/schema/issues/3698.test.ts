@@ -451,9 +451,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               name_EQ: String
               name_IN: [String!]
               name_STARTS_WITH: String
-              product: IProductWhere @deprecated(reason: \\"Use \`product_SOME\` instead.\\")
               productAggregate: GenreProductAggregateInput
-              productConnection: GenreProductConnectionWhere @deprecated(reason: \\"Use \`productConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Genres where all of the related GenreProductConnections match this filter
               \\"\\"\\"
@@ -1426,9 +1424,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               name_EQ: String
               name_IN: [String!]
               name_STARTS_WITH: String
-              product: IProductWhere @deprecated(reason: \\"Use \`product_SOME\` instead.\\")
               productAggregate: GenreProductAggregateInput
-              productConnection: GenreProductConnectionWhere @deprecated(reason: \\"Use \`productConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Genres where all of the related GenreProductConnections match this filter
               \\"\\"\\"
@@ -2516,9 +2512,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               name_EQ: String
               name_IN: [String!]
               name_STARTS_WITH: String
-              product: IProductWhere @deprecated(reason: \\"Use \`product_SOME\` instead.\\")
               productAggregate: GenreProductAggregateInput
-              productConnection: GenreProductConnectionWhere @deprecated(reason: \\"Use \`productConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Genres where all of the related GenreProductConnections match this filter
               \\"\\"\\"

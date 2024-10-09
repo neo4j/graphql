@@ -968,8 +968,6 @@ describe("issues/3591", () => {
               OR?: InputMaybe<Array<UserWhere>>;
               AND?: InputMaybe<Array<UserWhere>>;
               NOT?: InputMaybe<UserWhere>;
-              /** @deprecated Use \`company_SOME\` instead. */
-              company?: InputMaybe<CompanyWhere>;
               /** Return Users where all of the related Companies match this filter */
               company_ALL?: InputMaybe<CompanyWhere>;
               /** Return Users where none of the related Companies match this filter */
@@ -978,8 +976,6 @@ describe("issues/3591", () => {
               company_SINGLE?: InputMaybe<CompanyWhere>;
               /** Return Users where some of the related Companies match this filter */
               company_SOME?: InputMaybe<CompanyWhere>;
-              /** @deprecated Use \`companyConnection_SOME\` instead. */
-              companyConnection?: InputMaybe<UserCompanyConnectionWhere>;
               /** Return Users where all of the related UserCompanyConnections match this filter */
               companyConnection_ALL?: InputMaybe<UserCompanyConnectionWhere>;
               /** Return Users where none of the related UserCompanyConnections match this filter */
@@ -989,8 +985,6 @@ describe("issues/3591", () => {
               /** Return Users where some of the related UserCompanyConnections match this filter */
               companyConnection_SOME?: InputMaybe<UserCompanyConnectionWhere>;
               companyAggregate?: InputMaybe<UserCompanyAggregateInput>;
-              /** @deprecated Use \`favoriteRestaurants_SOME\` instead. */
-              favoriteRestaurants?: InputMaybe<RestaurantWhere>;
               /** Return Users where all of the related Restaurants match this filter */
               favoriteRestaurants_ALL?: InputMaybe<RestaurantWhere>;
               /** Return Users where none of the related Restaurants match this filter */
@@ -999,8 +993,6 @@ describe("issues/3591", () => {
               favoriteRestaurants_SINGLE?: InputMaybe<RestaurantWhere>;
               /** Return Users where some of the related Restaurants match this filter */
               favoriteRestaurants_SOME?: InputMaybe<RestaurantWhere>;
-              /** @deprecated Use \`favoriteRestaurantsConnection_SOME\` instead. */
-              favoriteRestaurantsConnection?: InputMaybe<UserFavoriteRestaurantsConnectionWhere>;
               /** Return Users where all of the related UserFavoriteRestaurantsConnections match this filter */
               favoriteRestaurantsConnection_ALL?: InputMaybe<UserFavoriteRestaurantsConnectionWhere>;
               /** Return Users where none of the related UserFavoriteRestaurantsConnections match this filter */

@@ -43,7 +43,10 @@ describe("https://github.com/neo4j/graphql/issues/4239", () => {
                 @node
                 @authorization(
                     validate: [
-                        { when: [BEFORE], where: { node: { directorConnection: { node: { id_EQ: "$jwt.sub" } } } } }
+                        {
+                            when: [BEFORE]
+                            where: { node: { directorConnection_SOME: { node: { id_EQ: "$jwt.sub" } } } }
+                        }
                     ]
                 ) {
                 title: String
@@ -98,7 +101,9 @@ describe("https://github.com/neo4j/graphql/issues/4239", () => {
         const typeDefs = /* GraphQL */ `
             type Movie
                 @node
-                @authorization(validate: [{ when: [BEFORE], where: { node: { director_SOME: { id_EQ: "$jwt.sub" } } } }]) {
+                @authorization(
+                    validate: [{ when: [BEFORE], where: { node: { director_SOME: { id_EQ: "$jwt.sub" } } } }]
+                ) {
                 title: String
                 director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
             }
@@ -153,7 +158,10 @@ describe("https://github.com/neo4j/graphql/issues/4239", () => {
                 @node
                 @authorization(
                     validate: [
-                        { when: [BEFORE], where: { node: { directorConnection: { node: { id_EQ: "$jwt.sub" } } } } }
+                        {
+                            when: [BEFORE]
+                            where: { node: { directorConnection_SOME: { node: { id_EQ: "$jwt.sub" } } } }
+                        }
                     ]
                 ) {
                 title: String

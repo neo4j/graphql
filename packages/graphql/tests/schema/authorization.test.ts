@@ -576,9 +576,7 @@ describe("Authorization", () => {
               name_EQ: String
               name_IN: [String!]
               name_STARTS_WITH: String
-              posts: UserWhere @deprecated(reason: \\"Use \`posts_SOME\` instead.\\")
               postsAggregate: UserPostsAggregateInput
-              postsConnection: UserPostsConnectionWhere @deprecated(reason: \\"Use \`postsConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Users where all of the related UserPostsConnections match this filter
               \\"\\"\\"

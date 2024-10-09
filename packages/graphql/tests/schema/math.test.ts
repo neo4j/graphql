@@ -756,9 +756,7 @@ describe("Algebraic", () => {
               AND: [DirectorWhere!]
               NOT: DirectorWhere
               OR: [DirectorWhere!]
-              directs: MovieWhere @deprecated(reason: \\"Use \`directs_SOME\` instead.\\")
               directsAggregate: DirectorDirectsAggregateInput
-              directsConnection: DirectorDirectsConnectionWhere @deprecated(reason: \\"Use \`directsConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Directors where all of the related DirectorDirectsConnections match this filter
               \\"\\"\\"
@@ -1244,9 +1242,7 @@ describe("Algebraic", () => {
               viewers_IN: [Int!]
               viewers_LT: Int
               viewers_LTE: Int
-              workers: PersonWhere @deprecated(reason: \\"Use \`workers_SOME\` instead.\\")
               workersAggregate: MovieWorkersAggregateInput
-              workersConnection: MovieWorkersConnectionWhere @deprecated(reason: \\"Use \`workersConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Movies where all of the related MovieWorkersConnections match this filter
               \\"\\"\\"
@@ -1496,9 +1492,7 @@ describe("Algebraic", () => {
               name_EQ: String
               name_IN: [String!]
               name_STARTS_WITH: String
-              worksInProduction: ProductionWhere @deprecated(reason: \\"Use \`worksInProduction_SOME\` instead.\\")
               worksInProductionAggregate: PersonWorksInProductionAggregateInput
-              worksInProductionConnection: PersonWorksInProductionConnectionWhere @deprecated(reason: \\"Use \`worksInProductionConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return People where all of the related PersonWorksInProductionConnections match this filter
               \\"\\"\\"
@@ -2067,9 +2061,7 @@ describe("Algebraic", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: MovieActorsAggregateInput
-              actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -2331,9 +2323,7 @@ describe("Algebraic", () => {
               AND: [PersonWhere!]
               NOT: PersonWhere
               OR: [PersonWhere!]
-              actedInMovies: MovieWhere @deprecated(reason: \\"Use \`actedInMovies_SOME\` instead.\\")
               actedInMoviesAggregate: PersonActedInMoviesAggregateInput
-              actedInMoviesConnection: PersonActedInMoviesConnectionWhere @deprecated(reason: \\"Use \`actedInMoviesConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return People where all of the related PersonActedInMoviesConnections match this filter
               \\"\\"\\"

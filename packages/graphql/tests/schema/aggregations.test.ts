@@ -1159,9 +1159,7 @@ describe("Aggregations", () => {
               AND: [PostWhere!]
               NOT: PostWhere
               OR: [PostWhere!]
-              likes: UserWhere @deprecated(reason: \\"Use \`likes_SOME\` instead.\\")
               likesAggregate: PostLikesAggregateInput
-              likesConnection: PostLikesConnectionWhere @deprecated(reason: \\"Use \`likesConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Posts where all of the related PostLikesConnections match this filter
               \\"\\"\\"

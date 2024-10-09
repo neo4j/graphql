@@ -297,9 +297,7 @@ describe("Query Direction", () => {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
-              friends: UserWhere @deprecated(reason: \\"Use \`friends_SOME\` instead.\\")
               friendsAggregate: UserFriendsAggregateInput
-              friendsConnection: UserFriendsConnectionWhere @deprecated(reason: \\"Use \`friendsConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Users where all of the related UserFriendsConnections match this filter
               \\"\\"\\"
@@ -613,9 +611,7 @@ describe("Query Direction", () => {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
-              friends: UserWhere @deprecated(reason: \\"Use \`friends_SOME\` instead.\\")
               friendsAggregate: UserFriendsAggregateInput
-              friendsConnection: UserFriendsConnectionWhere @deprecated(reason: \\"Use \`friendsConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Users where all of the related UserFriendsConnections match this filter
               \\"\\"\\"
@@ -929,9 +925,7 @@ describe("Query Direction", () => {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
-              friends: UserWhere @deprecated(reason: \\"Use \`friends_SOME\` instead.\\")
               friendsAggregate: UserFriendsAggregateInput
-              friendsConnection: UserFriendsConnectionWhere @deprecated(reason: \\"Use \`friendsConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Users where all of the related UserFriendsConnections match this filter
               \\"\\"\\"

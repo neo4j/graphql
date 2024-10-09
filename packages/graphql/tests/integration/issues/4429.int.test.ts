@@ -52,13 +52,13 @@ describe("https://github.com/neo4j/graphql/issues/4429", () => {
                 adminAccess: [${Tenant.name}!]! @relationship(type: "ADMIN_IN", direction: OUT)
             }
     
-            type ${Tenant.name} @authorization(validate: [{ where: { node: { admins: { userId_EQ: "$jwt.id" } } } }]) @node {
+            type ${Tenant.name} @authorization(validate: [{ where: { node: { admins_SOME: { userId_EQ: "$jwt.id" } } } }]) @node {
                 id: ID! @id
                 settings: ${Settings.name}! @relationship(type: "VEHICLECARD_OWNER", direction: IN)
                 admins: [${User.name}!]! @relationship(type: "ADMIN_IN", direction: IN)
             }
     
-            type ${Settings.name} @authorization(validate: [{ where: { node: { tenant: { admins: { userId_EQ: "$jwt.id" } } } } }]) @node {
+            type ${Settings.name} @authorization(validate: [{ where: { node: { tenant: { admins_SOME: { userId_EQ: "$jwt.id" } } } } }]) @node {
                 id: ID! @id
                 openingDays: [${OpeningDay.name}!]!  @relationship(type: "VALID_GARAGES", direction: OUT)
                 tenant: ${Tenant.name}! @relationship(type: "VEHICLECARD_OWNER", direction: OUT)
@@ -67,7 +67,7 @@ describe("https://github.com/neo4j/graphql/issues/4429", () => {
             type ${OpeningDay.name}
                 @node
                 @authorization(
-                    validate: [{ where: { node: { settings: { tenant: { admins: { userId_EQ: "$jwt.id" } } } } } }]
+                    validate: [{ where: { node: { settings: { tenant: { admins_SOME: { userId_EQ: "$jwt.id" } } } } } }]
                 ) {
                 id: ID! @id
                 settings: ${Settings.name} @relationship(type: "VALID_GARAGES", direction: IN)
@@ -78,7 +78,7 @@ describe("https://github.com/neo4j/graphql/issues/4429", () => {
                 @node
                 @authorization(
                     validate: [
-                        { where: { node: { openingDay: { settings: { tenant: { admins: { userId_EQ: "$jwt.id" } } } } } } }
+                        { where: { node: { openingDay: { settings: { tenant: { admins_SOME: { userId_EQ: "$jwt.id" } } } } } } }
                     ]
                 ) {
                 name: String

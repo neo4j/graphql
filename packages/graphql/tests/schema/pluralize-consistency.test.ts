@@ -366,9 +366,7 @@ describe("Pluralize consistency", () => {
               AND: [super_userWhere!]
               NOT: super_userWhere
               OR: [super_userWhere!]
-              my_friend: super_friendWhere @deprecated(reason: \\"Use \`my_friend_SOME\` instead.\\")
               my_friendAggregate: super_userMy_friendAggregateInput
-              my_friendConnection: super_userMy_friendConnectionWhere @deprecated(reason: \\"Use \`my_friendConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return super_users where all of the related super_userMy_friendConnections match this filter
               \\"\\"\\"

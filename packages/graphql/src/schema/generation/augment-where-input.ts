@@ -18,11 +18,8 @@
  */
 
 import type { Directive, InputTypeComposerFieldConfigMapDefinition } from "graphql-compose";
-import { DEPRECATED } from "../../constants";
 import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
-import type { Neo4jFeaturesSettings } from "../../types";
-import { shouldAddDeprecatedFields } from "./utils";
 
 function augmentWhereInputType({
     whereType,
@@ -30,7 +27,6 @@ function augmentWhereInputType({
     filters,
     relationshipAdapter,
     deprecatedDirectives,
-    features,
 }: {
     whereType: string;
     fieldName: string;
@@ -42,14 +38,13 @@ function augmentWhereInputType({
         | undefined;
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     deprecatedDirectives: Directive[];
-    features: Neo4jFeaturesSettings | undefined;
 }): InputTypeComposerFieldConfigMapDefinition {
     const fields: InputTypeComposerFieldConfigMapDefinition = {};
     if (!relationshipAdapter.isFilterableByValue()) {
         return fields;
     }
 
-    if (!relationshipAdapter.isList || shouldAddDeprecatedFields(features, "arrayFilters")) {
+    if (!relationshipAdapter.isList) {
         fields[fieldName] = {
             type: whereType,
         };
@@ -63,20 +58,6 @@ function augmentWhereInputType({
                 // e.g. "Return Movies where all of the related Actors match this filter"
                 description: filterField.description,
             };
-
-            if (shouldAddDeprecatedFields(features, "arrayFilters")) {
-                // TODO: are these deprecations still relevant?
-                // only adding these for the deprecation message. If no deprecation anymore, delete them.
-                fields[fieldName] = {
-                    type: whereType,
-                    directives: [
-                        {
-                            name: DEPRECATED,
-                            args: { reason: `Use \`${fieldName}_SOME\` instead.` },
-                        },
-                    ],
-                };
-            }
         }
     }
 
@@ -85,8 +66,7 @@ function augmentWhereInputType({
 
 export function augmentWhereInputTypeWithRelationshipFields(
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter,
-    deprecatedDirectives: Directive[],
-    features: Neo4jFeaturesSettings | undefined
+    deprecatedDirectives: Directive[]
 ): InputTypeComposerFieldConfigMapDefinition {
     const filters = relationshipAdapter.listFiltersModel?.filters;
     return augmentWhereInputType({
@@ -95,14 +75,12 @@ export function augmentWhereInputTypeWithRelationshipFields(
         filters,
         relationshipAdapter,
         deprecatedDirectives,
-        features,
     });
 }
 
 export function augmentWhereInputTypeWithConnectionFields(
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter,
-    deprecatedDirectives: Directive[],
-    features: Neo4jFeaturesSettings | undefined
+    deprecatedDirectives: Directive[]
 ): InputTypeComposerFieldConfigMapDefinition {
     const filters = relationshipAdapter.listFiltersModel?.connectionFilters;
     return augmentWhereInputType({
@@ -111,6 +89,5 @@ export function augmentWhereInputTypeWithConnectionFields(
         filters,
         relationshipAdapter,
         deprecatedDirectives,
-        features,
     });
 }

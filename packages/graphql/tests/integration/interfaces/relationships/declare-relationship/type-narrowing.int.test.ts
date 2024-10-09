@@ -569,7 +569,7 @@ describe("type narrowing - simple case", () => {
 
         const query = /* GraphQL */ `
             query People {
-                people(where: { actedInConnection: { edge: { ActedIn: { screenTime_EQ: ${movieScreenTime} }, AppearsIn: { sceneNr_EQ: ${sceneNr} } } } }) {
+                people(where: { actedInConnection_SOME: { edge: { ActedIn: { screenTime_EQ: ${movieScreenTime} }, AppearsIn: { sceneNr_EQ: ${sceneNr} } } } }) {
                     name
                     actedInConnection {
                         edges {

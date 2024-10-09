@@ -89,7 +89,7 @@ describe("https://github.com/neo4j/graphql/issues/488", () => {
         const variableValues = {
             journalistsWhere: {
                 id_EQ: journalistId,
-                keywordsConnection: {
+                keywordsConnection_SOME: {
                     [testEmoji.name]: {
                         node: {
                             type_EQ: emojiType,

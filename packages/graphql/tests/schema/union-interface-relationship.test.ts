@@ -407,9 +407,7 @@ describe("Union Interface Relationships", () => {
               id_IN: [Int]
               id_LT: Int
               id_LTE: Int
-              movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
               moviesAggregate: ActorMoviesAggregateInput
-              moviesConnection: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Actors where all of the related ActorMoviesConnections match this filter
               \\"\\"\\"
@@ -1206,9 +1204,7 @@ describe("Union Interface Relationships", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: MovieActorsAggregateInput
-              actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -1233,8 +1229,6 @@ describe("Union Interface Relationships", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
-              directors: DirectorWhere @deprecated(reason: \\"Use \`directors_SOME\` instead.\\")
-              directorsConnection: MovieDirectorsConnectionWhere @deprecated(reason: \\"Use \`directorsConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Movies where all of the related MovieDirectorsConnections match this filter
               \\"\\"\\"
@@ -1266,9 +1260,7 @@ describe("Union Interface Relationships", () => {
               imdbId_IN: [Int]
               imdbId_LT: Int
               imdbId_LTE: Int
-              reviewers: ReviewerWhere @deprecated(reason: \\"Use \`reviewers_SOME\` instead.\\")
               reviewersAggregate: MovieReviewersAggregateInput
-              reviewersConnection: MovieReviewersConnectionWhere @deprecated(reason: \\"Use \`reviewersConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Movies where all of the related MovieReviewersConnections match this filter
               \\"\\"\\"
@@ -1619,9 +1611,7 @@ describe("Union Interface Relationships", () => {
               id_IN: [Int]
               id_LT: Int
               id_LTE: Int
-              movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
               moviesAggregate: PersonMoviesAggregateInput
-              moviesConnection: PersonMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return People where all of the related PersonMoviesConnections match this filter
               \\"\\"\\"

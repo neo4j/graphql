@@ -274,8 +274,6 @@ describe("Unions", () => {
               name_EQ: String
               name_IN: [String!]
               name_STARTS_WITH: String
-              publications: PublicationWhere @deprecated(reason: \\"Use \`publications_SOME\` instead.\\")
-              publicationsConnection: AuthorPublicationsConnectionWhere @deprecated(reason: \\"Use \`publicationsConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Authors where all of the related AuthorPublicationsConnections match this filter
               \\"\\"\\"
@@ -512,9 +510,7 @@ describe("Unions", () => {
               AND: [BookWhere!]
               NOT: BookWhere
               OR: [BookWhere!]
-              author: AuthorWhere @deprecated(reason: \\"Use \`author_SOME\` instead.\\")
               authorAggregate: BookAuthorAggregateInput
-              authorConnection: BookAuthorConnectionWhere @deprecated(reason: \\"Use \`authorConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Books where all of the related BookAuthorConnections match this filter
               \\"\\"\\"
@@ -791,9 +787,7 @@ describe("Unions", () => {
               AND: [JournalWhere!]
               NOT: JournalWhere
               OR: [JournalWhere!]
-              author: AuthorWhere @deprecated(reason: \\"Use \`author_SOME\` instead.\\")
               authorAggregate: JournalAuthorAggregateInput
-              authorConnection: JournalAuthorConnectionWhere @deprecated(reason: \\"Use \`authorConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Journals where all of the related JournalAuthorConnections match this filter
               \\"\\"\\"

@@ -456,9 +456,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
-              following: ProfileWhere @deprecated(reason: \\"Use \`following_SOME\` instead.\\")
               followingAggregate: UserFollowingAggregateInput
-              followingConnection: UserFollowingConnectionWhere @deprecated(reason: \\"Use \`followingConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Users where all of the related UserFollowingConnections match this filter
               \\"\\"\\"

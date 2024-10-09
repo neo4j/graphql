@@ -103,7 +103,7 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
                         {
                             OR: [
                                 {
-                                    manufacturerConnection: {
+                                    manufacturerConnection_SOME: {
                                         edge: {
                                             current_EQ: true,
                                         },
@@ -113,7 +113,7 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
                                     },
                                 },
                                 {
-                                    manufacturerConnection: {
+                                    manufacturerConnection_SOME: {
                                         edge: {
                                             current_EQ: false,
                                         },
@@ -127,7 +127,7 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
                         {
                             OR: [
                                 {
-                                    brandConnection: {
+                                    brandConnection_SOME: {
                                         edge: {
                                             current_EQ: true,
                                         },
