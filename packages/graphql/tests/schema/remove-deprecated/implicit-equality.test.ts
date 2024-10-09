@@ -41,8 +41,7 @@ describe("Implicit Equality filters", () => {
             typeDefs,
             features: {
                 excludeDeprecatedFields: {
-                    implicitEqualFilters: true,
-                    bookmark: true,
+                    implicitEqualFilters: false,
                     arrayFilters: true,
                     aggregationFilters: true,
                     deprecatedOptionsArgument: true,
@@ -104,6 +103,7 @@ describe("Implicit Equality filters", () => {
               AND: [ActedInWhere!]
               NOT: ActedInWhere
               OR: [ActedInWhere!]
+              role: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               role_CONTAINS: String
               role_ENDS_WITH: String
               role_EQ: String
@@ -167,6 +167,7 @@ describe("Implicit Equality filters", () => {
               AND: [ActorMoviesAggregateInput!]
               NOT: ActorMoviesAggregateInput
               OR: [ActorMoviesAggregateInput!]
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -292,6 +293,7 @@ describe("Implicit Equality filters", () => {
               movies_SINGLE: MovieWhere
               \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
               movies_SOME: MovieWhere
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -361,6 +363,7 @@ describe("Implicit Equality filters", () => {
               AND: [MovieActorsAggregateInput!]
               NOT: MovieActorsAggregateInput
               OR: [MovieActorsAggregateInput!]
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -532,6 +535,7 @@ describe("Implicit Equality filters", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
+              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID

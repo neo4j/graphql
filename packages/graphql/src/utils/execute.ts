@@ -17,16 +17,15 @@
  * limitations under the License.
  */
 
-import type { SessionMode, QueryResult } from "neo4j-driver";
 import Debug from "debug";
-import { DEBUG_EXECUTE } from "../constants";
 import type { GraphQLResolveInfo } from "graphql";
+import type { QueryResult, SessionMode } from "neo4j-driver";
+import { DEBUG_EXECUTE } from "../constants";
 import type { Neo4jGraphQLComposedContext } from "../schema/resolvers/composition/wrap-query-and-mutation";
 
 const debug = Debug(DEBUG_EXECUTE);
 
 export interface ExecuteResult {
-    bookmark: string | null;
     result: QueryResult;
     statistics: Record<string, number>;
     records: Record<PropertyKey, any>[];
@@ -56,7 +55,6 @@ async function execute({
     debug(`Execute successful, received ${records.length} records`);
 
     return {
-        bookmark: context.executor.lastBookmark,
         result,
         statistics: result.summary.counters.updates(),
         records,

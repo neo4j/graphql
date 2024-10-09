@@ -60,7 +60,6 @@ describe("Comments", () => {
             typeDefs,
             features: {
                 excludeDeprecatedFields: {
-                    bookmark: true,
                     arrayFilters: true,
                     aggregationFilters: true,
                 },
@@ -300,7 +299,6 @@ describe("Comments", () => {
                 typeDefs,
                 features: {
                     excludeDeprecatedFields: {
-                        bookmark: true,
                         arrayFilters: true,
                         aggregationFilters: true,
                     },
@@ -702,7 +700,6 @@ describe("Comments", () => {
                 typeDefs,
                 features: {
                     excludeDeprecatedFields: {
-                        bookmark: true,
                         arrayFilters: true,
                         aggregationFilters: true,
                     },
@@ -1329,7 +1326,6 @@ describe("Comments", () => {
                 typeDefs,
                 features: {
                     excludeDeprecatedFields: {
-                        bookmark: true,
                         arrayFilters: true,
                         aggregationFilters: true,
                     },

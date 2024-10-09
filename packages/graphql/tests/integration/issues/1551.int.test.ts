@@ -51,7 +51,6 @@ describe("https://github.com/neo4j/graphql/issues/1551", () => {
             mutation {
                 ${testType.operations.create}(input: [{ prodid: 1, attribid: 2, level: 1, ord: 1 }]) {
                     info {
-                        bookmark
                         nodesCreated
                         relationshipsCreated
                     }

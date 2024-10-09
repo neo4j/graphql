@@ -91,11 +91,6 @@ export type Neo4jGraphQLSessionConfig = Pick<SessionConfig, "database" | "impers
 export class Executor {
     private executionContext: ExecutionContext;
 
-    /**
-     * @deprecated Will be removed in 5.0.0.
-     */
-    public lastBookmark: string | null;
-
     private cypherQueryOptions: CypherQueryOptions | undefined;
 
     private sessionConfig: SessionConfig | undefined;
@@ -112,7 +107,6 @@ export class Executor {
     }: ExecutorConstructorParam) {
         this.executionContext = executionContext;
         this.cypherQueryOptions = cypherQueryOptions;
-        this.lastBookmark = null;
         this.cypherQueryOptions = cypherQueryOptions;
         this.sessionConfig = sessionConfig;
         this.cypherParams = cypherParams;
@@ -274,12 +268,6 @@ export class Executor {
                     return this.transactionRun(query, parameters, tx);
                 }, this.getTransactionConfig(info));
                 break;
-        }
-
-        // TODO: remove in 5.0.0, only kept to not make client breaking changes in 4.0.0
-        const lastBookmark = session.lastBookmarks();
-        if (lastBookmark[0]) {
-            this.lastBookmark = lastBookmark[0];
         }
 
         return result;
