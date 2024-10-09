@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
 import { Neo4jGraphQL } from "@neo4j/graphql";
+import type { Driver, Session } from "neo4j-driver";
 import { OGM } from "../../src";
 import neo4j from "../integration/neo4j";
 
@@ -45,9 +45,14 @@ describe("https://github.com/neo4j/graphql/issues/5345", () => {
             driver,
         });
         await neoSchema.getSchema();
-        await neoSchema.assertIndexesAndConstraints({ driver, options: { create: true } });
+        await neoSchema.assertIndexesAndConstraints({ driver });
 
         try {
+            await session.run(`
+                CREATE FULLTEXT INDEX simpleTestIndex
+                IF NOT EXISTS FOR (n:TestNode)
+                ON EACH [n.name]
+            `);
             await session.run(`
                 CREATE (:TestNode { name: "jane" })
                 CREATE (:TestNode { name: "john" })

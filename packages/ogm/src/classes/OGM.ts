@@ -28,10 +28,6 @@ export interface OGMConstructor extends Neo4jGraphQLConstructor {
     database?: string;
 }
 
-type AssertIndexesAndConstraintsOptions = {
-    create?: boolean;
-};
-
 type Neo4jGraphQLSessionConfig = Pick<SessionConfig, "database" | "impersonatedUser" | "auth">;
 
 class OGM<ModelMap = unknown> {
@@ -39,7 +35,6 @@ class OGM<ModelMap = unknown> {
     public assertIndexesAndConstraints: (input?: {
         driver?: Driver;
         sessionConfig?: Neo4jGraphQLSessionConfig;
-        options?: AssertIndexesAndConstraintsOptions;
     }) => Promise<void>;
     private models: Model[];
     private neoSchema: Neo4jGraphQL;
@@ -74,15 +69,12 @@ class OGM<ModelMap = unknown> {
         this.assertIndexesAndConstraints = async ({
             driver,
             sessionConfig,
-            options,
         }: {
             driver?: Driver;
             sessionConfig?: Neo4jGraphQLSessionConfig;
-            options?: AssertIndexesAndConstraintsOptions;
         } = {}): Promise<void> => {
             try {
                 await this.neoSchema.assertIndexesAndConstraints({
-                    options,
                     driver: driver || rest.driver,
                     sessionConfig: sessionConfig || (database && { database }) || undefined,
                 });

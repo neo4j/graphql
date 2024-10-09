@@ -61,11 +61,16 @@ describe("https://github.com/neo4j/graphql/issues/2357", () => {
             driver,
         });
         await neoSchema.getSchema();
-        await neoSchema.assertIndexesAndConstraints({ driver, options: { create: true } });
+        await neoSchema.assertIndexesAndConstraints({ driver });
 
         const session = driver.session();
 
         try {
+            await session.run(`
+                CREATE FULLTEXT INDEX ${indexName}
+                IF NOT EXISTS FOR (n:${enterpriseType.name})
+                ON EACH [n.full_name, n.tags]
+            `);
             await session.run(`
                 CREATE (:${enterpriseType.name} { id: "${id1}", full_name: "${matchingFullName}", tags: "${matchingTags}" })
                 CREATE (:${enterpriseType.name} { id: "${id2}", full_name: "${nonMatchingFullName}", tags: "${nonMatchingTags}" })
