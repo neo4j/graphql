@@ -66,7 +66,7 @@ describe("https://github.com/neo4j/graphql/issues/1751", () => {
                         where: {
                             node: {
                                 organizationsAggregate: {
-                                    count: 1,
+                                    count_EQ: 1,
                                 },
                             },
                         },

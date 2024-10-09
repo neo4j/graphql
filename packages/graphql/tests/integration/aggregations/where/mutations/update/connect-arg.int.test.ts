@@ -89,7 +89,7 @@ describe("Connect using aggregate where", () => {
                                 where: { 
                                     node: {
                                         likesAggregate: {
-                                            count: 2
+                                            count_EQ: 2
                                         }
                                     } 
                                 } 
@@ -137,10 +137,10 @@ describe("Connect using aggregate where", () => {
                                         likesAggregate: {
                                             OR: [
                                                 {
-                                                    count: 2
+                                                    count_EQ: 2
                                                 },
                                                 {
-                                                    count: 0
+                                                    count_EQ: 0
                                                 }
                                             ]
                                         }
@@ -201,7 +201,7 @@ describe("Connect using aggregate where", () => {
                                                     node: {
                                                         name_SHORTEST_LT: 2 
                                                     }
-                                                    count: 2
+                                                    count_EQ: 2
                                                 }
                                             ]
                                         }
@@ -263,7 +263,7 @@ describe("Connect using aggregate where", () => {
                                                     node: {
                                                         NOT: { name_SHORTEST_GTE: 2 } 
                                                     }
-                                                    count: 2
+                                                    count_EQ: 2
                                                 }
                                             ]
                                         }
@@ -394,7 +394,7 @@ describe("Connect UNIONs using aggregate where", () => {
                                 where: {
                                     node: {
                                         likedPostsAggregate: {
-                                            count: 2
+                                            count_EQ: 2
                                         }
                                     }
                                 }

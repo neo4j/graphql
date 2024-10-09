@@ -114,7 +114,10 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             {
                 actors(
                     where: {
-                        movies_SOME: { actors_ALL: { moviesAggregate: { count_GT: 1 } }, actorsAggregate: { count: 1 } }
+                        movies_SOME: {
+                            actors_ALL: { moviesAggregate: { count_GT: 1 } }
+                            actorsAggregate: { count_EQ: 1 }
+                        }
                     }
                 ) {
                     name
@@ -430,7 +433,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
                     where: {
                         movies_SOME: {
                             actorsConnection_ALL: { node: { moviesAggregate: { count_GT: 1 } } }
-                            actorsAggregate: { count: 1 }
+                            actorsAggregate: { count_EQ: 1 }
                         }
                     }
                 ) {
@@ -1058,7 +1061,9 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
     test("should be able to filter by node properties and aggregations in nested relationships", async () => {
         const query = /* GraphQL */ `
             {
-                actors(where: { movies_ALL: { actors_SOME: { name_EQ: "a name", moviesAggregate: { count_GT: 1 } } } }) {
+                actors(
+                    where: { movies_ALL: { actors_SOME: { name_EQ: "a name", moviesAggregate: { count_GT: 1 } } } }
+                ) {
                     name
                 }
             }

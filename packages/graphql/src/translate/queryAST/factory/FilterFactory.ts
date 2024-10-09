@@ -556,7 +556,7 @@ export class FilterFactory {
                 }
                 const { fieldName, operator, isNot } = parseWhereField(key);
 
-                const filterOperator = operator || "EQ";
+                const filterOperator = operator ?? "EQ";
                 if (fieldName === "count") {
                     const countFilter = new CountFilter({
                         operator: filterOperator,

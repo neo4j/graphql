@@ -83,7 +83,7 @@ describe("Disconnect using aggregate where", () => {
                                 where: { 
                                     node: {
                                         likesAggregate: {
-                                            count: 2
+                                            count_EQ: 2
                                         }
                                     } 
                                 } 
@@ -129,7 +129,7 @@ describe("Disconnect using aggregate where", () => {
                                          likesAggregate: {
                                             OR: [
                                             {
-                                                count: 2
+                                                count_EQ: 2
                                                 
                                             },
                                             {
@@ -191,7 +191,7 @@ describe("Disconnect using aggregate where", () => {
                                                     node: {
                                                         name_SHORTEST_GT: 2 
                                                     }
-                                                    count: 2
+                                                    count_EQ: 2
                                                 }
                                             ]
                                         }
@@ -317,7 +317,7 @@ describe("Disconnect UNIONs using aggregate where", () => {
                                 where: {
                                     node: {
                                         likedPostsAggregate: {
-                                            count: 2
+                                            count_EQ: 2
                                         }
                                     }
                                 }
@@ -375,7 +375,7 @@ describe("Disconnect UNIONs using aggregate where", () => {
                                         AND: [
                                             {
                                                 likedPostsAggregate: {
-                                                    count: 2
+                                                    count_EQ: 2
                                                 }
                                             },
                                             {
@@ -445,7 +445,7 @@ describe("Disconnect UNIONs using aggregate where", () => {
                                         AND: [
                                             {
                                                 likedPostsAggregate: {
-                                                    count: 2
+                                                    count_EQ: 2
                                                 }
                                             },
                                             {
@@ -517,7 +517,7 @@ describe("Disconnect UNIONs using aggregate where", () => {
                                                 AND: [
                                                     {
                                                         likedPostsAggregate: {
-                                                            count: 2
+                                                            count_EQ: 2
                                                         }
                                                     },
                                                     {
