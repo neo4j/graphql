@@ -1,5 +1,51 @@
 # @neo4j/graphql
 
+## 5.9.0
+
+### Minor Changes
+
+-   [#5633](https://github.com/neo4j/graphql/pull/5633) [`cfa296b`](https://github.com/neo4j/graphql/commit/cfa296babdee3e8bcdb3f6a4eb2250bedc6debc4) Thanks [@angrykoala](https://github.com/angrykoala)! - Remove connection wrapper on vector queries.
+
+    _Previous:_
+
+    ```graphql
+    query MovieVectorQuery($vector: [Float!]!) {
+        myVectorQuery(vector: $vector) {
+            moviesConnection {
+                edges {
+                    cursor
+                    score
+                    node {
+                        title
+                    }
+                }
+            }
+        }
+    }
+    ```
+
+    _Now:_
+
+    ```graphql
+    query MovieVectorQuery($vector: [Float!]!) {
+        myVectorQuery(vector: $vector) {
+            edges {
+                cursor
+                score
+                node {
+                    title
+                }
+            }
+        }
+    }
+    ```
+
+    Vector index is now a stable feature.
+
+### Patch Changes
+
+-   [#5647](https://github.com/neo4j/graphql/pull/5647) [`9feeda9`](https://github.com/neo4j/graphql/commit/9feeda99961292537096fb30e76871a3d27e1d6d) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Fix a bug that causes an invalid Cypher generated for authorization filters in the connectOrCreate operation.
+
 ## 5.8.0
 
 ### Minor Changes
