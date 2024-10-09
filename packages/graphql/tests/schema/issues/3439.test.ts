@@ -202,7 +202,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [GenreProductAggregateInput!]
               NOT: GenreProductAggregateInput
               OR: [GenreProductAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -693,7 +694,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [MovieGenreAggregateInput!]
               NOT: MovieGenreAggregateInput
               OR: [MovieGenreAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -1058,7 +1060,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [SeriesGenreAggregateInput!]
               NOT: SeriesGenreAggregateInput
               OR: [SeriesGenreAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -1538,7 +1541,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [GenreProductAggregateInput!]
               NOT: GenreProductAggregateInput
               OR: [GenreProductAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -1975,7 +1979,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [MovieGenreAggregateInput!]
               NOT: MovieGenreAggregateInput
               OR: [MovieGenreAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -2337,7 +2342,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [SeriesGenreAggregateInput!]
               NOT: SeriesGenreAggregateInput
               OR: [SeriesGenreAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -2825,7 +2831,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [GenreProductAggregateInput!]
               NOT: GenreProductAggregateInput
               OR: [GenreProductAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -3145,7 +3152,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [IProductGenreAggregateInput!]
               NOT: IProductGenreAggregateInput
               OR: [IProductGenreAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -3485,7 +3493,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [MovieGenreAggregateInput!]
               NOT: MovieGenreAggregateInput
               OR: [MovieGenreAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -3906,7 +3915,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [SeriesGenreAggregateInput!]
               NOT: SeriesGenreAggregateInput
               OR: [SeriesGenreAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -4465,7 +4475,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [GenreProductAggregateInput!]
               NOT: GenreProductAggregateInput
               OR: [GenreProductAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -5564,7 +5575,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [RatingProductAggregateInput!]
               NOT: RatingProductAggregateInput
               OR: [RatingProductAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int

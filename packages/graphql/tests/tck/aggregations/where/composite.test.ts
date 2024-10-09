@@ -48,7 +48,7 @@ describe("Cypher Aggregations where with count and node", () => {
     test("Equality Count and node", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { count: 10, node: { name_EQUAL: "potato" } } }) {
+                posts(where: { likesAggregate: { count_EQ: 10, node: { name_EQUAL: "potato" } } }) {
                     content
                 }
             }
@@ -84,7 +84,11 @@ describe("Cypher Aggregations where with count and node", () => {
             {
                 posts(
                     where: {
-                        likesAggregate: { count: 10, node: { name_EQUAL: "potato" }, edge: { someString_EQUAL: "10" } }
+                        likesAggregate: {
+                            count_EQ: 10
+                            node: { name_EQUAL: "potato" }
+                            edge: { someString_EQUAL: "10" }
+                        }
                     }
                 ) {
                     content
@@ -124,7 +128,7 @@ describe("Cypher Aggregations where with count and node", () => {
                 posts(
                     where: {
                         likesAggregate: {
-                            count: 10
+                            count_EQ: 10
                             node: { name_EQUAL: "potato" }
                             edge: { someString_EQUAL: "10" }
                             AND: [{ count_GT: 10 }, { count_LT: 20 }]

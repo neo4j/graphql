@@ -129,7 +129,8 @@ describe("Connection with interfaces", () => {
               AND: [CreatureMoviesAggregateInput!]
               NOT: CreatureMoviesAggregateInput
               OR: [CreatureMoviesAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -302,7 +303,8 @@ describe("Connection with interfaces", () => {
               AND: [MovieDirectorAggregateInput!]
               NOT: MovieDirectorAggregateInput
               OR: [MovieDirectorAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -505,7 +507,8 @@ describe("Connection with interfaces", () => {
               AND: [PersonMoviesAggregateInput!]
               NOT: PersonMoviesAggregateInput
               OR: [PersonMoviesAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -638,7 +641,8 @@ describe("Connection with interfaces", () => {
               AND: [ProductionDirectorAggregateInput!]
               NOT: ProductionDirectorAggregateInput
               OR: [ProductionDirectorAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -864,7 +868,8 @@ describe("Connection with interfaces", () => {
               AND: [SeriesDirectorAggregateInput!]
               NOT: SeriesDirectorAggregateInput
               OR: [SeriesDirectorAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int

@@ -134,7 +134,8 @@ describe("Interface Relationships", () => {
               AND: [ActorActedInAggregateInput!]
               NOT: ActorActedInAggregateInput
               OR: [ActorActedInAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -799,7 +800,8 @@ describe("Interface Relationships", () => {
               AND: [ActorActedInAggregateInput!]
               NOT: ActorActedInAggregateInput
               OR: [ActorActedInAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -1120,7 +1122,8 @@ describe("Interface Relationships", () => {
               AND: [EpisodeSeriesAggregateInput!]
               NOT: EpisodeSeriesAggregateInput
               OR: [EpisodeSeriesAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -1336,7 +1339,8 @@ describe("Interface Relationships", () => {
               AND: [MovieActorsAggregateInput!]
               NOT: MovieActorsAggregateInput
               OR: [MovieActorsAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -1563,7 +1567,8 @@ describe("Interface Relationships", () => {
               AND: [ProductionActorsAggregateInput!]
               NOT: ProductionActorsAggregateInput
               OR: [ProductionActorsAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -1874,7 +1879,8 @@ describe("Interface Relationships", () => {
               AND: [SeriesActorsAggregateInput!]
               NOT: SeriesActorsAggregateInput
               OR: [SeriesActorsAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -2014,7 +2020,8 @@ describe("Interface Relationships", () => {
               AND: [SeriesEpisodesAggregateInput!]
               NOT: SeriesEpisodesAggregateInput
               OR: [SeriesEpisodesAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -2390,7 +2397,8 @@ describe("Interface Relationships", () => {
               AND: [ActorActedInAggregateInput!]
               NOT: ActorActedInAggregateInput
               OR: [ActorActedInAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -2711,7 +2719,8 @@ describe("Interface Relationships", () => {
               AND: [EpisodeSeriesAggregateInput!]
               NOT: EpisodeSeriesAggregateInput
               OR: [EpisodeSeriesAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -2927,7 +2936,8 @@ describe("Interface Relationships", () => {
               AND: [MovieActorsAggregateInput!]
               NOT: MovieActorsAggregateInput
               OR: [MovieActorsAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -3154,7 +3164,8 @@ describe("Interface Relationships", () => {
               AND: [ProductionActorsAggregateInput!]
               NOT: ProductionActorsAggregateInput
               OR: [ProductionActorsAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -3485,7 +3496,8 @@ describe("Interface Relationships", () => {
               AND: [SeriesActorsAggregateInput!]
               NOT: SeriesActorsAggregateInput
               OR: [SeriesActorsAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -3625,7 +3637,8 @@ describe("Interface Relationships", () => {
               AND: [SeriesEpisodesAggregateInput!]
               NOT: SeriesEpisodesAggregateInput
               OR: [SeriesEpisodesAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -4073,7 +4086,8 @@ describe("Interface Relationships", () => {
               AND: [Interface1Interface2AggregateInput!]
               NOT: Interface1Interface2AggregateInput
               OR: [Interface1Interface2AggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -4423,7 +4437,8 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface1AggregateInput!]
               NOT: Type1Interface1AggregateInput
               OR: [Type1Interface1AggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -4512,7 +4527,8 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface1Interface2AggregateInput!]
               NOT: Type1Interface1Interface2AggregateInput
               OR: [Type1Interface1Interface2AggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -4905,7 +4921,8 @@ describe("Interface Relationships", () => {
               AND: [Type2Interface1Interface2AggregateInput!]
               NOT: Type2Interface1Interface2AggregateInput
               OR: [Type2Interface1Interface2AggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -5315,7 +5332,8 @@ describe("Interface Relationships", () => {
               AND: [Interface1Interface2AggregateInput!]
               NOT: Interface1Interface2AggregateInput
               OR: [Interface1Interface2AggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -5786,7 +5804,8 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface1AggregateInput!]
               NOT: Type1Interface1AggregateInput
               OR: [Type1Interface1AggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -5875,7 +5894,8 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface1Interface2AggregateInput!]
               NOT: Type1Interface1Interface2AggregateInput
               OR: [Type1Interface1Interface2AggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -6277,7 +6297,8 @@ describe("Interface Relationships", () => {
               AND: [Type2Interface1Interface2AggregateInput!]
               NOT: Type2Interface1Interface2AggregateInput
               OR: [Type2Interface1Interface2AggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -6702,7 +6723,8 @@ describe("Interface Relationships", () => {
               AND: [Interface1Interface2AggregateInput!]
               NOT: Interface1Interface2AggregateInput
               OR: [Interface1Interface2AggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -7126,7 +7148,8 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface1AggregateInput!]
               NOT: Type1Interface1AggregateInput
               OR: [Type1Interface1AggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -7215,7 +7238,8 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface1Interface2AggregateInput!]
               NOT: Type1Interface1Interface2AggregateInput
               OR: [Type1Interface1Interface2AggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -7683,7 +7707,8 @@ describe("Interface Relationships", () => {
               AND: [Type2Interface1Interface2AggregateInput!]
               NOT: Type2Interface1Interface2AggregateInput
               OR: [Type2Interface1Interface2AggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -8101,7 +8126,8 @@ describe("Interface Relationships", () => {
               AND: [CommentCreatorAggregateInput!]
               NOT: CommentCreatorAggregateInput
               OR: [CommentCreatorAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -8210,7 +8236,8 @@ describe("Interface Relationships", () => {
               AND: [CommentPostAggregateInput!]
               NOT: CommentPostAggregateInput
               OR: [CommentPostAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -8423,7 +8450,8 @@ describe("Interface Relationships", () => {
               AND: [ContentCreatorAggregateInput!]
               NOT: ContentCreatorAggregateInput
               OR: [ContentCreatorAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -8687,7 +8715,8 @@ describe("Interface Relationships", () => {
               AND: [PostCommentsAggregateInput!]
               NOT: PostCommentsAggregateInput
               OR: [PostCommentsAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -8820,7 +8849,8 @@ describe("Interface Relationships", () => {
               AND: [PostCreatorAggregateInput!]
               NOT: PostCreatorAggregateInput
               OR: [PostCreatorAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -9088,7 +9118,8 @@ describe("Interface Relationships", () => {
               AND: [UserContentAggregateInput!]
               NOT: UserContentAggregateInput
               OR: [UserContentAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -9431,7 +9462,8 @@ describe("Interface Relationships", () => {
               AND: [ActorActedInAggregateInput!]
               NOT: ActorActedInAggregateInput
               OR: [ActorActedInAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -9725,7 +9757,8 @@ describe("Interface Relationships", () => {
               AND: [MovieActorsAggregateInput!]
               NOT: MovieActorsAggregateInput
               OR: [MovieActorsAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -10038,7 +10071,8 @@ describe("Interface Relationships", () => {
               AND: [SeriesActorsAggregateInput!]
               NOT: SeriesActorsAggregateInput
               OR: [SeriesActorsAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -10242,7 +10276,8 @@ describe("Interface Relationships", () => {
               AND: [ShowActorsAggregateInput!]
               NOT: ShowActorsAggregateInput
               OR: [ShowActorsAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int

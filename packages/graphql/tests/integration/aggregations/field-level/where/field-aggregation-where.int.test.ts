@@ -102,7 +102,7 @@ describe("Field Level Aggregations Where", () => {
         const query = `
             query {
               ${typeMovie.plural} {
-                actorsAggregate(where: {moviesAggregate: {count:1}}) {
+                actorsAggregate(where: {moviesAggregate: { count_EQ: 1}}) {
                   count
                 }
               }
@@ -120,7 +120,7 @@ describe("Field Level Aggregations Where", () => {
             const query = `
             query {
                 ${typePerson.plural} {
-                    moviesAggregate(where:{actorsConnection: {node: {name_EQ: "Linda"}}}){
+                    moviesAggregate(where:{actorsConnection: { node: { name_EQ: "Linda" } }}){
                         count
                     }
                 }

@@ -128,7 +128,8 @@ describe("Apollo Federation", () => {
               AND: [PostAuthorAggregateInput!]
               NOT: PostAuthorAggregateInput
               OR: [PostAuthorAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -424,7 +425,8 @@ describe("Apollo Federation", () => {
               AND: [UserPostsAggregateInput!]
               NOT: UserPostsAggregateInput
               OR: [UserPostsAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
@@ -724,7 +726,8 @@ describe("Apollo Federation", () => {
               AND: [PostAuthorAggregateInput!]
               NOT: PostAuthorAggregateInput
               OR: [PostAuthorAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int

@@ -33,7 +33,11 @@ import type { RelationshipAdapter } from "../../schema-model/relationship/model-
 import { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { Neo4jFeaturesSettings } from "../../types";
 import type { AggregationTypesMapper } from "../aggregations/aggregation-types-mapper";
-import { DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS, DEPRECATE_INVALID_AGGREGATION_FILTERS } from "../constants";
+import {
+    DEPRECATE_IMPLICIT_EQUAL_FILTERS,
+    DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS,
+    DEPRECATE_INVALID_AGGREGATION_FILTERS,
+} from "../constants";
 import { numericalResolver } from "../resolvers/field/numerical";
 import { graphqlDirectivesToCompose } from "../to-compose";
 import { shouldAddDeprecatedFields } from "./utils";
@@ -99,20 +103,28 @@ export function withAggregateInputType({
     if (composer.has(aggregateInputTypeName)) {
         return composer.getITC(aggregateInputTypeName);
     }
-    const aggregateSelection = composer.createInputTC({
+
+    const aggregateWhereInput = composer.createInputTC({
         name: aggregateInputTypeName,
         fields: {
-            count: GraphQLInt,
+            count_EQ: GraphQLInt,
             count_LT: GraphQLInt,
             count_LTE: GraphQLInt,
             count_GT: GraphQLInt,
             count_GTE: GraphQLInt,
         },
     });
-    aggregateSelection.addFields({
-        AND: aggregateSelection.NonNull.List,
-        OR: aggregateSelection.NonNull.List,
-        NOT: aggregateSelection,
+
+    if (shouldAddDeprecatedFields(features, "implicitEqualFilters")) {
+        aggregateWhereInput.addFields({
+            count: { type: GraphQLInt, directives: [DEPRECATE_IMPLICIT_EQUAL_FILTERS] },
+        });
+    }
+
+    aggregateWhereInput.addFields({
+        AND: aggregateWhereInput.NonNull.List,
+        OR: aggregateWhereInput.NonNull.List,
+        NOT: aggregateWhereInput,
     });
 
     const nodeWhereInputType = withAggregationWhereInputType({
@@ -123,7 +135,7 @@ export function withAggregateInputType({
         features,
     });
     if (nodeWhereInputType) {
-        aggregateSelection.addFields({ node: nodeWhereInputType });
+        aggregateWhereInput.addFields({ node: nodeWhereInputType });
     }
     const edgeWhereInputType = withAggregationWhereInputType({
         relationshipAdapter,
@@ -133,9 +145,9 @@ export function withAggregateInputType({
         features,
     });
     if (edgeWhereInputType) {
-        aggregateSelection.addFields({ edge: edgeWhereInputType });
+        aggregateWhereInput.addFields({ edge: edgeWhereInputType });
     }
-    return aggregateSelection;
+    return aggregateWhereInput;
 }
 
 function withAggregationWhereInputType({

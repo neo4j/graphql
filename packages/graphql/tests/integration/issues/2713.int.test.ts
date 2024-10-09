@@ -79,7 +79,7 @@ describe("https://github.com/neo4j/graphql/issues/2713", () => {
     test("should not find genresConnection_ALL where NONE true", async () => {
         const query = `
             {
-                ${movieType.plural}(where: { genresConnection_ALL: { node: { moviesAggregate: { count: 0 } } } }) {
+                ${movieType.plural}(where: { genresConnection_ALL: { node: { moviesAggregate: { count_EQ: 0 } } } }) {
                     title
                 }
             }

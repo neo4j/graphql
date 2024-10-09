@@ -18,10 +18,10 @@
  */
 
 import type { Driver, Session } from "neo4j-driver";
-import checkNeo4jCompat from "./verify-database";
-import { REQUIRED_APOC_FUNCTIONS, MIN_NEO4J_VERSION } from "../../constants";
-import { Neo4jDatabaseInfo } from "../Neo4jDatabaseInfo";
+import { MIN_NEO4J_VERSION, REQUIRED_APOC_FUNCTIONS } from "../../constants";
 import type { Neo4jGraphQLSessionConfig } from "../Executor";
+import { Neo4jDatabaseInfo } from "../Neo4jDatabaseInfo";
+import checkNeo4jCompat from "./verify-database";
 
 describe("checkNeo4jCompat", () => {
     test("should add driver config to session", async () => {
@@ -270,7 +270,7 @@ describe("checkNeo4jCompat", () => {
         ).resolves.not.toThrow();
     });
 
-    test("should not throw Error that 4.2 is minimum", async () => {
+    test("should throw Error for Neo4j 4.4", async () => {
         // @ts-ignore
         const fakeSession: Session = {
             // @ts-ignore
@@ -278,7 +278,7 @@ describe("checkNeo4jCompat", () => {
                 records: [
                     {
                         toObject: () => ({
-                            version: "4.1.10",
+                            version: "4.4.37",
                             functions: REQUIRED_APOC_FUNCTIONS,
                         }),
                     },
@@ -296,8 +296,8 @@ describe("checkNeo4jCompat", () => {
             verifyConnectivity: () => undefined,
         };
 
-        await expect(checkNeo4jCompat({ driver: fakeDriver, dbInfo: new Neo4jDatabaseInfo("4.1.10") })).rejects.toThrow(
-            `Encountered the following DBMS compatiblility issues:\nExpected minimum Neo4j version: '${MIN_NEO4J_VERSION}', received: '4.1.10'`
+        await expect(checkNeo4jCompat({ driver: fakeDriver, dbInfo: new Neo4jDatabaseInfo("4.4.37") })).rejects.toThrow(
+            `Encountered the following DBMS compatiblility issues:\nExpected minimum Neo4j version: '${MIN_NEO4J_VERSION}', received: '4.4.37'`
         );
     });
 });
