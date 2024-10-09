@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import exp from "constants";
 import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../../utils/tests-helper";
 
@@ -62,7 +61,7 @@ describe("https://github.com/neo4j/graphql/issues/5635", () => {
         await testHelper.close();
     });
 
-    test("should handle auth appropriately for nested connection", async () => {
+    test("validation should applied correctly without causing cypher errors", async () => {
         await testHelper.executeCypher(`
           CREATE (c:${MyNode.name} {id: 'abc'})<-[:OWNS]-(o:${Owner.name} {id: 'abc'})
         `);
@@ -90,7 +89,7 @@ describe("https://github.com/neo4j/graphql/issues/5635", () => {
 
         const result = await testHelper.executeGraphQL(mutation, {
             contextValue: {
-                token: testHelper.createBearerToken("secret", { sub: "abc" }), 
+                token: testHelper.createBearerToken("secret", { sub: "abc" }),
             },
         });
         expect(result.errors).toBeUndefined();
