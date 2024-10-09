@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 import type { DirectiveNode } from "graphql";
-import { GraphQLFloat, GraphQLID, GraphQLInt, GraphQLNonNull, GraphQLString } from "graphql";
+import { GraphQLFloat, GraphQLInt, GraphQLNonNull } from "graphql";
 import type {
     InputTypeComposer,
     InputTypeComposerFieldConfigMapDefinition,
@@ -33,11 +33,7 @@ import type { RelationshipAdapter } from "../../schema-model/relationship/model-
 import { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { Neo4jFeaturesSettings } from "../../types";
 import type { AggregationTypesMapper } from "../aggregations/aggregation-types-mapper";
-import {
-    DEPRECATE_IMPLICIT_EQUAL_FILTERS,
-    DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS,
-    DEPRECATE_INVALID_AGGREGATION_FILTERS,
-} from "../constants";
+import { DEPRECATE_IMPLICIT_EQUAL_FILTERS, DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS } from "../constants";
 import { numericalResolver } from "../resolvers/field/numerical";
 import { graphqlDirectivesToCompose } from "../to-compose";
 import { shouldAddDeprecatedFields } from "./utils";
@@ -223,23 +219,9 @@ function addAggregationFieldsByType(
     const deprecatedDirectives = graphqlDirectivesToCompose(
         (directivesOnField || []).filter((d) => d.name.value === DEPRECATED)
     );
-    // IF deprecated flag
-    if (attribute.typeHelper.isID()) {
-        if (shouldAddDeprecatedFields(features, "aggregationFilters")) {
-            fields[`${attribute.name}_EQUAL`] = {
-                type: GraphQLID,
-                directives: [DEPRECATE_INVALID_AGGREGATION_FILTERS],
-            };
-        }
-        return fields;
-    }
     if (attribute.typeHelper.isString()) {
         for (const operator of AGGREGATION_COMPARISON_OPERATORS) {
             if (shouldAddDeprecatedFields(features, "aggregationFilters")) {
-                fields[`${attribute.name}_${operator}`] = {
-                    type: `${operator === "EQUAL" ? GraphQLString : GraphQLInt}`,
-                    directives: [DEPRECATE_INVALID_AGGREGATION_FILTERS],
-                };
                 fields[`${attribute.name}_AVERAGE_${operator}`] = {
                     type: GraphQLFloat,
                     directives: [DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS],
@@ -274,12 +256,6 @@ function addAggregationFieldsByType(
         // https://neo4j.com/docs/cypher-manual/current/functions/aggregating/#functions-avg-duration
         // String uses avg(size())
         for (const operator of AGGREGATION_COMPARISON_OPERATORS) {
-            if (shouldAddDeprecatedFields(features, "aggregationFilters")) {
-                fields[`${attribute.name}_${operator}`] = {
-                    type: attribute.getTypeName(),
-                    directives: [DEPRECATE_INVALID_AGGREGATION_FILTERS],
-                };
-            }
             fields[`${attribute.name}_MIN_${operator}`] = {
                 type: attribute.getTypeName(),
                 directives: deprecatedDirectives,
@@ -304,12 +280,6 @@ function addAggregationFieldsByType(
         return fields;
     }
     for (const operator of AGGREGATION_COMPARISON_OPERATORS) {
-        if (shouldAddDeprecatedFields(features, "aggregationFilters")) {
-            fields[`${attribute.name}_${operator}`] = {
-                type: attribute.getTypeName(),
-                directives: [DEPRECATE_INVALID_AGGREGATION_FILTERS],
-            };
-        }
         fields[`${attribute.name}_MIN_${operator}`] = {
             type: attribute.getTypeName(),
             directives: deprecatedDirectives,
