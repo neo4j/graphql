@@ -43,8 +43,6 @@ describe("Remove deprecated fields for aggregations", () => {
             typeDefs,
             features: {
                 excludeDeprecatedFields: {
-                    bookmark: true,
-                    stringAggregation: true,
                     aggregationFilters: true,
                 },
             },
@@ -420,8 +418,6 @@ describe("Remove deprecated fields for aggregations", () => {
             typeDefs,
             features: {
                 excludeDeprecatedFields: {
-                    bookmark: true,
-                    stringAggregation: true,
                     aggregationFilters: true,
                 },
             },
@@ -854,7 +850,8 @@ describe("Remove deprecated fields for aggregations", () => {
               AND: [PostLikesAggregateInput!]
               NOT: PostLikesAggregateInput
               OR: [PostLikesAggregateInput!]
-              count: Int
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int

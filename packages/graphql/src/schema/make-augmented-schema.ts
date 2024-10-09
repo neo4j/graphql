@@ -76,7 +76,6 @@ import { augmentVectorSchema } from "./augment/vector";
 import { createConnectionFields } from "./create-connection-fields";
 import { addGlobalNodeFields } from "./create-global-nodes";
 import { createRelationshipFields } from "./create-relationship-fields/create-relationship-fields";
-import { bookmarkDeprecationMap } from "./deprecation-map";
 import { AugmentedSchemaGenerator } from "./generation/AugmentedSchemaGenerator";
 import { withAggregateSelectionType } from "./generation/aggregate-types";
 import { withCreateInputType } from "./generation/create-input";
@@ -85,7 +84,6 @@ import { withObjectType } from "./generation/object-type";
 import { withMutationResponseTypes } from "./generation/response-types";
 import { withOptionsInputType } from "./generation/sort-and-options-input";
 import { withUpdateInputType } from "./generation/update-input";
-import { shouldAddDeprecatedFields } from "./generation/utils";
 import { withUniqueWhereInputType, withWhereInputType } from "./generation/where-input";
 import getNodes from "./get-nodes";
 import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription-methods";
@@ -150,19 +148,6 @@ function makeAugmentedSchema({
     ];
     if (pipedDefs.length) {
         composer.addTypeDefs(print({ kind: Kind.DOCUMENT, definitions: pipedDefs }));
-    }
-
-    // Loop over all entries in the deprecation map and add field deprecations to all types in the map.
-    for (const [typeName, deprecatedFields] of bookmarkDeprecationMap) {
-        const typeComposer = composer.getOTC(typeName);
-
-        if (shouldAddDeprecatedFields(features, "bookmark")) {
-            typeComposer.deprecateFields(
-                deprecatedFields.reduce((acc, { field, reason }) => ({ ...acc, [field]: reason }), {})
-            );
-        } else {
-            typeComposer.removeField(deprecatedFields.map((field) => field.field));
-        }
     }
 
     // TODO: ideally move these in getSubgraphSchema()

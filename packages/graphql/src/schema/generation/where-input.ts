@@ -32,7 +32,7 @@ import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/Uni
 import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { Neo4jFeaturesSettings } from "../../types";
-import { DEPRECATE_EQUAL_FILTERS } from "../constants";
+import { DEPRECATE_IMPLICIT_EQUAL_FILTERS } from "../constants";
 import { getWhereFieldsForAttributes } from "../get-where-fields";
 import { withAggregateInputType } from "./aggregate-types";
 import {
@@ -59,7 +59,7 @@ export function withUniqueWhereInputType({
         if (shouldAddDeprecatedFields(features, "implicitEqualFilters")) {
             uniqueWhereFields[attribute.name] = {
                 type: attribute.getFieldTypeName(),
-                directives: [DEPRECATE_EQUAL_FILTERS],
+                directives: [DEPRECATE_IMPLICIT_EQUAL_FILTERS],
             };
         }
         uniqueWhereFields[`${attribute.name}_EQ`] = {

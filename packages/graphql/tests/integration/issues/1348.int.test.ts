@@ -83,9 +83,6 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
                         productTitle: "TestFilm1"
                     }
                 ]) {
-                    info {
-                        bookmark
-                    }
                     ${ProgrammeItem.plural} {
                         productTitle
                         episodeNumber
@@ -100,9 +97,6 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
                     where: { productTitle_EQ: "TestFilm1" }
                     connect: { relatedTo: { where: { node: { productTitle_EQ: "TestEpisode1" } } } }
                 ) {
-                    info {
-                        bookmark
-                    }
                     ${ProgrammeItem.plural} {
                         productTitle
                         episodeNumber
