@@ -32,21 +32,85 @@ describe("Cypher", () => {
             type Movie @node {
                 id: ID
                 custom_string: String @cypher(statement: "RETURN 'custom!' as c", columnName: "c")
+                list_of_custom_strings: [String]
+                    @cypher(
+                        statement: "RETURN ['a','b','c'] as list_of_custom_strings"
+                        columnName: "list_of_custom_strings"
+                    )
                 custom_int: Int @cypher(statement: "RETURN 42 as n", columnName: "n")
+                list_of_custom_ints: [Int]
+                    @cypher(statement: "RETURN [1,2,3] as list_of_custom_ints", columnName: "list_of_custom_ints")
                 custom_big_int: BigInt @cypher(statement: "RETURN 42 as n", columnName: "n")
+                list_of_custom_big_ints: [BigInt]
+                    @cypher(
+                        statement: "RETURN [1,2,3] as list_of_custom_big_ints"
+                        columnName: "list_of_custom_big_ints"
+                    )
                 custom_float: Float @cypher(statement: "RETURN 3.14 as f", columnName: "f")
+                list_of_custom_floats: [Float]
+                    @cypher(
+                        statement: "RETURN [1.1,2.2,3.3] as list_of_custom_floats"
+                        columnName: "list_of_custom_floats"
+                    )
                 custom_boolean: Boolean @cypher(statement: "RETURN true as b", columnName: "b")
+                list_of_custom_booleans: [Boolean]
+                    @cypher(
+                        statement: "RETURN [true,false,true] as list_of_custom_booleans"
+                        columnName: "list_of_custom_booleans"
+                    )
                 custom_id: ID @cypher(statement: "RETURN 'test-id' as i", columnName: "i")
+                list_custom_of_ids: [ID]
+                    @cypher(statement: "RETURN ['1','2','3'] as list_of_ids", columnName: "list_of_ids")
                 custom_point: Point
                     @cypher(statement: "RETURN point({latitude: 1, longitude: 1}) as p", columnName: "p")
+                list_of_custom_points: [Point]
+                    @cypher(
+                        statement: "RETURN [point({latitude: 1, longitude: 1}), point({latitude: 2, longitude: 2})] as list_of_points"
+                        columnName: "list_of_points"
+                    )
                 custom_cartesian_point: CartesianPoint @cypher(statement: "RETURN {x: 1, y: 1} as cp", columnName: "cp")
+                list_of_custom_cartesian_points: [CartesianPoint]
+                    @cypher(
+                        statement: "RETURN [{x: 1, y: 1}, {x: 2, y: 2}] as list_of_cartesian_points"
+                        columnName: "list_of_cartesian_points"
+                    )
                 custom_date: Date @cypher(statement: "RETURN date('2021-01-01') as d", columnName: "d")
+                list_of_custom_dates: [Date]
+                    @cypher(
+                        statement: "RETURN [date('2021-01-01'), date('2021-01-02')] as list_of_dates"
+                        columnName: "list_of_dates"
+                    )
                 custom_time: Time @cypher(statement: "RETURN localtime() as t", columnName: "t")
+                list_of_custom_times: [Time]
+                    @cypher(
+                        statement: "RETURN [localtime(), localtime()] as list_of_times"
+                        columnName: "list_of_times"
+                    )
                 custom_localtime: LocalTime @cypher(statement: "RETURN localtime() as lt", columnName: "lt")
+                list_of_custom_localtimes: [LocalTime]
+                    @cypher(
+                        statement: "RETURN [localtime(), localtime()] as list_of_localtimes"
+                        columnName: "list_of_localtimes"
+                    )
                 custom_datetime: DateTime @cypher(statement: "RETURN datetime() as dt", columnName: "dt")
+                list_of_custom_datetimes: [DateTime]
+                    @cypher(
+                        statement: "RETURN [localdatetime(), localdatetime()] as list_of_datetimes"
+                        columnName: "list_of_datetimes"
+                    )
                 custom_localdatetime: LocalDateTime
                     @cypher(statement: "RETURN localdatetime() as ldt", columnName: "ldt")
+                list_of_custom_localdatetimes: [LocalDateTime]
+                    @cypher(
+                        statement: "RETURN [localdatetime(), localdatetime()] as list_of_localdatetimes"
+                        columnName: "list_of_localdatetimes"
+                    )
                 custom_duration: Duration @cypher(statement: "RETURN duration({days: 1}) as dur", columnName: "dur")
+                list_of_custom_durations: [Duration]
+                    @cypher(
+                        statement: "RETURN [duration({days: 1}), duration({days: 2})] as list_of_durations"
+                        columnName: "list_of_durations"
+                    )
                 actor: Actor @cypher(statement: "MATCH (this)-[:ACTED_IN]->(a:Actor) RETURN a", columnName: "a")
                 actors(title: String): [Actor]
                     @cypher(
@@ -219,6 +283,20 @@ describe("Cypher", () => {
               custom_string: String
               custom_time: Time
               id: ID
+              list_custom_of_ids: [ID]
+              list_of_custom_big_ints: [BigInt]
+              list_of_custom_booleans: [Boolean]
+              list_of_custom_cartesian_points: [CartesianPoint]
+              list_of_custom_dates: [Date]
+              list_of_custom_datetimes: [DateTime]
+              list_of_custom_durations: [Duration]
+              list_of_custom_floats: [Float]
+              list_of_custom_ints: [Int]
+              list_of_custom_localdatetimes: [LocalDateTime]
+              list_of_custom_localtimes: [LocalTime]
+              list_of_custom_points: [Point]
+              list_of_custom_strings: [String]
+              list_of_custom_times: [Time]
             }
 
             type MovieAggregateSelection {
@@ -373,6 +451,47 @@ describe("Cypher", () => {
               id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
+              list_custom_of_ids: [ID] @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              list_custom_of_ids_EQ: [ID]
+              list_custom_of_ids_INCLUDES: ID
+              list_of_custom_big_ints: [BigInt] @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              list_of_custom_big_ints_EQ: [BigInt]
+              list_of_custom_big_ints_INCLUDES: BigInt
+              list_of_custom_booleans: [Boolean] @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              list_of_custom_booleans_EQ: [Boolean]
+              list_of_custom_cartesian_points: [CartesianPointInput] @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              list_of_custom_cartesian_points_EQ: [CartesianPointInput]
+              list_of_custom_cartesian_points_INCLUDES: CartesianPointInput
+              list_of_custom_dates: [Date] @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              list_of_custom_dates_EQ: [Date]
+              list_of_custom_dates_INCLUDES: Date
+              list_of_custom_datetimes: [DateTime] @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              list_of_custom_datetimes_EQ: [DateTime]
+              list_of_custom_datetimes_INCLUDES: DateTime
+              list_of_custom_durations: [Duration] @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              list_of_custom_durations_EQ: [Duration]
+              list_of_custom_durations_INCLUDES: Duration
+              list_of_custom_floats: [Float] @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              list_of_custom_floats_EQ: [Float]
+              list_of_custom_floats_INCLUDES: Float
+              list_of_custom_ints: [Int] @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              list_of_custom_ints_EQ: [Int]
+              list_of_custom_ints_INCLUDES: Int
+              list_of_custom_localdatetimes: [LocalDateTime] @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              list_of_custom_localdatetimes_EQ: [LocalDateTime]
+              list_of_custom_localdatetimes_INCLUDES: LocalDateTime
+              list_of_custom_localtimes: [LocalTime] @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              list_of_custom_localtimes_EQ: [LocalTime]
+              list_of_custom_localtimes_INCLUDES: LocalTime
+              list_of_custom_points: [PointInput] @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              list_of_custom_points_EQ: [PointInput]
+              list_of_custom_points_INCLUDES: PointInput
+              list_of_custom_strings: [String] @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              list_of_custom_strings_EQ: [String]
+              list_of_custom_strings_INCLUDES: String
+              list_of_custom_times: [Time] @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              list_of_custom_times_EQ: [Time]
+              list_of_custom_times_INCLUDES: Time
             }
 
             type MoviesConnection {
@@ -543,6 +662,9 @@ describe("Cypher", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              custom_cypher_string_list: [String] @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              custom_cypher_string_list_EQ: [String]
+              custom_cypher_string_list_INCLUDES: String
             }
 
             type MoviesConnection {
@@ -706,6 +828,228 @@ describe("Cypher", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
+            type UpdateInfo {
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type UpdateMoviesMutationResponse {
+              info: UpdateInfo!
+              movies: [Movie!]!
+            }"
+        `);
+    });
+
+    test("Filters should not be generated on Relationship/Object custom cypher fields", async () => {
+        const typeDefs = gql`
+            type Movie {
+                actors: [Actor]
+                    @cypher(
+                        statement: """
+                        MATCH (this)-[:ACTED_IN]->(actor:Actor)
+                        RETURN actor
+                        """
+                        columnName: "actor"
+                    )
+            }
+
+            type Actor {
+                name: String
+                movies: [Movie]
+                    @cypher(
+                        statement: """
+                        MATCH (this)-[:ACTED_IN]->(movie:Movie)
+                        RETURN movie
+                        """
+                        columnName: "movie"
+                    )
+            }
+        `;
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
+
+        expect(printedSchema).toMatchInlineSnapshot(`
+            "schema {
+              query: Query
+              mutation: Mutation
+            }
+
+            type Actor {
+              movies: [Movie]
+              name: String
+            }
+
+            type ActorAggregateSelection {
+              count: Int!
+              name: StringAggregateSelection!
+            }
+
+            input ActorCreateInput {
+              name: String
+            }
+
+            type ActorEdge {
+              cursor: String!
+              node: Actor!
+            }
+
+            input ActorOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [ActorSort!]
+            }
+
+            \\"\\"\\"
+            Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
+            \\"\\"\\"
+            input ActorSort {
+              name: SortDirection
+            }
+
+            input ActorUpdateInput {
+              name: String
+            }
+
+            input ActorWhere {
+              AND: [ActorWhere!]
+              NOT: ActorWhere
+              OR: [ActorWhere!]
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              name_CONTAINS: String
+              name_ENDS_WITH: String
+              name_EQ: String
+              name_IN: [String]
+              name_STARTS_WITH: String
+            }
+
+            type ActorsConnection {
+              edges: [ActorEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type CreateActorsMutationResponse {
+              actors: [Actor!]!
+              info: CreateInfo!
+            }
+
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
+            type CreateInfo {
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            type CreateMoviesMutationResponse {
+              info: CreateInfo!
+              movies: [Movie!]!
+            }
+
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
+            type DeleteInfo {
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type Movie {
+              actors: [Actor]
+            }
+
+            type MovieAggregateSelection {
+              count: Int!
+            }
+
+            input MovieCreateInput {
+              \\"\\"\\"
+              Appears because this input type would be empty otherwise because this type is composed of just generated and/or relationship properties. See https://neo4j.com/docs/graphql-manual/current/troubleshooting/faqs/
+              \\"\\"\\"
+              _emptyInput: Boolean
+            }
+
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
+            input MovieOptions {
+              limit: Int
+              offset: Int
+            }
+
+            input MovieUpdateInput {
+              \\"\\"\\"
+              Appears because this input type would be empty otherwise because this type is composed of just generated and/or relationship properties. See https://neo4j.com/docs/graphql-manual/current/troubleshooting/faqs/
+              \\"\\"\\"
+              _emptyInput: Boolean
+            }
+
+            input MovieWhere {
+              AND: [MovieWhere!]
+              NOT: MovieWhere
+              OR: [MovieWhere!]
+            }
+
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type Mutation {
+              createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
+              createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
+              deleteActors(where: ActorWhere): DeleteInfo!
+              deleteMovies(where: MovieWhere): DeleteInfo!
+              updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+            }
+
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
+            type Query {
+              actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
+              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+              actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
+              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: MovieWhere): [Movie!]!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, first: Int, where: MovieWhere): MoviesConnection!
+            }
+
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
+
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
+            }
+
+            type UpdateActorsMutationResponse {
+              actors: [Actor!]!
+              info: UpdateInfo!
             }
 
             \\"\\"\\"

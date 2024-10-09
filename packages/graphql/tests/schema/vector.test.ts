@@ -127,10 +127,6 @@ describe("@vector schema", () => {
               score: Float!
             }
 
-            type MovieVectorResult {
-              moviesConnection: MoviesVectorConnection!
-            }
-
             \\"\\"\\"The input for sorting a Vector query on an index of Movie\\"\\"\\"
             input MovieVectorSort {
               node: MovieSort
@@ -188,11 +184,11 @@ describe("@vector schema", () => {
             }
 
             type Query {
-              descriptionQuery(after: String, first: Int, sort: [MovieVectorSort!], vector: [Float!], where: MovieVectorWhere): MovieVectorResult!
+              descriptionQuery(after: String, first: Int, sort: [MovieVectorSort!], vector: [Float!], where: MovieVectorWhere): MoviesVectorConnection!
               movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-              titleQuery(after: String, first: Int, sort: [MovieVectorSort!], vector: [Float!], where: MovieVectorWhere): MovieVectorResult!
+              titleQuery(after: String, first: Int, sort: [MovieVectorSort!], vector: [Float!], where: MovieVectorWhere): MoviesVectorConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"

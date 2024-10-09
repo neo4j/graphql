@@ -57,13 +57,11 @@ describe("Vector index match", () => {
         const query = /* GraphQL */ `
                 query MovieVectorQuery($vector: [Float!]!) {
                     ${queryName}(vector: $vector) {
-                        moviesConnection {
-                            edges {
-                                cursor
-                                score
-                                node {
-                                    title
-                                }
+                        edges {
+                            cursor
+                            score
+                            node {
+                                title
                             }
                         }
                     }
@@ -231,14 +229,12 @@ describe("Vector index match", () => {
         const query = /* GraphQL */ `
                 query MovieVectorQuery($vector: [Float!]!) {
                     ${queryName}(vector: $vector, where: { node: { released_GT: 2000 } }) {
-                        moviesConnection {
-                            edges {
-                                cursor
-                                score
-                                node {
-                                    title
-                                    released
-                                }
+                        edges {
+                            cursor
+                            score
+                            node {
+                                title
+                                released
                             }
                         }
                     }
@@ -410,12 +406,10 @@ describe("Vector index match", () => {
         const query = /* GraphQL */ `
                 query MovieVectorQuery($vector: [Float!]!) {
                     ${queryName}(vector: $vector, sort: { node: { title: DESC } }) {
-                        moviesConnection {
-                            edges {
-                                score
-                                node {
-                                    title
-                                }
+                        edges {
+                            score
+                            node {
+                                title
                             }
                         }
                     }

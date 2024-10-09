@@ -56,13 +56,11 @@ describe("Cypher -> vector -> Score", () => {
         const query = /* GraphQL */ `
             query MovieVectorQuery($vector: [Float!]!) {
                 ${queryName}(vector: $vector, where: { score: { min: 0.5 } }) {
-                    moviesConnection {
-                        edges {
-                            node {
-                                title
-                            }
-                            score
+                    edges {
+                        node {
+                            title
                         }
+                        score
                     }
                 }
             }
@@ -230,13 +228,11 @@ describe("Cypher -> vector -> Score", () => {
         const query = /* GraphQL */ `
             query MovieVectorQuery($vector: [Float!]!) {
                 ${queryName}(vector: $vector, sort: { score: ASC }) {
-                    moviesConnection {
-                        edges {
-                            node {
-                                title
-                            }
-                            score
+                    edges {
+                        node {
+                            title
                         }
+                        score
                     }
                 }
             }
@@ -405,13 +401,11 @@ describe("Cypher -> vector -> Score", () => {
         const query = /* GraphQL */ `
             query MovieVectorQuery($vector: [Float!]!) {
                 ${queryName}(vector: $vector, sort: [{ score: ASC }, { node: { title: DESC } }]) {
-                    moviesConnection {
-                        edges {
-                            node {
-                                title
-                            }
-                            score
+                    edges {
+                        node {
+                            title
                         }
+                        score
                     }
                 }
             }

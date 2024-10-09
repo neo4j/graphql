@@ -55,20 +55,13 @@ export class VectorFactory {
         });
 
         let scoreField: ScoreField | undefined;
-        const vectorResultField = resolveTree.fieldsByTypeName[entity.operations.vectorTypeNames.result];
-        if (!vectorResultField) {
+        const vectorConnectionFields = resolveTree.fieldsByTypeName[entity.operations.vectorTypeNames.connection];
+
+        if (!vectorConnectionFields) {
             throw new Error("Vector result field not found");
         }
 
-        const filteredResolveTree = findFieldsByNameInFieldsByTypeNameField(
-            vectorResultField,
-            entity.operations.rootTypeFieldNames.connection
-        )[0]!;
-        // Adds the args to the nested resolve tree for vector
-        filteredResolveTree.args = resolveTree.args;
-
-        const connectionFields = getFieldsByTypeName(filteredResolveTree, entity.operations.vectorTypeNames.connection);
-        const filteredResolveTreeEdges = findFieldsByNameInFieldsByTypeNameField(connectionFields, "edges");
+        const filteredResolveTreeEdges = findFieldsByNameInFieldsByTypeNameField(vectorConnectionFields, "edges");
         const edgeFields = getFieldsByTypeName(filteredResolveTreeEdges, entity.operations.vectorTypeNames.edge);
         const scoreFields = findFieldsByNameInFieldsByTypeNameField(edgeFields, "score");
 
@@ -97,11 +90,11 @@ export class VectorFactory {
             whereArgs: resolveTreeWhere,
         });
 
-        this.addScoreSort(operation, filteredResolveTree, context);
+        this.addScoreSort(operation, resolveTree, context);
 
         this.queryASTFactory.operationsFactory.hydrateConnectionOperation({
             target: entity,
-            resolveTree: filteredResolveTree,
+            resolveTree: resolveTree,
             context,
             operation,
             whereArgs: resolveTreeWhere,

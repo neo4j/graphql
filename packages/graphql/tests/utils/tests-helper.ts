@@ -208,6 +208,26 @@ export class TestHelper {
         return new Neo4jDatabaseInfo(rawVersion, edition);
     }
 
+    public async createFulltextIndex(name: string, label: string, properties: string[]): Promise<void> {
+        const cypher = [
+            `CREATE FULLTEXT INDEX ${name}`,
+            `IF NOT EXISTS FOR (n:${label})`,
+            `ON EACH [${properties.map((p) => `n.${p}`).join(", ")}]`,
+        ].join(" ");
+
+        await this.executeCypher(cypher);
+    }
+
+    public async createUniqueConstraint(name: string, label: string, property: string): Promise<void> {
+        const cypher = [
+            `CREATE CONSTRAINT ${name}`,
+            `IF NOT EXISTS FOR (n:${label})`,
+            `REQUIRE n.${property} IS UNIQUE`,
+        ].join(" ");
+
+        await this.executeCypher(cypher);
+    }
+
     private async checkConnectivity(driver: neo4j.Driver): Promise<string> {
         if (process.env.USE_DEFAULT_DB) {
             return this.checkConnectivityToDefaultDatabase(driver);
