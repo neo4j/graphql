@@ -166,7 +166,7 @@ describe("Update using aggregate where", () => {
                                        },
                                        {
                                            node: {
-                                               name_SHORTEST_LT: 10 
+                                               name_SHORTEST_LENGTH_LT: 10 
                                            }
                                         }
                                        ]

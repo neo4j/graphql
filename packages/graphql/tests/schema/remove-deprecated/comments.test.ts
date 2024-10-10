@@ -58,11 +58,6 @@ describe("Comments", () => {
         `;
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            features: {
-                excludeDeprecatedFields: {
-                    aggregationFilters: true,
-                },
-            },
         });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
@@ -296,11 +291,6 @@ describe("Comments", () => {
             `;
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                features: {
-                    excludeDeprecatedFields: {
-                        aggregationFilters: true,
-                    },
-                },
             });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
@@ -696,11 +686,6 @@ describe("Comments", () => {
             `;
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                features: {
-                    excludeDeprecatedFields: {
-                        aggregationFilters: true,
-                    },
-                },
             });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
@@ -1321,11 +1306,6 @@ describe("Comments", () => {
             `;
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                features: {
-                    excludeDeprecatedFields: {
-                        aggregationFilters: true,
-                    },
-                },
             });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 

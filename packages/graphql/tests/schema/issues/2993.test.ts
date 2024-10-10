@@ -359,36 +359,21 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               id_MIN_GTE: ID
               id_MIN_LT: ID
               id_MIN_LTE: ID
-              userName_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              userName_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              userName_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               userName_AVERAGE_LENGTH_EQUAL: Float
               userName_AVERAGE_LENGTH_GT: Float
               userName_AVERAGE_LENGTH_GTE: Float
               userName_AVERAGE_LENGTH_LT: Float
               userName_AVERAGE_LENGTH_LTE: Float
-              userName_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              userName_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              userName_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              userName_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              userName_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               userName_LONGEST_LENGTH_EQUAL: Int
               userName_LONGEST_LENGTH_GT: Int
               userName_LONGEST_LENGTH_GTE: Int
               userName_LONGEST_LENGTH_LT: Int
               userName_LONGEST_LENGTH_LTE: Int
-              userName_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              userName_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              userName_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              userName_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              userName_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               userName_SHORTEST_LENGTH_EQUAL: Int
               userName_SHORTEST_LENGTH_GT: Int
               userName_SHORTEST_LENGTH_GTE: Int
               userName_SHORTEST_LENGTH_LT: Int
               userName_SHORTEST_LENGTH_LTE: Int
-              userName_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              userName_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
             type UserFollowingRelationship {

@@ -5,7 +5,6 @@ module.exports = {
     projects: [
         "<rootDir>/packages/graphql/jest.config.js",
         "<rootDir>/packages/introspector/jest.config.js",
-        "<rootDir>/packages/ogm/jest.config.js",
         "<rootDir>/packages/graphql-amqp-subscriptions-engine/jest.config.js",
     ],
     coverageDirectory: "<rootDir>/coverage/",

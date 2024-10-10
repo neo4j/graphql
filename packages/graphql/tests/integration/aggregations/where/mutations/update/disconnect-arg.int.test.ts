@@ -134,7 +134,7 @@ describe("Disconnect using aggregate where", () => {
                                             },
                                             {
                                                 node: {
-                                                    name_SHORTEST_LT: 10 
+                                                    name_SHORTEST_LENGTH_LT: 10 
                                                 }
                                              }
                                             ]
@@ -189,7 +189,7 @@ describe("Disconnect using aggregate where", () => {
                                                 },
                                                 {
                                                     node: {
-                                                        name_SHORTEST_GT: 2 
+                                                        name_SHORTEST_LENGTH_GT: 2 
                                                     }
                                                     count_EQ: 2
                                                 }
@@ -532,7 +532,7 @@ describe("Disconnect UNIONs using aggregate where", () => {
                                             {
                                                 likedPostsAggregate: {
                                                     node: {
-                                                        content_AVERAGE_LTE: 4
+                                                        content_AVERAGE_LENGTH_LTE: 4
                                                     }
                                                 }
                                             }
