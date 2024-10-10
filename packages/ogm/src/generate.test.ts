@@ -1339,48 +1339,18 @@ describe("generate", () => {
               AND?: InputMaybe<Array<MovieActorsNodeAggregationWhereInput>>;
               OR?: InputMaybe<Array<MovieActorsNodeAggregationWhereInput>>;
               NOT?: InputMaybe<MovieActorsNodeAggregationWhereInput>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_AVERAGE_EQUAL?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_LONGEST_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_SHORTEST_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               name_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               name_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               name_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_AVERAGE_GT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_LONGEST_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_SHORTEST_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               name_AVERAGE_LENGTH_GT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               name_LONGEST_LENGTH_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               name_SHORTEST_LENGTH_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_AVERAGE_GTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_LONGEST_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_SHORTEST_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               name_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               name_LONGEST_LENGTH_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               name_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_AVERAGE_LT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_LONGEST_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_SHORTEST_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               name_AVERAGE_LENGTH_LT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               name_LONGEST_LENGTH_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               name_SHORTEST_LENGTH_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_AVERAGE_LTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_LONGEST_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_SHORTEST_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               name_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               name_LONGEST_LENGTH_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               name_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
@@ -2168,93 +2138,33 @@ describe("generate", () => {
               id_MAX_LT?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               id_MIN_LTE?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               id_MAX_LTE?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              title_AVERAGE_EQUAL?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              title_LONGEST_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              title_SHORTEST_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               title_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               title_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               title_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              title_AVERAGE_GT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              title_LONGEST_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              title_SHORTEST_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               title_AVERAGE_LENGTH_GT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               title_LONGEST_LENGTH_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               title_SHORTEST_LENGTH_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              title_AVERAGE_GTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              title_LONGEST_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              title_SHORTEST_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               title_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               title_LONGEST_LENGTH_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               title_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              title_AVERAGE_LT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              title_LONGEST_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              title_SHORTEST_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               title_AVERAGE_LENGTH_LT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               title_LONGEST_LENGTH_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               title_SHORTEST_LENGTH_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              title_AVERAGE_LTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              title_LONGEST_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              title_SHORTEST_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               title_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               title_LONGEST_LENGTH_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               title_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              body_AVERAGE_EQUAL?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              body_LONGEST_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              body_SHORTEST_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               body_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               body_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               body_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              body_AVERAGE_GT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              body_LONGEST_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              body_SHORTEST_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               body_AVERAGE_LENGTH_GT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               body_LONGEST_LENGTH_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               body_SHORTEST_LENGTH_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              body_AVERAGE_GTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              body_LONGEST_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              body_SHORTEST_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               body_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               body_LONGEST_LENGTH_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               body_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              body_AVERAGE_LT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              body_LONGEST_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              body_SHORTEST_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               body_AVERAGE_LENGTH_LT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               body_LONGEST_LENGTH_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               body_SHORTEST_LENGTH_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              body_AVERAGE_LTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              body_LONGEST_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              body_SHORTEST_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               body_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               body_LONGEST_LENGTH_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               body_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
@@ -2416,48 +2326,18 @@ describe("generate", () => {
               id_MAX_LT?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               id_MIN_LTE?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               id_MAX_LTE?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_AVERAGE_EQUAL?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_LONGEST_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_SHORTEST_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               name_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               name_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               name_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_AVERAGE_GT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_LONGEST_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_SHORTEST_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               name_AVERAGE_LENGTH_GT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               name_LONGEST_LENGTH_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               name_SHORTEST_LENGTH_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_AVERAGE_GTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_LONGEST_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_SHORTEST_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               name_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               name_LONGEST_LENGTH_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               name_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_AVERAGE_LT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_LONGEST_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_SHORTEST_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               name_AVERAGE_LENGTH_LT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               name_LONGEST_LENGTH_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               name_SHORTEST_LENGTH_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_AVERAGE_LTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_LONGEST_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_SHORTEST_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               name_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               name_LONGEST_LENGTH_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               name_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
