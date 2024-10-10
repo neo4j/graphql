@@ -170,7 +170,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
     test("should find where moviesAggregate node property SHORTEST", async () => {
         const query = /* GraphQL */ `
             {
-                ${movieType.plural}(where: { genres_SOME: { moviesAggregate: { node: { title_SHORTEST_EQUAL: ${movieTitle3.length} } } } }) {
+                ${movieType.plural}(where: { genres_SOME: { moviesAggregate: { node: { title_SHORTEST_LENGTH_EQUAL: ${movieTitle3.length} } } } }) {
                     title
                 }
             }
@@ -197,7 +197,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
     test("should find where moviesAggregate node property AVERAGE", async () => {
         const query = /* GraphQL */ `
             {
-                ${movieType.plural}(where: { genres_SOME: { moviesAggregate: { node: { title_AVERAGE_EQUAL: ${genre2AverageTitleLength} } } } }) {
+                ${movieType.plural}(where: { genres_SOME: { moviesAggregate: { node: { title_AVERAGE_LENGTH_EQUAL: ${genre2AverageTitleLength} } } } }) {
                     title
                 }
             }
@@ -385,7 +385,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
     test("should find genres with multiple AND aggregates", async () => {
         const query = /* GraphQL */ `
             {
-                ${movieType.plural}(where: { genres_SOME: { AND: [{ moviesAggregate: { count_EQ: 2 } }, { seriesAggregate: { node: { name_SHORTEST_EQUAL: ${seriesName1.length} } } }] } }) {
+                ${movieType.plural}(where: { genres_SOME: { AND: [{ moviesAggregate: { count_EQ: 2 } }, { seriesAggregate: { node: { name_SHORTEST_LENGTH_EQUAL: ${seriesName1.length} } } }] } }) {
                     title
                 }
             }
@@ -409,7 +409,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
     test("should find genres with multiple OR aggregates", async () => {
         const query = /* GraphQL */ `
             {
-                ${movieType.plural}(where: { genres_SOME: { OR: [{ moviesAggregate: { count_EQ: 3 } }, { seriesAggregate: { node: { name_SHORTEST_EQUAL: ${seriesName1.length} } } }] } }) {
+                ${movieType.plural}(where: { genres_SOME: { OR: [{ moviesAggregate: { count_EQ: 3 } }, { seriesAggregate: { node: { name_SHORTEST_LENGTH_EQUAL: ${seriesName1.length} } } }] } }) {
                     title
                 }
             }
@@ -439,7 +439,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
     test("should find genres with multiple implicit AND aggregates", async () => {
         const query = /* GraphQL */ `
             {
-                ${movieType.plural}(where: { genres_SOME: { moviesAggregate: { count_EQ: 2 }, seriesAggregate: { node: { name_SHORTEST_EQUAL: ${seriesName1.length} } } } }) {
+                ${movieType.plural}(where: { genres_SOME: { moviesAggregate: { count_EQ: 2 }, seriesAggregate: { node: { name_SHORTEST_LENGTH_EQUAL: ${seriesName1.length} } } } }) {
                     title
                 }
             }

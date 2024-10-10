@@ -19,13 +19,6 @@
 
 import { DEPRECATED } from "../constants";
 
-export const DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS = {
-    name: DEPRECATED,
-    args: {
-        reason: "Please use the explicit _LENGTH version for string aggregation.",
-    },
-};
-
 export const DEPRECATE_IMPLICIT_EQUAL_FILTERS = {
     name: DEPRECATED,
     args: {
