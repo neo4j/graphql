@@ -47,7 +47,6 @@ import type Node from "./Node";
 import type Relationship from "./Relationship";
 import { Neo4jGraphQLAuthorization } from "./authorization/Neo4jGraphQLAuthorization";
 import { Neo4jGraphQLSubscriptionsDefaultEngine } from "./subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
-import type { AssertIndexesAndConstraintsOptions } from "./utils/asserts-indexes-and-constraints";
 import { assertIndexesAndConstraints } from "./utils/asserts-indexes-and-constraints";
 import { generateResolverComposition } from "./utils/generate-resolvers-composition";
 import checkNeo4jCompat from "./utils/verify-database";
@@ -162,14 +161,9 @@ class Neo4jGraphQL {
     public async assertIndexesAndConstraints({
         driver,
         sessionConfig,
-        options,
     }: {
         driver?: Driver;
         sessionConfig?: Neo4jGraphQLSessionConfig;
-        /**
-         * @deprecated The ability to create indexes and constraints will be removed in version 6.0.0
-         */
-        options?: AssertIndexesAndConstraintsOptions;
     } = {}): Promise<void> {
         if (!(this.executableSchema || this.subgraphSchema)) {
             throw new Error("You must await `.getSchema()` before `.assertIndexesAndConstraints()`");
@@ -195,7 +189,6 @@ class Neo4jGraphQL {
             driver: neo4jDriver,
             sessionConfig,
             schemaModel: this.schemaModel,
-            options: options,
         });
     }
 
