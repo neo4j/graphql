@@ -54,7 +54,6 @@ describe("Deprecated options argument", () => {
             typeDefs,
             features: {
                 excludeDeprecatedFields: {
-                    aggregationFilters: true,
                     deprecatedOptionsArgument: true,
                 },
             },

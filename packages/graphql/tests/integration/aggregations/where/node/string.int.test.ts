@@ -48,44 +48,41 @@ describe("aggregations-where-node-string", () => {
         await testHelper.close();
     });
 
-    describe("SHORTEST", () => {
-        test.each(["SHORTEST", "SHORTEST_LENGTH"])(
-            "should return posts where the %s like String is EQUAL to",
-            async (shortestFilter) => {
-                const testString = generate({
-                    charset: "alphabetic",
-                    readable: true,
-                });
+    test("should return posts where the SHORTEST like String is EQUAL to", async () => {
+        const testString = generate({
+            charset: "alphabetic",
+            readable: true,
+        });
 
-                const shortestTestString = generate({
-                    charset: "alphabetic",
-                    readable: true,
-                    length: 10,
-                });
+        const shortestTestString = generate({
+            charset: "alphabetic",
+            readable: true,
+            length: 10,
+        });
 
-                const testString2 = generate({
-                    charset: "alphabetic",
-                    readable: true,
-                    length: 11,
-                });
+        const testString2 = generate({
+            charset: "alphabetic",
+            readable: true,
+            length: 11,
+        });
 
-                const longestTestString = generate({
-                    charset: "alphabetic",
-                    readable: true,
-                    length: 12,
-                });
+        const longestTestString = generate({
+            charset: "alphabetic",
+            readable: true,
+            length: 12,
+        });
 
-                await testHelper.executeCypher(
-                    `
+        await testHelper.executeCypher(
+            `
                         CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${shortestTestString}"})
                         CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString2}"})
                         CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${longestTestString}"})
                     `
-                );
+        );
 
-                const query = `
+        const query = `
                     {
-                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_${shortestFilter}_EQUAL: ${shortestTestString.length} } } }) {
+                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_SHORTEST_LENGTH_EQUAL: ${shortestTestString.length} } } }) {
                             testString
                             likes {
                                 testString
@@ -94,62 +91,57 @@ describe("aggregations-where-node-string", () => {
                     }
                 `;
 
-                const gqlResult = await testHelper.executeGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
-                if (gqlResult.errors) {
-                    console.log(JSON.stringify(gqlResult.errors, null, 2));
-                }
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
+        }
 
-                expect(gqlResult.errors).toBeUndefined();
+        expect(gqlResult.errors).toBeUndefined();
 
-                expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
-                    {
-                        testString,
-                        likes: [{ testString: shortestTestString }],
-                    },
-                ]);
-            }
-        );
+        expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
+            {
+                testString,
+                likes: [{ testString: shortestTestString }],
+            },
+        ]);
     });
 
-    describe("LONGEST", () => {
-        test.each(["LONGEST", "LONGEST_LENGTH"])(
-            "should return posts where the %s like String is EQUAL to",
-            async (longestFilter) => {
-                const testString = generate({
-                    charset: "alphabetic",
-                    readable: true,
-                });
+    test("should return posts where the LONGEST like String is EQUAL to", async () => {
+        const testString = generate({
+            charset: "alphabetic",
+            readable: true,
+        });
 
-                const shortestTestString = generate({
-                    charset: "alphabetic",
-                    readable: true,
-                    length: 10,
-                });
+        const shortestTestString = generate({
+            charset: "alphabetic",
+            readable: true,
+            length: 10,
+        });
 
-                const testString2 = generate({
-                    charset: "alphabetic",
-                    readable: true,
-                    length: 11,
-                });
+        const testString2 = generate({
+            charset: "alphabetic",
+            readable: true,
+            length: 11,
+        });
 
-                const longestTestString = generate({
-                    charset: "alphabetic",
-                    readable: true,
-                    length: 12,
-                });
+        const longestTestString = generate({
+            charset: "alphabetic",
+            readable: true,
+            length: 12,
+        });
 
-                await testHelper.executeCypher(
-                    `
+        await testHelper.executeCypher(
+            `
                         CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${shortestTestString}"})
                         CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString2}"})
                         CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${longestTestString}"})
                     `
-                );
+        );
 
-                const query = `
+        const query = `
                     {
-                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_${longestFilter}_EQUAL: ${longestTestString.length} } } }) {
+                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_LONGEST_LENGTH_EQUAL: ${longestTestString.length} } } }) {
                             testString
                             likes {
                                 testString
@@ -158,129 +150,62 @@ describe("aggregations-where-node-string", () => {
                     }
                 `;
 
-                const gqlResult = await testHelper.executeGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
-                if (gqlResult.errors) {
-                    console.log(JSON.stringify(gqlResult.errors, null, 2));
-                }
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
+        }
 
-                expect(gqlResult.errors).toBeUndefined();
+        expect(gqlResult.errors).toBeUndefined();
 
-                expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
-                    {
-                        testString,
-                        likes: [{ testString: longestTestString }],
-                    },
-                ]);
-            }
-        );
+        expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
+            {
+                testString,
+                likes: [{ testString: longestTestString }],
+            },
+        ]);
     });
 
-    describe("AVERAGE", () => {
-        test.each(["AVERAGE", "AVERAGE_LENGTH"])(
-            "should return posts where the %s of like Strings is EQUAL to",
-            async (averageFilter) => {
-                const testString = generate({
-                    charset: "alphabetic",
-                    readable: true,
-                    length: 10,
-                });
+    test("should return posts where the AVERAGE of like Strings is EQUAL to", async () => {
+        const testString = generate({
+            charset: "alphabetic",
+            readable: true,
+            length: 10,
+        });
 
-                const testString1 = generate({
-                    charset: "alphabetic",
-                    readable: true,
-                    length: 10,
-                });
+        const testString1 = generate({
+            charset: "alphabetic",
+            readable: true,
+            length: 10,
+        });
 
-                const testString2 = generate({
-                    charset: "alphabetic",
-                    readable: true,
-                    length: 11,
-                });
+        const testString2 = generate({
+            charset: "alphabetic",
+            readable: true,
+            length: 11,
+        });
 
-                const testString3 = generate({
-                    charset: "alphabetic",
-                    readable: true,
-                    length: 12,
-                });
+        const testString3 = generate({
+            charset: "alphabetic",
+            readable: true,
+            length: 12,
+        });
 
-                const avg = (10 + 11 + 12) / 3;
+        const avg = (10 + 11 + 12) / 3;
 
-                await testHelper.executeCypher(
-                    `
+        await testHelper.executeCypher(
+            `
                         CREATE (p:${Post} {testString: "${testString}"})
                         CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString1}"})
                         CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString2}"})
                         CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString3}"})
                         CREATE (:${Post} {testString: "${testString}"})
                     `
-                );
-
-                const query = `
-                    {
-                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_${averageFilter}_EQUAL: ${avg} } } }) {
-                            testString
-                            likes {
-                                testString
-                            }
-                        }
-                    }
-                `;
-
-                const gqlResult = await testHelper.executeGraphQL(query);
-                if (gqlResult.errors) {
-                    console.log(JSON.stringify(gqlResult.errors, null, 2));
-                }
-
-                expect(gqlResult.errors).toBeUndefined();
-
-                const [post] = (gqlResult.data as any)[Post.plural] as any[];
-                expect(post.testString).toEqual(testString);
-                expect(post.likes).toHaveLength(3);
-            }
         );
 
-        test("should return posts where the average of like Strings is GT than", async () => {
-            const testString = generate({
-                charset: "alphabetic",
-                readable: true,
-                length: 10,
-            });
-
-            const testString1 = generate({
-                charset: "alphabetic",
-                readable: true,
-                length: 10,
-            });
-
-            const testString2 = generate({
-                charset: "alphabetic",
-                readable: true,
-                length: 11,
-            });
-
-            const testString3 = generate({
-                charset: "alphabetic",
-                readable: true,
-                length: 12,
-            });
-
-            const avg = (10 + 11 + 12) / 3;
-            const avgGT = avg - 1;
-
-            await testHelper.executeCypher(
-                `
-                        CREATE (p:${Post} {testString: "${testString}"})
-                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString1}"})
-                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString2}"})
-                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString3}"})
-                        CREATE (:${Post} {testString: "${testString}"})
-                    `
-            );
-
-            const query = `
+        const query = `
                     {
-                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_AVERAGE_GT: ${avgGT} } } }) {
+                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_AVERAGE_LENGTH_EQUAL: ${avg} } } }) {
                             testString
                             likes {
                                 testString
@@ -289,59 +214,59 @@ describe("aggregations-where-node-string", () => {
                     }
                 `;
 
-            const gqlResult = await testHelper.executeGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
+        }
 
-            if (gqlResult.errors) {
-                console.log(JSON.stringify(gqlResult.errors, null, 2));
-            }
+        expect(gqlResult.errors).toBeUndefined();
 
-            expect(gqlResult.errors).toBeUndefined();
+        const [post] = (gqlResult.data as any)[Post.plural] as any[];
+        expect(post.testString).toEqual(testString);
+        expect(post.likes).toHaveLength(3);
+    });
 
-            const [post] = (gqlResult.data as any)[Post.plural] as any[];
-            expect(post.testString).toEqual(testString);
-            expect(post.likes).toHaveLength(3);
+    test("should return posts where the average of like Strings is GT than", async () => {
+        const testString = generate({
+            charset: "alphabetic",
+            readable: true,
+            length: 10,
         });
 
-        test("should return posts where the average of like Strings is GTE than", async () => {
-            const testString = generate({
-                charset: "alphabetic",
-                readable: true,
-                length: 10,
-            });
+        const testString1 = generate({
+            charset: "alphabetic",
+            readable: true,
+            length: 10,
+        });
 
-            const testString1 = generate({
-                charset: "alphabetic",
-                readable: true,
-                length: 10,
-            });
+        const testString2 = generate({
+            charset: "alphabetic",
+            readable: true,
+            length: 11,
+        });
 
-            const testString2 = generate({
-                charset: "alphabetic",
-                readable: true,
-                length: 11,
-            });
+        const testString3 = generate({
+            charset: "alphabetic",
+            readable: true,
+            length: 12,
+        });
 
-            const testString3 = generate({
-                charset: "alphabetic",
-                readable: true,
-                length: 12,
-            });
+        const avg = (10 + 11 + 12) / 3;
+        const avgGT = avg - 1;
 
-            const avg = (10 + 11 + 12) / 3;
-
-            await testHelper.executeCypher(
-                `
+        await testHelper.executeCypher(
+            `
                         CREATE (p:${Post} {testString: "${testString}"})
                         CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString1}"})
                         CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString2}"})
                         CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString3}"})
                         CREATE (:${Post} {testString: "${testString}"})
                     `
-            );
+        );
 
-            const query = `
+        const query = `
                     {
-                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_AVERAGE_GTE: ${avg} } } }) {
+                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_AVERAGE_LENGTH_GT: ${avgGT} } } }) {
                             testString
                             likes {
                                 testString
@@ -350,60 +275,59 @@ describe("aggregations-where-node-string", () => {
                     }
                 `;
 
-            const gqlResult = await testHelper.executeGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
-            if (gqlResult.errors) {
-                console.log(JSON.stringify(gqlResult.errors, null, 2));
-            }
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
+        }
 
-            expect(gqlResult.errors).toBeUndefined();
+        expect(gqlResult.errors).toBeUndefined();
 
-            const [post] = (gqlResult.data as any)[Post.plural] as any[];
-            expect(post.testString).toEqual(testString);
-            expect(post.likes).toHaveLength(3);
+        const [post] = (gqlResult.data as any)[Post.plural] as any[];
+        expect(post.testString).toEqual(testString);
+        expect(post.likes).toHaveLength(3);
+    });
+
+    test("should return posts where the average of like Strings is GTE than", async () => {
+        const testString = generate({
+            charset: "alphabetic",
+            readable: true,
+            length: 10,
         });
 
-        test("should return posts where the average of like Strings is LT than", async () => {
-            const testString = generate({
-                charset: "alphabetic",
-                readable: true,
-                length: 10,
-            });
+        const testString1 = generate({
+            charset: "alphabetic",
+            readable: true,
+            length: 10,
+        });
 
-            const testString1 = generate({
-                charset: "alphabetic",
-                readable: true,
-                length: 10,
-            });
+        const testString2 = generate({
+            charset: "alphabetic",
+            readable: true,
+            length: 11,
+        });
 
-            const testString2 = generate({
-                charset: "alphabetic",
-                readable: true,
-                length: 11,
-            });
+        const testString3 = generate({
+            charset: "alphabetic",
+            readable: true,
+            length: 12,
+        });
 
-            const testString3 = generate({
-                charset: "alphabetic",
-                readable: true,
-                length: 12,
-            });
+        const avg = (10 + 11 + 12) / 3;
 
-            const avg = (10 + 11 + 12) / 3;
-            const avgLT = avg + 1;
-
-            await testHelper.executeCypher(
-                `
+        await testHelper.executeCypher(
+            `
                         CREATE (p:${Post} {testString: "${testString}"})
                         CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString1}"})
                         CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString2}"})
                         CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString3}"})
                         CREATE (:${Post} {testString: "${testString}"})
                     `
-            );
+        );
 
-            const query = `
+        const query = `
                     {
-                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_AVERAGE_LT: ${avgLT} } } }) {
+                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_AVERAGE_LENGTH_GTE: ${avg} } } }) {
                             testString
                             likes {
                                 testString
@@ -412,59 +336,60 @@ describe("aggregations-where-node-string", () => {
                     }
                 `;
 
-            const gqlResult = await testHelper.executeGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
-            if (gqlResult.errors) {
-                console.log(JSON.stringify(gqlResult.errors, null, 2));
-            }
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
+        }
 
-            expect(gqlResult.errors).toBeUndefined();
+        expect(gqlResult.errors).toBeUndefined();
 
-            const [post] = (gqlResult.data as any)[Post.plural] as any[];
-            expect(post.testString).toEqual(testString);
-            expect(post.likes).toHaveLength(3);
+        const [post] = (gqlResult.data as any)[Post.plural] as any[];
+        expect(post.testString).toEqual(testString);
+        expect(post.likes).toHaveLength(3);
+    });
+
+    test("should return posts where the average of like Strings is LT than", async () => {
+        const testString = generate({
+            charset: "alphabetic",
+            readable: true,
+            length: 10,
         });
 
-        test("should return posts where the average of like Strings is LTE than", async () => {
-            const testString = generate({
-                charset: "alphabetic",
-                readable: true,
-                length: 10,
-            });
+        const testString1 = generate({
+            charset: "alphabetic",
+            readable: true,
+            length: 10,
+        });
 
-            const testString1 = generate({
-                charset: "alphabetic",
-                readable: true,
-                length: 10,
-            });
+        const testString2 = generate({
+            charset: "alphabetic",
+            readable: true,
+            length: 11,
+        });
 
-            const testString2 = generate({
-                charset: "alphabetic",
-                readable: true,
-                length: 11,
-            });
+        const testString3 = generate({
+            charset: "alphabetic",
+            readable: true,
+            length: 12,
+        });
 
-            const testString3 = generate({
-                charset: "alphabetic",
-                readable: true,
-                length: 12,
-            });
+        const avg = (10 + 11 + 12) / 3;
+        const avgLT = avg + 1;
 
-            const avg = (10 + 11 + 12) / 3;
-
-            await testHelper.executeCypher(
-                `
+        await testHelper.executeCypher(
+            `
                         CREATE (p:${Post} {testString: "${testString}"})
                         CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString1}"})
                         CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString2}"})
                         CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString3}"})
                         CREATE (:${Post} {testString: "${testString}"})
                     `
-            );
+        );
 
-            const query = `
+        const query = `
                     {
-                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_AVERAGE_LTE: ${avg} } } }) {
+                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_AVERAGE_LENGTH_LT: ${avgLT} } } }) {
                             testString
                             likes {
                                 testString
@@ -473,18 +398,78 @@ describe("aggregations-where-node-string", () => {
                     }
                 `;
 
-            const gqlResult = await testHelper.executeGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
-            if (gqlResult.errors) {
-                console.log(JSON.stringify(gqlResult.errors, null, 2));
-            }
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
+        }
 
-            expect(gqlResult.errors).toBeUndefined();
+        expect(gqlResult.errors).toBeUndefined();
 
-            const [post] = (gqlResult.data as any)[Post.plural] as any[];
-            expect(post.testString).toEqual(testString);
-            expect(post.likes).toHaveLength(3);
+        const [post] = (gqlResult.data as any)[Post.plural] as any[];
+        expect(post.testString).toEqual(testString);
+        expect(post.likes).toHaveLength(3);
+    });
+
+    test("should return posts where the average of like Strings is LTE than", async () => {
+        const testString = generate({
+            charset: "alphabetic",
+            readable: true,
+            length: 10,
         });
+
+        const testString1 = generate({
+            charset: "alphabetic",
+            readable: true,
+            length: 10,
+        });
+
+        const testString2 = generate({
+            charset: "alphabetic",
+            readable: true,
+            length: 11,
+        });
+
+        const testString3 = generate({
+            charset: "alphabetic",
+            readable: true,
+            length: 12,
+        });
+
+        const avg = (10 + 11 + 12) / 3;
+
+        await testHelper.executeCypher(
+            `
+                        CREATE (p:${Post} {testString: "${testString}"})
+                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString1}"})
+                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString2}"})
+                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString3}"})
+                        CREATE (:${Post} {testString: "${testString}"})
+                    `
+        );
+
+        const query = `
+                    {
+                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_AVERAGE_LENGTH_LTE: ${avg} } } }) {
+                            testString
+                            likes {
+                                testString
+                            }
+                        }
+                    }
+                `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
+        }
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        const [post] = (gqlResult.data as any)[Post.plural] as any[];
+        expect(post.testString).toEqual(testString);
+        expect(post.likes).toHaveLength(3);
     });
 });
 
@@ -526,43 +511,41 @@ describe("aggregations-where-node-string interface relationships of concrete typ
     });
 
     describe("SHORTEST", () => {
-        test.each(["SHORTEST", "SHORTEST_LENGTH"])(
-            "should return posts where the %s like String is EQUAL to",
-            async (shortestFilter) => {
-                const testString = generate({
-                    charset: "alphabetic",
-                    readable: true,
-                });
+        test("should return posts where the %s like String is EQUAL to", async () => {
+            const testString = generate({
+                charset: "alphabetic",
+                readable: true,
+            });
 
-                const shortestTestString = generate({
-                    charset: "alphabetic",
-                    readable: true,
-                    length: 10,
-                });
+            const shortestTestString = generate({
+                charset: "alphabetic",
+                readable: true,
+                length: 10,
+            });
 
-                const testString2 = generate({
-                    charset: "alphabetic",
-                    readable: true,
-                    length: 11,
-                });
+            const testString2 = generate({
+                charset: "alphabetic",
+                readable: true,
+                length: 11,
+            });
 
-                const longestTestString = generate({
-                    charset: "alphabetic",
-                    readable: true,
-                    length: 12,
-                });
+            const longestTestString = generate({
+                charset: "alphabetic",
+                readable: true,
+                length: 12,
+            });
 
-                await testHelper.executeCypher(
-                    `
+            await testHelper.executeCypher(
+                `
                         CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${shortestTestString}"})
                         CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString2}"})
                         CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${longestTestString}"})
                     `
-                );
+            );
 
-                const query = `
+            const query = `
                     {
-                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_${shortestFilter}_EQUAL: ${shortestTestString.length} } } }) {
+                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_SHORTEST_LENGTH_EQUAL: ${shortestTestString.length} } } }) {
                             testString
                             likes {
                                 testString
@@ -571,62 +554,59 @@ describe("aggregations-where-node-string interface relationships of concrete typ
                     }
                 `;
 
-                const gqlResult = await testHelper.executeGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
-                if (gqlResult.errors) {
-                    console.log(JSON.stringify(gqlResult.errors, null, 2));
-                }
-
-                expect(gqlResult.errors).toBeUndefined();
-
-                expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
-                    {
-                        testString,
-                        likes: [{ testString: shortestTestString }],
-                    },
-                ]);
+            if (gqlResult.errors) {
+                console.log(JSON.stringify(gqlResult.errors, null, 2));
             }
-        );
+
+            expect(gqlResult.errors).toBeUndefined();
+
+            expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
+                {
+                    testString,
+                    likes: [{ testString: shortestTestString }],
+                },
+            ]);
+        });
     });
 
     describe("LONGEST", () => {
-        test.each(["LONGEST", "LONGEST_LENGTH"])(
-            "should return posts where the %s like String is EQUAL to",
-            async (longestFilter) => {
-                const testString = generate({
-                    charset: "alphabetic",
-                    readable: true,
-                });
+        test("should return posts where the %s like String is EQUAL to", async () => {
+            const testString = generate({
+                charset: "alphabetic",
+                readable: true,
+            });
 
-                const shortestTestString = generate({
-                    charset: "alphabetic",
-                    readable: true,
-                    length: 10,
-                });
+            const shortestTestString = generate({
+                charset: "alphabetic",
+                readable: true,
+                length: 10,
+            });
 
-                const testString2 = generate({
-                    charset: "alphabetic",
-                    readable: true,
-                    length: 11,
-                });
+            const testString2 = generate({
+                charset: "alphabetic",
+                readable: true,
+                length: 11,
+            });
 
-                const longestTestString = generate({
-                    charset: "alphabetic",
-                    readable: true,
-                    length: 12,
-                });
+            const longestTestString = generate({
+                charset: "alphabetic",
+                readable: true,
+                length: 12,
+            });
 
-                await testHelper.executeCypher(
-                    `
+            await testHelper.executeCypher(
+                `
                         CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${shortestTestString}"})
                         CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString2}"})
                         CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${longestTestString}"})
                     `
-                );
+            );
 
-                const query = `
+            const query = `
                     {
-                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_${longestFilter}_EQUAL: ${longestTestString.length} } } }) {
+                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_LONGEST_LENGTH_EQUAL: ${longestTestString.length} } } }) {
                             testString
                             likes {
                                 testString
@@ -635,67 +615,64 @@ describe("aggregations-where-node-string interface relationships of concrete typ
                     }
                 `;
 
-                const gqlResult = await testHelper.executeGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
-                if (gqlResult.errors) {
-                    console.log(JSON.stringify(gqlResult.errors, null, 2));
-                }
-
-                expect(gqlResult.errors).toBeUndefined();
-
-                expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
-                    {
-                        testString,
-                        likes: [{ testString: longestTestString }],
-                    },
-                ]);
+            if (gqlResult.errors) {
+                console.log(JSON.stringify(gqlResult.errors, null, 2));
             }
-        );
+
+            expect(gqlResult.errors).toBeUndefined();
+
+            expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
+                {
+                    testString,
+                    likes: [{ testString: longestTestString }],
+                },
+            ]);
+        });
     });
 
     describe("AVERAGE", () => {
-        test.each(["AVERAGE", "AVERAGE_LENGTH"])(
-            "should return posts where the %s of like Strings is EQUAL to",
-            async (averageFilter) => {
-                const testString = generate({
-                    charset: "alphabetic",
-                    readable: true,
-                    length: 10,
-                });
+        test("should return posts where the AVERAGE of like Strings is EQUAL to", async () => {
+            const testString = generate({
+                charset: "alphabetic",
+                readable: true,
+                length: 10,
+            });
 
-                const testString1 = generate({
-                    charset: "alphabetic",
-                    readable: true,
-                    length: 10,
-                });
+            const testString1 = generate({
+                charset: "alphabetic",
+                readable: true,
+                length: 10,
+            });
 
-                const testString2 = generate({
-                    charset: "alphabetic",
-                    readable: true,
-                    length: 11,
-                });
+            const testString2 = generate({
+                charset: "alphabetic",
+                readable: true,
+                length: 11,
+            });
 
-                const testString3 = generate({
-                    charset: "alphabetic",
-                    readable: true,
-                    length: 12,
-                });
+            const testString3 = generate({
+                charset: "alphabetic",
+                readable: true,
+                length: 12,
+            });
 
-                const avg = (10 + 11 + 12) / 3;
+            const avg = (10 + 11 + 12) / 3;
 
-                await testHelper.executeCypher(
-                    `
+            await testHelper.executeCypher(
+                `
                         CREATE (p:${Post} {testString: "${testString}"})
                         CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString1}"})
                         CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString2}"})
                         CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString3}"})
                         CREATE (:${Post} {testString: "${testString}"})
                     `
-                );
+            );
 
-                const query = `
+            const query = `
                     {
-                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_${averageFilter}_EQUAL: ${avg} } } }) {
+                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_AVERAGE_LENGTH_EQUAL: ${avg} } } }) {
                             testString
                             likes {
                                 testString
@@ -704,19 +681,18 @@ describe("aggregations-where-node-string interface relationships of concrete typ
                     }
                 `;
 
-                const gqlResult = await testHelper.executeGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
-                if (gqlResult.errors) {
-                    console.log(JSON.stringify(gqlResult.errors, null, 2));
-                }
-
-                expect(gqlResult.errors).toBeUndefined();
-
-                const [post] = (gqlResult.data as any)[Post.plural] as any[];
-                expect(post.testString).toEqual(testString);
-                expect(post.likes).toHaveLength(3);
+            if (gqlResult.errors) {
+                console.log(JSON.stringify(gqlResult.errors, null, 2));
             }
-        );
+
+            expect(gqlResult.errors).toBeUndefined();
+
+            const [post] = (gqlResult.data as any)[Post.plural] as any[];
+            expect(post.testString).toEqual(testString);
+            expect(post.likes).toHaveLength(3);
+        });
 
         test("should return posts where the average of like Strings is GT than", async () => {
             const testString = generate({
@@ -758,7 +734,7 @@ describe("aggregations-where-node-string interface relationships of concrete typ
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_AVERAGE_GT: ${avgGT} } } }) {
+                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_AVERAGE_LENGTH_GT: ${avgGT} } } }) {
                             testString
                             likes {
                                 testString
@@ -819,7 +795,7 @@ describe("aggregations-where-node-string interface relationships of concrete typ
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_AVERAGE_GTE: ${avg} } } }) {
+                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_AVERAGE_LENGTH_GTE: ${avg} } } }) {
                             testString
                             likes {
                                 testString
@@ -881,7 +857,7 @@ describe("aggregations-where-node-string interface relationships of concrete typ
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_AVERAGE_LT: ${avgLT} } } }) {
+                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_AVERAGE_LENGTH_LT: ${avgLT} } } }) {
                             testString
                             likes {
                                 testString
@@ -942,7 +918,7 @@ describe("aggregations-where-node-string interface relationships of concrete typ
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_AVERAGE_LTE: ${avg} } } }) {
+                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_AVERAGE_LENGTH_LTE: ${avg} } } }) {
                             testString
                             likes {
                                 testString
@@ -982,11 +958,8 @@ describe("aggregations-where-node-string relationships of interface types", () =
         await testHelper.close();
     });
 
-    describe("SHORTEST - interface relationship", () => {
-        test.each(["SHORTEST", "SHORTEST_LENGTH"])(
-            "should return posts where the %s like String is EQUAL to",
-            async (shortestFilter) => {
-                const typeDefs = /* GraphQL */ `
+    test("should return posts where the SHORTEST like String is EQUAL to", async () => {
+        const typeDefs = /* GraphQL */ `
                     interface Thing {
                         testString: String!
                         likes: [Human!]! @declareRelationship
@@ -1010,42 +983,42 @@ describe("aggregations-where-node-string relationships of interface types", () =
                     }
                 `;
 
-                await testHelper.initNeo4jGraphQL({ typeDefs });
+        await testHelper.initNeo4jGraphQL({ typeDefs });
 
-                const testString = generate({
-                    charset: "alphabetic",
-                    readable: true,
-                });
+        const testString = generate({
+            charset: "alphabetic",
+            readable: true,
+        });
 
-                const shortestTestString = generate({
-                    charset: "alphabetic",
-                    readable: true,
-                    length: 10,
-                });
+        const shortestTestString = generate({
+            charset: "alphabetic",
+            readable: true,
+            length: 10,
+        });
 
-                const testString2 = generate({
-                    charset: "alphabetic",
-                    readable: true,
-                    length: 11,
-                });
+        const testString2 = generate({
+            charset: "alphabetic",
+            readable: true,
+            length: 11,
+        });
 
-                const longestTestString = generate({
-                    charset: "alphabetic",
-                    readable: true,
-                    length: 12,
-                });
+        const longestTestString = generate({
+            charset: "alphabetic",
+            readable: true,
+            length: 12,
+        });
 
-                await testHelper.executeCypher(
-                    `
+        await testHelper.executeCypher(
+            `
                         CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {user_testString: "${shortestTestString}"})
                         CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {user_testString: "${testString2}"})
                         CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {user_testString: "${longestTestString}"})
                     `
-                );
+        );
 
-                const query = `
+        const query = `
                     {
-                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_${shortestFilter}_EQUAL: ${shortestTestString.length} } } }) {
+                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_SHORTEST_LENGTH_EQUAL: ${shortestTestString.length} } } }) {
                             testString
                             likes {
                                 testString
@@ -1054,20 +1027,18 @@ describe("aggregations-where-node-string relationships of interface types", () =
                     }
                 `;
 
-                const gqlResult = await testHelper.executeGraphQL(query);
-                if (gqlResult.errors) {
-                    console.log(JSON.stringify(gqlResult.errors, null, 2));
-                }
+        const gqlResult = await testHelper.executeGraphQL(query);
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
+        }
 
-                expect(gqlResult.errors).toBeUndefined();
+        expect(gqlResult.errors).toBeUndefined();
 
-                expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
-                    {
-                        testString,
-                        likes: [{ testString: shortestTestString }],
-                    },
-                ]);
-            }
-        );
+        expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
+            {
+                testString,
+                likes: [{ testString: shortestTestString }],
+            },
+        ]);
     });
 });

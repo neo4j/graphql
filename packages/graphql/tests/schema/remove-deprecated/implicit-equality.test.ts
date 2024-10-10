@@ -42,7 +42,6 @@ describe("Implicit Equality filters", () => {
             features: {
                 excludeDeprecatedFields: {
                     implicitEqualFilters: false,
-                    aggregationFilters: true,
                     deprecatedOptionsArgument: true,
                     nestedUpdateOperationsFields: true,
                 },

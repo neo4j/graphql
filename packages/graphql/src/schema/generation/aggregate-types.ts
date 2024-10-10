@@ -33,7 +33,7 @@ import type { RelationshipAdapter } from "../../schema-model/relationship/model-
 import { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { Neo4jFeaturesSettings } from "../../types";
 import type { AggregationTypesMapper } from "../aggregations/aggregation-types-mapper";
-import { DEPRECATE_IMPLICIT_EQUAL_FILTERS, DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS } from "../constants";
+import { DEPRECATE_IMPLICIT_EQUAL_FILTERS } from "../constants";
 import { numericalResolver } from "../resolvers/field/numerical";
 import { graphqlDirectivesToCompose } from "../to-compose";
 import { shouldAddDeprecatedFields } from "./utils";
@@ -151,7 +151,6 @@ function withAggregationWhereInputType({
     entityAdapter,
     composer,
     userDefinedDirectivesOnTargetFields,
-    features,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     entityAdapter:
@@ -187,24 +186,18 @@ function withAggregationWhereInputType({
         NOT: aggregationInput,
     });
 
-    const aggrFields = makeAggregationFields(aggregationFields, userDefinedDirectivesOnTargetFields, features);
+    const aggrFields = makeAggregationFields(aggregationFields, userDefinedDirectivesOnTargetFields);
     aggregationInput.addFields(aggrFields);
     return aggregationInput;
 }
 
 function makeAggregationFields(
     attributes: AttributeAdapter[],
-    userDefinedDirectivesOnTargetFields: Map<string, DirectiveNode[]> | undefined,
-    features: Neo4jFeaturesSettings | undefined
+    userDefinedDirectivesOnTargetFields: Map<string, DirectiveNode[]> | undefined
 ): InputTypeComposerFieldConfigMapDefinition {
     const fields: InputTypeComposerFieldConfigMapDefinition = {};
     for (const attribute of attributes) {
-        addAggregationFieldsByType(
-            attribute,
-            userDefinedDirectivesOnTargetFields?.get(attribute.name),
-            fields,
-            features
-        );
+        addAggregationFieldsByType(attribute, userDefinedDirectivesOnTargetFields?.get(attribute.name), fields);
     }
     return fields;
 }
@@ -213,28 +206,13 @@ function makeAggregationFields(
 function addAggregationFieldsByType(
     attribute: AttributeAdapter,
     directivesOnField: DirectiveNode[] | undefined,
-    fields: InputTypeComposerFieldConfigMapDefinition,
-    features: Neo4jFeaturesSettings | undefined
+    fields: InputTypeComposerFieldConfigMapDefinition
 ): InputTypeComposerFieldConfigMapDefinition {
     const deprecatedDirectives = graphqlDirectivesToCompose(
         (directivesOnField || []).filter((d) => d.name.value === DEPRECATED)
     );
     if (attribute.typeHelper.isString()) {
         for (const operator of AGGREGATION_COMPARISON_OPERATORS) {
-            if (shouldAddDeprecatedFields(features, "aggregationFilters")) {
-                fields[`${attribute.name}_AVERAGE_${operator}`] = {
-                    type: GraphQLFloat,
-                    directives: [DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS],
-                };
-                fields[`${attribute.name}_LONGEST_${operator}`] = {
-                    type: GraphQLInt,
-                    directives: [DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS],
-                };
-                fields[`${attribute.name}_SHORTEST_${operator}`] = {
-                    type: GraphQLInt,
-                    directives: [DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS],
-                };
-            }
             fields[`${attribute.name}_AVERAGE_LENGTH_${operator}`] = {
                 type: GraphQLFloat,
                 directives: deprecatedDirectives,
