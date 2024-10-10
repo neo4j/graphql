@@ -197,9 +197,9 @@ function createConnectOrCreatePartialStatement({
         ) {
             mergeQuery = Cypher.utils.concat(
                 mergeQuery,
-                new Cypher.With(new Cypher.NamedVariable("*")),
+                new Cypher.With("*"),
                 authorizationAfterPredicateReturn.preComputedSubqueries,
-                new Cypher.With(new Cypher.NamedVariable("*")).where(authorizationAfterPredicateReturn.predicate)
+                new Cypher.With("*").where(authorizationAfterPredicateReturn.predicate)
             );
         } else {
             mergeQuery = Cypher.utils.concat(

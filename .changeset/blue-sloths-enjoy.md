@@ -1,6 +1,5 @@
 ---
 "@neo4j/graphql": major
-"@neo4j/graphql-ogm": major
 "@neo4j/introspector": major
 ---
 

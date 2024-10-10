@@ -134,11 +134,13 @@ describe("@fulltext directive", () => {
             neoSchema = await testHelper.initNeo4jGraphQL({
                 typeDefs,
             });
+
+            await testHelper.createFulltextIndex(`${personType.name}Index`, personType.name, ["name"]);
+
             await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
                 sessionConfig: { database: databaseName },
-                options: { create: true },
             });
 
             await testHelper.executeCypher(
@@ -1244,11 +1246,13 @@ describe("@fulltext directive", () => {
                     },
                 },
             });
+
+            await testHelper.createFulltextIndex(`${personType.name}Index`, personType.name, ["name"]);
+
             await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
                 sessionConfig: { database: databaseName },
-                options: { create: true },
             });
 
             const query = `
@@ -1305,11 +1309,13 @@ describe("@fulltext directive", () => {
                     },
                 },
             });
+
+            await testHelper.createFulltextIndex(`${personType.name}Index`, personType.name, ["name"]);
+
             await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
                 sessionConfig: { database: databaseName },
-                options: { create: true },
             });
 
             const query = `
@@ -1366,11 +1372,13 @@ describe("@fulltext directive", () => {
                     },
                 },
             });
+
+            await testHelper.createFulltextIndex(`${personType.name}Index`, personType.name, ["name"]);
+
             await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
                 sessionConfig: { database: databaseName },
-                options: { create: true },
             });
 
             const query = `
@@ -1442,11 +1450,13 @@ describe("@fulltext directive", () => {
                     },
                 },
             });
+
+            await testHelper.createFulltextIndex(`${personType.name}Index`, personType.name, ["name"]);
+
             await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
                 sessionConfig: { database: databaseName },
-                options: { create: true },
             });
 
             const query = `
@@ -1498,11 +1508,13 @@ describe("@fulltext directive", () => {
                     },
                 },
             });
+
+            await testHelper.createFulltextIndex(`${personType.name}Index`, personType.name, ["name"]);
+
             await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
                 sessionConfig: { database: databaseName },
-                options: { create: true },
             });
 
             const query = `
@@ -1557,11 +1569,13 @@ describe("@fulltext directive", () => {
                     },
                 },
             });
+
+            await testHelper.createFulltextIndex(`${personType.name}Index`, personType.name, ["name"]);
+
             await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
                 sessionConfig: { database: databaseName },
-                options: { create: true },
             });
 
             const query = `
@@ -1617,11 +1631,13 @@ describe("@fulltext directive", () => {
                     },
                 },
             });
+
+            await testHelper.createFulltextIndex(`${personType.name}Index`, personType.name, ["name"]);
+
             await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
                 sessionConfig: { database: databaseName },
-                options: { create: true },
             });
 
             const query = `
@@ -1669,11 +1685,13 @@ describe("@fulltext directive", () => {
             neoSchema = await testHelper.initNeo4jGraphQL({
                 typeDefs,
             });
+
+            await testHelper.createFulltextIndex(`${movieType.name}Index`, movieType.name, ["title", "description"]);
+
             await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
                 sessionConfig: { database: databaseName },
-                options: { create: true },
             });
 
             const query = `
@@ -1736,11 +1754,13 @@ describe("@fulltext directive", () => {
             neoSchema = await testHelper.initNeo4jGraphQL({
                 typeDefs,
             });
+
+            await testHelper.createFulltextIndex(`${personType.name}CustomIndex`, personType.name, ["name"]);
+
             await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
                 sessionConfig: { database: databaseName },
-                options: { create: true },
             });
 
             const query = `
@@ -1793,11 +1813,13 @@ describe("@fulltext directive", () => {
             neoSchema = await testHelper.initNeo4jGraphQL({
                 typeDefs,
             });
+
+            await testHelper.createFulltextIndex(`${movieType.name}Index`, movieType.name, ["title", "description"]);
+
             await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
                 sessionConfig: { database: databaseName },
-                options: { create: true },
             });
 
             const query = `
@@ -1862,11 +1884,14 @@ describe("@fulltext directive", () => {
             neoSchema = await testHelper.initNeo4jGraphQL({
                 typeDefs,
             });
+
+            await testHelper.createFulltextIndex(`${movieType.name}CustomIndex`, movieType.name, ["title"]);
+            await testHelper.createFulltextIndex(`${movieType.name}CustomIndex2`, movieType.name, ["description"]);
+
             await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
                 sessionConfig: { database: databaseName },
-                options: { create: true },
             });
 
             const query1 = `
@@ -1963,154 +1988,6 @@ describe("@fulltext directive", () => {
             await testHelper.executeCypher(deleteIndex2Cypher);
         });
 
-        test("Creates index if it doesn't exist", async () => {
-            // Skip if multi-db not supported
-            if (!MULTIDB_SUPPORT) {
-                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
-                return;
-            }
-
-            const typeDefs = gql`
-            type ${type.name} @node @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }]) {
-                    title: String!
-                }
-            `;
-
-            const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
-            await neoSchema.getSchema();
-
-            await expect(
-                neoSchema.assertIndexesAndConstraints({
-                    driver,
-                    sessionConfig: { database: databaseName },
-                    options: { create: true },
-                })
-            ).resolves.not.toThrow();
-
-            const result = await testHelper.executeCypher(indexQueryCypher);
-
-            expect(result.records[0]?.get("result")).toEqual({
-                name: indexName1,
-                type: "FULLTEXT",
-                entityType: "NODE",
-                labelsOrTypes: [type.name],
-                properties: ["title"],
-            });
-        });
-
-        test("Creates two index's if they dont exist", async () => {
-            // Skip if multi-db not supported
-            if (!MULTIDB_SUPPORT) {
-                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
-                return;
-            }
-
-            const typeDefs = gql`
-                type ${type.name} @node @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }, { indexName: "${indexName2}", fields: ["description"] }]) {
-                    title: String!
-                    description: String!
-                }
-            `;
-
-            const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
-            await neoSchema.getSchema();
-
-            await expect(
-                neoSchema.assertIndexesAndConstraints({
-                    driver,
-                    sessionConfig: { database: databaseName },
-                    options: { create: true },
-                })
-            ).resolves.not.toThrow();
-
-            const result = await testHelper.executeCypher(indexQueryCypher);
-
-            expect(result.records[0]?.get("result")).toEqual({
-                name: indexName1,
-                type: "FULLTEXT",
-                entityType: "NODE",
-                labelsOrTypes: [type.name],
-                properties: ["title"],
-            });
-            expect(result.records[1]?.get("result")).toEqual({
-                name: indexName2,
-                type: "FULLTEXT",
-                entityType: "NODE",
-                labelsOrTypes: [type.name],
-                properties: ["description"],
-            });
-        });
-
-        test("When using the node label, creates index if it doesn't exist", async () => {
-            // Skip if multi-db not supported
-            if (!MULTIDB_SUPPORT) {
-                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
-                return;
-            }
-
-            const typeDefs = gql`
-                type ${type.name} @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }]) @node(labels: ["${label}"]) {
-                    title: String!
-                }
-            `;
-
-            const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
-            await neoSchema.getSchema();
-
-            await expect(
-                neoSchema.assertIndexesAndConstraints({
-                    driver,
-                    sessionConfig: { database: databaseName },
-                    options: { create: true },
-                })
-            ).resolves.not.toThrow();
-
-            const result = await testHelper.executeCypher(indexQueryCypher);
-
-            expect(result.records[0]?.get("result")).toEqual({
-                name: indexName1,
-                type: "FULLTEXT",
-                entityType: "NODE",
-                labelsOrTypes: [label],
-                properties: ["title"],
-            });
-        });
-
-        test("When using the field alias, creates index if it doesn't exist", async () => {
-            // Skip if multi-db not supported
-            if (!MULTIDB_SUPPORT) {
-                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
-                return;
-            }
-
-            const typeDefs = gql`
-                type ${type.name} @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }]) @node(labels: ["${label}"]) {
-                    title: String! @alias(property: "${aliasName}")
-                }
-            `;
-
-            const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
-            await neoSchema.getSchema();
-
-            await expect(
-                neoSchema.assertIndexesAndConstraints({
-                    driver,
-                    sessionConfig: { database: databaseName },
-                    options: { create: true },
-                })
-            ).resolves.not.toThrow();
-
-            const result = await testHelper.executeCypher(indexQueryCypher);
-
-            expect(result.records[0]?.get("result")).toEqual({
-                name: indexName1,
-                type: "FULLTEXT",
-                entityType: "NODE",
-                labelsOrTypes: [label],
-                properties: [aliasName],
-            });
-        });
-
         test("Throws when missing index (create index and constraint option not true)", async () => {
             // Skip if multi-db not supported
             if (!MULTIDB_SUPPORT) {
@@ -2201,107 +2078,6 @@ describe("@fulltext directive", () => {
             );
         });
 
-        test("Doesn't throw if an index exists", async () => {
-            // Skip if multi-db not supported
-            if (!MULTIDB_SUPPORT) {
-                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
-                return;
-            }
-
-            const typeDefs = gql`
-                type ${type.name} @node @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }]) {
-                    title: String!
-                }
-            `;
-
-            const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
-            await neoSchema.getSchema();
-
-            await expect(
-                neoSchema.assertIndexesAndConstraints({
-                    driver,
-                    sessionConfig: { database: databaseName },
-                    options: { create: true },
-                })
-            ).resolves.not.toThrow();
-
-            await expect(
-                neoSchema.assertIndexesAndConstraints({
-                    driver,
-                    sessionConfig: { database: databaseName },
-                })
-            ).resolves.not.toThrow();
-        });
-
-        test("Throws when index is missing fields when used with create option", async () => {
-            // Skip if multi-db not supported
-            if (!MULTIDB_SUPPORT) {
-                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
-                return;
-            }
-
-            const typeDefs = gql`
-                type ${type.name} @node @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title", "description"] }]) {
-                    title: String!
-                    description: String!
-                }
-            `;
-
-            const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
-            await neoSchema.getSchema();
-
-            await testHelper.executeCypher(
-                [`CREATE FULLTEXT INDEX ${indexName1}`, `IF NOT EXISTS FOR (n:${type.name})`, `ON EACH [n.title]`].join(
-                    " "
-                )
-            );
-
-            await expect(
-                neoSchema.assertIndexesAndConstraints({
-                    driver,
-                    sessionConfig: { database: databaseName },
-                    options: { create: true },
-                })
-            ).rejects.toThrow(
-                `@fulltext index '${indexName1}' on Node '${type.name}' already exists, but is missing field 'description'`
-            );
-        });
-
-        test("Create index for ID field if it doesn't exist", async () => {
-            // Skip if multi-db not supported
-            if (!MULTIDB_SUPPORT) {
-                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
-                return;
-            }
-
-            const typeDefs = gql`
-                type ${type.name} @node @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["id"] }]) {
-                    id: ID!
-                }
-            `;
-
-            const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
-            await neoSchema.getSchema();
-
-            await expect(
-                neoSchema.assertIndexesAndConstraints({
-                    driver,
-                    sessionConfig: { database: databaseName },
-                    options: { create: true },
-                })
-            ).resolves.not.toThrow();
-
-            const result = await testHelper.executeCypher(indexQueryCypher);
-
-            expect(result.records[0]?.get("result")).toEqual({
-                name: indexName1,
-                type: "FULLTEXT",
-                entityType: "NODE",
-                labelsOrTypes: [type.name],
-                properties: ["id"],
-            });
-        });
-
         test("should not throw if index exists on an additional label", async () => {
             // Skip if multi-db not supported
             if (!MULTIDB_SUPPORT) {
@@ -2334,58 +2110,6 @@ describe("@fulltext directive", () => {
                     sessionConfig: { database: databaseName },
                 })
             ).resolves.not.toThrow();
-        });
-
-        test("should not create new constraint if constraint exists on an additional label", async () => {
-            // Skip if multi-db not supported
-            if (!MULTIDB_SUPPORT) {
-                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
-                return;
-            }
-
-            const baseType = testHelper.createUniqueType("Base");
-            const additionalType = testHelper.createUniqueType("Additional");
-            const typeDefs = `
-                type ${baseType.name} @node(labels: ["${baseType.name}", "${additionalType.name}"]) @fulltext(indexes: [{ indexName: "${indexName1}", fields: ["title"] }]) {
-                    title: String!
-                }
-            `;
-
-            const createIndexCypher = `
-                CREATE FULLTEXT INDEX ${indexName1}
-                IF NOT EXISTS FOR (n:${additionalType.name})
-                ON EACH [n.title]
-            `;
-
-            await testHelper.executeCypher(createIndexCypher);
-
-            const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs });
-            await neoSchema.getSchema();
-
-            await expect(
-                neoSchema.assertIndexesAndConstraints({
-                    driver,
-                    sessionConfig: { database: databaseName },
-                    options: { create: true },
-                })
-            ).resolves.not.toThrow();
-
-            const dbConstraintsResult = (await testHelper.executeCypher(indexQueryCypher)).records.map((record) => {
-                return record.toObject().result;
-            });
-
-            expect(
-                dbConstraintsResult.filter(
-                    (record) => record.labelsOrTypes.includes(baseType.name) && record.properties.includes("title")
-                )
-            ).toHaveLength(0);
-
-            expect(
-                dbConstraintsResult.filter(
-                    (record) =>
-                        record.labelsOrTypes.includes(additionalType.name) && record.properties.includes("title")
-                )
-            ).toHaveLength(1);
         });
     });
 });

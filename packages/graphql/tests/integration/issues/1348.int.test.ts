@@ -83,9 +83,6 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
                         productTitle: "TestFilm1"
                     }
                 ]) {
-                    info {
-                        bookmark
-                    }
                     ${ProgrammeItem.plural} {
                         productTitle
                         episodeNumber
@@ -106,9 +103,6 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
                         }
                     }
                 ) {
-                    info {
-                        bookmark
-                    }
                     ${ProgrammeItem.plural} {
                         productTitle
                         episodeNumber

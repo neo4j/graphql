@@ -324,14 +324,12 @@ describe("@filterable directive", () => {
 
             const movieWhereFields = movieWhereType.getFields();
 
-            const actorsConnection = movieWhereFields["actorsConnection"];
             const actorsConnectionALL = movieWhereFields["actorsConnection_ALL"];
             const actorsConnectionNONE = movieWhereFields["actorsConnection_NONE"];
             const actorsConnectionSINGLE = movieWhereFields["actorsConnection_SINGLE"];
             const actorsConnectionSOME = movieWhereFields["actorsConnection_SOME"];
 
             const actorsConnectionFilters = [
-                actorsConnection,
                 actorsConnectionALL,
                 actorsConnectionNONE,
                 actorsConnectionSINGLE,
@@ -374,14 +372,12 @@ describe("@filterable directive", () => {
 
             const movieWhereFields = movieWhereType.getFields();
 
-            const actorsConnection = movieWhereFields["actorsConnection"];
             const actorsConnectionALL = movieWhereFields["actorsConnection_ALL"];
             const actorsConnectionNONE = movieWhereFields["actorsConnection_NONE"];
             const actorsConnectionSINGLE = movieWhereFields["actorsConnection_SINGLE"];
             const actorsConnectionSOME = movieWhereFields["actorsConnection_SOME"];
 
             const actorsConnectionFilters = [
-                actorsConnection,
                 actorsConnectionALL,
                 actorsConnectionNONE,
                 actorsConnectionSINGLE,
@@ -474,14 +470,12 @@ describe("@filterable directive", () => {
 
             const movieWhereFields = movieWhereType.getFields();
 
-            const actorsConnection = movieWhereFields["actorsConnection"];
             const actorsConnectionALL = movieWhereFields["actorsConnection_ALL"];
             const actorsConnectionNONE = movieWhereFields["actorsConnection_NONE"];
             const actorsConnectionSINGLE = movieWhereFields["actorsConnection_SINGLE"];
             const actorsConnectionSOME = movieWhereFields["actorsConnection_SOME"];
 
             const actorsConnectionFilters = [
-                actorsConnection,
                 actorsConnectionALL,
                 actorsConnectionNONE,
                 actorsConnectionSINGLE,
@@ -528,14 +522,12 @@ describe("@filterable directive", () => {
 
             const movieWhereFields = movieWhereType.getFields();
 
-            const actorsConnection = movieWhereFields["actorsConnection"];
             const actorsConnectionALL = movieWhereFields["actorsConnection_ALL"];
             const actorsConnectionNONE = movieWhereFields["actorsConnection_NONE"];
             const actorsConnectionSINGLE = movieWhereFields["actorsConnection_SINGLE"];
             const actorsConnectionSOME = movieWhereFields["actorsConnection_SOME"];
 
             const actorsConnectionFilters = [
-                actorsConnection,
                 actorsConnectionALL,
                 actorsConnectionNONE,
                 actorsConnectionSINGLE,
@@ -582,14 +574,12 @@ describe("@filterable directive", () => {
 
             const movieWhereFields = movieWhereType.getFields();
 
-            const actorsConnection = movieWhereFields["actorsConnection"];
             const actorsConnectionALL = movieWhereFields["actorsConnection_ALL"];
             const actorsConnectionNONE = movieWhereFields["actorsConnection_NONE"];
             const actorsConnectionSINGLE = movieWhereFields["actorsConnection_SINGLE"];
             const actorsConnectionSOME = movieWhereFields["actorsConnection_SOME"];
 
             const actorsConnectionFilters = [
-                actorsConnection,
                 actorsConnectionALL,
                 actorsConnectionNONE,
                 actorsConnectionSINGLE,
@@ -636,14 +626,12 @@ describe("@filterable directive", () => {
 
             const movieWhereFields = movieWhereType.getFields();
 
-            const actorsConnection = movieWhereFields["actorsConnection"];
             const actorsConnectionALL = movieWhereFields["actorsConnection_ALL"];
             const actorsConnectionNONE = movieWhereFields["actorsConnection_NONE"];
             const actorsConnectionSINGLE = movieWhereFields["actorsConnection_SINGLE"];
             const actorsConnectionSOME = movieWhereFields["actorsConnection_SOME"];
 
             const actorsConnectionFilters = [
-                actorsConnection,
                 actorsConnectionALL,
                 actorsConnectionNONE,
                 actorsConnectionSINGLE,
@@ -748,14 +736,12 @@ describe("@filterable directive", () => {
 
             const movieWhereFields = movieWhereType.getFields();
 
-            const actorsConnection = movieWhereFields["actorsConnection"];
             const actorsConnectionALL = movieWhereFields["actorsConnection_ALL"];
             const actorsConnectionNONE = movieWhereFields["actorsConnection_NONE"];
             const actorsConnectionSINGLE = movieWhereFields["actorsConnection_SINGLE"];
             const actorsConnectionSOME = movieWhereFields["actorsConnection_SOME"];
 
             const actorsConnectionFilters = [
-                actorsConnection,
                 actorsConnectionALL,
                 actorsConnectionNONE,
                 actorsConnectionSINGLE,
@@ -806,14 +792,12 @@ describe("@filterable directive", () => {
 
             const movieWhereFields = movieWhereType.getFields();
 
-            const actorsConnection = movieWhereFields["actorsConnection"];
             const actorsConnectionALL = movieWhereFields["actorsConnection_ALL"];
             const actorsConnectionNONE = movieWhereFields["actorsConnection_NONE"];
             const actorsConnectionSINGLE = movieWhereFields["actorsConnection_SINGLE"];
             const actorsConnectionSOME = movieWhereFields["actorsConnection_SOME"];
 
             const actorsConnectionFilters = [
-                actorsConnection,
                 actorsConnectionALL,
                 actorsConnectionNONE,
                 actorsConnectionSINGLE,
@@ -864,14 +848,12 @@ describe("@filterable directive", () => {
 
             const movieWhereFields = movieWhereType.getFields();
 
-            const actorsConnection = movieWhereFields["actorsConnection"];
             const actorsConnectionALL = movieWhereFields["actorsConnection_ALL"];
             const actorsConnectionNONE = movieWhereFields["actorsConnection_NONE"];
             const actorsConnectionSINGLE = movieWhereFields["actorsConnection_SINGLE"];
             const actorsConnectionSOME = movieWhereFields["actorsConnection_SOME"];
 
             const actorsConnectionFilters = [
-                actorsConnection,
                 actorsConnectionALL,
                 actorsConnectionNONE,
                 actorsConnectionSINGLE,
@@ -1159,9 +1141,7 @@ describe("@filterable directive", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
                       moviesAggregate: ActorMoviesAggregateInput
-                      moviesConnection: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -1215,7 +1195,6 @@ describe("@filterable directive", () => {
                     Information about the number of nodes and relationships created during a create mutation
                     \\"\\"\\"
                     type CreateInfo {
-                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       relationshipsCreated: Int!
                     }
@@ -1229,7 +1208,6 @@ describe("@filterable directive", () => {
                     Information about the number of nodes and relationships deleted during a delete mutation
                     \\"\\"\\"
                     type DeleteInfo {
-                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
                     }
@@ -1325,76 +1303,36 @@ describe("@filterable directive", () => {
                       AND: [MovieActorsNodeAggregationWhereInput!]
                       NOT: MovieActorsNodeAggregationWhereInput
                       OR: [MovieActorsNodeAggregationWhereInput!]
-                      password_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       password_AVERAGE_LENGTH_EQUAL: Float
                       password_AVERAGE_LENGTH_GT: Float
                       password_AVERAGE_LENGTH_GTE: Float
                       password_AVERAGE_LENGTH_LT: Float
                       password_AVERAGE_LENGTH_LTE: Float
-                      password_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      password_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      password_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      password_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       password_LONGEST_LENGTH_EQUAL: Int
                       password_LONGEST_LENGTH_GT: Int
                       password_LONGEST_LENGTH_GTE: Int
                       password_LONGEST_LENGTH_LT: Int
                       password_LONGEST_LENGTH_LTE: Int
-                      password_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      password_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      password_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       password_SHORTEST_LENGTH_EQUAL: Int
                       password_SHORTEST_LENGTH_GT: Int
                       password_SHORTEST_LENGTH_GTE: Int
                       password_SHORTEST_LENGTH_LT: Int
                       password_SHORTEST_LENGTH_LTE: Int
-                      password_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       username_AVERAGE_LENGTH_EQUAL: Float
                       username_AVERAGE_LENGTH_GT: Float
                       username_AVERAGE_LENGTH_GTE: Float
                       username_AVERAGE_LENGTH_LT: Float
                       username_AVERAGE_LENGTH_LTE: Float
-                      username_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      username_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      username_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      username_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       username_LONGEST_LENGTH_EQUAL: Int
                       username_LONGEST_LENGTH_GT: Int
                       username_LONGEST_LENGTH_GTE: Int
                       username_LONGEST_LENGTH_LT: Int
                       username_LONGEST_LENGTH_LTE: Int
-                      username_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      username_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      username_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       username_SHORTEST_LENGTH_EQUAL: Int
                       username_SHORTEST_LENGTH_GT: Int
                       username_SHORTEST_LENGTH_GTE: Int
                       username_SHORTEST_LENGTH_LT: Int
                       username_SHORTEST_LENGTH_LTE: Int
-                      username_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                     }
 
                     type MovieActorsRelationship {
@@ -1550,9 +1488,7 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                       actorsAggregate: MovieActorsAggregateInput
-                      actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -1652,7 +1588,6 @@ describe("@filterable directive", () => {
                     Information about the number of nodes and relationships created and deleted during an update mutation
                     \\"\\"\\"
                     type UpdateInfo {
-                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       nodesDeleted: Int!
                       relationshipsCreated: Int!
@@ -1831,41 +1766,21 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesNodeAggregationWhereInput!]
                       NOT: ActorMoviesNodeAggregationWhereInput
                       OR: [ActorMoviesNodeAggregationWhereInput!]
-                      title_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_AVERAGE_LENGTH_EQUAL: Float
                       title_AVERAGE_LENGTH_GT: Float
                       title_AVERAGE_LENGTH_GTE: Float
                       title_AVERAGE_LENGTH_LT: Float
                       title_AVERAGE_LENGTH_LTE: Float
-                      title_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_LONGEST_LENGTH_EQUAL: Int
                       title_LONGEST_LENGTH_GT: Int
                       title_LONGEST_LENGTH_GTE: Int
                       title_LONGEST_LENGTH_LT: Int
                       title_LONGEST_LENGTH_LTE: Int
-                      title_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_SHORTEST_LENGTH_EQUAL: Int
                       title_SHORTEST_LENGTH_GT: Int
                       title_SHORTEST_LENGTH_GTE: Int
                       title_SHORTEST_LENGTH_LT: Int
                       title_SHORTEST_LENGTH_LTE: Int
-                      title_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                     }
 
                     type ActorMoviesRelationship {
@@ -1978,9 +1893,7 @@ describe("@filterable directive", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
                       moviesAggregate: ActorMoviesAggregateInput
-                      moviesConnection: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -2034,7 +1947,6 @@ describe("@filterable directive", () => {
                     Information about the number of nodes and relationships created during a create mutation
                     \\"\\"\\"
                     type CreateInfo {
-                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       relationshipsCreated: Int!
                     }
@@ -2048,7 +1960,6 @@ describe("@filterable directive", () => {
                     Information about the number of nodes and relationships deleted during a delete mutation
                     \\"\\"\\"
                     type DeleteInfo {
-                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
                     }
@@ -2144,76 +2055,36 @@ describe("@filterable directive", () => {
                       AND: [MovieActorsNodeAggregationWhereInput!]
                       NOT: MovieActorsNodeAggregationWhereInput
                       OR: [MovieActorsNodeAggregationWhereInput!]
-                      password_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       password_AVERAGE_LENGTH_EQUAL: Float
                       password_AVERAGE_LENGTH_GT: Float
                       password_AVERAGE_LENGTH_GTE: Float
                       password_AVERAGE_LENGTH_LT: Float
                       password_AVERAGE_LENGTH_LTE: Float
-                      password_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      password_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      password_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      password_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       password_LONGEST_LENGTH_EQUAL: Int
                       password_LONGEST_LENGTH_GT: Int
                       password_LONGEST_LENGTH_GTE: Int
                       password_LONGEST_LENGTH_LT: Int
                       password_LONGEST_LENGTH_LTE: Int
-                      password_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      password_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      password_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       password_SHORTEST_LENGTH_EQUAL: Int
                       password_SHORTEST_LENGTH_GT: Int
                       password_SHORTEST_LENGTH_GTE: Int
                       password_SHORTEST_LENGTH_LT: Int
                       password_SHORTEST_LENGTH_LTE: Int
-                      password_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       username_AVERAGE_LENGTH_EQUAL: Float
                       username_AVERAGE_LENGTH_GT: Float
                       username_AVERAGE_LENGTH_GTE: Float
                       username_AVERAGE_LENGTH_LT: Float
                       username_AVERAGE_LENGTH_LTE: Float
-                      username_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      username_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      username_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      username_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       username_LONGEST_LENGTH_EQUAL: Int
                       username_LONGEST_LENGTH_GT: Int
                       username_LONGEST_LENGTH_GTE: Int
                       username_LONGEST_LENGTH_LT: Int
                       username_LONGEST_LENGTH_LTE: Int
-                      username_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      username_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      username_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       username_SHORTEST_LENGTH_EQUAL: Int
                       username_SHORTEST_LENGTH_GT: Int
                       username_SHORTEST_LENGTH_GTE: Int
                       username_SHORTEST_LENGTH_LT: Int
                       username_SHORTEST_LENGTH_LTE: Int
-                      username_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                     }
 
                     type MovieActorsRelationship {
@@ -2369,9 +2240,7 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                       actorsAggregate: MovieActorsAggregateInput
-                      actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -2471,7 +2340,6 @@ describe("@filterable directive", () => {
                     Information about the number of nodes and relationships created and deleted during an update mutation
                     \\"\\"\\"
                     type UpdateInfo {
-                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       nodesDeleted: Int!
                       relationshipsCreated: Int!
@@ -2650,41 +2518,21 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesNodeAggregationWhereInput!]
                       NOT: ActorMoviesNodeAggregationWhereInput
                       OR: [ActorMoviesNodeAggregationWhereInput!]
-                      title_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_AVERAGE_LENGTH_EQUAL: Float
                       title_AVERAGE_LENGTH_GT: Float
                       title_AVERAGE_LENGTH_GTE: Float
                       title_AVERAGE_LENGTH_LT: Float
                       title_AVERAGE_LENGTH_LTE: Float
-                      title_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_LONGEST_LENGTH_EQUAL: Int
                       title_LONGEST_LENGTH_GT: Int
                       title_LONGEST_LENGTH_GTE: Int
                       title_LONGEST_LENGTH_LT: Int
                       title_LONGEST_LENGTH_LTE: Int
-                      title_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_SHORTEST_LENGTH_EQUAL: Int
                       title_SHORTEST_LENGTH_GT: Int
                       title_SHORTEST_LENGTH_GTE: Int
                       title_SHORTEST_LENGTH_LT: Int
                       title_SHORTEST_LENGTH_LTE: Int
-                      title_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                     }
 
                     type ActorMoviesRelationship {
@@ -2787,9 +2635,7 @@ describe("@filterable directive", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
                       moviesAggregate: ActorMoviesAggregateInput
-                      moviesConnection: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -2843,7 +2689,6 @@ describe("@filterable directive", () => {
                     Information about the number of nodes and relationships created during a create mutation
                     \\"\\"\\"
                     type CreateInfo {
-                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       relationshipsCreated: Int!
                     }
@@ -2857,7 +2702,6 @@ describe("@filterable directive", () => {
                     Information about the number of nodes and relationships deleted during a delete mutation
                     \\"\\"\\"
                     type DeleteInfo {
-                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
                     }
@@ -2953,76 +2797,36 @@ describe("@filterable directive", () => {
                       AND: [MovieActorsNodeAggregationWhereInput!]
                       NOT: MovieActorsNodeAggregationWhereInput
                       OR: [MovieActorsNodeAggregationWhereInput!]
-                      password_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       password_AVERAGE_LENGTH_EQUAL: Float
                       password_AVERAGE_LENGTH_GT: Float
                       password_AVERAGE_LENGTH_GTE: Float
                       password_AVERAGE_LENGTH_LT: Float
                       password_AVERAGE_LENGTH_LTE: Float
-                      password_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      password_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      password_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      password_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       password_LONGEST_LENGTH_EQUAL: Int
                       password_LONGEST_LENGTH_GT: Int
                       password_LONGEST_LENGTH_GTE: Int
                       password_LONGEST_LENGTH_LT: Int
                       password_LONGEST_LENGTH_LTE: Int
-                      password_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      password_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      password_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       password_SHORTEST_LENGTH_EQUAL: Int
                       password_SHORTEST_LENGTH_GT: Int
                       password_SHORTEST_LENGTH_GTE: Int
                       password_SHORTEST_LENGTH_LT: Int
                       password_SHORTEST_LENGTH_LTE: Int
-                      password_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       username_AVERAGE_LENGTH_EQUAL: Float
                       username_AVERAGE_LENGTH_GT: Float
                       username_AVERAGE_LENGTH_GTE: Float
                       username_AVERAGE_LENGTH_LT: Float
                       username_AVERAGE_LENGTH_LTE: Float
-                      username_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      username_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      username_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      username_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       username_LONGEST_LENGTH_EQUAL: Int
                       username_LONGEST_LENGTH_GT: Int
                       username_LONGEST_LENGTH_GTE: Int
                       username_LONGEST_LENGTH_LT: Int
                       username_LONGEST_LENGTH_LTE: Int
-                      username_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      username_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      username_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       username_SHORTEST_LENGTH_EQUAL: Int
                       username_SHORTEST_LENGTH_GT: Int
                       username_SHORTEST_LENGTH_GTE: Int
                       username_SHORTEST_LENGTH_LT: Int
                       username_SHORTEST_LENGTH_LTE: Int
-                      username_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                     }
 
                     type MovieActorsRelationship {
@@ -3164,9 +2968,7 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                       actorsAggregate: MovieActorsAggregateInput
-                      actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -3260,7 +3062,6 @@ describe("@filterable directive", () => {
                     Information about the number of nodes and relationships created and deleted during an update mutation
                     \\"\\"\\"
                     type UpdateInfo {
-                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       nodesDeleted: Int!
                       relationshipsCreated: Int!
@@ -3442,41 +3243,21 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesNodeAggregationWhereInput!]
                       NOT: ActorMoviesNodeAggregationWhereInput
                       OR: [ActorMoviesNodeAggregationWhereInput!]
-                      title_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_AVERAGE_LENGTH_EQUAL: Float
                       title_AVERAGE_LENGTH_GT: Float
                       title_AVERAGE_LENGTH_GTE: Float
                       title_AVERAGE_LENGTH_LT: Float
                       title_AVERAGE_LENGTH_LTE: Float
-                      title_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_LONGEST_LENGTH_EQUAL: Int
                       title_LONGEST_LENGTH_GT: Int
                       title_LONGEST_LENGTH_GTE: Int
                       title_LONGEST_LENGTH_LT: Int
                       title_LONGEST_LENGTH_LTE: Int
-                      title_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_SHORTEST_LENGTH_EQUAL: Int
                       title_SHORTEST_LENGTH_GT: Int
                       title_SHORTEST_LENGTH_GTE: Int
                       title_SHORTEST_LENGTH_LT: Int
                       title_SHORTEST_LENGTH_LTE: Int
-                      title_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                     }
 
                     type ActorMoviesRelationship {
@@ -3589,9 +3370,7 @@ describe("@filterable directive", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
                       moviesAggregate: ActorMoviesAggregateInput
-                      moviesConnection: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -3645,7 +3424,6 @@ describe("@filterable directive", () => {
                     Information about the number of nodes and relationships created during a create mutation
                     \\"\\"\\"
                     type CreateInfo {
-                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       relationshipsCreated: Int!
                     }
@@ -3659,7 +3437,6 @@ describe("@filterable directive", () => {
                     Information about the number of nodes and relationships deleted during a delete mutation
                     \\"\\"\\"
                     type DeleteInfo {
-                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
                     }
@@ -3891,8 +3668,6 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
-                      actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -3992,7 +3767,6 @@ describe("@filterable directive", () => {
                     Information about the number of nodes and relationships created and deleted during an update mutation
                     \\"\\"\\"
                     type UpdateInfo {
-                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       nodesDeleted: Int!
                       relationshipsCreated: Int!
@@ -4173,41 +3947,21 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesNodeAggregationWhereInput!]
                       NOT: ActorMoviesNodeAggregationWhereInput
                       OR: [ActorMoviesNodeAggregationWhereInput!]
-                      title_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_AVERAGE_LENGTH_EQUAL: Float
                       title_AVERAGE_LENGTH_GT: Float
                       title_AVERAGE_LENGTH_GTE: Float
                       title_AVERAGE_LENGTH_LT: Float
                       title_AVERAGE_LENGTH_LTE: Float
-                      title_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_LONGEST_LENGTH_EQUAL: Int
                       title_LONGEST_LENGTH_GT: Int
                       title_LONGEST_LENGTH_GTE: Int
                       title_LONGEST_LENGTH_LT: Int
                       title_LONGEST_LENGTH_LTE: Int
-                      title_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_SHORTEST_LENGTH_EQUAL: Int
                       title_SHORTEST_LENGTH_GT: Int
                       title_SHORTEST_LENGTH_GTE: Int
                       title_SHORTEST_LENGTH_LT: Int
                       title_SHORTEST_LENGTH_LTE: Int
-                      title_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                     }
 
                     type ActorMoviesRelationship {
@@ -4320,9 +4074,7 @@ describe("@filterable directive", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
                       moviesAggregate: ActorMoviesAggregateInput
-                      moviesConnection: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -4376,7 +4128,6 @@ describe("@filterable directive", () => {
                     Information about the number of nodes and relationships created during a create mutation
                     \\"\\"\\"
                     type CreateInfo {
-                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       relationshipsCreated: Int!
                     }
@@ -4390,7 +4141,6 @@ describe("@filterable directive", () => {
                     Information about the number of nodes and relationships deleted during a delete mutation
                     \\"\\"\\"
                     type DeleteInfo {
-                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
                     }
@@ -4486,76 +4236,36 @@ describe("@filterable directive", () => {
                       AND: [MovieActorsNodeAggregationWhereInput!]
                       NOT: MovieActorsNodeAggregationWhereInput
                       OR: [MovieActorsNodeAggregationWhereInput!]
-                      password_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       password_AVERAGE_LENGTH_EQUAL: Float
                       password_AVERAGE_LENGTH_GT: Float
                       password_AVERAGE_LENGTH_GTE: Float
                       password_AVERAGE_LENGTH_LT: Float
                       password_AVERAGE_LENGTH_LTE: Float
-                      password_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      password_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      password_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      password_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       password_LONGEST_LENGTH_EQUAL: Int
                       password_LONGEST_LENGTH_GT: Int
                       password_LONGEST_LENGTH_GTE: Int
                       password_LONGEST_LENGTH_LT: Int
                       password_LONGEST_LENGTH_LTE: Int
-                      password_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      password_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      password_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       password_SHORTEST_LENGTH_EQUAL: Int
                       password_SHORTEST_LENGTH_GT: Int
                       password_SHORTEST_LENGTH_GTE: Int
                       password_SHORTEST_LENGTH_LT: Int
                       password_SHORTEST_LENGTH_LTE: Int
-                      password_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       username_AVERAGE_LENGTH_EQUAL: Float
                       username_AVERAGE_LENGTH_GT: Float
                       username_AVERAGE_LENGTH_GTE: Float
                       username_AVERAGE_LENGTH_LT: Float
                       username_AVERAGE_LENGTH_LTE: Float
-                      username_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      username_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      username_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      username_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       username_LONGEST_LENGTH_EQUAL: Int
                       username_LONGEST_LENGTH_GT: Int
                       username_LONGEST_LENGTH_GTE: Int
                       username_LONGEST_LENGTH_LT: Int
                       username_LONGEST_LENGTH_LTE: Int
-                      username_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      username_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      username_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       username_SHORTEST_LENGTH_EQUAL: Int
                       username_SHORTEST_LENGTH_GT: Int
                       username_SHORTEST_LENGTH_GTE: Int
                       username_SHORTEST_LENGTH_LT: Int
                       username_SHORTEST_LENGTH_LTE: Int
-                      username_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                     }
 
                     type MovieActorsRelationship {
@@ -4711,9 +4421,7 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                       actorsAggregate: MovieActorsAggregateInput
-                      actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -4813,7 +4521,6 @@ describe("@filterable directive", () => {
                     Information about the number of nodes and relationships created and deleted during an update mutation
                     \\"\\"\\"
                     type UpdateInfo {
-                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       nodesDeleted: Int!
                       relationshipsCreated: Int!
@@ -4994,41 +4701,21 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesNodeAggregationWhereInput!]
                       NOT: ActorMoviesNodeAggregationWhereInput
                       OR: [ActorMoviesNodeAggregationWhereInput!]
-                      title_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_AVERAGE_LENGTH_EQUAL: Float
                       title_AVERAGE_LENGTH_GT: Float
                       title_AVERAGE_LENGTH_GTE: Float
                       title_AVERAGE_LENGTH_LT: Float
                       title_AVERAGE_LENGTH_LTE: Float
-                      title_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_LONGEST_LENGTH_EQUAL: Int
                       title_LONGEST_LENGTH_GT: Int
                       title_LONGEST_LENGTH_GTE: Int
                       title_LONGEST_LENGTH_LT: Int
                       title_LONGEST_LENGTH_LTE: Int
-                      title_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_SHORTEST_LENGTH_EQUAL: Int
                       title_SHORTEST_LENGTH_GT: Int
                       title_SHORTEST_LENGTH_GTE: Int
                       title_SHORTEST_LENGTH_LT: Int
                       title_SHORTEST_LENGTH_LTE: Int
-                      title_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                     }
 
                     type ActorMoviesRelationship {
@@ -5141,9 +4828,7 @@ describe("@filterable directive", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
                       moviesAggregate: ActorMoviesAggregateInput
-                      moviesConnection: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -5197,7 +4882,6 @@ describe("@filterable directive", () => {
                     Information about the number of nodes and relationships created during a create mutation
                     \\"\\"\\"
                     type CreateInfo {
-                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       relationshipsCreated: Int!
                     }
@@ -5211,7 +4895,6 @@ describe("@filterable directive", () => {
                     Information about the number of nodes and relationships deleted during a delete mutation
                     \\"\\"\\"
                     type DeleteInfo {
-                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
                     }
@@ -5307,76 +4990,36 @@ describe("@filterable directive", () => {
                       AND: [MovieActorsNodeAggregationWhereInput!]
                       NOT: MovieActorsNodeAggregationWhereInput
                       OR: [MovieActorsNodeAggregationWhereInput!]
-                      password_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       password_AVERAGE_LENGTH_EQUAL: Float
                       password_AVERAGE_LENGTH_GT: Float
                       password_AVERAGE_LENGTH_GTE: Float
                       password_AVERAGE_LENGTH_LT: Float
                       password_AVERAGE_LENGTH_LTE: Float
-                      password_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      password_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      password_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      password_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       password_LONGEST_LENGTH_EQUAL: Int
                       password_LONGEST_LENGTH_GT: Int
                       password_LONGEST_LENGTH_GTE: Int
                       password_LONGEST_LENGTH_LT: Int
                       password_LONGEST_LENGTH_LTE: Int
-                      password_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      password_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      password_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       password_SHORTEST_LENGTH_EQUAL: Int
                       password_SHORTEST_LENGTH_GT: Int
                       password_SHORTEST_LENGTH_GTE: Int
                       password_SHORTEST_LENGTH_LT: Int
                       password_SHORTEST_LENGTH_LTE: Int
-                      password_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       username_AVERAGE_LENGTH_EQUAL: Float
                       username_AVERAGE_LENGTH_GT: Float
                       username_AVERAGE_LENGTH_GTE: Float
                       username_AVERAGE_LENGTH_LT: Float
                       username_AVERAGE_LENGTH_LTE: Float
-                      username_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      username_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      username_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      username_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       username_LONGEST_LENGTH_EQUAL: Int
                       username_LONGEST_LENGTH_GT: Int
                       username_LONGEST_LENGTH_GTE: Int
                       username_LONGEST_LENGTH_LT: Int
                       username_LONGEST_LENGTH_LTE: Int
-                      username_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      username_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      username_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       username_SHORTEST_LENGTH_EQUAL: Int
                       username_SHORTEST_LENGTH_GT: Int
                       username_SHORTEST_LENGTH_GTE: Int
                       username_SHORTEST_LENGTH_LT: Int
                       username_SHORTEST_LENGTH_LTE: Int
-                      username_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                     }
 
                     type MovieActorsRelationship {
@@ -5608,7 +5251,6 @@ describe("@filterable directive", () => {
                     Information about the number of nodes and relationships created and deleted during an update mutation
                     \\"\\"\\"
                     type UpdateInfo {
-                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       nodesDeleted: Int!
                       relationshipsCreated: Int!
@@ -5789,41 +5431,21 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesNodeAggregationWhereInput!]
                       NOT: ActorMoviesNodeAggregationWhereInput
                       OR: [ActorMoviesNodeAggregationWhereInput!]
-                      title_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_AVERAGE_LENGTH_EQUAL: Float
                       title_AVERAGE_LENGTH_GT: Float
                       title_AVERAGE_LENGTH_GTE: Float
                       title_AVERAGE_LENGTH_LT: Float
                       title_AVERAGE_LENGTH_LTE: Float
-                      title_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_LONGEST_LENGTH_EQUAL: Int
                       title_LONGEST_LENGTH_GT: Int
                       title_LONGEST_LENGTH_GTE: Int
                       title_LONGEST_LENGTH_LT: Int
                       title_LONGEST_LENGTH_LTE: Int
-                      title_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_SHORTEST_LENGTH_EQUAL: Int
                       title_SHORTEST_LENGTH_GT: Int
                       title_SHORTEST_LENGTH_GTE: Int
                       title_SHORTEST_LENGTH_LT: Int
                       title_SHORTEST_LENGTH_LTE: Int
-                      title_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                     }
 
                     type ActorMoviesRelationship {
@@ -5936,9 +5558,7 @@ describe("@filterable directive", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
                       moviesAggregate: ActorMoviesAggregateInput
-                      moviesConnection: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -5992,7 +5612,6 @@ describe("@filterable directive", () => {
                     Information about the number of nodes and relationships created during a create mutation
                     \\"\\"\\"
                     type CreateInfo {
-                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       relationshipsCreated: Int!
                     }
@@ -6006,7 +5625,6 @@ describe("@filterable directive", () => {
                     Information about the number of nodes and relationships deleted during a delete mutation
                     \\"\\"\\"
                     type DeleteInfo {
-                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
                     }
@@ -6238,8 +5856,6 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
-                      actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -6339,7 +5955,6 @@ describe("@filterable directive", () => {
                     Information about the number of nodes and relationships created and deleted during an update mutation
                     \\"\\"\\"
                     type UpdateInfo {
-                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       nodesDeleted: Int!
                       relationshipsCreated: Int!
@@ -6513,41 +6128,21 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesNodeAggregationWhereInput!]
                       NOT: ActorMoviesNodeAggregationWhereInput
                       OR: [ActorMoviesNodeAggregationWhereInput!]
-                      title_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_AVERAGE_LENGTH_EQUAL: Float
                       title_AVERAGE_LENGTH_GT: Float
                       title_AVERAGE_LENGTH_GTE: Float
                       title_AVERAGE_LENGTH_LT: Float
                       title_AVERAGE_LENGTH_LTE: Float
-                      title_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_LONGEST_LENGTH_EQUAL: Int
                       title_LONGEST_LENGTH_GT: Int
                       title_LONGEST_LENGTH_GTE: Int
                       title_LONGEST_LENGTH_LT: Int
                       title_LONGEST_LENGTH_LTE: Int
-                      title_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_SHORTEST_LENGTH_EQUAL: Int
                       title_SHORTEST_LENGTH_GT: Int
                       title_SHORTEST_LENGTH_GTE: Int
                       title_SHORTEST_LENGTH_LT: Int
                       title_SHORTEST_LENGTH_LTE: Int
-                      title_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                     }
 
                     type ActorMoviesRelationship {
@@ -6660,9 +6255,7 @@ describe("@filterable directive", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
                       moviesAggregate: ActorMoviesAggregateInput
-                      moviesConnection: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -6716,7 +6309,6 @@ describe("@filterable directive", () => {
                     Information about the number of nodes and relationships created during a create mutation
                     \\"\\"\\"
                     type CreateInfo {
-                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       relationshipsCreated: Int!
                     }
@@ -6730,7 +6322,6 @@ describe("@filterable directive", () => {
                     Information about the number of nodes and relationships deleted during a delete mutation
                     \\"\\"\\"
                     type DeleteInfo {
-                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
                     }
@@ -6954,8 +6545,6 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
-                      actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -7140,7 +6729,6 @@ describe("@filterable directive", () => {
                     Information about the number of nodes and relationships created and deleted during an update mutation
                     \\"\\"\\"
                     type UpdateInfo {
-                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       nodesDeleted: Int!
                       relationshipsCreated: Int!
@@ -7314,41 +6902,21 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesNodeAggregationWhereInput!]
                       NOT: ActorMoviesNodeAggregationWhereInput
                       OR: [ActorMoviesNodeAggregationWhereInput!]
-                      title_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_AVERAGE_LENGTH_EQUAL: Float
                       title_AVERAGE_LENGTH_GT: Float
                       title_AVERAGE_LENGTH_GTE: Float
                       title_AVERAGE_LENGTH_LT: Float
                       title_AVERAGE_LENGTH_LTE: Float
-                      title_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_LONGEST_LENGTH_EQUAL: Int
                       title_LONGEST_LENGTH_GT: Int
                       title_LONGEST_LENGTH_GTE: Int
                       title_LONGEST_LENGTH_LT: Int
                       title_LONGEST_LENGTH_LTE: Int
-                      title_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_SHORTEST_LENGTH_EQUAL: Int
                       title_SHORTEST_LENGTH_GT: Int
                       title_SHORTEST_LENGTH_GTE: Int
                       title_SHORTEST_LENGTH_LT: Int
                       title_SHORTEST_LENGTH_LTE: Int
-                      title_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                     }
 
                     type ActorMoviesRelationship {
@@ -7461,9 +7029,7 @@ describe("@filterable directive", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
                       moviesAggregate: ActorMoviesAggregateInput
-                      moviesConnection: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -7517,7 +7083,6 @@ describe("@filterable directive", () => {
                     Information about the number of nodes and relationships created during a create mutation
                     \\"\\"\\"
                     type CreateInfo {
-                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       relationshipsCreated: Int!
                     }
@@ -7531,7 +7096,6 @@ describe("@filterable directive", () => {
                     Information about the number of nodes and relationships deleted during a delete mutation
                     \\"\\"\\"
                     type DeleteInfo {
-                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
                     }
@@ -7610,41 +7174,21 @@ describe("@filterable directive", () => {
                       AND: [MovieActorsNodeAggregationWhereInput!]
                       NOT: MovieActorsNodeAggregationWhereInput
                       OR: [MovieActorsNodeAggregationWhereInput!]
-                      username_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       username_AVERAGE_LENGTH_EQUAL: Float
                       username_AVERAGE_LENGTH_GT: Float
                       username_AVERAGE_LENGTH_GTE: Float
                       username_AVERAGE_LENGTH_LT: Float
                       username_AVERAGE_LENGTH_LTE: Float
-                      username_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      username_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      username_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      username_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       username_LONGEST_LENGTH_EQUAL: Int
                       username_LONGEST_LENGTH_GT: Int
                       username_LONGEST_LENGTH_GTE: Int
                       username_LONGEST_LENGTH_LT: Int
                       username_LONGEST_LENGTH_LTE: Int
-                      username_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      username_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      username_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       username_SHORTEST_LENGTH_EQUAL: Int
                       username_SHORTEST_LENGTH_GT: Int
                       username_SHORTEST_LENGTH_GTE: Int
                       username_SHORTEST_LENGTH_LT: Int
                       username_SHORTEST_LENGTH_LTE: Int
-                      username_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                     }
 
                     type MovieActorsRelationship {
@@ -7809,9 +7353,7 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                       actorsAggregate: MovieActorsAggregateInput
-                      actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -7996,7 +7538,6 @@ describe("@filterable directive", () => {
                     Information about the number of nodes and relationships created and deleted during an update mutation
                     \\"\\"\\"
                     type UpdateInfo {
-                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       nodesDeleted: Int!
                       relationshipsCreated: Int!
@@ -8170,41 +7711,21 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesNodeAggregationWhereInput!]
                       NOT: ActorMoviesNodeAggregationWhereInput
                       OR: [ActorMoviesNodeAggregationWhereInput!]
-                      title_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_AVERAGE_LENGTH_EQUAL: Float
                       title_AVERAGE_LENGTH_GT: Float
                       title_AVERAGE_LENGTH_GTE: Float
                       title_AVERAGE_LENGTH_LT: Float
                       title_AVERAGE_LENGTH_LTE: Float
-                      title_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_LONGEST_LENGTH_EQUAL: Int
                       title_LONGEST_LENGTH_GT: Int
                       title_LONGEST_LENGTH_GTE: Int
                       title_LONGEST_LENGTH_LT: Int
                       title_LONGEST_LENGTH_LTE: Int
-                      title_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_SHORTEST_LENGTH_EQUAL: Int
                       title_SHORTEST_LENGTH_GT: Int
                       title_SHORTEST_LENGTH_GTE: Int
                       title_SHORTEST_LENGTH_LT: Int
                       title_SHORTEST_LENGTH_LTE: Int
-                      title_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                     }
 
                     type ActorMoviesRelationship {
@@ -8317,9 +7838,7 @@ describe("@filterable directive", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
                       moviesAggregate: ActorMoviesAggregateInput
-                      moviesConnection: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -8373,7 +7892,6 @@ describe("@filterable directive", () => {
                     Information about the number of nodes and relationships created during a create mutation
                     \\"\\"\\"
                     type CreateInfo {
-                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       relationshipsCreated: Int!
                     }
@@ -8387,7 +7905,6 @@ describe("@filterable directive", () => {
                     Information about the number of nodes and relationships deleted during a delete mutation
                     \\"\\"\\"
                     type DeleteInfo {
-                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
                     }
@@ -8611,8 +8128,6 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
-                      actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -8797,7 +8312,6 @@ describe("@filterable directive", () => {
                     Information about the number of nodes and relationships created and deleted during an update mutation
                     \\"\\"\\"
                     type UpdateInfo {
-                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       nodesDeleted: Int!
                       relationshipsCreated: Int!
@@ -8987,41 +8501,21 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesNodeAggregationWhereInput!]
                       NOT: ActorMoviesNodeAggregationWhereInput
                       OR: [ActorMoviesNodeAggregationWhereInput!]
-                      title_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_AVERAGE_LENGTH_EQUAL: Float
                       title_AVERAGE_LENGTH_GT: Float
                       title_AVERAGE_LENGTH_GTE: Float
                       title_AVERAGE_LENGTH_LT: Float
                       title_AVERAGE_LENGTH_LTE: Float
-                      title_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_LONGEST_LENGTH_EQUAL: Int
                       title_LONGEST_LENGTH_GT: Int
                       title_LONGEST_LENGTH_GTE: Int
                       title_LONGEST_LENGTH_LT: Int
                       title_LONGEST_LENGTH_LTE: Int
-                      title_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_SHORTEST_LENGTH_EQUAL: Int
                       title_SHORTEST_LENGTH_GT: Int
                       title_SHORTEST_LENGTH_GTE: Int
                       title_SHORTEST_LENGTH_LT: Int
                       title_SHORTEST_LENGTH_LTE: Int
-                      title_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                     }
 
                     type ActorMoviesRelationship {
@@ -9134,9 +8628,7 @@ describe("@filterable directive", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
                       moviesAggregate: ActorMoviesAggregateInput
-                      moviesConnection: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -9318,41 +8810,21 @@ describe("@filterable directive", () => {
                       AND: [AppearanceMoviesNodeAggregationWhereInput!]
                       NOT: AppearanceMoviesNodeAggregationWhereInput
                       OR: [AppearanceMoviesNodeAggregationWhereInput!]
-                      title_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_AVERAGE_LENGTH_EQUAL: Float
                       title_AVERAGE_LENGTH_GT: Float
                       title_AVERAGE_LENGTH_GTE: Float
                       title_AVERAGE_LENGTH_LT: Float
                       title_AVERAGE_LENGTH_LTE: Float
-                      title_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_LONGEST_LENGTH_EQUAL: Int
                       title_LONGEST_LENGTH_GT: Int
                       title_LONGEST_LENGTH_GTE: Int
                       title_LONGEST_LENGTH_LT: Int
                       title_LONGEST_LENGTH_LTE: Int
-                      title_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_SHORTEST_LENGTH_EQUAL: Int
                       title_SHORTEST_LENGTH_GT: Int
                       title_SHORTEST_LENGTH_GTE: Int
                       title_SHORTEST_LENGTH_LT: Int
                       title_SHORTEST_LENGTH_LTE: Int
-                      title_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                     }
 
                     type AppearanceMoviesRelationship {
@@ -9465,9 +8937,7 @@ describe("@filterable directive", () => {
                       AND: [AppearanceWhere!]
                       NOT: AppearanceWhere
                       OR: [AppearanceWhere!]
-                      movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
                       moviesAggregate: AppearanceMoviesAggregateInput
-                      moviesConnection: AppearanceMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Appearances where all of the related AppearanceMoviesConnections match this filter
                       \\"\\"\\"
@@ -9526,7 +8996,6 @@ describe("@filterable directive", () => {
                     Information about the number of nodes and relationships created during a create mutation
                     \\"\\"\\"
                     type CreateInfo {
-                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       relationshipsCreated: Int!
                     }
@@ -9540,7 +9009,6 @@ describe("@filterable directive", () => {
                     Information about the number of nodes and relationships deleted during a delete mutation
                     \\"\\"\\"
                     type DeleteInfo {
-                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
                     }
@@ -9836,8 +9304,6 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
-                      actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -9969,7 +9435,6 @@ describe("@filterable directive", () => {
                     Information about the number of nodes and relationships created and deleted during an update mutation
                     \\"\\"\\"
                     type UpdateInfo {
-                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       nodesDeleted: Int!
                       relationshipsCreated: Int!
@@ -10159,41 +9624,21 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesNodeAggregationWhereInput!]
                       NOT: ActorMoviesNodeAggregationWhereInput
                       OR: [ActorMoviesNodeAggregationWhereInput!]
-                      title_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_AVERAGE_LENGTH_EQUAL: Float
                       title_AVERAGE_LENGTH_GT: Float
                       title_AVERAGE_LENGTH_GTE: Float
                       title_AVERAGE_LENGTH_LT: Float
                       title_AVERAGE_LENGTH_LTE: Float
-                      title_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_LONGEST_LENGTH_EQUAL: Int
                       title_LONGEST_LENGTH_GT: Int
                       title_LONGEST_LENGTH_GTE: Int
                       title_LONGEST_LENGTH_LT: Int
                       title_LONGEST_LENGTH_LTE: Int
-                      title_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_SHORTEST_LENGTH_EQUAL: Int
                       title_SHORTEST_LENGTH_GT: Int
                       title_SHORTEST_LENGTH_GTE: Int
                       title_SHORTEST_LENGTH_LT: Int
                       title_SHORTEST_LENGTH_LTE: Int
-                      title_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                     }
 
                     type ActorMoviesRelationship {
@@ -10306,9 +9751,7 @@ describe("@filterable directive", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
                       moviesAggregate: ActorMoviesAggregateInput
-                      moviesConnection: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -10490,41 +9933,21 @@ describe("@filterable directive", () => {
                       AND: [AppearanceMoviesNodeAggregationWhereInput!]
                       NOT: AppearanceMoviesNodeAggregationWhereInput
                       OR: [AppearanceMoviesNodeAggregationWhereInput!]
-                      title_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_AVERAGE_LENGTH_EQUAL: Float
                       title_AVERAGE_LENGTH_GT: Float
                       title_AVERAGE_LENGTH_GTE: Float
                       title_AVERAGE_LENGTH_LT: Float
                       title_AVERAGE_LENGTH_LTE: Float
-                      title_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_LONGEST_LENGTH_EQUAL: Int
                       title_LONGEST_LENGTH_GT: Int
                       title_LONGEST_LENGTH_GTE: Int
                       title_LONGEST_LENGTH_LT: Int
                       title_LONGEST_LENGTH_LTE: Int
-                      title_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_SHORTEST_LENGTH_EQUAL: Int
                       title_SHORTEST_LENGTH_GT: Int
                       title_SHORTEST_LENGTH_GTE: Int
                       title_SHORTEST_LENGTH_LT: Int
                       title_SHORTEST_LENGTH_LTE: Int
-                      title_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                     }
 
                     type AppearanceMoviesRelationship {
@@ -10637,9 +10060,7 @@ describe("@filterable directive", () => {
                       AND: [AppearanceWhere!]
                       NOT: AppearanceWhere
                       OR: [AppearanceWhere!]
-                      movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
                       moviesAggregate: AppearanceMoviesAggregateInput
-                      moviesConnection: AppearanceMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Appearances where all of the related AppearanceMoviesConnections match this filter
                       \\"\\"\\"
@@ -10698,7 +10119,6 @@ describe("@filterable directive", () => {
                     Information about the number of nodes and relationships created during a create mutation
                     \\"\\"\\"
                     type CreateInfo {
-                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       relationshipsCreated: Int!
                     }
@@ -10712,7 +10132,6 @@ describe("@filterable directive", () => {
                     Information about the number of nodes and relationships deleted during a delete mutation
                     \\"\\"\\"
                     type DeleteInfo {
-                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
                     }
@@ -11008,8 +10427,6 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
-                      actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -11141,7 +10558,6 @@ describe("@filterable directive", () => {
                     Information about the number of nodes and relationships created and deleted during an update mutation
                     \\"\\"\\"
                     type UpdateInfo {
-                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       nodesDeleted: Int!
                       relationshipsCreated: Int!
@@ -11331,41 +10747,21 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesNodeAggregationWhereInput!]
                       NOT: ActorMoviesNodeAggregationWhereInput
                       OR: [ActorMoviesNodeAggregationWhereInput!]
-                      title_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_AVERAGE_LENGTH_EQUAL: Float
                       title_AVERAGE_LENGTH_GT: Float
                       title_AVERAGE_LENGTH_GTE: Float
                       title_AVERAGE_LENGTH_LT: Float
                       title_AVERAGE_LENGTH_LTE: Float
-                      title_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_LONGEST_LENGTH_EQUAL: Int
                       title_LONGEST_LENGTH_GT: Int
                       title_LONGEST_LENGTH_GTE: Int
                       title_LONGEST_LENGTH_LT: Int
                       title_LONGEST_LENGTH_LTE: Int
-                      title_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_SHORTEST_LENGTH_EQUAL: Int
                       title_SHORTEST_LENGTH_GT: Int
                       title_SHORTEST_LENGTH_GTE: Int
                       title_SHORTEST_LENGTH_LT: Int
                       title_SHORTEST_LENGTH_LTE: Int
-                      title_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                     }
 
                     type ActorMoviesRelationship {
@@ -11478,9 +10874,7 @@ describe("@filterable directive", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
                       moviesAggregate: ActorMoviesAggregateInput
-                      moviesConnection: ActorMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -11662,41 +11056,21 @@ describe("@filterable directive", () => {
                       AND: [AppearanceMoviesNodeAggregationWhereInput!]
                       NOT: AppearanceMoviesNodeAggregationWhereInput
                       OR: [AppearanceMoviesNodeAggregationWhereInput!]
-                      title_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_AVERAGE_LENGTH_EQUAL: Float
                       title_AVERAGE_LENGTH_GT: Float
                       title_AVERAGE_LENGTH_GTE: Float
                       title_AVERAGE_LENGTH_LT: Float
                       title_AVERAGE_LENGTH_LTE: Float
-                      title_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_LONGEST_LENGTH_EQUAL: Int
                       title_LONGEST_LENGTH_GT: Int
                       title_LONGEST_LENGTH_GTE: Int
                       title_LONGEST_LENGTH_LT: Int
                       title_LONGEST_LENGTH_LTE: Int
-                      title_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                      title_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       title_SHORTEST_LENGTH_EQUAL: Int
                       title_SHORTEST_LENGTH_GT: Int
                       title_SHORTEST_LENGTH_GTE: Int
                       title_SHORTEST_LENGTH_LT: Int
                       title_SHORTEST_LENGTH_LTE: Int
-                      title_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      title_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                     }
 
                     type AppearanceMoviesRelationship {
@@ -11809,9 +11183,7 @@ describe("@filterable directive", () => {
                       AND: [AppearanceWhere!]
                       NOT: AppearanceWhere
                       OR: [AppearanceWhere!]
-                      movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
                       moviesAggregate: AppearanceMoviesAggregateInput
-                      moviesConnection: AppearanceMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Appearances where all of the related AppearanceMoviesConnections match this filter
                       \\"\\"\\"
@@ -11870,7 +11242,6 @@ describe("@filterable directive", () => {
                     Information about the number of nodes and relationships created during a create mutation
                     \\"\\"\\"
                     type CreateInfo {
-                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       relationshipsCreated: Int!
                     }
@@ -11884,7 +11255,6 @@ describe("@filterable directive", () => {
                     Information about the number of nodes and relationships deleted during a delete mutation
                     \\"\\"\\"
                     type DeleteInfo {
-                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
                     }
@@ -12180,8 +11550,6 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
-                      actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -12313,7 +11681,6 @@ describe("@filterable directive", () => {
                     Information about the number of nodes and relationships created and deleted during an update mutation
                     \\"\\"\\"
                     type UpdateInfo {
-                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       nodesDeleted: Int!
                       relationshipsCreated: Int!

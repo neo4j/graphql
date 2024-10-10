@@ -166,7 +166,6 @@ describe("@populatedBy tests", () => {
                 Information about the number of nodes and relationships created during a create mutation
                 \\"\\"\\"
                 type CreateInfo {
-                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   relationshipsCreated: Int!
                 }
@@ -180,7 +179,6 @@ describe("@populatedBy tests", () => {
                 Information about the number of nodes and relationships deleted during a delete mutation
                 \\"\\"\\"
                 type DeleteInfo {
-                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
                   relationshipsDeleted: Int!
                 }
@@ -312,7 +310,6 @@ describe("@populatedBy tests", () => {
                 Information about the number of nodes and relationships created and deleted during an update mutation
                 \\"\\"\\"
                 type UpdateInfo {
-                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   nodesDeleted: Int!
                   relationshipsCreated: Int!
@@ -365,7 +362,6 @@ describe("@populatedBy tests", () => {
                 Information about the number of nodes and relationships created during a create mutation
                 \\"\\"\\"
                 type CreateInfo {
-                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   relationshipsCreated: Int!
                 }
@@ -379,7 +375,6 @@ describe("@populatedBy tests", () => {
                 Information about the number of nodes and relationships deleted during a delete mutation
                 \\"\\"\\"
                 type DeleteInfo {
-                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
                   relationshipsDeleted: Int!
                 }
@@ -518,7 +513,6 @@ describe("@populatedBy tests", () => {
                 Information about the number of nodes and relationships created and deleted during an update mutation
                 \\"\\"\\"
                 type UpdateInfo {
-                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   nodesDeleted: Int!
                   relationshipsCreated: Int!
@@ -720,7 +714,6 @@ describe("@populatedBy tests", () => {
                 Information about the number of nodes and relationships created during a create mutation
                 \\"\\"\\"
                 type CreateInfo {
-                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   relationshipsCreated: Int!
                 }
@@ -734,7 +727,6 @@ describe("@populatedBy tests", () => {
                 Information about the number of nodes and relationships deleted during a delete mutation
                 \\"\\"\\"
                 type DeleteInfo {
-                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
                   relationshipsDeleted: Int!
                 }
@@ -911,7 +903,16 @@ describe("@populatedBy tests", () => {
                   AND: [MovieGenresNodeAggregationWhereInput!]
                   NOT: MovieGenresNodeAggregationWhereInput
                   OR: [MovieGenresNodeAggregationWhereInput!]
-                  id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+                  id_MAX_EQUAL: ID
+                  id_MAX_GT: ID
+                  id_MAX_GTE: ID
+                  id_MAX_LT: ID
+                  id_MAX_LTE: ID
+                  id_MIN_EQUAL: ID
+                  id_MIN_GT: ID
+                  id_MIN_GTE: ID
+                  id_MIN_LT: ID
+                  id_MIN_LTE: ID
                 }
 
                 type MovieGenresRelationship {
@@ -959,9 +960,7 @@ describe("@populatedBy tests", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  genres: GenreWhere @deprecated(reason: \\"Use \`genres_SOME\` instead.\\")
                   genresAggregate: MovieGenresAggregateInput
-                  genresConnection: MovieGenresConnectionWhere @deprecated(reason: \\"Use \`genresConnection_SOME\` instead.\\")
                   \\"\\"\\"
                   Return Movies where all of the related MovieGenresConnections match this filter
                   \\"\\"\\"
@@ -1041,112 +1040,61 @@ describe("@populatedBy tests", () => {
                   AND: [RelPropertiesAggregationWhereInput!]
                   NOT: RelPropertiesAggregationWhereInput
                   OR: [RelPropertiesAggregationWhereInput!]
-                  callback1_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  callback1_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  callback1_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                   callback1_AVERAGE_LENGTH_EQUAL: Float
                   callback1_AVERAGE_LENGTH_GT: Float
                   callback1_AVERAGE_LENGTH_GTE: Float
                   callback1_AVERAGE_LENGTH_LT: Float
                   callback1_AVERAGE_LENGTH_LTE: Float
-                  callback1_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  callback1_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  callback1_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                  callback1_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                  callback1_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                  callback1_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  callback1_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  callback1_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                   callback1_LONGEST_LENGTH_EQUAL: Int
                   callback1_LONGEST_LENGTH_GT: Int
                   callback1_LONGEST_LENGTH_GTE: Int
                   callback1_LONGEST_LENGTH_LT: Int
                   callback1_LONGEST_LENGTH_LTE: Int
-                  callback1_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  callback1_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  callback1_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                  callback1_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                  callback1_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  callback1_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  callback1_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                   callback1_SHORTEST_LENGTH_EQUAL: Int
                   callback1_SHORTEST_LENGTH_GT: Int
                   callback1_SHORTEST_LENGTH_GTE: Int
                   callback1_SHORTEST_LENGTH_LT: Int
                   callback1_SHORTEST_LENGTH_LTE: Int
-                  callback1_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  callback1_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  callback2_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  callback2_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  callback2_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                   callback2_AVERAGE_LENGTH_EQUAL: Float
                   callback2_AVERAGE_LENGTH_GT: Float
                   callback2_AVERAGE_LENGTH_GTE: Float
                   callback2_AVERAGE_LENGTH_LT: Float
                   callback2_AVERAGE_LENGTH_LTE: Float
-                  callback2_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  callback2_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  callback2_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                  callback2_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                  callback2_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                  callback2_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  callback2_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  callback2_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                   callback2_LONGEST_LENGTH_EQUAL: Int
                   callback2_LONGEST_LENGTH_GT: Int
                   callback2_LONGEST_LENGTH_GTE: Int
                   callback2_LONGEST_LENGTH_LT: Int
                   callback2_LONGEST_LENGTH_LTE: Int
-                  callback2_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  callback2_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  callback2_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                  callback2_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                  callback2_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  callback2_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  callback2_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                   callback2_SHORTEST_LENGTH_EQUAL: Int
                   callback2_SHORTEST_LENGTH_GT: Int
                   callback2_SHORTEST_LENGTH_GTE: Int
                   callback2_SHORTEST_LENGTH_LT: Int
                   callback2_SHORTEST_LENGTH_LTE: Int
-                  callback2_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  callback2_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  callback3_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  callback3_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  callback3_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                   callback3_AVERAGE_LENGTH_EQUAL: Float
                   callback3_AVERAGE_LENGTH_GT: Float
                   callback3_AVERAGE_LENGTH_GTE: Float
                   callback3_AVERAGE_LENGTH_LT: Float
                   callback3_AVERAGE_LENGTH_LTE: Float
-                  callback3_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  callback3_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  callback3_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                  callback3_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                  callback3_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                  callback3_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  callback3_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  callback3_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                   callback3_LONGEST_LENGTH_EQUAL: Int
                   callback3_LONGEST_LENGTH_GT: Int
                   callback3_LONGEST_LENGTH_GTE: Int
                   callback3_LONGEST_LENGTH_LT: Int
                   callback3_LONGEST_LENGTH_LTE: Int
-                  callback3_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  callback3_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  callback3_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                  callback3_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                  callback3_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  callback3_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  callback3_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                   callback3_SHORTEST_LENGTH_EQUAL: Int
                   callback3_SHORTEST_LENGTH_GT: Int
                   callback3_SHORTEST_LENGTH_GTE: Int
                   callback3_SHORTEST_LENGTH_LT: Int
                   callback3_SHORTEST_LENGTH_LTE: Int
-                  callback3_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  callback3_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+                  id_MAX_EQUAL: ID
+                  id_MAX_GT: ID
+                  id_MAX_GTE: ID
+                  id_MAX_LT: ID
+                  id_MAX_LTE: ID
+                  id_MIN_EQUAL: ID
+                  id_MIN_GT: ID
+                  id_MIN_GTE: ID
+                  id_MIN_LT: ID
+                  id_MIN_LTE: ID
                 }
 
                 input RelPropertiesCreateInput {
@@ -1218,7 +1166,6 @@ describe("@populatedBy tests", () => {
                 Information about the number of nodes and relationships created and deleted during an update mutation
                 \\"\\"\\"
                 type UpdateInfo {
-                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   nodesDeleted: Int!
                   relationshipsCreated: Int!
@@ -1285,7 +1232,6 @@ describe("@populatedBy tests", () => {
                 Information about the number of nodes and relationships created during a create mutation
                 \\"\\"\\"
                 type CreateInfo {
-                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   relationshipsCreated: Int!
                 }
@@ -1299,7 +1245,6 @@ describe("@populatedBy tests", () => {
                 Information about the number of nodes and relationships deleted during a delete mutation
                 \\"\\"\\"
                 type DeleteInfo {
-                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
                   relationshipsDeleted: Int!
                 }
@@ -1483,7 +1428,16 @@ describe("@populatedBy tests", () => {
                   AND: [MovieGenresNodeAggregationWhereInput!]
                   NOT: MovieGenresNodeAggregationWhereInput
                   OR: [MovieGenresNodeAggregationWhereInput!]
-                  id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+                  id_MAX_EQUAL: ID
+                  id_MAX_GT: ID
+                  id_MAX_GTE: ID
+                  id_MAX_LT: ID
+                  id_MAX_LTE: ID
+                  id_MIN_EQUAL: ID
+                  id_MIN_GT: ID
+                  id_MIN_GTE: ID
+                  id_MIN_LT: ID
+                  id_MIN_LTE: ID
                 }
 
                 type MovieGenresRelationship {
@@ -1531,9 +1485,7 @@ describe("@populatedBy tests", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  genres: GenreWhere @deprecated(reason: \\"Use \`genres_SOME\` instead.\\")
                   genresAggregate: MovieGenresAggregateInput
-                  genresConnection: MovieGenresConnectionWhere @deprecated(reason: \\"Use \`genresConnection_SOME\` instead.\\")
                   \\"\\"\\"
                   Return Movies where all of the related MovieGenresConnections match this filter
                   \\"\\"\\"
@@ -1618,11 +1570,6 @@ describe("@populatedBy tests", () => {
                   callback1_AVERAGE_GTE: Float
                   callback1_AVERAGE_LT: Float
                   callback1_AVERAGE_LTE: Float
-                  callback1_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                  callback1_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                  callback1_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                  callback1_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                  callback1_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
                   callback1_MAX_EQUAL: Int
                   callback1_MAX_GT: Int
                   callback1_MAX_GTE: Int
@@ -1643,11 +1590,6 @@ describe("@populatedBy tests", () => {
                   callback2_AVERAGE_GTE: Float
                   callback2_AVERAGE_LT: Float
                   callback2_AVERAGE_LTE: Float
-                  callback2_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                  callback2_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                  callback2_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                  callback2_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                  callback2_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
                   callback2_MAX_EQUAL: Int
                   callback2_MAX_GT: Int
                   callback2_MAX_GTE: Int
@@ -1668,11 +1610,6 @@ describe("@populatedBy tests", () => {
                   callback3_AVERAGE_GTE: Float
                   callback3_AVERAGE_LT: Float
                   callback3_AVERAGE_LTE: Float
-                  callback3_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                  callback3_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                  callback3_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                  callback3_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-                  callback3_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
                   callback3_MAX_EQUAL: Int
                   callback3_MAX_GT: Int
                   callback3_MAX_GTE: Int
@@ -1688,7 +1625,16 @@ describe("@populatedBy tests", () => {
                   callback3_SUM_GTE: Int
                   callback3_SUM_LT: Int
                   callback3_SUM_LTE: Int
-                  id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+                  id_MAX_EQUAL: ID
+                  id_MAX_GT: ID
+                  id_MAX_GTE: ID
+                  id_MAX_LT: ID
+                  id_MAX_LTE: ID
+                  id_MIN_EQUAL: ID
+                  id_MIN_GT: ID
+                  id_MIN_GTE: ID
+                  id_MIN_LT: ID
+                  id_MIN_LTE: ID
                 }
 
                 input RelPropertiesCreateInput {
@@ -1760,7 +1706,6 @@ describe("@populatedBy tests", () => {
                 Information about the number of nodes and relationships created and deleted during an update mutation
                 \\"\\"\\"
                 type UpdateInfo {
-                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   nodesDeleted: Int!
                   relationshipsCreated: Int!

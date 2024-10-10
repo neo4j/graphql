@@ -60,7 +60,6 @@ describe("info", () => {
             mutation($title: String!, $name: String!) {
                 ${Movie.operations.create}(input: [{ title: $title, actors: { create: [{ node: { name: $name } }] } }]) {
                     info {
-                        bookmark
                         nodesCreated
                         relationshipsCreated
                     }
@@ -80,7 +79,6 @@ describe("info", () => {
 
         expect(gqlResult.errors).toBeFalsy();
 
-        expect(typeof (gqlResult?.data as any)?.[Movie.operations.create].info.bookmark).toBe("string");
         expect((gqlResult?.data as any)?.[Movie.operations.create].info.nodesCreated).toBe(2);
         expect((gqlResult?.data as any)?.[Movie.operations.create].info.relationshipsCreated).toBe(1);
         expect((gqlResult?.data as any)?.[Movie.operations.create][Movie.plural]).toEqual([
@@ -104,7 +102,8 @@ describe("info", () => {
         const query = `
             mutation($id: ID!) {
                 ${Movie.operations.delete}(where: { id_EQ: $id }) {
-                    bookmark
+                    nodesDeleted
+                    relationshipsDeleted
                 }
             }
         `;
@@ -115,7 +114,8 @@ describe("info", () => {
 
         expect(gqlResult.errors).toBeFalsy();
 
-        expect(typeof (gqlResult?.data as any)?.[Movie.operations.delete].bookmark).toBe("string");
+        expect((gqlResult?.data as any)?.[Movie.operations.delete].nodesDeleted).toBe(0);
+        expect((gqlResult?.data as any)?.[Movie.operations.delete].relationshipsDeleted).toBe(0);
     });
 
     test("should return info from an update mutation", async () => {
@@ -134,11 +134,11 @@ describe("info", () => {
         const query = `
             mutation($id: ID!) {
                 ${Movie.operations.update}(where: { id_EQ: $id }) {
-                    info {
-                        bookmark
-                    }
                     ${Movie.plural} {
                         id
+                    }
+                    info {
+                        nodesCreated
                     }
                 }
             }
@@ -149,7 +149,6 @@ describe("info", () => {
         });
 
         expect(gqlResult.errors).toBeFalsy();
-
-        expect(typeof (gqlResult?.data as any)[Movie.operations.update].info.bookmark).toBe("string");
+        expect((gqlResult?.data as any)?.[Movie.operations.update].info.nodesCreated).toBe(0);
     });
 });

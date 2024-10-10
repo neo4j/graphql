@@ -266,11 +266,11 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
                         actors_SINGLE: {
                             movies_SOME: {
                                 actors_ALL: { moviesAggregate: { count_GT: 1 } }
-                                actorsAggregate: { node: { name_AVERAGE_LT: 10 } }
+                                actorsAggregate: { node: { name_AVERAGE_LENGTH_LT: 10 } }
                             }
                             moviesAggregate: { node: { released_AVERAGE_EQUAL: 25 } }
                         }
-                        actorsAggregate: { node: { name_AVERAGE_GTE: 3 } }
+                        actorsAggregate: { node: { name_AVERAGE_LENGTH_GTE: 3 } }
                     }
                 ) {
                     released
@@ -595,13 +595,13 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
                                 moviesConnection_SOME: {
                                     node: {
                                         actorsConnection_ALL: { node: { moviesAggregate: { count_GT: 1 } } }
-                                        actorsAggregate: { node: { name_AVERAGE_LT: 10 } }
+                                        actorsAggregate: { node: { name_AVERAGE_LENGTH_LT: 10 } }
                                     }
                                 }
                                 moviesAggregate: { node: { released_AVERAGE_EQUAL: 25 } }
                             }
                         }
-                        actorsAggregate: { node: { name_AVERAGE_GTE: 3 } }
+                        actorsAggregate: { node: { name_AVERAGE_LENGTH_GTE: 3 } }
                     }
                 ) {
                     released

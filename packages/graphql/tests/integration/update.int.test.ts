@@ -258,7 +258,7 @@ describe("update", () => {
         const query = `
         mutation($updatedMovieId: ID, $actorName: String) {
             ${Movie.operations.update}(
-              where: { actorsConnection: { node: { name_EQ: $actorName } } },
+              where: { actorsConnection_SOME: { node: { name_EQ: $actorName } } },
               update: {
                 id: $updatedMovieId
               }
@@ -880,7 +880,7 @@ describe("update", () => {
             mutation($movieId: ID, $seriesId: ID) {
                 ${Movie.operations.update}(
                     where: { id_EQ: $movieId }
-                    update: { actors: { connect: [{ where: { node: { seriesConnection: { node: { id_EQ: $seriesId } } } } }]} }
+                    update: { actors: { connect: [{ where: { node: { seriesConnection_SOME: { node: { id_EQ: $seriesId } } } } }]} }
                 ) {
                     ${Movie.plural} {
                         id

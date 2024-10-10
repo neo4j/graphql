@@ -323,7 +323,7 @@ describe("delete", () => {
 
         const mutation = `
             mutation($name: String) {
-                ${Movie.operations.delete}(where: { actorsConnection: { node: { name_EQ: $name } } } ) {
+                ${Movie.operations.delete}(where: { actorsConnection_SOME: { node: { name_EQ: $name } } } ) {
                     nodesDeleted
                     relationshipsDeleted
                 }

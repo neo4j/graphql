@@ -50,7 +50,7 @@ describe("https://github.com/neo4j/graphql/issues/1628", () => {
     test("Nested filter with limit cypher should be composed correctly", async () => {
         const query = /* GraphQL */ `
             {
-                ${workType.plural}(limit: 1, where: { title: { value_CONTAINS: "0777" } }) {
+                ${workType.plural}(limit: 1, where: { title_SOME: { value_CONTAINS: "0777" } }) {
                     title(where: { value_CONTAINS: "0777" }) {
                         value
                     }

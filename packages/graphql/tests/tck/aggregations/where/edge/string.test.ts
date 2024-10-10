@@ -46,202 +46,10 @@ describe("Cypher Aggregations where edge with String", () => {
         });
     });
 
-    test("EQUAL", async () => {
+    test("SHORTEST_LENGTH_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someString_EQUAL: "10" } } }) {
-                    content
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            CALL {
-                WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN any(var2 IN collect(this0.someString) WHERE var2 = $param0) AS var3
-            }
-            WITH *
-            WHERE var3 = true
-            RETURN this { .content } AS this"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": \\"10\\"
-            }"
-        `);
-    });
-
-    test("EQUAL with alias", async () => {
-        const query = /* GraphQL */ `
-            {
-                posts(where: { likesAggregate: { edge: { someStringAlias_EQUAL: "10" } } }) {
-                    content
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            CALL {
-                WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN any(var2 IN collect(this0._someStringAlias) WHERE var2 = $param0) AS var3
-            }
-            WITH *
-            WHERE var3 = true
-            RETURN this { .content } AS this"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": \\"10\\"
-            }"
-        `);
-    });
-
-    test("GT", async () => {
-        const query = /* GraphQL */ `
-            {
-                posts(where: { likesAggregate: { edge: { someString_GT: 10 } } }) {
-                    content
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            CALL {
-                WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN any(var2 IN collect(size(this0.someString)) WHERE var2 > $param0) AS var3
-            }
-            WITH *
-            WHERE var3 = true
-            RETURN this { .content } AS this"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": {
-                    \\"low\\": 10,
-                    \\"high\\": 0
-                }
-            }"
-        `);
-    });
-
-    test("GTE", async () => {
-        const query = /* GraphQL */ `
-            {
-                posts(where: { likesAggregate: { edge: { someString_GTE: 10 } } }) {
-                    content
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            CALL {
-                WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN any(var2 IN collect(size(this0.someString)) WHERE var2 >= $param0) AS var3
-            }
-            WITH *
-            WHERE var3 = true
-            RETURN this { .content } AS this"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": {
-                    \\"low\\": 10,
-                    \\"high\\": 0
-                }
-            }"
-        `);
-    });
-
-    test("LT", async () => {
-        const query = /* GraphQL */ `
-            {
-                posts(where: { likesAggregate: { edge: { someString_LT: 10 } } }) {
-                    content
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            CALL {
-                WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN any(var2 IN collect(size(this0.someString)) WHERE var2 < $param0) AS var3
-            }
-            WITH *
-            WHERE var3 = true
-            RETURN this { .content } AS this"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": {
-                    \\"low\\": 10,
-                    \\"high\\": 0
-                }
-            }"
-        `);
-    });
-
-    test("LTE", async () => {
-        const query = /* GraphQL */ `
-            {
-                posts(where: { likesAggregate: { edge: { someString_LTE: 10 } } }) {
-                    content
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            CALL {
-                WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN any(var2 IN collect(size(this0.someString)) WHERE var2 <= $param0) AS var3
-            }
-            WITH *
-            WHERE var3 = true
-            RETURN this { .content } AS this"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": {
-                    \\"low\\": 10,
-                    \\"high\\": 0
-                }
-            }"
-        `);
-    });
-
-    test("SHORTEST_EQUAL", async () => {
-        const query = /* GraphQL */ `
-            {
-                posts(where: { likesAggregate: { edge: { someString_SHORTEST_EQUAL: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someString_SHORTEST_LENGTH_EQUAL: 10 } } }) {
                     content
                 }
             }
@@ -271,10 +79,10 @@ describe("Cypher Aggregations where edge with String", () => {
         `);
     });
 
-    test("SHORTEST_GT", async () => {
+    test("SHORTEST_LENGTH_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someString_SHORTEST_GT: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someString_SHORTEST_LENGTH_GT: 10 } } }) {
                     content
                 }
             }
@@ -304,10 +112,10 @@ describe("Cypher Aggregations where edge with String", () => {
         `);
     });
 
-    test("SHORTEST_GTE", async () => {
+    test("SHORTEST_LENGTH_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someString_SHORTEST_GTE: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someString_SHORTEST_LENGTH_GTE: 10 } } }) {
                     content
                 }
             }
@@ -337,10 +145,10 @@ describe("Cypher Aggregations where edge with String", () => {
         `);
     });
 
-    test("SHORTEST_LT", async () => {
+    test("SHORTEST_LENGTH_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someString_SHORTEST_LT: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someString_SHORTEST_LENGTH_LT: 10 } } }) {
                     content
                 }
             }
@@ -370,10 +178,10 @@ describe("Cypher Aggregations where edge with String", () => {
         `);
     });
 
-    test("SHORTEST_LTE", async () => {
+    test("SHORTEST_LENGTH_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someString_SHORTEST_LTE: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someString_SHORTEST_LENGTH_LTE: 10 } } }) {
                     content
                 }
             }
@@ -403,10 +211,10 @@ describe("Cypher Aggregations where edge with String", () => {
         `);
     });
 
-    test("LONGEST_EQUAL", async () => {
+    test("LONGEST_LENGTH_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someString_LONGEST_EQUAL: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someString_LONGEST_LENGTH_EQUAL: 10 } } }) {
                     content
                 }
             }
@@ -436,10 +244,10 @@ describe("Cypher Aggregations where edge with String", () => {
         `);
     });
 
-    test("LONGEST_GT", async () => {
+    test("LONGEST_LENGTH_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someString_LONGEST_GT: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someString_LONGEST_LENGTH_GT: 10 } } }) {
                     content
                 }
             }
@@ -469,10 +277,10 @@ describe("Cypher Aggregations where edge with String", () => {
         `);
     });
 
-    test("LONGEST_GTE", async () => {
+    test("LONGEST_LENGTH_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someString_LONGEST_GTE: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someString_LONGEST_LENGTH_GTE: 10 } } }) {
                     content
                 }
             }
@@ -502,10 +310,10 @@ describe("Cypher Aggregations where edge with String", () => {
         `);
     });
 
-    test("LONGEST_LT", async () => {
+    test("LONGEST_LENGTH_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someString_LONGEST_LT: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someString_LONGEST_LENGTH_LT: 10 } } }) {
                     content
                 }
             }
@@ -535,10 +343,10 @@ describe("Cypher Aggregations where edge with String", () => {
         `);
     });
 
-    test("LONGEST_LTE", async () => {
+    test("LONGEST_LENGTH_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someString_LONGEST_LTE: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someString_LONGEST_LENGTH_LTE: 10 } } }) {
                     content
                 }
             }
@@ -568,10 +376,10 @@ describe("Cypher Aggregations where edge with String", () => {
         `);
     });
 
-    test("AVERAGE_EQUAL", async () => {
+    test("AVERAGE_LENGTH_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someString_AVERAGE_EQUAL: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someString_AVERAGE_LENGTH_EQUAL: 10 } } }) {
                     content
                 }
             }
@@ -598,10 +406,10 @@ describe("Cypher Aggregations where edge with String", () => {
         `);
     });
 
-    test("AVERAGE_GT", async () => {
+    test("AVERAGE_LENGTH_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someString_AVERAGE_GT: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someString_AVERAGE_LENGTH_GT: 10 } } }) {
                     content
                 }
             }
@@ -628,10 +436,10 @@ describe("Cypher Aggregations where edge with String", () => {
         `);
     });
 
-    test("AVERAGE_GTE", async () => {
+    test("AVERAGE_LENGTH_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someString_AVERAGE_GTE: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someString_AVERAGE_LENGTH_GTE: 10 } } }) {
                     content
                 }
             }
@@ -658,10 +466,10 @@ describe("Cypher Aggregations where edge with String", () => {
         `);
     });
 
-    test("AVERAGE_LT", async () => {
+    test("AVERAGE_LENGTH_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someString_AVERAGE_LT: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someString_AVERAGE_LENGTH_LT: 10 } } }) {
                     content
                 }
             }
@@ -688,10 +496,10 @@ describe("Cypher Aggregations where edge with String", () => {
         `);
     });
 
-    test("AVERAGE_LTE", async () => {
+    test("AVERAGE_LENGTH_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someString_AVERAGE_LTE: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someString_AVERAGE_LENGTH_LTE: 10 } } }) {
                     content
                 }
             }

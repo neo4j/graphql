@@ -71,7 +71,9 @@ describe("context-variable-not-always-resolved-on-cypher-queries", () => {
         const query = /* GraphQL */ `
             query {
                 exprs(
-                    where: { realizationOf: { hasResourceType: { iri_EQ: "http://data.somesite.com/crown/test-id" } } }
+                    where: {
+                        realizationOf: { hasResourceType_SOME: { iri_EQ: "http://data.somesite.com/crown/test-id" } }
+                    }
                     limit: 1
                 ) {
                     iri
@@ -114,7 +116,9 @@ describe("context-variable-not-always-resolved-on-cypher-queries", () => {
         const query = /* GraphQL */ `
             query {
                 exprs(
-                    where: { realizationOf: { hasResourceType: { iri_EQ: "http://data.somesite.com/crown/test-id" } } }
+                    where: {
+                        realizationOf: { hasResourceType_SOME: { iri_EQ: "http://data.somesite.com/crown/test-id" } }
+                    }
                     limit: 1
                 ) {
                     iri
@@ -178,7 +182,9 @@ describe("context-variable-not-always-resolved-on-cypher-queries", () => {
         const query = /* GraphQL */ `
             query {
                 exprs(
-                    where: { realizationOf: { hasResourceType: { iri_EQ: "http://data.somesite.com/crown/test-id" } } }
+                    where: {
+                        realizationOf: { hasResourceType_SOME: { iri_EQ: "http://data.somesite.com/crown/test-id" } }
+                    }
                     limit: 1
                 ) {
                     iri

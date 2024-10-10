@@ -58,14 +58,6 @@ describe("Comments", () => {
         `;
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            features: {
-                excludeDeprecatedFields: {
-                    bookmark: true,
-                    arrayFilters: true,
-                    stringAggregation: true,
-                    aggregationFilters: true,
-                },
-            },
         });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
@@ -299,14 +291,6 @@ describe("Comments", () => {
             `;
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                features: {
-                    excludeDeprecatedFields: {
-                        bookmark: true,
-                        arrayFilters: true,
-                        stringAggregation: true,
-                        aggregationFilters: true,
-                    },
-                },
             });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
@@ -690,14 +674,6 @@ describe("Comments", () => {
             `;
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                features: {
-                    excludeDeprecatedFields: {
-                        bookmark: true,
-                        arrayFilters: true,
-                        stringAggregation: true,
-                        aggregationFilters: true,
-                    },
-                },
             });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
@@ -1306,14 +1282,6 @@ describe("Comments", () => {
             `;
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                features: {
-                    excludeDeprecatedFields: {
-                        bookmark: true,
-                        arrayFilters: true,
-                        stringAggregation: true,
-                        aggregationFilters: true,
-                    },
-                },
             });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 

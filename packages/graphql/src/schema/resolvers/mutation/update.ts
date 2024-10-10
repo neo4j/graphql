@@ -44,16 +44,7 @@ export function updateResolver({
     concreteEntityAdapter: ConcreteEntityAdapter;
     features?: Neo4jFeaturesSettings;
 }): ObjectTypeComposerFieldConfigAsObjectDefinition<any, any> {
-    async function resolve(
-        _root: any,
-        args: any,
-        context: Neo4jGraphQLComposedContext,
-        info: GraphQLResolveInfo
-    ): Promise<{
-        info: {
-            bookmark: string | null;
-        };
-    }> {
+    async function resolve(_root: any, args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
         const resolveTree = getNeo4jResolveTree(info, { args });
 
         (context as Neo4jGraphQLTranslationContext).resolveTree = resolveTree;
@@ -74,10 +65,8 @@ export function updateResolver({
                 selection.kind === Kind.FIELD && selection.name.value === concreteEntityAdapter.plural
         );
 
-        // TODO: Ask why we are returning bookmark still
         const resolveResult = {
             info: {
-                bookmark: executeResult.bookmark,
                 ...executeResult.statistics,
             },
         };

@@ -167,7 +167,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
                         current_EQ: true
                         mainConnection_SINGLE: {
                             node: {
-                                architectureConnection: {
+                                architectureConnection_SOME: {
                                     node: { nameDetailsConnection: { node: { fullName_EQ: "MHA" } } }
                                 }
                             }

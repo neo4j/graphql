@@ -92,7 +92,7 @@ describe("Single relationship (1-*) filtering", () => {
         const query = `
             query {
                 ${Person.plural}(
-                    where: { actedIn: { OR: [{ director: { name_EQ: "Jon Wu" } }, { producer: { name_EQ: "Jon Wu" } }] } }
+                    where: { actedIn_SOME: { OR: [{ director: { name_EQ: "Jon Wu" } }, { producer: { name_EQ: "Jon Wu" } }] } }
                 ) {
                     name
                 }

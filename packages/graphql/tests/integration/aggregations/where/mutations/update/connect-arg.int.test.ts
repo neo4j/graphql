@@ -199,7 +199,7 @@ describe("Connect using aggregate where", () => {
                                                 },
                                                 {
                                                     node: {
-                                                        name_SHORTEST_LT: 2 
+                                                        name_SHORTEST_LENGTH_LT: 2 
                                                     }
                                                     count_EQ: 2
                                                 }
@@ -261,7 +261,7 @@ describe("Connect using aggregate where", () => {
                                                 },
                                                 {
                                                     node: {
-                                                        NOT: { name_SHORTEST_GTE: 2 } 
+                                                        NOT: { name_SHORTEST_LENGTH_GTE: 2 } 
                                                     }
                                                     count_EQ: 2
                                                 }
@@ -544,7 +544,7 @@ describe("Connect UNIONs using aggregate where", () => {
                                                         {
                                                             likedPostsAggregate: {
                                                                 node: {
-                                                                    content_SHORTEST_LTE: 5
+                                                                    content_SHORTEST_LENGTH_LTE: 5
                                                                 }
                                                             }
                                                         }

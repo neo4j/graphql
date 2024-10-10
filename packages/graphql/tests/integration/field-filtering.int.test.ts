@@ -70,7 +70,7 @@ describe("field-filtering", () => {
             {
                 ${Movie.plural}(where: { title_EQ: "${movieTitle}" }) {
                     title
-                    genres(where: { seriesConnection: { node: { name_EQ: "${seriesName}" } } }) {
+                    genres(where: { seriesConnection_SOME: { node: { name_EQ: "${seriesName}" } } }) {
                         name
                         series {
                             name

@@ -35,23 +35,17 @@ export async function assertIndexesAndConstraints({
     driver,
     sessionConfig,
     schemaModel,
-    options,
 }: {
     driver: Driver;
     sessionConfig?: Neo4jGraphQLSessionConfig;
     schemaModel: Neo4jGraphQLSchemaModel;
-    options?: AssertIndexesAndConstraintsOptions;
 }): Promise<void> {
     await driver.verifyConnectivity();
 
     const session = driver.session(sessionConfig);
 
     try {
-        if (options?.create) {
-            await createIndexesAndConstraints({ schemaModel, session });
-        } else {
-            await checkIndexesAndConstraints({ schemaModel, session });
-        }
+        await checkIndexesAndConstraints({ schemaModel, session });
     } finally {
         await session.close();
     }
@@ -130,108 +124,6 @@ function checkVectorIndexes(entity: ConcreteEntity, existingIndexes: ExistingInd
                 return;
             }
         });
-    }
-}
-
-async function createIndexesAndConstraints({
-    schemaModel,
-    session,
-}: {
-    schemaModel: Neo4jGraphQLSchemaModel;
-    session: Session;
-}): Promise<void> {
-    const constraintsToCreate = await getMissingConstraints({ schemaModel, session });
-    const indexesToCreate: { indexName: string; label: string; properties: string[] }[] = [];
-
-    const existingIndexes = await getExistingIndexes({ session });
-    const indexErrors: string[] = [];
-
-    for (const entity of schemaModel.concreteEntities) {
-        if (entity.annotations.fulltext) {
-            entity.annotations.fulltext.indexes.forEach((index) => {
-                const indexName = index.indexName || index.name; // TODO remove indexName assignment and undefined check once the name argument has been removed.
-                if (indexName === undefined) {
-                    throw new Error("The name of the fulltext index should be defined using the indexName argument.");
-                }
-                const existingIndex = existingIndexes[indexName];
-                if (!existingIndex) {
-                    // An index with the same name does not exist, so we will create it
-                    const properties = index.fields.map((field) => {
-                        const attribute = entity.findAttribute(field);
-                        if (!attribute) {
-                            throw new Error(`Attribute '${field}' not found in entity '${entity.name}'`);
-                        }
-
-                        return attribute.databaseName;
-                    });
-
-                    const entityAdapter = new ConcreteEntityAdapter(entity);
-
-                    indexesToCreate.push({
-                        indexName: indexName,
-                        label: entityAdapter.getMainLabel(),
-                        properties,
-                    });
-                } else {
-                    // An index with the same name already exists, so we check that all index fields are included in the existing index
-                    index.fields.forEach((field) => {
-                        const attribute = entity.findAttribute(field);
-                        if (!attribute) {
-                            throw new Error(`Attribute '${field}' not found in entity '${entity.name}'`);
-                        }
-
-                        const propertyIsInIndex = existingIndex.properties.some((p) => p === attribute.databaseName);
-                        if (!propertyIsInIndex) {
-                            const aliasError =
-                                attribute.databaseName !== attribute.name
-                                    ? ` aliased to field '${attribute.databaseName}'`
-                                    : "";
-
-                            indexErrors.push(
-                                `@fulltext index '${indexName}' on Node '${entity.name}' already exists, but is missing field '${field}'${aliasError}`
-                            );
-                        }
-                    });
-                }
-            });
-        }
-
-        // Even though this is the create path, we still check for vector indexes to ensure they are correct
-        checkVectorIndexes(entity, existingIndexes, indexErrors);
-    }
-
-    if (indexErrors.length) {
-        throw new Error(indexErrors.join("\n"));
-    }
-
-    for (const constraintToCreate of constraintsToCreate) {
-        const cypher = [
-            `CREATE CONSTRAINT ${constraintToCreate.constraintName}`,
-            `IF NOT EXISTS FOR (n:${constraintToCreate.label})`,
-            `REQUIRE n.${constraintToCreate.property} IS UNIQUE`,
-        ].join(" ");
-
-        debug(`About to execute Cypher: ${cypher}`);
-
-        const result = await session.run(cypher);
-
-        const { constraintsAdded } = result.summary.counters.updates();
-
-        debug(`Created ${constraintsAdded} new constraint${constraintsAdded ? "" : "s"}`);
-    }
-
-    for (const indexToCreate of indexesToCreate) {
-        const cypher = [
-            `CREATE FULLTEXT INDEX ${indexToCreate.indexName}`,
-            `IF NOT EXISTS FOR (n:${indexToCreate.label})`,
-            `ON EACH [${indexToCreate.properties.map((p) => `n.${p}`).join(", ")}]`,
-        ].join(" ");
-
-        debug(`About to execute Cypher: ${cypher}`);
-
-        await session.run(cypher);
-
-        debug(`Created @fulltext index ${indexToCreate.indexName}`);
     }
 }
 

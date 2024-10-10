@@ -49,7 +49,7 @@ describe("Cypher -> vector -> Auth", () => {
             type Movie
                 @node
                 @vector(indexes: [{ indexName: "movie_index", embeddingProperty: "movieVector", queryName: "${queryName}" }])
-                @authorization(filter: [{ where: { node: { director: { id_EQ: "$jwt.sub" } } } }]) {
+                @authorization(filter: [{ where: { node: { director_SOME: { id_EQ: "$jwt.sub" } } } }]) {
                 title: String
                 director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
             }
@@ -67,11 +67,9 @@ describe("Cypher -> vector -> Auth", () => {
         const query = /* GraphQL */ `
             query MovieVectorQuery($vector: [Float!]!) {
                 ${queryName}(vector: $vector) {
-                    moviesConnection {
-                        edges {
-                            node {
-                                title
-                            }
+                    edges {
+                        node {
+                            title
                         }
                     }
                 }
@@ -250,7 +248,7 @@ describe("Cypher -> vector -> Auth", () => {
             type Movie
                 @node
                 @vector(indexes: [{ indexName: "movie_index", embeddingProperty: "movieVector", queryName: "${queryName}" }])
-                @authorization(validate: [{ when: [BEFORE], where: { node: { director: { id_EQ: "$jwt.sub" } } } }]) {
+                @authorization(validate: [{ when: [BEFORE], where: { node: { director_SOME: { id_EQ: "$jwt.sub" } } } }]) {
                 title: String
                 director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
             }
@@ -268,11 +266,9 @@ describe("Cypher -> vector -> Auth", () => {
         const query = /* GraphQL */ `
             query MovieVectorQuery($vector: [Float!]!) {
                 ${queryName}(vector: $vector) {
-                    moviesConnection {
-                        edges {
-                            node {
-                                title
-                            }
+                    edges {
+                        node {
+                            title
                         }
                     }
                 }
@@ -471,11 +467,9 @@ describe("Cypher -> vector -> Auth", () => {
         const query = /* GraphQL */ `
             query MovieVectorQuery($vector: [Float!]!) {
                 ${queryName}(vector: $vector) {
-                    moviesConnection {
-                        edges {
-                            node {
-                                title
-                            }
+                    edges {
+                        node {
+                            title
                         }
                     }
                 }
@@ -659,7 +653,7 @@ describe("Cypher -> vector -> Auth", () => {
                 @vector(indexes: [{ indexName: "movie_index", embeddingProperty: "movieVector", queryName: "${queryName}" }])
                 @authorization(
                     validate: [
-                        { when: [BEFORE], where: { node: { directorConnection: { node: { id_EQ: "$jwt.sub" } } } } }
+                        { when: [BEFORE], where: { node: { directorConnection_SOME: { node: { id_EQ: "$jwt.sub" } } } } }
                     ]
                 ) {
                 title: String
@@ -679,11 +673,9 @@ describe("Cypher -> vector -> Auth", () => {
         const query = /* GraphQL */ `
             query MovieVectorQuery($vector: [Float!]!) {
                 ${queryName}(vector: $vector) {
-                    moviesConnection {
-                        edges {
-                            node {
-                                title
-                            }
+                    edges {
+                        node {
+                            title
                         }
                     }
                 }
@@ -887,11 +879,9 @@ describe("Cypher -> vector -> Auth", () => {
         const query = /* GraphQL */ `
             query MovieVectorQuery($vector: [Float!]!) {
                 ${queryName}(vector: $vector) {
-                    moviesConnection {
-                        edges {
-                            node {
-                                title
-                            }
+                    edges {
+                        node {
+                            title
                         }
                     }
                 }
@@ -1075,7 +1065,7 @@ describe("Cypher -> vector -> Auth", () => {
                 @vector(indexes: [{ indexName: "movie_index", embeddingProperty: "movieVector", queryName: "${queryName}" }])
                 @authorization(
                     validate: [
-                        { when: [BEFORE], where: { node: { directorConnection: { edge: { year_EQ: 2020 } } } } }
+                        { when: [BEFORE], where: { node: { directorConnection_SOME: { edge: { year_EQ: 2020 } } } } }
                     ]
                 ) {
                 title: String
@@ -1099,11 +1089,9 @@ describe("Cypher -> vector -> Auth", () => {
         const query = /* GraphQL */ `
             query MovieVectorQuery($vector: [Float!]!) {
                 ${queryName}(vector: $vector) {
-                    moviesConnection {
-                        edges {
-                            node {
-                                title
-                            }
+                    edges {
+                        node {
+                            title
                         }
                     }
                 }
@@ -1305,11 +1293,9 @@ describe("Cypher -> vector -> Auth", () => {
         const query = /* GraphQL */ `
             query MovieVectorQuery($vector: [Float!]!) {
                 ${queryName}(vector: $vector) {
-                    moviesConnection {
-                        edges {
-                            node {
-                                title
-                            }
+                    edges {
+                        node {
+                            title
                         }
                     }
                 }

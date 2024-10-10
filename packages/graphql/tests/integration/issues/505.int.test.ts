@@ -50,7 +50,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
                 filter: [
                     {
                         operations: [READ]
-                        where: { OR: [{ node: { members: { authId_EQ: "$jwt.sub" } } }, { node: { admins: { authId_EQ: "$jwt.sub" } } }] }
+                        where: { OR: [{ node: { members_SOME: { authId_EQ: "$jwt.sub" } } }, { node: { admins_SOME: { authId_EQ: "$jwt.sub" } } }] }
                     }
                 ]
             )
@@ -78,8 +78,8 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
                                             {
                                                 workspace: {
                                                     OR: [
-                                                        { members: { authId_EQ: "$jwt.sub" } } 
-                                                        { admins: { authId_EQ: "$jwt.sub" } } 
+                                                        { members_SOME: { authId_EQ: "$jwt.sub" } } 
+                                                        { admins_SOME: { authId_EQ: "$jwt.sub" } } 
                                                     ]
                                                 }
                                             }

@@ -31,7 +31,7 @@ describe("Field Level Aggregations Where", () => {
         typeMovie = testHelper.createUniqueType("Movie");
         typePerson = testHelper.createUniqueType("Person");
 
-        typeDefs = `
+        typeDefs = /* GraphQL */ `
         type ${typeMovie.name} @node {
             title: String
             actors: [${typePerson.name}!]! @relationship(type: "ACTED_IN", direction: IN, properties:"ActedIn")
@@ -61,7 +61,7 @@ describe("Field Level Aggregations Where", () => {
     });
 
     test("Count nodes where string equals", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             query {
               ${typeMovie.plural} {
                 actorsAggregate(where: {name_EQ: "Linda"}) {
@@ -80,7 +80,7 @@ describe("Field Level Aggregations Where", () => {
     });
 
     test("Count nodes with OR query", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             query {
               ${typeMovie.plural} {
                 actorsAggregate(where: {OR: [{name_EQ: "Linda"}, {name_EQ: "Arnold"}]}) {
@@ -99,7 +99,7 @@ describe("Field Level Aggregations Where", () => {
     });
 
     test("Count nodes with nested aggregation", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             query {
               ${typeMovie.plural} {
                 actorsAggregate(where: {moviesAggregate: { count_EQ: 1}}) {
@@ -117,10 +117,10 @@ describe("Field Level Aggregations Where", () => {
 
     describe("Using connections in where", () => {
         test("Count nodes with where in connection node", async () => {
-            const query = `
+            const query = /* GraphQL */ `
             query {
                 ${typePerson.plural} {
-                    moviesAggregate(where:{actorsConnection: { node: { name_EQ: "Linda" } }}){
+                    moviesAggregate(where:{actorsConnection_SOME: { node: { name_EQ: "Linda" } }}){
                         count
                     }
                 }
@@ -134,10 +134,10 @@ describe("Field Level Aggregations Where", () => {
         });
 
         test("Count nodes with where in connection edge", async () => {
-            const query = `
+            const query = /* GraphQL */ `
             query {
                 ${typePerson.plural} {
-                    moviesAggregate(where:{actorsConnection: {edge: {screentime_GT: 10}}}){
+                    moviesAggregate(where:{actorsConnection_SOME: {edge: {screentime_GT: 10}}}){
                         count
                     }
                 }
@@ -151,10 +151,10 @@ describe("Field Level Aggregations Where", () => {
         });
 
         test("Count nodes with where in connection node using OR", async () => {
-            const query = `
+            const query = /* GraphQL */ `
             query {
                 ${typePerson.plural} {
-                    moviesAggregate(where:{actorsConnection: {node: {OR: [{ name_EQ: "Linda" },{ name_EQ: "Arnold" } ]}}}){
+                    moviesAggregate(where:{actorsConnection_SOME: {node: {OR: [{ name_EQ: "Linda" },{ name_EQ: "Arnold" } ]}}}){
                         count
                     }
                 }
@@ -169,7 +169,7 @@ describe("Field Level Aggregations Where", () => {
     });
 
     test("Count nodes with where using IN strings", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             query {
               ${typeMovie.plural} {
                 actorsAggregate(where: {name_IN: ["Linda", "Arnold"]}) {
@@ -188,7 +188,7 @@ describe("Field Level Aggregations Where", () => {
     });
 
     test("Count nodes with where using IN ints", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             query {
               ${typeMovie.plural} {
                 actorsAggregate(where: {age_IN: [40, 60, 37]}) {
@@ -207,7 +207,7 @@ describe("Field Level Aggregations Where", () => {
     });
 
     test("Count nodes with datetime filter", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             query {
               ${typeMovie.plural} {
                 actorsAggregate(where: {born_GT: "2000-01-01"}) {

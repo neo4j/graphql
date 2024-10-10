@@ -17,9 +17,6 @@ labels:
   - label: graphql
     files:
       - packages/graphql/src/.*
-  - label: ogm
-    files:
-      - packages/ogm/src/.*
   - label: introspector
     files:
       - packages/introspector/src/.*

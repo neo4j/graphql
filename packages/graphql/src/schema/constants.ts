@@ -19,24 +19,10 @@
 
 import { DEPRECATED } from "../constants";
 
-export const DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS = {
-    name: DEPRECATED,
-    args: {
-        reason: "Please use the explicit _LENGTH version for string aggregation.",
-    },
-};
-
 export const DEPRECATE_IMPLICIT_EQUAL_FILTERS = {
     name: DEPRECATED,
     args: {
         reason: "Please use the explicit _EQ version",
-    },
-};
-
-export const DEPRECATE_INVALID_AGGREGATION_FILTERS = {
-    name: DEPRECATED,
-    args: {
-        reason: "Aggregation filters that are not relying on an aggregating function will be deprecated.",
     },
 };
 
