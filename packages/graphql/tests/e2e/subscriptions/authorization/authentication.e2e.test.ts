@@ -1718,14 +1718,16 @@ describe("Subscription authentication", () => {
                             where: {
                                 title_EQ: "Matrix"
                             },
-                            delete: {
+                            update: {
                                 actors: {
-                                    where: {
-                                        node: {
-                                            name_EQ: "Keanu"
+                                    delete: {
+                                        where: {
+                                            node: {
+                                                name_EQ: "Keanu"
+                                            }
                                         }
                                     }
-                                }
+                                }    
                             }  
                         ) {
                             info {
@@ -2179,13 +2181,15 @@ describe("Subscription authentication", () => {
                             where: {
                                 name_EQ: "Keanu",
                             }
-                            disconnect: {
+                            update: {
                               movies: {
-                                where: {
-                                  node: {
-                                    title_EQ: "Matrix",
-                                    imdbId_EQ: 1
-                                  }
+                                disconnect: {
+                                    where: {
+                                        node: {
+                                            title_EQ: "Matrix",
+                                            imdbId_EQ: 1
+                                        }
+                                    }
                                 }
                               }
                             }
@@ -2271,13 +2275,15 @@ describe("Subscription authentication", () => {
                             where: {
                                 name_EQ: "Keanu",
                             }
-                            disconnect: {
+                            update: {
                               movies: {
-                                where: {
-                                  node: {
-                                    title_EQ: "Matrix",
-                                    imdbId_EQ: 1
-                                  }
+                                disconnect: {
+                                    where: {
+                                        node: {
+                                            title_EQ: "Matrix",
+                                            imdbId_EQ: 1
+                                        }
+                                    }
                                 }
                               }
                             }
@@ -2353,15 +2359,17 @@ describe("Subscription authentication", () => {
                             where: {
                                 name_EQ: "Keanu",
                             }
-                            disconnect: {
+                            update: {
                               movies: {
-                                where: {
-                                  node: {
-                                    title_EQ: "Matrix",
-                                    imdbId_EQ: 1
-                                  }
+                                disconnect: {
+                                    where: {
+                                        node: {
+                                            title_EQ: "Matrix",
+                                            imdbId_EQ: 1
+                                        }
+                                    }
                                 }
-                              }
+                            }
                             }
                         ) {
                             ${typeActor.plural} {
@@ -2440,13 +2448,15 @@ describe("Subscription authentication", () => {
                             where: {
                                 name_EQ: "Keanu",
                             }
-                            disconnect: {
+                            update: {
                               movies: {
-                                where: {
-                                  node: {
-                                    title_EQ: "Matrix",
-                                    imdbId_EQ: 1
-                                  }
+                                disconnect: {
+                                    where: {
+                                        node: {
+                                            title_EQ: "Matrix",
+                                            imdbId_EQ: 1
+                                        }
+                                    }
                                 }
                               }
                             }
@@ -2522,13 +2532,15 @@ describe("Subscription authentication", () => {
                             where: {
                                 name_EQ: "Keanu",
                             }
-                            disconnect: {
+                            update: {
                               movies: {
-                                where: {
-                                  node: {
-                                    title_EQ: "Matrix",
-                                    imdbId_EQ: 1
-                                  }
+                                disconnect: {
+                                    where: {
+                                        node: {
+                                            title_EQ: "Matrix",
+                                            imdbId_EQ: 1
+                                        }
+                                    }
                                 }
                               }
                             }
@@ -3937,12 +3949,14 @@ describe("Subscription authentication", () => {
                             where: {
                                 name_EQ: "Bob",
                             }
-                            disconnect: {
+                            update: {
                               movies: {
-                                where: {
-                                  node: {
-                                    title_EQ: "Matrix"
-                                  }
+                                disconnect: {
+                                    where: {
+                                        node: {
+                                            title_EQ: "Matrix"
+                                        }
+                                    }
                                 }
                               }
                             }
@@ -4046,12 +4060,14 @@ describe("Subscription authentication", () => {
                             where: {
                                 name_EQ: "Bob",
                             }
-                            disconnect: {
+                            update: {
                               movies: {
-                                where: {
-                                  node: {
-                                    title_EQ: "Matrix"
-                                  }
+                                disconnect: {
+                                    where: {
+                                        node: {
+                                            title_EQ: "Matrix"
+                                        }
+                                    }
                                 }
                               }
                             }
@@ -4138,12 +4154,14 @@ describe("Subscription authentication", () => {
                             where: {
                                 name_EQ: "Bob",
                             }
-                            disconnect: {
+                            update: {
                               movies: {
-                                where: {
-                                  node: {
-                                    title_EQ: "Matrix"
-                                  }
+                                disconnect: {
+                                    where: {
+                                        node: {
+                                            title_EQ: "Matrix"
+                                        }
+                                    }
                                 }
                               }
                             }
@@ -4163,6 +4181,7 @@ describe("Subscription authentication", () => {
                 expect(wsClient.events).toEqual([]);
                 expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
             });
+
             test("unauthenticated subscription does not send events if interface field queried on unauthenticated implementing type - delete_relationship", async () => {
                 await supertest(server.path)
                     .post("")
@@ -4230,12 +4249,14 @@ describe("Subscription authentication", () => {
                             where: {
                                 name_EQ: "Bob",
                             }
-                            disconnect: {
+                            update: {
                               movies: {
-                                where: {
-                                  node: {
-                                    title_EQ: "Matrix"
-                                  }
+                                disconnect: {
+                                    where: {
+                                        node: {
+                                            title_EQ: "Matrix"
+                                        }
+                                    }
                                 }
                               }
                             }
@@ -4256,6 +4277,7 @@ describe("Subscription authentication", () => {
                 expect(wsClient.events).toEqual([]);
                 expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
             });
+
             test("unauthenticated subscription sends events if no authenticated field queried - delete_relationship", async () => {
                 await supertest(server.path)
                     .post("")
@@ -4322,12 +4344,14 @@ describe("Subscription authentication", () => {
                             where: {
                                 name_EQ: "Bob",
                             }
-                            disconnect: {
+                            update: {
                               movies: {
-                                where: {
-                                  node: {
-                                    title_EQ: "Matrix"
-                                  }
+                                disconnect: {
+                                    where: {
+                                        node: {
+                                            title_EQ: "Matrix"
+                                        }
+                                    }
                                 }
                               }
                             }
@@ -4820,12 +4844,14 @@ describe("Subscription authentication", () => {
                             where: {
                                 name_EQ: "Bob",
                             }
-                            disconnect: {
+                            update: {
                               movies: {
-                                where: {
-                                  node: {
-                                    title_EQ: "Matrix"
-                                  }
+                                disconnect: {
+                                    where: {
+                                        node: {
+                                            title_EQ: "Matrix"
+                                        }
+                                    }
                                 }
                               }
                             }
@@ -4845,6 +4871,7 @@ describe("Subscription authentication", () => {
                 expect(wsClient.events).toEqual([]);
                 expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
             });
+
             test("unauthenticated subscription does not send events if authenticated implemented type is selected - delete_relationship", async () => {
                 await supertest(server.path)
                     .post("")
@@ -4914,12 +4941,14 @@ describe("Subscription authentication", () => {
                             where: {
                                 title_EQ: "Matrix"
                             },
-                            disconnect: {
+                            update: {
                                 directors: {
                                     ${typeActor.name}: {
-                                        where: {
-                                            node: {
-                                                name_EQ: "Bob", 
+                                        disconnect: {
+                                            where: {
+                                                node: {
+                                                    name_EQ: "Bob", 
+                                                }
                                             }
                                         }
                                     }

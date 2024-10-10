@@ -736,10 +736,6 @@ describe("Algebraic", () => {
               sort: [DirectorSort!]
             }
 
-            input DirectorRelationInput {
-              directs: [DirectorDirectsCreateFieldInput!]
-            }
-
             \\"\\"\\"
             Fields to sort Directors by. The order in which sorts are applied is not guaranteed when specifying many fields in one DirectorSort object.
             \\"\\"\\"
@@ -963,10 +959,6 @@ describe("Algebraic", () => {
               sort: [MovieSort!]
             }
 
-            input MovieRelationInput {
-              directedBy: MovieDirectedByCreateFieldInput
-            }
-
             \\"\\"\\"
             Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
             \\"\\"\\"
@@ -1016,8 +1008,8 @@ describe("Algebraic", () => {
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
               deleteDirectors(delete: DirectorDeleteInput, where: DirectorWhere): DeleteInfo!
               deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
-              updateDirectors(connect: DirectorConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: DirectorRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: DirectorDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: DirectorDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: DirectorUpdateInput, where: DirectorWhere): UpdateDirectorsMutationResponse!
-              updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+              updateDirectors(update: DirectorUpdateInput, where: DirectorWhere): UpdateDirectorsMutationResponse!
+              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -1149,10 +1141,6 @@ describe("Algebraic", () => {
               viewers: IntAggregateSelection!
             }
 
-            input MovieConnectInput {
-              workers: [MovieWorkersConnectFieldInput!]
-            }
-
             input MovieCreateInput {
               id: ID
               viewers: Int!
@@ -1161,10 +1149,6 @@ describe("Algebraic", () => {
 
             input MovieDeleteInput {
               workers: [MovieWorkersDeleteFieldInput!]
-            }
-
-            input MovieDisconnectInput {
-              workers: [MovieWorkersDisconnectFieldInput!]
             }
 
             type MovieEdge {
@@ -1188,10 +1172,6 @@ describe("Algebraic", () => {
 
             type MoviePersonWorkersNodeAggregateSelection {
               name: StringAggregateSelection!
-            }
-
-            input MovieRelationInput {
-              workers: [MovieWorkersCreateFieldInput!]
             }
 
             \\"\\"\\"
@@ -1362,8 +1342,8 @@ describe("Algebraic", () => {
               createPeople(input: [PersonCreateInput!]!): CreatePeopleMutationResponse!
               deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
               deletePeople(delete: PersonDeleteInput, where: PersonWhere): DeleteInfo!
-              updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-              updatePeople(connect: PersonConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: PersonRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: PersonDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: PersonDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
+              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+              updatePeople(update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -1434,10 +1414,6 @@ describe("Algebraic", () => {
 
             type PersonProductionWorksInProductionNodeAggregateSelection {
               viewers: IntAggregateSelection!
-            }
-
-            input PersonRelationInput {
-              worksInProduction: [PersonWorksInProductionCreateFieldInput!]
             }
 
             \\"\\"\\"
@@ -1996,10 +1972,6 @@ describe("Algebraic", () => {
               name: StringAggregateSelection!
             }
 
-            input MovieRelationInput {
-              actors: [MovieActorsCreateFieldInput!]
-            }
-
             \\"\\"\\"
             Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
             \\"\\"\\"
@@ -2060,8 +2032,8 @@ describe("Algebraic", () => {
               createPeople(input: [PersonCreateInput!]!): CreatePeopleMutationResponse!
               deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
               deletePeople(delete: PersonDeleteInput, where: PersonWhere): DeleteInfo!
-              updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-              updatePeople(connect: PersonConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: PersonRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: PersonDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: PersonDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
+              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+              updatePeople(update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -2241,10 +2213,6 @@ describe("Algebraic", () => {
               Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [PersonSort!]
-            }
-
-            input PersonRelationInput {
-              actedInMovies: [PersonActedInMoviesCreateFieldInput!]
             }
 
             \\"\\"\\"

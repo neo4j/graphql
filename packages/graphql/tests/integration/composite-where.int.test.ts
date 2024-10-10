@@ -70,14 +70,16 @@ describe("composite-where", () => {
                         where: {
                             id_EQ: $movieId
                         }
-                        delete: {
+                        update:{
                             actors: {
-                                where: {
-                                    node: {
-                                        name_EQ: $actorName1
-                                    }
-                                    edge: {
-                                        screenTime_EQ: $screenTime
+                                delete: {
+                                    where: {
+                                        node: {
+                                            name_EQ: $actorName1
+                                        }
+                                        edge: {
+                                            screenTime_EQ: $screenTime
+                                        }
                                     }
                                 }
                             }
@@ -133,14 +135,16 @@ describe("composite-where", () => {
                         where: {
                             id_EQ: $movieId
                         }
-                        disconnect: {
+                        update: {
                             actors: {
-                                where: {
-                                    node: {
-                                        name_EQ: $actorName1
-                                    }
-                                    edge: {
-                                        screenTime_EQ: $screenTime
+                                disconnect: {
+                                    where: {
+                                        node: {
+                                            name_EQ: $actorName1
+                                        }
+                                        edge: {
+                                            screenTime_EQ: $screenTime
+                                        }
                                     }
                                 }
                             }

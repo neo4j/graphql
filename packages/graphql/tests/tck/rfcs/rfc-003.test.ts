@@ -688,10 +688,12 @@ describe("tck/rfs/003", () => {
                             mutation {
                                 updateMovies(
                                     where: { id_EQ: "${movieId}" },
-                                    delete: {
+                                    update: {
                                         director: {
-                                            where: { node: { id_EQ: "${directorId}" } },
-                                            delete: { address: { where: { node: { id_EQ: "some-address" } } } }
+                                            delete: {
+                                                where: { node: { id_EQ: "${directorId}" } },
+                                                delete: { address: { where: { node: { id_EQ: "some-address" } } } }
+                                            }
                                         }
                                     }
                                 ) {
@@ -710,28 +712,27 @@ describe("tck/rfs/003", () => {
                             WITH *
                             CALL {
                             WITH *
-                            OPTIONAL MATCH (this)<-[this_delete_director0_relationship:DIRECTED]-(this_delete_director0:Director)
-                            WHERE this_delete_director0.id = $updateMovies_args_delete_director_where_this_delete_director0param0
+                            OPTIONAL MATCH (this)<-[this_director0_delete0_relationship:DIRECTED]-(this_director0_delete0:Director)
+                            WHERE this_director0_delete0.id = $updateMovies_args_update_director_delete_where_this_director0_delete0param0
                             WITH *
                             CALL {
                             WITH *
-                            OPTIONAL MATCH (this_delete_director0)-[this_delete_director0_address0_relationship:HAS_ADDRESS]->(this_delete_director0_address0:Address)
-                            WHERE this_delete_director0_address0.id = $updateMovies_args_delete_director_delete_address_where_this_delete_director0_address0param0
-                            WITH this_delete_director0_address0_relationship, collect(DISTINCT this_delete_director0_address0) AS this_delete_director0_address0_to_delete
+                            OPTIONAL MATCH (this_director0_delete0)-[this_director0_delete0_address0_relationship:HAS_ADDRESS]->(this_director0_delete0_address0:Address)
+                            WHERE this_director0_delete0_address0.id = $updateMovies_args_update_director_delete_delete_address_where_this_director0_delete0_address0param0
+                            WITH this_director0_delete0_address0_relationship, collect(DISTINCT this_director0_delete0_address0) AS this_director0_delete0_address0_to_delete
                             CALL {
-                            	WITH this_delete_director0_address0_to_delete
-                            	UNWIND this_delete_director0_address0_to_delete AS x
+                            	WITH this_director0_delete0_address0_to_delete
+                            	UNWIND this_director0_delete0_address0_to_delete AS x
                             	DETACH DELETE x
                             }
                             }
-                            WITH this_delete_director0_relationship, collect(DISTINCT this_delete_director0) AS this_delete_director0_to_delete
+                            WITH this_director0_delete0_relationship, collect(DISTINCT this_director0_delete0) AS this_director0_delete0_to_delete
                             CALL {
-                            	WITH this_delete_director0_to_delete
-                            	UNWIND this_delete_director0_to_delete AS x
+                            	WITH this_director0_delete0_to_delete
+                            	UNWIND this_director0_delete0_to_delete AS x
                             	DETACH DELETE x
                             }
                             }
-                            WITH *
                             WITH *
                             CALL {
                             	WITH this
@@ -753,22 +754,24 @@ describe("tck/rfs/003", () => {
                         expect(formatParams(result.params)).toMatchInlineSnapshot(`
                             "{
                                 \\"param0\\": \\"movieId-4\\",
-                                \\"updateMovies_args_delete_director_where_this_delete_director0param0\\": \\"directorId-3\\",
-                                \\"updateMovies_args_delete_director_delete_address_where_this_delete_director0_address0param0\\": \\"some-address\\",
+                                \\"updateMovies_args_update_director_delete_where_this_director0_delete0param0\\": \\"directorId-3\\",
+                                \\"updateMovies_args_update_director_delete_delete_address_where_this_director0_delete0_address0param0\\": \\"some-address\\",
                                 \\"updateMovies\\": {
                                     \\"args\\": {
-                                        \\"delete\\": {
+                                        \\"update\\": {
                                             \\"director\\": {
-                                                \\"where\\": {
-                                                    \\"node\\": {
-                                                        \\"id_EQ\\": \\"directorId-3\\"
-                                                    }
-                                                },
                                                 \\"delete\\": {
-                                                    \\"address\\": {
-                                                        \\"where\\": {
-                                                            \\"node\\": {
-                                                                \\"id_EQ\\": \\"some-address\\"
+                                                    \\"where\\": {
+                                                        \\"node\\": {
+                                                            \\"id_EQ\\": \\"directorId-3\\"
+                                                        }
+                                                    },
+                                                    \\"delete\\": {
+                                                        \\"address\\": {
+                                                            \\"where\\": {
+                                                                \\"node\\": {
+                                                                    \\"id_EQ\\": \\"some-address\\"
+                                                                }
                                                             }
                                                         }
                                                     }
@@ -813,10 +816,12 @@ describe("tck/rfs/003", () => {
                             mutation {
                                 updateMovies(
                                     where: { id_EQ: "${movieId}" },
-                                    delete: {
+                                    update: {
                                         director: {
-                                            where: { node: { id_EQ: "${directorId}" } },
-                                            delete: { address: { where: { node: { id_EQ: "some-address" } } } }
+                                            delete: {
+                                                where: { node: { id_EQ: "${directorId}" } },
+                                                delete: { address: { where: { node: { id_EQ: "some-address" } } } }
+                                            }
                                         }
                                     }
                                 ) {
@@ -835,28 +840,27 @@ describe("tck/rfs/003", () => {
                             WITH *
                             CALL {
                             WITH *
-                            OPTIONAL MATCH (this)<-[this_delete_director0_relationship:DIRECTED]-(this_delete_director0:Director)
-                            WHERE this_delete_director0.id = $updateMovies_args_delete_director_where_this_delete_director0param0
+                            OPTIONAL MATCH (this)<-[this_director0_delete0_relationship:DIRECTED]-(this_director0_delete0:Director)
+                            WHERE this_director0_delete0.id = $updateMovies_args_update_director_delete_where_this_director0_delete0param0
                             WITH *
                             CALL {
                             WITH *
-                            OPTIONAL MATCH (this_delete_director0)-[this_delete_director0_address0_relationship:HAS_ADDRESS]->(this_delete_director0_address0:Address)
-                            WHERE this_delete_director0_address0.id = $updateMovies_args_delete_director_delete_address_where_this_delete_director0_address0param0
-                            WITH this_delete_director0_address0_relationship, collect(DISTINCT this_delete_director0_address0) AS this_delete_director0_address0_to_delete
+                            OPTIONAL MATCH (this_director0_delete0)-[this_director0_delete0_address0_relationship:HAS_ADDRESS]->(this_director0_delete0_address0:Address)
+                            WHERE this_director0_delete0_address0.id = $updateMovies_args_update_director_delete_delete_address_where_this_director0_delete0_address0param0
+                            WITH this_director0_delete0_address0_relationship, collect(DISTINCT this_director0_delete0_address0) AS this_director0_delete0_address0_to_delete
                             CALL {
-                            	WITH this_delete_director0_address0_to_delete
-                            	UNWIND this_delete_director0_address0_to_delete AS x
+                            	WITH this_director0_delete0_address0_to_delete
+                            	UNWIND this_director0_delete0_address0_to_delete AS x
                             	DETACH DELETE x
                             }
                             }
-                            WITH this_delete_director0_relationship, collect(DISTINCT this_delete_director0) AS this_delete_director0_to_delete
+                            WITH this_director0_delete0_relationship, collect(DISTINCT this_director0_delete0) AS this_director0_delete0_to_delete
                             CALL {
-                            	WITH this_delete_director0_to_delete
-                            	UNWIND this_delete_director0_to_delete AS x
+                            	WITH this_director0_delete0_to_delete
+                            	UNWIND this_director0_delete0_to_delete AS x
                             	DETACH DELETE x
                             }
                             }
-                            WITH *
                             WITH *
                             CALL {
                             	WITH this
@@ -878,22 +882,24 @@ describe("tck/rfs/003", () => {
                         expect(formatParams(result.params)).toMatchInlineSnapshot(`
                             "{
                                 \\"param0\\": \\"movieId-4\\",
-                                \\"updateMovies_args_delete_director_where_this_delete_director0param0\\": \\"directorId-3\\",
-                                \\"updateMovies_args_delete_director_delete_address_where_this_delete_director0_address0param0\\": \\"some-address\\",
+                                \\"updateMovies_args_update_director_delete_where_this_director0_delete0param0\\": \\"directorId-3\\",
+                                \\"updateMovies_args_update_director_delete_delete_address_where_this_director0_delete0_address0param0\\": \\"some-address\\",
                                 \\"updateMovies\\": {
                                     \\"args\\": {
-                                        \\"delete\\": {
+                                        \\"update\\": {
                                             \\"director\\": {
-                                                \\"where\\": {
-                                                    \\"node\\": {
-                                                        \\"id_EQ\\": \\"directorId-3\\"
-                                                    }
-                                                },
                                                 \\"delete\\": {
-                                                    \\"address\\": {
-                                                        \\"where\\": {
-                                                            \\"node\\": {
-                                                                \\"id_EQ\\": \\"some-address\\"
+                                                    \\"where\\": {
+                                                        \\"node\\": {
+                                                            \\"id_EQ\\": \\"directorId-3\\"
+                                                        }
+                                                    },
+                                                    \\"delete\\": {
+                                                        \\"address\\": {
+                                                            \\"where\\": {
+                                                                \\"node\\": {
+                                                                    \\"id_EQ\\": \\"some-address\\"
+                                                                }
                                                             }
                                                         }
                                                     }
@@ -1195,7 +1201,7 @@ describe("tck/rfs/003", () => {
 
                     const mutation = /* GraphQL */ `
                         mutation {
-                            updateMovies(where: { id_EQ: "${movieId}" }, disconnect: { director: { where: { node: {  id_EQ: "${directorId}" } } } }) {
+                            updateMovies(where: { id_EQ: "${movieId}" }, update: { director: { disconnect: { where: { node: {  id_EQ: "${directorId}" } } } } }) {
                                 info {
                                     nodesCreated
                                 }
@@ -1211,17 +1217,16 @@ describe("tck/rfs/003", () => {
                         WITH this
                         CALL {
                         WITH this
-                        OPTIONAL MATCH (this)<-[this_disconnect_director0_rel:DIRECTED]-(this_disconnect_director0:Director)
-                        WHERE this_disconnect_director0.id = $updateMovies_args_disconnect_director_where_Director_this_disconnect_director0param0
+                        OPTIONAL MATCH (this)<-[this_director0_disconnect0_rel:DIRECTED]-(this_director0_disconnect0:Director)
+                        WHERE this_director0_disconnect0.id = $updateMovies_args_update_director_disconnect_where_Director_this_director0_disconnect0param0
                         CALL {
-                        	WITH this_disconnect_director0, this_disconnect_director0_rel, this
-                        	WITH collect(this_disconnect_director0) as this_disconnect_director0, this_disconnect_director0_rel, this
-                        	UNWIND this_disconnect_director0 as x
-                        	DELETE this_disconnect_director0_rel
+                        	WITH this_director0_disconnect0, this_director0_disconnect0_rel, this
+                        	WITH collect(this_director0_disconnect0) as this_director0_disconnect0, this_director0_disconnect0_rel, this
+                        	UNWIND this_director0_disconnect0 as x
+                        	DELETE this_director0_disconnect0_rel
                         }
-                        RETURN count(*) AS disconnect_this_disconnect_director_Director
+                        RETURN count(*) AS disconnect_this_director0_disconnect_Director
                         }
-                        WITH *
                         WITH *
                         CALL {
                         	WITH this
@@ -1236,14 +1241,16 @@ describe("tck/rfs/003", () => {
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`
                         "{
                             \\"param0\\": \\"movieId-5\\",
-                            \\"updateMovies_args_disconnect_director_where_Director_this_disconnect_director0param0\\": \\"directorId-5\\",
+                            \\"updateMovies_args_update_director_disconnect_where_Director_this_director0_disconnect0param0\\": \\"directorId-5\\",
                             \\"updateMovies\\": {
                                 \\"args\\": {
-                                    \\"disconnect\\": {
+                                    \\"update\\": {
                                         \\"director\\": {
-                                            \\"where\\": {
-                                                \\"node\\": {
-                                                    \\"id_EQ\\": \\"directorId-5\\"
+                                            \\"disconnect\\": {
+                                                \\"where\\": {
+                                                    \\"node\\": {
+                                                        \\"id_EQ\\": \\"directorId-5\\"
+                                                    }
                                                 }
                                             }
                                         }
@@ -1279,11 +1286,15 @@ describe("tck/rfs/003", () => {
                         mutation {
                             updateMovies(
                                 where: { id_EQ: "${movieId}" },
-                                disconnect: {
-                                    director: { where: { node: { id_EQ: "${directorId1}" } } }
-                                }
-                                connect: {
-                                    director: { where: { node: { id_EQ: "${directorId2}" } } }
+                                update: {
+                                    director: {
+                                        disconnect: {
+                                            where: { node: { id_EQ: "${directorId1}" } }
+                                        }
+                                        connect: {
+                                            where: { node: { id_EQ: "${directorId2}" } } 
+                                        }
+                                    }
                                 }
                             ) {
                                 movies {
@@ -1304,33 +1315,33 @@ describe("tck/rfs/003", () => {
                         WITH this
                         CALL {
                         WITH this
-                        OPTIONAL MATCH (this)<-[this_disconnect_director0_rel:DIRECTED]-(this_disconnect_director0:Director)
-                        WHERE this_disconnect_director0.id = $updateMovies_args_disconnect_director_where_Director_this_disconnect_director0param0
+                        OPTIONAL MATCH (this)<-[this_director0_disconnect0_rel:DIRECTED]-(this_director0_disconnect0:Director)
+                        WHERE this_director0_disconnect0.id = $updateMovies_args_update_director_disconnect_where_Director_this_director0_disconnect0param0
                         CALL {
-                        	WITH this_disconnect_director0, this_disconnect_director0_rel, this
-                        	WITH collect(this_disconnect_director0) as this_disconnect_director0, this_disconnect_director0_rel, this
-                        	UNWIND this_disconnect_director0 as x
-                        	DELETE this_disconnect_director0_rel
+                        	WITH this_director0_disconnect0, this_director0_disconnect0_rel, this
+                        	WITH collect(this_director0_disconnect0) as this_director0_disconnect0, this_director0_disconnect0_rel, this
+                        	UNWIND this_director0_disconnect0 as x
+                        	DELETE this_director0_disconnect0_rel
                         }
-                        RETURN count(*) AS disconnect_this_disconnect_director_Director
+                        RETURN count(*) AS disconnect_this_director0_disconnect_Director
                         }
                         WITH *
                         CALL {
                         	WITH this
-                        	OPTIONAL MATCH (this_connect_director0_node:Director)
-                        	WHERE this_connect_director0_node.id = $this_connect_director0_node_param0
+                        	OPTIONAL MATCH (this_director0_connect0_node:Director)
+                        	WHERE this_director0_connect0_node.id = $this_director0_connect0_node_param0
                         	CALL {
                         		WITH *
-                        		WITH collect(this_connect_director0_node) as connectedNodes, collect(this) as parentNodes
+                        		WITH collect(this_director0_connect0_node) as connectedNodes, collect(this) as parentNodes
                         		CALL {
                         			WITH connectedNodes, parentNodes
                         			UNWIND parentNodes as this
-                        			UNWIND connectedNodes as this_connect_director0_node
-                        			MERGE (this)<-[:DIRECTED]-(this_connect_director0_node)
+                        			UNWIND connectedNodes as this_director0_connect0_node
+                        			MERGE (this)<-[:DIRECTED]-(this_director0_connect0_node)
                         		}
                         	}
-                        WITH this, this_connect_director0_node
-                        	RETURN count(*) AS connect_this_connect_director_Director0
+                        WITH this, this_director0_connect0_node
+                        	RETURN count(*) AS connect_this_director0_connect_Director0
                         }
                         WITH *
                         WITH *
@@ -1353,15 +1364,25 @@ describe("tck/rfs/003", () => {
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`
                         "{
                             \\"param0\\": \\"movieId-6\\",
-                            \\"updateMovies_args_disconnect_director_where_Director_this_disconnect_director0param0\\": \\"directorId-6\\",
-                            \\"this_connect_director0_node_param0\\": \\"directorId2-6\\",
+                            \\"updateMovies_args_update_director_disconnect_where_Director_this_director0_disconnect0param0\\": \\"directorId-6\\",
+                            \\"this_director0_connect0_node_param0\\": \\"directorId2-6\\",
                             \\"updateMovies\\": {
                                 \\"args\\": {
-                                    \\"disconnect\\": {
+                                    \\"update\\": {
                                         \\"director\\": {
-                                            \\"where\\": {
-                                                \\"node\\": {
-                                                    \\"id_EQ\\": \\"directorId-6\\"
+                                            \\"connect\\": {
+                                                \\"where\\": {
+                                                    \\"node\\": {
+                                                        \\"id_EQ\\": \\"directorId2-6\\"
+                                                    }
+                                                },
+                                                \\"overwrite\\": true
+                                            },
+                                            \\"disconnect\\": {
+                                                \\"where\\": {
+                                                    \\"node\\": {
+                                                        \\"id_EQ\\": \\"directorId-6\\"
+                                                    }
                                                 }
                                             }
                                         }
@@ -1395,11 +1416,15 @@ describe("tck/rfs/003", () => {
                         mutation {
                             updateMovies(
                                 where: { id_EQ: "${movieId}" },
-                                disconnect: {
-                                    director: { where: { node: { id_EQ: "${directorId1}" } } }
-                                }
-                                connect: {
-                                    director: { where: { node: { id_EQ: "${directorId2}" } } }
+                                update: {
+                                    director: {
+                                        disconnect: {
+                                            where: { node: { id_EQ: "${directorId1}" } }
+                                        }
+                                        connect: {
+                                            where: { node: { id_EQ: "${directorId2}" } }
+                                        }
+                                    }
                                 }
                             ) {
                                 movies {
@@ -1420,33 +1445,33 @@ describe("tck/rfs/003", () => {
                         WITH this
                         CALL {
                         WITH this
-                        OPTIONAL MATCH (this)<-[this_disconnect_director0_rel:DIRECTED]-(this_disconnect_director0:Director)
-                        WHERE this_disconnect_director0.id = $updateMovies_args_disconnect_director_where_Director_this_disconnect_director0param0
+                        OPTIONAL MATCH (this)<-[this_director0_disconnect0_rel:DIRECTED]-(this_director0_disconnect0:Director)
+                        WHERE this_director0_disconnect0.id = $updateMovies_args_update_director_disconnect_where_Director_this_director0_disconnect0param0
                         CALL {
-                        	WITH this_disconnect_director0, this_disconnect_director0_rel, this
-                        	WITH collect(this_disconnect_director0) as this_disconnect_director0, this_disconnect_director0_rel, this
-                        	UNWIND this_disconnect_director0 as x
-                        	DELETE this_disconnect_director0_rel
+                        	WITH this_director0_disconnect0, this_director0_disconnect0_rel, this
+                        	WITH collect(this_director0_disconnect0) as this_director0_disconnect0, this_director0_disconnect0_rel, this
+                        	UNWIND this_director0_disconnect0 as x
+                        	DELETE this_director0_disconnect0_rel
                         }
-                        RETURN count(*) AS disconnect_this_disconnect_director_Director
+                        RETURN count(*) AS disconnect_this_director0_disconnect_Director
                         }
                         WITH *
                         CALL {
                         	WITH this
-                        	OPTIONAL MATCH (this_connect_director0_node:Director)
-                        	WHERE this_connect_director0_node.id = $this_connect_director0_node_param0
+                        	OPTIONAL MATCH (this_director0_connect0_node:Director)
+                        	WHERE this_director0_connect0_node.id = $this_director0_connect0_node_param0
                         	CALL {
                         		WITH *
-                        		WITH collect(this_connect_director0_node) as connectedNodes, collect(this) as parentNodes
+                        		WITH collect(this_director0_connect0_node) as connectedNodes, collect(this) as parentNodes
                         		CALL {
                         			WITH connectedNodes, parentNodes
                         			UNWIND parentNodes as this
-                        			UNWIND connectedNodes as this_connect_director0_node
-                        			MERGE (this)<-[:DIRECTED]-(this_connect_director0_node)
+                        			UNWIND connectedNodes as this_director0_connect0_node
+                        			MERGE (this)<-[:DIRECTED]-(this_director0_connect0_node)
                         		}
                         	}
-                        WITH this, this_connect_director0_node
-                        	RETURN count(*) AS connect_this_connect_director_Director0
+                        WITH this, this_director0_connect0_node
+                        	RETURN count(*) AS connect_this_director0_connect_Director0
                         }
                         WITH *
                         WITH *
@@ -1469,15 +1494,25 @@ describe("tck/rfs/003", () => {
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`
                         "{
                             \\"param0\\": \\"movieId-6\\",
-                            \\"updateMovies_args_disconnect_director_where_Director_this_disconnect_director0param0\\": \\"directorId-6\\",
-                            \\"this_connect_director0_node_param0\\": \\"directorId2-6\\",
+                            \\"updateMovies_args_update_director_disconnect_where_Director_this_director0_disconnect0param0\\": \\"directorId-6\\",
+                            \\"this_director0_connect0_node_param0\\": \\"directorId2-6\\",
                             \\"updateMovies\\": {
                                 \\"args\\": {
-                                    \\"disconnect\\": {
+                                    \\"update\\": {
                                         \\"director\\": {
-                                            \\"where\\": {
-                                                \\"node\\": {
-                                                    \\"id_EQ\\": \\"directorId-6\\"
+                                            \\"connect\\": {
+                                                \\"where\\": {
+                                                    \\"node\\": {
+                                                        \\"id_EQ\\": \\"directorId2-6\\"
+                                                    }
+                                                },
+                                                \\"overwrite\\": true
+                                            },
+                                            \\"disconnect\\": {
+                                                \\"where\\": {
+                                                    \\"node\\": {
+                                                        \\"id_EQ\\": \\"directorId-6\\"
+                                                    }
                                                 }
                                             }
                                         }

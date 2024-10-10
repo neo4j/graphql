@@ -84,9 +84,14 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
                 mutation {
                     ${testUser.operations.update}(
                         where: { name_EQ: "Luke Skywalker" }
-                        connect: { activeOrganization: { where: { node: { id_EQ: "${orgId}" } } } }
-                        disconnect: { activeOrganization: { where: { node: { NOT: { id_EQ: "${orgId}" } } } } }
-                    ) {
+                        update: {
+                            activeOrganization: {
+                                connect: { where: { node: { id_EQ: "${orgId}" } } } 
+                                disconnect: { where: { node: { NOT: { id_EQ: "${orgId}" } } } } 
+                                
+                            }
+                        }
+                        ) {
                         ${testUser.plural} {
                             id
                         }

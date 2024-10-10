@@ -69,7 +69,7 @@ describe("Mass Delete", () => {
     test("Should successfully delete many nodes in the same query", async () => {
         const mutation = `
             mutation {
-                ${movieType.operations.update}(delete: { actors: { where: { node: { name_CONTAINS: "Shark" } } } }) {
+                ${movieType.operations.update}(update: { actors: { delete: { where: { node: { name_CONTAINS: "Shark" } } } } }) {
                     ${movieType.plural} {
                         title
                     }

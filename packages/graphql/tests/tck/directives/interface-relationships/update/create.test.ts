@@ -59,8 +59,13 @@ describe("Interface Relationships - Update create", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateActors(
-                    create: {
-                        actedIn: { edge: { screenTime: 90 }, node: { Movie: { title: "Example Film", runtime: 90 } } }
+                    update: {
+                        actedIn: {
+                            create: {
+                                edge: { screenTime: 90 }
+                                node: { Movie: { title: "Example Film", runtime: 90 } }
+                            }
+                        }
                     }
                 ) {
                     actors {
@@ -83,11 +88,22 @@ describe("Interface Relationships - Update create", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Actor)
-            CREATE (this_create_actedIn_Movie0_node_Movie:Movie)
-            SET this_create_actedIn_Movie0_node_Movie.title = $this_create_actedIn_Movie0_node_Movie_title
-            SET this_create_actedIn_Movie0_node_Movie.runtime = $this_create_actedIn_Movie0_node_Movie_runtime
-            MERGE (this)-[this_create_actedIn_Movie0_relationship:ACTED_IN]->(this_create_actedIn_Movie0_node_Movie)
-            SET this_create_actedIn_Movie0_relationship.screenTime = $this_create_actedIn_Movie0_relationship_screenTime
+            WITH this
+            CALL {
+            	 WITH this
+            WITH this
+            CREATE (this_actedIn0_create0_node:Movie)
+            SET this_actedIn0_create0_node.title = $this_actedIn0_create0_node_title
+            SET this_actedIn0_create0_node.runtime = $this_actedIn0_create0_node_runtime
+            MERGE (this)-[this_actedIn0_create0_relationship:ACTED_IN]->(this_actedIn0_create0_node)
+            SET this_actedIn0_create0_relationship.screenTime = $updateActors.args.update.actedIn[0].create[0].edge.screenTime
+            RETURN count(*) AS update_this_Movie
+            }
+            CALL {
+            	 WITH this
+            	WITH this
+            RETURN count(*) AS update_this_Series
+            }
             WITH *
             CALL {
                 WITH this
@@ -110,14 +126,39 @@ describe("Interface Relationships - Update create", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_create_actedIn_Movie0_node_Movie_title\\": \\"Example Film\\",
-                \\"this_create_actedIn_Movie0_node_Movie_runtime\\": {
+                \\"this_actedIn0_create0_node_title\\": \\"Example Film\\",
+                \\"this_actedIn0_create0_node_runtime\\": {
                     \\"low\\": 90,
                     \\"high\\": 0
                 },
-                \\"this_create_actedIn_Movie0_relationship_screenTime\\": {
-                    \\"low\\": 90,
-                    \\"high\\": 0
+                \\"updateActors\\": {
+                    \\"args\\": {
+                        \\"update\\": {
+                            \\"actedIn\\": [
+                                {
+                                    \\"create\\": [
+                                        {
+                                            \\"edge\\": {
+                                                \\"screenTime\\": {
+                                                    \\"low\\": 90,
+                                                    \\"high\\": 0
+                                                }
+                                            },
+                                            \\"node\\": {
+                                                \\"Movie\\": {
+                                                    \\"title\\": \\"Example Film\\",
+                                                    \\"runtime\\": {
+                                                        \\"low\\": 90,
+                                                        \\"high\\": 0
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    }
                 },
                 \\"resolvedCallbacks\\": {}
             }"

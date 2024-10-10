@@ -95,7 +95,13 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
             mutation {
                 ${ProgrammeItem.operations.update}(
                     where: { productTitle_EQ: "TestFilm1" }
-                    connect: { relatedTo: { where: { node: { productTitle_EQ: "TestEpisode1" } } } }
+                    update: {
+                        relatedTo: {
+                            connect: {
+                                 where: { node: { productTitle_EQ: "TestEpisode1" } } 
+                            }
+                        }
+                    }
                 ) {
                     ${ProgrammeItem.plural} {
                         productTitle

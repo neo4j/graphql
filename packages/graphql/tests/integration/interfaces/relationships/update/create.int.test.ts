@@ -106,8 +106,8 @@ describe("interface relationships", () => {
             ) {
                 ${Actor.operations.update}(
                     where: { name_EQ: $name }
-                    create: {
-                        actedIn: [
+                    update: {
+                        actedIn: { create: [
                             {
                                 edge: { screenTime: $movieScreenTime }
                                 node: { ${Movie}: { title: $movieTitle, runtime: $movieRuntime } }
@@ -116,7 +116,7 @@ describe("interface relationships", () => {
                                 edge: { screenTime: $seriesScreenTime }
                                 node: { ${Series}: { title: $seriesTitle, episodes: { create: [{ node: { runtime: 123 } }] } } }
                             }
-                        ]
+                        ]}
                     }
                 ) {
                     ${Actor.plural} {
@@ -207,8 +207,8 @@ describe("interface relationships", () => {
             ) {
                 ${Actor.operations.update}(
                     where: { name_EQ: $name1 }
-                    create: {
-                        actedIn: [
+                    update: {
+                        actedIn: { create: [
                             {
                                 edge: { screenTime: $movieScreenTime }
                                 node: {
@@ -222,7 +222,7 @@ describe("interface relationships", () => {
                                 }
                             }
                             { edge: { screenTime: $seriesScreenTime }, node: { ${Series}: { title: $seriesTitle, episodes: { create: [{ node: { runtime: 123 } }] }} } }
-                        ]
+                        ]}
                     }
                 ) {
                     ${Actor.plural} {

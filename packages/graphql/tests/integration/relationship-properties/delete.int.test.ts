@@ -65,7 +65,7 @@ describe("Relationship properties - delete", () => {
             mutation ($movieTitle: String!, $actorName1: String!) {
                 ${Movie.operations.update}(
                     where: { title_EQ: $movieTitle }
-                    delete: { actors: { where: { node: { name_EQ: $actorName1 } } } }
+                    update: { actors: { delete: { where: { node: { name_EQ: $actorName1 } } } } }
                 ) {
                     ${Movie.plural} {
                         title
@@ -137,7 +137,7 @@ describe("Relationship properties - delete", () => {
             mutation ($screenTime: Int!, $actorName: String!) {
                 ${Actor.operations.update}(
                     where: { name_EQ: $actorName }
-                    delete: { actedIn: { ${Movie}: { where: { edge: { screenTime_EQ: $screenTime } } } } }
+                    update: { actedIn: { ${Movie}: { delete: { where: { edge: { screenTime_EQ: $screenTime } } } } } }
                 ) {
                     ${Actor.plural} {
                         name

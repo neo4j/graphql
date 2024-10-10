@@ -59,12 +59,12 @@ describe("@alias directive", () => {
             mutation {
               ${typeActor.operations.update}(
                 update: {
-                    name: "Tom Hanks 2"
-                },
-                connectOrCreate: {
+                  name: "Tom Hanks 2"
                     movies: {
+                      connectOrCreate: {
                         where: { node: { id_EQ: 5 } }
                         onCreate: { node: { title: "The Terminal", titleAgain: "oops" } }
+                      }
                     }
                 }
                 where: { name_EQ: "Tom Hanks"}
