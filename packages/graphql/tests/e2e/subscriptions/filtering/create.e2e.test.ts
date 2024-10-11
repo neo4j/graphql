@@ -17,12 +17,8 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import type { Response } from "supertest";
 import supertest from "supertest";
-import { Neo4jGraphQLSubscriptionsCDCEngine } from "../../../../src/classes/subscription/Neo4jGraphQLSubscriptionsCDCEngine";
-import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../../src/classes/subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
-import type { Neo4jGraphQLSubscriptionsEngine } from "../../../../src/types";
 import { delay } from "../../../../src/utils/utils";
 import type { UniqueType } from "../../../utils/graphql-types";
 import { TestHelper } from "../../../utils/tests-helper";
@@ -30,29 +26,11 @@ import type { TestGraphQLServer } from "../../setup/apollo-server";
 import { ApolloTestServer } from "../../setup/apollo-server";
 import { WebSocketTestClient } from "../../setup/ws-client";
 
-describe.each([
-    {
-        name: "Neo4jGraphQLSubscriptionsDefaultEngine",
-        engine: (_driver: Driver, _db: string) => new Neo4jGraphQLSubscriptionsDefaultEngine(),
-    },
-    {
-        name: "Neo4jGraphQLSubscriptionsCDCEngine",
-        engine: (driver: Driver, db: string) =>
-            new Neo4jGraphQLSubscriptionsCDCEngine({
-                driver,
-                pollTime: 100,
-                queryConfig: {
-                    database: db,
-                },
-            }),
-    },
-    // ])("$name Create Subscription", ({ engine }) => {
-])("$name Create Subscription with optional filters valid for all types", ({ engine }) => {
+describe("Create Subscription with optional filters valid for all types", () => {
     const testHelper = new TestHelper({ cdc: true });
     let server: TestGraphQLServer;
     let wsClient: WebSocketTestClient;
     let typeMovie: UniqueType;
-    let subscriptionEngine: Neo4jGraphQLSubscriptionsEngine;
 
     beforeEach(async () => {
         typeMovie = testHelper.createUniqueType("Movie");
@@ -68,13 +46,10 @@ describe.each([
          }
          `;
 
-        const driver = await testHelper.getDriver();
-        subscriptionEngine = engine(driver, testHelper.database);
-
         const neoSchema = await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {
-                subscriptions: subscriptionEngine,
+                subscriptions: await testHelper.getSubscriptionEngine(),
             },
         });
 
@@ -92,7 +67,6 @@ describe.each([
 
     afterEach(async () => {
         await wsClient.close();
-        subscriptionEngine.close();
         await server.close();
         await testHelper.close();
     });
@@ -635,7 +609,7 @@ describe.each([
             },
         ]);
     });
- 
+
     test("subscription with IN on BigInt", async () => {
         await wsClient.subscribe(`
             subscription {
@@ -661,7 +635,7 @@ describe.each([
             },
         ]);
     });
- 
+
     test("subscription with IN on Boolean should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
@@ -705,7 +679,7 @@ describe.each([
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-   
+
     // NOT operator tests
     test("subscription with where filter NOT operator 1 result", async () => {
         await wsClient.subscribe(`

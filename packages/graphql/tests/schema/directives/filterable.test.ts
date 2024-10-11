@@ -22,15 +22,8 @@ import type { GraphQLInputObjectType } from "graphql";
 import { lexicographicSortSchema } from "graphql";
 import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
 
 describe("@filterable directive", () => {
-    let plugin: TestSubscriptionsEngine;
-
-    beforeAll(() => {
-        plugin = new TestSubscriptionsEngine();
-    });
-
     describe("on SCALAR", () => {
         test("default arguments should disable aggregation", async () => {
             const typeDefs = gql`
@@ -48,7 +41,7 @@ describe("@filterable directive", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 features: {
-                    subscriptions: plugin,
+                    subscriptions: true,
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -117,7 +110,7 @@ describe("@filterable directive", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 features: {
-                    subscriptions: plugin,
+                    subscriptions: true,
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -224,7 +217,7 @@ describe("@filterable directive", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 features: {
-                    subscriptions: plugin,
+                    subscriptions: true,
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -314,7 +307,7 @@ describe("@filterable directive", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 features: {
-                    subscriptions: plugin,
+                    subscriptions: true,
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -362,7 +355,7 @@ describe("@filterable directive", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 features: {
-                    subscriptions: plugin,
+                    subscriptions: true,
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -410,7 +403,7 @@ describe("@filterable directive", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 features: {
-                    subscriptions: plugin,
+                    subscriptions: true,
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -460,7 +453,7 @@ describe("@filterable directive", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 features: {
-                    subscriptions: plugin,
+                    subscriptions: true,
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -512,7 +505,7 @@ describe("@filterable directive", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 features: {
-                    subscriptions: plugin,
+                    subscriptions: true,
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -564,7 +557,7 @@ describe("@filterable directive", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 features: {
-                    subscriptions: plugin,
+                    subscriptions: true,
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -616,7 +609,7 @@ describe("@filterable directive", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 features: {
-                    subscriptions: plugin,
+                    subscriptions: true,
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -668,7 +661,7 @@ describe("@filterable directive", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 features: {
-                    subscriptions: plugin,
+                    subscriptions: true,
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -726,7 +719,7 @@ describe("@filterable directive", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 features: {
-                    subscriptions: plugin,
+                    subscriptions: true,
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -782,7 +775,7 @@ describe("@filterable directive", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 features: {
-                    subscriptions: plugin,
+                    subscriptions: true,
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -838,7 +831,7 @@ describe("@filterable directive", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 features: {
-                    subscriptions: plugin,
+                    subscriptions: true,
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -887,7 +880,7 @@ describe("@filterable directive", () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
                     features: {
-                        subscriptions: plugin,
+                        subscriptions: true,
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -919,10 +912,6 @@ describe("@filterable directive", () => {
 
                     input ActorConnectWhere {
                       node: ActorWhere!
-                    }
-
-                    type ActorConnectedRelationships {
-                      movies: ActorMoviesConnectedRelationship
                     }
 
                     input ActorCreateInput {
@@ -991,10 +980,6 @@ describe("@filterable directive", () => {
                       where: MovieConnectWhere
                     }
 
-                    type ActorMoviesConnectedRelationship {
-                      node: MovieEventPayload!
-                    }
-
                     type ActorMoviesConnection {
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
@@ -1036,10 +1021,6 @@ describe("@filterable directive", () => {
                       node: Movie!
                     }
 
-                    input ActorMoviesRelationshipSubscriptionWhere {
-                      node: MovieSubscriptionWhere
-                    }
-
                     input ActorMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
                     }
@@ -1064,42 +1045,6 @@ describe("@filterable directive", () => {
 
                     input ActorRelationInput {
                       movies: [ActorMoviesCreateFieldInput!]
-                    }
-
-                    type ActorRelationshipCreatedEvent {
-                      actor: ActorEventPayload!
-                      createdRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipCreatedSubscriptionWhere {
-                      AND: [ActorRelationshipCreatedSubscriptionWhere!]
-                      NOT: ActorRelationshipCreatedSubscriptionWhere
-                      OR: [ActorRelationshipCreatedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      createdRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    type ActorRelationshipDeletedEvent {
-                      actor: ActorEventPayload!
-                      deletedRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipDeletedSubscriptionWhere {
-                      AND: [ActorRelationshipDeletedSubscriptionWhere!]
-                      NOT: ActorRelationshipDeletedSubscriptionWhere
-                      OR: [ActorRelationshipDeletedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      deletedRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    input ActorRelationshipsSubscriptionWhere {
-                      movies: ActorMoviesRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -1263,10 +1208,6 @@ describe("@filterable directive", () => {
                       where: ActorConnectWhere
                     }
 
-                    type MovieActorsConnectedRelationship {
-                      node: ActorEventPayload!
-                    }
-
                     type MovieActorsConnection {
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
@@ -1374,10 +1315,6 @@ describe("@filterable directive", () => {
                       node: Actor!
                     }
 
-                    input MovieActorsRelationshipSubscriptionWhere {
-                      node: ActorSubscriptionWhere
-                    }
-
                     input MovieActorsUpdateConnectionInput {
                       node: ActorUpdateInput
                     }
@@ -1402,10 +1339,6 @@ describe("@filterable directive", () => {
 
                     input MovieConnectWhere {
                       node: MovieWhere!
-                    }
-
-                    type MovieConnectedRelationships {
-                      actors: MovieActorsConnectedRelationship
                     }
 
                     input MovieCreateInput {
@@ -1453,42 +1386,6 @@ describe("@filterable directive", () => {
 
                     input MovieRelationInput {
                       actors: [MovieActorsCreateFieldInput!]
-                    }
-
-                    type MovieRelationshipCreatedEvent {
-                      createdRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipCreatedSubscriptionWhere {
-                      AND: [MovieRelationshipCreatedSubscriptionWhere!]
-                      NOT: MovieRelationshipCreatedSubscriptionWhere
-                      OR: [MovieRelationshipCreatedSubscriptionWhere!]
-                      createdRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    type MovieRelationshipDeletedEvent {
-                      deletedRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipDeletedSubscriptionWhere {
-                      AND: [MovieRelationshipDeletedSubscriptionWhere!]
-                      NOT: MovieRelationshipDeletedSubscriptionWhere
-                      OR: [MovieRelationshipDeletedSubscriptionWhere!]
-                      deletedRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    input MovieRelationshipsSubscriptionWhere {
-                      actors: MovieActorsRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -1607,13 +1504,9 @@ describe("@filterable directive", () => {
                     type Subscription {
                       actorCreated(where: ActorSubscriptionWhere): ActorCreatedEvent!
                       actorDeleted(where: ActorSubscriptionWhere): ActorDeletedEvent!
-                      actorRelationshipCreated(where: ActorRelationshipCreatedSubscriptionWhere): ActorRelationshipCreatedEvent!
-                      actorRelationshipDeleted(where: ActorRelationshipDeletedSubscriptionWhere): ActorRelationshipDeletedEvent!
                       actorUpdated(where: ActorSubscriptionWhere): ActorUpdatedEvent!
                       movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
                       movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-                      movieRelationshipCreated(where: MovieRelationshipCreatedSubscriptionWhere): MovieRelationshipCreatedEvent!
-                      movieRelationshipDeleted(where: MovieRelationshipDeletedSubscriptionWhere): MovieRelationshipDeletedEvent!
                       movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
                     }
 
@@ -1655,7 +1548,7 @@ describe("@filterable directive", () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
                     features: {
-                        subscriptions: plugin,
+                        subscriptions: true,
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -1687,10 +1580,6 @@ describe("@filterable directive", () => {
 
                     input ActorConnectWhere {
                       node: ActorWhere!
-                    }
-
-                    type ActorConnectedRelationships {
-                      movies: ActorMoviesConnectedRelationship
                     }
 
                     input ActorCreateInput {
@@ -1758,10 +1647,6 @@ describe("@filterable directive", () => {
                       \\"\\"\\"
                       overwrite: Boolean! = true
                       where: MovieConnectWhere
-                    }
-
-                    type ActorMoviesConnectedRelationship {
-                      node: MovieEventPayload!
                     }
 
                     type ActorMoviesConnection {
@@ -1841,10 +1726,6 @@ describe("@filterable directive", () => {
                       node: Movie!
                     }
 
-                    input ActorMoviesRelationshipSubscriptionWhere {
-                      node: MovieSubscriptionWhere
-                    }
-
                     input ActorMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
                     }
@@ -1869,42 +1750,6 @@ describe("@filterable directive", () => {
 
                     input ActorRelationInput {
                       movies: [ActorMoviesCreateFieldInput!]
-                    }
-
-                    type ActorRelationshipCreatedEvent {
-                      actor: ActorEventPayload!
-                      createdRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipCreatedSubscriptionWhere {
-                      AND: [ActorRelationshipCreatedSubscriptionWhere!]
-                      NOT: ActorRelationshipCreatedSubscriptionWhere
-                      OR: [ActorRelationshipCreatedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      createdRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    type ActorRelationshipDeletedEvent {
-                      actor: ActorEventPayload!
-                      deletedRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipDeletedSubscriptionWhere {
-                      AND: [ActorRelationshipDeletedSubscriptionWhere!]
-                      NOT: ActorRelationshipDeletedSubscriptionWhere
-                      OR: [ActorRelationshipDeletedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      deletedRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    input ActorRelationshipsSubscriptionWhere {
-                      movies: ActorMoviesRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -2068,10 +1913,6 @@ describe("@filterable directive", () => {
                       where: ActorConnectWhere
                     }
 
-                    type MovieActorsConnectedRelationship {
-                      node: ActorEventPayload!
-                    }
-
                     type MovieActorsConnection {
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
@@ -2179,10 +2020,6 @@ describe("@filterable directive", () => {
                       node: Actor!
                     }
 
-                    input MovieActorsRelationshipSubscriptionWhere {
-                      node: ActorSubscriptionWhere
-                    }
-
                     input MovieActorsUpdateConnectionInput {
                       node: ActorUpdateInput
                     }
@@ -2207,10 +2044,6 @@ describe("@filterable directive", () => {
 
                     input MovieConnectWhere {
                       node: MovieWhere!
-                    }
-
-                    type MovieConnectedRelationships {
-                      actors: MovieActorsConnectedRelationship
                     }
 
                     input MovieCreateInput {
@@ -2258,42 +2091,6 @@ describe("@filterable directive", () => {
 
                     input MovieRelationInput {
                       actors: [MovieActorsCreateFieldInput!]
-                    }
-
-                    type MovieRelationshipCreatedEvent {
-                      createdRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipCreatedSubscriptionWhere {
-                      AND: [MovieRelationshipCreatedSubscriptionWhere!]
-                      NOT: MovieRelationshipCreatedSubscriptionWhere
-                      OR: [MovieRelationshipCreatedSubscriptionWhere!]
-                      createdRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    type MovieRelationshipDeletedEvent {
-                      deletedRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipDeletedSubscriptionWhere {
-                      AND: [MovieRelationshipDeletedSubscriptionWhere!]
-                      NOT: MovieRelationshipDeletedSubscriptionWhere
-                      OR: [MovieRelationshipDeletedSubscriptionWhere!]
-                      deletedRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    input MovieRelationshipsSubscriptionWhere {
-                      actors: MovieActorsRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -2412,13 +2209,9 @@ describe("@filterable directive", () => {
                     type Subscription {
                       actorCreated(where: ActorSubscriptionWhere): ActorCreatedEvent!
                       actorDeleted(where: ActorSubscriptionWhere): ActorDeletedEvent!
-                      actorRelationshipCreated(where: ActorRelationshipCreatedSubscriptionWhere): ActorRelationshipCreatedEvent!
-                      actorRelationshipDeleted(where: ActorRelationshipDeletedSubscriptionWhere): ActorRelationshipDeletedEvent!
                       actorUpdated(where: ActorSubscriptionWhere): ActorUpdatedEvent!
                       movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
                       movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-                      movieRelationshipCreated(where: MovieRelationshipCreatedSubscriptionWhere): MovieRelationshipCreatedEvent!
-                      movieRelationshipDeleted(where: MovieRelationshipDeletedSubscriptionWhere): MovieRelationshipDeletedEvent!
                       movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
                     }
 
@@ -2460,7 +2253,7 @@ describe("@filterable directive", () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
                     features: {
-                        subscriptions: plugin,
+                        subscriptions: true,
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -2492,10 +2285,6 @@ describe("@filterable directive", () => {
 
                     input ActorConnectWhere {
                       node: ActorWhere!
-                    }
-
-                    type ActorConnectedRelationships {
-                      movies: ActorMoviesConnectedRelationship
                     }
 
                     input ActorCreateInput {
@@ -2563,10 +2352,6 @@ describe("@filterable directive", () => {
                       \\"\\"\\"
                       overwrite: Boolean! = true
                       where: MovieConnectWhere
-                    }
-
-                    type ActorMoviesConnectedRelationship {
-                      node: MovieEventPayload!
                     }
 
                     type ActorMoviesConnection {
@@ -2670,36 +2455,6 @@ describe("@filterable directive", () => {
 
                     input ActorRelationInput {
                       movies: [ActorMoviesCreateFieldInput!]
-                    }
-
-                    type ActorRelationshipCreatedEvent {
-                      actor: ActorEventPayload!
-                      createdRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipCreatedSubscriptionWhere {
-                      AND: [ActorRelationshipCreatedSubscriptionWhere!]
-                      NOT: ActorRelationshipCreatedSubscriptionWhere
-                      OR: [ActorRelationshipCreatedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                    }
-
-                    type ActorRelationshipDeletedEvent {
-                      actor: ActorEventPayload!
-                      deletedRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipDeletedSubscriptionWhere {
-                      AND: [ActorRelationshipDeletedSubscriptionWhere!]
-                      NOT: ActorRelationshipDeletedSubscriptionWhere
-                      OR: [ActorRelationshipDeletedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -2863,10 +2618,6 @@ describe("@filterable directive", () => {
                       where: ActorConnectWhere
                     }
 
-                    type MovieActorsConnectedRelationship {
-                      node: ActorEventPayload!
-                    }
-
                     type MovieActorsConnection {
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
@@ -2974,10 +2725,6 @@ describe("@filterable directive", () => {
                       node: Actor!
                     }
 
-                    input MovieActorsRelationshipSubscriptionWhere {
-                      node: ActorSubscriptionWhere
-                    }
-
                     input MovieActorsUpdateConnectionInput {
                       node: ActorUpdateInput
                     }
@@ -3002,10 +2749,6 @@ describe("@filterable directive", () => {
 
                     input MovieConnectWhere {
                       node: MovieWhere!
-                    }
-
-                    type MovieConnectedRelationships {
-                      actors: MovieActorsConnectedRelationship
                     }
 
                     input MovieCreateInput {
@@ -3053,40 +2796,6 @@ describe("@filterable directive", () => {
 
                     input MovieRelationInput {
                       actors: [MovieActorsCreateFieldInput!]
-                    }
-
-                    type MovieRelationshipCreatedEvent {
-                      createdRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipCreatedSubscriptionWhere {
-                      AND: [MovieRelationshipCreatedSubscriptionWhere!]
-                      NOT: MovieRelationshipCreatedSubscriptionWhere
-                      OR: [MovieRelationshipCreatedSubscriptionWhere!]
-                      createdRelationship: MovieRelationshipsSubscriptionWhere
-                    }
-
-                    type MovieRelationshipDeletedEvent {
-                      deletedRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipDeletedSubscriptionWhere {
-                      AND: [MovieRelationshipDeletedSubscriptionWhere!]
-                      NOT: MovieRelationshipDeletedSubscriptionWhere
-                      OR: [MovieRelationshipDeletedSubscriptionWhere!]
-                      deletedRelationship: MovieRelationshipsSubscriptionWhere
-                    }
-
-                    input MovieRelationshipsSubscriptionWhere {
-                      actors: MovieActorsRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -3187,13 +2896,9 @@ describe("@filterable directive", () => {
                     type Subscription {
                       actorCreated(where: ActorSubscriptionWhere): ActorCreatedEvent!
                       actorDeleted(where: ActorSubscriptionWhere): ActorDeletedEvent!
-                      actorRelationshipCreated(where: ActorRelationshipCreatedSubscriptionWhere): ActorRelationshipCreatedEvent!
-                      actorRelationshipDeleted(where: ActorRelationshipDeletedSubscriptionWhere): ActorRelationshipDeletedEvent!
                       actorUpdated(where: ActorSubscriptionWhere): ActorUpdatedEvent!
                       movieCreated: MovieCreatedEvent!
                       movieDeleted: MovieDeletedEvent!
-                      movieRelationshipCreated(where: MovieRelationshipCreatedSubscriptionWhere): MovieRelationshipCreatedEvent!
-                      movieRelationshipDeleted(where: MovieRelationshipDeletedSubscriptionWhere): MovieRelationshipDeletedEvent!
                       movieUpdated: MovieUpdatedEvent!
                     }
 
@@ -3237,7 +2942,7 @@ describe("@filterable directive", () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
                     features: {
-                        subscriptions: plugin,
+                        subscriptions: true,
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -3270,10 +2975,6 @@ describe("@filterable directive", () => {
 
                     input ActorConnectWhere {
                       node: ActorWhere!
-                    }
-
-                    type ActorConnectedRelationships {
-                      movies: ActorMoviesConnectedRelationship
                     }
 
                     input ActorCreateInput {
@@ -3341,10 +3042,6 @@ describe("@filterable directive", () => {
                       \\"\\"\\"
                       overwrite: Boolean! = true
                       where: MovieConnectWhere
-                    }
-
-                    type ActorMoviesConnectedRelationship {
-                      node: MovieEventPayload!
                     }
 
                     type ActorMoviesConnection {
@@ -3424,10 +3121,6 @@ describe("@filterable directive", () => {
                       node: Movie!
                     }
 
-                    input ActorMoviesRelationshipSubscriptionWhere {
-                      node: MovieSubscriptionWhere
-                    }
-
                     input ActorMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
                     }
@@ -3452,42 +3145,6 @@ describe("@filterable directive", () => {
 
                     input ActorRelationInput {
                       movies: [ActorMoviesCreateFieldInput!]
-                    }
-
-                    type ActorRelationshipCreatedEvent {
-                      actor: ActorEventPayload!
-                      createdRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipCreatedSubscriptionWhere {
-                      AND: [ActorRelationshipCreatedSubscriptionWhere!]
-                      NOT: ActorRelationshipCreatedSubscriptionWhere
-                      OR: [ActorRelationshipCreatedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      createdRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    type ActorRelationshipDeletedEvent {
-                      actor: ActorEventPayload!
-                      deletedRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipDeletedSubscriptionWhere {
-                      AND: [ActorRelationshipDeletedSubscriptionWhere!]
-                      NOT: ActorRelationshipDeletedSubscriptionWhere
-                      OR: [ActorRelationshipDeletedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      deletedRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    input ActorRelationshipsSubscriptionWhere {
-                      movies: ActorMoviesRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -3638,10 +3295,6 @@ describe("@filterable directive", () => {
                       where: ActorConnectWhere
                     }
 
-                    type MovieActorsConnectedRelationship {
-                      node: ActorEventPayload!
-                    }
-
                     type MovieActorsConnection {
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
@@ -3683,10 +3336,6 @@ describe("@filterable directive", () => {
                       node: Actor!
                     }
 
-                    input MovieActorsRelationshipSubscriptionWhere {
-                      node: ActorSubscriptionWhere
-                    }
-
                     input MovieActorsUpdateConnectionInput {
                       node: ActorUpdateInput
                     }
@@ -3711,10 +3360,6 @@ describe("@filterable directive", () => {
 
                     input MovieConnectWhere {
                       node: MovieWhere!
-                    }
-
-                    type MovieConnectedRelationships {
-                      actors: MovieActorsConnectedRelationship
                     }
 
                     input MovieCreateInput {
@@ -3762,42 +3407,6 @@ describe("@filterable directive", () => {
 
                     input MovieRelationInput {
                       actors: [MovieActorsCreateFieldInput!]
-                    }
-
-                    type MovieRelationshipCreatedEvent {
-                      createdRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipCreatedSubscriptionWhere {
-                      AND: [MovieRelationshipCreatedSubscriptionWhere!]
-                      NOT: MovieRelationshipCreatedSubscriptionWhere
-                      OR: [MovieRelationshipCreatedSubscriptionWhere!]
-                      createdRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    type MovieRelationshipDeletedEvent {
-                      deletedRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipDeletedSubscriptionWhere {
-                      AND: [MovieRelationshipDeletedSubscriptionWhere!]
-                      NOT: MovieRelationshipDeletedSubscriptionWhere
-                      OR: [MovieRelationshipDeletedSubscriptionWhere!]
-                      deletedRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    input MovieRelationshipsSubscriptionWhere {
-                      actors: MovieActorsRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -3915,13 +3524,9 @@ describe("@filterable directive", () => {
                     type Subscription {
                       actorCreated(where: ActorSubscriptionWhere): ActorCreatedEvent!
                       actorDeleted(where: ActorSubscriptionWhere): ActorDeletedEvent!
-                      actorRelationshipCreated(where: ActorRelationshipCreatedSubscriptionWhere): ActorRelationshipCreatedEvent!
-                      actorRelationshipDeleted(where: ActorRelationshipDeletedSubscriptionWhere): ActorRelationshipDeletedEvent!
                       actorUpdated(where: ActorSubscriptionWhere): ActorUpdatedEvent!
                       movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
                       movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-                      movieRelationshipCreated(where: MovieRelationshipCreatedSubscriptionWhere): MovieRelationshipCreatedEvent!
-                      movieRelationshipDeleted(where: MovieRelationshipDeletedSubscriptionWhere): MovieRelationshipDeletedEvent!
                       movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
                     }
 
@@ -3965,7 +3570,7 @@ describe("@filterable directive", () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
                     features: {
-                        subscriptions: plugin,
+                        subscriptions: true,
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -3997,10 +3602,6 @@ describe("@filterable directive", () => {
 
                     input ActorConnectWhere {
                       node: ActorWhere!
-                    }
-
-                    type ActorConnectedRelationships {
-                      movies: ActorMoviesConnectedRelationship
                     }
 
                     input ActorCreateInput {
@@ -4068,10 +3669,6 @@ describe("@filterable directive", () => {
                       \\"\\"\\"
                       overwrite: Boolean! = true
                       where: MovieConnectWhere
-                    }
-
-                    type ActorMoviesConnectedRelationship {
-                      node: MovieEventPayload!
                     }
 
                     type ActorMoviesConnection {
@@ -4151,10 +3748,6 @@ describe("@filterable directive", () => {
                       node: Movie!
                     }
 
-                    input ActorMoviesRelationshipSubscriptionWhere {
-                      node: MovieSubscriptionWhere
-                    }
-
                     input ActorMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
                     }
@@ -4179,42 +3772,6 @@ describe("@filterable directive", () => {
 
                     input ActorRelationInput {
                       movies: [ActorMoviesCreateFieldInput!]
-                    }
-
-                    type ActorRelationshipCreatedEvent {
-                      actor: ActorEventPayload!
-                      createdRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipCreatedSubscriptionWhere {
-                      AND: [ActorRelationshipCreatedSubscriptionWhere!]
-                      NOT: ActorRelationshipCreatedSubscriptionWhere
-                      OR: [ActorRelationshipCreatedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      createdRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    type ActorRelationshipDeletedEvent {
-                      actor: ActorEventPayload!
-                      deletedRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipDeletedSubscriptionWhere {
-                      AND: [ActorRelationshipDeletedSubscriptionWhere!]
-                      NOT: ActorRelationshipDeletedSubscriptionWhere
-                      OR: [ActorRelationshipDeletedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      deletedRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    input ActorRelationshipsSubscriptionWhere {
-                      movies: ActorMoviesRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -4378,10 +3935,6 @@ describe("@filterable directive", () => {
                       where: ActorConnectWhere
                     }
 
-                    type MovieActorsConnectedRelationship {
-                      node: ActorEventPayload!
-                    }
-
                     type MovieActorsConnection {
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
@@ -4489,10 +4042,6 @@ describe("@filterable directive", () => {
                       node: Actor!
                     }
 
-                    input MovieActorsRelationshipSubscriptionWhere {
-                      node: ActorSubscriptionWhere
-                    }
-
                     input MovieActorsUpdateConnectionInput {
                       node: ActorUpdateInput
                     }
@@ -4517,10 +4066,6 @@ describe("@filterable directive", () => {
 
                     input MovieConnectWhere {
                       node: MovieWhere!
-                    }
-
-                    type MovieConnectedRelationships {
-                      actors: MovieActorsConnectedRelationship
                     }
 
                     input MovieCreateInput {
@@ -4568,42 +4113,6 @@ describe("@filterable directive", () => {
 
                     input MovieRelationInput {
                       actors: [MovieActorsCreateFieldInput!]
-                    }
-
-                    type MovieRelationshipCreatedEvent {
-                      createdRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipCreatedSubscriptionWhere {
-                      AND: [MovieRelationshipCreatedSubscriptionWhere!]
-                      NOT: MovieRelationshipCreatedSubscriptionWhere
-                      OR: [MovieRelationshipCreatedSubscriptionWhere!]
-                      createdRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    type MovieRelationshipDeletedEvent {
-                      deletedRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipDeletedSubscriptionWhere {
-                      AND: [MovieRelationshipDeletedSubscriptionWhere!]
-                      NOT: MovieRelationshipDeletedSubscriptionWhere
-                      OR: [MovieRelationshipDeletedSubscriptionWhere!]
-                      deletedRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    input MovieRelationshipsSubscriptionWhere {
-                      actors: MovieActorsRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -4722,13 +4231,9 @@ describe("@filterable directive", () => {
                     type Subscription {
                       actorCreated(where: ActorSubscriptionWhere): ActorCreatedEvent!
                       actorDeleted(where: ActorSubscriptionWhere): ActorDeletedEvent!
-                      actorRelationshipCreated(where: ActorRelationshipCreatedSubscriptionWhere): ActorRelationshipCreatedEvent!
-                      actorRelationshipDeleted(where: ActorRelationshipDeletedSubscriptionWhere): ActorRelationshipDeletedEvent!
                       actorUpdated(where: ActorSubscriptionWhere): ActorUpdatedEvent!
                       movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
                       movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-                      movieRelationshipCreated(where: MovieRelationshipCreatedSubscriptionWhere): MovieRelationshipCreatedEvent!
-                      movieRelationshipDeleted(where: MovieRelationshipDeletedSubscriptionWhere): MovieRelationshipDeletedEvent!
                       movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
                     }
 
@@ -4772,7 +4277,7 @@ describe("@filterable directive", () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
                     features: {
-                        subscriptions: plugin,
+                        subscriptions: true,
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -4804,10 +4309,6 @@ describe("@filterable directive", () => {
 
                     input ActorConnectWhere {
                       node: ActorWhere!
-                    }
-
-                    type ActorConnectedRelationships {
-                      movies: ActorMoviesConnectedRelationship
                     }
 
                     input ActorCreateInput {
@@ -4875,10 +4376,6 @@ describe("@filterable directive", () => {
                       \\"\\"\\"
                       overwrite: Boolean! = true
                       where: MovieConnectWhere
-                    }
-
-                    type ActorMoviesConnectedRelationship {
-                      node: MovieEventPayload!
                     }
 
                     type ActorMoviesConnection {
@@ -4958,10 +4455,6 @@ describe("@filterable directive", () => {
                       node: Movie!
                     }
 
-                    input ActorMoviesRelationshipSubscriptionWhere {
-                      node: MovieSubscriptionWhere
-                    }
-
                     input ActorMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
                     }
@@ -4986,42 +4479,6 @@ describe("@filterable directive", () => {
 
                     input ActorRelationInput {
                       movies: [ActorMoviesCreateFieldInput!]
-                    }
-
-                    type ActorRelationshipCreatedEvent {
-                      actor: ActorEventPayload!
-                      createdRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipCreatedSubscriptionWhere {
-                      AND: [ActorRelationshipCreatedSubscriptionWhere!]
-                      NOT: ActorRelationshipCreatedSubscriptionWhere
-                      OR: [ActorRelationshipCreatedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      createdRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    type ActorRelationshipDeletedEvent {
-                      actor: ActorEventPayload!
-                      deletedRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipDeletedSubscriptionWhere {
-                      AND: [ActorRelationshipDeletedSubscriptionWhere!]
-                      NOT: ActorRelationshipDeletedSubscriptionWhere
-                      OR: [ActorRelationshipDeletedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      deletedRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    input ActorRelationshipsSubscriptionWhere {
-                      movies: ActorMoviesRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -5185,10 +4642,6 @@ describe("@filterable directive", () => {
                       where: ActorConnectWhere
                     }
 
-                    type MovieActorsConnectedRelationship {
-                      node: ActorEventPayload!
-                    }
-
                     type MovieActorsConnection {
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
@@ -5296,10 +4749,6 @@ describe("@filterable directive", () => {
                       node: Actor!
                     }
 
-                    input MovieActorsRelationshipSubscriptionWhere {
-                      node: ActorSubscriptionWhere
-                    }
-
                     input MovieActorsUpdateConnectionInput {
                       node: ActorUpdateInput
                     }
@@ -5324,10 +4773,6 @@ describe("@filterable directive", () => {
 
                     input MovieConnectWhere {
                       node: MovieWhere!
-                    }
-
-                    type MovieConnectedRelationships {
-                      actors: MovieActorsConnectedRelationship
                     }
 
                     input MovieCreateInput {
@@ -5375,42 +4820,6 @@ describe("@filterable directive", () => {
 
                     input MovieRelationInput {
                       actors: [MovieActorsCreateFieldInput!]
-                    }
-
-                    type MovieRelationshipCreatedEvent {
-                      createdRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipCreatedSubscriptionWhere {
-                      AND: [MovieRelationshipCreatedSubscriptionWhere!]
-                      NOT: MovieRelationshipCreatedSubscriptionWhere
-                      OR: [MovieRelationshipCreatedSubscriptionWhere!]
-                      createdRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    type MovieRelationshipDeletedEvent {
-                      deletedRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipDeletedSubscriptionWhere {
-                      AND: [MovieRelationshipDeletedSubscriptionWhere!]
-                      NOT: MovieRelationshipDeletedSubscriptionWhere
-                      OR: [MovieRelationshipDeletedSubscriptionWhere!]
-                      deletedRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    input MovieRelationshipsSubscriptionWhere {
-                      actors: MovieActorsRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -5505,13 +4914,9 @@ describe("@filterable directive", () => {
                     type Subscription {
                       actorCreated(where: ActorSubscriptionWhere): ActorCreatedEvent!
                       actorDeleted(where: ActorSubscriptionWhere): ActorDeletedEvent!
-                      actorRelationshipCreated(where: ActorRelationshipCreatedSubscriptionWhere): ActorRelationshipCreatedEvent!
-                      actorRelationshipDeleted(where: ActorRelationshipDeletedSubscriptionWhere): ActorRelationshipDeletedEvent!
                       actorUpdated(where: ActorSubscriptionWhere): ActorUpdatedEvent!
                       movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
                       movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-                      movieRelationshipCreated(where: MovieRelationshipCreatedSubscriptionWhere): MovieRelationshipCreatedEvent!
-                      movieRelationshipDeleted(where: MovieRelationshipDeletedSubscriptionWhere): MovieRelationshipDeletedEvent!
                       movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
                     }
 
@@ -5555,7 +4960,7 @@ describe("@filterable directive", () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
                     features: {
-                        subscriptions: plugin,
+                        subscriptions: true,
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -5587,10 +4992,6 @@ describe("@filterable directive", () => {
 
                     input ActorConnectWhere {
                       node: ActorWhere!
-                    }
-
-                    type ActorConnectedRelationships {
-                      movies: ActorMoviesConnectedRelationship
                     }
 
                     input ActorCreateInput {
@@ -5658,10 +5059,6 @@ describe("@filterable directive", () => {
                       \\"\\"\\"
                       overwrite: Boolean! = true
                       where: MovieConnectWhere
-                    }
-
-                    type ActorMoviesConnectedRelationship {
-                      node: MovieEventPayload!
                     }
 
                     type ActorMoviesConnection {
@@ -5741,10 +5138,6 @@ describe("@filterable directive", () => {
                       node: Movie!
                     }
 
-                    input ActorMoviesRelationshipSubscriptionWhere {
-                      node: MovieSubscriptionWhere
-                    }
-
                     input ActorMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
                     }
@@ -5769,42 +5162,6 @@ describe("@filterable directive", () => {
 
                     input ActorRelationInput {
                       movies: [ActorMoviesCreateFieldInput!]
-                    }
-
-                    type ActorRelationshipCreatedEvent {
-                      actor: ActorEventPayload!
-                      createdRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipCreatedSubscriptionWhere {
-                      AND: [ActorRelationshipCreatedSubscriptionWhere!]
-                      NOT: ActorRelationshipCreatedSubscriptionWhere
-                      OR: [ActorRelationshipCreatedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      createdRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    type ActorRelationshipDeletedEvent {
-                      actor: ActorEventPayload!
-                      deletedRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipDeletedSubscriptionWhere {
-                      AND: [ActorRelationshipDeletedSubscriptionWhere!]
-                      NOT: ActorRelationshipDeletedSubscriptionWhere
-                      OR: [ActorRelationshipDeletedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      deletedRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    input ActorRelationshipsSubscriptionWhere {
-                      movies: ActorMoviesRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -5955,10 +5312,6 @@ describe("@filterable directive", () => {
                       where: ActorConnectWhere
                     }
 
-                    type MovieActorsConnectedRelationship {
-                      node: ActorEventPayload!
-                    }
-
                     type MovieActorsConnection {
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
@@ -6000,10 +5353,6 @@ describe("@filterable directive", () => {
                       node: Actor!
                     }
 
-                    input MovieActorsRelationshipSubscriptionWhere {
-                      node: ActorSubscriptionWhere
-                    }
-
                     input MovieActorsUpdateConnectionInput {
                       node: ActorUpdateInput
                     }
@@ -6028,10 +5377,6 @@ describe("@filterable directive", () => {
 
                     input MovieConnectWhere {
                       node: MovieWhere!
-                    }
-
-                    type MovieConnectedRelationships {
-                      actors: MovieActorsConnectedRelationship
                     }
 
                     input MovieCreateInput {
@@ -6079,42 +5424,6 @@ describe("@filterable directive", () => {
 
                     input MovieRelationInput {
                       actors: [MovieActorsCreateFieldInput!]
-                    }
-
-                    type MovieRelationshipCreatedEvent {
-                      createdRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipCreatedSubscriptionWhere {
-                      AND: [MovieRelationshipCreatedSubscriptionWhere!]
-                      NOT: MovieRelationshipCreatedSubscriptionWhere
-                      OR: [MovieRelationshipCreatedSubscriptionWhere!]
-                      createdRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    type MovieRelationshipDeletedEvent {
-                      deletedRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipDeletedSubscriptionWhere {
-                      AND: [MovieRelationshipDeletedSubscriptionWhere!]
-                      NOT: MovieRelationshipDeletedSubscriptionWhere
-                      OR: [MovieRelationshipDeletedSubscriptionWhere!]
-                      deletedRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    input MovieRelationshipsSubscriptionWhere {
-                      actors: MovieActorsRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -6232,13 +5541,9 @@ describe("@filterable directive", () => {
                     type Subscription {
                       actorCreated(where: ActorSubscriptionWhere): ActorCreatedEvent!
                       actorDeleted(where: ActorSubscriptionWhere): ActorDeletedEvent!
-                      actorRelationshipCreated(where: ActorRelationshipCreatedSubscriptionWhere): ActorRelationshipCreatedEvent!
-                      actorRelationshipDeleted(where: ActorRelationshipDeletedSubscriptionWhere): ActorRelationshipDeletedEvent!
                       actorUpdated(where: ActorSubscriptionWhere): ActorUpdatedEvent!
                       movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
                       movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-                      movieRelationshipCreated(where: MovieRelationshipCreatedSubscriptionWhere): MovieRelationshipCreatedEvent!
-                      movieRelationshipDeleted(where: MovieRelationshipDeletedSubscriptionWhere): MovieRelationshipDeletedEvent!
                       movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
                     }
 
@@ -6286,7 +5591,7 @@ describe("@filterable directive", () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
                     features: {
-                        subscriptions: plugin,
+                        subscriptions: true,
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -6315,10 +5620,6 @@ describe("@filterable directive", () => {
 
                     input ActorConnectInput {
                       movies: [ActorMoviesConnectFieldInput!]
-                    }
-
-                    type ActorConnectedRelationships {
-                      movies: ActorMoviesConnectedRelationship
                     }
 
                     input ActorCreateInput {
@@ -6386,10 +5687,6 @@ describe("@filterable directive", () => {
                       \\"\\"\\"
                       overwrite: Boolean! = true
                       where: MovieConnectWhere
-                    }
-
-                    type ActorMoviesConnectedRelationship {
-                      node: MovieEventPayload!
                     }
 
                     type ActorMoviesConnection {
@@ -6469,10 +5766,6 @@ describe("@filterable directive", () => {
                       node: Movie!
                     }
 
-                    input ActorMoviesRelationshipSubscriptionWhere {
-                      node: MovieSubscriptionWhere
-                    }
-
                     input ActorMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
                     }
@@ -6497,42 +5790,6 @@ describe("@filterable directive", () => {
 
                     input ActorRelationInput {
                       movies: [ActorMoviesCreateFieldInput!]
-                    }
-
-                    type ActorRelationshipCreatedEvent {
-                      actor: ActorEventPayload!
-                      createdRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipCreatedSubscriptionWhere {
-                      AND: [ActorRelationshipCreatedSubscriptionWhere!]
-                      NOT: ActorRelationshipCreatedSubscriptionWhere
-                      OR: [ActorRelationshipCreatedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      createdRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    type ActorRelationshipDeletedEvent {
-                      actor: ActorEventPayload!
-                      deletedRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipDeletedSubscriptionWhere {
-                      AND: [ActorRelationshipDeletedSubscriptionWhere!]
-                      NOT: ActorRelationshipDeletedSubscriptionWhere
-                      OR: [ActorRelationshipDeletedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      deletedRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    input ActorRelationshipsSubscriptionWhere {
-                      movies: ActorMoviesRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -6668,10 +5925,6 @@ describe("@filterable directive", () => {
                       where: PersonConnectWhere
                     }
 
-                    type MovieActorsConnectedRelationship {
-                      node: PersonEventPayload!
-                    }
-
                     type MovieActorsConnection {
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
@@ -6711,10 +5964,6 @@ describe("@filterable directive", () => {
                       node: Person!
                     }
 
-                    input MovieActorsRelationshipSubscriptionWhere {
-                      node: PersonSubscriptionWhere
-                    }
-
                     input MovieActorsUpdateConnectionInput {
                       node: PersonUpdateInput
                     }
@@ -6739,10 +5988,6 @@ describe("@filterable directive", () => {
 
                     input MovieConnectWhere {
                       node: MovieWhere!
-                    }
-
-                    type MovieConnectedRelationships {
-                      actors: MovieActorsConnectedRelationship
                     }
 
                     input MovieCreateInput {
@@ -6799,42 +6044,6 @@ describe("@filterable directive", () => {
 
                     input MovieRelationInput {
                       actors: [MovieActorsCreateFieldInput!]
-                    }
-
-                    type MovieRelationshipCreatedEvent {
-                      createdRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipCreatedSubscriptionWhere {
-                      AND: [MovieRelationshipCreatedSubscriptionWhere!]
-                      NOT: MovieRelationshipCreatedSubscriptionWhere
-                      OR: [MovieRelationshipCreatedSubscriptionWhere!]
-                      createdRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    type MovieRelationshipDeletedEvent {
-                      deletedRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipDeletedSubscriptionWhere {
-                      AND: [MovieRelationshipDeletedSubscriptionWhere!]
-                      NOT: MovieRelationshipDeletedSubscriptionWhere
-                      OR: [MovieRelationshipDeletedSubscriptionWhere!]
-                      deletedRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    input MovieRelationshipsSubscriptionWhere {
-                      actors: MovieActorsRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -6979,19 +6188,6 @@ describe("@filterable directive", () => {
                       username: SortDirection
                     }
 
-                    input PersonSubscriptionWhere {
-                      AND: [PersonSubscriptionWhere!]
-                      NOT: PersonSubscriptionWhere
-                      OR: [PersonSubscriptionWhere!]
-                      typename_IN: [PersonImplementation!]
-                      username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                      username_CONTAINS: String
-                      username_ENDS_WITH: String
-                      username_EQ: String
-                      username_IN: [String!]
-                      username_STARTS_WITH: String
-                    }
-
                     input PersonUpdateInput {
                       username: String
                     }
@@ -7037,13 +6233,9 @@ describe("@filterable directive", () => {
                     type Subscription {
                       actorCreated(where: ActorSubscriptionWhere): ActorCreatedEvent!
                       actorDeleted(where: ActorSubscriptionWhere): ActorDeletedEvent!
-                      actorRelationshipCreated(where: ActorRelationshipCreatedSubscriptionWhere): ActorRelationshipCreatedEvent!
-                      actorRelationshipDeleted(where: ActorRelationshipDeletedSubscriptionWhere): ActorRelationshipDeletedEvent!
                       actorUpdated(where: ActorSubscriptionWhere): ActorUpdatedEvent!
                       movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
                       movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-                      movieRelationshipCreated(where: MovieRelationshipCreatedSubscriptionWhere): MovieRelationshipCreatedEvent!
-                      movieRelationshipDeleted(where: MovieRelationshipDeletedSubscriptionWhere): MovieRelationshipDeletedEvent!
                       movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
                     }
 
@@ -7091,7 +6283,7 @@ describe("@filterable directive", () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
                     features: {
-                        subscriptions: plugin,
+                        subscriptions: true,
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -7120,10 +6312,6 @@ describe("@filterable directive", () => {
 
                     input ActorConnectInput {
                       movies: [ActorMoviesConnectFieldInput!]
-                    }
-
-                    type ActorConnectedRelationships {
-                      movies: ActorMoviesConnectedRelationship
                     }
 
                     input ActorCreateInput {
@@ -7191,10 +6379,6 @@ describe("@filterable directive", () => {
                       \\"\\"\\"
                       overwrite: Boolean! = true
                       where: MovieConnectWhere
-                    }
-
-                    type ActorMoviesConnectedRelationship {
-                      node: MovieEventPayload!
                     }
 
                     type ActorMoviesConnection {
@@ -7274,10 +6458,6 @@ describe("@filterable directive", () => {
                       node: Movie!
                     }
 
-                    input ActorMoviesRelationshipSubscriptionWhere {
-                      node: MovieSubscriptionWhere
-                    }
-
                     input ActorMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
                     }
@@ -7302,42 +6482,6 @@ describe("@filterable directive", () => {
 
                     input ActorRelationInput {
                       movies: [ActorMoviesCreateFieldInput!]
-                    }
-
-                    type ActorRelationshipCreatedEvent {
-                      actor: ActorEventPayload!
-                      createdRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipCreatedSubscriptionWhere {
-                      AND: [ActorRelationshipCreatedSubscriptionWhere!]
-                      NOT: ActorRelationshipCreatedSubscriptionWhere
-                      OR: [ActorRelationshipCreatedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      createdRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    type ActorRelationshipDeletedEvent {
-                      actor: ActorEventPayload!
-                      deletedRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipDeletedSubscriptionWhere {
-                      AND: [ActorRelationshipDeletedSubscriptionWhere!]
-                      NOT: ActorRelationshipDeletedSubscriptionWhere
-                      OR: [ActorRelationshipDeletedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      deletedRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    input ActorRelationshipsSubscriptionWhere {
-                      movies: ActorMoviesRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -7486,10 +6630,6 @@ describe("@filterable directive", () => {
                       where: PersonConnectWhere
                     }
 
-                    type MovieActorsConnectedRelationship {
-                      node: PersonEventPayload!
-                    }
-
                     type MovieActorsConnection {
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
@@ -7565,10 +6705,6 @@ describe("@filterable directive", () => {
                       node: Person!
                     }
 
-                    input MovieActorsRelationshipSubscriptionWhere {
-                      node: PersonSubscriptionWhere
-                    }
-
                     input MovieActorsUpdateConnectionInput {
                       node: PersonUpdateInput
                     }
@@ -7593,10 +6729,6 @@ describe("@filterable directive", () => {
 
                     input MovieConnectWhere {
                       node: MovieWhere!
-                    }
-
-                    type MovieConnectedRelationships {
-                      actors: MovieActorsConnectedRelationship
                     }
 
                     input MovieCreateInput {
@@ -7653,42 +6785,6 @@ describe("@filterable directive", () => {
 
                     input MovieRelationInput {
                       actors: [MovieActorsCreateFieldInput!]
-                    }
-
-                    type MovieRelationshipCreatedEvent {
-                      createdRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipCreatedSubscriptionWhere {
-                      AND: [MovieRelationshipCreatedSubscriptionWhere!]
-                      NOT: MovieRelationshipCreatedSubscriptionWhere
-                      OR: [MovieRelationshipCreatedSubscriptionWhere!]
-                      createdRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    type MovieRelationshipDeletedEvent {
-                      deletedRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipDeletedSubscriptionWhere {
-                      AND: [MovieRelationshipDeletedSubscriptionWhere!]
-                      NOT: MovieRelationshipDeletedSubscriptionWhere
-                      OR: [MovieRelationshipDeletedSubscriptionWhere!]
-                      deletedRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    input MovieRelationshipsSubscriptionWhere {
-                      actors: MovieActorsRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -7834,19 +6930,6 @@ describe("@filterable directive", () => {
                       username: SortDirection
                     }
 
-                    input PersonSubscriptionWhere {
-                      AND: [PersonSubscriptionWhere!]
-                      NOT: PersonSubscriptionWhere
-                      OR: [PersonSubscriptionWhere!]
-                      typename_IN: [PersonImplementation!]
-                      username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                      username_CONTAINS: String
-                      username_ENDS_WITH: String
-                      username_EQ: String
-                      username_IN: [String!]
-                      username_STARTS_WITH: String
-                    }
-
                     input PersonUpdateInput {
                       username: String
                     }
@@ -7892,13 +6975,9 @@ describe("@filterable directive", () => {
                     type Subscription {
                       actorCreated(where: ActorSubscriptionWhere): ActorCreatedEvent!
                       actorDeleted(where: ActorSubscriptionWhere): ActorDeletedEvent!
-                      actorRelationshipCreated(where: ActorRelationshipCreatedSubscriptionWhere): ActorRelationshipCreatedEvent!
-                      actorRelationshipDeleted(where: ActorRelationshipDeletedSubscriptionWhere): ActorRelationshipDeletedEvent!
                       actorUpdated(where: ActorSubscriptionWhere): ActorUpdatedEvent!
                       movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
                       movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-                      movieRelationshipCreated(where: MovieRelationshipCreatedSubscriptionWhere): MovieRelationshipCreatedEvent!
-                      movieRelationshipDeleted(where: MovieRelationshipDeletedSubscriptionWhere): MovieRelationshipDeletedEvent!
                       movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
                     }
 
@@ -7946,7 +7025,7 @@ describe("@filterable directive", () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
                     features: {
-                        subscriptions: plugin,
+                        subscriptions: true,
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -7975,10 +7054,6 @@ describe("@filterable directive", () => {
 
                     input ActorConnectInput {
                       movies: [ActorMoviesConnectFieldInput!]
-                    }
-
-                    type ActorConnectedRelationships {
-                      movies: ActorMoviesConnectedRelationship
                     }
 
                     input ActorCreateInput {
@@ -8046,10 +7121,6 @@ describe("@filterable directive", () => {
                       \\"\\"\\"
                       overwrite: Boolean! = true
                       where: MovieConnectWhere
-                    }
-
-                    type ActorMoviesConnectedRelationship {
-                      node: MovieEventPayload!
                     }
 
                     type ActorMoviesConnection {
@@ -8129,10 +7200,6 @@ describe("@filterable directive", () => {
                       node: Movie!
                     }
 
-                    input ActorMoviesRelationshipSubscriptionWhere {
-                      node: MovieSubscriptionWhere
-                    }
-
                     input ActorMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
                     }
@@ -8157,42 +7224,6 @@ describe("@filterable directive", () => {
 
                     input ActorRelationInput {
                       movies: [ActorMoviesCreateFieldInput!]
-                    }
-
-                    type ActorRelationshipCreatedEvent {
-                      actor: ActorEventPayload!
-                      createdRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipCreatedSubscriptionWhere {
-                      AND: [ActorRelationshipCreatedSubscriptionWhere!]
-                      NOT: ActorRelationshipCreatedSubscriptionWhere
-                      OR: [ActorRelationshipCreatedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      createdRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    type ActorRelationshipDeletedEvent {
-                      actor: ActorEventPayload!
-                      deletedRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipDeletedSubscriptionWhere {
-                      AND: [ActorRelationshipDeletedSubscriptionWhere!]
-                      NOT: ActorRelationshipDeletedSubscriptionWhere
-                      OR: [ActorRelationshipDeletedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      deletedRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    input ActorRelationshipsSubscriptionWhere {
-                      movies: ActorMoviesRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -8328,10 +7359,6 @@ describe("@filterable directive", () => {
                       where: PersonConnectWhere
                     }
 
-                    type MovieActorsConnectedRelationship {
-                      node: PersonEventPayload!
-                    }
-
                     type MovieActorsConnection {
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
@@ -8371,10 +7398,6 @@ describe("@filterable directive", () => {
                       node: Person!
                     }
 
-                    input MovieActorsRelationshipSubscriptionWhere {
-                      node: PersonSubscriptionWhere
-                    }
-
                     input MovieActorsUpdateConnectionInput {
                       node: PersonUpdateInput
                     }
@@ -8399,10 +7422,6 @@ describe("@filterable directive", () => {
 
                     input MovieConnectWhere {
                       node: MovieWhere!
-                    }
-
-                    type MovieConnectedRelationships {
-                      actors: MovieActorsConnectedRelationship
                     }
 
                     input MovieCreateInput {
@@ -8459,42 +7478,6 @@ describe("@filterable directive", () => {
 
                     input MovieRelationInput {
                       actors: [MovieActorsCreateFieldInput!]
-                    }
-
-                    type MovieRelationshipCreatedEvent {
-                      createdRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipCreatedSubscriptionWhere {
-                      AND: [MovieRelationshipCreatedSubscriptionWhere!]
-                      NOT: MovieRelationshipCreatedSubscriptionWhere
-                      OR: [MovieRelationshipCreatedSubscriptionWhere!]
-                      createdRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    type MovieRelationshipDeletedEvent {
-                      deletedRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipDeletedSubscriptionWhere {
-                      AND: [MovieRelationshipDeletedSubscriptionWhere!]
-                      NOT: MovieRelationshipDeletedSubscriptionWhere
-                      OR: [MovieRelationshipDeletedSubscriptionWhere!]
-                      deletedRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    input MovieRelationshipsSubscriptionWhere {
-                      actors: MovieActorsRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -8639,19 +7622,6 @@ describe("@filterable directive", () => {
                       username: SortDirection
                     }
 
-                    input PersonSubscriptionWhere {
-                      AND: [PersonSubscriptionWhere!]
-                      NOT: PersonSubscriptionWhere
-                      OR: [PersonSubscriptionWhere!]
-                      typename_IN: [PersonImplementation!]
-                      username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                      username_CONTAINS: String
-                      username_ENDS_WITH: String
-                      username_EQ: String
-                      username_IN: [String!]
-                      username_STARTS_WITH: String
-                    }
-
                     input PersonUpdateInput {
                       username: String
                     }
@@ -8697,13 +7667,9 @@ describe("@filterable directive", () => {
                     type Subscription {
                       actorCreated(where: ActorSubscriptionWhere): ActorCreatedEvent!
                       actorDeleted(where: ActorSubscriptionWhere): ActorDeletedEvent!
-                      actorRelationshipCreated(where: ActorRelationshipCreatedSubscriptionWhere): ActorRelationshipCreatedEvent!
-                      actorRelationshipDeleted(where: ActorRelationshipDeletedSubscriptionWhere): ActorRelationshipDeletedEvent!
                       actorUpdated(where: ActorSubscriptionWhere): ActorUpdatedEvent!
                       movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
                       movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-                      movieRelationshipCreated(where: MovieRelationshipCreatedSubscriptionWhere): MovieRelationshipCreatedEvent!
-                      movieRelationshipDeleted(where: MovieRelationshipDeletedSubscriptionWhere): MovieRelationshipDeletedEvent!
                       movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
                     }
 
@@ -8755,7 +7721,7 @@ describe("@filterable directive", () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
                     features: {
-                        subscriptions: plugin,
+                        subscriptions: true,
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -8788,10 +7754,6 @@ describe("@filterable directive", () => {
 
                     input ActorConnectWhere {
                       node: ActorWhere!
-                    }
-
-                    type ActorConnectedRelationships {
-                      movies: ActorMoviesConnectedRelationship
                     }
 
                     input ActorCreateInput {
@@ -8859,10 +7821,6 @@ describe("@filterable directive", () => {
                       \\"\\"\\"
                       overwrite: Boolean! = true
                       where: MovieConnectWhere
-                    }
-
-                    type ActorMoviesConnectedRelationship {
-                      node: MovieEventPayload!
                     }
 
                     type ActorMoviesConnection {
@@ -8942,10 +7900,6 @@ describe("@filterable directive", () => {
                       node: Movie!
                     }
 
-                    input ActorMoviesRelationshipSubscriptionWhere {
-                      node: MovieSubscriptionWhere
-                    }
-
                     input ActorMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
                     }
@@ -8970,42 +7924,6 @@ describe("@filterable directive", () => {
 
                     input ActorRelationInput {
                       movies: [ActorMoviesCreateFieldInput!]
-                    }
-
-                    type ActorRelationshipCreatedEvent {
-                      actor: ActorEventPayload!
-                      createdRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipCreatedSubscriptionWhere {
-                      AND: [ActorRelationshipCreatedSubscriptionWhere!]
-                      NOT: ActorRelationshipCreatedSubscriptionWhere
-                      OR: [ActorRelationshipCreatedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      createdRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    type ActorRelationshipDeletedEvent {
-                      actor: ActorEventPayload!
-                      deletedRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipDeletedSubscriptionWhere {
-                      AND: [ActorRelationshipDeletedSubscriptionWhere!]
-                      NOT: ActorRelationshipDeletedSubscriptionWhere
-                      OR: [ActorRelationshipDeletedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      deletedRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    input ActorRelationshipsSubscriptionWhere {
-                      movies: ActorMoviesRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -9118,10 +8036,6 @@ describe("@filterable directive", () => {
                       node: AppearanceWhere!
                     }
 
-                    type AppearanceConnectedRelationships {
-                      movies: AppearanceMoviesConnectedRelationship
-                    }
-
                     input AppearanceCreateInput {
                       movies: AppearanceMoviesFieldInput
                       password: String!
@@ -9187,10 +8101,6 @@ describe("@filterable directive", () => {
                       \\"\\"\\"
                       overwrite: Boolean! = true
                       where: MovieConnectWhere
-                    }
-
-                    type AppearanceMoviesConnectedRelationship {
-                      node: MovieEventPayload!
                     }
 
                     type AppearanceMoviesConnection {
@@ -9270,10 +8180,6 @@ describe("@filterable directive", () => {
                       node: Movie!
                     }
 
-                    input AppearanceMoviesRelationshipSubscriptionWhere {
-                      node: MovieSubscriptionWhere
-                    }
-
                     input AppearanceMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
                     }
@@ -9298,42 +8204,6 @@ describe("@filterable directive", () => {
 
                     input AppearanceRelationInput {
                       movies: [AppearanceMoviesCreateFieldInput!]
-                    }
-
-                    type AppearanceRelationshipCreatedEvent {
-                      appearance: AppearanceEventPayload!
-                      createdRelationship: AppearanceConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input AppearanceRelationshipCreatedSubscriptionWhere {
-                      AND: [AppearanceRelationshipCreatedSubscriptionWhere!]
-                      NOT: AppearanceRelationshipCreatedSubscriptionWhere
-                      OR: [AppearanceRelationshipCreatedSubscriptionWhere!]
-                      appearance: AppearanceSubscriptionWhere
-                      createdRelationship: AppearanceRelationshipsSubscriptionWhere
-                    }
-
-                    type AppearanceRelationshipDeletedEvent {
-                      appearance: AppearanceEventPayload!
-                      deletedRelationship: AppearanceConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input AppearanceRelationshipDeletedSubscriptionWhere {
-                      AND: [AppearanceRelationshipDeletedSubscriptionWhere!]
-                      NOT: AppearanceRelationshipDeletedSubscriptionWhere
-                      OR: [AppearanceRelationshipDeletedSubscriptionWhere!]
-                      appearance: AppearanceSubscriptionWhere
-                      deletedRelationship: AppearanceRelationshipsSubscriptionWhere
-                    }
-
-                    input AppearanceRelationshipsSubscriptionWhere {
-                      movies: AppearanceMoviesRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -9500,10 +8370,6 @@ describe("@filterable directive", () => {
                       create: [MovieActorsActorCreateFieldInput!]
                     }
 
-                    input MovieActorsActorSubscriptionWhere {
-                      node: ActorSubscriptionWhere
-                    }
-
                     input MovieActorsActorUpdateConnectionInput {
                       node: ActorUpdateInput
                     }
@@ -9548,10 +8414,6 @@ describe("@filterable directive", () => {
                       create: [MovieActorsAppearanceCreateFieldInput!]
                     }
 
-                    input MovieActorsAppearanceSubscriptionWhere {
-                      node: AppearanceSubscriptionWhere
-                    }
-
                     input MovieActorsAppearanceUpdateConnectionInput {
                       node: AppearanceUpdateInput
                     }
@@ -9568,10 +8430,6 @@ describe("@filterable directive", () => {
                     input MovieActorsConnectInput {
                       Actor: [MovieActorsActorConnectFieldInput!]
                       Appearance: [MovieActorsAppearanceConnectFieldInput!]
-                    }
-
-                    type MovieActorsConnectedRelationship {
-                      node: PersonEventPayload!
                     }
 
                     type MovieActorsConnection {
@@ -9610,11 +8468,6 @@ describe("@filterable directive", () => {
                       node: Person!
                     }
 
-                    input MovieActorsRelationshipSubscriptionWhere {
-                      Actor: MovieActorsActorSubscriptionWhere
-                      Appearance: MovieActorsAppearanceSubscriptionWhere
-                    }
-
                     input MovieActorsUpdateInput {
                       Actor: [MovieActorsActorUpdateFieldInput!]
                       Appearance: [MovieActorsAppearanceUpdateFieldInput!]
@@ -9631,10 +8484,6 @@ describe("@filterable directive", () => {
 
                     input MovieConnectWhere {
                       node: MovieWhere!
-                    }
-
-                    type MovieConnectedRelationships {
-                      actors: MovieActorsConnectedRelationship
                     }
 
                     input MovieCreateInput {
@@ -9682,42 +8531,6 @@ describe("@filterable directive", () => {
 
                     input MovieRelationInput {
                       actors: MovieActorsCreateFieldInput
-                    }
-
-                    type MovieRelationshipCreatedEvent {
-                      createdRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipCreatedSubscriptionWhere {
-                      AND: [MovieRelationshipCreatedSubscriptionWhere!]
-                      NOT: MovieRelationshipCreatedSubscriptionWhere
-                      OR: [MovieRelationshipCreatedSubscriptionWhere!]
-                      createdRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    type MovieRelationshipDeletedEvent {
-                      deletedRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipDeletedSubscriptionWhere {
-                      AND: [MovieRelationshipDeletedSubscriptionWhere!]
-                      NOT: MovieRelationshipDeletedSubscriptionWhere
-                      OR: [MovieRelationshipDeletedSubscriptionWhere!]
-                      deletedRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    input MovieRelationshipsSubscriptionWhere {
-                      actors: MovieActorsRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -9815,8 +8628,6 @@ describe("@filterable directive", () => {
 
                     union Person = Actor | Appearance
 
-                    union PersonEventPayload = ActorEventPayload | AppearanceEventPayload
-
                     input PersonWhere {
                       Actor: ActorWhere
                       Appearance: AppearanceWhere
@@ -9857,18 +8668,12 @@ describe("@filterable directive", () => {
                     type Subscription {
                       actorCreated(where: ActorSubscriptionWhere): ActorCreatedEvent!
                       actorDeleted(where: ActorSubscriptionWhere): ActorDeletedEvent!
-                      actorRelationshipCreated(where: ActorRelationshipCreatedSubscriptionWhere): ActorRelationshipCreatedEvent!
-                      actorRelationshipDeleted(where: ActorRelationshipDeletedSubscriptionWhere): ActorRelationshipDeletedEvent!
                       actorUpdated(where: ActorSubscriptionWhere): ActorUpdatedEvent!
                       appearanceCreated(where: AppearanceSubscriptionWhere): AppearanceCreatedEvent!
                       appearanceDeleted(where: AppearanceSubscriptionWhere): AppearanceDeletedEvent!
-                      appearanceRelationshipCreated(where: AppearanceRelationshipCreatedSubscriptionWhere): AppearanceRelationshipCreatedEvent!
-                      appearanceRelationshipDeleted(where: AppearanceRelationshipDeletedSubscriptionWhere): AppearanceRelationshipDeletedEvent!
                       appearanceUpdated(where: AppearanceSubscriptionWhere): AppearanceUpdatedEvent!
                       movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
                       movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-                      movieRelationshipCreated(where: MovieRelationshipCreatedSubscriptionWhere): MovieRelationshipCreatedEvent!
-                      movieRelationshipDeleted(where: MovieRelationshipDeletedSubscriptionWhere): MovieRelationshipDeletedEvent!
                       movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
                     }
 
@@ -9925,7 +8730,7 @@ describe("@filterable directive", () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
                     features: {
-                        subscriptions: plugin,
+                        subscriptions: true,
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -9958,10 +8763,6 @@ describe("@filterable directive", () => {
 
                     input ActorConnectWhere {
                       node: ActorWhere!
-                    }
-
-                    type ActorConnectedRelationships {
-                      movies: ActorMoviesConnectedRelationship
                     }
 
                     input ActorCreateInput {
@@ -10029,10 +8830,6 @@ describe("@filterable directive", () => {
                       \\"\\"\\"
                       overwrite: Boolean! = true
                       where: MovieConnectWhere
-                    }
-
-                    type ActorMoviesConnectedRelationship {
-                      node: MovieEventPayload!
                     }
 
                     type ActorMoviesConnection {
@@ -10112,10 +8909,6 @@ describe("@filterable directive", () => {
                       node: Movie!
                     }
 
-                    input ActorMoviesRelationshipSubscriptionWhere {
-                      node: MovieSubscriptionWhere
-                    }
-
                     input ActorMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
                     }
@@ -10140,42 +8933,6 @@ describe("@filterable directive", () => {
 
                     input ActorRelationInput {
                       movies: [ActorMoviesCreateFieldInput!]
-                    }
-
-                    type ActorRelationshipCreatedEvent {
-                      actor: ActorEventPayload!
-                      createdRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipCreatedSubscriptionWhere {
-                      AND: [ActorRelationshipCreatedSubscriptionWhere!]
-                      NOT: ActorRelationshipCreatedSubscriptionWhere
-                      OR: [ActorRelationshipCreatedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      createdRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    type ActorRelationshipDeletedEvent {
-                      actor: ActorEventPayload!
-                      deletedRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipDeletedSubscriptionWhere {
-                      AND: [ActorRelationshipDeletedSubscriptionWhere!]
-                      NOT: ActorRelationshipDeletedSubscriptionWhere
-                      OR: [ActorRelationshipDeletedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      deletedRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    input ActorRelationshipsSubscriptionWhere {
-                      movies: ActorMoviesRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -10288,10 +9045,6 @@ describe("@filterable directive", () => {
                       node: AppearanceWhere!
                     }
 
-                    type AppearanceConnectedRelationships {
-                      movies: AppearanceMoviesConnectedRelationship
-                    }
-
                     input AppearanceCreateInput {
                       movies: AppearanceMoviesFieldInput
                       password: String!
@@ -10357,10 +9110,6 @@ describe("@filterable directive", () => {
                       \\"\\"\\"
                       overwrite: Boolean! = true
                       where: MovieConnectWhere
-                    }
-
-                    type AppearanceMoviesConnectedRelationship {
-                      node: MovieEventPayload!
                     }
 
                     type AppearanceMoviesConnection {
@@ -10440,10 +9189,6 @@ describe("@filterable directive", () => {
                       node: Movie!
                     }
 
-                    input AppearanceMoviesRelationshipSubscriptionWhere {
-                      node: MovieSubscriptionWhere
-                    }
-
                     input AppearanceMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
                     }
@@ -10468,42 +9213,6 @@ describe("@filterable directive", () => {
 
                     input AppearanceRelationInput {
                       movies: [AppearanceMoviesCreateFieldInput!]
-                    }
-
-                    type AppearanceRelationshipCreatedEvent {
-                      appearance: AppearanceEventPayload!
-                      createdRelationship: AppearanceConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input AppearanceRelationshipCreatedSubscriptionWhere {
-                      AND: [AppearanceRelationshipCreatedSubscriptionWhere!]
-                      NOT: AppearanceRelationshipCreatedSubscriptionWhere
-                      OR: [AppearanceRelationshipCreatedSubscriptionWhere!]
-                      appearance: AppearanceSubscriptionWhere
-                      createdRelationship: AppearanceRelationshipsSubscriptionWhere
-                    }
-
-                    type AppearanceRelationshipDeletedEvent {
-                      appearance: AppearanceEventPayload!
-                      deletedRelationship: AppearanceConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input AppearanceRelationshipDeletedSubscriptionWhere {
-                      AND: [AppearanceRelationshipDeletedSubscriptionWhere!]
-                      NOT: AppearanceRelationshipDeletedSubscriptionWhere
-                      OR: [AppearanceRelationshipDeletedSubscriptionWhere!]
-                      appearance: AppearanceSubscriptionWhere
-                      deletedRelationship: AppearanceRelationshipsSubscriptionWhere
-                    }
-
-                    input AppearanceRelationshipsSubscriptionWhere {
-                      movies: AppearanceMoviesRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -10670,10 +9379,6 @@ describe("@filterable directive", () => {
                       create: [MovieActorsActorCreateFieldInput!]
                     }
 
-                    input MovieActorsActorSubscriptionWhere {
-                      node: ActorSubscriptionWhere
-                    }
-
                     input MovieActorsActorUpdateConnectionInput {
                       node: ActorUpdateInput
                     }
@@ -10718,10 +9423,6 @@ describe("@filterable directive", () => {
                       create: [MovieActorsAppearanceCreateFieldInput!]
                     }
 
-                    input MovieActorsAppearanceSubscriptionWhere {
-                      node: AppearanceSubscriptionWhere
-                    }
-
                     input MovieActorsAppearanceUpdateConnectionInput {
                       node: AppearanceUpdateInput
                     }
@@ -10738,10 +9439,6 @@ describe("@filterable directive", () => {
                     input MovieActorsConnectInput {
                       Actor: [MovieActorsActorConnectFieldInput!]
                       Appearance: [MovieActorsAppearanceConnectFieldInput!]
-                    }
-
-                    type MovieActorsConnectedRelationship {
-                      node: PersonEventPayload!
                     }
 
                     type MovieActorsConnection {
@@ -10780,11 +9477,6 @@ describe("@filterable directive", () => {
                       node: Person!
                     }
 
-                    input MovieActorsRelationshipSubscriptionWhere {
-                      Actor: MovieActorsActorSubscriptionWhere
-                      Appearance: MovieActorsAppearanceSubscriptionWhere
-                    }
-
                     input MovieActorsUpdateInput {
                       Actor: [MovieActorsActorUpdateFieldInput!]
                       Appearance: [MovieActorsAppearanceUpdateFieldInput!]
@@ -10801,10 +9493,6 @@ describe("@filterable directive", () => {
 
                     input MovieConnectWhere {
                       node: MovieWhere!
-                    }
-
-                    type MovieConnectedRelationships {
-                      actors: MovieActorsConnectedRelationship
                     }
 
                     input MovieCreateInput {
@@ -10852,42 +9540,6 @@ describe("@filterable directive", () => {
 
                     input MovieRelationInput {
                       actors: MovieActorsCreateFieldInput
-                    }
-
-                    type MovieRelationshipCreatedEvent {
-                      createdRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipCreatedSubscriptionWhere {
-                      AND: [MovieRelationshipCreatedSubscriptionWhere!]
-                      NOT: MovieRelationshipCreatedSubscriptionWhere
-                      OR: [MovieRelationshipCreatedSubscriptionWhere!]
-                      createdRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    type MovieRelationshipDeletedEvent {
-                      deletedRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipDeletedSubscriptionWhere {
-                      AND: [MovieRelationshipDeletedSubscriptionWhere!]
-                      NOT: MovieRelationshipDeletedSubscriptionWhere
-                      OR: [MovieRelationshipDeletedSubscriptionWhere!]
-                      deletedRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    input MovieRelationshipsSubscriptionWhere {
-                      actors: MovieActorsRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -10985,8 +9637,6 @@ describe("@filterable directive", () => {
 
                     union Person = Actor | Appearance
 
-                    union PersonEventPayload = ActorEventPayload | AppearanceEventPayload
-
                     input PersonWhere {
                       Actor: ActorWhere
                       Appearance: AppearanceWhere
@@ -11027,18 +9677,12 @@ describe("@filterable directive", () => {
                     type Subscription {
                       actorCreated(where: ActorSubscriptionWhere): ActorCreatedEvent!
                       actorDeleted(where: ActorSubscriptionWhere): ActorDeletedEvent!
-                      actorRelationshipCreated(where: ActorRelationshipCreatedSubscriptionWhere): ActorRelationshipCreatedEvent!
-                      actorRelationshipDeleted(where: ActorRelationshipDeletedSubscriptionWhere): ActorRelationshipDeletedEvent!
                       actorUpdated(where: ActorSubscriptionWhere): ActorUpdatedEvent!
                       appearanceCreated(where: AppearanceSubscriptionWhere): AppearanceCreatedEvent!
                       appearanceDeleted(where: AppearanceSubscriptionWhere): AppearanceDeletedEvent!
-                      appearanceRelationshipCreated(where: AppearanceRelationshipCreatedSubscriptionWhere): AppearanceRelationshipCreatedEvent!
-                      appearanceRelationshipDeleted(where: AppearanceRelationshipDeletedSubscriptionWhere): AppearanceRelationshipDeletedEvent!
                       appearanceUpdated(where: AppearanceSubscriptionWhere): AppearanceUpdatedEvent!
                       movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
                       movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-                      movieRelationshipCreated(where: MovieRelationshipCreatedSubscriptionWhere): MovieRelationshipCreatedEvent!
-                      movieRelationshipDeleted(where: MovieRelationshipDeletedSubscriptionWhere): MovieRelationshipDeletedEvent!
                       movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
                     }
 
@@ -11095,7 +9739,7 @@ describe("@filterable directive", () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
                     features: {
-                        subscriptions: plugin,
+                        subscriptions: true,
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -11128,10 +9772,6 @@ describe("@filterable directive", () => {
 
                     input ActorConnectWhere {
                       node: ActorWhere!
-                    }
-
-                    type ActorConnectedRelationships {
-                      movies: ActorMoviesConnectedRelationship
                     }
 
                     input ActorCreateInput {
@@ -11199,10 +9839,6 @@ describe("@filterable directive", () => {
                       \\"\\"\\"
                       overwrite: Boolean! = true
                       where: MovieConnectWhere
-                    }
-
-                    type ActorMoviesConnectedRelationship {
-                      node: MovieEventPayload!
                     }
 
                     type ActorMoviesConnection {
@@ -11282,10 +9918,6 @@ describe("@filterable directive", () => {
                       node: Movie!
                     }
 
-                    input ActorMoviesRelationshipSubscriptionWhere {
-                      node: MovieSubscriptionWhere
-                    }
-
                     input ActorMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
                     }
@@ -11310,42 +9942,6 @@ describe("@filterable directive", () => {
 
                     input ActorRelationInput {
                       movies: [ActorMoviesCreateFieldInput!]
-                    }
-
-                    type ActorRelationshipCreatedEvent {
-                      actor: ActorEventPayload!
-                      createdRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipCreatedSubscriptionWhere {
-                      AND: [ActorRelationshipCreatedSubscriptionWhere!]
-                      NOT: ActorRelationshipCreatedSubscriptionWhere
-                      OR: [ActorRelationshipCreatedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      createdRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    type ActorRelationshipDeletedEvent {
-                      actor: ActorEventPayload!
-                      deletedRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipDeletedSubscriptionWhere {
-                      AND: [ActorRelationshipDeletedSubscriptionWhere!]
-                      NOT: ActorRelationshipDeletedSubscriptionWhere
-                      OR: [ActorRelationshipDeletedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      deletedRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    input ActorRelationshipsSubscriptionWhere {
-                      movies: ActorMoviesRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -11458,10 +10054,6 @@ describe("@filterable directive", () => {
                       node: AppearanceWhere!
                     }
 
-                    type AppearanceConnectedRelationships {
-                      movies: AppearanceMoviesConnectedRelationship
-                    }
-
                     input AppearanceCreateInput {
                       movies: AppearanceMoviesFieldInput
                       password: String!
@@ -11527,10 +10119,6 @@ describe("@filterable directive", () => {
                       \\"\\"\\"
                       overwrite: Boolean! = true
                       where: MovieConnectWhere
-                    }
-
-                    type AppearanceMoviesConnectedRelationship {
-                      node: MovieEventPayload!
                     }
 
                     type AppearanceMoviesConnection {
@@ -11610,10 +10198,6 @@ describe("@filterable directive", () => {
                       node: Movie!
                     }
 
-                    input AppearanceMoviesRelationshipSubscriptionWhere {
-                      node: MovieSubscriptionWhere
-                    }
-
                     input AppearanceMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
                     }
@@ -11638,42 +10222,6 @@ describe("@filterable directive", () => {
 
                     input AppearanceRelationInput {
                       movies: [AppearanceMoviesCreateFieldInput!]
-                    }
-
-                    type AppearanceRelationshipCreatedEvent {
-                      appearance: AppearanceEventPayload!
-                      createdRelationship: AppearanceConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input AppearanceRelationshipCreatedSubscriptionWhere {
-                      AND: [AppearanceRelationshipCreatedSubscriptionWhere!]
-                      NOT: AppearanceRelationshipCreatedSubscriptionWhere
-                      OR: [AppearanceRelationshipCreatedSubscriptionWhere!]
-                      appearance: AppearanceSubscriptionWhere
-                      createdRelationship: AppearanceRelationshipsSubscriptionWhere
-                    }
-
-                    type AppearanceRelationshipDeletedEvent {
-                      appearance: AppearanceEventPayload!
-                      deletedRelationship: AppearanceConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input AppearanceRelationshipDeletedSubscriptionWhere {
-                      AND: [AppearanceRelationshipDeletedSubscriptionWhere!]
-                      NOT: AppearanceRelationshipDeletedSubscriptionWhere
-                      OR: [AppearanceRelationshipDeletedSubscriptionWhere!]
-                      appearance: AppearanceSubscriptionWhere
-                      deletedRelationship: AppearanceRelationshipsSubscriptionWhere
-                    }
-
-                    input AppearanceRelationshipsSubscriptionWhere {
-                      movies: AppearanceMoviesRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -11840,10 +10388,6 @@ describe("@filterable directive", () => {
                       create: [MovieActorsActorCreateFieldInput!]
                     }
 
-                    input MovieActorsActorSubscriptionWhere {
-                      node: ActorSubscriptionWhere
-                    }
-
                     input MovieActorsActorUpdateConnectionInput {
                       node: ActorUpdateInput
                     }
@@ -11888,10 +10432,6 @@ describe("@filterable directive", () => {
                       create: [MovieActorsAppearanceCreateFieldInput!]
                     }
 
-                    input MovieActorsAppearanceSubscriptionWhere {
-                      node: AppearanceSubscriptionWhere
-                    }
-
                     input MovieActorsAppearanceUpdateConnectionInput {
                       node: AppearanceUpdateInput
                     }
@@ -11908,10 +10448,6 @@ describe("@filterable directive", () => {
                     input MovieActorsConnectInput {
                       Actor: [MovieActorsActorConnectFieldInput!]
                       Appearance: [MovieActorsAppearanceConnectFieldInput!]
-                    }
-
-                    type MovieActorsConnectedRelationship {
-                      node: PersonEventPayload!
                     }
 
                     type MovieActorsConnection {
@@ -11950,11 +10486,6 @@ describe("@filterable directive", () => {
                       node: Person!
                     }
 
-                    input MovieActorsRelationshipSubscriptionWhere {
-                      Actor: MovieActorsActorSubscriptionWhere
-                      Appearance: MovieActorsAppearanceSubscriptionWhere
-                    }
-
                     input MovieActorsUpdateInput {
                       Actor: [MovieActorsActorUpdateFieldInput!]
                       Appearance: [MovieActorsAppearanceUpdateFieldInput!]
@@ -11971,10 +10502,6 @@ describe("@filterable directive", () => {
 
                     input MovieConnectWhere {
                       node: MovieWhere!
-                    }
-
-                    type MovieConnectedRelationships {
-                      actors: MovieActorsConnectedRelationship
                     }
 
                     input MovieCreateInput {
@@ -12022,42 +10549,6 @@ describe("@filterable directive", () => {
 
                     input MovieRelationInput {
                       actors: MovieActorsCreateFieldInput
-                    }
-
-                    type MovieRelationshipCreatedEvent {
-                      createdRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipCreatedSubscriptionWhere {
-                      AND: [MovieRelationshipCreatedSubscriptionWhere!]
-                      NOT: MovieRelationshipCreatedSubscriptionWhere
-                      OR: [MovieRelationshipCreatedSubscriptionWhere!]
-                      createdRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    type MovieRelationshipDeletedEvent {
-                      deletedRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipDeletedSubscriptionWhere {
-                      AND: [MovieRelationshipDeletedSubscriptionWhere!]
-                      NOT: MovieRelationshipDeletedSubscriptionWhere
-                      OR: [MovieRelationshipDeletedSubscriptionWhere!]
-                      deletedRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    input MovieRelationshipsSubscriptionWhere {
-                      actors: MovieActorsRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -12155,8 +10646,6 @@ describe("@filterable directive", () => {
 
                     union Person = Actor | Appearance
 
-                    union PersonEventPayload = ActorEventPayload | AppearanceEventPayload
-
                     input PersonWhere {
                       Actor: ActorWhere
                       Appearance: AppearanceWhere
@@ -12197,18 +10686,12 @@ describe("@filterable directive", () => {
                     type Subscription {
                       actorCreated(where: ActorSubscriptionWhere): ActorCreatedEvent!
                       actorDeleted(where: ActorSubscriptionWhere): ActorDeletedEvent!
-                      actorRelationshipCreated(where: ActorRelationshipCreatedSubscriptionWhere): ActorRelationshipCreatedEvent!
-                      actorRelationshipDeleted(where: ActorRelationshipDeletedSubscriptionWhere): ActorRelationshipDeletedEvent!
                       actorUpdated(where: ActorSubscriptionWhere): ActorUpdatedEvent!
                       appearanceCreated(where: AppearanceSubscriptionWhere): AppearanceCreatedEvent!
                       appearanceDeleted(where: AppearanceSubscriptionWhere): AppearanceDeletedEvent!
-                      appearanceRelationshipCreated(where: AppearanceRelationshipCreatedSubscriptionWhere): AppearanceRelationshipCreatedEvent!
-                      appearanceRelationshipDeleted(where: AppearanceRelationshipDeletedSubscriptionWhere): AppearanceRelationshipDeletedEvent!
                       appearanceUpdated(where: AppearanceSubscriptionWhere): AppearanceUpdatedEvent!
                       movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
                       movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-                      movieRelationshipCreated(where: MovieRelationshipCreatedSubscriptionWhere): MovieRelationshipCreatedEvent!
-                      movieRelationshipDeleted(where: MovieRelationshipDeletedSubscriptionWhere): MovieRelationshipDeletedEvent!
                       movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
                     }
 

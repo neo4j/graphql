@@ -17,11 +17,8 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import type { Response } from "supertest";
 import supertest from "supertest";
-import { Neo4jGraphQLSubscriptionsCDCEngine, type Neo4jGraphQLSubscriptionsEngine } from "../../../../src";
-import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../../src/classes/subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
 import { createBearerToken } from "../../../utils/create-bearer-token";
 import type { UniqueType } from "../../../utils/graphql-types";
 import { TestHelper } from "../../../utils/tests-helper";
@@ -29,23 +26,7 @@ import type { TestGraphQLServer } from "../../setup/apollo-server";
 import { ApolloTestServer } from "../../setup/apollo-server";
 import { WebSocketTestClient } from "../../setup/ws-client";
 
-describe.each([
-    {
-        name: "Neo4jGraphQLSubscriptionsDefaultEngine",
-        engine: (_driver: Driver, _db: string) => new Neo4jGraphQLSubscriptionsDefaultEngine(),
-    },
-    {
-        name: "Neo4jGraphQLSubscriptionsCDCEngine",
-        engine: (driver: Driver, db: string) =>
-            new Neo4jGraphQLSubscriptionsCDCEngine({
-                driver,
-                pollTime: 100,
-                queryConfig: {
-                    database: db,
-                },
-            }),
-    },
-])("$name - Subscription authentication roles", ({ engine }) => {
+describe("Subscription authentication roles", () => {
     const testHelper = new TestHelper({ cdc: true });
 
     let typeMovie: UniqueType;
@@ -53,7 +34,6 @@ describe.each([
     let jwtToken: string;
     let server: TestGraphQLServer;
     let wsClient: WebSocketTestClient;
-    let subscriptionEngine: Neo4jGraphQLSubscriptionsEngine;
 
     let typeDefs: string;
 
@@ -74,15 +54,13 @@ describe.each([
 
         jwtToken = createBearerToken("secret", { roles: ["admin"] });
 
-        const driver = await testHelper.getDriver();
-        subscriptionEngine = engine(driver, testHelper.database);
         const neoSchema = await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {
                 authorization: {
                     key: "secret",
                 },
-                subscriptions: subscriptionEngine,
+                subscriptions: await testHelper.getSubscriptionEngine(),
             },
         });
 
@@ -102,7 +80,6 @@ describe.each([
 
     afterAll(async () => {
         await server.close();
-        subscriptionEngine.close();
         await testHelper.close();
     });
 

@@ -18,7 +18,6 @@
  */
 
 import { generate } from "randomstring";
-import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
 import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../../utils/tests-helper";
 
@@ -175,7 +174,7 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
         const neoSchema = await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {
-                subscriptions: new TestSubscriptionsEngine(),
+                subscriptions: true,
             },
         });
         const videoID = generate({ charset: "alphabetic" });

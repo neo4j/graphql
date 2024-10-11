@@ -55,7 +55,7 @@ export function deleteResolver({
             info,
         });
 
-        publishEventsToSubscriptionMechanism(executeResult, context.features?.subscriptions, context.schemaModel);
+        publishEventsToSubscriptionMechanism(executeResult, context.features?.subscriptionsEngine, context.schemaModel);
 
         return executeResult.statistics;
     }

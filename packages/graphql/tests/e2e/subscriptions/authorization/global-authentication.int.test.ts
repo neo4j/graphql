@@ -19,7 +19,6 @@
 
 import type { Response } from "supertest";
 import supertest from "supertest";
-import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../../src/classes/subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
 import { createBearerToken } from "../../../utils/create-bearer-token";
 import { TestHelper } from "../../../utils/tests-helper";
 import type { TestGraphQLServer } from "../../setup/apollo-server";
@@ -27,7 +26,7 @@ import { ApolloTestServer } from "../../setup/apollo-server";
 import { WebSocketTestClient } from "../../setup/ws-client";
 
 describe("Subscription global authentication", () => {
-    const testHelper = new TestHelper();
+    const testHelper = new TestHelper({ cdc: true });
     let jwtToken: string;
 
     const secret = "secret";
@@ -55,7 +54,7 @@ describe("Subscription global authentication", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: new Neo4jGraphQLSubscriptionsDefaultEngine(),
+                    subscriptions: await testHelper.getSubscriptionEngine(),
                 },
             });
 
@@ -130,7 +129,7 @@ describe("Subscription global authentication", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: new Neo4jGraphQLSubscriptionsDefaultEngine(),
+                    subscriptions: await testHelper.getSubscriptionEngine(),
                 },
             });
 
@@ -205,7 +204,7 @@ describe("Subscription global authentication", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: new Neo4jGraphQLSubscriptionsDefaultEngine(),
+                    subscriptions: await testHelper.getSubscriptionEngine(),
                 },
             });
 

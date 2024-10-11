@@ -24,6 +24,7 @@ import type { Directive } from "graphql-compose";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { JWTVerifyOptions, RemoteJWKSetOptions } from "jose";
 import type { Integer } from "neo4j-driver";
+import type { Neo4jGraphQLSubscriptionsCDCEngine } from "../classes/subscription/Neo4jGraphQLSubscriptionsCDCEngine";
 import type { RelationshipNestedOperationsOption, RelationshipQueryDirectionOption } from "../constants";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 import type { DefaultAnnotationValue } from "../schema-model/annotation/DefaultAnnotation";
@@ -470,7 +471,7 @@ export type Neo4jFeaturesSettings = {
     filters?: Neo4jFiltersSettings;
     populatedBy?: Neo4jPopulatedBySettings;
     authorization?: Neo4jAuthorizationSettings;
-    subscriptions?: Neo4jGraphQLSubscriptionsEngine | boolean;
+    subscriptions?: boolean | Neo4jGraphQLSubscriptionsCDCEngine;
     /** If set to `true`, removes `@neo4j/graphql` fields that are marked as deprecated to reduce schema size.
      *
      * NOTE: this will not remove user defined deprecated fields
@@ -485,11 +486,8 @@ export type Neo4jFeaturesSettings = {
 };
 
 /** Parsed features used in context */
-export type ContextFeatures = {
-    filters?: Neo4jFiltersSettings;
-    populatedBy?: Neo4jPopulatedBySettings;
-    authorization?: Neo4jAuthorizationSettings;
-    subscriptions?: Neo4jGraphQLSubscriptionsEngine;
+export type ContextFeatures = Neo4jFeaturesSettings & {
+    subscriptionsEngine?: Neo4jGraphQLSubscriptionsEngine;
 };
 
 export type PredicateReturn = {

@@ -21,15 +21,8 @@ import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
-import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
 
 describe("@selectable", () => {
-    let subscriptionMechanism: TestSubscriptionsEngine;
-
-    beforeAll(() => {
-        subscriptionMechanism = new TestSubscriptionsEngine();
-    });
-
     test("Disable read fields", async () => {
         const typeDefs = gql`
             type Movie @query(aggregate: true) @node {
@@ -492,7 +485,7 @@ describe("@selectable", () => {
                 description: String @selectable(onRead: false, onAggregate: true)
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionMechanism } });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: true } });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {

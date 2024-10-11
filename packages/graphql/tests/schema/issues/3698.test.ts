@@ -22,7 +22,6 @@ import { validateSchema } from "graphql";
 import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
-import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
 
 describe("https://github.com/neo4j/graphql/issues/3698", () => {
     test("Relationship not declared in interface", async () => {
@@ -49,7 +48,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
         `;
 
-        const subscriptionsEngine = new TestSubscriptionsEngine();
         const resolvers = {
             Movie: {
                 info: ({ id, name }) => {
@@ -57,7 +55,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
                 },
             },
         };
-        const neoSchema = new Neo4jGraphQL({ typeDefs, resolvers, features: { subscriptions: subscriptionsEngine } });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, resolvers, features: { subscriptions: true } });
 
         const schema = await neoSchema.getSchema();
         const errors = validateSchema(schema);
@@ -128,10 +126,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
 
             input GenreConnectWhere {
               node: GenreWhere!
-            }
-
-            type GenreConnectedRelationships {
-              product: GenreProductConnectedRelationship
             }
 
             input GenreCreateInput {
@@ -207,10 +201,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
 
             input GenreProductConnectFieldInput {
               where: IProductConnectWhere
-            }
-
-            type GenreProductConnectedRelationship {
-              node: IProductEventPayload!
             }
 
             type GenreProductConnection {
@@ -348,10 +338,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               node: IProduct!
             }
 
-            input GenreProductRelationshipSubscriptionWhere {
-              node: IProductSubscriptionWhere
-            }
-
             input GenreProductUpdateConnectionInput {
               node: IProductUpdateInput
             }
@@ -367,42 +353,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
 
             input GenreRelationInput {
               product: [GenreProductCreateFieldInput!]
-            }
-
-            type GenreRelationshipCreatedEvent {
-              createdRelationship: GenreConnectedRelationships!
-              event: EventType!
-              genre: GenreEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input GenreRelationshipCreatedSubscriptionWhere {
-              AND: [GenreRelationshipCreatedSubscriptionWhere!]
-              NOT: GenreRelationshipCreatedSubscriptionWhere
-              OR: [GenreRelationshipCreatedSubscriptionWhere!]
-              createdRelationship: GenreRelationshipsSubscriptionWhere
-              genre: GenreSubscriptionWhere
-            }
-
-            type GenreRelationshipDeletedEvent {
-              deletedRelationship: GenreConnectedRelationships!
-              event: EventType!
-              genre: GenreEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input GenreRelationshipDeletedSubscriptionWhere {
-              AND: [GenreRelationshipDeletedSubscriptionWhere!]
-              NOT: GenreRelationshipDeletedSubscriptionWhere
-              OR: [GenreRelationshipDeletedSubscriptionWhere!]
-              deletedRelationship: GenreRelationshipsSubscriptionWhere
-              genre: GenreSubscriptionWhere
-            }
-
-            input GenreRelationshipsSubscriptionWhere {
-              product: GenreProductRelationshipSubscriptionWhere
             }
 
             \\"\\"\\"
@@ -538,31 +488,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               name: SortDirection
             }
 
-            input IProductSubscriptionWhere {
-              AND: [IProductSubscriptionWhere!]
-              NOT: IProductSubscriptionWhere
-              OR: [IProductSubscriptionWhere!]
-              id: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: String
-              id_ENDS_WITH: String
-              id_EQ: String
-              id_IN: [String!]
-              id_STARTS_WITH: String
-              info: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              info_CONTAINS: String
-              info_ENDS_WITH: String
-              info_EQ: String
-              info_IN: [String!]
-              info_STARTS_WITH: String
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
-              typename_IN: [IProductImplementation!]
-            }
-
             input IProductUpdateInput {
               id: String
               info: String
@@ -621,10 +546,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
 
             input MovieConnectOrCreateInput {
               genre: MovieGenreConnectOrCreateFieldInput
-            }
-
-            type MovieConnectedRelationships {
-              genre: MovieGenreConnectedRelationship
             }
 
             input MovieCreateInput {
@@ -692,10 +613,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
 
             input MovieGenreConnectOrCreateFieldInputOnCreate {
               node: GenreOnCreateInput!
-            }
-
-            type MovieGenreConnectedRelationship {
-              node: GenreEventPayload!
             }
 
             type MovieGenreConnection {
@@ -785,10 +702,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               node: Genre!
             }
 
-            input MovieGenreRelationshipSubscriptionWhere {
-              node: GenreSubscriptionWhere
-            }
-
             input MovieGenreUpdateConnectionInput {
               node: GenreUpdateInput
             }
@@ -814,42 +727,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
 
             input MovieRelationInput {
               genre: MovieGenreCreateFieldInput
-            }
-
-            type MovieRelationshipCreatedEvent {
-              createdRelationship: MovieConnectedRelationships!
-              event: EventType!
-              movie: MovieEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input MovieRelationshipCreatedSubscriptionWhere {
-              AND: [MovieRelationshipCreatedSubscriptionWhere!]
-              NOT: MovieRelationshipCreatedSubscriptionWhere
-              OR: [MovieRelationshipCreatedSubscriptionWhere!]
-              createdRelationship: MovieRelationshipsSubscriptionWhere
-              movie: MovieSubscriptionWhere
-            }
-
-            type MovieRelationshipDeletedEvent {
-              deletedRelationship: MovieConnectedRelationships!
-              event: EventType!
-              movie: MovieEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input MovieRelationshipDeletedSubscriptionWhere {
-              AND: [MovieRelationshipDeletedSubscriptionWhere!]
-              NOT: MovieRelationshipDeletedSubscriptionWhere
-              OR: [MovieRelationshipDeletedSubscriptionWhere!]
-              deletedRelationship: MovieRelationshipsSubscriptionWhere
-              movie: MovieSubscriptionWhere
-            }
-
-            input MovieRelationshipsSubscriptionWhere {
-              genre: MovieGenreRelationshipSubscriptionWhere
             }
 
             \\"\\"\\"
@@ -963,13 +840,9 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             type Subscription {
               genreCreated(where: GenreSubscriptionWhere): GenreCreatedEvent!
               genreDeleted(where: GenreSubscriptionWhere): GenreDeletedEvent!
-              genreRelationshipCreated(where: GenreRelationshipCreatedSubscriptionWhere): GenreRelationshipCreatedEvent!
-              genreRelationshipDeleted(where: GenreRelationshipDeletedSubscriptionWhere): GenreRelationshipDeletedEvent!
               genreUpdated(where: GenreSubscriptionWhere): GenreUpdatedEvent!
               movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
               movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-              movieRelationshipCreated(where: MovieRelationshipCreatedSubscriptionWhere): MovieRelationshipCreatedEvent!
-              movieRelationshipDeleted(where: MovieRelationshipDeletedSubscriptionWhere): MovieRelationshipDeletedEvent!
               movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
             }
 
@@ -1019,7 +892,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
         `;
 
-        const subscriptionsEngine = new TestSubscriptionsEngine();
         const resolvers = {
             Movie: {
                 info: ({ id, name }) => {
@@ -1027,7 +899,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
                 },
             },
         };
-        const neoSchema = new Neo4jGraphQL({ typeDefs, resolvers, features: { subscriptions: subscriptionsEngine } });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, resolvers, features: { subscriptions: true } });
 
         const schema = await neoSchema.getSchema();
         const errors = validateSchema(schema);
@@ -1098,10 +970,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
 
             input GenreConnectWhere {
               node: GenreWhere!
-            }
-
-            type GenreConnectedRelationships {
-              product: GenreProductConnectedRelationship
             }
 
             input GenreCreateInput {
@@ -1178,10 +1046,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             input GenreProductConnectFieldInput {
               connect: IProductConnectInput
               where: IProductConnectWhere
-            }
-
-            type GenreProductConnectedRelationship {
-              node: IProductEventPayload!
             }
 
             type GenreProductConnection {
@@ -1321,10 +1185,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               node: IProduct!
             }
 
-            input GenreProductRelationshipSubscriptionWhere {
-              node: IProductSubscriptionWhere
-            }
-
             input GenreProductUpdateConnectionInput {
               node: IProductUpdateInput
             }
@@ -1340,42 +1200,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
 
             input GenreRelationInput {
               product: [GenreProductCreateFieldInput!]
-            }
-
-            type GenreRelationshipCreatedEvent {
-              createdRelationship: GenreConnectedRelationships!
-              event: EventType!
-              genre: GenreEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input GenreRelationshipCreatedSubscriptionWhere {
-              AND: [GenreRelationshipCreatedSubscriptionWhere!]
-              NOT: GenreRelationshipCreatedSubscriptionWhere
-              OR: [GenreRelationshipCreatedSubscriptionWhere!]
-              createdRelationship: GenreRelationshipsSubscriptionWhere
-              genre: GenreSubscriptionWhere
-            }
-
-            type GenreRelationshipDeletedEvent {
-              deletedRelationship: GenreConnectedRelationships!
-              event: EventType!
-              genre: GenreEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input GenreRelationshipDeletedSubscriptionWhere {
-              AND: [GenreRelationshipDeletedSubscriptionWhere!]
-              NOT: GenreRelationshipDeletedSubscriptionWhere
-              OR: [GenreRelationshipDeletedSubscriptionWhere!]
-              deletedRelationship: GenreRelationshipsSubscriptionWhere
-              genre: GenreSubscriptionWhere
-            }
-
-            input GenreRelationshipsSubscriptionWhere {
-              product: GenreProductRelationshipSubscriptionWhere
             }
 
             \\"\\"\\"
@@ -1641,31 +1465,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               name: SortDirection
             }
 
-            input IProductSubscriptionWhere {
-              AND: [IProductSubscriptionWhere!]
-              NOT: IProductSubscriptionWhere
-              OR: [IProductSubscriptionWhere!]
-              id: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: String
-              id_ENDS_WITH: String
-              id_EQ: String
-              id_IN: [String!]
-              id_STARTS_WITH: String
-              info: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              info_CONTAINS: String
-              info_ENDS_WITH: String
-              info_EQ: String
-              info_IN: [String!]
-              info_STARTS_WITH: String
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
-              typename_IN: [IProductImplementation!]
-            }
-
             input IProductUpdateInput {
               genre: IProductGenreUpdateFieldInput
               id: String
@@ -1728,10 +1527,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
 
             input MovieConnectOrCreateInput {
               genre: MovieGenreConnectOrCreateFieldInput
-            }
-
-            type MovieConnectedRelationships {
-              genre: MovieGenreConnectedRelationship
             }
 
             input MovieCreateInput {
@@ -1801,10 +1596,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               node: GenreOnCreateInput!
             }
 
-            type MovieGenreConnectedRelationship {
-              node: GenreEventPayload!
-            }
-
             input MovieGenreCreateFieldInput {
               node: GenreCreateInput!
             }
@@ -1860,10 +1651,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
-            input MovieGenreRelationshipSubscriptionWhere {
-              node: GenreSubscriptionWhere
-            }
-
             input MovieGenreUpdateConnectionInput {
               node: GenreUpdateInput
             }
@@ -1889,42 +1676,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
 
             input MovieRelationInput {
               genre: MovieGenreCreateFieldInput
-            }
-
-            type MovieRelationshipCreatedEvent {
-              createdRelationship: MovieConnectedRelationships!
-              event: EventType!
-              movie: MovieEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input MovieRelationshipCreatedSubscriptionWhere {
-              AND: [MovieRelationshipCreatedSubscriptionWhere!]
-              NOT: MovieRelationshipCreatedSubscriptionWhere
-              OR: [MovieRelationshipCreatedSubscriptionWhere!]
-              createdRelationship: MovieRelationshipsSubscriptionWhere
-              movie: MovieSubscriptionWhere
-            }
-
-            type MovieRelationshipDeletedEvent {
-              deletedRelationship: MovieConnectedRelationships!
-              event: EventType!
-              movie: MovieEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input MovieRelationshipDeletedSubscriptionWhere {
-              AND: [MovieRelationshipDeletedSubscriptionWhere!]
-              NOT: MovieRelationshipDeletedSubscriptionWhere
-              OR: [MovieRelationshipDeletedSubscriptionWhere!]
-              deletedRelationship: MovieRelationshipsSubscriptionWhere
-              movie: MovieSubscriptionWhere
-            }
-
-            input MovieRelationshipsSubscriptionWhere {
-              genre: MovieGenreRelationshipSubscriptionWhere
             }
 
             \\"\\"\\"
@@ -2038,13 +1789,9 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             type Subscription {
               genreCreated(where: GenreSubscriptionWhere): GenreCreatedEvent!
               genreDeleted(where: GenreSubscriptionWhere): GenreDeletedEvent!
-              genreRelationshipCreated(where: GenreRelationshipCreatedSubscriptionWhere): GenreRelationshipCreatedEvent!
-              genreRelationshipDeleted(where: GenreRelationshipDeletedSubscriptionWhere): GenreRelationshipDeletedEvent!
               genreUpdated(where: GenreSubscriptionWhere): GenreUpdatedEvent!
               movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
               movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-              movieRelationshipCreated(where: MovieRelationshipCreatedSubscriptionWhere): MovieRelationshipCreatedEvent!
-              movieRelationshipDeleted(where: MovieRelationshipDeletedSubscriptionWhere): MovieRelationshipDeletedEvent!
               movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
             }
 
@@ -2102,7 +1849,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
         `;
 
-        const subscriptionsEngine = new TestSubscriptionsEngine();
         const resolvers = {
             Movie: {
                 info: ({ id, name }) => {
@@ -2110,7 +1856,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
                 },
             },
         };
-        const neoSchema = new Neo4jGraphQL({ typeDefs, resolvers, features: { subscriptions: subscriptionsEngine } });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, resolvers, features: { subscriptions: true } });
 
         const schema = await neoSchema.getSchema();
         const errors = validateSchema(schema);
@@ -2188,10 +1934,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               node: GenreWhere!
             }
 
-            type GenreConnectedRelationships {
-              product: GenreProductConnectedRelationship
-            }
-
             input GenreCreateInput {
               name: String!
               product: GenreProductFieldInput
@@ -2266,10 +2008,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             input GenreProductConnectFieldInput {
               connect: IProductConnectInput
               where: IProductConnectWhere
-            }
-
-            type GenreProductConnectedRelationship {
-              node: IProductEventPayload!
             }
 
             type GenreProductConnection {
@@ -2409,10 +2147,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               node: IProduct!
             }
 
-            input GenreProductRelationshipSubscriptionWhere {
-              node: IProductSubscriptionWhere
-            }
-
             input GenreProductUpdateConnectionInput {
               node: IProductUpdateInput
             }
@@ -2428,42 +2162,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
 
             input GenreRelationInput {
               product: [GenreProductCreateFieldInput!]
-            }
-
-            type GenreRelationshipCreatedEvent {
-              createdRelationship: GenreConnectedRelationships!
-              event: EventType!
-              genre: GenreEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input GenreRelationshipCreatedSubscriptionWhere {
-              AND: [GenreRelationshipCreatedSubscriptionWhere!]
-              NOT: GenreRelationshipCreatedSubscriptionWhere
-              OR: [GenreRelationshipCreatedSubscriptionWhere!]
-              createdRelationship: GenreRelationshipsSubscriptionWhere
-              genre: GenreSubscriptionWhere
-            }
-
-            type GenreRelationshipDeletedEvent {
-              deletedRelationship: GenreConnectedRelationships!
-              event: EventType!
-              genre: GenreEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input GenreRelationshipDeletedSubscriptionWhere {
-              AND: [GenreRelationshipDeletedSubscriptionWhere!]
-              NOT: GenreRelationshipDeletedSubscriptionWhere
-              OR: [GenreRelationshipDeletedSubscriptionWhere!]
-              deletedRelationship: GenreRelationshipsSubscriptionWhere
-              genre: GenreSubscriptionWhere
-            }
-
-            input GenreRelationshipsSubscriptionWhere {
-              product: GenreProductRelationshipSubscriptionWhere
             }
 
             \\"\\"\\"
@@ -2731,31 +2429,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               name: SortDirection
             }
 
-            input IProductSubscriptionWhere {
-              AND: [IProductSubscriptionWhere!]
-              NOT: IProductSubscriptionWhere
-              OR: [IProductSubscriptionWhere!]
-              id: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: String
-              id_ENDS_WITH: String
-              id_EQ: String
-              id_IN: [String!]
-              id_STARTS_WITH: String
-              info: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              info_CONTAINS: String
-              info_ENDS_WITH: String
-              info_EQ: String
-              info_IN: [String!]
-              info_STARTS_WITH: String
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
-              typename_IN: [IProductImplementation!]
-            }
-
             input IProductUpdateInput {
               genre: IProductGenreUpdateFieldInput
               id: String
@@ -2818,10 +2491,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
 
             input MovieConnectOrCreateInput {
               genre: MovieGenreConnectOrCreateFieldInput
-            }
-
-            type MovieConnectedRelationships {
-              genre: MovieGenreConnectedRelationship
             }
 
             input MovieCreateInput {
@@ -2891,10 +2560,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               node: GenreOnCreateInput!
             }
 
-            type MovieGenreConnectedRelationship {
-              node: GenreEventPayload!
-            }
-
             input MovieGenreCreateFieldInput {
               node: GenreCreateInput!
             }
@@ -2950,10 +2615,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
-            input MovieGenreRelationshipSubscriptionWhere {
-              node: GenreSubscriptionWhere
-            }
-
             input MovieGenreUpdateConnectionInput {
               node: GenreUpdateInput
             }
@@ -2979,42 +2640,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
 
             input MovieRelationInput {
               genre: MovieGenreCreateFieldInput
-            }
-
-            type MovieRelationshipCreatedEvent {
-              createdRelationship: MovieConnectedRelationships!
-              event: EventType!
-              movie: MovieEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input MovieRelationshipCreatedSubscriptionWhere {
-              AND: [MovieRelationshipCreatedSubscriptionWhere!]
-              NOT: MovieRelationshipCreatedSubscriptionWhere
-              OR: [MovieRelationshipCreatedSubscriptionWhere!]
-              createdRelationship: MovieRelationshipsSubscriptionWhere
-              movie: MovieSubscriptionWhere
-            }
-
-            type MovieRelationshipDeletedEvent {
-              deletedRelationship: MovieConnectedRelationships!
-              event: EventType!
-              movie: MovieEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input MovieRelationshipDeletedSubscriptionWhere {
-              AND: [MovieRelationshipDeletedSubscriptionWhere!]
-              NOT: MovieRelationshipDeletedSubscriptionWhere
-              OR: [MovieRelationshipDeletedSubscriptionWhere!]
-              deletedRelationship: MovieRelationshipsSubscriptionWhere
-              movie: MovieSubscriptionWhere
-            }
-
-            input MovieRelationshipsSubscriptionWhere {
-              genre: MovieGenreRelationshipSubscriptionWhere
             }
 
             \\"\\"\\"
@@ -3142,10 +2767,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               genre: SeriesGenreConnectOrCreateFieldInput
             }
 
-            type SeriesConnectedRelationships {
-              genre: SeriesGenreConnectedRelationship
-            }
-
             type SeriesConnection {
               edges: [SeriesEdge!]!
               pageInfo: PageInfo!
@@ -3221,10 +2842,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               node: GenreOnCreateInput!
             }
 
-            type SeriesGenreConnectedRelationship {
-              node: GenreEventPayload!
-            }
-
             input SeriesGenreCreateFieldInput {
               node: GenreCreateInput!
             }
@@ -3280,10 +2897,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
-            input SeriesGenreRelationshipSubscriptionWhere {
-              node: GenreSubscriptionWhere
-            }
-
             input SeriesGenreUpdateConnectionInput {
               node: GenreUpdateInput
             }
@@ -3309,42 +2922,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
 
             input SeriesRelationInput {
               genre: SeriesGenreCreateFieldInput
-            }
-
-            type SeriesRelationshipCreatedEvent {
-              createdRelationship: SeriesConnectedRelationships!
-              event: EventType!
-              relationshipFieldName: String!
-              series: SeriesEventPayload!
-              timestamp: Float!
-            }
-
-            input SeriesRelationshipCreatedSubscriptionWhere {
-              AND: [SeriesRelationshipCreatedSubscriptionWhere!]
-              NOT: SeriesRelationshipCreatedSubscriptionWhere
-              OR: [SeriesRelationshipCreatedSubscriptionWhere!]
-              createdRelationship: SeriesRelationshipsSubscriptionWhere
-              series: SeriesSubscriptionWhere
-            }
-
-            type SeriesRelationshipDeletedEvent {
-              deletedRelationship: SeriesConnectedRelationships!
-              event: EventType!
-              relationshipFieldName: String!
-              series: SeriesEventPayload!
-              timestamp: Float!
-            }
-
-            input SeriesRelationshipDeletedSubscriptionWhere {
-              AND: [SeriesRelationshipDeletedSubscriptionWhere!]
-              NOT: SeriesRelationshipDeletedSubscriptionWhere
-              OR: [SeriesRelationshipDeletedSubscriptionWhere!]
-              deletedRelationship: SeriesRelationshipsSubscriptionWhere
-              series: SeriesSubscriptionWhere
-            }
-
-            input SeriesRelationshipsSubscriptionWhere {
-              genre: SeriesGenreRelationshipSubscriptionWhere
             }
 
             \\"\\"\\"
@@ -3437,18 +3014,12 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             type Subscription {
               genreCreated(where: GenreSubscriptionWhere): GenreCreatedEvent!
               genreDeleted(where: GenreSubscriptionWhere): GenreDeletedEvent!
-              genreRelationshipCreated(where: GenreRelationshipCreatedSubscriptionWhere): GenreRelationshipCreatedEvent!
-              genreRelationshipDeleted(where: GenreRelationshipDeletedSubscriptionWhere): GenreRelationshipDeletedEvent!
               genreUpdated(where: GenreSubscriptionWhere): GenreUpdatedEvent!
               movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
               movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-              movieRelationshipCreated(where: MovieRelationshipCreatedSubscriptionWhere): MovieRelationshipCreatedEvent!
-              movieRelationshipDeleted(where: MovieRelationshipDeletedSubscriptionWhere): MovieRelationshipDeletedEvent!
               movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
               seriesCreated(where: SeriesSubscriptionWhere): SeriesCreatedEvent!
               seriesDeleted(where: SeriesSubscriptionWhere): SeriesDeletedEvent!
-              seriesRelationshipCreated(where: SeriesRelationshipCreatedSubscriptionWhere): SeriesRelationshipCreatedEvent!
-              seriesRelationshipDeleted(where: SeriesRelationshipDeletedSubscriptionWhere): SeriesRelationshipDeletedEvent!
               seriesUpdated(where: SeriesSubscriptionWhere): SeriesUpdatedEvent!
             }
 

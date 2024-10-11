@@ -21,7 +21,6 @@ import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
-import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
 
 describe("Extending the schema in when using getSubgraphSchema", () => {
     test("Should be able to extend the schema using @query", async () => {
@@ -502,8 +501,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             extend schema @subscription(events: [UPDATED])
         `;
 
-        const subscriptionPlugin = new TestSubscriptionsEngine();
-        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionPlugin } });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: true } });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSubgraphSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`

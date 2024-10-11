@@ -16,24 +16,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { EventEmitter } from "events";
-import type { Neo4jGraphQLSubscriptionsEngine, SubscriptionsEvent } from "../../src/types";
 
-export class TestSubscriptionsEngine implements Neo4jGraphQLSubscriptionsEngine {
-    public events = new EventEmitter();
+import { Neo4jGraphQLSubscriptionsCDCEngine } from "../../../src";
+import { DriverBuilder } from "./driver-builder";
 
-    public eventList: SubscriptionsEvent[] = [];
-    private closed = false;
-
-    // eslint-disable-next-line @typescript-eslint/require-await
-    async publish(eventMeta: SubscriptionsEvent): Promise<void> {
-        if (!this.closed) {
-            this.eventList.push(eventMeta);
-            this.events.emit(eventMeta.event, eventMeta);
-        }
+export class TestCDCEngine extends Neo4jGraphQLSubscriptionsCDCEngine {
+    constructor() {
+        const driverBuilder = new DriverBuilder();
+        super({
+            driver: driverBuilder.instance(),
+        });
     }
 
-    public close(): void {
-        this.closed = true;
+    public async init(): Promise<void> {
+        // Disable polling
     }
 }
