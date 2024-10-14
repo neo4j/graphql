@@ -242,7 +242,10 @@ describe("Cypher Update", () => {
     test("Simple Update as Connect", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateMovies(where: { id_EQ: "1" }, connect: { actors: [{ where: { node: { name_EQ: "Daniel" } } }] }) {
+                updateMovies(
+                    where: { id_EQ: "1" }
+                    update: { actors: { connect: [{ where: { node: { name_EQ: "Daniel" } } }] } }
+                ) {
                     movies {
                         id
                     }
@@ -258,29 +261,28 @@ describe("Cypher Update", () => {
             WITH *
             CALL {
             	WITH this
-            	OPTIONAL MATCH (this_connect_actors0_node:Actor)
-            	WHERE this_connect_actors0_node.name = $this_connect_actors0_node_param0
+            	OPTIONAL MATCH (this_actors0_connect0_node:Actor)
+            	WHERE this_actors0_connect0_node.name = $this_actors0_connect0_node_param0
             	CALL {
             		WITH *
-            		WITH collect(this_connect_actors0_node) as connectedNodes, collect(this) as parentNodes
+            		WITH collect(this_actors0_connect0_node) as connectedNodes, collect(this) as parentNodes
             		CALL {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
-            			UNWIND connectedNodes as this_connect_actors0_node
-            			MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
+            			UNWIND connectedNodes as this_actors0_connect0_node
+            			MERGE (this)<-[this_actors0_connect0_relationship:ACTED_IN]-(this_actors0_connect0_node)
             		}
             	}
-            WITH this, this_connect_actors0_node
-            	RETURN count(*) AS connect_this_connect_actors_Actor0
+            WITH this, this_actors0_connect0_node
+            	RETURN count(*) AS connect_this_actors0_connect_Actor0
             }
-            WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
-                \\"this_connect_actors0_node_param0\\": \\"Daniel\\",
+                \\"this_actors0_connect0_node_param0\\": \\"Daniel\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -291,11 +293,13 @@ describe("Cypher Update", () => {
             mutation {
                 updateMovies(
                     where: { id_EQ: "1" }
-                    connect: {
-                        actors: [
-                            { where: { node: { name_EQ: "Daniel" } } }
-                            { where: { node: { name_EQ: "Darrell" } } }
-                        ]
+                    update: {
+                        actors: {
+                            connect: [
+                                { where: { node: { name_EQ: "Daniel" } } }
+                                { where: { node: { name_EQ: "Darrell" } } }
+                            ]
+                        }
                     }
                 ) {
                     movies {
@@ -313,48 +317,47 @@ describe("Cypher Update", () => {
             WITH *
             CALL {
             	WITH this
-            	OPTIONAL MATCH (this_connect_actors0_node:Actor)
-            	WHERE this_connect_actors0_node.name = $this_connect_actors0_node_param0
+            	OPTIONAL MATCH (this_actors0_connect0_node:Actor)
+            	WHERE this_actors0_connect0_node.name = $this_actors0_connect0_node_param0
             	CALL {
             		WITH *
-            		WITH collect(this_connect_actors0_node) as connectedNodes, collect(this) as parentNodes
+            		WITH collect(this_actors0_connect0_node) as connectedNodes, collect(this) as parentNodes
             		CALL {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
-            			UNWIND connectedNodes as this_connect_actors0_node
-            			MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
+            			UNWIND connectedNodes as this_actors0_connect0_node
+            			MERGE (this)<-[this_actors0_connect0_relationship:ACTED_IN]-(this_actors0_connect0_node)
             		}
             	}
-            WITH this, this_connect_actors0_node
-            	RETURN count(*) AS connect_this_connect_actors_Actor0
+            WITH this, this_actors0_connect0_node
+            	RETURN count(*) AS connect_this_actors0_connect_Actor0
             }
             WITH *
             CALL {
             	WITH this
-            	OPTIONAL MATCH (this_connect_actors1_node:Actor)
-            	WHERE this_connect_actors1_node.name = $this_connect_actors1_node_param0
+            	OPTIONAL MATCH (this_actors0_connect1_node:Actor)
+            	WHERE this_actors0_connect1_node.name = $this_actors0_connect1_node_param0
             	CALL {
             		WITH *
-            		WITH collect(this_connect_actors1_node) as connectedNodes, collect(this) as parentNodes
+            		WITH collect(this_actors0_connect1_node) as connectedNodes, collect(this) as parentNodes
             		CALL {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
-            			UNWIND connectedNodes as this_connect_actors1_node
-            			MERGE (this)<-[this_connect_actors1_relationship:ACTED_IN]-(this_connect_actors1_node)
+            			UNWIND connectedNodes as this_actors0_connect1_node
+            			MERGE (this)<-[this_actors0_connect1_relationship:ACTED_IN]-(this_actors0_connect1_node)
             		}
             	}
-            WITH this, this_connect_actors1_node
-            	RETURN count(*) AS connect_this_connect_actors_Actor1
+            WITH this, this_actors0_connect1_node
+            	RETURN count(*) AS connect_this_actors0_connect_Actor1
             }
-            WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
-                \\"this_connect_actors0_node_param0\\": \\"Daniel\\",
-                \\"this_connect_actors1_node_param0\\": \\"Darrell\\",
+                \\"this_actors0_connect0_node_param0\\": \\"Daniel\\",
+                \\"this_actors0_connect1_node_param0\\": \\"Darrell\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -365,7 +368,7 @@ describe("Cypher Update", () => {
             mutation {
                 updateMovies(
                     where: { id_EQ: "1" }
-                    disconnect: { actors: [{ where: { node: { name_EQ: "Daniel" } } }] }
+                    update: { actors: { disconnect: [{ where: { node: { name_EQ: "Daniel" } } }] } }
                 ) {
                     movies {
                         id
@@ -382,34 +385,37 @@ describe("Cypher Update", () => {
             WITH this
             CALL {
             WITH this
-            OPTIONAL MATCH (this)<-[this_disconnect_actors0_rel:ACTED_IN]-(this_disconnect_actors0:Actor)
-            WHERE this_disconnect_actors0.name = $updateMovies_args_disconnect_actors0_where_Actor_this_disconnect_actors0param0
+            OPTIONAL MATCH (this)<-[this_actors0_disconnect0_rel:ACTED_IN]-(this_actors0_disconnect0:Actor)
+            WHERE this_actors0_disconnect0.name = $updateMovies_args_update_actors0_disconnect0_where_Actor_this_actors0_disconnect0param0
             CALL {
-            	WITH this_disconnect_actors0, this_disconnect_actors0_rel, this
-            	WITH collect(this_disconnect_actors0) as this_disconnect_actors0, this_disconnect_actors0_rel, this
-            	UNWIND this_disconnect_actors0 as x
-            	DELETE this_disconnect_actors0_rel
+            	WITH this_actors0_disconnect0, this_actors0_disconnect0_rel, this
+            	WITH collect(this_actors0_disconnect0) as this_actors0_disconnect0, this_actors0_disconnect0_rel, this
+            	UNWIND this_actors0_disconnect0 as x
+            	DELETE this_actors0_disconnect0_rel
             }
-            RETURN count(*) AS disconnect_this_disconnect_actors_Actor
+            RETURN count(*) AS disconnect_this_actors0_disconnect_Actor
             }
-            WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
-                \\"updateMovies_args_disconnect_actors0_where_Actor_this_disconnect_actors0param0\\": \\"Daniel\\",
+                \\"updateMovies_args_update_actors0_disconnect0_where_Actor_this_actors0_disconnect0param0\\": \\"Daniel\\",
                 \\"updateMovies\\": {
                     \\"args\\": {
-                        \\"disconnect\\": {
+                        \\"update\\": {
                             \\"actors\\": [
                                 {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"name_EQ\\": \\"Daniel\\"
+                                    \\"disconnect\\": [
+                                        {
+                                            \\"where\\": {
+                                                \\"node\\": {
+                                                    \\"name_EQ\\": \\"Daniel\\"
+                                                }
+                                            }
                                         }
-                                    }
+                                    ]
                                 }
                             ]
                         }
@@ -425,11 +431,13 @@ describe("Cypher Update", () => {
             mutation {
                 updateMovies(
                     where: { id_EQ: "1" }
-                    disconnect: {
-                        actors: [
-                            { where: { node: { name_EQ: "Daniel" } } }
-                            { where: { node: { name_EQ: "Darrell" } } }
-                        ]
+                    update: {
+                        actors: {
+                            disconnect: [
+                                { where: { node: { name_EQ: "Daniel" } } }
+                                { where: { node: { name_EQ: "Darrell" } } }
+                            ]
+                        }
                     }
                 ) {
                     movies {
@@ -447,55 +455,58 @@ describe("Cypher Update", () => {
             WITH this
             CALL {
             WITH this
-            OPTIONAL MATCH (this)<-[this_disconnect_actors0_rel:ACTED_IN]-(this_disconnect_actors0:Actor)
-            WHERE this_disconnect_actors0.name = $updateMovies_args_disconnect_actors0_where_Actor_this_disconnect_actors0param0
+            OPTIONAL MATCH (this)<-[this_actors0_disconnect0_rel:ACTED_IN]-(this_actors0_disconnect0:Actor)
+            WHERE this_actors0_disconnect0.name = $updateMovies_args_update_actors0_disconnect0_where_Actor_this_actors0_disconnect0param0
             CALL {
-            	WITH this_disconnect_actors0, this_disconnect_actors0_rel, this
-            	WITH collect(this_disconnect_actors0) as this_disconnect_actors0, this_disconnect_actors0_rel, this
-            	UNWIND this_disconnect_actors0 as x
-            	DELETE this_disconnect_actors0_rel
+            	WITH this_actors0_disconnect0, this_actors0_disconnect0_rel, this
+            	WITH collect(this_actors0_disconnect0) as this_actors0_disconnect0, this_actors0_disconnect0_rel, this
+            	UNWIND this_actors0_disconnect0 as x
+            	DELETE this_actors0_disconnect0_rel
             }
-            RETURN count(*) AS disconnect_this_disconnect_actors_Actor
+            RETURN count(*) AS disconnect_this_actors0_disconnect_Actor
             }
             WITH this
             CALL {
             WITH this
-            OPTIONAL MATCH (this)<-[this_disconnect_actors1_rel:ACTED_IN]-(this_disconnect_actors1:Actor)
-            WHERE this_disconnect_actors1.name = $updateMovies_args_disconnect_actors1_where_Actor_this_disconnect_actors1param0
+            OPTIONAL MATCH (this)<-[this_actors0_disconnect1_rel:ACTED_IN]-(this_actors0_disconnect1:Actor)
+            WHERE this_actors0_disconnect1.name = $updateMovies_args_update_actors0_disconnect1_where_Actor_this_actors0_disconnect1param0
             CALL {
-            	WITH this_disconnect_actors1, this_disconnect_actors1_rel, this
-            	WITH collect(this_disconnect_actors1) as this_disconnect_actors1, this_disconnect_actors1_rel, this
-            	UNWIND this_disconnect_actors1 as x
-            	DELETE this_disconnect_actors1_rel
+            	WITH this_actors0_disconnect1, this_actors0_disconnect1_rel, this
+            	WITH collect(this_actors0_disconnect1) as this_actors0_disconnect1, this_actors0_disconnect1_rel, this
+            	UNWIND this_actors0_disconnect1 as x
+            	DELETE this_actors0_disconnect1_rel
             }
-            RETURN count(*) AS disconnect_this_disconnect_actors_Actor
+            RETURN count(*) AS disconnect_this_actors0_disconnect_Actor
             }
-            WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
-                \\"updateMovies_args_disconnect_actors0_where_Actor_this_disconnect_actors0param0\\": \\"Daniel\\",
-                \\"updateMovies_args_disconnect_actors1_where_Actor_this_disconnect_actors1param0\\": \\"Darrell\\",
+                \\"updateMovies_args_update_actors0_disconnect0_where_Actor_this_actors0_disconnect0param0\\": \\"Daniel\\",
+                \\"updateMovies_args_update_actors0_disconnect1_where_Actor_this_actors0_disconnect1param0\\": \\"Darrell\\",
                 \\"updateMovies\\": {
                     \\"args\\": {
-                        \\"disconnect\\": {
+                        \\"update\\": {
                             \\"actors\\": [
                                 {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"name_EQ\\": \\"Daniel\\"
+                                    \\"disconnect\\": [
+                                        {
+                                            \\"where\\": {
+                                                \\"node\\": {
+                                                    \\"name_EQ\\": \\"Daniel\\"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            \\"where\\": {
+                                                \\"node\\": {
+                                                    \\"name_EQ\\": \\"Darrell\\"
+                                                }
+                                            }
                                         }
-                                    }
-                                },
-                                {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"name_EQ\\": \\"Darrell\\"
-                                        }
-                                    }
+                                    ]
                                 }
                             ]
                         }
@@ -559,7 +570,7 @@ describe("Cypher Update", () => {
             mutation {
                 updateActors(
                     where: { name_EQ: "Dan" }
-                    create: { movies: [{ node: { id: "dan_movie_id", title: "The Story of Beer" } }] }
+                    update: { movies: { create: [{ node: { id: "dan_movie_id", title: "The Story of Beer" } }] } }
                 ) {
                     actors {
                         name
@@ -577,10 +588,11 @@ describe("Cypher Update", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Actor)
             WHERE this.name = $param0
-            CREATE (this_create_movies0_node:Movie)
-            SET this_create_movies0_node.id = $this_create_movies0_node_id
-            SET this_create_movies0_node.title = $this_create_movies0_node_title
-            MERGE (this)-[this_create_movies0_relationship:ACTED_IN]->(this_create_movies0_node)
+            WITH this
+            CREATE (this_movies0_create0_node:Movie)
+            SET this_movies0_create0_node.id = $this_movies0_create0_node_id
+            SET this_movies0_create0_node.title = $this_movies0_create0_node_title
+            MERGE (this)-[:ACTED_IN]->(this_movies0_create0_node)
             WITH *
             CALL {
                 WITH this
@@ -594,8 +606,8 @@ describe("Cypher Update", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Dan\\",
-                \\"this_create_movies0_node_id\\": \\"dan_movie_id\\",
-                \\"this_create_movies0_node_title\\": \\"The Story of Beer\\",
+                \\"this_movies0_create0_node_id\\": \\"dan_movie_id\\",
+                \\"this_movies0_create0_node_title\\": \\"The Story of Beer\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -606,11 +618,13 @@ describe("Cypher Update", () => {
             mutation {
                 updateActors(
                     where: { name_EQ: "Dan" }
-                    create: {
-                        movies: [
-                            { node: { id: "dan_movie_id", title: "The Story of Beer" } }
-                            { node: { id: "dan_movie2_id", title: "Forrest Gump" } }
-                        ]
+                    update: {
+                        movies: {
+                            create: [
+                                { node: { id: "dan_movie_id", title: "The Story of Beer" } }
+                                { node: { id: "dan_movie2_id", title: "Forrest Gump" } }
+                            ]
+                        }
                     }
                 ) {
                     actors {
@@ -629,14 +643,15 @@ describe("Cypher Update", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Actor)
             WHERE this.name = $param0
-            CREATE (this_create_movies0_node:Movie)
-            SET this_create_movies0_node.id = $this_create_movies0_node_id
-            SET this_create_movies0_node.title = $this_create_movies0_node_title
-            MERGE (this)-[this_create_movies0_relationship:ACTED_IN]->(this_create_movies0_node)
-            CREATE (this_create_movies1_node:Movie)
-            SET this_create_movies1_node.id = $this_create_movies1_node_id
-            SET this_create_movies1_node.title = $this_create_movies1_node_title
-            MERGE (this)-[this_create_movies1_relationship:ACTED_IN]->(this_create_movies1_node)
+            WITH this
+            CREATE (this_movies0_create0_node:Movie)
+            SET this_movies0_create0_node.id = $this_movies0_create0_node_id
+            SET this_movies0_create0_node.title = $this_movies0_create0_node_title
+            MERGE (this)-[:ACTED_IN]->(this_movies0_create0_node)
+            CREATE (this_movies0_create1_node:Movie)
+            SET this_movies0_create1_node.id = $this_movies0_create1_node_id
+            SET this_movies0_create1_node.title = $this_movies0_create1_node_title
+            MERGE (this)-[:ACTED_IN]->(this_movies0_create1_node)
             WITH *
             CALL {
                 WITH this
@@ -650,10 +665,10 @@ describe("Cypher Update", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Dan\\",
-                \\"this_create_movies0_node_id\\": \\"dan_movie_id\\",
-                \\"this_create_movies0_node_title\\": \\"The Story of Beer\\",
-                \\"this_create_movies1_node_id\\": \\"dan_movie2_id\\",
-                \\"this_create_movies1_node_title\\": \\"Forrest Gump\\",
+                \\"this_movies0_create0_node_id\\": \\"dan_movie_id\\",
+                \\"this_movies0_create0_node_title\\": \\"The Story of Beer\\",
+                \\"this_movies0_create1_node_id\\": \\"dan_movie2_id\\",
+                \\"this_movies0_create1_node_title\\": \\"Forrest Gump\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -664,7 +679,11 @@ describe("Cypher Update", () => {
             mutation {
                 updateMovies(
                     where: { id_EQ: "1" }
-                    delete: { actors: { where: { node: { name_EQ: "Actor to delete" }, edge: { screenTime_EQ: 60 } } } }
+                    update: {
+                        actors: {
+                            delete: { where: { node: { name_EQ: "Actor to delete" }, edge: { screenTime_EQ: 60 } } }
+                        }
+                    }
                 ) {
                     movies {
                         id
@@ -681,43 +700,46 @@ describe("Cypher Update", () => {
             WITH *
             CALL {
             WITH *
-            OPTIONAL MATCH (this)<-[this_delete_actors0_relationship:ACTED_IN]-(this_delete_actors0:Actor)
-            WHERE (this_delete_actors0.name = $updateMovies_args_delete_actors0_where_this_delete_actors0param0 AND this_delete_actors0_relationship.screenTime = $updateMovies_args_delete_actors0_where_this_delete_actors0param1)
-            WITH this_delete_actors0_relationship, collect(DISTINCT this_delete_actors0) AS this_delete_actors0_to_delete
+            OPTIONAL MATCH (this)<-[this_actors0_delete0_relationship:ACTED_IN]-(this_actors0_delete0:Actor)
+            WHERE (this_actors0_delete0.name = $updateMovies_args_update_actors0_delete0_where_this_actors0_delete0param0 AND this_actors0_delete0_relationship.screenTime = $updateMovies_args_update_actors0_delete0_where_this_actors0_delete0param1)
+            WITH this_actors0_delete0_relationship, collect(DISTINCT this_actors0_delete0) AS this_actors0_delete0_to_delete
             CALL {
-            	WITH this_delete_actors0_to_delete
-            	UNWIND this_delete_actors0_to_delete AS x
+            	WITH this_actors0_delete0_to_delete
+            	UNWIND this_actors0_delete0_to_delete AS x
             	DETACH DELETE x
             }
             }
-            WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
-                \\"updateMovies_args_delete_actors0_where_this_delete_actors0param0\\": \\"Actor to delete\\",
-                \\"updateMovies_args_delete_actors0_where_this_delete_actors0param1\\": {
+                \\"updateMovies_args_update_actors0_delete0_where_this_actors0_delete0param0\\": \\"Actor to delete\\",
+                \\"updateMovies_args_update_actors0_delete0_where_this_actors0_delete0param1\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
                 },
                 \\"updateMovies\\": {
                     \\"args\\": {
-                        \\"delete\\": {
+                        \\"update\\": {
                             \\"actors\\": [
                                 {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"name_EQ\\": \\"Actor to delete\\"
-                                        },
-                                        \\"edge\\": {
-                                            \\"screenTime_EQ\\": {
-                                                \\"low\\": 60,
-                                                \\"high\\": 0
+                                    \\"delete\\": [
+                                        {
+                                            \\"where\\": {
+                                                \\"node\\": {
+                                                    \\"name_EQ\\": \\"Actor to delete\\"
+                                                },
+                                                \\"edge\\": {
+                                                    \\"screenTime_EQ\\": {
+                                                        \\"low\\": 60,
+                                                        \\"high\\": 0
+                                                    }
+                                                }
                                             }
                                         }
-                                    }
+                                    ]
                                 }
                             ]
                         }
@@ -737,9 +759,9 @@ describe("Cypher Update", () => {
                         actors: {
                             where: { node: { name_EQ: "Actor to update" } }
                             update: { node: { name: "Updated name" } }
+                            delete: { where: { node: { name_EQ: "Actor to delete" } } }
                         }
                     }
-                    delete: { actors: { where: { node: { name_EQ: "Actor to delete" } } } }
                 ) {
                     movies {
                         id
@@ -756,12 +778,12 @@ describe("Cypher Update", () => {
             WITH *
             CALL {
             WITH *
-            OPTIONAL MATCH (this)<-[this_delete_actors0_relationship:ACTED_IN]-(this_delete_actors0:Actor)
-            WHERE this_delete_actors0.name = $updateMovies_args_delete_actors0_where_this_delete_actors0param0
-            WITH this_delete_actors0_relationship, collect(DISTINCT this_delete_actors0) AS this_delete_actors0_to_delete
+            OPTIONAL MATCH (this)<-[this_actors0_delete0_relationship:ACTED_IN]-(this_actors0_delete0:Actor)
+            WHERE this_actors0_delete0.name = $updateMovies_args_update_actors0_delete0_where_this_actors0_delete0param0
+            WITH this_actors0_delete0_relationship, collect(DISTINCT this_actors0_delete0) AS this_actors0_delete0_to_delete
             CALL {
-            	WITH this_delete_actors0_to_delete
-            	UNWIND this_delete_actors0_to_delete AS x
+            	WITH this_actors0_delete0_to_delete
+            	UNWIND this_actors0_delete0_to_delete AS x
             	DETACH DELETE x
             }
             }
@@ -773,29 +795,17 @@ describe("Cypher Update", () => {
             	SET this_actors0.name = $this_update_actors0_name
             	RETURN count(*) AS update_this_actors0
             }
-            WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
-                \\"updateMovies_args_delete_actors0_where_this_delete_actors0param0\\": \\"Actor to delete\\",
+                \\"updateMovies_args_update_actors0_delete0_where_this_actors0_delete0param0\\": \\"Actor to delete\\",
                 \\"updateMovies_args_update_actors0_where_this_actors0param0\\": \\"Actor to update\\",
                 \\"this_update_actors0_name\\": \\"Updated name\\",
                 \\"updateMovies\\": {
                     \\"args\\": {
-                        \\"delete\\": {
-                            \\"actors\\": [
-                                {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"name_EQ\\": \\"Actor to delete\\"
-                                        }
-                                    }
-                                }
-                            ]
-                        },
                         \\"update\\": {
                             \\"actors\\": [
                                 {
@@ -808,7 +818,16 @@ describe("Cypher Update", () => {
                                         \\"node\\": {
                                             \\"name\\": \\"Updated name\\"
                                         }
-                                    }
+                                    },
+                                    \\"delete\\": [
+                                        {
+                                            \\"where\\": {
+                                                \\"node\\": {
+                                                    \\"name_EQ\\": \\"Actor to delete\\"
+                                                }
+                                            }
+                                        }
+                                    ]
                                 }
                             ]
                         }

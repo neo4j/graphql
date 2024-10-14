@@ -62,7 +62,11 @@ describe("Interface Relationships - Update connect", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateActors(
-                    connect: { actedIn: { edge: { screenTime: 90 }, where: { node: { title_STARTS_WITH: "The " } } } }
+                    update: {
+                        actedIn: {
+                            connect: { edge: { screenTime: 90 }, where: { node: { title_STARTS_WITH: "The " } } }
+                        }
+                    }
                 ) {
                     actors {
                         name
@@ -75,56 +79,60 @@ describe("Interface Relationships - Update connect", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Actor)
+            WITH this
+            CALL {
+            	 WITH this
             WITH *
             CALL {
             	WITH this
-            	OPTIONAL MATCH (this_connect_actedIn0_node:Movie)
-            	WHERE this_connect_actedIn0_node.title STARTS WITH $this_connect_actedIn0_node_param0
+            	OPTIONAL MATCH (this_actedIn0_connect0_node:Movie)
+            	WHERE this_actedIn0_connect0_node.title STARTS WITH $this_actedIn0_connect0_node_param0
             	CALL {
             		WITH *
-            		WITH collect(this_connect_actedIn0_node) as connectedNodes, collect(this) as parentNodes
+            		WITH collect(this_actedIn0_connect0_node) as connectedNodes, collect(this) as parentNodes
             		CALL {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
-            			UNWIND connectedNodes as this_connect_actedIn0_node
-            			MERGE (this)-[this_connect_actedIn0_relationship:ACTED_IN]->(this_connect_actedIn0_node)
-            			SET this_connect_actedIn0_relationship.screenTime = $this_connect_actedIn0_relationship_screenTime
+            			UNWIND connectedNodes as this_actedIn0_connect0_node
+            			MERGE (this)-[this_actedIn0_connect0_relationship:ACTED_IN]->(this_actedIn0_connect0_node)
+            			SET this_actedIn0_connect0_relationship.screenTime = $this_actedIn0_connect0_relationship_screenTime
             		}
             	}
-            WITH this, this_connect_actedIn0_node
-            	RETURN count(*) AS connect_this_connect_actedIn_Movie0
+            WITH this, this_actedIn0_connect0_node
+            	RETURN count(*) AS connect_this_actedIn0_connect_Movie0
+            }
+            RETURN count(*) AS update_this_Movie
             }
             CALL {
-            		WITH this
-            	OPTIONAL MATCH (this_connect_actedIn1_node:Series)
-            	WHERE this_connect_actedIn1_node.title STARTS WITH $this_connect_actedIn1_node_param0
+            	 WITH this
+            	WITH *
+            CALL {
+            	WITH this
+            	OPTIONAL MATCH (this_actedIn0_connect0_node:Series)
+            	WHERE this_actedIn0_connect0_node.title STARTS WITH $this_actedIn0_connect0_node_param0
             	CALL {
             		WITH *
-            		WITH collect(this_connect_actedIn1_node) as connectedNodes, collect(this) as parentNodes
+            		WITH collect(this_actedIn0_connect0_node) as connectedNodes, collect(this) as parentNodes
             		CALL {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
-            			UNWIND connectedNodes as this_connect_actedIn1_node
-            			MERGE (this)-[this_connect_actedIn1_relationship:ACTED_IN]->(this_connect_actedIn1_node)
-            			SET this_connect_actedIn1_relationship.screenTime = $this_connect_actedIn1_relationship_screenTime
+            			UNWIND connectedNodes as this_actedIn0_connect0_node
+            			MERGE (this)-[this_actedIn0_connect0_relationship:ACTED_IN]->(this_actedIn0_connect0_node)
+            			SET this_actedIn0_connect0_relationship.screenTime = $this_actedIn0_connect0_relationship_screenTime
             		}
             	}
-            WITH this, this_connect_actedIn1_node
-            	RETURN count(*) AS connect_this_connect_actedIn_Series1
+            WITH this, this_actedIn0_connect0_node
+            	RETURN count(*) AS connect_this_actedIn0_connect_Series0
             }
-            WITH *
+            RETURN count(*) AS update_this_Series
+            }
             RETURN collect(DISTINCT this { .name }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_connect_actedIn0_node_param0\\": \\"The \\",
-                \\"this_connect_actedIn0_relationship_screenTime\\": {
-                    \\"low\\": 90,
-                    \\"high\\": 0
-                },
-                \\"this_connect_actedIn1_node_param0\\": \\"The \\",
-                \\"this_connect_actedIn1_relationship_screenTime\\": {
+                \\"this_actedIn0_connect0_node_param0\\": \\"The \\",
+                \\"this_actedIn0_connect0_relationship_screenTime\\": {
                     \\"low\\": 90,
                     \\"high\\": 0
                 },
@@ -137,12 +145,17 @@ describe("Interface Relationships - Update connect", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateActors(
-                    connect: {
+                    update: {
                         actedIn: {
-                            edge: { screenTime: 90 }
-                            where: { node: { title_STARTS_WITH: "The " } }
                             connect: {
-                                actors: { edge: { ActedIn: { screenTime: 90 } }, where: { node: { name_EQ: "Actor" } } }
+                                edge: { screenTime: 90 }
+                                where: { node: { title_STARTS_WITH: "The " } }
+                                connect: {
+                                    actors: {
+                                        edge: { ActedIn: { screenTime: 90 } }
+                                        where: { node: { name_EQ: "Actor" } }
+                                    }
+                                }
                             }
                         }
                     }
@@ -158,102 +171,101 @@ describe("Interface Relationships - Update connect", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Actor)
+            WITH this
+            CALL {
+            	 WITH this
             WITH *
             CALL {
             	WITH this
-            	OPTIONAL MATCH (this_connect_actedIn0_node:Movie)
-            	WHERE this_connect_actedIn0_node.title STARTS WITH $this_connect_actedIn0_node_param0
+            	OPTIONAL MATCH (this_actedIn0_connect0_node:Movie)
+            	WHERE this_actedIn0_connect0_node.title STARTS WITH $this_actedIn0_connect0_node_param0
             	CALL {
             		WITH *
-            		WITH collect(this_connect_actedIn0_node) as connectedNodes, collect(this) as parentNodes
+            		WITH collect(this_actedIn0_connect0_node) as connectedNodes, collect(this) as parentNodes
             		CALL {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
-            			UNWIND connectedNodes as this_connect_actedIn0_node
-            			MERGE (this)-[this_connect_actedIn0_relationship:ACTED_IN]->(this_connect_actedIn0_node)
-            			SET this_connect_actedIn0_relationship.screenTime = $this_connect_actedIn0_relationship_screenTime
+            			UNWIND connectedNodes as this_actedIn0_connect0_node
+            			MERGE (this)-[this_actedIn0_connect0_relationship:ACTED_IN]->(this_actedIn0_connect0_node)
+            			SET this_actedIn0_connect0_relationship.screenTime = $this_actedIn0_connect0_relationship_screenTime
             		}
             	}
-            WITH this, this_connect_actedIn0_node
+            WITH this, this_actedIn0_connect0_node
             CALL {
-            	WITH this, this_connect_actedIn0_node
-            	OPTIONAL MATCH (this_connect_actedIn0_node_actors0_node:Actor)
-            	WHERE this_connect_actedIn0_node_actors0_node.name = $this_connect_actedIn0_node_actors0_node_param0
+            	WITH this, this_actedIn0_connect0_node
+            	OPTIONAL MATCH (this_actedIn0_connect0_node_actors0_node:Actor)
+            	WHERE this_actedIn0_connect0_node_actors0_node.name = $this_actedIn0_connect0_node_actors0_node_param0
             	CALL {
             		WITH *
-            		WITH this, collect(this_connect_actedIn0_node_actors0_node) as connectedNodes, collect(this_connect_actedIn0_node) as parentNodes
+            		WITH this, collect(this_actedIn0_connect0_node_actors0_node) as connectedNodes, collect(this_actedIn0_connect0_node) as parentNodes
             		CALL {
             			WITH connectedNodes, parentNodes
-            			UNWIND parentNodes as this_connect_actedIn0_node
-            			UNWIND connectedNodes as this_connect_actedIn0_node_actors0_node
-            			MERGE (this_connect_actedIn0_node)<-[this_connect_actedIn0_node_actors0_relationship:ACTED_IN]-(this_connect_actedIn0_node_actors0_node)
-            			SET this_connect_actedIn0_node_actors0_relationship.screenTime = $this_connect_actedIn0_node_actors0_relationship_screenTime
+            			UNWIND parentNodes as this_actedIn0_connect0_node
+            			UNWIND connectedNodes as this_actedIn0_connect0_node_actors0_node
+            			MERGE (this_actedIn0_connect0_node)<-[this_actedIn0_connect0_node_actors0_relationship:ACTED_IN]-(this_actedIn0_connect0_node_actors0_node)
+            			SET this_actedIn0_connect0_node_actors0_relationship.screenTime = $this_actedIn0_connect0_node_actors0_relationship_screenTime
             		}
             	}
-            WITH this, this_connect_actedIn0_node, this_connect_actedIn0_node_actors0_node
-            	RETURN count(*) AS connect_this_connect_actedIn0_node_actors_Actor0
+            WITH this, this_actedIn0_connect0_node, this_actedIn0_connect0_node_actors0_node
+            	RETURN count(*) AS connect_this_actedIn0_connect0_node_actors_Actor0
             }
-            	RETURN count(*) AS connect_this_connect_actedIn_Movie0
+            	RETURN count(*) AS connect_this_actedIn0_connect_Movie0
+            }
+            RETURN count(*) AS update_this_Movie
             }
             CALL {
-            		WITH this
-            	OPTIONAL MATCH (this_connect_actedIn1_node:Series)
-            	WHERE this_connect_actedIn1_node.title STARTS WITH $this_connect_actedIn1_node_param0
+            	 WITH this
+            	WITH *
+            CALL {
+            	WITH this
+            	OPTIONAL MATCH (this_actedIn0_connect0_node:Series)
+            	WHERE this_actedIn0_connect0_node.title STARTS WITH $this_actedIn0_connect0_node_param0
             	CALL {
             		WITH *
-            		WITH collect(this_connect_actedIn1_node) as connectedNodes, collect(this) as parentNodes
+            		WITH collect(this_actedIn0_connect0_node) as connectedNodes, collect(this) as parentNodes
             		CALL {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
-            			UNWIND connectedNodes as this_connect_actedIn1_node
-            			MERGE (this)-[this_connect_actedIn1_relationship:ACTED_IN]->(this_connect_actedIn1_node)
-            			SET this_connect_actedIn1_relationship.screenTime = $this_connect_actedIn1_relationship_screenTime
+            			UNWIND connectedNodes as this_actedIn0_connect0_node
+            			MERGE (this)-[this_actedIn0_connect0_relationship:ACTED_IN]->(this_actedIn0_connect0_node)
+            			SET this_actedIn0_connect0_relationship.screenTime = $this_actedIn0_connect0_relationship_screenTime
             		}
             	}
-            WITH this, this_connect_actedIn1_node
+            WITH this, this_actedIn0_connect0_node
             CALL {
-            	WITH this, this_connect_actedIn1_node
-            	OPTIONAL MATCH (this_connect_actedIn1_node_actors0_node:Actor)
-            	WHERE this_connect_actedIn1_node_actors0_node.name = $this_connect_actedIn1_node_actors0_node_param0
+            	WITH this, this_actedIn0_connect0_node
+            	OPTIONAL MATCH (this_actedIn0_connect0_node_actors0_node:Actor)
+            	WHERE this_actedIn0_connect0_node_actors0_node.name = $this_actedIn0_connect0_node_actors0_node_param0
             	CALL {
             		WITH *
-            		WITH this, collect(this_connect_actedIn1_node_actors0_node) as connectedNodes, collect(this_connect_actedIn1_node) as parentNodes
+            		WITH this, collect(this_actedIn0_connect0_node_actors0_node) as connectedNodes, collect(this_actedIn0_connect0_node) as parentNodes
             		CALL {
             			WITH connectedNodes, parentNodes
-            			UNWIND parentNodes as this_connect_actedIn1_node
-            			UNWIND connectedNodes as this_connect_actedIn1_node_actors0_node
-            			MERGE (this_connect_actedIn1_node)<-[this_connect_actedIn1_node_actors0_relationship:ACTED_IN]-(this_connect_actedIn1_node_actors0_node)
-            			SET this_connect_actedIn1_node_actors0_relationship.screenTime = $this_connect_actedIn1_node_actors0_relationship_screenTime
+            			UNWIND parentNodes as this_actedIn0_connect0_node
+            			UNWIND connectedNodes as this_actedIn0_connect0_node_actors0_node
+            			MERGE (this_actedIn0_connect0_node)<-[this_actedIn0_connect0_node_actors0_relationship:ACTED_IN]-(this_actedIn0_connect0_node_actors0_node)
+            			SET this_actedIn0_connect0_node_actors0_relationship.screenTime = $this_actedIn0_connect0_node_actors0_relationship_screenTime
             		}
             	}
-            WITH this, this_connect_actedIn1_node, this_connect_actedIn1_node_actors0_node
-            	RETURN count(*) AS connect_this_connect_actedIn1_node_actors_Actor0
+            WITH this, this_actedIn0_connect0_node, this_actedIn0_connect0_node_actors0_node
+            	RETURN count(*) AS connect_this_actedIn0_connect0_node_actors_Actor0
             }
-            	RETURN count(*) AS connect_this_connect_actedIn_Series1
+            	RETURN count(*) AS connect_this_actedIn0_connect_Series0
             }
-            WITH *
+            RETURN count(*) AS update_this_Series
+            }
             RETURN collect(DISTINCT this { .name }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_connect_actedIn0_node_param0\\": \\"The \\",
-                \\"this_connect_actedIn0_relationship_screenTime\\": {
+                \\"this_actedIn0_connect0_node_param0\\": \\"The \\",
+                \\"this_actedIn0_connect0_relationship_screenTime\\": {
                     \\"low\\": 90,
                     \\"high\\": 0
                 },
-                \\"this_connect_actedIn0_node_actors0_node_param0\\": \\"Actor\\",
-                \\"this_connect_actedIn0_node_actors0_relationship_screenTime\\": {
-                    \\"low\\": 90,
-                    \\"high\\": 0
-                },
-                \\"this_connect_actedIn1_node_param0\\": \\"The \\",
-                \\"this_connect_actedIn1_relationship_screenTime\\": {
-                    \\"low\\": 90,
-                    \\"high\\": 0
-                },
-                \\"this_connect_actedIn1_node_actors0_node_param0\\": \\"Actor\\",
-                \\"this_connect_actedIn1_node_actors0_relationship_screenTime\\": {
+                \\"this_actedIn0_connect0_node_actors0_node_param0\\": \\"Actor\\",
+                \\"this_actedIn0_connect0_node_actors0_relationship_screenTime\\": {
                     \\"low\\": 90,
                     \\"high\\": 0
                 },

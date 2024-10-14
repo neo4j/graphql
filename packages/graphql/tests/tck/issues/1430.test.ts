@@ -60,7 +60,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             mutation ddfs {
                 updateAbces(
                     where: { id_EQ: "TestID" }
-                    create: { interface: { node: { ChildOne: { name: "childone name2" } } } }
+                    update: { interface: { create: { node: { ChildOne: { name: "childone name2" } } } } }
                 ) {
                     abces {
                         id
@@ -79,12 +79,23 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:ABCE)
             WHERE this.id = $param0
+            WITH this
+            CALL {
+            	 WITH this
+            WITH this
             WITH *
             WHERE apoc.util.validatePredicate(EXISTS((this)-[:HAS_INTERFACE]->(:ChildOne)) OR EXISTS((this)-[:HAS_INTERFACE]->(:ChildTwo)),'Relationship field \\"%s.%s\\" cannot have more than one node linked',[\\"ABCE\\",\\"interface\\"])
-            CREATE (this_create_interface_ChildOne0_node_ChildOne:ChildOne)
-            SET this_create_interface_ChildOne0_node_ChildOne.id = randomUUID()
-            SET this_create_interface_ChildOne0_node_ChildOne.name = $this_create_interface_ChildOne0_node_ChildOne_name
-            MERGE (this)-[:HAS_INTERFACE]->(this_create_interface_ChildOne0_node_ChildOne)
+            CREATE (this_interface0_create0_node:ChildOne)
+            SET this_interface0_create0_node.id = randomUUID()
+            SET this_interface0_create0_node.name = $this_interface0_create0_node_name
+            MERGE (this)-[:HAS_INTERFACE]->(this_interface0_create0_node)
+            RETURN count(*) AS update_this_ChildOne
+            }
+            CALL {
+            	 WITH this
+            	WITH this
+            RETURN count(*) AS update_this_ChildTwo
+            }
             WITH *
             CALL {
                 WITH this
@@ -108,7 +119,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"TestID\\",
-                \\"this_create_interface_ChildOne0_node_ChildOne_name\\": \\"childone name2\\",
+                \\"this_interface0_create0_node_name\\": \\"childone name2\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);

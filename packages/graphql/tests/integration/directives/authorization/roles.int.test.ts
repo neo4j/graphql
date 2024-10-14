@@ -510,7 +510,7 @@ describe("auth/roles", () => {
 
             const query = `
                 mutation {
-                    ${typeUser.operations.update}(update: { id: "${userId}" }, connect: { posts: { where: { node: { id_EQ: "${postId}" } } } }) {
+                    ${typeUser.operations.update}(update: { id: "${userId}", posts: { connect: { where: { node: { id_EQ: "${postId}" } } } } }) {
                         ${typeUser.plural} {
                             id
                         }
@@ -670,7 +670,7 @@ describe("auth/roles", () => {
 
             const query = `
                 mutation {
-                    ${typeUser.operations.update}(update: { id: "${userId}" }, disconnect: { posts: { where: { node: { id_EQ: "${postId}" } } } }) {
+                    ${typeUser.operations.update}(update: { id: "${userId}", posts: { disconnect: { where: { node: { id_EQ: "${postId}" } } } } }) {
                         ${typeUser.plural} {
                             id
                         }

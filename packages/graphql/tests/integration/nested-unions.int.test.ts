@@ -76,11 +76,13 @@ describe("Nested unions", () => {
             mutation {
                 ${Movie.operations.update}(
                     where: { title_EQ: "${movieTitle}" }
-                    connect: {
+                    update: {
                         actors: {
                             ${LeadActor} : {
-                                where: { node: { name_EQ: "${actorName}" } }
-                                connect: { actedIn: { ${Series}: { where: { node: { name_EQ: "${seriesName}" } } } } }
+                                connect: {
+                                    where: { node: { name_EQ: "${actorName}" } }
+                                    connect: { actedIn: { ${Series}: { where: { node: { name_EQ: "${seriesName}" } } } } }
+                                }
                             }
                         }
                     }
@@ -129,11 +131,13 @@ describe("Nested unions", () => {
             mutation {
                 ${Movie.operations.update}(
                     where: { title_EQ: "${movieTitle}" }
-                    disconnect: {
+                    update: {
                         actors: {
                             ${LeadActor}: {
-                                where: { node: { name_EQ: "${actorName}" } }
-                                disconnect: { actedIn: { ${Series} : { where: { node: { name_EQ: "${seriesName}" } } } } }
+                                disconnect: {
+                                    where: { node: { name_EQ: "${actorName}" } }
+                                    disconnect: { actedIn: { ${Series} : { where: { node: { name_EQ: "${seriesName}" } } } } }
+                                }
                             }
                         }
                     }
@@ -201,11 +205,13 @@ describe("Nested unions", () => {
             mutation {
                 ${Movie.operations.update}(
                     where: { title_EQ: "${movieTitle}" }
-                    delete: {
+                    update: {
                         actors: {
                             ${LeadActor}: {
-                                where: { node: { name_EQ: "${actorName}" } }
-                                delete: { actedIn: { ${Series}: { where: { node: { name_EQ: "${seriesName}" } } } } }
+                                delete: {
+                                    where: { node: { name_EQ: "${actorName}" } }
+                                    delete: { actedIn: { ${Series}: { where: { node: { name_EQ: "${seriesName}" } } } } }
+                                }
                             }
                         }
                     }
@@ -277,23 +283,25 @@ describe("Nested unions", () => {
             mutation {
                 ${Movie.operations.update}(
                     where: { title_EQ: "${movieTitle}" }
-                    create: {
+                    update: {
                         actors: {
                             ${LeadActor}: {
-                                node: {
-                                    name: "${actorName}"
-                                    actedIn: {
-                                        ${Series}: {
-                                            create: [
-                                                {
-                                                    node: {
-                                                        name: "${seriesName}"
+                                create: {
+                                    node: {
+                                        name: "${actorName}"
+                                        actedIn: {
+                                            ${Series}: {
+                                                create: [
+                                                    {
+                                                        node: {
+                                                            name: "${seriesName}"
+                                                        }
                                                     }
-                                                }
-                                            ]
+                                                ]
+                                            }
                                         }
                                     }
-                                }
+                            }
                             }
                         }
                     }

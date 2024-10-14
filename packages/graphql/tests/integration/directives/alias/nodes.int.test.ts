@@ -657,7 +657,7 @@ describe("@alias directive", () => {
     test("Update mutation (with create) with alias referring to existing field, include both fields as inputs", async () => {
         const userMutation = `
             mutation {
-                ${typeDirector.operations.update}(where: {name_CONTAINS: "Timmy"}, create: { movies: [{ node: { title: "Movie", titleAgain: "El Movie" }, edge: { year: 1989 } }] }) {
+                ${typeDirector.operations.update}(where: {name_CONTAINS: "Timmy"}, update: { movies: { create: [{ node: { title: "Movie", titleAgain: "El Movie" }, edge: { year: 1989 } }] } }) {
                     ${typeDirector.plural} {
                         name
                         nameAgain

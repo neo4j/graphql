@@ -43,7 +43,6 @@ describe("Implicit Equality filters", () => {
                 excludeDeprecatedFields: {
                     implicitEqualFilters: false,
                     deprecatedOptionsArgument: true,
-                    nestedUpdateOperationsFields: true,
                 },
             },
         });

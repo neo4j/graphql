@@ -69,7 +69,7 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
         mutation UpdateBooks {
             ${Book.operations.update}(
               where: { isbn_EQ: "123" }
-              create: { translatedTitle: { ${BookTitle_EN}: { node: { value: "English book title" } } } }
+              update: { translatedTitle: { ${BookTitle_EN}: { create: { node: { value: "English book title" } } } } }
             ) {
               ${Book.plural} {
                 isbn

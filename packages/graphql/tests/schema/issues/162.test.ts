@@ -98,8 +98,8 @@ describe("162", () => {
               deleteTigerJawLevel2Part1s(delete: TigerJawLevel2Part1DeleteInput, where: TigerJawLevel2Part1Where): DeleteInfo!
               deleteTigerJawLevel2s(delete: TigerJawLevel2DeleteInput, where: TigerJawLevel2Where): DeleteInfo!
               deleteTigers(where: TigerWhere): DeleteInfo!
-              updateTigerJawLevel2Part1s(connect: TigerJawLevel2Part1ConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: TigerJawLevel2Part1RelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: TigerJawLevel2Part1DeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: TigerJawLevel2Part1DisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: TigerJawLevel2Part1UpdateInput, where: TigerJawLevel2Part1Where): UpdateTigerJawLevel2Part1sMutationResponse!
-              updateTigerJawLevel2s(connect: TigerJawLevel2ConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: TigerJawLevel2RelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: TigerJawLevel2DeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: TigerJawLevel2DisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: TigerJawLevel2UpdateInput, where: TigerJawLevel2Where): UpdateTigerJawLevel2sMutationResponse!
+              updateTigerJawLevel2Part1s(update: TigerJawLevel2Part1UpdateInput, where: TigerJawLevel2Part1Where): UpdateTigerJawLevel2Part1sMutationResponse!
+              updateTigerJawLevel2s(update: TigerJawLevel2UpdateInput, where: TigerJawLevel2Where): UpdateTigerJawLevel2sMutationResponse!
               updateTigers(update: TigerUpdateInput, where: TigerWhere): UpdateTigersMutationResponse!
             }
 
@@ -165,10 +165,6 @@ describe("162", () => {
               id: IDAggregateSelection!
             }
 
-            input TigerJawLevel2ConnectInput {
-              part1: TigerJawLevel2Part1ConnectFieldInput
-            }
-
             input TigerJawLevel2CreateInput {
               id: ID
               part1: TigerJawLevel2Part1FieldInput
@@ -176,10 +172,6 @@ describe("162", () => {
 
             input TigerJawLevel2DeleteInput {
               part1: TigerJawLevel2Part1DeleteFieldInput
-            }
-
-            input TigerJawLevel2DisconnectInput {
-              part1: TigerJawLevel2Part1DisconnectFieldInput
             }
 
             type TigerJawLevel2Edge {
@@ -315,10 +307,6 @@ describe("162", () => {
               Specify one or more TigerJawLevel2Part1Sort objects to sort TigerJawLevel2Part1s by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [TigerJawLevel2Part1Sort!]
-            }
-
-            input TigerJawLevel2Part1RelationInput {
-              tiger: TigerJawLevel2Part1TigerCreateFieldInput
             }
 
             type TigerJawLevel2Part1Relationship {
@@ -478,10 +466,6 @@ describe("162", () => {
               edges: [TigerJawLevel2Part1Edge!]!
               pageInfo: PageInfo!
               totalCount: Int!
-            }
-
-            input TigerJawLevel2RelationInput {
-              part1: TigerJawLevel2Part1CreateFieldInput
             }
 
             \\"\\"\\"

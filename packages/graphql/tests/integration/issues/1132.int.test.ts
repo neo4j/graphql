@@ -27,8 +27,6 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
 
     const testHelper = new TestHelper();
 
-    beforeEach(() => {});
-
     afterEach(async () => {
         await testHelper.close();
     });
@@ -66,7 +64,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             });
             const query = `
                 mutation {
-                    ${testSource.operations.update}(where: { id_EQ: "${sourceId}" }, connect: { targets: { where: { node: { id_EQ: "${targetId}" } } } }) {
+                    ${testSource.operations.update}(where: { id_EQ: "${sourceId}" }, update: { targets: { connect: { where: { node: { id_EQ: "${targetId}" } } } } }) {
                         ${testSource.plural} {
                             id
                             targets {
@@ -135,7 +133,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             });
             const query = `
                 mutation {
-                    ${testSource.operations.update}(where: { id_EQ: "${sourceId}" }, disconnect: { targets: { where: { node: { id_EQ: "${targetId}" } } } }) {
+                    ${testSource.operations.update}(where: { id_EQ: "${sourceId}" }, update: { targets: { disconnect: { where: { node: { id_EQ: "${targetId}" } } } } }) {
                         ${testSource.plural} {
                             id
                         }
@@ -185,7 +183,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             });
             const query = `
                 mutation {
-                    ${testSource.operations.update}(where: { id_EQ: "${sourceId}" }, disconnect: { targets: { where: { node: { id_EQ: "${targetId}" } } } }) {
+                    ${testSource.operations.update}(where: { id_EQ: "${sourceId}" }, update: { targets: { disconnect: { where: { node: { id_EQ: "${targetId}" } } } } }) {
                         ${testSource.plural} {
                             id
                             targets {

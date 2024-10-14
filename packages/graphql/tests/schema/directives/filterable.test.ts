@@ -1062,10 +1062,6 @@ describe("@filterable directive", () => {
                       sort: [ActorSort!]
                     }
 
-                    input ActorRelationInput {
-                      movies: [ActorMoviesCreateFieldInput!]
-                    }
-
                     type ActorRelationshipCreatedEvent {
                       actor: ActorEventPayload!
                       createdRelationship: ActorConnectedRelationships!
@@ -1421,10 +1417,6 @@ describe("@filterable directive", () => {
                       sort: [MovieSort!]
                     }
 
-                    input MovieRelationInput {
-                      actors: [MovieActorsCreateFieldInput!]
-                    }
-
                     type MovieRelationshipCreatedEvent {
                       createdRelationship: MovieConnectedRelationships!
                       event: EventType!
@@ -1540,8 +1532,8 @@ describe("@filterable directive", () => {
                       createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
                       deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
                       deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
-                      updateActors(connect: ActorConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: ActorRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: ActorDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: ActorDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
-                      updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                      updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+                      updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                     }
 
                     \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -1822,10 +1814,6 @@ describe("@filterable directive", () => {
                       sort: [ActorSort!]
                     }
 
-                    input ActorRelationInput {
-                      movies: [ActorMoviesCreateFieldInput!]
-                    }
-
                     type ActorRelationshipCreatedEvent {
                       actor: ActorEventPayload!
                       createdRelationship: ActorConnectedRelationships!
@@ -2181,10 +2169,6 @@ describe("@filterable directive", () => {
                       sort: [MovieSort!]
                     }
 
-                    input MovieRelationInput {
-                      actors: [MovieActorsCreateFieldInput!]
-                    }
-
                     type MovieRelationshipCreatedEvent {
                       createdRelationship: MovieConnectedRelationships!
                       event: EventType!
@@ -2300,8 +2284,8 @@ describe("@filterable directive", () => {
                       createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
                       deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
                       deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
-                      updateActors(connect: ActorConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: ActorRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: ActorDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: ActorDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
-                      updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                      updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+                      updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                     }
 
                     \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -2576,10 +2560,6 @@ describe("@filterable directive", () => {
                       Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [ActorSort!]
-                    }
-
-                    input ActorRelationInput {
-                      movies: [ActorMoviesCreateFieldInput!]
                     }
 
                     type ActorRelationshipCreatedEvent {
@@ -2931,10 +2911,6 @@ describe("@filterable directive", () => {
                       sort: [MovieSort!]
                     }
 
-                    input MovieRelationInput {
-                      actors: [MovieActorsCreateFieldInput!]
-                    }
-
                     type MovieRelationshipCreatedEvent {
                       createdRelationship: MovieConnectedRelationships!
                       event: EventType!
@@ -3030,8 +3006,8 @@ describe("@filterable directive", () => {
                       createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
                       deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
                       deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
-                      updateActors(connect: ActorConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: ActorRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: ActorDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: ActorDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
-                      updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                      updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+                      updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                     }
 
                     \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -3315,10 +3291,6 @@ describe("@filterable directive", () => {
                       sort: [ActorSort!]
                     }
 
-                    input ActorRelationInput {
-                      movies: [ActorMoviesCreateFieldInput!]
-                    }
-
                     type ActorRelationshipCreatedEvent {
                       actor: ActorEventPayload!
                       createdRelationship: ActorConnectedRelationships!
@@ -3625,10 +3597,6 @@ describe("@filterable directive", () => {
                       sort: [MovieSort!]
                     }
 
-                    input MovieRelationInput {
-                      actors: [MovieActorsCreateFieldInput!]
-                    }
-
                     type MovieRelationshipCreatedEvent {
                       createdRelationship: MovieConnectedRelationships!
                       event: EventType!
@@ -3743,8 +3711,8 @@ describe("@filterable directive", () => {
                       createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
                       deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
                       deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
-                      updateActors(connect: ActorConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: ActorRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: ActorDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: ActorDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
-                      updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                      updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+                      updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                     }
 
                     \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -4025,10 +3993,6 @@ describe("@filterable directive", () => {
                       Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [ActorSort!]
-                    }
-
-                    input ActorRelationInput {
-                      movies: [ActorMoviesCreateFieldInput!]
                     }
 
                     type ActorRelationshipCreatedEvent {
@@ -4386,10 +4350,6 @@ describe("@filterable directive", () => {
                       sort: [MovieSort!]
                     }
 
-                    input MovieRelationInput {
-                      actors: [MovieActorsCreateFieldInput!]
-                    }
-
                     type MovieRelationshipCreatedEvent {
                       createdRelationship: MovieConnectedRelationships!
                       event: EventType!
@@ -4505,8 +4465,8 @@ describe("@filterable directive", () => {
                       createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
                       deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
                       deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
-                      updateActors(connect: ActorConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: ActorRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: ActorDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: ActorDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
-                      updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                      updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+                      updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                     }
 
                     \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -4789,10 +4749,6 @@ describe("@filterable directive", () => {
                       sort: [ActorSort!]
                     }
 
-                    input ActorRelationInput {
-                      movies: [ActorMoviesCreateFieldInput!]
-                    }
-
                     type ActorRelationshipCreatedEvent {
                       actor: ActorEventPayload!
                       createdRelationship: ActorConnectedRelationships!
@@ -5148,10 +5104,6 @@ describe("@filterable directive", () => {
                       sort: [MovieSort!]
                     }
 
-                    input MovieRelationInput {
-                      actors: [MovieActorsCreateFieldInput!]
-                    }
-
                     type MovieRelationshipCreatedEvent {
                       createdRelationship: MovieConnectedRelationships!
                       event: EventType!
@@ -5243,8 +5195,8 @@ describe("@filterable directive", () => {
                       createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
                       deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
                       deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
-                      updateActors(connect: ActorConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: ActorRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: ActorDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: ActorDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
-                      updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                      updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+                      updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                     }
 
                     \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -5525,10 +5477,6 @@ describe("@filterable directive", () => {
                       Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [ActorSort!]
-                    }
-
-                    input ActorRelationInput {
-                      movies: [ActorMoviesCreateFieldInput!]
                     }
 
                     type ActorRelationshipCreatedEvent {
@@ -5837,10 +5785,6 @@ describe("@filterable directive", () => {
                       sort: [MovieSort!]
                     }
 
-                    input MovieRelationInput {
-                      actors: [MovieActorsCreateFieldInput!]
-                    }
-
                     type MovieRelationshipCreatedEvent {
                       createdRelationship: MovieConnectedRelationships!
                       event: EventType!
@@ -5955,8 +5899,8 @@ describe("@filterable directive", () => {
                       createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
                       deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
                       deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
-                      updateActors(connect: ActorConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: ActorRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: ActorDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: ActorDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
-                      updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                      updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+                      updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                     }
 
                     \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -6073,10 +6017,6 @@ describe("@filterable directive", () => {
                       username: StringAggregateSelection!
                     }
 
-                    input ActorConnectInput {
-                      movies: [ActorMoviesConnectFieldInput!]
-                    }
-
                     type ActorConnectedRelationships {
                       movies: ActorMoviesConnectedRelationship
                     }
@@ -6101,10 +6041,6 @@ describe("@filterable directive", () => {
                       deletedActor: ActorEventPayload!
                       event: EventType!
                       timestamp: Float!
-                    }
-
-                    input ActorDisconnectInput {
-                      movies: [ActorMoviesDisconnectFieldInput!]
                     }
 
                     type ActorEdge {
@@ -6238,10 +6174,6 @@ describe("@filterable directive", () => {
                       Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [ActorSort!]
-                    }
-
-                    input ActorRelationInput {
-                      movies: [ActorMoviesCreateFieldInput!]
                     }
 
                     type ActorRelationshipCreatedEvent {
@@ -6542,10 +6474,6 @@ describe("@filterable directive", () => {
                       username: StringAggregateSelection!
                     }
 
-                    input MovieRelationInput {
-                      actors: [MovieActorsCreateFieldInput!]
-                    }
-
                     type MovieRelationshipCreatedEvent {
                       createdRelationship: MovieConnectedRelationships!
                       event: EventType!
@@ -6660,8 +6588,8 @@ describe("@filterable directive", () => {
                       createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
                       deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
                       deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
-                      updateActors(connect: ActorConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: ActorRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: ActorDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: ActorDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
-                      updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                      updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+                      updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                     }
 
                     \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -6863,10 +6791,6 @@ describe("@filterable directive", () => {
                       username: StringAggregateSelection!
                     }
 
-                    input ActorConnectInput {
-                      movies: [ActorMoviesConnectFieldInput!]
-                    }
-
                     type ActorConnectedRelationships {
                       movies: ActorMoviesConnectedRelationship
                     }
@@ -6891,10 +6815,6 @@ describe("@filterable directive", () => {
                       deletedActor: ActorEventPayload!
                       event: EventType!
                       timestamp: Float!
-                    }
-
-                    input ActorDisconnectInput {
-                      movies: [ActorMoviesDisconnectFieldInput!]
                     }
 
                     type ActorEdge {
@@ -7028,10 +6948,6 @@ describe("@filterable directive", () => {
                       Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [ActorSort!]
-                    }
-
-                    input ActorRelationInput {
-                      movies: [ActorMoviesCreateFieldInput!]
                     }
 
                     type ActorRelationshipCreatedEvent {
@@ -7366,10 +7282,6 @@ describe("@filterable directive", () => {
                       username: StringAggregateSelection!
                     }
 
-                    input MovieRelationInput {
-                      actors: [MovieActorsCreateFieldInput!]
-                    }
-
                     type MovieRelationshipCreatedEvent {
                       createdRelationship: MovieConnectedRelationships!
                       event: EventType!
@@ -7485,8 +7397,8 @@ describe("@filterable directive", () => {
                       createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
                       deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
                       deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
-                      updateActors(connect: ActorConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: ActorRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: ActorDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: ActorDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
-                      updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                      updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+                      updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                     }
 
                     \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -7688,10 +7600,6 @@ describe("@filterable directive", () => {
                       username: StringAggregateSelection!
                     }
 
-                    input ActorConnectInput {
-                      movies: [ActorMoviesConnectFieldInput!]
-                    }
-
                     type ActorConnectedRelationships {
                       movies: ActorMoviesConnectedRelationship
                     }
@@ -7716,10 +7624,6 @@ describe("@filterable directive", () => {
                       deletedActor: ActorEventPayload!
                       event: EventType!
                       timestamp: Float!
-                    }
-
-                    input ActorDisconnectInput {
-                      movies: [ActorMoviesDisconnectFieldInput!]
                     }
 
                     type ActorEdge {
@@ -7853,10 +7757,6 @@ describe("@filterable directive", () => {
                       Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [ActorSort!]
-                    }
-
-                    input ActorRelationInput {
-                      movies: [ActorMoviesCreateFieldInput!]
                     }
 
                     type ActorRelationshipCreatedEvent {
@@ -8157,10 +8057,6 @@ describe("@filterable directive", () => {
                       username: StringAggregateSelection!
                     }
 
-                    input MovieRelationInput {
-                      actors: [MovieActorsCreateFieldInput!]
-                    }
-
                     type MovieRelationshipCreatedEvent {
                       createdRelationship: MovieConnectedRelationships!
                       event: EventType!
@@ -8275,8 +8171,8 @@ describe("@filterable directive", () => {
                       createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
                       deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
                       deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
-                      updateActors(connect: ActorConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: ActorRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: ActorDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: ActorDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
-                      updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                      updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+                      updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                     }
 
                     \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -8653,10 +8549,6 @@ describe("@filterable directive", () => {
                       sort: [ActorSort!]
                     }
 
-                    input ActorRelationInput {
-                      movies: [ActorMoviesCreateFieldInput!]
-                    }
-
                     type ActorRelationshipCreatedEvent {
                       actor: ActorEventPayload!
                       createdRelationship: ActorConnectedRelationships!
@@ -8966,10 +8858,6 @@ describe("@filterable directive", () => {
                       sort: [AppearanceSort!]
                     }
 
-                    input AppearanceRelationInput {
-                      movies: [AppearanceMoviesCreateFieldInput!]
-                    }
-
                     type AppearanceRelationshipCreatedEvent {
                       appearance: AppearanceEventPayload!
                       createdRelationship: AppearanceConnectedRelationships!
@@ -9255,11 +9143,6 @@ describe("@filterable directive", () => {
                       Appearance: MovieActorsAppearanceConnectionWhere
                     }
 
-                    input MovieActorsCreateFieldInput {
-                      Actor: [MovieActorsActorCreateFieldInput!]
-                      Appearance: [MovieActorsAppearanceCreateFieldInput!]
-                    }
-
                     input MovieActorsCreateInput {
                       Actor: MovieActorsActorFieldInput
                       Appearance: MovieActorsAppearanceFieldInput
@@ -9348,10 +9231,6 @@ describe("@filterable directive", () => {
                       Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [MovieSort!]
-                    }
-
-                    input MovieRelationInput {
-                      actors: MovieActorsCreateFieldInput
                     }
 
                     type MovieRelationshipCreatedEvent {
@@ -9470,9 +9349,9 @@ describe("@filterable directive", () => {
                       deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
                       deleteAppearances(delete: AppearanceDeleteInput, where: AppearanceWhere): DeleteInfo!
                       deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
-                      updateActors(connect: ActorConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: ActorRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: ActorDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: ActorDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
-                      updateAppearances(connect: AppearanceConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: AppearanceRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: AppearanceDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: AppearanceDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: AppearanceUpdateInput, where: AppearanceWhere): UpdateAppearancesMutationResponse!
-                      updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                      updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+                      updateAppearances(update: AppearanceUpdateInput, where: AppearanceWhere): UpdateAppearancesMutationResponse!
+                      updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                     }
 
                     \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -9793,10 +9672,6 @@ describe("@filterable directive", () => {
                       sort: [ActorSort!]
                     }
 
-                    input ActorRelationInput {
-                      movies: [ActorMoviesCreateFieldInput!]
-                    }
-
                     type ActorRelationshipCreatedEvent {
                       actor: ActorEventPayload!
                       createdRelationship: ActorConnectedRelationships!
@@ -10106,10 +9981,6 @@ describe("@filterable directive", () => {
                       sort: [AppearanceSort!]
                     }
 
-                    input AppearanceRelationInput {
-                      movies: [AppearanceMoviesCreateFieldInput!]
-                    }
-
                     type AppearanceRelationshipCreatedEvent {
                       appearance: AppearanceEventPayload!
                       createdRelationship: AppearanceConnectedRelationships!
@@ -10395,11 +10266,6 @@ describe("@filterable directive", () => {
                       Appearance: MovieActorsAppearanceConnectionWhere
                     }
 
-                    input MovieActorsCreateFieldInput {
-                      Actor: [MovieActorsActorCreateFieldInput!]
-                      Appearance: [MovieActorsAppearanceCreateFieldInput!]
-                    }
-
                     input MovieActorsCreateInput {
                       Actor: MovieActorsActorFieldInput
                       Appearance: MovieActorsAppearanceFieldInput
@@ -10488,10 +10354,6 @@ describe("@filterable directive", () => {
                       Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [MovieSort!]
-                    }
-
-                    input MovieRelationInput {
-                      actors: MovieActorsCreateFieldInput
                     }
 
                     type MovieRelationshipCreatedEvent {
@@ -10610,9 +10472,9 @@ describe("@filterable directive", () => {
                       deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
                       deleteAppearances(delete: AppearanceDeleteInput, where: AppearanceWhere): DeleteInfo!
                       deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
-                      updateActors(connect: ActorConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: ActorRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: ActorDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: ActorDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
-                      updateAppearances(connect: AppearanceConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: AppearanceRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: AppearanceDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: AppearanceDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: AppearanceUpdateInput, where: AppearanceWhere): UpdateAppearancesMutationResponse!
-                      updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                      updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+                      updateAppearances(update: AppearanceUpdateInput, where: AppearanceWhere): UpdateAppearancesMutationResponse!
+                      updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                     }
 
                     \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -10933,10 +10795,6 @@ describe("@filterable directive", () => {
                       sort: [ActorSort!]
                     }
 
-                    input ActorRelationInput {
-                      movies: [ActorMoviesCreateFieldInput!]
-                    }
-
                     type ActorRelationshipCreatedEvent {
                       actor: ActorEventPayload!
                       createdRelationship: ActorConnectedRelationships!
@@ -11246,10 +11104,6 @@ describe("@filterable directive", () => {
                       sort: [AppearanceSort!]
                     }
 
-                    input AppearanceRelationInput {
-                      movies: [AppearanceMoviesCreateFieldInput!]
-                    }
-
                     type AppearanceRelationshipCreatedEvent {
                       appearance: AppearanceEventPayload!
                       createdRelationship: AppearanceConnectedRelationships!
@@ -11535,11 +11389,6 @@ describe("@filterable directive", () => {
                       Appearance: MovieActorsAppearanceConnectionWhere
                     }
 
-                    input MovieActorsCreateFieldInput {
-                      Actor: [MovieActorsActorCreateFieldInput!]
-                      Appearance: [MovieActorsAppearanceCreateFieldInput!]
-                    }
-
                     input MovieActorsCreateInput {
                       Actor: MovieActorsActorFieldInput
                       Appearance: MovieActorsAppearanceFieldInput
@@ -11628,10 +11477,6 @@ describe("@filterable directive", () => {
                       Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [MovieSort!]
-                    }
-
-                    input MovieRelationInput {
-                      actors: MovieActorsCreateFieldInput
                     }
 
                     type MovieRelationshipCreatedEvent {
@@ -11750,9 +11595,9 @@ describe("@filterable directive", () => {
                       deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
                       deleteAppearances(delete: AppearanceDeleteInput, where: AppearanceWhere): DeleteInfo!
                       deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
-                      updateActors(connect: ActorConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: ActorRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: ActorDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: ActorDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
-                      updateAppearances(connect: AppearanceConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: AppearanceRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: AppearanceDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: AppearanceDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: AppearanceUpdateInput, where: AppearanceWhere): UpdateAppearancesMutationResponse!
-                      updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                      updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+                      updateAppearances(update: AppearanceUpdateInput, where: AppearanceWhere): UpdateAppearancesMutationResponse!
+                      updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                     }
 
                     \\"\\"\\"Pagination information (Relay)\\"\\"\\"
