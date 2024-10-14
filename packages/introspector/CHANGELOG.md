@@ -1,5 +1,15 @@
 # @neo4j/introspector
 
+## 4.0.0
+
+### Major Changes
+
+-   [#5638](https://github.com/neo4j/graphql/pull/5638) [`cab1a8d`](https://github.com/neo4j/graphql/commit/cab1a8db4433f0390fa2508d80efa2c022e90e7a) Thanks [@darrellwarde](https://github.com/darrellwarde)! - The Neo4j GraphQL Library now requires a Neo4j 5.x database.
+
+### Minor Changes
+
+-   [#5567](https://github.com/neo4j/graphql/pull/5567) [`233aac6`](https://github.com/neo4j/graphql/commit/233aac676ccbe17da3e66cbc2a81dc250fe452c4) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Added `@node` to the generated types.
+
 ## 3.0.1
 
 ### Patch Changes
