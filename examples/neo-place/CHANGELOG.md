@@ -1,5 +1,13 @@
 # neo-place
 
+## 0.1.6
+
+### Patch Changes
+
+-   Updated dependencies [[`de984a2`](https://github.com/neo4j/graphql/commit/de984a2ab3a8e3e196d2b6064eec2ad139ec3da2), [`cab1a8d`](https://github.com/neo4j/graphql/commit/cab1a8db4433f0390fa2508d80efa2c022e90e7a), [`4438b60`](https://github.com/neo4j/graphql/commit/4438b60ab2cad59320f348fa3ac912dd1c75dab4), [`8832dd6`](https://github.com/neo4j/graphql/commit/8832dd67cfc30faa920dc17831cb241bca757911), [`c716439`](https://github.com/neo4j/graphql/commit/c716439b69514f4c854c3299add992a2e9dac8c6), [`7e356f1`](https://github.com/neo4j/graphql/commit/7e356f17330d5567e77f182d8186b5bfa7052581), [`c64f6b4`](https://github.com/neo4j/graphql/commit/c64f6b4a9e46da8e43388ea4be9a4f54cd50a1ae), [`87917e4`](https://github.com/neo4j/graphql/commit/87917e41cf79023ae20323274631df2dc8543da5), [`8206edd`](https://github.com/neo4j/graphql/commit/8206eddb54597d60012c8e30cc0c033b2714348f), [`af866e0`](https://github.com/neo4j/graphql/commit/af866e058d7ba05f50fe0986cbbf63f252439e09), [`2174267`](https://github.com/neo4j/graphql/commit/2174267cbe4defb9d08c3da98a54a0ad0033044f), [`74e4d30`](https://github.com/neo4j/graphql/commit/74e4d30d1cf6566aff5312de61efc508d9876ea0), [`233aac6`](https://github.com/neo4j/graphql/commit/233aac676ccbe17da3e66cbc2a81dc250fe452c4), [`233aac6`](https://github.com/neo4j/graphql/commit/233aac676ccbe17da3e66cbc2a81dc250fe452c4), [`45e0233`](https://github.com/neo4j/graphql/commit/45e023377c1d26d2e1a584444d26f403f6496e90), [`3332ac6`](https://github.com/neo4j/graphql/commit/3332ac6f9a9e56827f3065abbe9752cb79d85401), [`cab1a8d`](https://github.com/neo4j/graphql/commit/cab1a8db4433f0390fa2508d80efa2c022e90e7a), [`38be579`](https://github.com/neo4j/graphql/commit/38be5798fabea053887aaf8c366311dd3cf86139), [`233aac6`](https://github.com/neo4j/graphql/commit/233aac676ccbe17da3e66cbc2a81dc250fe452c4)]:
+    -   @neo4j/graphql@6.0.0
+    -   @neo4j/graphql-amqp-subscriptions-engine@3.0.0
+
 ## 0.1.5
 
 ### Patch Changes
