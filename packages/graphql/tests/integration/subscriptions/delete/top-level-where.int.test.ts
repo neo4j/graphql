@@ -68,7 +68,7 @@ describe("Delete using top level aggregate where - subscriptions enabled", () =>
         await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {
-                subscriptions: true,
+                subscriptions: await testHelper.getSubscriptionEngine(),
             },
         });
     });

@@ -21,7 +21,7 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/4170", () => {
-    const testHelper = new TestHelper();
+    const testHelper = new TestHelper({ cdc: true });
 
     let User: UniqueType;
     let Tenant: UniqueType;
@@ -168,7 +168,7 @@ describe("https://github.com/neo4j/graphql/issues/4170", () => {
         await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {
-                subscriptions: true,
+                subscriptions: await testHelper.getSubscriptionEngine(),
                 populatedBy: {
                     callbacks: {
                         getUserIDFromContext: () => "hi",

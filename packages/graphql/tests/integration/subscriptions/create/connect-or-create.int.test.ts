@@ -49,7 +49,10 @@ describe("Create -> ConnectOrCreate", () => {
     });
 
     beforeEach(async () => {
-        await testHelper.initNeo4jGraphQL({ typeDefs, features: { subscriptions: true } });
+        await testHelper.initNeo4jGraphQL({
+            typeDefs,
+            features: { subscriptions: await testHelper.getSubscriptionEngine() },
+        });
     });
 
     afterEach(async () => {

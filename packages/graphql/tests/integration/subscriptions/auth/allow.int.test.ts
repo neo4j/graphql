@@ -41,7 +41,7 @@ describe("auth/allow", () => {
     });
 
     describe("read", () => {
-        test.only("should throw forbidden when reading a node with invalid allow", async () => {
+        test("should throw forbidden when reading a node with invalid allow", async () => {
             const typeDefs = `
                 type ${userType.name} @node {
                     id: ID
@@ -68,7 +68,7 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: true,
+                    subscriptions: await testHelper.getSubscriptionEngine(),
                 },
             });
 
@@ -112,7 +112,7 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: true,
+                    subscriptions: await testHelper.getSubscriptionEngine(),
                 },
             });
 
@@ -167,7 +167,7 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: true,
+                    subscriptions: await testHelper.getSubscriptionEngine(),
                 },
             });
 
@@ -226,7 +226,7 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: true,
+                    subscriptions: await testHelper.getSubscriptionEngine(),
                 },
             });
 
@@ -283,7 +283,7 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: true,
+                    subscriptions: await testHelper.getSubscriptionEngine(),
                 },
             });
 
@@ -344,7 +344,7 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: true,
+                    subscriptions: await testHelper.getSubscriptionEngine(),
                 },
             });
 
@@ -415,7 +415,7 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: true,
+                    subscriptions: await testHelper.getSubscriptionEngine(),
                 },
             });
 
@@ -462,7 +462,7 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: true,
+                    subscriptions: await testHelper.getSubscriptionEngine(),
                 },
             });
 
@@ -509,7 +509,7 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: true,
+                    subscriptions: await testHelper.getSubscriptionEngine(),
                 },
             });
 
@@ -566,7 +566,7 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: true,
+                    subscriptions: await testHelper.getSubscriptionEngine(),
                 },
             });
 
@@ -625,7 +625,7 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: true,
+                    subscriptions: await testHelper.getSubscriptionEngine(),
                 },
             });
 
@@ -671,7 +671,7 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: true,
+                    subscriptions: await testHelper.getSubscriptionEngine(),
                 },
             });
 
@@ -735,7 +735,7 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: true,
+                    subscriptions: await testHelper.getSubscriptionEngine(),
                 },
             });
 
@@ -794,7 +794,7 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: true,
+                    subscriptions: await testHelper.getSubscriptionEngine(),
                 },
             });
 
@@ -872,7 +872,7 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: true,
+                    subscriptions: await testHelper.getSubscriptionEngine(),
                 },
             });
 
@@ -933,7 +933,7 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: true,
+                    subscriptions: await testHelper.getSubscriptionEngine(),
                 },
             });
 
@@ -1012,7 +1012,7 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: true,
+                    subscriptions: await testHelper.getSubscriptionEngine(),
                 },
             });
 

@@ -21,7 +21,7 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2261", () => {
-    const testHelper = new TestHelper();
+    const testHelper = new TestHelper({ cdc: true });
 
     let ProgrammeItem: UniqueType;
     let Edition: UniqueType;
@@ -52,7 +52,7 @@ describe("https://github.com/neo4j/graphql/issues/2261", () => {
         await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {
-                subscriptions: true,
+                subscriptions: await testHelper.getSubscriptionEngine(),
             },
         });
     });

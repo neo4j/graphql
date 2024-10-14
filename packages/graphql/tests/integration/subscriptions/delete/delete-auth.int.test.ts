@@ -58,7 +58,7 @@ describe("Subscriptions delete", () => {
                 authorization: {
                     key: "secret",
                 },
-                subscriptions: true,
+                subscriptions: await testHelper.getSubscriptionEngine(),
             },
         });
 
