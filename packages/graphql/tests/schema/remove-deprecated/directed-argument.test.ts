@@ -18,31 +18,55 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
+import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
-describe("Implicit Equality filters", () => {
-    test("Should remove implicit filters if specified by the setting implicitEqualFilters", async () => {
-        const typeDefs = /* GraphQL */ `
+describe("Deprecated directed argument", () => {
+    test("should remove the directed argument", async () => {
+        const typeDefs = gql`
             type Actor @node {
-                name: String
-                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                name: String!
+                movies: [Movie!]!
+                    @relationship(
+                        type: "ACTED_IN"
+                        direction: OUT
+                        properties: "ActedIn"
+                        queryDirection: DEFAULT_UNDIRECTED
+                    )
             }
-            type Movie @node {
-                id: ID
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+
+            type Movie implements Production @node {
+                title: String!
+                actors: [Actor!]!
+                    @relationship(
+                        type: "ACTED_IN"
+                        direction: IN
+                        properties: "ActedIn"
+                        queryDirection: DEFAULT_DIRECTED
+                    )
             }
 
             type ActedIn @relationshipProperties {
-                role: String
+                screenTime: Int!
+                startDate: Date!
+                leadRole: Boolean!
+            }
+            union Search = Movie | Genre
+
+            type Genre @node {
+                id: ID
+            }
+
+            interface Production {
+                title: String!
             }
         `;
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             features: {
                 excludeDeprecatedFields: {
-                    implicitEqualFilters: false,
-                    deprecatedOptionsArgument: true,
+                    directedArgument: true,
                 },
             },
         });
@@ -60,59 +84,84 @@ describe("Implicit Equality filters", () => {
             * Movie.actors
             \\"\\"\\"
             type ActedIn {
-              role: String
+              leadRole: Boolean!
+              screenTime: Int!
+              startDate: Date!
             }
 
             input ActedInAggregationWhereInput {
               AND: [ActedInAggregationWhereInput!]
               NOT: ActedInAggregationWhereInput
               OR: [ActedInAggregationWhereInput!]
-              role_AVERAGE_LENGTH_EQUAL: Float
-              role_AVERAGE_LENGTH_GT: Float
-              role_AVERAGE_LENGTH_GTE: Float
-              role_AVERAGE_LENGTH_LT: Float
-              role_AVERAGE_LENGTH_LTE: Float
-              role_LONGEST_LENGTH_EQUAL: Int
-              role_LONGEST_LENGTH_GT: Int
-              role_LONGEST_LENGTH_GTE: Int
-              role_LONGEST_LENGTH_LT: Int
-              role_LONGEST_LENGTH_LTE: Int
-              role_SHORTEST_LENGTH_EQUAL: Int
-              role_SHORTEST_LENGTH_GT: Int
-              role_SHORTEST_LENGTH_GTE: Int
-              role_SHORTEST_LENGTH_LT: Int
-              role_SHORTEST_LENGTH_LTE: Int
+              screenTime_AVERAGE_EQUAL: Float
+              screenTime_AVERAGE_GT: Float
+              screenTime_AVERAGE_GTE: Float
+              screenTime_AVERAGE_LT: Float
+              screenTime_AVERAGE_LTE: Float
+              screenTime_MAX_EQUAL: Int
+              screenTime_MAX_GT: Int
+              screenTime_MAX_GTE: Int
+              screenTime_MAX_LT: Int
+              screenTime_MAX_LTE: Int
+              screenTime_MIN_EQUAL: Int
+              screenTime_MIN_GT: Int
+              screenTime_MIN_GTE: Int
+              screenTime_MIN_LT: Int
+              screenTime_MIN_LTE: Int
+              screenTime_SUM_EQUAL: Int
+              screenTime_SUM_GT: Int
+              screenTime_SUM_GTE: Int
+              screenTime_SUM_LT: Int
+              screenTime_SUM_LTE: Int
             }
 
             input ActedInCreateInput {
-              role: String
+              leadRole: Boolean!
+              screenTime: Int!
+              startDate: Date!
             }
 
             input ActedInSort {
-              role: SortDirection
+              leadRole: SortDirection
+              screenTime: SortDirection
+              startDate: SortDirection
             }
 
             input ActedInUpdateInput {
-              role: String
+              leadRole: Boolean
+              screenTime: Int
+              screenTime_DECREMENT: Int
+              screenTime_INCREMENT: Int
+              startDate: Date
             }
 
             input ActedInWhere {
               AND: [ActedInWhere!]
               NOT: ActedInWhere
               OR: [ActedInWhere!]
-              role: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              role_CONTAINS: String
-              role_ENDS_WITH: String
-              role_EQ: String
-              role_IN: [String]
-              role_STARTS_WITH: String
+              leadRole: Boolean @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              leadRole_EQ: Boolean
+              screenTime: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              screenTime_EQ: Int
+              screenTime_GT: Int
+              screenTime_GTE: Int
+              screenTime_IN: [Int!]
+              screenTime_LT: Int
+              screenTime_LTE: Int
+              startDate: Date @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              startDate_EQ: Date
+              startDate_GT: Date
+              startDate_GTE: Date
+              startDate_IN: [Date!]
+              startDate_LT: Date
+              startDate_LTE: Date
             }
 
             type Actor {
-              movies(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): ActorMovieMoviesAggregationSelection
-              moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
-              name: String
+              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
+              moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
+              moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
+              name: String!
             }
 
             type ActorAggregateSelection {
@@ -130,7 +179,7 @@ describe("Implicit Equality filters", () => {
 
             input ActorCreateInput {
               movies: ActorMoviesFieldInput
-              name: String
+              name: String!
             }
 
             input ActorDeleteInput {
@@ -153,11 +202,11 @@ describe("Implicit Equality filters", () => {
             }
 
             type ActorMovieMoviesEdgeAggregateSelection {
-              role: StringAggregateSelection!
+              screenTime: IntAggregateSelection!
             }
 
             type ActorMovieMoviesNodeAggregateSelection {
-              id: IDAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input ActorMoviesAggregateInput {
@@ -176,7 +225,7 @@ describe("Implicit Equality filters", () => {
 
             input ActorMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
-              edge: ActedInCreateInput
+              edge: ActedInCreateInput!
               \\"\\"\\"
               Whether or not to overwrite any matching relationship with the new properties.
               \\"\\"\\"
@@ -204,7 +253,7 @@ describe("Implicit Equality filters", () => {
             }
 
             input ActorMoviesCreateFieldInput {
-              edge: ActedInCreateInput
+              edge: ActedInCreateInput!
               node: MovieCreateInput!
             }
 
@@ -227,16 +276,21 @@ describe("Implicit Equality filters", () => {
               AND: [ActorMoviesNodeAggregationWhereInput!]
               NOT: ActorMoviesNodeAggregationWhereInput
               OR: [ActorMoviesNodeAggregationWhereInput!]
-              id_MAX_EQUAL: ID
-              id_MAX_GT: ID
-              id_MAX_GTE: ID
-              id_MAX_LT: ID
-              id_MAX_LTE: ID
-              id_MIN_EQUAL: ID
-              id_MIN_GT: ID
-              id_MIN_GTE: ID
-              id_MIN_LT: ID
-              id_MIN_LTE: ID
+              title_AVERAGE_LENGTH_EQUAL: Float
+              title_AVERAGE_LENGTH_GT: Float
+              title_AVERAGE_LENGTH_GTE: Float
+              title_AVERAGE_LENGTH_LT: Float
+              title_AVERAGE_LENGTH_LTE: Float
+              title_LONGEST_LENGTH_EQUAL: Int
+              title_LONGEST_LENGTH_GT: Int
+              title_LONGEST_LENGTH_GTE: Int
+              title_LONGEST_LENGTH_LT: Int
+              title_LONGEST_LENGTH_LTE: Int
+              title_SHORTEST_LENGTH_EQUAL: Int
+              title_SHORTEST_LENGTH_GT: Int
+              title_SHORTEST_LENGTH_GTE: Int
+              title_SHORTEST_LENGTH_LT: Int
+              title_SHORTEST_LENGTH_LTE: Int
             }
 
             type ActorMoviesRelationship {
@@ -257,6 +311,15 @@ describe("Implicit Equality filters", () => {
               disconnect: [ActorMoviesDisconnectFieldInput!]
               update: ActorMoviesUpdateConnectionInput
               where: ActorMoviesConnectionWhere
+            }
+
+            input ActorOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [ActorSort!]
             }
 
             \\"\\"\\"
@@ -304,7 +367,7 @@ describe("Implicit Equality filters", () => {
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
-              name_IN: [String]
+              name_IN: [String!]
               name_STARTS_WITH: String
             }
 
@@ -316,6 +379,11 @@ describe("Implicit Equality filters", () => {
 
             type CreateActorsMutationResponse {
               actors: [Actor!]!
+              info: CreateInfo!
+            }
+
+            type CreateGenresMutationResponse {
+              genres: [Genre!]!
               info: CreateInfo!
             }
 
@@ -332,6 +400,9 @@ describe("Implicit Equality filters", () => {
               movies: [Movie!]!
             }
 
+            \\"\\"\\"A date, represented as a 'yyyy-mm-dd' string\\"\\"\\"
+            scalar Date
+
             \\"\\"\\"
             Information about the number of nodes and relationships deleted during a delete mutation
             \\"\\"\\"
@@ -340,16 +411,79 @@ describe("Implicit Equality filters", () => {
               relationshipsDeleted: Int!
             }
 
+            type Genre {
+              id: ID
+            }
+
+            type GenreAggregateSelection {
+              count: Int!
+              id: IDAggregateSelection!
+            }
+
+            input GenreCreateInput {
+              id: ID
+            }
+
+            type GenreEdge {
+              cursor: String!
+              node: Genre!
+            }
+
+            input GenreOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more GenreSort objects to sort Genres by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [GenreSort!]
+            }
+
+            \\"\\"\\"
+            Fields to sort Genres by. The order in which sorts are applied is not guaranteed when specifying many fields in one GenreSort object.
+            \\"\\"\\"
+            input GenreSort {
+              id: SortDirection
+            }
+
+            input GenreUpdateInput {
+              id: ID
+            }
+
+            input GenreWhere {
+              AND: [GenreWhere!]
+              NOT: GenreWhere
+              OR: [GenreWhere!]
+              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_EQ: ID
+              id_IN: [ID]
+              id_STARTS_WITH: ID
+            }
+
+            type GenresConnection {
+              edges: [GenreEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
 
-            type Movie {
-              actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: ActorWhere): MovieActorActorsAggregationSelection
-              actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
-              id: ID
+            type IntAggregateSelection {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
+            }
+
+            type Movie implements Production {
+              actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
+              actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
+              actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+              title: String!
             }
 
             type MovieActorActorsAggregationSelection {
@@ -359,7 +493,7 @@ describe("Implicit Equality filters", () => {
             }
 
             type MovieActorActorsEdgeAggregateSelection {
-              role: StringAggregateSelection!
+              screenTime: IntAggregateSelection!
             }
 
             type MovieActorActorsNodeAggregateSelection {
@@ -382,7 +516,7 @@ describe("Implicit Equality filters", () => {
 
             input MovieActorsConnectFieldInput {
               connect: [ActorConnectInput!]
-              edge: ActedInCreateInput
+              edge: ActedInCreateInput!
               \\"\\"\\"
               Whether or not to overwrite any matching relationship with the new properties.
               \\"\\"\\"
@@ -410,7 +544,7 @@ describe("Implicit Equality filters", () => {
             }
 
             input MovieActorsCreateFieldInput {
-              edge: ActedInCreateInput
+              edge: ActedInCreateInput!
               node: ActorCreateInput!
             }
 
@@ -472,7 +606,7 @@ describe("Implicit Equality filters", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -485,7 +619,7 @@ describe("Implicit Equality filters", () => {
 
             input MovieCreateInput {
               actors: MovieActorsFieldInput
-              id: ID
+              title: String!
             }
 
             input MovieDeleteInput {
@@ -501,16 +635,25 @@ describe("Implicit Equality filters", () => {
               node: Movie!
             }
 
+            input MovieOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [MovieSort!]
+            }
+
             \\"\\"\\"
             Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
             \\"\\"\\"
             input MovieSort {
-              id: SortDirection
+              title: SortDirection
             }
 
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
-              id: ID
+              title: String
             }
 
             input MovieWhere {
@@ -542,12 +685,12 @@ describe("Implicit Equality filters", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
+              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              title_CONTAINS: String
+              title_ENDS_WITH: String
+              title_EQ: String
+              title_IN: [String!]
+              title_STARTS_WITH: String
             }
 
             type MoviesConnection {
@@ -558,10 +701,13 @@ describe("Implicit Equality filters", () => {
 
             type Mutation {
               createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
+              createGenres(input: [GenreCreateInput!]!): CreateGenresMutationResponse!
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
               deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
+              deleteGenres(where: GenreWhere): DeleteInfo!
               deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
               updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+              updateGenres(update: GenreUpdateInput, where: GenreWhere): UpdateGenresMutationResponse!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
@@ -573,13 +719,86 @@ describe("Implicit Equality filters", () => {
               startCursor: String
             }
 
+            interface Production {
+              title: String!
+            }
+
+            type ProductionAggregateSelection {
+              count: Int!
+              title: StringAggregateSelection!
+            }
+
+            type ProductionEdge {
+              cursor: String!
+              node: Production!
+            }
+
+            enum ProductionImplementation {
+              Movie
+            }
+
+            input ProductionOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more ProductionSort objects to sort Productions by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [ProductionSort!]
+            }
+
+            \\"\\"\\"
+            Fields to sort Productions by. The order in which sorts are applied is not guaranteed when specifying many fields in one ProductionSort object.
+            \\"\\"\\"
+            input ProductionSort {
+              title: SortDirection
+            }
+
+            input ProductionWhere {
+              AND: [ProductionWhere!]
+              NOT: ProductionWhere
+              OR: [ProductionWhere!]
+              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              title_CONTAINS: String
+              title_ENDS_WITH: String
+              title_EQ: String
+              title_IN: [String!]
+              title_STARTS_WITH: String
+              typename_IN: [ProductionImplementation!]
+            }
+
+            type ProductionsConnection {
+              edges: [ProductionEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Query {
-              actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
+              actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
-              movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
+              genres(limit: Int, offset: Int, options: GenreOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [GenreSort!], where: GenreWhere): [Genre!]!
+              genresAggregate(where: GenreWhere): GenreAggregateSelection!
+              genresConnection(after: String, first: Int, sort: [GenreSort!], where: GenreWhere): GenresConnection!
+              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+              productions(limit: Int, offset: Int, options: ProductionOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ProductionSort!], where: ProductionWhere): [Production!]!
+              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
+              productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
+              searches(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: SearchWhere): [Search!]!
+            }
+
+            \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
+            input QueryOptions {
+              limit: Int
+              offset: Int
+            }
+
+            union Search = Genre | Movie
+
+            input SearchWhere {
+              Genre: GenreWhere
+              Movie: MovieWhere
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -597,6 +816,11 @@ describe("Implicit Equality filters", () => {
 
             type UpdateActorsMutationResponse {
               actors: [Actor!]!
+              info: UpdateInfo!
+            }
+
+            type UpdateGenresMutationResponse {
+              genres: [Genre!]!
               info: UpdateInfo!
             }
 

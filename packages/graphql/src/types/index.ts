@@ -478,6 +478,7 @@ export type Neo4jFeaturesSettings = {
     excludeDeprecatedFields?: {
         implicitEqualFilters?: boolean;
         deprecatedOptionsArgument?: boolean;
+        directedArgument?: boolean;
     };
     vector?: Neo4jVectorSettings;
 };

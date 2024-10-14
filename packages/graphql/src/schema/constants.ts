@@ -32,3 +32,10 @@ export const DEPRECATE_OPTIONS_ARGUMENT = {
         reason: "Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.",
     },
 };
+
+export const DEPRECATE_DIRECTED_ARGUMENT = {
+    name: DEPRECATED,
+    args: {
+        reason: "The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server",
+    },
+};

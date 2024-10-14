@@ -103,7 +103,7 @@ export function augmentObjectOrInterfaceTypeWithRelationshipField({
         }
 
         if (relationshipAdapter instanceof RelationshipAdapter) {
-            const directedArg = getDirectedArgument(relationshipAdapter);
+            const directedArg = getDirectedArgument(relationshipAdapter, features);
             if (directedArg) {
                 nodeFieldsArgs["directed"] = directedArg;
             }
@@ -143,7 +143,8 @@ export function augmentObjectOrInterfaceTypeWithConnectionField(
                 type: GraphQLString,
             },
         },
-        relationshipAdapter
+        relationshipAdapter,
+        features
     );
     const connectionSortITC = withConnectionSortInputType({
         relationshipAdapter,
