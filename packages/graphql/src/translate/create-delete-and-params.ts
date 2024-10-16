@@ -19,13 +19,10 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { Node, Relationship } from "../classes";
-import { META_CYPHER_VARIABLE } from "../constants";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { caseWhere } from "../utils/case-where";
 import { checkAuthentication } from "./authorization/check-authentication";
 import { createAuthorizationBeforeAndParams } from "./authorization/compatibility/create-authorization-before-and-params";
-import { createConnectionEventMetaObject } from "./subscriptions/create-connection-event-meta";
-import { createEventMetaObject } from "./subscriptions/create-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 
@@ -107,12 +104,7 @@ function createDeleteAndParams({
                     innerStrs.push("WITH *");
                     innerStrs.push("CALL {");
                     if (withVars) {
-                        if (context.subscriptionsEnabled) {
-                            innerStrs.push(`WITH *`);
-                            innerStrs.push(`WITH *, []  AS ${META_CYPHER_VARIABLE}`);
-                        } else {
-                            innerStrs.push(`WITH *`);
-                        }
+                        innerStrs.push(`WITH *`);
                     }
                     innerStrs.push(
                         `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${variableName}${labels})`
@@ -194,9 +186,7 @@ function createDeleteAndParams({
                             (d1, [k1, v1]) => ({ ...d1, [k1]: v1 }),
                             {}
                         );
-                        const importWithVars = context.subscriptionsEnabled
-                            ? [...withVars, variableName, relationshipVariable]
-                            : [...withVars, variableName];
+                        const importWithVars = [...withVars, variableName];
 
                         const deleteAndParams = createDeleteAndParams({
                             context,
@@ -214,55 +204,16 @@ function createDeleteAndParams({
                         res.params = { ...res.params, ...deleteAndParams[1] };
                     }
 
-                    if (context.subscriptionsEnabled) {
-                        const metaObjectStr = createEventMetaObject({
-                            event: "delete",
-                            nodeVariable: "x",
-                            typename: refNode.name,
-                        });
-                        const [fromVariable, toVariable] =
-                            relationField.direction === "IN" ? ["x", parentVar] : [parentVar, "x"];
-                        const [fromTypename, toTypename] =
-                            relationField.direction === "IN" ? [refNode.name, node.name] : [node.name, refNode.name];
-                        const eventWithMetaStr = createConnectionEventMetaObject({
-                            event: "delete_relationship",
-                            relVariable: relationshipVariable,
-                            fromVariable,
-                            toVariable,
-                            typename: relationField.typeUnescaped,
-                            fromTypename,
-                            toTypename,
-                        });
-
-                        const statements = [
-                            `WITH ${varsWithoutMeta}, ${META_CYPHER_VARIABLE}, ${relationshipVariable}, collect(DISTINCT ${variableName}) AS ${nodeToDelete}`,
-                            "CALL {",
-                            `\tWITH ${relationshipVariable}, ${nodeToDelete}, ${varsWithoutMeta}`,
-                            `\tUNWIND ${nodeToDelete} AS x`,
-                            `\tWITH [] + ${metaObjectStr} + ${eventWithMetaStr} AS ${META_CYPHER_VARIABLE}, x, ${relationshipVariable}, ${varsWithoutMeta}`,
-                            `\tDETACH DELETE x`,
-                            `\tRETURN collect(${META_CYPHER_VARIABLE}) AS delete_meta`,
-                            `}`,
-                            `WITH delete_meta, ${META_CYPHER_VARIABLE}`,
-                            `RETURN reduce(m=${META_CYPHER_VARIABLE}, n IN delete_meta | m + n) AS delete_meta`,
-                            `}`,
-                            `WITH ${varsWithoutMeta}, ${META_CYPHER_VARIABLE}, collect(delete_meta) as delete_meta`,
-                            `WITH ${varsWithoutMeta}, reduce(m=${META_CYPHER_VARIABLE}, n IN delete_meta | m + n) AS ${META_CYPHER_VARIABLE}`,
-                        ];
-
-                        innerStrs.push(...statements);
-                    } else {
-                        const statements = [
-                            `WITH ${relationshipVariable}, collect(DISTINCT ${variableName}) AS ${nodeToDelete}`,
-                            "CALL {",
-                            `\tWITH ${nodeToDelete}`,
-                            `\tUNWIND ${nodeToDelete} AS x`,
-                            `\tDETACH DELETE x`,
-                            `}`,
-                            `}`,
-                        ];
-                        innerStrs.push(...statements);
-                    }
+                    const statements = [
+                        `WITH ${relationshipVariable}, collect(DISTINCT ${variableName}) AS ${nodeToDelete}`,
+                        "CALL {",
+                        `\tWITH ${nodeToDelete}`,
+                        `\tUNWIND ${nodeToDelete} AS x`,
+                        `\tDETACH DELETE x`,
+                        `}`,
+                        `}`,
+                    ];
+                    innerStrs.push(...statements);
 
                     res.strs.push(...innerStrs);
                 });

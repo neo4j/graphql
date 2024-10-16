@@ -21,7 +21,7 @@ import Cypher from "@neo4j/cypher-builder";
 import Debug from "debug";
 import type { Node } from "../classes";
 import { CallbackBucket } from "../classes/CallbackBucket";
-import { DEBUG_TRANSLATE, META_CYPHER_VARIABLE } from "../constants";
+import { DEBUG_TRANSLATE } from "../constants";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { compileCypherIfExists } from "../utils/compile-cypher";
 import { asArray, filterTruthy } from "../utils/utils";
@@ -69,11 +69,6 @@ export default async function translateCreate({
             const withVars = [varName];
             projectionWith.push(varName);
 
-            if (context.subscriptionsEnabled) {
-                create.push(`WITH [] AS ${META_CYPHER_VARIABLE}`);
-                withVars.push(META_CYPHER_VARIABLE);
-            }
-
             const {
                 create: nestedCreate,
                 params,
@@ -93,13 +88,7 @@ export default async function translateCreate({
 
             create.push(...getAuthorizationStatements(authorizationPredicates, authorizationSubqueries));
 
-            if (context.subscriptionsEnabled) {
-                const metaVariable = `${varName}_${META_CYPHER_VARIABLE}`;
-                create.push(`RETURN ${varName}, ${META_CYPHER_VARIABLE} AS ${metaVariable}`);
-                metaNames.push(metaVariable);
-            } else {
-                create.push(`RETURN ${varName}`);
-            }
+            create.push(`RETURN ${varName}`);
 
             create.push(`}`);
             res.createStrs.push(create.join("\n"));
@@ -150,7 +139,6 @@ export default async function translateCreate({
     const createQuery = new Cypher.Raw((env) => {
         const cypher = filterTruthy([
             `${createStrs.join("\n")}`,
-            context.subscriptionsEnabled ? `WITH ${projectionWith.join(", ")}` : "",
             compileCypherIfExists(projectionClause, env),
             compileCypherIfExists(returnStatement, env),
         ])
@@ -188,10 +176,8 @@ function getReturnStatement(
     if (projectedVariables.length) {
         ret.addColumns([new Cypher.List(projectedVariables), new Cypher.NamedVariable("data")]);
     }
-    if (context.subscriptionsEnabled) {
-        ret.addColumns(new Cypher.NamedVariable("meta"));
-    }
-    if (!projectedVariables.length && !context.subscriptionsEnabled) {
+
+    if (!projectedVariables.length) {
         ret.addColumns(new Cypher.Literal("Query cannot conclude with CALL"));
     }
     return ret;

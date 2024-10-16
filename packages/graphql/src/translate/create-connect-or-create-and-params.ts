@@ -23,7 +23,6 @@ import { Neo4jGraphQLError } from "../classes";
 import type { CallbackBucket } from "../classes/CallbackBucket";
 import type { PredicateReturn, PrimitiveField, RelationField } from "../types";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
-import { compileCypher } from "../utils/compile-cypher";
 import { findConflictingProperties } from "../utils/find-conflicting-properties";
 import { getCypherRelationshipDirection } from "../utils/get-relationship-direction";
 import { asArray, omitFields } from "../utils/utils";
@@ -31,8 +30,6 @@ import { checkAuthentication } from "./authorization/check-authentication";
 import { createAuthorizationAfterPredicate } from "./authorization/create-authorization-after-predicate";
 import { createAuthorizationBeforePredicate } from "./authorization/create-authorization-before-predicate";
 import { parseWhereField } from "./queryAST/factory/parsers/parse-where-field";
-import { createConnectionEventMeta } from "./subscriptions/create-connection-event-meta";
-import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 import { addCallbackAndSetParamCypher } from "./utils/callback-utils";
 
 type CreateOrConnectInput = {
@@ -103,17 +100,12 @@ export function createConnectOrCreateAndParams({
     });
 
     const wrappedQueries = statements.map((statement) => {
-        const returnStatement = context.subscriptionsEnabled
-            ? new Cypher.Return([new Cypher.NamedVariable("meta"), "update_meta"])
-            : new Cypher.Return([Cypher.count(new Cypher.Raw("*")), "_"]);
+        const returnStatement = new Cypher.Return([Cypher.count(new Cypher.Raw("*")), "_"]);
 
         const subqueryClause = new Cypher.With(...withVarsVariables)
             .call(Cypher.utils.concat(statement, returnStatement))
             .importWith(...withVarsVariables);
 
-        if (context.subscriptionsEnabled) {
-            subqueryClause.with("*", [new Cypher.NamedVariable("update_meta"), "meta"]);
-        }
         return subqueryClause;
     });
 
@@ -301,24 +293,6 @@ function mergeStatement({
     const relationshipMerge = new Cypher.Merge(relationshipPattern).onCreate(...onCreateRelationshipParams);
 
     let withClause: Cypher.Clause | undefined;
-    if (context.subscriptionsEnabled) {
-        const [fromTypename, toTypename] =
-            relationField.direction === "IN" ? [refNode.name, parentRefNode.name] : [parentRefNode.name, refNode.name];
-        const [fromNode, toNode] = relationField.direction === "IN" ? [node, parentNode] : [parentNode, node];
-
-        withClause = new Cypher.Raw((env: Cypher.Environment) => {
-            const eventWithMetaStr = createConnectionEventMeta({
-                event: "create_relationship",
-                relVariable: compileCypher(relationship, env),
-                fromVariable: compileCypher(fromNode, env),
-                toVariable: compileCypher(toNode, env),
-                typename: relationField.typeUnescaped,
-                fromTypename,
-                toTypename,
-            });
-            return `WITH ${eventWithMetaStr}, ${filterMetaVariable([...withVars, varName]).join(", ")}`;
-        });
-    }
 
     return Cypher.utils.concat(merge, relationshipMerge, withClause);
 }

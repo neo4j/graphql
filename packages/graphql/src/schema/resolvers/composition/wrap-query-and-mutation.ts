@@ -60,7 +60,6 @@ export interface Neo4jGraphQLComposedContext extends Neo4jGraphQLContext {
     relationships: Relationship[];
     schemaModel: Neo4jGraphQLSchemaModel;
     features: ContextFeatures;
-    subscriptionsEnabled: boolean;
     executor: Executor;
     authorization: AuthorizationContext;
     neo4jDatabaseInfo?: Neo4jDatabaseInfo;
@@ -95,8 +94,6 @@ export const wrapQueryAndMutation =
             context.executionContext = driver;
         }
 
-        const subscriptionsEnabled = false;
-
         const authorizationContext = await getAuthorizationContext(context, authorization, jwtPayloadFieldsMap);
         if (!context.jwt) {
             context.jwt = authorizationContext.jwt;
@@ -122,7 +119,6 @@ export const wrapQueryAndMutation =
             relationships,
             schemaModel,
             features,
-            subscriptionsEnabled,
             executor,
             authorization: authorizationContext,
         };
