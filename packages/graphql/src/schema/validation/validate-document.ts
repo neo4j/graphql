@@ -31,7 +31,7 @@ import type {
     TypeNode,
     UnionTypeDefinitionNode,
 } from "graphql";
-import { extendSchema, GraphQLSchema, Kind, specifiedDirectives, validateSchema } from "graphql";
+import { GraphQLSchema, Kind, extendSchema, specifiedDirectives, validateSchema } from "graphql";
 import { specifiedSDLRules } from "graphql/validation/specifiedRules";
 import pluralize from "pluralize";
 import * as directives from "../../graphql/directives";

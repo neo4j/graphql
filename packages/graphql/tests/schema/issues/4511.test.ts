@@ -21,6 +21,7 @@ import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
+import { TestCDCEngine } from "../../utils/builders/TestCDCEngine";
 
 describe("https://github.com/neo4j/graphql/issues/4511", () => {
     test("EventPayload does not generate related nodes Connections", async () => {
@@ -51,7 +52,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             features: {
-                subscriptions: true,
+                subscriptions: new TestCDCEngine(),
             },
         });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
@@ -428,10 +429,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               count: Int!
             }
 
-            type PersonConnectedRelationships {
-              movies: PersonMoviesConnectedRelationship
-            }
-
             input PersonCreateInput {
               movies: PersonMoviesFieldInput
             }
@@ -473,10 +470,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               where: ProductionConnectWhere
             }
 
-            type PersonMoviesConnectedRelationship {
-              node: ProductionEventPayload!
-            }
-
             input PersonMoviesCreateFieldInput {
               node: ProductionCreateInput!
             }
@@ -512,10 +505,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               id_MIN_LTE: ID
             }
 
-            input PersonMoviesRelationshipSubscriptionWhere {
-              node: ProductionSubscriptionWhere
-            }
-
             input PersonMoviesUpdateConnectionInput {
               node: ProductionUpdateInput
             }
@@ -541,36 +530,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
 
             type PersonProductionMoviesNodeAggregateSelection {
               id: IDAggregateSelection!
-            }
-
-            type PersonRelationshipCreatedEvent {
-              createdRelationship: PersonConnectedRelationships!
-              event: EventType!
-              timestamp: Float!
-            }
-
-            input PersonRelationshipCreatedSubscriptionWhere {
-              AND: [PersonRelationshipCreatedSubscriptionWhere!]
-              NOT: PersonRelationshipCreatedSubscriptionWhere
-              OR: [PersonRelationshipCreatedSubscriptionWhere!]
-              createdRelationship: PersonRelationshipsSubscriptionWhere
-            }
-
-            type PersonRelationshipDeletedEvent {
-              deletedRelationship: PersonConnectedRelationships!
-              event: EventType!
-              timestamp: Float!
-            }
-
-            input PersonRelationshipDeletedSubscriptionWhere {
-              AND: [PersonRelationshipDeletedSubscriptionWhere!]
-              NOT: PersonRelationshipDeletedSubscriptionWhere
-              OR: [PersonRelationshipDeletedSubscriptionWhere!]
-              deletedRelationship: PersonRelationshipsSubscriptionWhere
-            }
-
-            input PersonRelationshipsSubscriptionWhere {
-              movies: PersonMoviesRelationshipSubscriptionWhere
             }
 
             input PersonUpdateInput {
@@ -713,19 +672,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             \\"\\"\\"
             input ProductionSort {
               id: SortDirection
-            }
-
-            input ProductionSubscriptionWhere {
-              AND: [ProductionSubscriptionWhere!]
-              NOT: ProductionSubscriptionWhere
-              OR: [ProductionSubscriptionWhere!]
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
-              typename_IN: [ProductionImplementation!]
             }
 
             input ProductionUpdateInput {
@@ -891,34 +837,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               sort: [SeriesSort!]
             }
 
-            type SeriesRelationshipCreatedEvent {
-              event: EventType!
-              relationshipFieldName: String!
-              series: SeriesEventPayload!
-              timestamp: Float!
-            }
-
-            input SeriesRelationshipCreatedSubscriptionWhere {
-              AND: [SeriesRelationshipCreatedSubscriptionWhere!]
-              NOT: SeriesRelationshipCreatedSubscriptionWhere
-              OR: [SeriesRelationshipCreatedSubscriptionWhere!]
-              series: SeriesSubscriptionWhere
-            }
-
-            type SeriesRelationshipDeletedEvent {
-              event: EventType!
-              relationshipFieldName: String!
-              series: SeriesEventPayload!
-              timestamp: Float!
-            }
-
-            input SeriesRelationshipDeletedSubscriptionWhere {
-              AND: [SeriesRelationshipDeletedSubscriptionWhere!]
-              NOT: SeriesRelationshipDeletedSubscriptionWhere
-              OR: [SeriesRelationshipDeletedSubscriptionWhere!]
-              series: SeriesSubscriptionWhere
-            }
-
             \\"\\"\\"
             Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.
             \\"\\"\\"
@@ -1013,13 +931,9 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             type Subscription {
               personCreated: PersonCreatedEvent!
               personDeleted: PersonDeletedEvent!
-              personRelationshipCreated(where: PersonRelationshipCreatedSubscriptionWhere): PersonRelationshipCreatedEvent!
-              personRelationshipDeleted(where: PersonRelationshipDeletedSubscriptionWhere): PersonRelationshipDeletedEvent!
               personUpdated: PersonUpdatedEvent!
               seriesCreated(where: SeriesSubscriptionWhere): SeriesCreatedEvent!
               seriesDeleted(where: SeriesSubscriptionWhere): SeriesDeletedEvent!
-              seriesRelationshipCreated(where: SeriesRelationshipCreatedSubscriptionWhere): SeriesRelationshipCreatedEvent!
-              seriesRelationshipDeleted(where: SeriesRelationshipDeletedSubscriptionWhere): SeriesRelationshipDeletedEvent!
               seriesUpdated(where: SeriesSubscriptionWhere): SeriesUpdatedEvent!
             }
 

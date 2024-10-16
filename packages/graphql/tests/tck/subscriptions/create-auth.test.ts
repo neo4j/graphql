@@ -18,17 +18,15 @@
  */
 
 import { Neo4jGraphQL } from "../../../src";
+import { TestCDCEngine } from "../../utils/builders/TestCDCEngine";
 import { createBearerToken } from "../../utils/create-bearer-token";
-import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Subscriptions metadata on create", () => {
     let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
-    let plugin: TestSubscriptionsEngine;
 
     beforeAll(() => {
-        plugin = new TestSubscriptionsEngine();
         typeDefs = /* GraphQL */ `
             type Actor @node {
                 id: String!
@@ -46,7 +44,7 @@ describe("Subscriptions metadata on create", () => {
         neoSchema = new Neo4jGraphQL({
             typeDefs,
             features: {
-                subscriptions: plugin,
+                subscriptions: new TestCDCEngine(),
                 authorization: { key: "secret" },
             },
         });

@@ -18,16 +18,14 @@
  */
 
 import { Neo4jGraphQL } from "../../../src";
-import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
+import { TestCDCEngine } from "../../utils/builders/TestCDCEngine";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Subscriptions metadata on create", () => {
     let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
-    let plugin: TestSubscriptionsEngine;
 
     beforeAll(() => {
-        plugin = new TestSubscriptionsEngine();
         typeDefs = /* GraphQL */ `
             type Actor @node {
                 name: String!
@@ -43,7 +41,7 @@ describe("Subscriptions metadata on create", () => {
         neoSchema = new Neo4jGraphQL({
             typeDefs,
             features: {
-                subscriptions: plugin,
+                subscriptions: new TestCDCEngine(),
             },
         });
     });
@@ -96,7 +94,7 @@ describe("Subscriptions metadata on create", () => {
             new Neo4jGraphQL({
                 typeDefs,
                 features: {
-                    subscriptions: plugin,
+                    subscriptions: new TestCDCEngine(),
                 },
             }),
             query
@@ -185,7 +183,7 @@ describe("Subscriptions metadata on create", () => {
             new Neo4jGraphQL({
                 typeDefs,
                 features: {
-                    subscriptions: plugin,
+                    subscriptions: new TestCDCEngine(),
                 },
             }),
             query
@@ -293,7 +291,7 @@ describe("Subscriptions metadata on create", () => {
             new Neo4jGraphQL({
                 typeDefs,
                 features: {
-                    subscriptions: plugin,
+                    subscriptions: new TestCDCEngine(),
                 },
             }),
             query
@@ -417,7 +415,7 @@ describe("Subscriptions metadata on create", () => {
             new Neo4jGraphQL({
                 typeDefs,
                 features: {
-                    subscriptions: plugin,
+                    subscriptions: new TestCDCEngine(),
                 },
             }),
             query
@@ -561,7 +559,7 @@ describe("Subscriptions metadata on create", () => {
             new Neo4jGraphQL({
                 typeDefs,
                 features: {
-                    subscriptions: plugin,
+                    subscriptions: new TestCDCEngine(),
                 },
             }),
             query

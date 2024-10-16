@@ -93,6 +93,7 @@ export function generateSubscribeMethod({
             });
         }
 
+        // TODO: Remove
         if (["create_relationship", "delete_relationship"].includes(type)) {
             return filterAsyncIterator<SubscriptionsEvent[]>(iterable, (data) => {
                 if (!isRelationshipSubscriptionEvent(data[0])) {

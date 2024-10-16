@@ -65,7 +65,7 @@ export class WebSocketTestClient {
             };
             const timeout = setTimeout(() => {
                 this.eventsEmitter.removeListener(NEW_EVENT, newEventListener);
-                reject("Timed out.");
+                reject("[waitForEvents] Timed out.");
             }, 500);
             this.eventsEmitter.on(NEW_EVENT, newEventListener);
         });

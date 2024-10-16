@@ -46,7 +46,7 @@ import { getNeo4jDatabaseInfo } from "./Neo4jDatabaseInfo";
 import type Node from "./Node";
 import type Relationship from "./Relationship";
 import { Neo4jGraphQLAuthorization } from "./authorization/Neo4jGraphQLAuthorization";
-import { Neo4jGraphQLSubscriptionsDefaultEngine } from "./subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
+import { Neo4jGraphQLSubscriptionsCDCEngine } from "./subscription/Neo4jGraphQLSubscriptionsCDCEngine";
 import { assertIndexesAndConstraints } from "./utils/asserts-indexes-and-constraints";
 import { generateResolverComposition } from "./utils/generate-resolvers-composition";
 import checkNeo4jCompat from "./utils/verify-database";
@@ -127,7 +127,7 @@ class Neo4jGraphQL {
     public async getSubgraphSchema(): Promise<GraphQLSchema> {
         if (!this.subgraphSchema) {
             this.subgraphSchema = this.generateSubgraphSchema();
-
+            await this.subgraphSchema;
             await this.subscriptionMechanismSetup();
         }
 
@@ -288,7 +288,7 @@ class Neo4jGraphQL {
 
         const isSubscriptionEnabled = !!this.features.subscriptions;
         const wrapSubscriptionResolverArgs = {
-            subscriptionsEngine: this.features.subscriptions,
+            subscriptionsEngine: this.features.subscriptionsEngine,
             schemaModel: this.schemaModel,
             authorization: this.authorization,
             jwtPayloadFieldsMap: this.jwtFieldsMap,
@@ -331,14 +331,20 @@ class Neo4jGraphQL {
     private parseNeo4jFeatures(features: Neo4jFeaturesSettings | undefined): ContextFeatures {
         let subscriptionPlugin: Neo4jGraphQLSubscriptionsEngine | undefined;
         if (features?.subscriptions === true) {
-            subscriptionPlugin = new Neo4jGraphQLSubscriptionsDefaultEngine();
+            if (!this.driver) {
+                throw new Error("Driver required for CDC subscriptions");
+            }
+
+            subscriptionPlugin = new Neo4jGraphQLSubscriptionsCDCEngine({
+                driver: this.driver,
+            });
         } else {
             subscriptionPlugin = features?.subscriptions || undefined;
         }
 
         return {
             ...features,
-            subscriptions: subscriptionPlugin,
+            subscriptionsEngine: subscriptionPlugin,
         };
     }
 
@@ -478,7 +484,7 @@ class Neo4jGraphQL {
         }
 
         const setup = async () => {
-            const subscriptionsEngine = this.features?.subscriptions;
+            const subscriptionsEngine = this.features?.subscriptionsEngine;
             if (subscriptionsEngine) {
                 subscriptionsEngine.events.setMaxListeners(0); // Removes warning regarding leak. >10 listeners are expected
                 if (subscriptionsEngine.init) {

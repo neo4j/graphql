@@ -17,7 +17,6 @@ module.exports = {
     moduleNameMapper: {
         "@neo4j/graphql/dist/types": "<rootDir>/packages/graphql/src/types",
         "@neo4j/introspector(.*)$": "<rootDir>/packages/introspector/src/$1",
-        "@neo4j/graphql-amqp-subscriptions-engine(.*)$": "<rootDir>/packages/graphql-amqp-subscriptions-engine/src/$1",
         "@neo4j/graphql(.*)$": "<rootDir>/packages/graphql/src/$1",
     },
     snapshotFormat: {

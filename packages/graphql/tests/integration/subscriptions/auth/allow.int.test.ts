@@ -18,14 +18,12 @@
  */
 
 import { generate } from "randomstring";
-import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
 import { createBearerToken } from "../../../utils/create-bearer-token";
 import type { UniqueType } from "../../../utils/graphql-types";
 import { TestHelper } from "../../../utils/tests-helper";
 
 describe("auth/allow", () => {
-    const testHelper = new TestHelper();
-    let plugin: TestSubscriptionsEngine;
+    const testHelper = new TestHelper({ cdc: true });
     const secret = "secret";
 
     let userType: UniqueType;
@@ -36,8 +34,6 @@ describe("auth/allow", () => {
         userType = testHelper.createUniqueType("User");
         postType = testHelper.createUniqueType("Post");
         commentType = testHelper.createUniqueType("Comment");
-
-        plugin = new TestSubscriptionsEngine();
     });
 
     afterEach(async () => {
@@ -72,7 +68,7 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: plugin,
+                    subscriptions: await testHelper.getSubscriptionEngine(),
                 },
             });
 
@@ -116,7 +112,7 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: plugin,
+                    subscriptions: await testHelper.getSubscriptionEngine(),
                 },
             });
 
@@ -171,7 +167,7 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: plugin,
+                    subscriptions: await testHelper.getSubscriptionEngine(),
                 },
             });
 
@@ -230,7 +226,7 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: plugin,
+                    subscriptions: await testHelper.getSubscriptionEngine(),
                 },
             });
 
@@ -287,7 +283,7 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: plugin,
+                    subscriptions: await testHelper.getSubscriptionEngine(),
                 },
             });
 
@@ -348,7 +344,7 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: plugin,
+                    subscriptions: await testHelper.getSubscriptionEngine(),
                 },
             });
 
@@ -419,7 +415,7 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: plugin,
+                    subscriptions: await testHelper.getSubscriptionEngine(),
                 },
             });
 
@@ -466,7 +462,7 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: plugin,
+                    subscriptions: await testHelper.getSubscriptionEngine(),
                 },
             });
 
@@ -513,7 +509,7 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: plugin,
+                    subscriptions: await testHelper.getSubscriptionEngine(),
                 },
             });
 
@@ -570,7 +566,7 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: plugin,
+                    subscriptions: await testHelper.getSubscriptionEngine(),
                 },
             });
 
@@ -629,7 +625,7 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: plugin,
+                    subscriptions: await testHelper.getSubscriptionEngine(),
                 },
             });
 
@@ -675,7 +671,7 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: plugin,
+                    subscriptions: await testHelper.getSubscriptionEngine(),
                 },
             });
 
@@ -739,7 +735,7 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: plugin,
+                    subscriptions: await testHelper.getSubscriptionEngine(),
                 },
             });
 
@@ -798,7 +794,7 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: plugin,
+                    subscriptions: await testHelper.getSubscriptionEngine(),
                 },
             });
 
@@ -876,7 +872,7 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: plugin,
+                    subscriptions: await testHelper.getSubscriptionEngine(),
                 },
             });
 
@@ -937,7 +933,7 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: plugin,
+                    subscriptions: await testHelper.getSubscriptionEngine(),
                 },
             });
 
@@ -1016,7 +1012,7 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: plugin,
+                    subscriptions: await testHelper.getSubscriptionEngine(),
                 },
             });
 

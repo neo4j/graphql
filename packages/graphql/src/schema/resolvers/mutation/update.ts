@@ -58,7 +58,7 @@ export function updateResolver({
             info,
         });
 
-        publishEventsToSubscriptionMechanism(executeResult, context.features?.subscriptions, context.schemaModel);
+        publishEventsToSubscriptionMechanism(executeResult, context.features?.subscriptionsEngine, context.schemaModel);
 
         const nodeProjection = info.fieldNodes[0]?.selectionSet?.selections.find(
             (selection): selection is FieldNode =>

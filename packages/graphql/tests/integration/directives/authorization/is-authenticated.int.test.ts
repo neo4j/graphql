@@ -20,7 +20,6 @@
 import { IncomingMessage } from "http";
 import { Socket } from "net";
 import { generate } from "randomstring";
-import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
 import { createBearerToken } from "../../../utils/create-bearer-token";
 import type { UniqueType } from "../../../utils/graphql-types";
 import { TestHelper } from "../../../utils/tests-helper";
@@ -482,7 +481,6 @@ describe("auth/is-authenticated", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: new TestSubscriptionsEngine(),
                 },
             });
 
@@ -648,7 +646,7 @@ describe("auth/is-authenticated", () => {
 
             await testHelper.initNeo4jGraphQL({
                 typeDefs,
-                features: { authorization: { key: secret }, subscriptions: new TestSubscriptionsEngine() },
+                features: { authorization: { key: secret } },
             });
 
             const query = `
@@ -777,7 +775,6 @@ describe("auth/is-authenticated", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: new TestSubscriptionsEngine(),
                 },
             });
 

@@ -18,7 +18,6 @@
  */
 
 import supertest from "supertest";
-import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../src/classes/subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
 import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../../utils/tests-helper";
 import type { TestGraphQLServer } from "../setup/apollo-server";
@@ -26,7 +25,7 @@ import { ApolloTestServer } from "../setup/apollo-server";
 import { WebSocketTestClient } from "../setup/ws-client";
 
 describe("Delete Subscriptions - with interfaces, unions and nested operations", () => {
-    const testHelper = new TestHelper();
+    const testHelper = new TestHelper({ cdc: true });
     let server: TestGraphQLServer;
     let wsClient: WebSocketTestClient;
     let wsClient2: WebSocketTestClient;
@@ -90,7 +89,7 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
         const neoSchema = await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {
-                subscriptions: new Neo4jGraphQLSubscriptionsDefaultEngine(),
+                subscriptions: await testHelper.getSubscriptionEngine(),
             },
         });
         // eslint-disable-next-line @typescript-eslint/require-await
@@ -109,7 +108,6 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
     afterEach(async () => {
         await wsClient.close();
         await wsClient2.close();
-
         await server.close();
         await testHelper.close();
     });

@@ -22,7 +22,7 @@ import type { ExecutionResult, GraphQLArgs } from "graphql";
 import { graphql as graphqlRuntime } from "graphql";
 import * as neo4j from "neo4j-driver";
 import type { Neo4jGraphQLConstructor, Neo4jGraphQLContext } from "../../src";
-import { Neo4jGraphQL } from "../../src";
+import { Neo4jGraphQL, Neo4jGraphQLSubscriptionsCDCEngine } from "../../src";
 import { Neo4jDatabaseInfo } from "../../src/classes";
 import type { Neo4jEdition } from "../../src/classes/Neo4jDatabaseInfo";
 import { createBearerToken } from "./create-bearer-token";
@@ -41,6 +41,8 @@ export class TestHelper {
 
     private customDB: string | undefined;
 
+    private subscriptionEngine?: Neo4jGraphQLSubscriptionsCDCEngine;
+
     private cdc: boolean;
     constructor({ cdc = false }: { cdc: boolean } = { cdc: false }) {
         this.cdc = cdc;
@@ -52,6 +54,27 @@ export class TestHelper {
 
     public createBearerToken(secret: string, extraData?: Record<string, any>) {
         return createBearerToken(secret, extraData);
+    }
+
+    /** Returns a CDC engine attached to the driver, will be closed automatically */
+    public async getSubscriptionEngine(): Promise<Neo4jGraphQLSubscriptionsCDCEngine> {
+        if (this.subscriptionEngine) {
+            return this.subscriptionEngine;
+        }
+
+        if (!this.cdc) {
+            throw new Error("Error in getSubscriptionEngine. CDC is not enabled in test database");
+        }
+
+        this.subscriptionEngine = new Neo4jGraphQLSubscriptionsCDCEngine({
+            driver: await this.getDriver(),
+            pollTime: 100,
+            queryConfig: {
+                database: this.database,
+            },
+        });
+
+        return this.subscriptionEngine;
     }
 
     public async initNeo4jGraphQL(options: Omit<Neo4jGraphQLConstructor, "driver">): Promise<Neo4jGraphQL> {
@@ -124,15 +147,9 @@ export class TestHelper {
             }
         }
         await this.cleanNodes(driver, this.uniqueTypes);
+        this.closeSubscriptionEngine();
         await driver.close();
         this.reset();
-    }
-
-    private reset() {
-        this.driver = undefined;
-        this.uniqueTypes = [];
-        this.neo4jGraphQL = undefined;
-        this.lock = false;
     }
 
     /** Use this if using graphql() directly. If possible, use .runGraphQL */
@@ -226,6 +243,20 @@ export class TestHelper {
         ].join(" ");
 
         await this.executeCypher(cypher);
+    }
+
+    private reset() {
+        this.driver = undefined;
+        this.uniqueTypes = [];
+        this.neo4jGraphQL = undefined;
+        this.lock = false;
+    }
+
+    private closeSubscriptionEngine(): void {
+        if (this.subscriptionEngine) {
+            this.subscriptionEngine.close();
+            this.subscriptionEngine = undefined;
+        }
     }
 
     private async checkConnectivity(driver: neo4j.Driver): Promise<string> {

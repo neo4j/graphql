@@ -20,14 +20,11 @@
 import type { DocumentNode } from "graphql";
 import { gql } from "graphql-tag";
 import type { Integer } from "neo4j-driver";
-import type { Neo4jGraphQLSubscriptionsEngine } from "../../../../src/types";
-import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
 import { TestHelper } from "../../../utils/tests-helper";
 
 describe("Create -> ConnectOrCreate", () => {
-    const testHelper = new TestHelper();
+    const testHelper = new TestHelper({ cdc: true });
     let typeDefs: DocumentNode;
-    let plugin: Neo4jGraphQLSubscriptionsEngine;
 
     const typeMovie = testHelper.createUniqueType("Movie");
     const typeActor = testHelper.createUniqueType("Actor");
@@ -52,8 +49,10 @@ describe("Create -> ConnectOrCreate", () => {
     });
 
     beforeEach(async () => {
-        plugin = new TestSubscriptionsEngine();
-        await testHelper.initNeo4jGraphQL({ typeDefs, features: { subscriptions: plugin } });
+        await testHelper.initNeo4jGraphQL({
+            typeDefs,
+            features: { subscriptions: await testHelper.getSubscriptionEngine() },
+        });
     });
 
     afterEach(async () => {

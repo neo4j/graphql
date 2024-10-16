@@ -168,9 +168,6 @@ describe("update", () => {
 
         await testHelper.initNeo4jGraphQL({
             typeDefs,
-            features: {
-                subscriptions: true,
-            },
         });
         const query = `
         mutation {

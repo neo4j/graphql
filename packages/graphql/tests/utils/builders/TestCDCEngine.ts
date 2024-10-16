@@ -17,20 +17,18 @@
  * limitations under the License.
  */
 
-import { EventEmitter } from "events";
-import { Neo4jGraphQLAMQPSubscriptionsEngine } from ".";
+import { Neo4jGraphQLSubscriptionsCDCEngine } from "../../../src";
+import { DriverBuilder } from "./driver-builder";
 
-describe("index", () => {
-    test("Neo4jGraphQLAMQPSubscriptionsEngine", () => {
-        expect(Neo4jGraphQLAMQPSubscriptionsEngine).toBeDefined();
-    });
-
-    test("Neo4jGraphQLAMQPSubscriptionsEngine plugin interface", () => {
-        const plugin = new Neo4jGraphQLAMQPSubscriptionsEngine({
-            connection: "",
+export class TestCDCEngine extends Neo4jGraphQLSubscriptionsCDCEngine {
+    constructor() {
+        const driverBuilder = new DriverBuilder();
+        super({
+            driver: driverBuilder.instance(),
         });
+    }
 
-        expect(plugin.events).toBeInstanceOf(EventEmitter);
-        expect(typeof plugin.publish).toBe("function");
-    });
-});
+    public async init(): Promise<void> {
+        // Disable polling
+    }
+}

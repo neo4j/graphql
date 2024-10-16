@@ -21,15 +21,9 @@ import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
-import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
+import { TestCDCEngine } from "../../utils/builders/TestCDCEngine";
 
 describe("@settable", () => {
-    let subscriptionMechanism: TestSubscriptionsEngine;
-
-    beforeAll(() => {
-        subscriptionMechanism = new TestSubscriptionsEngine();
-    });
-
     test("Disable create fields", async () => {
         const typeDefs = gql`
             type Movie @query(aggregate: true) @node {
@@ -341,7 +335,7 @@ describe("@settable", () => {
                 description: String @settable(onCreate: false, onUpdate: false)
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionMechanism } });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: new TestCDCEngine() } });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {

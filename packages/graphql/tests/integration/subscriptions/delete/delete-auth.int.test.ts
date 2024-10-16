@@ -18,17 +18,11 @@
  */
 
 import { generate } from "randomstring";
-import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
 import { createBearerToken } from "../../../utils/create-bearer-token";
 import { TestHelper } from "../../../utils/tests-helper";
 
 describe("Subscriptions delete", () => {
-    const testHelper = new TestHelper();
-    let plugin: TestSubscriptionsEngine;
-
-    beforeEach(() => {
-        plugin = new TestSubscriptionsEngine();
-    });
+    const testHelper = new TestHelper({ cdc: true });
 
     afterEach(async () => {
         await testHelper.close();
@@ -64,7 +58,7 @@ describe("Subscriptions delete", () => {
                 authorization: {
                     key: "secret",
                 },
-                subscriptions: plugin,
+                subscriptions: await testHelper.getSubscriptionEngine(),
             },
         });
 

@@ -17,13 +17,11 @@
  * limitations under the License.
  */
 
-import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
 import type { UniqueType } from "../../../utils/graphql-types";
 import { TestHelper } from "../../../utils/tests-helper";
 
 describe("Delete using top level aggregate where - subscriptions enabled", () => {
-    const testHelper = new TestHelper();
-    let plugin: TestSubscriptionsEngine;
+    const testHelper = new TestHelper({ cdc: true });
 
     let userType: UniqueType;
     let postType: UniqueType;
@@ -43,8 +41,6 @@ describe("Delete using top level aggregate where - subscriptions enabled", () =>
     beforeEach(async () => {
         userType = testHelper.createUniqueType("User");
         postType = testHelper.createUniqueType("Post");
-
-        plugin = new TestSubscriptionsEngine();
 
         const typeDefs = `
             type ${userType.name} @node {
@@ -74,7 +70,7 @@ describe("Delete using top level aggregate where - subscriptions enabled", () =>
         await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {
-                subscriptions: plugin,
+                subscriptions: await testHelper.getSubscriptionEngine(),
             },
         });
     });

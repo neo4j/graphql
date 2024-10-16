@@ -54,7 +54,6 @@ import { attributeAdapterToComposeFields, graphqlDirectivesToCompose } from "./t
 // GraphQL type imports
 import type { GraphQLToolsResolveMethods } from "graphql-compose/lib/SchemaComposer";
 import type { Subgraph } from "../classes/Subgraph";
-import { Neo4jGraphQLSubscriptionsCDCEngine } from "../classes/subscription/Neo4jGraphQLSubscriptionsCDCEngine";
 import { SHAREABLE } from "../constants";
 import { CreateInfo } from "../graphql/objects/CreateInfo";
 import { DeleteInfo } from "../graphql/objects/DeleteInfo";
@@ -294,7 +293,8 @@ function makeAugmentedSchema({
     });
 
     if (features?.subscriptions && nodes.length) {
-        const isCDCEngine = features.subscriptions instanceof Neo4jGraphQLSubscriptionsCDCEngine;
+        // TODO: Update CDC
+        const isCDCEngine = true;
         generateSubscriptionTypes({
             schemaComposer: composer,
             schemaModel,

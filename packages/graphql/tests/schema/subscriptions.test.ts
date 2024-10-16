@@ -21,15 +21,9 @@ import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../src";
-import { TestSubscriptionsEngine } from "../utils/TestSubscriptionsEngine";
+import { TestCDCEngine } from "../utils/builders/TestCDCEngine";
 
 describe("Subscriptions", () => {
-    let plugin: TestSubscriptionsEngine;
-
-    beforeAll(() => {
-        plugin = new TestSubscriptionsEngine();
-    });
-
     test("Subscriptions", async () => {
         const typeDefs = gql`
             type Movie @node {
@@ -47,7 +41,7 @@ describe("Subscriptions", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             features: {
-                subscriptions: plugin,
+                subscriptions: new TestCDCEngine(),
             },
         });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
@@ -247,10 +241,6 @@ describe("Subscriptions", () => {
               where: ActorConnectWhere
             }
 
-            type MovieActorsConnectedRelationship {
-              node: ActorEventPayload!
-            }
-
             type MovieActorsConnection {
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
@@ -311,10 +301,6 @@ describe("Subscriptions", () => {
               node: Actor!
             }
 
-            input MovieActorsRelationshipSubscriptionWhere {
-              node: ActorSubscriptionWhere
-            }
-
             input MovieActorsUpdateConnectionInput {
               node: ActorUpdateInput
             }
@@ -333,10 +319,6 @@ describe("Subscriptions", () => {
               averageRating: FloatAggregateSelection!
               count: Int!
               id: IDAggregateSelection!
-            }
-
-            type MovieConnectedRelationships {
-              actors: MovieActorsConnectedRelationship
             }
 
             input MovieCreateInput {
@@ -382,42 +364,6 @@ describe("Subscriptions", () => {
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [MovieSort!]
-            }
-
-            type MovieRelationshipCreatedEvent {
-              createdRelationship: MovieConnectedRelationships!
-              event: EventType!
-              movie: MovieEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input MovieRelationshipCreatedSubscriptionWhere {
-              AND: [MovieRelationshipCreatedSubscriptionWhere!]
-              NOT: MovieRelationshipCreatedSubscriptionWhere
-              OR: [MovieRelationshipCreatedSubscriptionWhere!]
-              createdRelationship: MovieRelationshipsSubscriptionWhere
-              movie: MovieSubscriptionWhere
-            }
-
-            type MovieRelationshipDeletedEvent {
-              deletedRelationship: MovieConnectedRelationships!
-              event: EventType!
-              movie: MovieEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input MovieRelationshipDeletedSubscriptionWhere {
-              AND: [MovieRelationshipDeletedSubscriptionWhere!]
-              NOT: MovieRelationshipDeletedSubscriptionWhere
-              OR: [MovieRelationshipDeletedSubscriptionWhere!]
-              deletedRelationship: MovieRelationshipsSubscriptionWhere
-              movie: MovieSubscriptionWhere
-            }
-
-            input MovieRelationshipsSubscriptionWhere {
-              actors: MovieActorsRelationshipSubscriptionWhere
             }
 
             \\"\\"\\"
@@ -583,8 +529,6 @@ describe("Subscriptions", () => {
               actorUpdated(where: ActorSubscriptionWhere): ActorUpdatedEvent!
               movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
               movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-              movieRelationshipCreated(where: MovieRelationshipCreatedSubscriptionWhere): MovieRelationshipCreatedEvent!
-              movieRelationshipDeleted(where: MovieRelationshipDeletedSubscriptionWhere): MovieRelationshipDeletedEvent!
               movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
             }
 
@@ -628,7 +572,7 @@ describe("Subscriptions", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             features: {
-                subscriptions: plugin,
+                subscriptions: new TestCDCEngine(),
             },
         });
 
@@ -657,10 +601,6 @@ describe("Subscriptions", () => {
 
             input ActorConnectWhere {
               node: ActorWhere!
-            }
-
-            type ActorConnectedRelationships {
-              movies: ActorMoviesConnectedRelationship
             }
 
             input ActorCreateInput {
@@ -721,10 +661,6 @@ describe("Subscriptions", () => {
               \\"\\"\\"
               overwrite: Boolean! = true
               where: MovieConnectWhere
-            }
-
-            type ActorMoviesConnectedRelationship {
-              node: MovieEventPayload!
             }
 
             type ActorMoviesConnection {
@@ -824,10 +760,6 @@ describe("Subscriptions", () => {
               node: Movie!
             }
 
-            input ActorMoviesRelationshipSubscriptionWhere {
-              node: MovieSubscriptionWhere
-            }
-
             input ActorMoviesUpdateConnectionInput {
               node: MovieUpdateInput
             }
@@ -844,36 +776,6 @@ describe("Subscriptions", () => {
             input ActorOptions {
               limit: Int
               offset: Int
-            }
-
-            type ActorRelationshipCreatedEvent {
-              createdRelationship: ActorConnectedRelationships!
-              event: EventType!
-              timestamp: Float!
-            }
-
-            input ActorRelationshipCreatedSubscriptionWhere {
-              AND: [ActorRelationshipCreatedSubscriptionWhere!]
-              NOT: ActorRelationshipCreatedSubscriptionWhere
-              OR: [ActorRelationshipCreatedSubscriptionWhere!]
-              createdRelationship: ActorRelationshipsSubscriptionWhere
-            }
-
-            type ActorRelationshipDeletedEvent {
-              deletedRelationship: ActorConnectedRelationships!
-              event: EventType!
-              timestamp: Float!
-            }
-
-            input ActorRelationshipDeletedSubscriptionWhere {
-              AND: [ActorRelationshipDeletedSubscriptionWhere!]
-              NOT: ActorRelationshipDeletedSubscriptionWhere
-              OR: [ActorRelationshipDeletedSubscriptionWhere!]
-              deletedRelationship: ActorRelationshipsSubscriptionWhere
-            }
-
-            input ActorRelationshipsSubscriptionWhere {
-              movies: ActorMoviesRelationshipSubscriptionWhere
             }
 
             input ActorUpdateInput {
@@ -1124,34 +1026,6 @@ describe("Subscriptions", () => {
               sort: [MovieSort!]
             }
 
-            type MovieRelationshipCreatedEvent {
-              event: EventType!
-              movie: MovieEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input MovieRelationshipCreatedSubscriptionWhere {
-              AND: [MovieRelationshipCreatedSubscriptionWhere!]
-              NOT: MovieRelationshipCreatedSubscriptionWhere
-              OR: [MovieRelationshipCreatedSubscriptionWhere!]
-              movie: MovieSubscriptionWhere
-            }
-
-            type MovieRelationshipDeletedEvent {
-              event: EventType!
-              movie: MovieEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input MovieRelationshipDeletedSubscriptionWhere {
-              AND: [MovieRelationshipDeletedSubscriptionWhere!]
-              NOT: MovieRelationshipDeletedSubscriptionWhere
-              OR: [MovieRelationshipDeletedSubscriptionWhere!]
-              movie: MovieSubscriptionWhere
-            }
-
             \\"\\"\\"
             Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
             \\"\\"\\"
@@ -1307,13 +1181,9 @@ describe("Subscriptions", () => {
             type Subscription {
               actorCreated: ActorCreatedEvent!
               actorDeleted: ActorDeletedEvent!
-              actorRelationshipCreated(where: ActorRelationshipCreatedSubscriptionWhere): ActorRelationshipCreatedEvent!
-              actorRelationshipDeleted(where: ActorRelationshipDeletedSubscriptionWhere): ActorRelationshipDeletedEvent!
               actorUpdated: ActorUpdatedEvent!
               movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
               movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-              movieRelationshipCreated(where: MovieRelationshipCreatedSubscriptionWhere): MovieRelationshipCreatedEvent!
-              movieRelationshipDeleted(where: MovieRelationshipDeletedSubscriptionWhere): MovieRelationshipDeletedEvent!
               movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
             }
 
@@ -1362,7 +1232,7 @@ describe("Subscriptions", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             features: {
-                subscriptions: plugin,
+                subscriptions: new TestCDCEngine(),
             },
         });
 
@@ -1642,34 +1512,6 @@ describe("Subscriptions", () => {
               sort: [MovieSort!]
             }
 
-            type MovieRelationshipCreatedEvent {
-              event: EventType!
-              movie: MovieEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input MovieRelationshipCreatedSubscriptionWhere {
-              AND: [MovieRelationshipCreatedSubscriptionWhere!]
-              NOT: MovieRelationshipCreatedSubscriptionWhere
-              OR: [MovieRelationshipCreatedSubscriptionWhere!]
-              movie: MovieSubscriptionWhere
-            }
-
-            type MovieRelationshipDeletedEvent {
-              event: EventType!
-              movie: MovieEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input MovieRelationshipDeletedSubscriptionWhere {
-              AND: [MovieRelationshipDeletedSubscriptionWhere!]
-              NOT: MovieRelationshipDeletedSubscriptionWhere
-              OR: [MovieRelationshipDeletedSubscriptionWhere!]
-              movie: MovieSubscriptionWhere
-            }
-
             \\"\\"\\"
             Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
             \\"\\"\\"
@@ -1831,10 +1673,6 @@ describe("Subscriptions", () => {
               node: PersonWhere!
             }
 
-            type PersonConnectedRelationships {
-              movies: PersonMoviesConnectedRelationship
-            }
-
             input PersonCreateInput {
               movies: PersonMoviesFieldInput
             }
@@ -1893,10 +1731,6 @@ describe("Subscriptions", () => {
               \\"\\"\\"
               overwrite: Boolean! = true
               where: MovieConnectWhere
-            }
-
-            type PersonMoviesConnectedRelationship {
-              node: MovieEventPayload!
             }
 
             type PersonMoviesConnection {
@@ -1996,10 +1830,6 @@ describe("Subscriptions", () => {
               node: Movie!
             }
 
-            input PersonMoviesRelationshipSubscriptionWhere {
-              node: MovieSubscriptionWhere
-            }
-
             input PersonMoviesUpdateConnectionInput {
               node: MovieUpdateInput
             }
@@ -2016,36 +1846,6 @@ describe("Subscriptions", () => {
             input PersonOptions {
               limit: Int
               offset: Int
-            }
-
-            type PersonRelationshipCreatedEvent {
-              createdRelationship: PersonConnectedRelationships!
-              event: EventType!
-              timestamp: Float!
-            }
-
-            input PersonRelationshipCreatedSubscriptionWhere {
-              AND: [PersonRelationshipCreatedSubscriptionWhere!]
-              NOT: PersonRelationshipCreatedSubscriptionWhere
-              OR: [PersonRelationshipCreatedSubscriptionWhere!]
-              createdRelationship: PersonRelationshipsSubscriptionWhere
-            }
-
-            type PersonRelationshipDeletedEvent {
-              deletedRelationship: PersonConnectedRelationships!
-              event: EventType!
-              timestamp: Float!
-            }
-
-            input PersonRelationshipDeletedSubscriptionWhere {
-              AND: [PersonRelationshipDeletedSubscriptionWhere!]
-              NOT: PersonRelationshipDeletedSubscriptionWhere
-              OR: [PersonRelationshipDeletedSubscriptionWhere!]
-              deletedRelationship: PersonRelationshipsSubscriptionWhere
-            }
-
-            input PersonRelationshipsSubscriptionWhere {
-              movies: PersonMoviesRelationshipSubscriptionWhere
             }
 
             input PersonUpdateInput {
@@ -2133,10 +1933,6 @@ describe("Subscriptions", () => {
               node: StarWhere!
             }
 
-            type StarConnectedRelationships {
-              movies: StarMoviesConnectedRelationship
-            }
-
             input StarCreateInput {
               movies: StarMoviesFieldInput
             }
@@ -2195,10 +1991,6 @@ describe("Subscriptions", () => {
               \\"\\"\\"
               overwrite: Boolean! = true
               where: MovieConnectWhere
-            }
-
-            type StarMoviesConnectedRelationship {
-              node: MovieEventPayload!
             }
 
             type StarMoviesConnection {
@@ -2298,10 +2090,6 @@ describe("Subscriptions", () => {
               node: Movie!
             }
 
-            input StarMoviesRelationshipSubscriptionWhere {
-              node: MovieSubscriptionWhere
-            }
-
             input StarMoviesUpdateConnectionInput {
               node: MovieUpdateInput
             }
@@ -2318,36 +2106,6 @@ describe("Subscriptions", () => {
             input StarOptions {
               limit: Int
               offset: Int
-            }
-
-            type StarRelationshipCreatedEvent {
-              createdRelationship: StarConnectedRelationships!
-              event: EventType!
-              timestamp: Float!
-            }
-
-            input StarRelationshipCreatedSubscriptionWhere {
-              AND: [StarRelationshipCreatedSubscriptionWhere!]
-              NOT: StarRelationshipCreatedSubscriptionWhere
-              OR: [StarRelationshipCreatedSubscriptionWhere!]
-              createdRelationship: StarRelationshipsSubscriptionWhere
-            }
-
-            type StarRelationshipDeletedEvent {
-              deletedRelationship: StarConnectedRelationships!
-              event: EventType!
-              timestamp: Float!
-            }
-
-            input StarRelationshipDeletedSubscriptionWhere {
-              AND: [StarRelationshipDeletedSubscriptionWhere!]
-              NOT: StarRelationshipDeletedSubscriptionWhere
-              OR: [StarRelationshipDeletedSubscriptionWhere!]
-              deletedRelationship: StarRelationshipsSubscriptionWhere
-            }
-
-            input StarRelationshipsSubscriptionWhere {
-              movies: StarMoviesRelationshipSubscriptionWhere
             }
 
             input StarUpdateInput {
@@ -2399,18 +2157,12 @@ describe("Subscriptions", () => {
             type Subscription {
               movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
               movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-              movieRelationshipCreated(where: MovieRelationshipCreatedSubscriptionWhere): MovieRelationshipCreatedEvent!
-              movieRelationshipDeleted(where: MovieRelationshipDeletedSubscriptionWhere): MovieRelationshipDeletedEvent!
               movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
               personCreated: PersonCreatedEvent!
               personDeleted: PersonDeletedEvent!
-              personRelationshipCreated(where: PersonRelationshipCreatedSubscriptionWhere): PersonRelationshipCreatedEvent!
-              personRelationshipDeleted(where: PersonRelationshipDeletedSubscriptionWhere): PersonRelationshipDeletedEvent!
               personUpdated: PersonUpdatedEvent!
               starCreated: StarCreatedEvent!
               starDeleted: StarDeletedEvent!
-              starRelationshipCreated(where: StarRelationshipCreatedSubscriptionWhere): StarRelationshipCreatedEvent!
-              starRelationshipDeleted(where: StarRelationshipDeletedSubscriptionWhere): StarRelationshipDeletedEvent!
               starUpdated: StarUpdatedEvent!
             }
 
@@ -2463,7 +2215,7 @@ describe("Subscriptions", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             features: {
-                subscriptions: plugin,
+                subscriptions: new TestCDCEngine(),
             },
         });
 
@@ -2518,19 +2270,6 @@ describe("Subscriptions", () => {
               screenTime: SortDirection
             }
 
-            input ActedInSubscriptionWhere {
-              AND: [ActedInSubscriptionWhere!]
-              NOT: ActedInSubscriptionWhere
-              OR: [ActedInSubscriptionWhere!]
-              screenTime: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              screenTime_EQ: Int
-              screenTime_GT: Int
-              screenTime_GTE: Int
-              screenTime_IN: [Int!]
-              screenTime_LT: Int
-              screenTime_LTE: Int
-            }
-
             input ActedInUpdateInput {
               screenTime: Int
               screenTime_DECREMENT: Int
@@ -2566,10 +2305,6 @@ describe("Subscriptions", () => {
 
             input ActorConnectWhere {
               node: ActorWhere!
-            }
-
-            type ActorConnectedRelationships {
-              movies: ActorMoviesConnectedRelationship
             }
 
             input ActorCreateInput {
@@ -2630,10 +2365,6 @@ describe("Subscriptions", () => {
               \\"\\"\\"
               overwrite: Boolean! = true
               where: MovieConnectWhere
-            }
-
-            type ActorMoviesConnectedRelationship {
-              node: MovieEventPayload!
             }
 
             type ActorMoviesConnection {
@@ -2733,10 +2464,6 @@ describe("Subscriptions", () => {
               node: Movie!
             }
 
-            input ActorMoviesRelationshipSubscriptionWhere {
-              node: MovieSubscriptionWhere
-            }
-
             input ActorMoviesUpdateConnectionInput {
               node: MovieUpdateInput
             }
@@ -2753,36 +2480,6 @@ describe("Subscriptions", () => {
             input ActorOptions {
               limit: Int
               offset: Int
-            }
-
-            type ActorRelationshipCreatedEvent {
-              createdRelationship: ActorConnectedRelationships!
-              event: EventType!
-              timestamp: Float!
-            }
-
-            input ActorRelationshipCreatedSubscriptionWhere {
-              AND: [ActorRelationshipCreatedSubscriptionWhere!]
-              NOT: ActorRelationshipCreatedSubscriptionWhere
-              OR: [ActorRelationshipCreatedSubscriptionWhere!]
-              createdRelationship: ActorRelationshipsSubscriptionWhere
-            }
-
-            type ActorRelationshipDeletedEvent {
-              deletedRelationship: ActorConnectedRelationships!
-              event: EventType!
-              timestamp: Float!
-            }
-
-            input ActorRelationshipDeletedSubscriptionWhere {
-              AND: [ActorRelationshipDeletedSubscriptionWhere!]
-              NOT: ActorRelationshipDeletedSubscriptionWhere
-              OR: [ActorRelationshipDeletedSubscriptionWhere!]
-              deletedRelationship: ActorRelationshipsSubscriptionWhere
-            }
-
-            input ActorRelationshipsSubscriptionWhere {
-              movies: ActorMoviesRelationshipSubscriptionWhere
             }
 
             input ActorUpdateInput {
@@ -2926,10 +2623,6 @@ describe("Subscriptions", () => {
               where: ActorConnectWhere
             }
 
-            type MovieActorsConnectedRelationship {
-              screenTime: Int!
-            }
-
             type MovieActorsConnection {
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
@@ -2974,10 +2667,6 @@ describe("Subscriptions", () => {
               properties: ActedIn!
             }
 
-            input MovieActorsRelationshipSubscriptionWhere {
-              edge: ActedInSubscriptionWhere
-            }
-
             input MovieActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
@@ -3005,10 +2694,6 @@ describe("Subscriptions", () => {
 
             input MovieConnectWhere {
               node: MovieWhere!
-            }
-
-            type MovieConnectedRelationships {
-              actors: MovieActorsConnectedRelationship
             }
 
             input MovieCreateInput {
@@ -3058,42 +2743,6 @@ describe("Subscriptions", () => {
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [MovieSort!]
-            }
-
-            type MovieRelationshipCreatedEvent {
-              createdRelationship: MovieConnectedRelationships!
-              event: EventType!
-              movie: MovieEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input MovieRelationshipCreatedSubscriptionWhere {
-              AND: [MovieRelationshipCreatedSubscriptionWhere!]
-              NOT: MovieRelationshipCreatedSubscriptionWhere
-              OR: [MovieRelationshipCreatedSubscriptionWhere!]
-              createdRelationship: MovieRelationshipsSubscriptionWhere
-              movie: MovieSubscriptionWhere
-            }
-
-            type MovieRelationshipDeletedEvent {
-              deletedRelationship: MovieConnectedRelationships!
-              event: EventType!
-              movie: MovieEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input MovieRelationshipDeletedSubscriptionWhere {
-              AND: [MovieRelationshipDeletedSubscriptionWhere!]
-              NOT: MovieRelationshipDeletedSubscriptionWhere
-              OR: [MovieRelationshipDeletedSubscriptionWhere!]
-              deletedRelationship: MovieRelationshipsSubscriptionWhere
-              movie: MovieSubscriptionWhere
-            }
-
-            input MovieRelationshipsSubscriptionWhere {
-              actors: MovieActorsRelationshipSubscriptionWhere
             }
 
             \\"\\"\\"
@@ -3251,13 +2900,9 @@ describe("Subscriptions", () => {
             type Subscription {
               actorCreated: ActorCreatedEvent!
               actorDeleted: ActorDeletedEvent!
-              actorRelationshipCreated(where: ActorRelationshipCreatedSubscriptionWhere): ActorRelationshipCreatedEvent!
-              actorRelationshipDeleted(where: ActorRelationshipDeletedSubscriptionWhere): ActorRelationshipDeletedEvent!
               actorUpdated: ActorUpdatedEvent!
               movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
               movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-              movieRelationshipCreated(where: MovieRelationshipCreatedSubscriptionWhere): MovieRelationshipCreatedEvent!
-              movieRelationshipDeleted(where: MovieRelationshipDeletedSubscriptionWhere): MovieRelationshipDeletedEvent!
               movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
             }
 
@@ -3300,7 +2945,7 @@ describe("Subscriptions", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             features: {
-                subscriptions: plugin,
+                subscriptions: new TestCDCEngine(),
             },
         });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
@@ -3771,7 +3416,7 @@ describe("Subscriptions", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             features: {
-                subscriptions: plugin,
+                subscriptions: new TestCDCEngine(),
             },
         });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
@@ -3795,10 +3440,6 @@ describe("Subscriptions", () => {
               count: Int!
               id: IntAggregateSelection!
               name: StringAggregateSelection!
-            }
-
-            type AgreementConnectedRelationships {
-              owner: AgreementOwnerConnectedRelationship
             }
 
             input AgreementCreateInput {
@@ -3861,10 +3502,6 @@ describe("Subscriptions", () => {
               \\"\\"\\"
               overwrite: Boolean! = true
               where: UserConnectWhere
-            }
-
-            type AgreementOwnerConnectedRelationship {
-              node: UserEventPayload!
             }
 
             type AgreementOwnerConnection {
@@ -3942,10 +3579,6 @@ describe("Subscriptions", () => {
               node: User!
             }
 
-            input AgreementOwnerRelationshipSubscriptionWhere {
-              node: UserSubscriptionWhere
-            }
-
             input AgreementOwnerUpdateConnectionInput {
               node: UserUpdateInput
             }
@@ -3957,42 +3590,6 @@ describe("Subscriptions", () => {
               disconnect: AgreementOwnerDisconnectFieldInput
               update: AgreementOwnerUpdateConnectionInput
               where: AgreementOwnerConnectionWhere
-            }
-
-            type AgreementRelationshipCreatedEvent {
-              agreement: AgreementEventPayload!
-              createdRelationship: AgreementConnectedRelationships!
-              event: EventType!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input AgreementRelationshipCreatedSubscriptionWhere {
-              AND: [AgreementRelationshipCreatedSubscriptionWhere!]
-              NOT: AgreementRelationshipCreatedSubscriptionWhere
-              OR: [AgreementRelationshipCreatedSubscriptionWhere!]
-              agreement: AgreementSubscriptionWhere
-              createdRelationship: AgreementRelationshipsSubscriptionWhere
-            }
-
-            type AgreementRelationshipDeletedEvent {
-              agreement: AgreementEventPayload!
-              deletedRelationship: AgreementConnectedRelationships!
-              event: EventType!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input AgreementRelationshipDeletedSubscriptionWhere {
-              AND: [AgreementRelationshipDeletedSubscriptionWhere!]
-              NOT: AgreementRelationshipDeletedSubscriptionWhere
-              OR: [AgreementRelationshipDeletedSubscriptionWhere!]
-              agreement: AgreementSubscriptionWhere
-              deletedRelationship: AgreementRelationshipsSubscriptionWhere
-            }
-
-            input AgreementRelationshipsSubscriptionWhere {
-              owner: AgreementOwnerRelationshipSubscriptionWhere
             }
 
             \\"\\"\\"
@@ -4150,8 +3747,6 @@ describe("Subscriptions", () => {
             type Subscription {
               agreementCreated(where: AgreementSubscriptionWhere): AgreementCreatedEvent!
               agreementDeleted(where: AgreementSubscriptionWhere): AgreementDeletedEvent!
-              agreementRelationshipCreated(where: AgreementRelationshipCreatedSubscriptionWhere): AgreementRelationshipCreatedEvent!
-              agreementRelationshipDeleted(where: AgreementRelationshipDeletedSubscriptionWhere): AgreementRelationshipDeletedEvent!
               agreementUpdated(where: AgreementSubscriptionWhere): AgreementUpdatedEvent!
             }
 
@@ -4195,11 +3790,6 @@ describe("Subscriptions", () => {
               node: User!
             }
 
-            type UserEventPayload {
-              name: String
-              username: String!
-            }
-
             input UserOptions {
               limit: Int
               offset: Int
@@ -4215,24 +3805,6 @@ describe("Subscriptions", () => {
             input UserSort {
               name: SortDirection
               username: SortDirection
-            }
-
-            input UserSubscriptionWhere {
-              AND: [UserSubscriptionWhere!]
-              NOT: UserSubscriptionWhere
-              OR: [UserSubscriptionWhere!]
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String]
-              name_STARTS_WITH: String
-              username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              username_CONTAINS: String
-              username_ENDS_WITH: String
-              username_EQ: String
-              username_IN: [String!]
-              username_STARTS_WITH: String
             }
 
             input UserUpdateInput {
@@ -4289,7 +3861,7 @@ describe("Subscriptions", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             features: {
-                subscriptions: plugin,
+                subscriptions: new TestCDCEngine(),
             },
         });
 
@@ -4569,34 +4141,6 @@ describe("Subscriptions", () => {
               sort: [MovieSort!]
             }
 
-            type MovieRelationshipCreatedEvent {
-              event: EventType!
-              movie: MovieEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input MovieRelationshipCreatedSubscriptionWhere {
-              AND: [MovieRelationshipCreatedSubscriptionWhere!]
-              NOT: MovieRelationshipCreatedSubscriptionWhere
-              OR: [MovieRelationshipCreatedSubscriptionWhere!]
-              movie: MovieSubscriptionWhere
-            }
-
-            type MovieRelationshipDeletedEvent {
-              event: EventType!
-              movie: MovieEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input MovieRelationshipDeletedSubscriptionWhere {
-              AND: [MovieRelationshipDeletedSubscriptionWhere!]
-              NOT: MovieRelationshipDeletedSubscriptionWhere
-              OR: [MovieRelationshipDeletedSubscriptionWhere!]
-              movie: MovieSubscriptionWhere
-            }
-
             \\"\\"\\"
             Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
             \\"\\"\\"
@@ -4758,10 +4302,6 @@ describe("Subscriptions", () => {
               node: PersonWhere!
             }
 
-            type PersonConnectedRelationships {
-              movies: PersonMoviesConnectedRelationship
-            }
-
             input PersonCreateInput {
               movies: PersonMoviesFieldInput
             }
@@ -4820,10 +4360,6 @@ describe("Subscriptions", () => {
               \\"\\"\\"
               overwrite: Boolean! = true
               where: MovieConnectWhere
-            }
-
-            type PersonMoviesConnectedRelationship {
-              node: MovieEventPayload!
             }
 
             type PersonMoviesConnection {
@@ -4923,10 +4459,6 @@ describe("Subscriptions", () => {
               node: Movie!
             }
 
-            input PersonMoviesRelationshipSubscriptionWhere {
-              node: MovieSubscriptionWhere
-            }
-
             input PersonMoviesUpdateConnectionInput {
               node: MovieUpdateInput
             }
@@ -4943,36 +4475,6 @@ describe("Subscriptions", () => {
             input PersonOptions {
               limit: Int
               offset: Int
-            }
-
-            type PersonRelationshipCreatedEvent {
-              createdRelationship: PersonConnectedRelationships!
-              event: EventType!
-              timestamp: Float!
-            }
-
-            input PersonRelationshipCreatedSubscriptionWhere {
-              AND: [PersonRelationshipCreatedSubscriptionWhere!]
-              NOT: PersonRelationshipCreatedSubscriptionWhere
-              OR: [PersonRelationshipCreatedSubscriptionWhere!]
-              createdRelationship: PersonRelationshipsSubscriptionWhere
-            }
-
-            type PersonRelationshipDeletedEvent {
-              deletedRelationship: PersonConnectedRelationships!
-              event: EventType!
-              timestamp: Float!
-            }
-
-            input PersonRelationshipDeletedSubscriptionWhere {
-              AND: [PersonRelationshipDeletedSubscriptionWhere!]
-              NOT: PersonRelationshipDeletedSubscriptionWhere
-              OR: [PersonRelationshipDeletedSubscriptionWhere!]
-              deletedRelationship: PersonRelationshipsSubscriptionWhere
-            }
-
-            input PersonRelationshipsSubscriptionWhere {
-              movies: PersonMoviesRelationshipSubscriptionWhere
             }
 
             input PersonUpdateInput {
@@ -5269,13 +4771,9 @@ describe("Subscriptions", () => {
             type Subscription {
               movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
               movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-              movieRelationshipCreated(where: MovieRelationshipCreatedSubscriptionWhere): MovieRelationshipCreatedEvent!
-              movieRelationshipDeleted(where: MovieRelationshipDeletedSubscriptionWhere): MovieRelationshipDeletedEvent!
               movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
               personCreated: PersonCreatedEvent!
               personDeleted: PersonDeletedEvent!
-              personRelationshipCreated(where: PersonRelationshipCreatedSubscriptionWhere): PersonRelationshipCreatedEvent!
-              personRelationshipDeleted(where: PersonRelationshipDeletedSubscriptionWhere): PersonRelationshipDeletedEvent!
               personUpdated: PersonUpdatedEvent!
             }
 
@@ -5338,7 +4836,7 @@ describe("Subscriptions", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             features: {
-                subscriptions: plugin,
+                subscriptions: new TestCDCEngine(),
             },
         });
 
@@ -5716,10 +5214,6 @@ describe("Subscriptions", () => {
               count: Int!
             }
 
-            type PersonConnectedRelationships {
-              movies: PersonMoviesConnectedRelationship
-            }
-
             input PersonCreateInput {
               movies: PersonMoviesFieldInput
             }
@@ -5761,10 +5255,6 @@ describe("Subscriptions", () => {
               where: ProductionConnectWhere
             }
 
-            type PersonMoviesConnectedRelationship {
-              node: ProductionEventPayload!
-            }
-
             input PersonMoviesCreateFieldInput {
               node: ProductionCreateInput!
             }
@@ -5800,10 +5290,6 @@ describe("Subscriptions", () => {
               id_MIN_LTE: ID
             }
 
-            input PersonMoviesRelationshipSubscriptionWhere {
-              node: ProductionSubscriptionWhere
-            }
-
             input PersonMoviesUpdateConnectionInput {
               node: ProductionUpdateInput
             }
@@ -5829,36 +5315,6 @@ describe("Subscriptions", () => {
 
             type PersonProductionMoviesNodeAggregateSelection {
               id: IDAggregateSelection!
-            }
-
-            type PersonRelationshipCreatedEvent {
-              createdRelationship: PersonConnectedRelationships!
-              event: EventType!
-              timestamp: Float!
-            }
-
-            input PersonRelationshipCreatedSubscriptionWhere {
-              AND: [PersonRelationshipCreatedSubscriptionWhere!]
-              NOT: PersonRelationshipCreatedSubscriptionWhere
-              OR: [PersonRelationshipCreatedSubscriptionWhere!]
-              createdRelationship: PersonRelationshipsSubscriptionWhere
-            }
-
-            type PersonRelationshipDeletedEvent {
-              deletedRelationship: PersonConnectedRelationships!
-              event: EventType!
-              timestamp: Float!
-            }
-
-            input PersonRelationshipDeletedSubscriptionWhere {
-              AND: [PersonRelationshipDeletedSubscriptionWhere!]
-              NOT: PersonRelationshipDeletedSubscriptionWhere
-              OR: [PersonRelationshipDeletedSubscriptionWhere!]
-              deletedRelationship: PersonRelationshipsSubscriptionWhere
-            }
-
-            input PersonRelationshipsSubscriptionWhere {
-              movies: PersonMoviesRelationshipSubscriptionWhere
             }
 
             input PersonUpdateInput {
@@ -6001,19 +5457,6 @@ describe("Subscriptions", () => {
             \\"\\"\\"
             input ProductionSort {
               id: SortDirection
-            }
-
-            input ProductionSubscriptionWhere {
-              AND: [ProductionSubscriptionWhere!]
-              NOT: ProductionSubscriptionWhere
-              OR: [ProductionSubscriptionWhere!]
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
-              typename_IN: [ProductionImplementation!]
             }
 
             input ProductionUpdateInput {
@@ -6179,34 +5622,6 @@ describe("Subscriptions", () => {
               sort: [SeriesSort!]
             }
 
-            type SeriesRelationshipCreatedEvent {
-              event: EventType!
-              relationshipFieldName: String!
-              series: SeriesEventPayload!
-              timestamp: Float!
-            }
-
-            input SeriesRelationshipCreatedSubscriptionWhere {
-              AND: [SeriesRelationshipCreatedSubscriptionWhere!]
-              NOT: SeriesRelationshipCreatedSubscriptionWhere
-              OR: [SeriesRelationshipCreatedSubscriptionWhere!]
-              series: SeriesSubscriptionWhere
-            }
-
-            type SeriesRelationshipDeletedEvent {
-              event: EventType!
-              relationshipFieldName: String!
-              series: SeriesEventPayload!
-              timestamp: Float!
-            }
-
-            input SeriesRelationshipDeletedSubscriptionWhere {
-              AND: [SeriesRelationshipDeletedSubscriptionWhere!]
-              NOT: SeriesRelationshipDeletedSubscriptionWhere
-              OR: [SeriesRelationshipDeletedSubscriptionWhere!]
-              series: SeriesSubscriptionWhere
-            }
-
             \\"\\"\\"
             Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.
             \\"\\"\\"
@@ -6301,13 +5716,9 @@ describe("Subscriptions", () => {
             type Subscription {
               personCreated: PersonCreatedEvent!
               personDeleted: PersonDeletedEvent!
-              personRelationshipCreated(where: PersonRelationshipCreatedSubscriptionWhere): PersonRelationshipCreatedEvent!
-              personRelationshipDeleted(where: PersonRelationshipDeletedSubscriptionWhere): PersonRelationshipDeletedEvent!
               personUpdated: PersonUpdatedEvent!
               seriesCreated(where: SeriesSubscriptionWhere): SeriesCreatedEvent!
               seriesDeleted(where: SeriesSubscriptionWhere): SeriesDeletedEvent!
-              seriesRelationshipCreated(where: SeriesRelationshipCreatedSubscriptionWhere): SeriesRelationshipCreatedEvent!
-              seriesRelationshipDeleted(where: SeriesRelationshipDeletedSubscriptionWhere): SeriesRelationshipDeletedEvent!
               seriesUpdated(where: SeriesSubscriptionWhere): SeriesUpdatedEvent!
             }
 
