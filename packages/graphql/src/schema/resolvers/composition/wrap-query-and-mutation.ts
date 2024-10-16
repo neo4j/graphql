@@ -95,7 +95,7 @@ export const wrapQueryAndMutation =
             context.executionContext = driver;
         }
 
-        const subscriptionsEnabled = Boolean(features.subscriptions);
+        const subscriptionsEnabled = false;
 
         const authorizationContext = await getAuthorizationContext(context, authorization, jwtPayloadFieldsMap);
         if (!context.jwt) {
