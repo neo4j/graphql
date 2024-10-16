@@ -5,4 +5,4 @@
 Remove support for relationship subscriptions:
 
 -   `*RelationshipCreated`
--   `*RelatiosnhipDeleted`
+-   `*RelationshipDeleted`
