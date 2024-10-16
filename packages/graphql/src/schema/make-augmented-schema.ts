@@ -293,7 +293,7 @@ function makeAugmentedSchema({
     });
 
     if (features?.subscriptions && nodes.length) {
-        // TODO: update this thing
+        // TODO: Update CDC
         const isCDCEngine = true;
         generateSubscriptionTypes({
             schemaComposer: composer,
