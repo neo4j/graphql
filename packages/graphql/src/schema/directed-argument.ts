@@ -17,16 +17,24 @@
  * limitations under the License.
  */
 
+import type { Directive } from "graphql-compose";
 import { RelationshipQueryDirectionOption } from "../constants";
 import type { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { RelationshipDeclarationAdapter } from "../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
+import type { Neo4jFeaturesSettings } from "../types";
+import { DEPRECATE_DIRECTED_ARGUMENT } from "./constants";
+import { shouldAddDeprecatedFields } from "./generation/utils";
 
 type DirectedArgument = {
     type: "Boolean";
     defaultValue: boolean;
+    directives: Directive[];
 };
 
-export function getDirectedArgument(relationshipAdapter: RelationshipAdapter): DirectedArgument | undefined {
+export function getDirectedArgument(
+    relationshipAdapter: RelationshipAdapter,
+    features: Neo4jFeaturesSettings | undefined
+): DirectedArgument | undefined {
     let defaultValue: boolean;
     switch (relationshipAdapter.queryDirection) {
         case RelationshipQueryDirectionOption.DEFAULT_DIRECTED:
@@ -41,21 +49,25 @@ export function getDirectedArgument(relationshipAdapter: RelationshipAdapter): D
             return undefined;
     }
 
-    return {
-        type: "Boolean",
-        defaultValue,
-    };
+    if (shouldAddDeprecatedFields(features, "directedArgument")) {
+        return {
+            type: "Boolean",
+            defaultValue,
+            directives: [DEPRECATE_DIRECTED_ARGUMENT],
+        };
+    }
 }
 
 export function addDirectedArgument<T extends Record<string, any>>(
     args: T,
-    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter,
+    features: Neo4jFeaturesSettings | undefined
 ): T & { directed?: DirectedArgument } {
     if (relationshipAdapter instanceof RelationshipDeclarationAdapter) {
         return { ...args };
     }
 
-    const directedArg = getDirectedArgument(relationshipAdapter);
+    const directedArg = getDirectedArgument(relationshipAdapter, features);
     if (directedArg) {
         return { ...args, directed: directedArg };
     }

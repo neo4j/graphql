@@ -625,36 +625,21 @@ describe("Aggregations", () => {
               someLocalTime_MIN_GTE: LocalTime
               someLocalTime_MIN_LT: LocalTime
               someLocalTime_MIN_LTE: LocalTime
-              someString_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              someString_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              someString_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               someString_AVERAGE_LENGTH_EQUAL: Float
               someString_AVERAGE_LENGTH_GT: Float
               someString_AVERAGE_LENGTH_GTE: Float
               someString_AVERAGE_LENGTH_LT: Float
               someString_AVERAGE_LENGTH_LTE: Float
-              someString_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              someString_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              someString_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              someString_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              someString_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               someString_LONGEST_LENGTH_EQUAL: Int
               someString_LONGEST_LENGTH_GT: Int
               someString_LONGEST_LENGTH_GTE: Int
               someString_LONGEST_LENGTH_LT: Int
               someString_LONGEST_LENGTH_LTE: Int
-              someString_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              someString_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              someString_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              someString_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              someString_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               someString_SHORTEST_LENGTH_EQUAL: Int
               someString_SHORTEST_LENGTH_GT: Int
               someString_SHORTEST_LENGTH_GTE: Int
               someString_SHORTEST_LENGTH_LT: Int
               someString_SHORTEST_LENGTH_LTE: Int
-              someString_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              someString_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               someTime_MAX_EQUAL: Time
               someTime_MAX_GT: Time
               someTime_MAX_GTE: Time
@@ -811,7 +796,7 @@ describe("Aggregations", () => {
               createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
               deletePosts(delete: PostDeleteInput, where: PostWhere): DeleteInfo!
               deleteUsers(where: UserWhere): DeleteInfo!
-              updatePosts(connect: PostConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: PostRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: PostDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: PostDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: PostUpdateInput, where: PostWhere): UpdatePostsMutationResponse!
+              updatePosts(update: PostUpdateInput, where: PostWhere): UpdatePostsMutationResponse!
               updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
             }
 
@@ -824,19 +809,15 @@ describe("Aggregations", () => {
             }
 
             type Post {
-              likes(directed: Boolean = true, limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): [User!]!
-              likesAggregate(directed: Boolean = true, where: UserWhere): PostUserLikesAggregationSelection
-              likesConnection(after: String, directed: Boolean = true, first: Int, sort: [PostLikesConnectionSort!], where: PostLikesConnectionWhere): PostLikesConnection!
+              likes(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): [User!]!
+              likesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: UserWhere): PostUserLikesAggregationSelection
+              likesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [PostLikesConnectionSort!], where: PostLikesConnectionWhere): PostLikesConnection!
               title: String
             }
 
             type PostAggregateSelection {
               count: Int!
               title: StringAggregateSelection!
-            }
-
-            input PostConnectInput {
-              likes: [PostLikesConnectFieldInput!]
             }
 
             input PostCreateInput {
@@ -846,10 +827,6 @@ describe("Aggregations", () => {
 
             input PostDeleteInput {
               likes: [PostLikesDeleteFieldInput!]
-            }
-
-            input PostDisconnectInput {
-              likes: [PostLikesDisconnectFieldInput!]
             }
 
             type PostEdge {
@@ -1036,36 +1013,21 @@ describe("Aggregations", () => {
               someLocalTime_MIN_GTE: LocalTime
               someLocalTime_MIN_LT: LocalTime
               someLocalTime_MIN_LTE: LocalTime
-              someString_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              someString_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              someString_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               someString_AVERAGE_LENGTH_EQUAL: Float
               someString_AVERAGE_LENGTH_GT: Float
               someString_AVERAGE_LENGTH_GTE: Float
               someString_AVERAGE_LENGTH_LT: Float
               someString_AVERAGE_LENGTH_LTE: Float
-              someString_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              someString_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              someString_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              someString_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              someString_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               someString_LONGEST_LENGTH_EQUAL: Int
               someString_LONGEST_LENGTH_GT: Int
               someString_LONGEST_LENGTH_GTE: Int
               someString_LONGEST_LENGTH_LT: Int
               someString_LONGEST_LENGTH_LTE: Int
-              someString_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              someString_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              someString_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              someString_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              someString_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               someString_SHORTEST_LENGTH_EQUAL: Int
               someString_SHORTEST_LENGTH_GT: Int
               someString_SHORTEST_LENGTH_GTE: Int
               someString_SHORTEST_LENGTH_LT: Int
               someString_SHORTEST_LENGTH_LTE: Int
-              someString_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              someString_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               someTime_MAX_EQUAL: Time
               someTime_MAX_GT: Time
               someTime_MAX_GTE: Time
@@ -1105,10 +1067,6 @@ describe("Aggregations", () => {
               Specify one or more PostSort objects to sort Posts by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [PostSort!]
-            }
-
-            input PostRelationInput {
-              likes: [PostLikesCreateFieldInput!]
             }
 
             \\"\\"\\"

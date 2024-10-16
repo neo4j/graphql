@@ -55,7 +55,9 @@ describe("https://github.com/neo4j/graphql/issues/3027", () => {
                 mutation UpdateBooks {
                     updateBooks(
                         where: { isbn_EQ: "123" }
-                        create: { translatedTitle: { BookTitle_EN: { node: { value: "English book title" } } } }
+                        update: {
+                            translatedTitle: { BookTitle_EN: { create: { node: { value: "English book title" } } } }
+                        }
                     ) {
                         info {
                             nodesCreated
@@ -84,11 +86,20 @@ describe("https://github.com/neo4j/graphql/issues/3027", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:Book)
                 WHERE this.isbn = $param0
+                WITH this
                 WITH *
                 WHERE apoc.util.validatePredicate(EXISTS((this)<-[:TRANSLATED_BOOK_TITLE]-(:BookTitle_SV)) OR EXISTS((this)<-[:TRANSLATED_BOOK_TITLE]-(:BookTitle_EN)),'Relationship field \\"%s.%s\\" cannot have more than one node linked',[\\"Book\\",\\"translatedTitle\\"])
-                CREATE (this_create_translatedTitle_BookTitle_EN0_node:BookTitle_EN)
-                SET this_create_translatedTitle_BookTitle_EN0_node.value = $this_create_translatedTitle_BookTitle_EN0_node_value
-                MERGE (this)<-[:TRANSLATED_BOOK_TITLE]-(this_create_translatedTitle_BookTitle_EN0_node)
+                CREATE (this_translatedTitle_BookTitle_EN0_create0_node:BookTitle_EN)
+                SET this_translatedTitle_BookTitle_EN0_create0_node.value = $this_translatedTitle_BookTitle_EN0_create0_node_value
+                MERGE (this)<-[:TRANSLATED_BOOK_TITLE]-(this_translatedTitle_BookTitle_EN0_create0_node)
+                WITH this, this_translatedTitle_BookTitle_EN0_create0_node
+                CALL {
+                	WITH this_translatedTitle_BookTitle_EN0_create0_node
+                	MATCH (this_translatedTitle_BookTitle_EN0_create0_node)-[this_translatedTitle_BookTitle_EN0_create0_node_book_Book_unique:TRANSLATED_BOOK_TITLE]->(:Book)
+                	WITH count(this_translatedTitle_BookTitle_EN0_create0_node_book_Book_unique) as c
+                	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDBookTitle_EN.book required exactly once', [0])
+                	RETURN c AS this_translatedTitle_BookTitle_EN0_create0_node_book_Book_unique_ignored
+                }
                 WITH *
                 CALL {
                     WITH this
@@ -110,12 +121,12 @@ describe("https://github.com/neo4j/graphql/issues/3027", () => {
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
-                            "{
-                                \\"param0\\": \\"123\\",
-                                \\"this_create_translatedTitle_BookTitle_EN0_node_value\\": \\"English book title\\",
-                                \\"resolvedCallbacks\\": {}
-                            }"
-                    `);
+                "{
+                    \\"param0\\": \\"123\\",
+                    \\"this_translatedTitle_BookTitle_EN0_create0_node_value\\": \\"English book title\\",
+                    \\"resolvedCallbacks\\": {}
+                }"
+            `);
         });
     });
 
@@ -155,7 +166,9 @@ describe("https://github.com/neo4j/graphql/issues/3027", () => {
                 mutation UpdateBooks {
                     updateBooks(
                         where: { isbn_EQ: "123" }
-                        create: { translatedTitle: { node: { BookTitle_EN: { value: "English book title" } } } }
+                        update: {
+                            translatedTitle: { create: { node: { BookTitle_EN: { value: "English book title" } } } }
+                        }
                     ) {
                         books {
                             isbn
@@ -175,11 +188,30 @@ describe("https://github.com/neo4j/graphql/issues/3027", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:Book)
                 WHERE this.isbn = $param0
+                WITH this
+                CALL {
+                	 WITH this
+                WITH this
+                RETURN count(*) AS update_this_BookTitle_SV
+                }
+                CALL {
+                	 WITH this
+                	WITH this
                 WITH *
                 WHERE apoc.util.validatePredicate(EXISTS((this)<-[:TRANSLATED_BOOK_TITLE]-(:BookTitle_SV)) OR EXISTS((this)<-[:TRANSLATED_BOOK_TITLE]-(:BookTitle_EN)),'Relationship field \\"%s.%s\\" cannot have more than one node linked',[\\"Book\\",\\"translatedTitle\\"])
-                CREATE (this_create_translatedTitle_BookTitle_EN0_node_BookTitle_EN:BookTitle_EN)
-                SET this_create_translatedTitle_BookTitle_EN0_node_BookTitle_EN.value = $this_create_translatedTitle_BookTitle_EN0_node_BookTitle_EN_value
-                MERGE (this)<-[:TRANSLATED_BOOK_TITLE]-(this_create_translatedTitle_BookTitle_EN0_node_BookTitle_EN)
+                CREATE (this_translatedTitle0_create0_node:BookTitle_EN)
+                SET this_translatedTitle0_create0_node.value = $this_translatedTitle0_create0_node_value
+                MERGE (this)<-[:TRANSLATED_BOOK_TITLE]-(this_translatedTitle0_create0_node)
+                WITH this, this_translatedTitle0_create0_node
+                CALL {
+                	WITH this_translatedTitle0_create0_node
+                	MATCH (this_translatedTitle0_create0_node)-[this_translatedTitle0_create0_node_book_Book_unique:TRANSLATED_BOOK_TITLE]->(:Book)
+                	WITH count(this_translatedTitle0_create0_node_book_Book_unique) as c
+                	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDBookTitle_EN.book required exactly once', [0])
+                	RETURN c AS this_translatedTitle0_create0_node_book_Book_unique_ignored
+                }
+                RETURN count(*) AS update_this_BookTitle_EN
+                }
                 WITH *
                 CALL {
                     WITH this
@@ -203,7 +235,7 @@ describe("https://github.com/neo4j/graphql/issues/3027", () => {
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"param0\\": \\"123\\",
-                    \\"this_create_translatedTitle_BookTitle_EN0_node_BookTitle_EN_value\\": \\"English book title\\",
+                    \\"this_translatedTitle0_create0_node_value\\": \\"English book title\\",
                     \\"resolvedCallbacks\\": {}
                 }"
             `);

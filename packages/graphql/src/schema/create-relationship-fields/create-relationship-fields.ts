@@ -265,7 +265,7 @@ export function createRelationshipFields({
                 where: relationshipTarget.operations.whereInputTypeName,
             };
 
-            const aggregationFieldsArgs = addDirectedArgument(aggregationFieldsBaseArgs, relationshipAdapter);
+            const aggregationFieldsArgs = addDirectedArgument(aggregationFieldsBaseArgs, relationshipAdapter, features);
 
             if (relationshipAdapter.aggregate) {
                 composeNode.addFields({

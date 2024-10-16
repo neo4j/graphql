@@ -81,7 +81,7 @@ describe("Nested within AND/OR", () => {
                     likesAggregate: {
                         count_EQ: 3
                         node: {
-                            testString_SHORTEST_EQUAL: 3
+                            testString_SHORTEST_LENGTH_EQUAL: 3
                         }
                     }
                 }) {
@@ -111,7 +111,7 @@ describe("Nested within AND/OR", () => {
                             { count_EQ: 3 }
                             {
                                 node: {
-                                    testString_SHORTEST_EQUAL: 3
+                                    testString_SHORTEST_LENGTH_EQUAL: 3
                                 }
                             }
                         ]
@@ -152,7 +152,7 @@ describe("Nested within AND/OR", () => {
                             { count_EQ: 3 }
                             {
                                 node: {
-                                    testString_SHORTEST_EQUAL: 3
+                                    testString_SHORTEST_LENGTH_EQUAL: 3
                                 }
                             }
                         ]
@@ -186,12 +186,12 @@ describe("Nested within AND/OR", () => {
                                 AND: [
                                     {
                                         node: {
-                                            testString_SHORTEST_LT: 4
+                                            testString_SHORTEST_LENGTH_LT: 4
                                         }
                                     }
                                     {
                                         node: {
-                                            testString_SHORTEST_GT: 2
+                                            testString_SHORTEST_LENGTH_GT: 2
                                         }
                                     }
                                 ]
@@ -230,12 +230,12 @@ describe("Nested within AND/OR", () => {
                                 AND: [
                                     {
                                         node: {
-                                            NOT: { testString_SHORTEST_GT: 4 }
+                                            NOT: { testString_SHORTEST_LENGTH_GT: 4 }
                                         }
                                     }
                                     {
                                         node: {
-                                            testString_SHORTEST_GT: 2
+                                            testString_SHORTEST_LENGTH_GT: 2
                                         }
                                     }
                                 ]
@@ -274,12 +274,12 @@ describe("Nested within AND/OR", () => {
                                 OR: [
                                     {
                                         node: {
-                                            testString_SHORTEST_LT: 4
+                                            testString_SHORTEST_LENGTH_LT: 4
                                         }
                                     }
                                     {
                                         node: {
-                                            testString_SHORTEST_GT: 20
+                                            testString_SHORTEST_LENGTH_GT: 20
                                         }
                                     }
                                 ]
@@ -324,12 +324,12 @@ describe("Nested within AND/OR", () => {
                                 OR: [
                                     {
                                         node: {
-                                            testString_SHORTEST_LT: 4
+                                            testString_SHORTEST_LENGTH_LT: 4
                                         }
                                     }
                                     {
                                         node: {
-                                            testString_SHORTEST_GT: 20
+                                            testString_SHORTEST_LENGTH_GT: 20
                                         }
                                     }
                                 ]
@@ -368,12 +368,12 @@ describe("Nested within AND/OR", () => {
                                 OR: [
                                     {
                                         node: {
-                                            NOT: { testString_SHORTEST_GT: 4 }
+                                            NOT: { testString_SHORTEST_LENGTH_GT: 4 }
                                         }
                                     }
                                     {
                                         node: {
-                                            testString_SHORTEST_GT: 20
+                                            testString_SHORTEST_LENGTH_GT: 20
                                         }
                                     }
                                 ]
@@ -412,12 +412,12 @@ describe("Nested within AND/OR", () => {
                                 AND: [
                                     {
                                         node: {
-                                            testString_SHORTEST_LT: 4
+                                            testString_SHORTEST_LENGTH_LT: 4
                                         }
                                     }
                                     {
                                         node: {
-                                            testString_SHORTEST_GT: 2
+                                            testString_SHORTEST_LENGTH_GT: 2
                                         }
                                     }
                                 ]

@@ -65,7 +65,7 @@ describe("Relationship properties - disconnect", () => {
             mutation ($movieTitle: String!, $actorName1: String!) {
                 ${Movie.operations.update}(
                     where: { title_EQ: $movieTitle }
-                    disconnect: { actors: { where: { node: { name_EQ: $actorName1 } } } }
+                    update: { actors: { disconnect: { where: { node: { name_EQ: $actorName1 } } } } }
                 ) {
                     ${Movie.plural} {
                         title
@@ -137,7 +137,7 @@ describe("Relationship properties - disconnect", () => {
             mutation ($screenTime: Int!, $actorName: String!) {
                 ${Actor.operations.update}(
                     where: { name_EQ: $actorName }
-                    disconnect: { actedIn: { ${Movie}: { where: { edge: { screenTime_EQ: $screenTime } } } } }
+                    update: { actedIn: { ${Movie}: { disconnect: { where: { edge: { screenTime_EQ: $screenTime } } } } } }
                 ) {
                     ${Actor.plural} {
                         name

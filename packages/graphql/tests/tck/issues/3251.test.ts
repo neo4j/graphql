@@ -47,8 +47,7 @@ describe("https://github.com/neo4j/graphql/issues/3251", () => {
                 mutation UpdateMovieWithConnectAndUpdate {
                     updateMovies(
                         where: { name_EQ: "TestMovie1" }
-                        update: { name: "TestMovie1" }
-                        connect: { genre: { where: { node: { name_EQ: "Thriller" } } } }
+                        update: { name: "TestMovie1", genre: { connect: { where: { node: { name_EQ: "Thriller" } } } } }
                     ) {
                         movies {
                             name
@@ -69,20 +68,20 @@ describe("https://github.com/neo4j/graphql/issues/3251", () => {
                 WITH *
                 CALL {
                 	WITH this
-                	OPTIONAL MATCH (this_connect_genre0_node:Genre)
-                	WHERE this_connect_genre0_node.name = $this_connect_genre0_node_param0
+                	OPTIONAL MATCH (this_genre0_connect0_node:Genre)
+                	WHERE this_genre0_connect0_node.name = $this_genre0_connect0_node_param0
                 	CALL {
                 		WITH *
-                		WITH collect(this_connect_genre0_node) as connectedNodes, collect(this) as parentNodes
+                		WITH collect(this_genre0_connect0_node) as connectedNodes, collect(this) as parentNodes
                 		CALL {
                 			WITH connectedNodes, parentNodes
                 			UNWIND parentNodes as this
-                			UNWIND connectedNodes as this_connect_genre0_node
-                			MERGE (this)-[:HAS_GENRE]->(this_connect_genre0_node)
+                			UNWIND connectedNodes as this_genre0_connect0_node
+                			MERGE (this)-[:HAS_GENRE]->(this_genre0_connect0_node)
                 		}
                 	}
-                WITH this, this_connect_genre0_node
-                	RETURN count(*) AS connect_this_connect_genre_Genre0
+                WITH this, this_genre0_connect0_node
+                	RETURN count(*) AS connect_this_genre0_connect_Genre0
                 }
                 WITH *
                 WITH *
@@ -106,7 +105,7 @@ describe("https://github.com/neo4j/graphql/issues/3251", () => {
                 "{
                     \\"param0\\": \\"TestMovie1\\",
                     \\"this_update_name\\": \\"TestMovie1\\",
-                    \\"this_connect_genre0_node_param0\\": \\"Thriller\\",
+                    \\"this_genre0_connect0_node_param0\\": \\"Thriller\\",
                     \\"resolvedCallbacks\\": {}
                 }"
             `);

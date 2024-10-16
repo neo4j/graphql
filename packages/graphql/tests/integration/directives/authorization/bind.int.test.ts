@@ -609,9 +609,11 @@ describe("auth/bind", () => {
                 mutation {
                     ${Post.operations.update}(
                         where: { id_EQ: "${postId}" },
-                        connect: {
+                        update: {
                             creator: {
-                                where: { node: { id_EQ: "not bound" } }
+                                connect: {
+                                    where: { node: { id_EQ: "not bound" } }
+                                }
                             }
                         }
                     ) {
@@ -670,9 +672,11 @@ describe("auth/bind", () => {
                 mutation {
                     ${Post.operations.update}(
                         where: { id_EQ: "${postId}" },
-                        disconnect: {
+                        update: {
                             creator: {
-                                where: { node: { id_EQ: "${userId}" } }
+                                disconnect: {
+                                    where: { node: { id_EQ: "${userId}" } }
+                                }
                             }
                         }
                     ) {

@@ -87,7 +87,7 @@ describe("Delete using top level aggregate where - subscriptions enabled", () =>
                         likesAggregate: {
                             count_EQ: 3
                             node: {
-                                testString_SHORTEST_EQUAL: 3
+                                testString_SHORTEST_LENGTH_EQUAL: 3
                             }
                         }
                     }
@@ -120,7 +120,7 @@ describe("Delete using top level aggregate where - subscriptions enabled", () =>
                             { count_EQ: 3 }
                             {
                                 node: {
-                                    testString_SHORTEST_EQUAL: 3
+                                    testString_SHORTEST_LENGTH_EQUAL: 3
                                 }
                             }
                         ]
@@ -153,7 +153,7 @@ describe("Delete using top level aggregate where - subscriptions enabled", () =>
                             { count_EQ: 3 }
                             {
                                 node: {
-                                    testString_SHORTEST_EQUAL: 3
+                                    testString_SHORTEST_LENGTH_EQUAL: 3
                                 }
                             }
                         ]

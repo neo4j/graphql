@@ -1637,14 +1637,16 @@ describe("Subscription authentication", () => {
                             where: {
                                 title_EQ: "Matrix"
                             },
-                            delete: {
+                            update: {
                                 actors: {
-                                    where: {
-                                        node: {
-                                            name_EQ: "Keanu"
+                                    delete: {
+                                        where: {
+                                            node: {
+                                                name_EQ: "Keanu"
+                                            }
                                         }
                                     }
-                                }
+                                }    
                             }  
                         ) {
                             info {

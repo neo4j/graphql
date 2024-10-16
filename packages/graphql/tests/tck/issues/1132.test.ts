@@ -47,7 +47,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
 
         const query = /* GraphQL */ `
             mutation {
-                updateSources(connect: { targets: { where: { node: { id_EQ: 1 } } } }) {
+                updateSources(update: { targets: { connect: { where: { node: { id_EQ: 1 } } } } }) {
                     sources {
                         id
                     }
@@ -65,28 +65,27 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             WITH *
             CALL {
             	WITH this
-            	OPTIONAL MATCH (this_connect_targets0_node:Target)
-            	WHERE this_connect_targets0_node.id = $this_connect_targets0_node_param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            	OPTIONAL MATCH (this_targets0_connect0_node:Target)
+            	WHERE this_targets0_connect0_node.id = $this_targets0_connect0_node_param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             	CALL {
             		WITH *
-            		WITH collect(this_connect_targets0_node) as connectedNodes, collect(this) as parentNodes
+            		WITH collect(this_targets0_connect0_node) as connectedNodes, collect(this) as parentNodes
             		CALL {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
-            			UNWIND connectedNodes as this_connect_targets0_node
-            			MERGE (this)-[:HAS_TARGET]->(this_connect_targets0_node)
+            			UNWIND connectedNodes as this_targets0_connect0_node
+            			MERGE (this)-[:HAS_TARGET]->(this_targets0_connect0_node)
             		}
             	}
-            WITH this, this_connect_targets0_node
-            	RETURN count(*) AS connect_this_connect_targets_Target0
+            WITH this, this_targets0_connect0_node
+            	RETURN count(*) AS connect_this_targets0_connect_Target0
             }
-            WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_connect_targets0_node_param0\\": \\"1\\",
+                \\"this_targets0_connect0_node_param0\\": \\"1\\",
                 \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [],
@@ -122,7 +121,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
 
         const query = /* GraphQL */ `
             mutation {
-                updateSources(disconnect: { targets: { where: { node: { id_EQ: 1 } } } }) {
+                updateSources(update: { targets: { disconnect: { where: { node: { id_EQ: 1 } } } } }) {
                     sources {
                         id
                     }
@@ -140,23 +139,22 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             WITH this
             CALL {
             WITH this
-            OPTIONAL MATCH (this)-[this_disconnect_targets0_rel:HAS_TARGET]->(this_disconnect_targets0:Target)
-            WHERE this_disconnect_targets0.id = $updateSources_args_disconnect_targets0_where_Target_this_disconnect_targets0param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            OPTIONAL MATCH (this)-[this_targets0_disconnect0_rel:HAS_TARGET]->(this_targets0_disconnect0:Target)
+            WHERE this_targets0_disconnect0.id = $updateSources_args_update_targets0_disconnect0_where_Target_this_targets0_disconnect0param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
-            	WITH this_disconnect_targets0, this_disconnect_targets0_rel, this
-            	WITH collect(this_disconnect_targets0) as this_disconnect_targets0, this_disconnect_targets0_rel, this
-            	UNWIND this_disconnect_targets0 as x
-            	DELETE this_disconnect_targets0_rel
+            	WITH this_targets0_disconnect0, this_targets0_disconnect0_rel, this
+            	WITH collect(this_targets0_disconnect0) as this_targets0_disconnect0, this_targets0_disconnect0_rel, this
+            	UNWIND this_targets0_disconnect0 as x
+            	DELETE this_targets0_disconnect0_rel
             }
-            RETURN count(*) AS disconnect_this_disconnect_targets_Target
+            RETURN count(*) AS disconnect_this_targets0_disconnect_Target
             }
-            WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"updateSources_args_disconnect_targets0_where_Target_this_disconnect_targets0param0\\": \\"1\\",
+                \\"updateSources_args_update_targets0_disconnect0_where_Target_this_targets0_disconnect0param0\\": \\"1\\",
                 \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [],
@@ -164,14 +162,18 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
                 },
                 \\"updateSources\\": {
                     \\"args\\": {
-                        \\"disconnect\\": {
+                        \\"update\\": {
                             \\"targets\\": [
                                 {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"id_EQ\\": \\"1\\"
+                                    \\"disconnect\\": [
+                                        {
+                                            \\"where\\": {
+                                                \\"node\\": {
+                                                    \\"id_EQ\\": \\"1\\"
+                                                }
+                                            }
                                         }
-                                    }
+                                    ]
                                 }
                             ]
                         }

@@ -139,8 +139,8 @@ describe("Unions", () => {
 
             type Movie {
               id: ID
-              search(directed: Boolean = true, limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: SearchWhere): [Search!]!
-              searchConnection(after: String, directed: Boolean = true, first: Int, where: MovieSearchConnectionWhere): MovieSearchConnection!
+              search(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: SearchWhere): [Search!]!
+              searchConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, where: MovieSearchConnectionWhere): MovieSearchConnection!
               searchNoDirective: Search
             }
 
@@ -184,10 +184,6 @@ describe("Unions", () => {
               sort: [MovieSort!]
             }
 
-            input MovieRelationInput {
-              search: MovieSearchCreateFieldInput
-            }
-
             input MovieSearchConnectInput {
               Genre: [MovieSearchGenreConnectFieldInput!]
               Movie: [MovieSearchMovieConnectFieldInput!]
@@ -202,11 +198,6 @@ describe("Unions", () => {
             input MovieSearchConnectionWhere {
               Genre: MovieSearchGenreConnectionWhere
               Movie: MovieSearchMovieConnectionWhere
-            }
-
-            input MovieSearchCreateFieldInput {
-              Genre: [MovieSearchGenreCreateFieldInput!]
-              Movie: [MovieSearchMovieCreateFieldInput!]
             }
 
             input MovieSearchCreateInput {
@@ -379,7 +370,7 @@ describe("Unions", () => {
               deleteGenres(where: GenreWhere): DeleteInfo!
               deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
               updateGenres(update: GenreUpdateInput, where: GenreWhere): UpdateGenresMutationResponse!
-              updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"

@@ -74,7 +74,7 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
     test("should return posts where an edge like String AVERAGE_EQUAL", async () => {
         const query = `
             {
-                ${postType.plural}(where: { likesAggregate: { edge: { someString_AVERAGE_EQUAL: ${post1Average} } } }) {
+                ${postType.plural}(where: { likesAggregate: { edge: { someString_AVERAGE_LENGTH_EQUAL: ${post1Average} } } }) {
                     content
                     likes {
                         name
@@ -106,7 +106,7 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
     test("should return posts where an edge like String AVERAGE_LT", async () => {
         const query = `
             {
-                ${postType.plural}(where: { likesAggregate: { edge: { someString_AVERAGE_LT: ${someString3.length} } } }) {
+                ${postType.plural}(where: { likesAggregate: { edge: { someString_AVERAGE_LENGTH_LT: ${someString3.length} } } }) {
                     content
                     likes {
                         name
@@ -138,7 +138,7 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
     test("should return posts where an edge like String AVERAGE_LTE", async () => {
         const query = `
             {
-                ${postType.plural}(where: { likesAggregate: { edge: { someString_AVERAGE_LTE: ${post1Average} } } }) {
+                ${postType.plural}(where: { likesAggregate: { edge: { someString_AVERAGE_LENGTH_LTE: ${post1Average} } } }) {
                     content
                     likes {
                         name
@@ -170,7 +170,7 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
     test("should return posts where an edge like String AVERAGE_GT", async () => {
         const query = `
             {
-                ${postType.plural}(where: { likesAggregate: { edge: { someString_AVERAGE_GT: ${post1Average} } } }) {
+                ${postType.plural}(where: { likesAggregate: { edge: { someString_AVERAGE_LENGTH_GT: ${post1Average} } } }) {
                     content
                     likes {
                         name
@@ -199,7 +199,7 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
     test("should return posts where an edge like String AVERAGE_GTE", async () => {
         const query = `
             {
-                ${postType.plural}(where: { likesAggregate: { edge: { someString_AVERAGE_GTE: ${post1Average} } } }) {
+                ${postType.plural}(where: { likesAggregate: { edge: { someString_AVERAGE_LENGTH_GTE: ${post1Average} } } }) {
                     content
                     likes {
                         name
@@ -239,7 +239,7 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
     test("should return posts where an edge like String LONGEST_EQUAL", async () => {
         const query = `
             {
-                ${postType.plural}(where: { likesAggregate: { edge: { someString_LONGEST_EQUAL: ${someString1.length} } } }) {
+                ${postType.plural}(where: { likesAggregate: { edge: { someString_LONGEST_LENGTH_EQUAL: ${someString1.length} } } }) {
                     content
                     likes {
                         name
@@ -271,7 +271,7 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
     test("should return posts where an edge like String LONGEST_LT", async () => {
         const query = `
             {
-                ${postType.plural}(where: { likesAggregate: { edge: { someString_LONGEST_LT: ${someString3.length} } } }) {
+                ${postType.plural}(where: { likesAggregate: { edge: { someString_LONGEST_LENGTH_LT: ${someString3.length} } } }) {
                     content
                     likes {
                         name
@@ -303,7 +303,7 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
     test("should return posts where an edge like String LONGEST_LTE", async () => {
         const query = `
             {
-                ${postType.plural}(where: { likesAggregate: { edge: { someString_LONGEST_LTE: ${someString3.length} } } }) {
+                ${postType.plural}(where: { likesAggregate: { edge: { someString_LONGEST_LENGTH_LTE: ${someString3.length} } } }) {
                     content
                     likes {
                         name
@@ -343,7 +343,7 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
     test("should return posts where an edge like String LONGEST_GT", async () => {
         const query = `
             {
-                ${postType.plural}(where: { likesAggregate: { edge: { someString_LONGEST_GT: ${someString1.length} } } }) {
+                ${postType.plural}(where: { likesAggregate: { edge: { someString_LONGEST_LENGTH_GT: ${someString1.length} } } }) {
                     content
                     likes {
                         name
@@ -372,7 +372,7 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
     test("should return posts where an edge like String LONGEST_GTE", async () => {
         const query = `
             {
-                ${postType.plural}(where: { likesAggregate: { edge: { someString_LONGEST_GTE: ${someString3.length} } } }) {
+                ${postType.plural}(where: { likesAggregate: { edge: { someString_LONGEST_LENGTH_GTE: ${someString3.length} } } }) {
                     content
                     likes {
                         name
@@ -401,7 +401,7 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
     test("should return posts where an edge like String SHORTEST_EQUAL", async () => {
         const query = `
             {
-                ${postType.plural}(where: { likesAggregate: { edge: { someString_SHORTEST_EQUAL: ${someString2.length} } } }) {
+                ${postType.plural}(where: { likesAggregate: { edge: { someString_SHORTEST_LENGTH_EQUAL: ${someString2.length} } } }) {
                     content
                     likes {
                         name
@@ -433,7 +433,7 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
     test("should return posts where an edge like String SHORTEST_LT", async () => {
         const query = `
             {
-                ${postType.plural}(where: { likesAggregate: { edge: { someString_SHORTEST_LT: ${someString1.length} } } }) {
+                ${postType.plural}(where: { likesAggregate: { edge: { someString_SHORTEST_LENGTH_LT: ${someString1.length} } } }) {
                     content
                     likes {
                         name
@@ -465,7 +465,7 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
     test("should return posts where an edge like String SHORTEST_LTE", async () => {
         const query = `
             {
-                ${postType.plural}(where: { likesAggregate: { edge: { someString_SHORTEST_LTE: ${someString2.length} } } }) {
+                ${postType.plural}(where: { likesAggregate: { edge: { someString_SHORTEST_LENGTH_LTE: ${someString2.length} } } }) {
                     content
                     likes {
                         name
@@ -497,7 +497,7 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
     test("should return posts where an edge like String SHORTEST_GT", async () => {
         const query = `
             {
-                ${postType.plural}(where: { likesAggregate: { edge: { someString_SHORTEST_GT: ${someString2.length} } } }) {
+                ${postType.plural}(where: { likesAggregate: { edge: { someString_SHORTEST_LENGTH_GT: ${someString2.length} } } }) {
                     content
                     likes {
                         name
@@ -526,7 +526,7 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
     test("should return posts where an edge like String SHORTEST_GTE", async () => {
         const query = `
             {
-                ${postType.plural}(where: { likesAggregate: { edge: { someString_SHORTEST_GTE: ${someString2.length} } } }) {
+                ${postType.plural}(where: { likesAggregate: { edge: { someString_SHORTEST_LENGTH_GTE: ${someString2.length} } } }) {
                     content
                     likes {
                         name
@@ -613,7 +613,7 @@ describe("https://github.com/neo4j/graphql/issues/2662 - alternative typedefs", 
     test("should should apply AVERAGE filter to a string edge property correctly when node has a node has a property with the same name but different type", async () => {
         const query = `
             {
-                ${postType.plural}(where: { likesAggregate: { edge: { someProperty_AVERAGE_EQUAL: ${post1Average} } } }) {
+                ${postType.plural}(where: { likesAggregate: { edge: { someProperty_AVERAGE_LENGTH_EQUAL: ${post1Average} } } }) {
                     someProperty
                     likes {
                         someProperty

@@ -74,15 +74,15 @@ describe("Sort", () => {
               createNode2s(input: [Node2CreateInput!]!): CreateNode2sMutationResponse!
               deleteNode1s(delete: Node1DeleteInput, where: Node1Where): DeleteInfo!
               deleteNode2s(delete: Node2DeleteInput, where: Node2Where): DeleteInfo!
-              updateNode1s(connect: Node1ConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: Node1RelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: Node1DeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: Node1DisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: Node1UpdateInput, where: Node1Where): UpdateNode1sMutationResponse!
-              updateNode2s(connect: Node2ConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: Node2RelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: Node2DeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: Node2DisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: Node2UpdateInput, where: Node2Where): UpdateNode2sMutationResponse!
+              updateNode1s(update: Node1UpdateInput, where: Node1Where): UpdateNode1sMutationResponse!
+              updateNode2s(update: Node2UpdateInput, where: Node2Where): UpdateNode2sMutationResponse!
             }
 
             type Node1 {
               property: String!
-              relatedTo(directed: Boolean = true, limit: Int, offset: Int, options: Node2Options @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: Node2Where): [Node2!]!
-              relatedToAggregate(directed: Boolean = true, where: Node2Where): Node1Node2RelatedToAggregationSelection
-              relatedToConnection(after: String, directed: Boolean = true, first: Int, where: Node1RelatedToConnectionWhere): Node1RelatedToConnection!
+              relatedTo(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: Node2Options @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: Node2Where): [Node2!]!
+              relatedToAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: Node2Where): Node1Node2RelatedToAggregationSelection
+              relatedToConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, where: Node1RelatedToConnectionWhere): Node1RelatedToConnection!
             }
 
             type Node1AggregateSelection {
@@ -200,10 +200,6 @@ describe("Sort", () => {
               where: Node1RelatedToConnectionWhere
             }
 
-            input Node1RelationInput {
-              relatedTo: [Node1RelatedToCreateFieldInput!]
-            }
-
             \\"\\"\\"
             Fields to sort Node1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Node1Sort object.
             \\"\\"\\"
@@ -260,9 +256,9 @@ describe("Sort", () => {
             }
 
             type Node2 {
-              relatedTo(directed: Boolean = true, limit: Int, offset: Int, options: Node1Options @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [Node1Sort!], where: Node1Where): [Node1!]!
-              relatedToAggregate(directed: Boolean = true, where: Node1Where): Node2Node1RelatedToAggregationSelection
-              relatedToConnection(after: String, directed: Boolean = true, first: Int, sort: [Node2RelatedToConnectionSort!], where: Node2RelatedToConnectionWhere): Node2RelatedToConnection!
+              relatedTo(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: Node1Options @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [Node1Sort!], where: Node1Where): [Node1!]!
+              relatedToAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: Node1Where): Node2Node1RelatedToAggregationSelection
+              relatedToConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [Node2RelatedToConnectionSort!], where: Node2RelatedToConnectionWhere): Node2RelatedToConnection!
             }
 
             type Node2AggregateSelection {
@@ -370,36 +366,21 @@ describe("Sort", () => {
               AND: [Node2RelatedToNodeAggregationWhereInput!]
               NOT: Node2RelatedToNodeAggregationWhereInput
               OR: [Node2RelatedToNodeAggregationWhereInput!]
-              property_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              property_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              property_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               property_AVERAGE_LENGTH_EQUAL: Float
               property_AVERAGE_LENGTH_GT: Float
               property_AVERAGE_LENGTH_GTE: Float
               property_AVERAGE_LENGTH_LT: Float
               property_AVERAGE_LENGTH_LTE: Float
-              property_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              property_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              property_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              property_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              property_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               property_LONGEST_LENGTH_EQUAL: Int
               property_LONGEST_LENGTH_GT: Int
               property_LONGEST_LENGTH_GTE: Int
               property_LONGEST_LENGTH_LT: Int
               property_LONGEST_LENGTH_LTE: Int
-              property_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              property_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              property_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              property_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              property_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               property_SHORTEST_LENGTH_EQUAL: Int
               property_SHORTEST_LENGTH_GT: Int
               property_SHORTEST_LENGTH_GTE: Int
               property_SHORTEST_LENGTH_LT: Int
               property_SHORTEST_LENGTH_LTE: Int
-              property_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              property_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
             type Node2RelatedToRelationship {
@@ -418,10 +399,6 @@ describe("Sort", () => {
               disconnect: [Node2RelatedToDisconnectFieldInput!]
               update: Node2RelatedToUpdateConnectionInput
               where: Node2RelatedToConnectionWhere
-            }
-
-            input Node2RelationInput {
-              relatedTo: [Node2RelatedToCreateFieldInput!]
             }
 
             input Node2UpdateInput {

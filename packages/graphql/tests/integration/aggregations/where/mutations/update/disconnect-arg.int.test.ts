@@ -134,7 +134,7 @@ describe("Disconnect using aggregate where", () => {
                                             },
                                             {
                                                 node: {
-                                                    name_SHORTEST_LT: 10 
+                                                    name_SHORTEST_LENGTH_LT: 10 
                                                 }
                                              }
                                             ]
@@ -189,7 +189,7 @@ describe("Disconnect using aggregate where", () => {
                                                 },
                                                 {
                                                     node: {
-                                                        name_SHORTEST_GT: 2 
+                                                        name_SHORTEST_LENGTH_GT: 2 
                                                     }
                                                     count_EQ: 2
                                                 }
@@ -311,13 +311,15 @@ describe("Disconnect UNIONs using aggregate where", () => {
             mutation {
                 ${postType.operations.update}(
                     where: { id_EQ: "${postId2}" }
-                    disconnect: {
+                    update: {
                         likes: {
                             ${specialUserType.name}: {
-                                where: {
-                                    node: {
-                                        likedPostsAggregate: {
-                                            count_EQ: 2
+                                    disconnect: {
+                                    where: {
+                                        node: {
+                                            likedPostsAggregate: {
+                                                count_EQ: 2
+                                            }
                                         }
                                     }
                                 }
@@ -367,25 +369,27 @@ describe("Disconnect UNIONs using aggregate where", () => {
             mutation {
                 ${postType.operations.update}(
                     where: { id_EQ: "${postId2}" }
-                    disconnect: {
+                    update: {
                         likes: {
                             ${userType.name}: {
-                                where: {
-                                    node: {
-                                        AND: [
-                                            {
-                                                likedPostsAggregate: {
-                                                    count_EQ: 2
-                                                }
-                                            },
-                                            {
-                                                likedPostsAggregate: {
-                                                    edge: {
-                                                        likedAt_MAX_GT: "${date2.toISOString()}"
+                                disconnect: {
+                                    where: {
+                                        node: {
+                                            AND: [
+                                                {
+                                                    likedPostsAggregate: {
+                                                        count_EQ: 2
+                                                    }
+                                                },
+                                                {
+                                                    likedPostsAggregate: {
+                                                        edge: {
+                                                            likedAt_MAX_GT: "${date2.toISOString()}"
+                                                        }
                                                     }
                                                 }
-                                            }
-                                        ]
+                                            ]
+                                        }
                                     }
                                 }
                             }
@@ -437,25 +441,27 @@ describe("Disconnect UNIONs using aggregate where", () => {
             mutation {
                 ${postType.operations.update}(
                     where: { id_EQ: "${postId2}" }
-                    disconnect: {
+                    update: {
                         likes: {
                             ${userType.name}: {
-                                where: {
-                                    node: {
-                                        AND: [
-                                            {
-                                                likedPostsAggregate: {
-                                                    count_EQ: 2
-                                                }
-                                            },
-                                            {
-                                                likedPostsAggregate: {
-                                                    edge: {
-                                                        NOT: { likedAt_MAX_LTE: "${date2.toISOString()}" }
+                                disconnect: {
+                                    where: {
+                                        node: {
+                                            AND: [
+                                                {
+                                                    likedPostsAggregate: {
+                                                        count_EQ: 2
+                                                    }
+                                                },
+                                                {
+                                                    likedPostsAggregate: {
+                                                        edge: {
+                                                            NOT: { likedAt_MAX_LTE: "${date2.toISOString()}" }
+                                                        }
                                                     }
                                                 }
-                                            }
-                                        ]
+                                            ]
+                                        }
                                     }
                                 }
                             }
@@ -507,36 +513,38 @@ describe("Disconnect UNIONs using aggregate where", () => {
             mutation {
                 ${postType.operations.update}(
                     where: { id_EQ: "${postId2}" }
-                    disconnect: {
+                    update: {
                         likes: {
                             ${userType.name}: {
-                                where: {
-                                    node: {
-                                        OR: [
-                                            {
-                                                AND: [
-                                                    {
-                                                        likedPostsAggregate: {
-                                                            count_EQ: 2
-                                                        }
-                                                    },
-                                                    {
-                                                        likedPostsAggregate: {
-                                                            edge: {
-                                                                likedAt_MAX_GT: "${date2.toISOString()}"
+                                disconnect: {
+                                    where: {
+                                        node: {
+                                            OR: [
+                                                {
+                                                    AND: [
+                                                        {
+                                                            likedPostsAggregate: {
+                                                                count_EQ: 2
+                                                            }
+                                                        },
+                                                        {
+                                                            likedPostsAggregate: {
+                                                                edge: {
+                                                                    likedAt_MAX_GT: "${date2.toISOString()}"
+                                                                }
                                                             }
                                                         }
-                                                    }
-                                                ]
-                                            },
-                                            {
-                                                likedPostsAggregate: {
-                                                    node: {
-                                                        content_AVERAGE_LTE: 4
+                                                    ]
+                                                },
+                                                {
+                                                    likedPostsAggregate: {
+                                                        node: {
+                                                            content_AVERAGE_LENGTH_LTE: 4
+                                                        }
                                                     }
                                                 }
-                                            }
-                                        ]
+                                            ]
+                                        }
                                     }
                                 }
                             }

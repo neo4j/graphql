@@ -423,7 +423,7 @@ describe("Cypher Auth Roles", () => {
     test("Connect", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateUsers(connect: { posts: {} }) {
+                updateUsers(update: { posts: { connect: {} } }) {
                     users {
                         id
                     }
@@ -443,24 +443,25 @@ describe("Cypher Auth Roles", () => {
             WITH *
             CALL {
             	WITH this
-            	OPTIONAL MATCH (this_connect_posts0_node:Post)
+            	OPTIONAL MATCH (this_posts0_connect0_node:Post)
             	WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__before_param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__before_param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             	CALL {
             		WITH *
-            		WITH collect(this_connect_posts0_node) as connectedNodes, collect(this) as parentNodes
+            		WITH collect(this_posts0_connect0_node) as connectedNodes, collect(this) as parentNodes
             		CALL {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
-            			UNWIND connectedNodes as this_connect_posts0_node
-            			MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
+            			UNWIND connectedNodes as this_posts0_connect0_node
+            			MERGE (this)-[:HAS_POST]->(this_posts0_connect0_node)
             		}
             	}
-            WITH this, this_connect_posts0_node
-            WITH this, this_connect_posts0_node
+            WITH this, this_posts0_connect0_node
+            WITH this, this_posts0_connect0_node
             WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__after_param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__after_param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-            	RETURN count(*) AS connect_this_connect_posts_Post0
+            	RETURN count(*) AS connect_this_posts0_connect_Post0
             }
-            WITH *
+            WITH this
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__after_param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH *
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $update_param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -575,7 +576,7 @@ describe("Cypher Auth Roles", () => {
     test("Disconnect", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateUsers(disconnect: { posts: {} }) {
+                updateUsers(update: { posts: { disconnect: {} } }) {
                     users {
                         id
                     }
@@ -595,19 +596,20 @@ describe("Cypher Auth Roles", () => {
             WITH this
             CALL {
             WITH this
-            OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:HAS_POST]->(this_disconnect_posts0:Post)
+            OPTIONAL MATCH (this)-[this_posts0_disconnect0_rel:HAS_POST]->(this_posts0_disconnect0:Post)
             WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__before_param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__before_param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             CALL {
-            	WITH this_disconnect_posts0, this_disconnect_posts0_rel, this
-            	WITH collect(this_disconnect_posts0) as this_disconnect_posts0, this_disconnect_posts0_rel, this
-            	UNWIND this_disconnect_posts0 as x
-            	DELETE this_disconnect_posts0_rel
+            	WITH this_posts0_disconnect0, this_posts0_disconnect0_rel, this
+            	WITH collect(this_posts0_disconnect0) as this_posts0_disconnect0, this_posts0_disconnect0_rel, this
+            	UNWIND this_posts0_disconnect0 as x
+            	DELETE this_posts0_disconnect0_rel
             }
-            WITH this, this_disconnect_posts0
+            WITH this, this_posts0_disconnect0
             WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__after_param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__after_param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-            RETURN count(*) AS disconnect_this_disconnect_posts_Post
+            RETURN count(*) AS disconnect_this_posts0_disconnect_Post
             }
-            WITH *
+            WITH this
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__after_param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH *
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $update_param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -628,15 +630,6 @@ describe("Cypher Auth Roles", () => {
                 \\"authorization__before_param3\\": \\"super-admin\\",
                 \\"authorization__after_param2\\": \\"admin\\",
                 \\"authorization__after_param3\\": \\"super-admin\\",
-                \\"updateUsers\\": {
-                    \\"args\\": {
-                        \\"disconnect\\": {
-                            \\"posts\\": [
-                                {}
-                            ]
-                        }
-                    }
-                },
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -647,7 +640,9 @@ describe("Cypher Auth Roles", () => {
             mutation {
                 updateComments(
                     update: {
-                        post: { update: { node: { creator: { disconnect: { where: { node: { id_EQ: "user-id" } } } } } } }
+                        post: {
+                            update: { node: { creator: { disconnect: { where: { node: { id_EQ: "user-id" } } } } } }
+                        }
                     }
                 ) {
                     comments {

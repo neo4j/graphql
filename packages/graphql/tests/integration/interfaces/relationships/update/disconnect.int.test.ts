@@ -97,7 +97,7 @@ describe("interface relationships", () => {
 
         const query = `
             mutation DisconnectMovie($name: String, $title: String) {
-                ${Actor.operations.update}(where: { name_EQ: $name }, disconnect: { actedIn: { where: { node: { title_EQ: $title } } } }) {
+                ${Actor.operations.update}(where: { name_EQ: $name }, update: { actedIn: { disconnect: { where: { node: { title_EQ: $title } } } } }) {
                     ${Actor.plural} {
                         name
                         actedIn {
@@ -176,10 +176,12 @@ describe("interface relationships", () => {
             mutation DisconnectMovie($name1: String, $name2: String, $title: String) {
                 ${Actor.operations.update}(
                     where: { name_EQ: $name1 }
-                    disconnect: {
+                    update: {
                         actedIn: {
-                            where: { node: { title_EQ: $title } }
-                            disconnect: { actors: { where: { node: { name_EQ: $name2 } } } }
+                            disconnect: {
+                                where: { node: { title_EQ: $title } }
+                                disconnect: { actors: { where: { node: { name_EQ: $name2 } } } }
+                            }
                         }
                     }
                 ) {

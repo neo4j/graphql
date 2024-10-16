@@ -61,11 +61,13 @@ describe("Nested Unions", () => {
             mutation {
                 updateMovies(
                     where: { title_EQ: "Movie" }
-                    connect: {
+                    update: {
                         actors: {
                             LeadActor: {
-                                where: { node: { name_EQ: "Actor" } }
-                                connect: { actedIn: { Series: { where: { node: { name_EQ: "Series" } } } } }
+                                connect: {
+                                    where: { node: { name_EQ: "Actor" } }
+                                    connect: { actedIn: { Series: { where: { node: { name_EQ: "Series" } } } } }
+                                }
                             }
                         }
                     }
@@ -95,37 +97,37 @@ describe("Nested Unions", () => {
             WITH *
             CALL {
             	WITH this
-            	OPTIONAL MATCH (this_connect_actors_LeadActor0_node:LeadActor)
-            	WHERE this_connect_actors_LeadActor0_node.name = $this_connect_actors_LeadActor0_node_param0
+            	OPTIONAL MATCH (this_actors_LeadActor0_connect0_node:LeadActor)
+            	WHERE this_actors_LeadActor0_connect0_node.name = $this_actors_LeadActor0_connect0_node_param0
             	CALL {
             		WITH *
-            		WITH collect(this_connect_actors_LeadActor0_node) as connectedNodes, collect(this) as parentNodes
+            		WITH collect(this_actors_LeadActor0_connect0_node) as connectedNodes, collect(this) as parentNodes
             		CALL {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
-            			UNWIND connectedNodes as this_connect_actors_LeadActor0_node
-            			MERGE (this)<-[:ACTED_IN]-(this_connect_actors_LeadActor0_node)
+            			UNWIND connectedNodes as this_actors_LeadActor0_connect0_node
+            			MERGE (this)<-[:ACTED_IN]-(this_actors_LeadActor0_connect0_node)
             		}
             	}
-            WITH this, this_connect_actors_LeadActor0_node
+            WITH this, this_actors_LeadActor0_connect0_node
             CALL {
-            	WITH this, this_connect_actors_LeadActor0_node
-            	OPTIONAL MATCH (this_connect_actors_LeadActor0_node_actedIn_Series0_node:Series)
-            	WHERE this_connect_actors_LeadActor0_node_actedIn_Series0_node.name = $this_connect_actors_LeadActor0_node_actedIn_Series0_node_param0
+            	WITH this, this_actors_LeadActor0_connect0_node
+            	OPTIONAL MATCH (this_actors_LeadActor0_connect0_node_actedIn_Series0_node:Series)
+            	WHERE this_actors_LeadActor0_connect0_node_actedIn_Series0_node.name = $this_actors_LeadActor0_connect0_node_actedIn_Series0_node_param0
             	CALL {
             		WITH *
-            		WITH this, collect(this_connect_actors_LeadActor0_node_actedIn_Series0_node) as connectedNodes, collect(this_connect_actors_LeadActor0_node) as parentNodes
+            		WITH this, collect(this_actors_LeadActor0_connect0_node_actedIn_Series0_node) as connectedNodes, collect(this_actors_LeadActor0_connect0_node) as parentNodes
             		CALL {
             			WITH connectedNodes, parentNodes
-            			UNWIND parentNodes as this_connect_actors_LeadActor0_node
-            			UNWIND connectedNodes as this_connect_actors_LeadActor0_node_actedIn_Series0_node
-            			MERGE (this_connect_actors_LeadActor0_node)-[:ACTED_IN]->(this_connect_actors_LeadActor0_node_actedIn_Series0_node)
+            			UNWIND parentNodes as this_actors_LeadActor0_connect0_node
+            			UNWIND connectedNodes as this_actors_LeadActor0_connect0_node_actedIn_Series0_node
+            			MERGE (this_actors_LeadActor0_connect0_node)-[:ACTED_IN]->(this_actors_LeadActor0_connect0_node_actedIn_Series0_node)
             		}
             	}
-            WITH this, this_connect_actors_LeadActor0_node, this_connect_actors_LeadActor0_node_actedIn_Series0_node
-            	RETURN count(*) AS connect_this_connect_actors_LeadActor0_node_actedIn_Series_Series0
+            WITH this, this_actors_LeadActor0_connect0_node, this_actors_LeadActor0_connect0_node_actedIn_Series0_node
+            	RETURN count(*) AS connect_this_actors_LeadActor0_connect0_node_actedIn_Series_Series0
             }
-            	RETURN count(*) AS connect_this_connect_actors_LeadActor_LeadActor0
+            	RETURN count(*) AS connect_this_actors_LeadActor0_connect_LeadActor0
             }
             WITH *
             CALL {
@@ -166,8 +168,8 @@ describe("Nested Unions", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Movie\\",
-                \\"this_connect_actors_LeadActor0_node_param0\\": \\"Actor\\",
-                \\"this_connect_actors_LeadActor0_node_actedIn_Series0_node_param0\\": \\"Series\\",
+                \\"this_actors_LeadActor0_connect0_node_param0\\": \\"Actor\\",
+                \\"this_actors_LeadActor0_connect0_node_actedIn_Series0_node_param0\\": \\"Series\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -178,11 +180,13 @@ describe("Nested Unions", () => {
             mutation {
                 updateMovies(
                     where: { title_EQ: "Movie" }
-                    disconnect: {
+                    update: {
                         actors: {
                             LeadActor: {
-                                where: { node: { name_EQ: "Actor" } }
-                                disconnect: { actedIn: { Series: { where: { node: { name_EQ: "Series" } } } } }
+                                disconnect: {
+                                    where: { node: { name_EQ: "Actor" } }
+                                    disconnect: { actedIn: { Series: { where: { node: { name_EQ: "Series" } } } } }
+                                }
                             }
                         }
                     }
@@ -212,27 +216,27 @@ describe("Nested Unions", () => {
             WITH this
             CALL {
             WITH this
-            OPTIONAL MATCH (this)<-[this_disconnect_actors_LeadActor0_rel:ACTED_IN]-(this_disconnect_actors_LeadActor0:LeadActor)
-            WHERE this_disconnect_actors_LeadActor0.name = $updateMovies_args_disconnect_actors_LeadActor0_where_LeadActor_this_disconnect_actors_LeadActor0param0
+            OPTIONAL MATCH (this)<-[this_actors_LeadActor0_disconnect0_rel:ACTED_IN]-(this_actors_LeadActor0_disconnect0:LeadActor)
+            WHERE this_actors_LeadActor0_disconnect0.name = $updateMovies_args_update_actors_LeadActor0_disconnect0_where_LeadActor_this_actors_LeadActor0_disconnect0param0
             CALL {
-            	WITH this_disconnect_actors_LeadActor0, this_disconnect_actors_LeadActor0_rel, this
-            	WITH collect(this_disconnect_actors_LeadActor0) as this_disconnect_actors_LeadActor0, this_disconnect_actors_LeadActor0_rel, this
-            	UNWIND this_disconnect_actors_LeadActor0 as x
-            	DELETE this_disconnect_actors_LeadActor0_rel
+            	WITH this_actors_LeadActor0_disconnect0, this_actors_LeadActor0_disconnect0_rel, this
+            	WITH collect(this_actors_LeadActor0_disconnect0) as this_actors_LeadActor0_disconnect0, this_actors_LeadActor0_disconnect0_rel, this
+            	UNWIND this_actors_LeadActor0_disconnect0 as x
+            	DELETE this_actors_LeadActor0_disconnect0_rel
             }
             CALL {
-            WITH this, this_disconnect_actors_LeadActor0
-            OPTIONAL MATCH (this_disconnect_actors_LeadActor0)-[this_disconnect_actors_LeadActor0_actedIn_Series0_rel:ACTED_IN]->(this_disconnect_actors_LeadActor0_actedIn_Series0:Series)
-            WHERE this_disconnect_actors_LeadActor0_actedIn_Series0.name = $updateMovies_args_disconnect_actors_LeadActor0_disconnect_actedIn_Series0_where_Series_this_disconnect_actors_LeadActor0_actedIn_Series0param0
+            WITH this, this_actors_LeadActor0_disconnect0
+            OPTIONAL MATCH (this_actors_LeadActor0_disconnect0)-[this_actors_LeadActor0_disconnect0_actedIn_Series0_rel:ACTED_IN]->(this_actors_LeadActor0_disconnect0_actedIn_Series0:Series)
+            WHERE this_actors_LeadActor0_disconnect0_actedIn_Series0.name = $updateMovies_args_update_actors_LeadActor0_disconnect0_disconnect_actedIn_Series0_where_Series_this_actors_LeadActor0_disconnect0_actedIn_Series0param0
             CALL {
-            	WITH this_disconnect_actors_LeadActor0_actedIn_Series0, this_disconnect_actors_LeadActor0_actedIn_Series0_rel, this_disconnect_actors_LeadActor0
-            	WITH collect(this_disconnect_actors_LeadActor0_actedIn_Series0) as this_disconnect_actors_LeadActor0_actedIn_Series0, this_disconnect_actors_LeadActor0_actedIn_Series0_rel, this_disconnect_actors_LeadActor0
-            	UNWIND this_disconnect_actors_LeadActor0_actedIn_Series0 as x
-            	DELETE this_disconnect_actors_LeadActor0_actedIn_Series0_rel
+            	WITH this_actors_LeadActor0_disconnect0_actedIn_Series0, this_actors_LeadActor0_disconnect0_actedIn_Series0_rel, this_actors_LeadActor0_disconnect0
+            	WITH collect(this_actors_LeadActor0_disconnect0_actedIn_Series0) as this_actors_LeadActor0_disconnect0_actedIn_Series0, this_actors_LeadActor0_disconnect0_actedIn_Series0_rel, this_actors_LeadActor0_disconnect0
+            	UNWIND this_actors_LeadActor0_disconnect0_actedIn_Series0 as x
+            	DELETE this_actors_LeadActor0_disconnect0_actedIn_Series0_rel
             }
-            RETURN count(*) AS disconnect_this_disconnect_actors_LeadActor0_actedIn_Series_Series
+            RETURN count(*) AS disconnect_this_actors_LeadActor0_disconnect0_actedIn_Series_Series
             }
-            RETURN count(*) AS disconnect_this_disconnect_actors_LeadActor_LeadActor
+            RETURN count(*) AS disconnect_this_actors_LeadActor0_disconnect_LeadActor
             }
             WITH *
             CALL {
@@ -273,32 +277,36 @@ describe("Nested Unions", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Movie\\",
-                \\"updateMovies_args_disconnect_actors_LeadActor0_where_LeadActor_this_disconnect_actors_LeadActor0param0\\": \\"Actor\\",
-                \\"updateMovies_args_disconnect_actors_LeadActor0_disconnect_actedIn_Series0_where_Series_this_disconnect_actors_LeadActor0_actedIn_Series0param0\\": \\"Series\\",
+                \\"updateMovies_args_update_actors_LeadActor0_disconnect0_where_LeadActor_this_actors_LeadActor0_disconnect0param0\\": \\"Actor\\",
+                \\"updateMovies_args_update_actors_LeadActor0_disconnect0_disconnect_actedIn_Series0_where_Series_this_actors_LeadActor0_disconnect0_actedIn_Series0param0\\": \\"Series\\",
                 \\"updateMovies\\": {
                     \\"args\\": {
-                        \\"disconnect\\": {
+                        \\"update\\": {
                             \\"actors\\": {
                                 \\"LeadActor\\": [
                                     {
-                                        \\"where\\": {
-                                            \\"node\\": {
-                                                \\"name_EQ\\": \\"Actor\\"
-                                            }
-                                        },
-                                        \\"disconnect\\": {
-                                            \\"actedIn\\": {
-                                                \\"Series\\": [
-                                                    {
-                                                        \\"where\\": {
-                                                            \\"node\\": {
-                                                                \\"name_EQ\\": \\"Series\\"
-                                                            }
-                                                        }
+                                        \\"disconnect\\": [
+                                            {
+                                                \\"where\\": {
+                                                    \\"node\\": {
+                                                        \\"name_EQ\\": \\"Actor\\"
                                                     }
-                                                ]
+                                                },
+                                                \\"disconnect\\": {
+                                                    \\"actedIn\\": {
+                                                        \\"Series\\": [
+                                                            {
+                                                                \\"where\\": {
+                                                                    \\"node\\": {
+                                                                        \\"name_EQ\\": \\"Series\\"
+                                                                    }
+                                                                }
+                                                            }
+                                                        ]
+                                                    }
+                                                }
                                             }
-                                        }
+                                        ]
                                     }
                                 ]
                             }

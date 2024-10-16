@@ -62,8 +62,7 @@ describe("https://github.com/neo4j/graphql/issues/3251", () => {
             mutation UpdateMovieWithConnectAndUpdate {
                 ${Movie.operations.update}(
                     where: { name_EQ: "TestMovie1" }
-                    update: { name: "TestMovie1" }
-                    connect: { genre: { where: { node: { name_EQ: "Thriller" } } } }
+                    update: { name: "TestMovie1", genre: {connect: { where: { node: { name_EQ: "Thriller" } } }} }
                 ) {
                     ${Movie.plural} {
                         name

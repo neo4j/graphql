@@ -99,36 +99,21 @@ describe("3817", () => {
               AND: [FriendOfAggregationWhereInput!]
               NOT: FriendOfAggregationWhereInput
               OR: [FriendOfAggregationWhereInput!]
-              id_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              id_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              id_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               id_AVERAGE_LENGTH_EQUAL: Float
               id_AVERAGE_LENGTH_GT: Float
               id_AVERAGE_LENGTH_GTE: Float
               id_AVERAGE_LENGTH_LT: Float
               id_AVERAGE_LENGTH_LTE: Float
-              id_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              id_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              id_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              id_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              id_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               id_LONGEST_LENGTH_EQUAL: Int
               id_LONGEST_LENGTH_GT: Int
               id_LONGEST_LENGTH_GTE: Int
               id_LONGEST_LENGTH_LT: Int
               id_LONGEST_LENGTH_LTE: Int
-              id_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              id_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              id_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              id_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              id_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               id_SHORTEST_LENGTH_EQUAL: Int
               id_SHORTEST_LENGTH_GT: Int
               id_SHORTEST_LENGTH_GTE: Int
               id_SHORTEST_LENGTH_LT: Int
               id_SHORTEST_LENGTH_LTE: Int
-              id_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              id_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
             input FriendOfSort {
@@ -159,7 +144,7 @@ describe("3817", () => {
             type Mutation {
               createPeople(input: [PersonCreateInput!]!): CreatePeopleMutationResponse!
               deletePeople(delete: PersonDeleteInput, where: PersonWhere): DeleteInfo!
-              updatePeople(connect: PersonConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), connectOrCreate: PersonConnectOrCreateInput @deprecated(reason: \\"Top level connectOrCreate input argument in update is deprecated. Use the nested connectOrCreate field in the relationship within the update argument\\"), create: PersonRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: PersonDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: PersonDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
+              updatePeople(update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -190,10 +175,6 @@ describe("3817", () => {
 
             input PersonConnectInput {
               friends: [PersonFriendsConnectFieldInput!]
-            }
-
-            input PersonConnectOrCreateInput {
-              friends: [PersonFriendsConnectOrCreateFieldInput!]
             }
 
             input PersonConnectOrCreateWhere {
@@ -357,10 +338,6 @@ describe("3817", () => {
 
             type PersonPersonFriendsNodeAggregateSelection {
               id: IDAggregateSelection!
-            }
-
-            input PersonRelationInput {
-              friends: [PersonFriendsCreateFieldInput!]
             }
 
             \\"\\"\\"

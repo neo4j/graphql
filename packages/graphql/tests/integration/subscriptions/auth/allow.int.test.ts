@@ -779,7 +779,7 @@ describe("auth/allow", () => {
                 mutation {
                     ${userType.operations.update}(
                         where: { id_EQ: "${userId}" }
-                        disconnect: { posts: { where: { node: { id_EQ: "${postId}" } } } }
+                        update: { posts: { disconnect: { where: { node: { id_EQ: "${postId}" } } } } }
                     ) {
                         ${userType.plural} {
                             id
@@ -918,7 +918,7 @@ describe("auth/allow", () => {
                 mutation {
                     ${userType.operations.update}(
                         where: { id_EQ: "${userId}" }
-                        connect: { posts: { where: { node: { id_EQ: "${postId}" } } } }
+                        update: { posts: { connect: { where: { node: { id_EQ: "${postId}" } } } } }
                     ) {
                         ${userType.plural} {
                             id

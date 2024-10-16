@@ -700,7 +700,7 @@ describe("@relationhip - nestedOperations", () => {
             `;
             updateMutationWithNestedDelete = `#graphql
                 mutation {
-                    ${Movie.operations.update}(delete: { actors: { ${PersonOne}: { where: { node: { name_EQ: "someName" } } } } }) {
+                    ${Movie.operations.update}(update: { actors: { ${PersonOne}: { delete: { where: { node: { name_EQ: "someName" } } } } } }) {
                         info {
                             nodesCreated
                             nodesDeleted
@@ -780,7 +780,7 @@ describe("@relationhip - nestedOperations", () => {
             );
             expect(updateWithNestedDeleteResult.errors).toBeDefined();
             expect((updateWithNestedDeleteResult.errors as any)[0].message).toInclude(
-                'Unknown argument "delete" on field'
+                'Field "delete" is not defined by type'
             );
             expect(deleteWithNestedDeleteResult.errors).toBeDefined();
             expect((deleteWithNestedDeleteResult.errors as any)[0].message).toInclude(
@@ -852,7 +852,7 @@ describe("@relationhip - nestedOperations", () => {
             );
             expect(updateWithNestedDeleteResult.errors).toBeDefined();
             expect((updateWithNestedDeleteResult.errors as any)[0].message).toInclude(
-                'Unknown argument "delete" on field'
+                'Field "delete" is not defined by type'
             );
             expect(deleteWithNestedDeleteResult.errors).toBeDefined();
             expect((deleteWithNestedDeleteResult.errors as any)[0].message).toInclude(
@@ -925,7 +925,7 @@ describe("@relationhip - nestedOperations", () => {
             );
             expect(updateWithNestedDeleteResult.errors).toBeDefined();
             expect((updateWithNestedDeleteResult.errors as any)[0].message).toInclude(
-                'Unknown argument "delete" on field'
+                'Field "delete" is not defined by type'
             );
             expect(deleteWithNestedDeleteResult.errors).toBeDefined();
             expect((deleteWithNestedDeleteResult.errors as any)[0].message).toInclude(
@@ -1000,7 +1000,7 @@ describe("@relationhip - nestedOperations", () => {
             );
             expect(updateWithNestedDeleteResult.errors).toBeDefined();
             expect((updateWithNestedDeleteResult.errors as any)[0].message).toInclude(
-                'Unknown argument "delete" on field'
+                'Field "delete" is not defined by type'
             );
             expect(deleteWithNestedDeleteResult.errors).toBeDefined();
             expect((deleteWithNestedDeleteResult.errors as any)[0].message).toInclude(
@@ -1075,7 +1075,7 @@ describe("@relationhip - nestedOperations", () => {
             expect(updateWithNestedDisconnectResult.errors).toBeFalsy();
             expect(updateWithNestedDeleteResult.errors).toBeDefined();
             expect((updateWithNestedDeleteResult.errors as any)[0].message).toInclude(
-                'Unknown argument "delete" on field'
+                'Field "delete" is not defined by type'
             );
             expect(deleteWithNestedDeleteResult.errors).toBeDefined();
             expect((deleteWithNestedDeleteResult.errors as any)[0].message).toInclude(

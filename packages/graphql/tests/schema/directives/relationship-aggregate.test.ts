@@ -325,8 +325,8 @@ describe("@relationship directive, aggregate argument", () => {
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true, limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
+                  actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   title: String
                 }
 
@@ -389,66 +389,36 @@ describe("@relationship directive, aggregate argument", () => {
                   AND: [MovieActorsNodeAggregationWhereInput!]
                   NOT: MovieActorsNodeAggregationWhereInput
                   OR: [MovieActorsNodeAggregationWhereInput!]
-                  password_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  password_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  password_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                   password_AVERAGE_LENGTH_EQUAL: Float
                   password_AVERAGE_LENGTH_GT: Float
                   password_AVERAGE_LENGTH_GTE: Float
                   password_AVERAGE_LENGTH_LT: Float
                   password_AVERAGE_LENGTH_LTE: Float
-                  password_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  password_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  password_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  password_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  password_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                   password_LONGEST_LENGTH_EQUAL: Int
                   password_LONGEST_LENGTH_GT: Int
                   password_LONGEST_LENGTH_GTE: Int
                   password_LONGEST_LENGTH_LT: Int
                   password_LONGEST_LENGTH_LTE: Int
-                  password_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  password_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  password_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  password_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  password_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                   password_SHORTEST_LENGTH_EQUAL: Int
                   password_SHORTEST_LENGTH_GT: Int
                   password_SHORTEST_LENGTH_GTE: Int
                   password_SHORTEST_LENGTH_LT: Int
                   password_SHORTEST_LENGTH_LTE: Int
-                  password_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  password_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  username_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  username_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  username_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                   username_AVERAGE_LENGTH_EQUAL: Float
                   username_AVERAGE_LENGTH_GT: Float
                   username_AVERAGE_LENGTH_GTE: Float
                   username_AVERAGE_LENGTH_LT: Float
                   username_AVERAGE_LENGTH_LTE: Float
-                  username_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  username_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  username_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  username_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  username_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                   username_LONGEST_LENGTH_EQUAL: Int
                   username_LONGEST_LENGTH_GT: Int
                   username_LONGEST_LENGTH_GTE: Int
                   username_LONGEST_LENGTH_LT: Int
                   username_LONGEST_LENGTH_LTE: Int
-                  username_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  username_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  username_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  username_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  username_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                   username_SHORTEST_LENGTH_EQUAL: Int
                   username_SHORTEST_LENGTH_GT: Int
                   username_SHORTEST_LENGTH_GTE: Int
                   username_SHORTEST_LENGTH_LT: Int
                   username_SHORTEST_LENGTH_LTE: Int
-                  username_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  username_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                 }
 
                 type MovieActorsRelationship {
@@ -474,10 +444,6 @@ describe("@relationship directive, aggregate argument", () => {
                   title: StringAggregateSelection!
                 }
 
-                input MovieConnectInput {
-                  actors: [MovieActorsConnectFieldInput!]
-                }
-
                 input MovieCreateInput {
                   actors: MovieActorsFieldInput
                   title: String
@@ -485,10 +451,6 @@ describe("@relationship directive, aggregate argument", () => {
 
                 input MovieDeleteInput {
                   actors: [MovieActorsDeleteFieldInput!]
-                }
-
-                input MovieDisconnectInput {
-                  actors: [MovieActorsDisconnectFieldInput!]
                 }
 
                 type MovieEdge {
@@ -503,10 +465,6 @@ describe("@relationship directive, aggregate argument", () => {
                   Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [MovieSort!]
-                }
-
-                input MovieRelationInput {
-                  actors: [MovieActorsCreateFieldInput!]
                 }
 
                 \\"\\"\\"
@@ -570,7 +528,7 @@ describe("@relationship directive, aggregate argument", () => {
                   deleteActors(where: ActorWhere): DeleteInfo!
                   deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
                   updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
-                  updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                  updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                 }
 
                 \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -745,9 +703,9 @@ describe("@relationship directive, aggregate argument", () => {
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true, limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
-                  actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
+                  actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: ActorWhere): MovieActorActorsAggregationSelection
+                  actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   title: String
                 }
 
@@ -820,66 +778,36 @@ describe("@relationship directive, aggregate argument", () => {
                   AND: [MovieActorsNodeAggregationWhereInput!]
                   NOT: MovieActorsNodeAggregationWhereInput
                   OR: [MovieActorsNodeAggregationWhereInput!]
-                  password_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  password_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  password_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                   password_AVERAGE_LENGTH_EQUAL: Float
                   password_AVERAGE_LENGTH_GT: Float
                   password_AVERAGE_LENGTH_GTE: Float
                   password_AVERAGE_LENGTH_LT: Float
                   password_AVERAGE_LENGTH_LTE: Float
-                  password_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  password_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  password_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  password_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  password_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                   password_LONGEST_LENGTH_EQUAL: Int
                   password_LONGEST_LENGTH_GT: Int
                   password_LONGEST_LENGTH_GTE: Int
                   password_LONGEST_LENGTH_LT: Int
                   password_LONGEST_LENGTH_LTE: Int
-                  password_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  password_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  password_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  password_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  password_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                   password_SHORTEST_LENGTH_EQUAL: Int
                   password_SHORTEST_LENGTH_GT: Int
                   password_SHORTEST_LENGTH_GTE: Int
                   password_SHORTEST_LENGTH_LT: Int
                   password_SHORTEST_LENGTH_LTE: Int
-                  password_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  password_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  username_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  username_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  username_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                   username_AVERAGE_LENGTH_EQUAL: Float
                   username_AVERAGE_LENGTH_GT: Float
                   username_AVERAGE_LENGTH_GTE: Float
                   username_AVERAGE_LENGTH_LT: Float
                   username_AVERAGE_LENGTH_LTE: Float
-                  username_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  username_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  username_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  username_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  username_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                   username_LONGEST_LENGTH_EQUAL: Int
                   username_LONGEST_LENGTH_GT: Int
                   username_LONGEST_LENGTH_GTE: Int
                   username_LONGEST_LENGTH_LT: Int
                   username_LONGEST_LENGTH_LTE: Int
-                  username_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  username_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  username_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  username_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  username_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                   username_SHORTEST_LENGTH_EQUAL: Int
                   username_SHORTEST_LENGTH_GT: Int
                   username_SHORTEST_LENGTH_GTE: Int
                   username_SHORTEST_LENGTH_LT: Int
                   username_SHORTEST_LENGTH_LTE: Int
-                  username_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                  username_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                 }
 
                 type MovieActorsRelationship {
@@ -905,10 +833,6 @@ describe("@relationship directive, aggregate argument", () => {
                   title: StringAggregateSelection!
                 }
 
-                input MovieConnectInput {
-                  actors: [MovieActorsConnectFieldInput!]
-                }
-
                 input MovieCreateInput {
                   actors: MovieActorsFieldInput
                   title: String
@@ -916,10 +840,6 @@ describe("@relationship directive, aggregate argument", () => {
 
                 input MovieDeleteInput {
                   actors: [MovieActorsDeleteFieldInput!]
-                }
-
-                input MovieDisconnectInput {
-                  actors: [MovieActorsDisconnectFieldInput!]
                 }
 
                 type MovieEdge {
@@ -934,10 +854,6 @@ describe("@relationship directive, aggregate argument", () => {
                   Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [MovieSort!]
-                }
-
-                input MovieRelationInput {
-                  actors: [MovieActorsCreateFieldInput!]
                 }
 
                 \\"\\"\\"
@@ -1001,7 +917,7 @@ describe("@relationship directive, aggregate argument", () => {
                   deleteActors(where: ActorWhere): DeleteInfo!
                   deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
                   updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
-                  updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                  updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                 }
 
                 \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -1178,8 +1094,8 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type Movie {
-                      actors(directed: Boolean = true, limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                      actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                      actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
+                      actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
                     }
 
@@ -1238,66 +1154,36 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [MovieActorsNodeAggregationWhereInput!]
                       NOT: MovieActorsNodeAggregationWhereInput
                       OR: [MovieActorsNodeAggregationWhereInput!]
-                      password_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       password_AVERAGE_LENGTH_EQUAL: Float
                       password_AVERAGE_LENGTH_GT: Float
                       password_AVERAGE_LENGTH_GTE: Float
                       password_AVERAGE_LENGTH_LT: Float
                       password_AVERAGE_LENGTH_LTE: Float
-                      password_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       password_LONGEST_LENGTH_EQUAL: Int
                       password_LONGEST_LENGTH_GT: Int
                       password_LONGEST_LENGTH_GTE: Int
                       password_LONGEST_LENGTH_LT: Int
                       password_LONGEST_LENGTH_LTE: Int
-                      password_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       password_SHORTEST_LENGTH_EQUAL: Int
                       password_SHORTEST_LENGTH_GT: Int
                       password_SHORTEST_LENGTH_GTE: Int
                       password_SHORTEST_LENGTH_LT: Int
                       password_SHORTEST_LENGTH_LTE: Int
-                      password_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       username_AVERAGE_LENGTH_EQUAL: Float
                       username_AVERAGE_LENGTH_GT: Float
                       username_AVERAGE_LENGTH_GTE: Float
                       username_AVERAGE_LENGTH_LT: Float
                       username_AVERAGE_LENGTH_LTE: Float
-                      username_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       username_LONGEST_LENGTH_EQUAL: Int
                       username_LONGEST_LENGTH_GT: Int
                       username_LONGEST_LENGTH_GTE: Int
                       username_LONGEST_LENGTH_LT: Int
                       username_LONGEST_LENGTH_LTE: Int
-                      username_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       username_SHORTEST_LENGTH_EQUAL: Int
                       username_SHORTEST_LENGTH_GT: Int
                       username_SHORTEST_LENGTH_GTE: Int
                       username_SHORTEST_LENGTH_LT: Int
                       username_SHORTEST_LENGTH_LTE: Int
-                      username_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                     }
 
                     type MovieActorsRelationship {
@@ -1323,10 +1209,6 @@ describe("@relationship directive, aggregate argument", () => {
                       title: StringAggregateSelection!
                     }
 
-                    input MovieConnectInput {
-                      actors: [MovieActorsConnectFieldInput!]
-                    }
-
                     input MovieCreateInput {
                       actors: MovieActorsFieldInput
                       title: String
@@ -1334,10 +1216,6 @@ describe("@relationship directive, aggregate argument", () => {
 
                     input MovieDeleteInput {
                       actors: [MovieActorsDeleteFieldInput!]
-                    }
-
-                    input MovieDisconnectInput {
-                      actors: [MovieActorsDisconnectFieldInput!]
                     }
 
                     type MovieEdge {
@@ -1352,10 +1230,6 @@ describe("@relationship directive, aggregate argument", () => {
                       Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [MovieSort!]
-                    }
-
-                    input MovieRelationInput {
-                      actors: [MovieActorsCreateFieldInput!]
                     }
 
                     \\"\\"\\"
@@ -1419,7 +1293,7 @@ describe("@relationship directive, aggregate argument", () => {
                       deleteActors(where: ActorWhere): DeleteInfo!
                       deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
                       updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
-                      updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                      updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                     }
 
                     \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -1672,9 +1546,9 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type Movie {
-                      actors(directed: Boolean = true, limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                      actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
-                      actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                      actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
+                      actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: PersonWhere): MoviePersonActorsAggregationSelection
+                      actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
                     }
 
@@ -1733,66 +1607,36 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [MovieActorsNodeAggregationWhereInput!]
                       NOT: MovieActorsNodeAggregationWhereInput
                       OR: [MovieActorsNodeAggregationWhereInput!]
-                      password_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       password_AVERAGE_LENGTH_EQUAL: Float
                       password_AVERAGE_LENGTH_GT: Float
                       password_AVERAGE_LENGTH_GTE: Float
                       password_AVERAGE_LENGTH_LT: Float
                       password_AVERAGE_LENGTH_LTE: Float
-                      password_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       password_LONGEST_LENGTH_EQUAL: Int
                       password_LONGEST_LENGTH_GT: Int
                       password_LONGEST_LENGTH_GTE: Int
                       password_LONGEST_LENGTH_LT: Int
                       password_LONGEST_LENGTH_LTE: Int
-                      password_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       password_SHORTEST_LENGTH_EQUAL: Int
                       password_SHORTEST_LENGTH_GT: Int
                       password_SHORTEST_LENGTH_GTE: Int
                       password_SHORTEST_LENGTH_LT: Int
                       password_SHORTEST_LENGTH_LTE: Int
-                      password_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      password_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       username_AVERAGE_LENGTH_EQUAL: Float
                       username_AVERAGE_LENGTH_GT: Float
                       username_AVERAGE_LENGTH_GTE: Float
                       username_AVERAGE_LENGTH_LT: Float
                       username_AVERAGE_LENGTH_LTE: Float
-                      username_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       username_LONGEST_LENGTH_EQUAL: Int
                       username_LONGEST_LENGTH_GT: Int
                       username_LONGEST_LENGTH_GTE: Int
                       username_LONGEST_LENGTH_LT: Int
                       username_LONGEST_LENGTH_LTE: Int
-                      username_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                       username_SHORTEST_LENGTH_EQUAL: Int
                       username_SHORTEST_LENGTH_GT: Int
                       username_SHORTEST_LENGTH_GTE: Int
                       username_SHORTEST_LENGTH_LT: Int
                       username_SHORTEST_LENGTH_LTE: Int
-                      username_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-                      username_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                     }
 
                     type MovieActorsRelationship {
@@ -1818,10 +1662,6 @@ describe("@relationship directive, aggregate argument", () => {
                       title: StringAggregateSelection!
                     }
 
-                    input MovieConnectInput {
-                      actors: [MovieActorsConnectFieldInput!]
-                    }
-
                     input MovieCreateInput {
                       actors: MovieActorsFieldInput
                       title: String
@@ -1829,10 +1669,6 @@ describe("@relationship directive, aggregate argument", () => {
 
                     input MovieDeleteInput {
                       actors: [MovieActorsDeleteFieldInput!]
-                    }
-
-                    input MovieDisconnectInput {
-                      actors: [MovieActorsDisconnectFieldInput!]
                     }
 
                     type MovieEdge {
@@ -1857,10 +1693,6 @@ describe("@relationship directive, aggregate argument", () => {
                     type MoviePersonActorsNodeAggregateSelection {
                       password: StringAggregateSelection!
                       username: StringAggregateSelection!
-                    }
-
-                    input MovieRelationInput {
-                      actors: [MovieActorsCreateFieldInput!]
                     }
 
                     \\"\\"\\"
@@ -1924,7 +1756,7 @@ describe("@relationship directive, aggregate argument", () => {
                       deleteActors(where: ActorWhere): DeleteInfo!
                       deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
                       updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
-                      updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                      updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                     }
 
                     \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -2197,8 +2029,8 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type Movie {
-                      actors(directed: Boolean = true, limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: CastMemberWhere): [CastMember!]!
-                      actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
+                      actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: CastMemberWhere): [CastMember!]!
+                      actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
                     }
 
@@ -2243,11 +2075,6 @@ describe("@relationship directive, aggregate argument", () => {
                       where: MovieActorsActorConnectionWhere
                     }
 
-                    input MovieActorsConnectInput {
-                      Actor: [MovieActorsActorConnectFieldInput!]
-                      Person: [MovieActorsPersonConnectFieldInput!]
-                    }
-
                     type MovieActorsConnection {
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
@@ -2259,11 +2086,6 @@ describe("@relationship directive, aggregate argument", () => {
                       Person: MovieActorsPersonConnectionWhere
                     }
 
-                    input MovieActorsCreateFieldInput {
-                      Actor: [MovieActorsActorCreateFieldInput!]
-                      Person: [MovieActorsPersonCreateFieldInput!]
-                    }
-
                     input MovieActorsCreateInput {
                       Actor: MovieActorsActorFieldInput
                       Person: MovieActorsPersonFieldInput
@@ -2272,11 +2094,6 @@ describe("@relationship directive, aggregate argument", () => {
                     input MovieActorsDeleteInput {
                       Actor: [MovieActorsActorDeleteFieldInput!]
                       Person: [MovieActorsPersonDeleteFieldInput!]
-                    }
-
-                    input MovieActorsDisconnectInput {
-                      Actor: [MovieActorsActorDisconnectFieldInput!]
-                      Person: [MovieActorsPersonDisconnectFieldInput!]
                     }
 
                     input MovieActorsPersonConnectFieldInput {
@@ -2335,10 +2152,6 @@ describe("@relationship directive, aggregate argument", () => {
                       title: StringAggregateSelection!
                     }
 
-                    input MovieConnectInput {
-                      actors: MovieActorsConnectInput
-                    }
-
                     input MovieCreateInput {
                       actors: MovieActorsCreateInput
                       title: String
@@ -2346,10 +2159,6 @@ describe("@relationship directive, aggregate argument", () => {
 
                     input MovieDeleteInput {
                       actors: MovieActorsDeleteInput
-                    }
-
-                    input MovieDisconnectInput {
-                      actors: MovieActorsDisconnectInput
                     }
 
                     type MovieEdge {
@@ -2364,10 +2173,6 @@ describe("@relationship directive, aggregate argument", () => {
                       Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [MovieSort!]
-                    }
-
-                    input MovieRelationInput {
-                      actors: MovieActorsCreateFieldInput
                     }
 
                     \\"\\"\\"
@@ -2432,7 +2237,7 @@ describe("@relationship directive, aggregate argument", () => {
                       deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
                       deletePeople(where: PersonWhere): DeleteInfo!
                       updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
-                      updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                      updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                       updatePeople(update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
                     }
 
@@ -2700,8 +2505,8 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type Movie {
-                      actors(directed: Boolean = true, limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: CastMemberWhere): [CastMember!]!
-                      actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
+                      actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: CastMemberWhere): [CastMember!]!
+                      actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
                     }
 
@@ -2746,11 +2551,6 @@ describe("@relationship directive, aggregate argument", () => {
                       where: MovieActorsActorConnectionWhere
                     }
 
-                    input MovieActorsConnectInput {
-                      Actor: [MovieActorsActorConnectFieldInput!]
-                      Person: [MovieActorsPersonConnectFieldInput!]
-                    }
-
                     type MovieActorsConnection {
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
@@ -2762,11 +2562,6 @@ describe("@relationship directive, aggregate argument", () => {
                       Person: MovieActorsPersonConnectionWhere
                     }
 
-                    input MovieActorsCreateFieldInput {
-                      Actor: [MovieActorsActorCreateFieldInput!]
-                      Person: [MovieActorsPersonCreateFieldInput!]
-                    }
-
                     input MovieActorsCreateInput {
                       Actor: MovieActorsActorFieldInput
                       Person: MovieActorsPersonFieldInput
@@ -2775,11 +2570,6 @@ describe("@relationship directive, aggregate argument", () => {
                     input MovieActorsDeleteInput {
                       Actor: [MovieActorsActorDeleteFieldInput!]
                       Person: [MovieActorsPersonDeleteFieldInput!]
-                    }
-
-                    input MovieActorsDisconnectInput {
-                      Actor: [MovieActorsActorDisconnectFieldInput!]
-                      Person: [MovieActorsPersonDisconnectFieldInput!]
                     }
 
                     input MovieActorsPersonConnectFieldInput {
@@ -2838,10 +2628,6 @@ describe("@relationship directive, aggregate argument", () => {
                       title: StringAggregateSelection!
                     }
 
-                    input MovieConnectInput {
-                      actors: MovieActorsConnectInput
-                    }
-
                     input MovieCreateInput {
                       actors: MovieActorsCreateInput
                       title: String
@@ -2849,10 +2635,6 @@ describe("@relationship directive, aggregate argument", () => {
 
                     input MovieDeleteInput {
                       actors: MovieActorsDeleteInput
-                    }
-
-                    input MovieDisconnectInput {
-                      actors: MovieActorsDisconnectInput
                     }
 
                     type MovieEdge {
@@ -2867,10 +2649,6 @@ describe("@relationship directive, aggregate argument", () => {
                       Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [MovieSort!]
-                    }
-
-                    input MovieRelationInput {
-                      actors: MovieActorsCreateFieldInput
                     }
 
                     \\"\\"\\"
@@ -2935,7 +2713,7 @@ describe("@relationship directive, aggregate argument", () => {
                       deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
                       deletePeople(where: PersonWhere): DeleteInfo!
                       updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
-                      updateMovies(connect: MovieConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: MovieRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: MovieDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: MovieDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                      updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                       updatePeople(update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
                     }
 

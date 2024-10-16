@@ -296,7 +296,7 @@ describe("integration/rfc/003", () => {
                         mutation {
                             ${Movie.operations.update}(
                                 where: { id_EQ: "${movieId}" },
-                                delete: { director: { where: { node: { id_EQ: "${directorId}" } } } }
+                                update: { director: { delete: { where: { node: { id_EQ: "${directorId}" } } } } }
                             ) {
                                 info {
                                     nodesCreated
@@ -444,7 +444,7 @@ describe("integration/rfc/003", () => {
 
                     const mutation = `
                         mutation {
-                            ${Movie.operations.update}(where: { id_EQ: "${movieId}" }, disconnect: { director: { where: { node: { id_EQ: "${directorId}" } } } }) {
+                            ${Movie.operations.update}(where: { id_EQ: "${movieId}" }, update: { director: { disconnect: { where: { node: { id_EQ: "${directorId}" } } } } }) {
                                 info {
                                     nodesCreated
                                 }
@@ -495,11 +495,15 @@ describe("integration/rfc/003", () => {
                     mutation {
                         ${Movie.operations.update}(
                             where: { id_EQ: "${movieId}" },
-                            disconnect: {
-                                director: { where: { node: { id_EQ: "${directorId1}" } } }
-                            }
-                            connect: {
-                                director: { where: { node: { id_EQ: "${directorId2}" } } }
+                            update: {
+                                director: {
+                                    disconnect: {
+                                        where: { node: { id_EQ: "${directorId1}" } }
+                                    }
+                                    connect: {
+                                       where: { node: { id_EQ: "${directorId2}" } }
+                                    }
+                                }
                             }
                         ) {
                             ${Movie.plural} {
@@ -561,11 +565,15 @@ describe("integration/rfc/003", () => {
                     mutation {
                         ${Movie.operations.update}(
                             where: { id_EQ: "${movieId}" },
-                            disconnect: {
-                                director: { where: { node: { id_EQ: "${directorId1}" } } }
-                            }
-                            connect: {
-                                director: { where: { node: { id_EQ: "${directorId2}" } } }
+                            update: {
+                                director: {
+                                    disconnect: {
+                                        where: { node: { id_EQ: "${directorId1}" } }
+                                    }
+                                    connect: {
+                                       where: { node: { id_EQ: "${directorId2}" } }
+                                    }
+                                }
                             }
                         ) {
                             ${Movie.plural} {
@@ -629,8 +637,8 @@ describe("integration/rfc/003", () => {
                     mutation {
                         ${Movie.operations.update}(
                             where: { id_EQ: "${movieId}" },
-                            connect: {
-                                director: { where: { node: { id_IN: ["${directorId1}", "${directorId2}"] } } }
+                            update: {
+                                director: { connect: { where: { node: { id_IN: ["${directorId1}", "${directorId2}"] } } } }
                             }
                         ) {
                             ${Movie.plural} {

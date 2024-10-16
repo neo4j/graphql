@@ -61,11 +61,13 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
         const query = /* GraphQL */ `
             mutation UpdateParents {
                 updateParents(
-                    connectOrCreate: {
-                        children: [
-                            { where: { node: { tcId_EQ: "123" } }, onCreate: { node: { tcId: "123" } } }
-                            { where: { node: { tcId_EQ: "456" } }, onCreate: { node: { tcId: "456" } } }
-                        ]
+                    update: {
+                        children: {
+                            connectOrCreate: [
+                                { where: { node: { tcId_EQ: "123" } }, onCreate: { node: { tcId: "123" } } }
+                                { where: { node: { tcId_EQ: "456" } }, onCreate: { node: { tcId: "456" } } }
+                            ]
+                        }
                     }
                 ) {
                     info {
@@ -84,40 +86,39 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
             WITH this
             CALL {
                 WITH this
-                MERGE (this_connectOrCreate_children0:Child { tcId: $this_connectOrCreate_children_param0 })
+                MERGE (this_children0_connectOrCreate0:Child { tcId: $this_children0_connectOrCreate_param0 })
                 ON CREATE SET
-                    this_connectOrCreate_children0.tcId = $this_connectOrCreate_children_param1
-                MERGE (this)<-[this_connectOrCreate_children_this0:HAS]-(this_connectOrCreate_children0)
+                    this_children0_connectOrCreate0.tcId = $this_children0_connectOrCreate_param1
+                MERGE (this)<-[this_children0_connectOrCreate_this0:HAS]-(this_children0_connectOrCreate0)
                 WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $this_connectOrCreate_children_param4 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $this_children0_connectOrCreate_param4 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN count(*) AS _
             }
             WITH this
             CALL {
                 WITH this
-                MERGE (this_connectOrCreate_children1:Child { tcId: $this_connectOrCreate_children_param5 })
+                MERGE (this_children0_connectOrCreate1:Child { tcId: $this_children0_connectOrCreate_param5 })
                 ON CREATE SET
-                    this_connectOrCreate_children1.tcId = $this_connectOrCreate_children_param6
-                MERGE (this)<-[this_connectOrCreate_children_this1:HAS]-(this_connectOrCreate_children1)
+                    this_children0_connectOrCreate1.tcId = $this_children0_connectOrCreate_param6
+                MERGE (this)<-[this_children0_connectOrCreate_this1:HAS]-(this_children0_connectOrCreate1)
                 WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $this_connectOrCreate_children_param7 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $this_children0_connectOrCreate_param7 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN count(*) AS _
             }
-            WITH *
             RETURN \\"Query cannot conclude with CALL\\""
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_connectOrCreate_children_param0\\": \\"123\\",
-                \\"this_connectOrCreate_children_param1\\": \\"123\\",
+                \\"this_children0_connectOrCreate_param0\\": \\"123\\",
+                \\"this_children0_connectOrCreate_param1\\": \\"123\\",
                 \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": []
                 },
-                \\"this_connectOrCreate_children_param4\\": \\"upstream\\",
-                \\"this_connectOrCreate_children_param5\\": \\"456\\",
-                \\"this_connectOrCreate_children_param6\\": \\"456\\",
-                \\"this_connectOrCreate_children_param7\\": \\"upstream\\",
+                \\"this_children0_connectOrCreate_param4\\": \\"upstream\\",
+                \\"this_children0_connectOrCreate_param5\\": \\"456\\",
+                \\"this_children0_connectOrCreate_param6\\": \\"456\\",
+                \\"this_children0_connectOrCreate_param7\\": \\"upstream\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);

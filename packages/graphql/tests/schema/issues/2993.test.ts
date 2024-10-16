@@ -132,7 +132,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             type Mutation {
               createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
               deleteUsers(delete: UserDeleteInput, where: UserWhere): DeleteInfo!
-              updateUsers(connect: UserConnectInput @deprecated(reason: \\"Top level connect input argument in update is deprecated. Use the nested connect field in the relationship within the update argument\\"), create: UserRelationInput @deprecated(reason: \\"Top level create input argument in update is deprecated. Use the nested create field in the relationship within the update argument\\"), delete: UserDeleteInput @deprecated(reason: \\"Top level delete input argument in update is deprecated. Use the nested delete field in the relationship within the update argument\\"), disconnect: UserDisconnectInput @deprecated(reason: \\"Top level disconnect input argument in update is deprecated. Use the nested disconnect field in the relationship within the update argument\\"), update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
+              updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -256,9 +256,9 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             type User implements Profile {
-              following(directed: Boolean = true, limit: Int, offset: Int, options: ProfileOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ProfileSort!], where: ProfileWhere): [Profile!]!
-              followingAggregate(directed: Boolean = true, where: ProfileWhere): UserProfileFollowingAggregationSelection
-              followingConnection(after: String, directed: Boolean = true, first: Int, sort: [UserFollowingConnectionSort!], where: UserFollowingConnectionWhere): UserFollowingConnection!
+              following(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: ProfileOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ProfileSort!], where: ProfileWhere): [Profile!]!
+              followingAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: ProfileWhere): UserProfileFollowingAggregationSelection
+              followingConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [UserFollowingConnectionSort!], where: UserFollowingConnectionWhere): UserFollowingConnection!
               id: ID!
               userName: String!
             }
@@ -269,10 +269,6 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               userName: StringAggregateSelection!
             }
 
-            input UserConnectInput {
-              following: [UserFollowingConnectFieldInput!]
-            }
-
             input UserCreateInput {
               following: UserFollowingFieldInput
               userName: String!
@@ -280,10 +276,6 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
 
             input UserDeleteInput {
               following: [UserFollowingDeleteFieldInput!]
-            }
-
-            input UserDisconnectInput {
-              following: [UserFollowingDisconnectFieldInput!]
             }
 
             type UserEdge {
@@ -359,36 +351,21 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               id_MIN_GTE: ID
               id_MIN_LT: ID
               id_MIN_LTE: ID
-              userName_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              userName_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              userName_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               userName_AVERAGE_LENGTH_EQUAL: Float
               userName_AVERAGE_LENGTH_GT: Float
               userName_AVERAGE_LENGTH_GTE: Float
               userName_AVERAGE_LENGTH_LT: Float
               userName_AVERAGE_LENGTH_LTE: Float
-              userName_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              userName_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              userName_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              userName_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              userName_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               userName_LONGEST_LENGTH_EQUAL: Int
               userName_LONGEST_LENGTH_GT: Int
               userName_LONGEST_LENGTH_GTE: Int
               userName_LONGEST_LENGTH_LT: Int
               userName_LONGEST_LENGTH_LTE: Int
-              userName_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              userName_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              userName_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              userName_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              userName_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               userName_SHORTEST_LENGTH_EQUAL: Int
               userName_SHORTEST_LENGTH_GT: Int
               userName_SHORTEST_LENGTH_GTE: Int
               userName_SHORTEST_LENGTH_LT: Int
               userName_SHORTEST_LENGTH_LTE: Int
-              userName_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              userName_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
             type UserFollowingRelationship {
@@ -433,10 +410,6 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             type UserProfileFollowingNodeAggregateSelection {
               id: IDAggregateSelection!
               userName: StringAggregateSelection!
-            }
-
-            input UserRelationInput {
-              following: [UserFollowingCreateFieldInput!]
             }
 
             \\"\\"\\"

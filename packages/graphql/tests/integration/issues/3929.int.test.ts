@@ -104,8 +104,8 @@ describe("https://github.com/neo4j/graphql/issues/3929", () => {
         `;
 
         const updateGroups = /* GraphQL */ `
-            mutation UpdateGroups($where: ${Group}Where, $delete: ${Group}DeleteInput) {
-                ${Group.operations.update}(where: $where, delete: $delete) {
+            mutation UpdateGroups($where: ${Group}Where, $update: ${Group}UpdateInput) {
+                ${Group.operations.update}(where: $where, update: $update) {
                     info {
                         nodesDeleted
                         relationshipsDeleted
@@ -165,12 +165,14 @@ describe("https://github.com/neo4j/graphql/issues/3929", () => {
                 where: {
                     name_EQ: "Group 1",
                 },
-                delete: {
+                update: {
                     members: [
                         {
-                            where: {
-                                node: {
-                                    name_EQ: "Member 1",
+                            delete: {
+                                where: {
+                                    node: {
+                                        name_EQ: "Member 1",
+                                    },
                                 },
                             },
                         },

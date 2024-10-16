@@ -317,7 +317,10 @@ describe("@auth allow on specific interface implementation", () => {
     test("Nested Delete Node", async () => {
         const query = /* GraphQL */ `
             mutation {
-                deleteUsers(where: { id_EQ: "user-id" }, delete: { content: { where: { node: { id_EQ: "post-id" } } } }) {
+                deleteUsers(
+                    where: { id_EQ: "user-id" }
+                    delete: { content: { where: { node: { id_EQ: "post-id" } } } }
+                ) {
                     nodesDeleted
                 }
             }
@@ -372,167 +375,6 @@ describe("@auth allow on specific interface implementation", () => {
                     ],
                     \\"sub\\": \\"user-id\\"
                 }
-            }"
-        `);
-    });
-
-    test("Disconnect Node", async () => {
-        const query = /* GraphQL */ `
-            mutation {
-                updateUsers(where: { id_EQ: "user-id" }, disconnect: { content: { where: { node: { id_EQ: "post-id" } } } }) {
-                    users {
-                        id
-                    }
-                }
-            }
-        `;
-
-        const token = createBearerToken("secret", { sub: "user-id", roles: ["admin"] });
-        const result = await translateQuery(neoSchema, query, {
-            token,
-        });
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
-            WHERE this.id = $param0
-            WITH this
-            CALL {
-            WITH this
-            OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Comment)
-            WHERE this_disconnect_content0.id = $updateUsers_args_disconnect_content0_where_Comment_this_disconnect_content0param0
-            CALL {
-            	WITH this_disconnect_content0, this_disconnect_content0_rel, this
-            	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel, this
-            	UNWIND this_disconnect_content0 as x
-            	DELETE this_disconnect_content0_rel
-            }
-            RETURN count(*) AS disconnect_this_disconnect_content_Comment
-            }
-            CALL {
-            	WITH this
-            OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Post)
-            OPTIONAL MATCH (this_disconnect_content0)<-[:HAS_CONTENT]-(authorization__before_this0:User)
-            WITH *, count(authorization__before_this0) AS creatorCount
-            WITH *
-            WHERE this_disconnect_content0.id = $updateUsers_args_disconnect_content0_where_Post_this_disconnect_content0param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            CALL {
-            	WITH this_disconnect_content0, this_disconnect_content0_rel, this
-            	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel, this
-            	UNWIND this_disconnect_content0 as x
-            	DELETE this_disconnect_content0_rel
-            }
-            RETURN count(*) AS disconnect_this_disconnect_content_Post
-            }
-            WITH *
-            RETURN collect(DISTINCT this { .id }) AS data"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": \\"user-id\\",
-                \\"updateUsers_args_disconnect_content0_where_Comment_this_disconnect_content0param0\\": \\"post-id\\",
-                \\"updateUsers_args_disconnect_content0_where_Post_this_disconnect_content0param0\\": \\"post-id\\",
-                \\"isAuthenticated\\": true,
-                \\"jwt\\": {
-                    \\"roles\\": [
-                        \\"admin\\"
-                    ],
-                    \\"sub\\": \\"user-id\\"
-                },
-                \\"updateUsers\\": {
-                    \\"args\\": {
-                        \\"disconnect\\": {
-                            \\"content\\": [
-                                {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"id_EQ\\": \\"post-id\\"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                },
-                \\"resolvedCallbacks\\": {}
-            }"
-        `);
-    });
-
-    test("Connect node", async () => {
-        const query = /* GraphQL */ `
-            mutation {
-                updateUsers(where: { id_EQ: "user-id" }, connect: { content: { where: { node: { id_EQ: "post-id" } } } }) {
-                    users {
-                        id
-                    }
-                }
-            }
-        `;
-
-        const token = createBearerToken("secret", { sub: "user-id", roles: ["admin"] });
-        const result = await translateQuery(neoSchema, query, {
-            token,
-        });
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
-            WHERE this.id = $param0
-            WITH *
-            CALL {
-            	WITH this
-            	OPTIONAL MATCH (this_connect_content0_node:Comment)
-            	WHERE this_connect_content0_node.id = $this_connect_content0_node_param0
-            	CALL {
-            		WITH *
-            		WITH collect(this_connect_content0_node) as connectedNodes, collect(this) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
-            			UNWIND parentNodes as this
-            			UNWIND connectedNodes as this_connect_content0_node
-            			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
-            		}
-            	}
-            WITH this, this_connect_content0_node
-            	RETURN count(*) AS connect_this_connect_content_Comment0
-            }
-            CALL {
-            		WITH this
-            	OPTIONAL MATCH (this_connect_content1_node:Post)
-            OPTIONAL MATCH (this_connect_content1_node)<-[:HAS_CONTENT]-(authorization__before_this0:User)
-            WITH *, count(authorization__before_this0) AS creatorCount
-            WITH *
-            	WHERE this_connect_content1_node.id = $this_connect_content1_node_param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            	CALL {
-            		WITH *
-            		WITH collect(this_connect_content1_node) as connectedNodes, collect(this) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
-            			UNWIND parentNodes as this
-            			UNWIND connectedNodes as this_connect_content1_node
-            			MERGE (this)-[:HAS_CONTENT]->(this_connect_content1_node)
-            		}
-            	}
-            WITH this, this_connect_content1_node
-            	RETURN count(*) AS connect_this_connect_content_Post1
-            }
-            WITH *
-            RETURN collect(DISTINCT this { .id }) AS data"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": \\"user-id\\",
-                \\"this_connect_content0_node_param0\\": \\"post-id\\",
-                \\"this_connect_content1_node_param0\\": \\"post-id\\",
-                \\"isAuthenticated\\": true,
-                \\"jwt\\": {
-                    \\"roles\\": [
-                        \\"admin\\"
-                    ],
-                    \\"sub\\": \\"user-id\\"
-                },
-                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

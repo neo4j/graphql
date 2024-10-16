@@ -249,13 +249,13 @@ describe("Relationship properties - update", () => {
             mutation {
                 ${Movie.operations.update}(
                     where: { title_EQ: "${movieTitle}" }
-                    create: {
-                        actors: [
-                            {
+                    update: {
+                        actors: {
+                            create: {
                                 node: { name: "${actor3}" }
                                 edge: { screenTime: 60 }
                             }
-                        ]
+                        }
                     }
                 ) {
                     ${Movie.plural} {
