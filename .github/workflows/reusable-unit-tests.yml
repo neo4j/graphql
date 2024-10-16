@@ -16,7 +16,6 @@ jobs:
         package:
           - graphql
           - introspector
-          - graphql-amqp-subscriptions-engine
 
     runs-on: ubuntu-latest
 
