@@ -19,8 +19,8 @@
 
 import type { Driver, Session, Transaction } from "neo4j-driver";
 import { Record } from "neo4j-driver";
-import { Builder } from "./builder";
 import { DBMS_COMPONENTS_QUERY } from "../../../src/constants";
+import { Builder } from "./builder";
 
 type RunFunction = ((...params) => any) & { calls: Array<Array<any>> };
 

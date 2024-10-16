@@ -21,6 +21,7 @@ import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
+import { TestCDCEngine } from "../../utils/builders/TestCDCEngine";
 
 describe("@selectable", () => {
     test("Disable read fields", async () => {
@@ -485,7 +486,7 @@ describe("@selectable", () => {
                 description: String @selectable(onRead: false, onAggregate: true)
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: true } });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: new TestCDCEngine() } });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {

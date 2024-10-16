@@ -22,6 +22,7 @@ import { validateSchema } from "graphql";
 import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
+import { TestCDCEngine } from "../../utils/builders/TestCDCEngine";
 
 describe("https://github.com/neo4j/graphql/issues/3439", () => {
     test("Type definitions implementing multiple interfaces", async () => {
@@ -57,7 +58,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: true } });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: new TestCDCEngine() } });
 
         const schema = await neoSchema.getSchema();
         const errors = validateSchema(schema);
@@ -295,42 +296,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               disconnect: [GenreProductDisconnectFieldInput!]
               update: GenreProductUpdateConnectionInput
               where: GenreProductConnectionWhere
-            }
-
-            type GenreRelationshipCreatedEvent {
-              createdRelationship: GenreConnectedRelationships!
-              event: EventType!
-              genre: GenreEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input GenreRelationshipCreatedSubscriptionWhere {
-              AND: [GenreRelationshipCreatedSubscriptionWhere!]
-              NOT: GenreRelationshipCreatedSubscriptionWhere
-              OR: [GenreRelationshipCreatedSubscriptionWhere!]
-              createdRelationship: GenreRelationshipsSubscriptionWhere
-              genre: GenreSubscriptionWhere
-            }
-
-            type GenreRelationshipDeletedEvent {
-              deletedRelationship: GenreConnectedRelationships!
-              event: EventType!
-              genre: GenreEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input GenreRelationshipDeletedSubscriptionWhere {
-              AND: [GenreRelationshipDeletedSubscriptionWhere!]
-              NOT: GenreRelationshipDeletedSubscriptionWhere
-              OR: [GenreRelationshipDeletedSubscriptionWhere!]
-              deletedRelationship: GenreRelationshipsSubscriptionWhere
-              genre: GenreSubscriptionWhere
-            }
-
-            input GenreRelationshipsSubscriptionWhere {
-              product: GenreProductRelationshipSubscriptionWhere
             }
 
             \\"\\"\\"
@@ -563,10 +528,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name: StringAggregateSelection!
             }
 
-            type MovieConnectedRelationships {
-              genre: MovieGenreConnectedRelationship
-            }
-
             input MovieCreateInput {
               genre: MovieGenreFieldInput
               id: String!
@@ -725,42 +686,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               sort: [MovieSort!]
             }
 
-            type MovieRelationshipCreatedEvent {
-              createdRelationship: MovieConnectedRelationships!
-              event: EventType!
-              movie: MovieEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input MovieRelationshipCreatedSubscriptionWhere {
-              AND: [MovieRelationshipCreatedSubscriptionWhere!]
-              NOT: MovieRelationshipCreatedSubscriptionWhere
-              OR: [MovieRelationshipCreatedSubscriptionWhere!]
-              createdRelationship: MovieRelationshipsSubscriptionWhere
-              movie: MovieSubscriptionWhere
-            }
-
-            type MovieRelationshipDeletedEvent {
-              deletedRelationship: MovieConnectedRelationships!
-              event: EventType!
-              movie: MovieEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input MovieRelationshipDeletedSubscriptionWhere {
-              AND: [MovieRelationshipDeletedSubscriptionWhere!]
-              NOT: MovieRelationshipDeletedSubscriptionWhere
-              OR: [MovieRelationshipDeletedSubscriptionWhere!]
-              deletedRelationship: MovieRelationshipsSubscriptionWhere
-              movie: MovieSubscriptionWhere
-            }
-
-            input MovieRelationshipsSubscriptionWhere {
-              genre: MovieGenreRelationshipSubscriptionWhere
-            }
-
             \\"\\"\\"
             Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
             \\"\\"\\"
@@ -877,10 +802,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               count: Int!
               id: StringAggregateSelection!
               name: StringAggregateSelection!
-            }
-
-            type SeriesConnectedRelationships {
-              genre: SeriesGenreConnectedRelationship
             }
 
             type SeriesConnection {
@@ -1047,42 +968,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               sort: [SeriesSort!]
             }
 
-            type SeriesRelationshipCreatedEvent {
-              createdRelationship: SeriesConnectedRelationships!
-              event: EventType!
-              relationshipFieldName: String!
-              series: SeriesEventPayload!
-              timestamp: Float!
-            }
-
-            input SeriesRelationshipCreatedSubscriptionWhere {
-              AND: [SeriesRelationshipCreatedSubscriptionWhere!]
-              NOT: SeriesRelationshipCreatedSubscriptionWhere
-              OR: [SeriesRelationshipCreatedSubscriptionWhere!]
-              createdRelationship: SeriesRelationshipsSubscriptionWhere
-              series: SeriesSubscriptionWhere
-            }
-
-            type SeriesRelationshipDeletedEvent {
-              deletedRelationship: SeriesConnectedRelationships!
-              event: EventType!
-              relationshipFieldName: String!
-              series: SeriesEventPayload!
-              timestamp: Float!
-            }
-
-            input SeriesRelationshipDeletedSubscriptionWhere {
-              AND: [SeriesRelationshipDeletedSubscriptionWhere!]
-              NOT: SeriesRelationshipDeletedSubscriptionWhere
-              OR: [SeriesRelationshipDeletedSubscriptionWhere!]
-              deletedRelationship: SeriesRelationshipsSubscriptionWhere
-              series: SeriesSubscriptionWhere
-            }
-
-            input SeriesRelationshipsSubscriptionWhere {
-              genre: SeriesGenreRelationshipSubscriptionWhere
-            }
-
             \\"\\"\\"
             Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.
             \\"\\"\\"
@@ -1224,7 +1109,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: true } });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: new TestCDCEngine() } });
 
         const schema = await neoSchema.getSchema();
         const errors = validateSchema(schema);
@@ -1464,42 +1349,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               where: GenreProductConnectionWhere
             }
 
-            type GenreRelationshipCreatedEvent {
-              createdRelationship: GenreConnectedRelationships!
-              event: EventType!
-              genre: GenreEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input GenreRelationshipCreatedSubscriptionWhere {
-              AND: [GenreRelationshipCreatedSubscriptionWhere!]
-              NOT: GenreRelationshipCreatedSubscriptionWhere
-              OR: [GenreRelationshipCreatedSubscriptionWhere!]
-              createdRelationship: GenreRelationshipsSubscriptionWhere
-              genre: GenreSubscriptionWhere
-            }
-
-            type GenreRelationshipDeletedEvent {
-              deletedRelationship: GenreConnectedRelationships!
-              event: EventType!
-              genre: GenreEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input GenreRelationshipDeletedSubscriptionWhere {
-              AND: [GenreRelationshipDeletedSubscriptionWhere!]
-              NOT: GenreRelationshipDeletedSubscriptionWhere
-              OR: [GenreRelationshipDeletedSubscriptionWhere!]
-              deletedRelationship: GenreRelationshipsSubscriptionWhere
-              genre: GenreSubscriptionWhere
-            }
-
-            input GenreRelationshipsSubscriptionWhere {
-              product: GenreProductRelationshipSubscriptionWhere
-            }
-
             \\"\\"\\"
             Fields to sort Genres by. The order in which sorts are applied is not guaranteed when specifying many fields in one GenreSort object.
             \\"\\"\\"
@@ -1676,10 +1525,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name: StringAggregateSelection!
             }
 
-            type MovieConnectedRelationships {
-              genre: MovieGenreConnectedRelationship
-            }
-
             input MovieCreateInput {
               genre: MovieGenreFieldInput
               id: String!
@@ -1838,42 +1683,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               sort: [MovieSort!]
             }
 
-            type MovieRelationshipCreatedEvent {
-              createdRelationship: MovieConnectedRelationships!
-              event: EventType!
-              movie: MovieEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input MovieRelationshipCreatedSubscriptionWhere {
-              AND: [MovieRelationshipCreatedSubscriptionWhere!]
-              NOT: MovieRelationshipCreatedSubscriptionWhere
-              OR: [MovieRelationshipCreatedSubscriptionWhere!]
-              createdRelationship: MovieRelationshipsSubscriptionWhere
-              movie: MovieSubscriptionWhere
-            }
-
-            type MovieRelationshipDeletedEvent {
-              deletedRelationship: MovieConnectedRelationships!
-              event: EventType!
-              movie: MovieEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input MovieRelationshipDeletedSubscriptionWhere {
-              AND: [MovieRelationshipDeletedSubscriptionWhere!]
-              NOT: MovieRelationshipDeletedSubscriptionWhere
-              OR: [MovieRelationshipDeletedSubscriptionWhere!]
-              deletedRelationship: MovieRelationshipsSubscriptionWhere
-              movie: MovieSubscriptionWhere
-            }
-
-            input MovieRelationshipsSubscriptionWhere {
-              genre: MovieGenreRelationshipSubscriptionWhere
-            }
-
             \\"\\"\\"
             Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
             \\"\\"\\"
@@ -1987,10 +1796,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               count: Int!
               id: StringAggregateSelection!
               name: StringAggregateSelection!
-            }
-
-            type SeriesConnectedRelationships {
-              genre: SeriesGenreConnectedRelationship
             }
 
             type SeriesConnection {
@@ -2157,42 +1962,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               sort: [SeriesSort!]
             }
 
-            type SeriesRelationshipCreatedEvent {
-              createdRelationship: SeriesConnectedRelationships!
-              event: EventType!
-              relationshipFieldName: String!
-              series: SeriesEventPayload!
-              timestamp: Float!
-            }
-
-            input SeriesRelationshipCreatedSubscriptionWhere {
-              AND: [SeriesRelationshipCreatedSubscriptionWhere!]
-              NOT: SeriesRelationshipCreatedSubscriptionWhere
-              OR: [SeriesRelationshipCreatedSubscriptionWhere!]
-              createdRelationship: SeriesRelationshipsSubscriptionWhere
-              series: SeriesSubscriptionWhere
-            }
-
-            type SeriesRelationshipDeletedEvent {
-              deletedRelationship: SeriesConnectedRelationships!
-              event: EventType!
-              relationshipFieldName: String!
-              series: SeriesEventPayload!
-              timestamp: Float!
-            }
-
-            input SeriesRelationshipDeletedSubscriptionWhere {
-              AND: [SeriesRelationshipDeletedSubscriptionWhere!]
-              NOT: SeriesRelationshipDeletedSubscriptionWhere
-              OR: [SeriesRelationshipDeletedSubscriptionWhere!]
-              deletedRelationship: SeriesRelationshipsSubscriptionWhere
-              series: SeriesSubscriptionWhere
-            }
-
-            input SeriesRelationshipsSubscriptionWhere {
-              genre: SeriesGenreRelationshipSubscriptionWhere
-            }
-
             \\"\\"\\"
             Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.
             \\"\\"\\"
@@ -2342,7 +2111,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: true } });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: new TestCDCEngine() } });
 
         const schema = await neoSchema.getSchema();
         const errors = validateSchema(schema);
@@ -2583,42 +2352,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               disconnect: [GenreProductDisconnectFieldInput!]
               update: GenreProductUpdateConnectionInput
               where: GenreProductConnectionWhere
-            }
-
-            type GenreRelationshipCreatedEvent {
-              createdRelationship: GenreConnectedRelationships!
-              event: EventType!
-              genre: GenreEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input GenreRelationshipCreatedSubscriptionWhere {
-              AND: [GenreRelationshipCreatedSubscriptionWhere!]
-              NOT: GenreRelationshipCreatedSubscriptionWhere
-              OR: [GenreRelationshipCreatedSubscriptionWhere!]
-              createdRelationship: GenreRelationshipsSubscriptionWhere
-              genre: GenreSubscriptionWhere
-            }
-
-            type GenreRelationshipDeletedEvent {
-              deletedRelationship: GenreConnectedRelationships!
-              event: EventType!
-              genre: GenreEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input GenreRelationshipDeletedSubscriptionWhere {
-              AND: [GenreRelationshipDeletedSubscriptionWhere!]
-              NOT: GenreRelationshipDeletedSubscriptionWhere
-              OR: [GenreRelationshipDeletedSubscriptionWhere!]
-              deletedRelationship: GenreRelationshipsSubscriptionWhere
-              genre: GenreSubscriptionWhere
-            }
-
-            input GenreRelationshipsSubscriptionWhere {
-              product: GenreProductRelationshipSubscriptionWhere
             }
 
             \\"\\"\\"
@@ -2998,10 +2731,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name: StringAggregateSelection!
             }
 
-            type MovieConnectedRelationships {
-              genre: MovieGenreConnectedRelationship
-            }
-
             input MovieCreateInput {
               genre: MovieGenreFieldInput
               id: String!
@@ -3199,42 +2928,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               year_LTE: Int
             }
 
-            type MovieRelationshipCreatedEvent {
-              createdRelationship: MovieConnectedRelationships!
-              event: EventType!
-              movie: MovieEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input MovieRelationshipCreatedSubscriptionWhere {
-              AND: [MovieRelationshipCreatedSubscriptionWhere!]
-              NOT: MovieRelationshipCreatedSubscriptionWhere
-              OR: [MovieRelationshipCreatedSubscriptionWhere!]
-              createdRelationship: MovieRelationshipsSubscriptionWhere
-              movie: MovieSubscriptionWhere
-            }
-
-            type MovieRelationshipDeletedEvent {
-              deletedRelationship: MovieConnectedRelationships!
-              event: EventType!
-              movie: MovieEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input MovieRelationshipDeletedSubscriptionWhere {
-              AND: [MovieRelationshipDeletedSubscriptionWhere!]
-              NOT: MovieRelationshipDeletedSubscriptionWhere
-              OR: [MovieRelationshipDeletedSubscriptionWhere!]
-              deletedRelationship: MovieRelationshipsSubscriptionWhere
-              movie: MovieSubscriptionWhere
-            }
-
-            input MovieRelationshipsSubscriptionWhere {
-              genre: MovieGenreRelationshipSubscriptionWhere
-            }
-
             \\"\\"\\"
             Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
             \\"\\"\\"
@@ -3348,10 +3041,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               count: Int!
               id: StringAggregateSelection!
               name: StringAggregateSelection!
-            }
-
-            type SeriesConnectedRelationships {
-              genre: SeriesGenreConnectedRelationship
             }
 
             type SeriesConnection {
@@ -3557,42 +3246,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               episodes_LTE: Int
             }
 
-            type SeriesRelationshipCreatedEvent {
-              createdRelationship: SeriesConnectedRelationships!
-              event: EventType!
-              relationshipFieldName: String!
-              series: SeriesEventPayload!
-              timestamp: Float!
-            }
-
-            input SeriesRelationshipCreatedSubscriptionWhere {
-              AND: [SeriesRelationshipCreatedSubscriptionWhere!]
-              NOT: SeriesRelationshipCreatedSubscriptionWhere
-              OR: [SeriesRelationshipCreatedSubscriptionWhere!]
-              createdRelationship: SeriesRelationshipsSubscriptionWhere
-              series: SeriesSubscriptionWhere
-            }
-
-            type SeriesRelationshipDeletedEvent {
-              deletedRelationship: SeriesConnectedRelationships!
-              event: EventType!
-              relationshipFieldName: String!
-              series: SeriesEventPayload!
-              timestamp: Float!
-            }
-
-            input SeriesRelationshipDeletedSubscriptionWhere {
-              AND: [SeriesRelationshipDeletedSubscriptionWhere!]
-              NOT: SeriesRelationshipDeletedSubscriptionWhere
-              OR: [SeriesRelationshipDeletedSubscriptionWhere!]
-              deletedRelationship: SeriesRelationshipsSubscriptionWhere
-              series: SeriesSubscriptionWhere
-            }
-
-            input SeriesRelationshipsSubscriptionWhere {
-              genre: SeriesGenreRelationshipSubscriptionWhere
-            }
-
             \\"\\"\\"
             Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.
             \\"\\"\\"
@@ -3749,7 +3402,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: true } });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: new TestCDCEngine() } });
 
         const schema = await neoSchema.getSchema();
         const errors = validateSchema(schema);
@@ -3995,42 +3648,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               disconnect: [GenreProductDisconnectFieldInput!]
               update: GenreProductUpdateConnectionInput
               where: GenreProductConnectionWhere
-            }
-
-            type GenreRelationshipCreatedEvent {
-              createdRelationship: GenreConnectedRelationships!
-              event: EventType!
-              genre: GenreEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input GenreRelationshipCreatedSubscriptionWhere {
-              AND: [GenreRelationshipCreatedSubscriptionWhere!]
-              NOT: GenreRelationshipCreatedSubscriptionWhere
-              OR: [GenreRelationshipCreatedSubscriptionWhere!]
-              createdRelationship: GenreRelationshipsSubscriptionWhere
-              genre: GenreSubscriptionWhere
-            }
-
-            type GenreRelationshipDeletedEvent {
-              deletedRelationship: GenreConnectedRelationships!
-              event: EventType!
-              genre: GenreEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input GenreRelationshipDeletedSubscriptionWhere {
-              AND: [GenreRelationshipDeletedSubscriptionWhere!]
-              NOT: GenreRelationshipDeletedSubscriptionWhere
-              OR: [GenreRelationshipDeletedSubscriptionWhere!]
-              deletedRelationship: GenreRelationshipsSubscriptionWhere
-              genre: GenreSubscriptionWhere
-            }
-
-            input GenreRelationshipsSubscriptionWhere {
-              product: GenreProductRelationshipSubscriptionWhere
             }
 
             \\"\\"\\"
@@ -4434,10 +4051,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name: StringAggregateSelection!
             }
 
-            type MovieConnectedRelationships {
-              genre: MovieGenreConnectedRelationship
-            }
-
             input MovieCreateInput {
               genre: MovieGenreCreateInput
               id: String!
@@ -4468,11 +4081,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             type MovieEventPayload implements IProductEventPayload {
               id: String!
               name: String!
-            }
-
-            type MovieGenreConnectedRelationship {
-              node: UGenreEventPayload!
-              year: Int!
             }
 
             input MovieGenreCreateInput {
@@ -4616,42 +4224,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               year_IN: [Int!]
               year_LT: Int
               year_LTE: Int
-            }
-
-            type MovieRelationshipCreatedEvent {
-              createdRelationship: MovieConnectedRelationships!
-              event: EventType!
-              movie: MovieEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input MovieRelationshipCreatedSubscriptionWhere {
-              AND: [MovieRelationshipCreatedSubscriptionWhere!]
-              NOT: MovieRelationshipCreatedSubscriptionWhere
-              OR: [MovieRelationshipCreatedSubscriptionWhere!]
-              createdRelationship: MovieRelationshipsSubscriptionWhere
-              movie: MovieSubscriptionWhere
-            }
-
-            type MovieRelationshipDeletedEvent {
-              deletedRelationship: MovieConnectedRelationships!
-              event: EventType!
-              movie: MovieEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input MovieRelationshipDeletedSubscriptionWhere {
-              AND: [MovieRelationshipDeletedSubscriptionWhere!]
-              NOT: MovieRelationshipDeletedSubscriptionWhere
-              OR: [MovieRelationshipDeletedSubscriptionWhere!]
-              deletedRelationship: MovieRelationshipsSubscriptionWhere
-              movie: MovieSubscriptionWhere
-            }
-
-            input MovieRelationshipsSubscriptionWhere {
-              genre: MovieGenreRelationshipSubscriptionWhere
             }
 
             \\"\\"\\"
@@ -4956,42 +4528,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               where: RatingProductConnectionWhere
             }
 
-            type RatingRelationshipCreatedEvent {
-              createdRelationship: RatingConnectedRelationships!
-              event: EventType!
-              rating: RatingEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input RatingRelationshipCreatedSubscriptionWhere {
-              AND: [RatingRelationshipCreatedSubscriptionWhere!]
-              NOT: RatingRelationshipCreatedSubscriptionWhere
-              OR: [RatingRelationshipCreatedSubscriptionWhere!]
-              createdRelationship: RatingRelationshipsSubscriptionWhere
-              rating: RatingSubscriptionWhere
-            }
-
-            type RatingRelationshipDeletedEvent {
-              deletedRelationship: RatingConnectedRelationships!
-              event: EventType!
-              rating: RatingEventPayload!
-              relationshipFieldName: String!
-              timestamp: Float!
-            }
-
-            input RatingRelationshipDeletedSubscriptionWhere {
-              AND: [RatingRelationshipDeletedSubscriptionWhere!]
-              NOT: RatingRelationshipDeletedSubscriptionWhere
-              OR: [RatingRelationshipDeletedSubscriptionWhere!]
-              deletedRelationship: RatingRelationshipsSubscriptionWhere
-              rating: RatingSubscriptionWhere
-            }
-
-            input RatingRelationshipsSubscriptionWhere {
-              product: RatingProductRelationshipSubscriptionWhere
-            }
-
             \\"\\"\\"
             Fields to sort Ratings by. The order in which sorts are applied is not guaranteed when specifying many fields in one RatingSort object.
             \\"\\"\\"
@@ -5088,10 +4624,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name: StringAggregateSelection!
             }
 
-            type SeriesConnectedRelationships {
-              genre: SeriesGenreConnectedRelationship
-            }
-
             type SeriesConnection {
               edges: [SeriesEdge!]!
               pageInfo: PageInfo!
@@ -5128,11 +4660,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             type SeriesEventPayload implements IProductEventPayload {
               id: String!
               name: String!
-            }
-
-            type SeriesGenreConnectedRelationship {
-              episodes: Int
-              node: UGenreEventPayload!
             }
 
             input SeriesGenreCreateInput {
@@ -5276,42 +4803,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               episodes_IN: [Int]
               episodes_LT: Int
               episodes_LTE: Int
-            }
-
-            type SeriesRelationshipCreatedEvent {
-              createdRelationship: SeriesConnectedRelationships!
-              event: EventType!
-              relationshipFieldName: String!
-              series: SeriesEventPayload!
-              timestamp: Float!
-            }
-
-            input SeriesRelationshipCreatedSubscriptionWhere {
-              AND: [SeriesRelationshipCreatedSubscriptionWhere!]
-              NOT: SeriesRelationshipCreatedSubscriptionWhere
-              OR: [SeriesRelationshipCreatedSubscriptionWhere!]
-              createdRelationship: SeriesRelationshipsSubscriptionWhere
-              series: SeriesSubscriptionWhere
-            }
-
-            type SeriesRelationshipDeletedEvent {
-              deletedRelationship: SeriesConnectedRelationships!
-              event: EventType!
-              relationshipFieldName: String!
-              series: SeriesEventPayload!
-              timestamp: Float!
-            }
-
-            input SeriesRelationshipDeletedSubscriptionWhere {
-              AND: [SeriesRelationshipDeletedSubscriptionWhere!]
-              NOT: SeriesRelationshipDeletedSubscriptionWhere
-              OR: [SeriesRelationshipDeletedSubscriptionWhere!]
-              deletedRelationship: SeriesRelationshipsSubscriptionWhere
-              series: SeriesSubscriptionWhere
-            }
-
-            input SeriesRelationshipsSubscriptionWhere {
-              genre: SeriesGenreRelationshipSubscriptionWhere
             }
 
             \\"\\"\\"

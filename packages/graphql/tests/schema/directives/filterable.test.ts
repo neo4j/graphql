@@ -22,6 +22,7 @@ import type { GraphQLInputObjectType } from "graphql";
 import { lexicographicSortSchema } from "graphql";
 import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
+import { TestCDCEngine } from "../../utils/builders/TestCDCEngine";
 
 describe("@filterable directive", () => {
     describe("on SCALAR", () => {
@@ -41,7 +42,7 @@ describe("@filterable directive", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 features: {
-                    subscriptions: true,
+                    subscriptions: new TestCDCEngine(),
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -110,7 +111,7 @@ describe("@filterable directive", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 features: {
-                    subscriptions: true,
+                    subscriptions: new TestCDCEngine(),
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -217,7 +218,7 @@ describe("@filterable directive", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 features: {
-                    subscriptions: true,
+                    subscriptions: new TestCDCEngine(),
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -307,7 +308,7 @@ describe("@filterable directive", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 features: {
-                    subscriptions: true,
+                    subscriptions: new TestCDCEngine(),
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -355,7 +356,7 @@ describe("@filterable directive", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 features: {
-                    subscriptions: true,
+                    subscriptions: new TestCDCEngine(),
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -403,7 +404,7 @@ describe("@filterable directive", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 features: {
-                    subscriptions: true,
+                    subscriptions: new TestCDCEngine(),
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -453,7 +454,7 @@ describe("@filterable directive", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 features: {
-                    subscriptions: true,
+                    subscriptions: new TestCDCEngine(),
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -505,7 +506,7 @@ describe("@filterable directive", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 features: {
-                    subscriptions: true,
+                    subscriptions: new TestCDCEngine(),
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -557,7 +558,7 @@ describe("@filterable directive", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 features: {
-                    subscriptions: true,
+                    subscriptions: new TestCDCEngine(),
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -609,7 +610,7 @@ describe("@filterable directive", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 features: {
-                    subscriptions: true,
+                    subscriptions: new TestCDCEngine(),
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -661,7 +662,7 @@ describe("@filterable directive", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 features: {
-                    subscriptions: true,
+                    subscriptions: new TestCDCEngine(),
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -719,7 +720,7 @@ describe("@filterable directive", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 features: {
-                    subscriptions: true,
+                    subscriptions: new TestCDCEngine(),
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -775,7 +776,7 @@ describe("@filterable directive", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 features: {
-                    subscriptions: true,
+                    subscriptions: new TestCDCEngine(),
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -831,7 +832,7 @@ describe("@filterable directive", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 features: {
-                    subscriptions: true,
+                    subscriptions: new TestCDCEngine(),
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -880,7 +881,7 @@ describe("@filterable directive", () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
                     features: {
-                        subscriptions: true,
+                        subscriptions: new TestCDCEngine(),
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -1041,42 +1042,6 @@ describe("@filterable directive", () => {
                       Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [ActorSort!]
-                    }
-
-                    type ActorRelationshipCreatedEvent {
-                      actor: ActorEventPayload!
-                      createdRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipCreatedSubscriptionWhere {
-                      AND: [ActorRelationshipCreatedSubscriptionWhere!]
-                      NOT: ActorRelationshipCreatedSubscriptionWhere
-                      OR: [ActorRelationshipCreatedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      createdRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    type ActorRelationshipDeletedEvent {
-                      actor: ActorEventPayload!
-                      deletedRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipDeletedSubscriptionWhere {
-                      AND: [ActorRelationshipDeletedSubscriptionWhere!]
-                      NOT: ActorRelationshipDeletedSubscriptionWhere
-                      OR: [ActorRelationshipDeletedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      deletedRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    input ActorRelationshipsSubscriptionWhere {
-                      movies: ActorMoviesRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -1384,42 +1349,6 @@ describe("@filterable directive", () => {
                       Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [MovieSort!]
-                    }
-
-                    type MovieRelationshipCreatedEvent {
-                      createdRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipCreatedSubscriptionWhere {
-                      AND: [MovieRelationshipCreatedSubscriptionWhere!]
-                      NOT: MovieRelationshipCreatedSubscriptionWhere
-                      OR: [MovieRelationshipCreatedSubscriptionWhere!]
-                      createdRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    type MovieRelationshipDeletedEvent {
-                      deletedRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipDeletedSubscriptionWhere {
-                      AND: [MovieRelationshipDeletedSubscriptionWhere!]
-                      NOT: MovieRelationshipDeletedSubscriptionWhere
-                      OR: [MovieRelationshipDeletedSubscriptionWhere!]
-                      deletedRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    input MovieRelationshipsSubscriptionWhere {
-                      actors: MovieActorsRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -1582,7 +1511,7 @@ describe("@filterable directive", () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
                     features: {
-                        subscriptions: true,
+                        subscriptions: new TestCDCEngine(),
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -1765,42 +1694,6 @@ describe("@filterable directive", () => {
                       Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [ActorSort!]
-                    }
-
-                    type ActorRelationshipCreatedEvent {
-                      actor: ActorEventPayload!
-                      createdRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipCreatedSubscriptionWhere {
-                      AND: [ActorRelationshipCreatedSubscriptionWhere!]
-                      NOT: ActorRelationshipCreatedSubscriptionWhere
-                      OR: [ActorRelationshipCreatedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      createdRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    type ActorRelationshipDeletedEvent {
-                      actor: ActorEventPayload!
-                      deletedRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipDeletedSubscriptionWhere {
-                      AND: [ActorRelationshipDeletedSubscriptionWhere!]
-                      NOT: ActorRelationshipDeletedSubscriptionWhere
-                      OR: [ActorRelationshipDeletedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      deletedRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    input ActorRelationshipsSubscriptionWhere {
-                      movies: ActorMoviesRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -2108,42 +2001,6 @@ describe("@filterable directive", () => {
                       Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [MovieSort!]
-                    }
-
-                    type MovieRelationshipCreatedEvent {
-                      createdRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipCreatedSubscriptionWhere {
-                      AND: [MovieRelationshipCreatedSubscriptionWhere!]
-                      NOT: MovieRelationshipCreatedSubscriptionWhere
-                      OR: [MovieRelationshipCreatedSubscriptionWhere!]
-                      createdRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    type MovieRelationshipDeletedEvent {
-                      deletedRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipDeletedSubscriptionWhere {
-                      AND: [MovieRelationshipDeletedSubscriptionWhere!]
-                      NOT: MovieRelationshipDeletedSubscriptionWhere
-                      OR: [MovieRelationshipDeletedSubscriptionWhere!]
-                      deletedRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    input MovieRelationshipsSubscriptionWhere {
-                      actors: MovieActorsRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -2306,7 +2163,7 @@ describe("@filterable directive", () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
                     features: {
-                        subscriptions: true,
+                        subscriptions: new TestCDCEngine(),
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -2489,36 +2346,6 @@ describe("@filterable directive", () => {
                       Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [ActorSort!]
-                    }
-
-                    type ActorRelationshipCreatedEvent {
-                      actor: ActorEventPayload!
-                      createdRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipCreatedSubscriptionWhere {
-                      AND: [ActorRelationshipCreatedSubscriptionWhere!]
-                      NOT: ActorRelationshipCreatedSubscriptionWhere
-                      OR: [ActorRelationshipCreatedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                    }
-
-                    type ActorRelationshipDeletedEvent {
-                      actor: ActorEventPayload!
-                      deletedRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipDeletedSubscriptionWhere {
-                      AND: [ActorRelationshipDeletedSubscriptionWhere!]
-                      NOT: ActorRelationshipDeletedSubscriptionWhere
-                      OR: [ActorRelationshipDeletedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -2828,40 +2655,6 @@ describe("@filterable directive", () => {
                       sort: [MovieSort!]
                     }
 
-                    type MovieRelationshipCreatedEvent {
-                      createdRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipCreatedSubscriptionWhere {
-                      AND: [MovieRelationshipCreatedSubscriptionWhere!]
-                      NOT: MovieRelationshipCreatedSubscriptionWhere
-                      OR: [MovieRelationshipCreatedSubscriptionWhere!]
-                      createdRelationship: MovieRelationshipsSubscriptionWhere
-                    }
-
-                    type MovieRelationshipDeletedEvent {
-                      deletedRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipDeletedSubscriptionWhere {
-                      AND: [MovieRelationshipDeletedSubscriptionWhere!]
-                      NOT: MovieRelationshipDeletedSubscriptionWhere
-                      OR: [MovieRelationshipDeletedSubscriptionWhere!]
-                      deletedRelationship: MovieRelationshipsSubscriptionWhere
-                    }
-
-                    input MovieRelationshipsSubscriptionWhere {
-                      actors: MovieActorsRelationshipSubscriptionWhere
-                    }
-
                     \\"\\"\\"
                     Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
                     \\"\\"\\"
@@ -3006,7 +2799,7 @@ describe("@filterable directive", () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
                     features: {
-                        subscriptions: true,
+                        subscriptions: new TestCDCEngine(),
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -3190,42 +2983,6 @@ describe("@filterable directive", () => {
                       Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [ActorSort!]
-                    }
-
-                    type ActorRelationshipCreatedEvent {
-                      actor: ActorEventPayload!
-                      createdRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipCreatedSubscriptionWhere {
-                      AND: [ActorRelationshipCreatedSubscriptionWhere!]
-                      NOT: ActorRelationshipCreatedSubscriptionWhere
-                      OR: [ActorRelationshipCreatedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      createdRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    type ActorRelationshipDeletedEvent {
-                      actor: ActorEventPayload!
-                      deletedRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipDeletedSubscriptionWhere {
-                      AND: [ActorRelationshipDeletedSubscriptionWhere!]
-                      NOT: ActorRelationshipDeletedSubscriptionWhere
-                      OR: [ActorRelationshipDeletedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      deletedRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    input ActorRelationshipsSubscriptionWhere {
-                      movies: ActorMoviesRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -3484,42 +3241,6 @@ describe("@filterable directive", () => {
                       Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [MovieSort!]
-                    }
-
-                    type MovieRelationshipCreatedEvent {
-                      createdRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipCreatedSubscriptionWhere {
-                      AND: [MovieRelationshipCreatedSubscriptionWhere!]
-                      NOT: MovieRelationshipCreatedSubscriptionWhere
-                      OR: [MovieRelationshipCreatedSubscriptionWhere!]
-                      createdRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    type MovieRelationshipDeletedEvent {
-                      deletedRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipDeletedSubscriptionWhere {
-                      AND: [MovieRelationshipDeletedSubscriptionWhere!]
-                      NOT: MovieRelationshipDeletedSubscriptionWhere
-                      OR: [MovieRelationshipDeletedSubscriptionWhere!]
-                      deletedRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    input MovieRelationshipsSubscriptionWhere {
-                      actors: MovieActorsRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -3683,7 +3404,7 @@ describe("@filterable directive", () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
                     features: {
-                        subscriptions: true,
+                        subscriptions: new TestCDCEngine(),
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -3866,42 +3587,6 @@ describe("@filterable directive", () => {
                       Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [ActorSort!]
-                    }
-
-                    type ActorRelationshipCreatedEvent {
-                      actor: ActorEventPayload!
-                      createdRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipCreatedSubscriptionWhere {
-                      AND: [ActorRelationshipCreatedSubscriptionWhere!]
-                      NOT: ActorRelationshipCreatedSubscriptionWhere
-                      OR: [ActorRelationshipCreatedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      createdRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    type ActorRelationshipDeletedEvent {
-                      actor: ActorEventPayload!
-                      deletedRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipDeletedSubscriptionWhere {
-                      AND: [ActorRelationshipDeletedSubscriptionWhere!]
-                      NOT: ActorRelationshipDeletedSubscriptionWhere
-                      OR: [ActorRelationshipDeletedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      deletedRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    input ActorRelationshipsSubscriptionWhere {
-                      movies: ActorMoviesRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -4209,42 +3894,6 @@ describe("@filterable directive", () => {
                       Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [MovieSort!]
-                    }
-
-                    type MovieRelationshipCreatedEvent {
-                      createdRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipCreatedSubscriptionWhere {
-                      AND: [MovieRelationshipCreatedSubscriptionWhere!]
-                      NOT: MovieRelationshipCreatedSubscriptionWhere
-                      OR: [MovieRelationshipCreatedSubscriptionWhere!]
-                      createdRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    type MovieRelationshipDeletedEvent {
-                      deletedRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipDeletedSubscriptionWhere {
-                      AND: [MovieRelationshipDeletedSubscriptionWhere!]
-                      NOT: MovieRelationshipDeletedSubscriptionWhere
-                      OR: [MovieRelationshipDeletedSubscriptionWhere!]
-                      deletedRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    input MovieRelationshipsSubscriptionWhere {
-                      actors: MovieActorsRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -4409,7 +4058,7 @@ describe("@filterable directive", () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
                     features: {
-                        subscriptions: true,
+                        subscriptions: new TestCDCEngine(),
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -4592,42 +4241,6 @@ describe("@filterable directive", () => {
                       Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [ActorSort!]
-                    }
-
-                    type ActorRelationshipCreatedEvent {
-                      actor: ActorEventPayload!
-                      createdRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipCreatedSubscriptionWhere {
-                      AND: [ActorRelationshipCreatedSubscriptionWhere!]
-                      NOT: ActorRelationshipCreatedSubscriptionWhere
-                      OR: [ActorRelationshipCreatedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      createdRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    type ActorRelationshipDeletedEvent {
-                      actor: ActorEventPayload!
-                      deletedRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipDeletedSubscriptionWhere {
-                      AND: [ActorRelationshipDeletedSubscriptionWhere!]
-                      NOT: ActorRelationshipDeletedSubscriptionWhere
-                      OR: [ActorRelationshipDeletedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      deletedRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    input ActorRelationshipsSubscriptionWhere {
-                      movies: ActorMoviesRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -4937,42 +4550,6 @@ describe("@filterable directive", () => {
                       sort: [MovieSort!]
                     }
 
-                    type MovieRelationshipCreatedEvent {
-                      createdRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipCreatedSubscriptionWhere {
-                      AND: [MovieRelationshipCreatedSubscriptionWhere!]
-                      NOT: MovieRelationshipCreatedSubscriptionWhere
-                      OR: [MovieRelationshipCreatedSubscriptionWhere!]
-                      createdRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    type MovieRelationshipDeletedEvent {
-                      deletedRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipDeletedSubscriptionWhere {
-                      AND: [MovieRelationshipDeletedSubscriptionWhere!]
-                      NOT: MovieRelationshipDeletedSubscriptionWhere
-                      OR: [MovieRelationshipDeletedSubscriptionWhere!]
-                      deletedRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    input MovieRelationshipsSubscriptionWhere {
-                      actors: MovieActorsRelationshipSubscriptionWhere
-                    }
-
                     \\"\\"\\"
                     Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
                     \\"\\"\\"
@@ -5111,7 +4688,7 @@ describe("@filterable directive", () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
                     features: {
-                        subscriptions: true,
+                        subscriptions: new TestCDCEngine(),
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -5294,42 +4871,6 @@ describe("@filterable directive", () => {
                       Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [ActorSort!]
-                    }
-
-                    type ActorRelationshipCreatedEvent {
-                      actor: ActorEventPayload!
-                      createdRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipCreatedSubscriptionWhere {
-                      AND: [ActorRelationshipCreatedSubscriptionWhere!]
-                      NOT: ActorRelationshipCreatedSubscriptionWhere
-                      OR: [ActorRelationshipCreatedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      createdRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    type ActorRelationshipDeletedEvent {
-                      actor: ActorEventPayload!
-                      deletedRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipDeletedSubscriptionWhere {
-                      AND: [ActorRelationshipDeletedSubscriptionWhere!]
-                      NOT: ActorRelationshipDeletedSubscriptionWhere
-                      OR: [ActorRelationshipDeletedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      deletedRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    input ActorRelationshipsSubscriptionWhere {
-                      movies: ActorMoviesRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -5588,42 +5129,6 @@ describe("@filterable directive", () => {
                       Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [MovieSort!]
-                    }
-
-                    type MovieRelationshipCreatedEvent {
-                      createdRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipCreatedSubscriptionWhere {
-                      AND: [MovieRelationshipCreatedSubscriptionWhere!]
-                      NOT: MovieRelationshipCreatedSubscriptionWhere
-                      OR: [MovieRelationshipCreatedSubscriptionWhere!]
-                      createdRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    type MovieRelationshipDeletedEvent {
-                      deletedRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipDeletedSubscriptionWhere {
-                      AND: [MovieRelationshipDeletedSubscriptionWhere!]
-                      NOT: MovieRelationshipDeletedSubscriptionWhere
-                      OR: [MovieRelationshipDeletedSubscriptionWhere!]
-                      deletedRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    input MovieRelationshipsSubscriptionWhere {
-                      actors: MovieActorsRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -5791,7 +5296,7 @@ describe("@filterable directive", () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
                     features: {
-                        subscriptions: true,
+                        subscriptions: new TestCDCEngine(),
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -5816,10 +5321,6 @@ describe("@filterable directive", () => {
                       count: Int!
                       password: StringAggregateSelection!
                       username: StringAggregateSelection!
-                    }
-
-                    type ActorConnectedRelationships {
-                      movies: ActorMoviesConnectedRelationship
                     }
 
                     input ActorCreateInput {
@@ -5967,42 +5468,6 @@ describe("@filterable directive", () => {
                       Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [ActorSort!]
-                    }
-
-                    type ActorRelationshipCreatedEvent {
-                      actor: ActorEventPayload!
-                      createdRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipCreatedSubscriptionWhere {
-                      AND: [ActorRelationshipCreatedSubscriptionWhere!]
-                      NOT: ActorRelationshipCreatedSubscriptionWhere
-                      OR: [ActorRelationshipCreatedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      createdRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    type ActorRelationshipDeletedEvent {
-                      actor: ActorEventPayload!
-                      deletedRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipDeletedSubscriptionWhere {
-                      AND: [ActorRelationshipDeletedSubscriptionWhere!]
-                      NOT: ActorRelationshipDeletedSubscriptionWhere
-                      OR: [ActorRelationshipDeletedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      deletedRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    input ActorRelationshipsSubscriptionWhere {
-                      movies: ActorMoviesRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -6255,42 +5720,6 @@ describe("@filterable directive", () => {
                       username: StringAggregateSelection!
                     }
 
-                    type MovieRelationshipCreatedEvent {
-                      createdRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipCreatedSubscriptionWhere {
-                      AND: [MovieRelationshipCreatedSubscriptionWhere!]
-                      NOT: MovieRelationshipCreatedSubscriptionWhere
-                      OR: [MovieRelationshipCreatedSubscriptionWhere!]
-                      createdRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    type MovieRelationshipDeletedEvent {
-                      deletedRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipDeletedSubscriptionWhere {
-                      AND: [MovieRelationshipDeletedSubscriptionWhere!]
-                      NOT: MovieRelationshipDeletedSubscriptionWhere
-                      OR: [MovieRelationshipDeletedSubscriptionWhere!]
-                      deletedRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    input MovieRelationshipsSubscriptionWhere {
-                      actors: MovieActorsRelationshipSubscriptionWhere
-                    }
-
                     \\"\\"\\"
                     Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
                     \\"\\"\\"
@@ -6528,7 +5957,7 @@ describe("@filterable directive", () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
                     features: {
-                        subscriptions: true,
+                        subscriptions: new TestCDCEngine(),
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -6553,10 +5982,6 @@ describe("@filterable directive", () => {
                       count: Int!
                       password: StringAggregateSelection!
                       username: StringAggregateSelection!
-                    }
-
-                    type ActorConnectedRelationships {
-                      movies: ActorMoviesConnectedRelationship
                     }
 
                     input ActorCreateInput {
@@ -6704,42 +6129,6 @@ describe("@filterable directive", () => {
                       Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [ActorSort!]
-                    }
-
-                    type ActorRelationshipCreatedEvent {
-                      actor: ActorEventPayload!
-                      createdRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipCreatedSubscriptionWhere {
-                      AND: [ActorRelationshipCreatedSubscriptionWhere!]
-                      NOT: ActorRelationshipCreatedSubscriptionWhere
-                      OR: [ActorRelationshipCreatedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      createdRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    type ActorRelationshipDeletedEvent {
-                      actor: ActorEventPayload!
-                      deletedRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipDeletedSubscriptionWhere {
-                      AND: [ActorRelationshipDeletedSubscriptionWhere!]
-                      NOT: ActorRelationshipDeletedSubscriptionWhere
-                      OR: [ActorRelationshipDeletedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      deletedRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    input ActorRelationshipsSubscriptionWhere {
-                      movies: ActorMoviesRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -7026,42 +6415,6 @@ describe("@filterable directive", () => {
                       username: StringAggregateSelection!
                     }
 
-                    type MovieRelationshipCreatedEvent {
-                      createdRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipCreatedSubscriptionWhere {
-                      AND: [MovieRelationshipCreatedSubscriptionWhere!]
-                      NOT: MovieRelationshipCreatedSubscriptionWhere
-                      OR: [MovieRelationshipCreatedSubscriptionWhere!]
-                      createdRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    type MovieRelationshipDeletedEvent {
-                      deletedRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipDeletedSubscriptionWhere {
-                      AND: [MovieRelationshipDeletedSubscriptionWhere!]
-                      NOT: MovieRelationshipDeletedSubscriptionWhere
-                      OR: [MovieRelationshipDeletedSubscriptionWhere!]
-                      deletedRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    input MovieRelationshipsSubscriptionWhere {
-                      actors: MovieActorsRelationshipSubscriptionWhere
-                    }
-
                     \\"\\"\\"
                     Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
                     \\"\\"\\"
@@ -7300,7 +6653,7 @@ describe("@filterable directive", () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
                     features: {
-                        subscriptions: true,
+                        subscriptions: new TestCDCEngine(),
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -7325,10 +6678,6 @@ describe("@filterable directive", () => {
                       count: Int!
                       password: StringAggregateSelection!
                       username: StringAggregateSelection!
-                    }
-
-                    type ActorConnectedRelationships {
-                      movies: ActorMoviesConnectedRelationship
                     }
 
                     input ActorCreateInput {
@@ -7476,42 +6825,6 @@ describe("@filterable directive", () => {
                       Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [ActorSort!]
-                    }
-
-                    type ActorRelationshipCreatedEvent {
-                      actor: ActorEventPayload!
-                      createdRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipCreatedSubscriptionWhere {
-                      AND: [ActorRelationshipCreatedSubscriptionWhere!]
-                      NOT: ActorRelationshipCreatedSubscriptionWhere
-                      OR: [ActorRelationshipCreatedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      createdRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    type ActorRelationshipDeletedEvent {
-                      actor: ActorEventPayload!
-                      deletedRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipDeletedSubscriptionWhere {
-                      AND: [ActorRelationshipDeletedSubscriptionWhere!]
-                      NOT: ActorRelationshipDeletedSubscriptionWhere
-                      OR: [ActorRelationshipDeletedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      deletedRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    input ActorRelationshipsSubscriptionWhere {
-                      movies: ActorMoviesRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -7762,42 +7075,6 @@ describe("@filterable directive", () => {
 
                     type MoviePersonActorsNodeAggregateSelection {
                       username: StringAggregateSelection!
-                    }
-
-                    type MovieRelationshipCreatedEvent {
-                      createdRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipCreatedSubscriptionWhere {
-                      AND: [MovieRelationshipCreatedSubscriptionWhere!]
-                      NOT: MovieRelationshipCreatedSubscriptionWhere
-                      OR: [MovieRelationshipCreatedSubscriptionWhere!]
-                      createdRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    type MovieRelationshipDeletedEvent {
-                      deletedRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipDeletedSubscriptionWhere {
-                      AND: [MovieRelationshipDeletedSubscriptionWhere!]
-                      NOT: MovieRelationshipDeletedSubscriptionWhere
-                      OR: [MovieRelationshipDeletedSubscriptionWhere!]
-                      deletedRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    input MovieRelationshipsSubscriptionWhere {
-                      actors: MovieActorsRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -8041,7 +7318,7 @@ describe("@filterable directive", () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
                     features: {
-                        subscriptions: true,
+                        subscriptions: new TestCDCEngine(),
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -8225,42 +7502,6 @@ describe("@filterable directive", () => {
                       Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [ActorSort!]
-                    }
-
-                    type ActorRelationshipCreatedEvent {
-                      actor: ActorEventPayload!
-                      createdRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipCreatedSubscriptionWhere {
-                      AND: [ActorRelationshipCreatedSubscriptionWhere!]
-                      NOT: ActorRelationshipCreatedSubscriptionWhere
-                      OR: [ActorRelationshipCreatedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      createdRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    type ActorRelationshipDeletedEvent {
-                      actor: ActorEventPayload!
-                      deletedRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipDeletedSubscriptionWhere {
-                      AND: [ActorRelationshipDeletedSubscriptionWhere!]
-                      NOT: ActorRelationshipDeletedSubscriptionWhere
-                      OR: [ActorRelationshipDeletedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      deletedRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    input ActorRelationshipsSubscriptionWhere {
-                      movies: ActorMoviesRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -8522,42 +7763,6 @@ describe("@filterable directive", () => {
                       Specify one or more AppearanceSort objects to sort Appearances by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [AppearanceSort!]
-                    }
-
-                    type AppearanceRelationshipCreatedEvent {
-                      appearance: AppearanceEventPayload!
-                      createdRelationship: AppearanceConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input AppearanceRelationshipCreatedSubscriptionWhere {
-                      AND: [AppearanceRelationshipCreatedSubscriptionWhere!]
-                      NOT: AppearanceRelationshipCreatedSubscriptionWhere
-                      OR: [AppearanceRelationshipCreatedSubscriptionWhere!]
-                      appearance: AppearanceSubscriptionWhere
-                      createdRelationship: AppearanceRelationshipsSubscriptionWhere
-                    }
-
-                    type AppearanceRelationshipDeletedEvent {
-                      appearance: AppearanceEventPayload!
-                      deletedRelationship: AppearanceConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input AppearanceRelationshipDeletedSubscriptionWhere {
-                      AND: [AppearanceRelationshipDeletedSubscriptionWhere!]
-                      NOT: AppearanceRelationshipDeletedSubscriptionWhere
-                      OR: [AppearanceRelationshipDeletedSubscriptionWhere!]
-                      appearance: AppearanceSubscriptionWhere
-                      deletedRelationship: AppearanceRelationshipsSubscriptionWhere
-                    }
-
-                    input AppearanceRelationshipsSubscriptionWhere {
-                      movies: AppearanceMoviesRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -8876,42 +8081,6 @@ describe("@filterable directive", () => {
                       Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [MovieSort!]
-                    }
-
-                    type MovieRelationshipCreatedEvent {
-                      createdRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipCreatedSubscriptionWhere {
-                      AND: [MovieRelationshipCreatedSubscriptionWhere!]
-                      NOT: MovieRelationshipCreatedSubscriptionWhere
-                      OR: [MovieRelationshipCreatedSubscriptionWhere!]
-                      createdRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    type MovieRelationshipDeletedEvent {
-                      deletedRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipDeletedSubscriptionWhere {
-                      AND: [MovieRelationshipDeletedSubscriptionWhere!]
-                      NOT: MovieRelationshipDeletedSubscriptionWhere
-                      OR: [MovieRelationshipDeletedSubscriptionWhere!]
-                      deletedRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    input MovieRelationshipsSubscriptionWhere {
-                      actors: MovieActorsRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -9111,7 +8280,7 @@ describe("@filterable directive", () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
                     features: {
-                        subscriptions: true,
+                        subscriptions: new TestCDCEngine(),
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -9295,42 +8464,6 @@ describe("@filterable directive", () => {
                       Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [ActorSort!]
-                    }
-
-                    type ActorRelationshipCreatedEvent {
-                      actor: ActorEventPayload!
-                      createdRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipCreatedSubscriptionWhere {
-                      AND: [ActorRelationshipCreatedSubscriptionWhere!]
-                      NOT: ActorRelationshipCreatedSubscriptionWhere
-                      OR: [ActorRelationshipCreatedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      createdRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    type ActorRelationshipDeletedEvent {
-                      actor: ActorEventPayload!
-                      deletedRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipDeletedSubscriptionWhere {
-                      AND: [ActorRelationshipDeletedSubscriptionWhere!]
-                      NOT: ActorRelationshipDeletedSubscriptionWhere
-                      OR: [ActorRelationshipDeletedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      deletedRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    input ActorRelationshipsSubscriptionWhere {
-                      movies: ActorMoviesRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -9592,42 +8725,6 @@ describe("@filterable directive", () => {
                       Specify one or more AppearanceSort objects to sort Appearances by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [AppearanceSort!]
-                    }
-
-                    type AppearanceRelationshipCreatedEvent {
-                      appearance: AppearanceEventPayload!
-                      createdRelationship: AppearanceConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input AppearanceRelationshipCreatedSubscriptionWhere {
-                      AND: [AppearanceRelationshipCreatedSubscriptionWhere!]
-                      NOT: AppearanceRelationshipCreatedSubscriptionWhere
-                      OR: [AppearanceRelationshipCreatedSubscriptionWhere!]
-                      appearance: AppearanceSubscriptionWhere
-                      createdRelationship: AppearanceRelationshipsSubscriptionWhere
-                    }
-
-                    type AppearanceRelationshipDeletedEvent {
-                      appearance: AppearanceEventPayload!
-                      deletedRelationship: AppearanceConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input AppearanceRelationshipDeletedSubscriptionWhere {
-                      AND: [AppearanceRelationshipDeletedSubscriptionWhere!]
-                      NOT: AppearanceRelationshipDeletedSubscriptionWhere
-                      OR: [AppearanceRelationshipDeletedSubscriptionWhere!]
-                      appearance: AppearanceSubscriptionWhere
-                      deletedRelationship: AppearanceRelationshipsSubscriptionWhere
-                    }
-
-                    input AppearanceRelationshipsSubscriptionWhere {
-                      movies: AppearanceMoviesRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -9946,42 +9043,6 @@ describe("@filterable directive", () => {
                       Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [MovieSort!]
-                    }
-
-                    type MovieRelationshipCreatedEvent {
-                      createdRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipCreatedSubscriptionWhere {
-                      AND: [MovieRelationshipCreatedSubscriptionWhere!]
-                      NOT: MovieRelationshipCreatedSubscriptionWhere
-                      OR: [MovieRelationshipCreatedSubscriptionWhere!]
-                      createdRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    type MovieRelationshipDeletedEvent {
-                      deletedRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipDeletedSubscriptionWhere {
-                      AND: [MovieRelationshipDeletedSubscriptionWhere!]
-                      NOT: MovieRelationshipDeletedSubscriptionWhere
-                      OR: [MovieRelationshipDeletedSubscriptionWhere!]
-                      deletedRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    input MovieRelationshipsSubscriptionWhere {
-                      actors: MovieActorsRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -10181,7 +9242,7 @@ describe("@filterable directive", () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
                     features: {
-                        subscriptions: true,
+                        subscriptions: new TestCDCEngine(),
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -10365,42 +9426,6 @@ describe("@filterable directive", () => {
                       Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [ActorSort!]
-                    }
-
-                    type ActorRelationshipCreatedEvent {
-                      actor: ActorEventPayload!
-                      createdRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipCreatedSubscriptionWhere {
-                      AND: [ActorRelationshipCreatedSubscriptionWhere!]
-                      NOT: ActorRelationshipCreatedSubscriptionWhere
-                      OR: [ActorRelationshipCreatedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      createdRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    type ActorRelationshipDeletedEvent {
-                      actor: ActorEventPayload!
-                      deletedRelationship: ActorConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input ActorRelationshipDeletedSubscriptionWhere {
-                      AND: [ActorRelationshipDeletedSubscriptionWhere!]
-                      NOT: ActorRelationshipDeletedSubscriptionWhere
-                      OR: [ActorRelationshipDeletedSubscriptionWhere!]
-                      actor: ActorSubscriptionWhere
-                      deletedRelationship: ActorRelationshipsSubscriptionWhere
-                    }
-
-                    input ActorRelationshipsSubscriptionWhere {
-                      movies: ActorMoviesRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -10662,42 +9687,6 @@ describe("@filterable directive", () => {
                       Specify one or more AppearanceSort objects to sort Appearances by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [AppearanceSort!]
-                    }
-
-                    type AppearanceRelationshipCreatedEvent {
-                      appearance: AppearanceEventPayload!
-                      createdRelationship: AppearanceConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input AppearanceRelationshipCreatedSubscriptionWhere {
-                      AND: [AppearanceRelationshipCreatedSubscriptionWhere!]
-                      NOT: AppearanceRelationshipCreatedSubscriptionWhere
-                      OR: [AppearanceRelationshipCreatedSubscriptionWhere!]
-                      appearance: AppearanceSubscriptionWhere
-                      createdRelationship: AppearanceRelationshipsSubscriptionWhere
-                    }
-
-                    type AppearanceRelationshipDeletedEvent {
-                      appearance: AppearanceEventPayload!
-                      deletedRelationship: AppearanceConnectedRelationships!
-                      event: EventType!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input AppearanceRelationshipDeletedSubscriptionWhere {
-                      AND: [AppearanceRelationshipDeletedSubscriptionWhere!]
-                      NOT: AppearanceRelationshipDeletedSubscriptionWhere
-                      OR: [AppearanceRelationshipDeletedSubscriptionWhere!]
-                      appearance: AppearanceSubscriptionWhere
-                      deletedRelationship: AppearanceRelationshipsSubscriptionWhere
-                    }
-
-                    input AppearanceRelationshipsSubscriptionWhere {
-                      movies: AppearanceMoviesRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"
@@ -11016,42 +10005,6 @@ describe("@filterable directive", () => {
                       Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [MovieSort!]
-                    }
-
-                    type MovieRelationshipCreatedEvent {
-                      createdRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipCreatedSubscriptionWhere {
-                      AND: [MovieRelationshipCreatedSubscriptionWhere!]
-                      NOT: MovieRelationshipCreatedSubscriptionWhere
-                      OR: [MovieRelationshipCreatedSubscriptionWhere!]
-                      createdRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    type MovieRelationshipDeletedEvent {
-                      deletedRelationship: MovieConnectedRelationships!
-                      event: EventType!
-                      movie: MovieEventPayload!
-                      relationshipFieldName: String!
-                      timestamp: Float!
-                    }
-
-                    input MovieRelationshipDeletedSubscriptionWhere {
-                      AND: [MovieRelationshipDeletedSubscriptionWhere!]
-                      NOT: MovieRelationshipDeletedSubscriptionWhere
-                      OR: [MovieRelationshipDeletedSubscriptionWhere!]
-                      deletedRelationship: MovieRelationshipsSubscriptionWhere
-                      movie: MovieSubscriptionWhere
-                    }
-
-                    input MovieRelationshipsSubscriptionWhere {
-                      actors: MovieActorsRelationshipSubscriptionWhere
                     }
 
                     \\"\\"\\"

@@ -21,6 +21,7 @@ import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
+import { TestCDCEngine } from "../../utils/builders/TestCDCEngine";
 
 describe("https://github.com/neo4j/graphql/issues/4511", () => {
     test("EventPayload does not generate related nodes Connections", async () => {
@@ -51,7 +52,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             features: {
-                subscriptions: true,
+                subscriptions: new TestCDCEngine(),
             },
         });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
@@ -428,10 +429,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               count: Int!
             }
 
-            type PersonConnectedRelationships {
-              movies: PersonMoviesConnectedRelationship
-            }
-
             input PersonCreateInput {
               movies: PersonMoviesFieldInput
             }
@@ -533,36 +530,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
 
             type PersonProductionMoviesNodeAggregateSelection {
               id: IDAggregateSelection!
-            }
-
-            type PersonRelationshipCreatedEvent {
-              createdRelationship: PersonConnectedRelationships!
-              event: EventType!
-              timestamp: Float!
-            }
-
-            input PersonRelationshipCreatedSubscriptionWhere {
-              AND: [PersonRelationshipCreatedSubscriptionWhere!]
-              NOT: PersonRelationshipCreatedSubscriptionWhere
-              OR: [PersonRelationshipCreatedSubscriptionWhere!]
-              createdRelationship: PersonRelationshipsSubscriptionWhere
-            }
-
-            type PersonRelationshipDeletedEvent {
-              deletedRelationship: PersonConnectedRelationships!
-              event: EventType!
-              timestamp: Float!
-            }
-
-            input PersonRelationshipDeletedSubscriptionWhere {
-              AND: [PersonRelationshipDeletedSubscriptionWhere!]
-              NOT: PersonRelationshipDeletedSubscriptionWhere
-              OR: [PersonRelationshipDeletedSubscriptionWhere!]
-              deletedRelationship: PersonRelationshipsSubscriptionWhere
-            }
-
-            input PersonRelationshipsSubscriptionWhere {
-              movies: PersonMoviesRelationshipSubscriptionWhere
             }
 
             input PersonUpdateInput {
@@ -868,34 +835,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [SeriesSort!]
-            }
-
-            type SeriesRelationshipCreatedEvent {
-              event: EventType!
-              relationshipFieldName: String!
-              series: SeriesEventPayload!
-              timestamp: Float!
-            }
-
-            input SeriesRelationshipCreatedSubscriptionWhere {
-              AND: [SeriesRelationshipCreatedSubscriptionWhere!]
-              NOT: SeriesRelationshipCreatedSubscriptionWhere
-              OR: [SeriesRelationshipCreatedSubscriptionWhere!]
-              series: SeriesSubscriptionWhere
-            }
-
-            type SeriesRelationshipDeletedEvent {
-              event: EventType!
-              relationshipFieldName: String!
-              series: SeriesEventPayload!
-              timestamp: Float!
-            }
-
-            input SeriesRelationshipDeletedSubscriptionWhere {
-              AND: [SeriesRelationshipDeletedSubscriptionWhere!]
-              NOT: SeriesRelationshipDeletedSubscriptionWhere
-              OR: [SeriesRelationshipDeletedSubscriptionWhere!]
-              series: SeriesSubscriptionWhere
             }
 
             \\"\\"\\"

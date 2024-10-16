@@ -20,6 +20,7 @@
 import type { GraphQLFieldMap } from "graphql";
 import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
+import { TestCDCEngine } from "../../utils/builders/TestCDCEngine";
 
 describe("@subscription directive", () => {
     describe("on OBJECT", () => {
@@ -39,7 +40,7 @@ describe("@subscription directive", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                features: { subscriptions: true },
+                features: { subscriptions: new TestCDCEngine() },
             });
             const schema = await neoSchema.getSchema();
 
@@ -78,7 +79,7 @@ describe("@subscription directive", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: true } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: new TestCDCEngine() } });
             const schema = await neoSchema.getSchema();
             const subscriptionFields = schema.getSubscriptionType()?.getFields() as GraphQLFieldMap<any, any>;
 
@@ -115,7 +116,7 @@ describe("@subscription directive", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: true } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: new TestCDCEngine() } });
             const schema = await neoSchema.getSchema();
             const subscriptionFields = schema.getSubscriptionType()?.getFields() as GraphQLFieldMap<any, any>;
 
@@ -152,7 +153,7 @@ describe("@subscription directive", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: true } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: new TestCDCEngine() } });
             const schema = await neoSchema.getSchema();
             const subscriptionFields = schema.getSubscriptionType()?.getFields() as GraphQLFieldMap<any, any>;
 
@@ -188,7 +189,7 @@ describe("@subscription directive", () => {
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: true } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: new TestCDCEngine() } });
 
             const schema = await neoSchema.getSchema();
             expect(schema).toBeDefined();
@@ -211,7 +212,7 @@ describe("@subscription directive", () => {
                 extend schema @subscription
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: true } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: new TestCDCEngine() } });
             const schema = await neoSchema.getSchema();
 
             const subscriptionFields = schema.getSubscriptionType()?.getFields() as GraphQLFieldMap<any, any>;
@@ -250,7 +251,7 @@ describe("@subscription directive", () => {
                 extend schema @subscription(events: [UPDATED, DELETED, RELATIONSHIP_CREATED, RELATIONSHIP_DELETED])
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: true } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: new TestCDCEngine() } });
             const schema = await neoSchema.getSchema();
             const subscriptionFields = schema.getSubscriptionType()?.getFields() as GraphQLFieldMap<any, any>;
 
@@ -288,7 +289,7 @@ describe("@subscription directive", () => {
                 extend schema @subscription(events: [CREATED, DELETED, RELATIONSHIP_CREATED, RELATIONSHIP_DELETED])
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: true } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: new TestCDCEngine() } });
             const schema = await neoSchema.getSchema();
             const subscriptionFields = schema.getSubscriptionType()?.getFields() as GraphQLFieldMap<any, any>;
 
@@ -326,7 +327,7 @@ describe("@subscription directive", () => {
                 extend schema @subscription(events: [CREATED, UPDATED, RELATIONSHIP_CREATED, RELATIONSHIP_DELETED])
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: true } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: new TestCDCEngine() } });
             const schema = await neoSchema.getSchema();
             const subscriptionFields = schema.getSubscriptionType()?.getFields() as GraphQLFieldMap<any, any>;
 
@@ -364,7 +365,7 @@ describe("@subscription directive", () => {
                 extend schema @subscription(events: [CREATED, UPDATED, DELETED, RELATIONSHIP_DELETED])
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: true } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: new TestCDCEngine() } });
             const schema = await neoSchema.getSchema();
             const subscriptionFields = schema.getSubscriptionType()?.getFields() as GraphQLFieldMap<any, any>;
 
@@ -402,7 +403,7 @@ describe("@subscription directive", () => {
                 extend schema @subscription(events: [CREATED, UPDATED, DELETED, RELATIONSHIP_CREATED])
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: true } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: new TestCDCEngine() } });
             const schema = await neoSchema.getSchema();
             const subscriptionFields = schema.getSubscriptionType()?.getFields() as GraphQLFieldMap<any, any>;
 
@@ -440,7 +441,7 @@ describe("@subscription directive", () => {
                 extend schema @subscription(events: [])
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: true } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: new TestCDCEngine() } });
             const schema = await neoSchema.getSchema();
             const subscriptionType = schema.getSubscriptionType();
             expect(subscriptionType).toBeUndefined();
@@ -460,7 +461,7 @@ describe("@subscription directive", () => {
                 }
                 extend schema @query(read: true) @subscription(events: [])
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: true } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: new TestCDCEngine() } });
 
             const schema = await neoSchema.getSchema();
             expect(schema).toBeDefined();
