@@ -5350,7 +5350,7 @@ describe("@filterable directive", () => {
                       node: Actor!
                     }
 
-                    type ActorEventPayload implements PersonEventPayload {
+                    type ActorEventPayload {
                       password: String!
                       username: String!
                     }
@@ -5838,10 +5838,6 @@ describe("@filterable directive", () => {
                       node: Person!
                     }
 
-                    interface PersonEventPayload {
-                      username: String!
-                    }
-
                     enum PersonImplementation {
                       Actor
                     }
@@ -6011,7 +6007,7 @@ describe("@filterable directive", () => {
                       node: Actor!
                     }
 
-                    type ActorEventPayload implements PersonEventPayload {
+                    type ActorEventPayload {
                       password: String!
                       username: String!
                     }
@@ -6534,10 +6530,6 @@ describe("@filterable directive", () => {
                       node: Person!
                     }
 
-                    interface PersonEventPayload {
-                      username: String!
-                    }
-
                     enum PersonImplementation {
                       Actor
                     }
@@ -6707,7 +6699,7 @@ describe("@filterable directive", () => {
                       node: Actor!
                     }
 
-                    type ActorEventPayload implements PersonEventPayload {
+                    type ActorEventPayload {
                       password: String!
                       username: String!
                     }
@@ -7193,10 +7185,6 @@ describe("@filterable directive", () => {
                     type PersonEdge {
                       cursor: String!
                       node: Person!
-                    }
-
-                    interface PersonEventPayload {
-                      username: String!
                     }
 
                     enum PersonImplementation {

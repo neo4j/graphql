@@ -457,11 +457,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               node: IProduct!
             }
 
-            interface IProductEventPayload {
-              id: String!
-              name: String!
-            }
-
             enum IProductImplementation {
               Movie
               Series
@@ -555,7 +550,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               node: Movie!
             }
 
-            type MovieEventPayload implements IProductEventPayload {
+            type MovieEventPayload {
               id: String!
               name: String!
             }
@@ -837,7 +832,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               node: Series!
             }
 
-            type SeriesEventPayload implements IProductEventPayload {
+            type SeriesEventPayload {
               id: String!
               name: String!
             }
@@ -1454,11 +1449,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               node: IProduct!
             }
 
-            interface IProductEventPayload {
-              id: String!
-              name: String!
-            }
-
             enum IProductImplementation {
               Movie
               Series
@@ -1552,7 +1542,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               node: Movie!
             }
 
-            type MovieEventPayload implements IProductEventPayload {
+            type MovieEventPayload {
               id: String!
               name: String!
             }
@@ -1831,7 +1821,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               node: Series!
             }
 
-            type SeriesEventPayload implements IProductEventPayload {
+            type SeriesEventPayload {
               id: String!
               name: String!
             }
@@ -2472,11 +2462,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               node: IProduct!
             }
 
-            interface IProductEventPayload {
-              id: String!
-              name: String!
-            }
-
             input IProductGenreAggregateInput {
               AND: [IProductGenreAggregateInput!]
               NOT: IProductGenreAggregateInput
@@ -2758,7 +2743,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               node: Movie!
             }
 
-            type MovieEventPayload implements IProductEventPayload {
+            type MovieEventPayload {
               id: String!
               name: String!
             }
@@ -3076,7 +3061,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               node: Series!
             }
 
-            type SeriesEventPayload implements IProductEventPayload {
+            type SeriesEventPayload {
               id: String!
               name: String!
             }
@@ -3768,11 +3753,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               node: IProduct!
             }
 
-            interface IProductEventPayload {
-              id: String!
-              name: String!
-            }
-
             input IProductGenreConnectInput {
               Genre: IProductGenreGenreConnectFieldInput
               Rating: IProductGenreRatingConnectFieldInput
@@ -4078,7 +4058,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               node: Movie!
             }
 
-            type MovieEventPayload implements IProductEventPayload {
+            type MovieEventPayload {
               id: String!
               name: String!
             }
@@ -4657,7 +4637,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               node: Series!
             }
 
-            type SeriesEventPayload implements IProductEventPayload {
+            type SeriesEventPayload {
               id: String!
               name: String!
             }

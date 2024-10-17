@@ -5434,10 +5434,6 @@ describe("Subscriptions", () => {
               node: Production!
             }
 
-            interface ProductionEventPayload {
-              id: ID
-            }
-
             enum ProductionImplementation {
               Movie
               Series
@@ -5607,7 +5603,7 @@ describe("Subscriptions", () => {
               node: Series!
             }
 
-            type SeriesEventPayload implements ProductionEventPayload {
+            type SeriesEventPayload {
               episode: Int!
               id: ID
               title: String!

@@ -348,39 +348,9 @@ export type NodeSubscriptionsEvent =
           id: string;
           timestamp: number;
       };
-export type RelationshipSubscriptionsEvent =
-    | {
-          event: "create_relationship";
-          relationshipName: string;
-          properties: {
-              from: Record<string, any>;
-              to: Record<string, any>;
-              relationship: Record<string, any>;
-          };
-          id_from: string;
-          id_to: string;
-          fromTypename: string;
-          toTypename: string;
-          id: string;
-          timestamp: number;
-      }
-    | {
-          event: "delete_relationship";
-          relationshipName: string;
-          properties: {
-              from: Record<string, any>;
-              to: Record<string, any>;
-              relationship: Record<string, any>;
-          };
-          id_from: string;
-          id_to: string;
-          fromTypename: string;
-          toTypename: string;
-          id: string;
-          timestamp: number;
-      };
+
 /** Serialized subscription event */
-export type SubscriptionsEvent = NodeSubscriptionsEvent | RelationshipSubscriptionsEvent;
+export type SubscriptionsEvent = NodeSubscriptionsEvent;
 
 export type SubscriptionEngineContext = {
     schemaModel: Neo4jGraphQLSchemaModel;

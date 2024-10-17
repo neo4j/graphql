@@ -21,7 +21,7 @@ import { on } from "events";
 import type { GraphQLResolveInfo } from "graphql";
 import { Neo4jGraphQLError } from "../../../classes";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import type { NodeSubscriptionsEvent, RelationshipSubscriptionsEvent, SubscriptionsEvent } from "../../../types";
+import type { NodeSubscriptionsEvent, SubscriptionsEvent } from "../../../types";
 import type { Neo4jGraphQLComposedSubscriptionsContext } from "../composition/wrap-subscription";
 import { checkAuthentication } from "./authentication/check-authentication";
 import { checkAuthenticationOnSelectionSet } from "./authentication/check-authentication-selection-set";
@@ -48,16 +48,6 @@ function isNodeSubscriptionEvent(event: SubscriptionsEvent | undefined): event i
     }
 
     return "typename" in event;
-}
-
-function isRelationshipSubscriptionEvent(
-    event: SubscriptionsEvent | undefined
-): event is RelationshipSubscriptionsEvent {
-    if (event === undefined) {
-        return false;
-    }
-
-    return "toTypename" in event && "fromTypename" in event;
 }
 
 export function generateSubscribeMethod({
@@ -89,36 +79,6 @@ export function generateSubscribeMethod({
                     subscriptionAuthorization({ event: data[0], entity: entityAdapter, context }) &&
                     subscriptionWhere({ where: args.where, event: data[0], entityAdapter }) &&
                     updateDiffFilter(data[0])
-                );
-            });
-        }
-
-        // TODO: Remove
-        if (["create_relationship", "delete_relationship"].includes(type)) {
-            return filterAsyncIterator<SubscriptionsEvent[]>(iterable, (data) => {
-                if (!isRelationshipSubscriptionEvent(data[0])) {
-                    return false;
-                }
-
-                const relationEventPayload = data[0];
-                const isOfRelevantType =
-                    relationEventPayload.toTypename === entityAdapter.name ||
-                    relationEventPayload.fromTypename === entityAdapter.name;
-                if (!isOfRelevantType) {
-                    return false;
-                }
-                const relationFieldName = Array.from(entityAdapter.relationships.values()).find(
-                    (r) => r.type === relationEventPayload.relationshipName
-                )?.name;
-
-                return (
-                    !!relationFieldName &&
-                    subscriptionAuthorization({
-                        event: data[0],
-                        entity: entityAdapter,
-                        context,
-                    }) &&
-                    subscriptionWhere({ where: args.where, event: data[0], entityAdapter })
                 );
             });
         }
