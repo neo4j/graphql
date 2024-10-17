@@ -13,6 +13,6 @@
         "neo4j-driver": "^5.8.0"
     },
     "devDependencies": {
-        "typescript": "5.1.6"
+        "typescript": "5.6.3"
     }
 }
