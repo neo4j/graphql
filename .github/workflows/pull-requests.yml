@@ -73,9 +73,6 @@ jobs:
   unit-tests:
     uses: ./.github/workflows/reusable-unit-tests.yml
 
-  e2e-tests-plugins:
-    uses: ./.github/workflows/reusable-subscriptions-plugin-amqp-e2e-test.yml
-
   api-library-tests:
     uses: ./.github/workflows/reusable-api-library-tests.yml
 
@@ -92,7 +89,6 @@ jobs:
       - code-scanning
       - package-tests
       - unit-tests
-      - e2e-tests-plugins
       - api-library-tests
       - integration-tests-on-prem
       - federation-tests
@@ -106,7 +102,6 @@ jobs:
             [ ${{ needs.code-scanning.result }} != 'success' ] ||
             [ ${{ needs.package-tests.result }} != 'success' ] ||
             [ ${{ needs.unit-tests.result }} != 'success' ] ||
-            [ ${{ needs.e2e-tests-plugins.result }} != 'success' ] ||
             [ ${{ needs.api-library-tests.result }} != 'success' ] ||
             [ ${{ needs.federation-tests.result }} != 'success' ] ||
             [ ${{ needs.integration-tests-on-prem.result }} != 'success' ]; then

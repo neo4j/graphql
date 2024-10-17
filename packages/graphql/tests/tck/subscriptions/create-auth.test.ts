@@ -68,46 +68,34 @@ describe("Subscriptions metadata on create", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            WITH [] AS meta
-            CREATE (this0:Actor)
-            SET this0.id = $this0_id
-            WITH *, meta + { event: \\"create\\", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp(), typename: \\"Actor\\" } AS meta
-            WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN this0, meta AS this0_meta
-            }
+            "UNWIND $create_param0 AS create_var0
             CALL {
-            WITH [] AS meta
-            CREATE (this1:Actor)
-            SET this1.id = $this1_id
-            WITH *, meta + { event: \\"create\\", id: id(this1), properties: { old: null, new: this1 { .* } }, timestamp: timestamp(), typename: \\"Actor\\" } AS meta
-            WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this1.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN this1, meta AS this1_meta
+                WITH create_var0
+                CREATE (create_this1:Actor)
+                SET
+                    create_this1.id = create_var0.id
+                WITH *
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND create_this1.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                RETURN create_this1
             }
-            WITH this0, this1, this0_meta + this1_meta AS meta
-            CALL {
-                WITH this0
-                RETURN this0 { .id } AS create_var0
-            }
-            CALL {
-                WITH this1
-                RETURN this1 { .id } AS create_var1
-            }
-            RETURN [create_var0, create_var1] AS data, meta"
+            RETURN collect(create_this1 { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_id\\": \\"1\\",
+                \\"create_param0\\": [
+                    {
+                        \\"id\\": \\"1\\"
+                    },
+                    {
+                        \\"id\\": \\"2\\"
+                    }
+                ],
                 \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [],
                     \\"sub\\": \\"super_admin\\"
-                },
-                \\"this1_id\\": \\"2\\",
-                \\"resolvedCallbacks\\": {}
+                }
             }"
         `);
     });

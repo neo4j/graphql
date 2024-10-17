@@ -40,7 +40,6 @@ export class ContextBuilder extends Builder<Neo4jGraphQLTranslationContext, Neo4
                 operations: {},
                 annotations: {},
             }),
-            subscriptionsEnabled: false,
             executionContext: {} as neo4j.Driver,
             executor: new Executor({ executionContext: {} as neo4j.Driver }),
             neo4jDatabaseInfo: {} as Neo4jDatabaseInfo,

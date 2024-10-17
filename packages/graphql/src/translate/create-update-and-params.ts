@@ -45,7 +45,6 @@ import createDeleteAndParams from "./create-delete-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
 import { createRelationshipValidationString } from "./create-relationship-validation-string";
 import createSetRelationshipProperties from "./create-set-relationship-properties";
-import { createConnectionEventMeta } from "./subscriptions/create-connection-event-meta";
 import { createEventMeta } from "./subscriptions/create-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 import { addCallbackAndSetParam } from "./utils/callback-utils";
@@ -141,11 +140,10 @@ export default function createUpdateAndParams({
 
             const subqueries: string[] = [];
             const intermediateWithMetaStatements: string[] = [];
-            refNodes.forEach((refNode, idx) => {
+            refNodes.forEach((refNode) => {
                 const v = relationField.union ? value[refNode.name] : value;
                 const updates = relationField.typeMeta.array ? v : [v];
                 const subquery: string[] = [];
-                let returnMetaStatement = "";
 
                 updates.forEach((update, index) => {
                     const relationshipVariable = `${varName}_${relationField.typeUnescaped.toLowerCase()}${index}_relationship`;
@@ -322,13 +320,7 @@ export default function createUpdateAndParams({
                             innerUpdate.push(updateAndParams[0]);
                         }
 
-                        if (context.subscriptionsEnabled) {
-                            innerUpdate.push(`RETURN collect(${META_CYPHER_VARIABLE}) as update_meta`);
-                            returnMetaStatement = `meta AS update${idx}_meta`;
-                            intermediateWithMetaStatements.push(`WITH *, update${idx}_meta AS meta`);
-                        } else {
-                            innerUpdate.push(`RETURN count(*) AS update_${variableName}`);
-                        }
+                        innerUpdate.push(`RETURN count(*) AS update_${variableName}`);
 
                         subquery.push(
                             `WITH ${withVars.join(", ")}`,
@@ -336,10 +328,6 @@ export default function createUpdateAndParams({
                             indentBlock(innerUpdate.join("\n")),
                             "}"
                         );
-                        if (context.subscriptionsEnabled) {
-                            const reduceMeta = `REDUCE(m=${META_CYPHER_VARIABLE}, n IN update_meta | m + n) AS ${META_CYPHER_VARIABLE}`;
-                            subquery.push(`WITH ${filterMetaVariable(withVars).join(", ")}, ${reduceMeta}`);
-                        }
                     }
 
                     if (update.connect) {
@@ -381,10 +369,7 @@ export default function createUpdateAndParams({
                             source: "UPDATE",
                         });
                         subquery.push(connectAndParams[0]);
-                        if (context.subscriptionsEnabled) {
-                            returnMetaStatement = `meta AS update${idx}_meta`;
-                            intermediateWithMetaStatements.push(`WITH *, update${idx}_meta AS meta`);
-                        }
+
                         res.params = { ...res.params, ...connectAndParams[1] };
                     }
 
@@ -473,7 +458,7 @@ export default function createUpdateAndParams({
                             });
                             subquery.push(nestedCreate);
                             res.params = { ...res.params, ...params };
-                            const relationVarName = create.edge || context.subscriptionsEnabled ? propertiesName : "";
+                            const relationVarName = create.edge ? propertiesName : "";
                             subquery.push(
                                 `MERGE (${parentVar})${inStr}[${relationVarName}:${relationField.type}]${outStr}(${nodeName})`
                             );
@@ -504,31 +489,6 @@ export default function createUpdateAndParams({
                                 ...getAuthorizationStatements(authorizationPredicates, authorizationSubqueries)
                             );
 
-                            if (context.subscriptionsEnabled) {
-                                const [fromVariable, toVariable] =
-                                    relationField.direction === "IN" ? [nodeName, varName] : [varName, nodeName];
-                                const [fromTypename, toTypename] =
-                                    relationField.direction === "IN"
-                                        ? [refNode.name, node.name]
-                                        : [node.name, refNode.name];
-                                const eventWithMetaStr = createConnectionEventMeta({
-                                    event: "create_relationship",
-                                    relVariable: propertiesName,
-                                    fromVariable,
-                                    toVariable,
-                                    typename: relationField.typeUnescaped,
-                                    fromTypename,
-                                    toTypename,
-                                });
-                                subquery.push(
-                                    `WITH ${eventWithMetaStr}, ${filterMetaVariable([...withVars, nodeName]).join(
-                                        ", "
-                                    )}`
-                                );
-                                returnMetaStatement = `meta AS update${idx}_meta`;
-                                intermediateWithMetaStatements.push(`WITH *, update${idx}_meta AS meta`);
-                            }
-
                             const relationshipValidationStr = createRelationshipValidationString({
                                 node: refNode,
                                 context,
@@ -543,11 +503,8 @@ export default function createUpdateAndParams({
 
                     if (relationField.interface) {
                         const returnStatement = `RETURN count(*) AS update_${varName}_${refNode.name}`;
-                        if (context.subscriptionsEnabled && returnMetaStatement) {
-                            subquery.push(`RETURN ${returnMetaStatement}`);
-                        } else {
-                            subquery.push(returnStatement);
-                        }
+
+                        subquery.push(returnStatement);
                     }
                 });
 
@@ -796,15 +753,8 @@ export default function createUpdateAndParams({
         }
     }
 
-    let statements = strs;
-    if (context.subscriptionsEnabled) {
-        statements = wrapInSubscriptionsMetaCall({
-            withVars,
-            nodeVariable: varName,
-            typename: node.name,
-            statements: strs,
-        });
-    }
+    const statements = strs;
+
     return [
         [
             preUpdatePredicatesStr,

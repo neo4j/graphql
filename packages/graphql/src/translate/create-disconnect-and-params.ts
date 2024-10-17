@@ -25,8 +25,6 @@ import { caseWhere } from "../utils/case-where";
 import { checkAuthentication } from "./authorization/check-authentication";
 import { createAuthorizationAfterAndParams } from "./authorization/compatibility/create-authorization-after-and-params";
 import { createAuthorizationBeforeAndParams } from "./authorization/compatibility/create-authorization-before-and-params";
-import { createConnectionEventMetaObject } from "./subscriptions/create-connection-event-meta";
-import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 
 interface Res {
@@ -157,35 +155,9 @@ function createDisconnectAndParams({
         subquery.push(`\tWITH collect(${variableName}) as ${variableName}, ${relVarName}, ${parentVar}`);
         subquery.push(`\tUNWIND ${variableName} as x`);
 
-        if (context.subscriptionsEnabled) {
-            const [fromVariable, toVariable] = relationField.direction === "IN" ? ["x", parentVar] : [parentVar, "x"];
-            const [fromTypename, toTypename] =
-                relationField.direction === "IN"
-                    ? [relatedNode.name, parentNode.name]
-                    : [parentNode.name, relatedNode.name];
-            const eventWithMetaStr = createConnectionEventMetaObject({
-                event: "delete_relationship",
-                relVariable: relVarName,
-                fromVariable,
-                toVariable,
-                typename: relationField.typeUnescaped,
-                fromTypename,
-                toTypename,
-            });
-            subquery.push(`\tWITH ${eventWithMetaStr} as meta, ${relVarName}`);
-            subquery.push(`\tDELETE ${relVarName}`);
-            subquery.push(`\tRETURN collect(meta) as update_meta`);
-        } else {
-            subquery.push(`\tDELETE ${relVarName}`);
-        }
+        subquery.push(`\tDELETE ${relVarName}`);
 
         subquery.push(`}`);
-
-        if (context.subscriptionsEnabled) {
-            subquery.push(
-                `WITH ${filterMetaVariable(withVars).join(", ")}, ${variableName}, meta + update_meta as meta`
-            );
-        }
 
         // TODO - relationship validation - Blocking, if this were to be enforced it would stop someone from 'reconnecting'
 
@@ -270,12 +242,7 @@ function createDisconnectAndParams({
             }
         }
 
-        if (context.subscriptionsEnabled) {
-            subquery.push(`WITH collect(meta) AS disconnect_meta`);
-            subquery.push(`RETURN REDUCE(m=[],m1 IN disconnect_meta | m+m1 ) as disconnect_meta`);
-        } else {
-            subquery.push(`RETURN count(*) AS disconnect_${varName}_${relatedNode.name}`);
-        }
+        subquery.push(`RETURN count(*) AS disconnect_${varName}_${relatedNode.name}`);
 
         return { subquery: subquery.join("\n"), params };
     }
@@ -296,14 +263,7 @@ function createDisconnectAndParams({
                 }
             });
             if (subqueries.length > 0) {
-                if (context.subscriptionsEnabled) {
-                    const withStatement = `WITH ${filterMetaVariable(withVars).join(
-                        ", "
-                    )}, disconnect_meta + meta AS meta`;
-                    inner.push(subqueries.join(`\n}\n${withStatement}\nCALL {\n\t`));
-                } else {
-                    inner.push(subqueries.join("\n}\nCALL {\n\t"));
-                }
+                inner.push(subqueries.join("\n}\nCALL {\n\t"));
             }
         } else {
             const subquery = createSubqueryContents(refNodes[0] as Node, disconnect, index);
@@ -315,10 +275,6 @@ function createDisconnectAndParams({
             res.disconnects.push("CALL {");
             res.disconnects.push(...inner);
             res.disconnects.push("}");
-
-            if (context.subscriptionsEnabled) {
-                res.disconnects.push(`WITH ${filterMetaVariable(withVars).join(", ")}, disconnect_meta + meta as meta`);
-            }
         }
 
         return res;

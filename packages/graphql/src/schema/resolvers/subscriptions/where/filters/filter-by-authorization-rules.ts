@@ -19,18 +19,12 @@
 
 import type { SubscriptionsAuthorizationWhere } from "../../../../../schema-model/annotation/SubscriptionsAuthorizationAnnotation";
 import type { ConcreteEntityAdapter } from "../../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { filterByValues } from "../../../../../translate/authorization/utils/filter-by-values";
-import type { RelationshipSubscriptionsEvent, SubscriptionsEvent } from "../../../../../types";
+import type { SubscriptionsEvent } from "../../../../../types";
 import type { Neo4jGraphQLComposedSubscriptionsContext } from "../../../composition/wrap-subscription";
 import type { RecordType, RelationshipType } from "../../types";
-import { filterRelationshipKey } from "../utils/filter-relationship-key";
 import { multipleConditionsAggregationMap } from "../utils/multiple-conditions-aggregation-map";
 import { filterByProperties } from "./filter-by-properties";
-
-function isRelationshipSubscriptionsEvent(event: SubscriptionsEvent): event is RelationshipSubscriptionsEvent {
-    return ["create_relationship", "delete_relationship"].includes(event.event);
-}
 
 export function filterByAuthorizationRules({
     entityAdapter,
@@ -48,8 +42,6 @@ export function filterByAuthorizationRules({
     event: SubscriptionsEvent;
     context: Neo4jGraphQLComposedSubscriptionsContext;
 }): boolean {
-    const receivedEventProperties = event.properties;
-
     const results = Object.entries(where).map(([wherePropertyKey, wherePropertyValue]) => {
         if (Object.keys(multipleConditionsAggregationMap).includes(wherePropertyKey)) {
             const comparisonResultsAggregationFn = multipleConditionsAggregationMap[wherePropertyKey];
@@ -92,48 +84,7 @@ export function filterByAuthorizationRules({
                         whereProperties: wherePropertyValue,
                         receivedProperties: event.properties.old,
                     });
-                case "create_relationship":
-                case "delete_relationship": {
-                    const receivedEventRelationshipType = event.relationshipName;
-                    // TODO: this was f.type
-                    const relationships = Array.from(entityAdapter.relationships.values()).filter(
-                        (f) => f.type === receivedEventRelationshipType
-                    );
-                    if (!relationships.length) {
-                        return false;
-                    }
-                    const receivedEventRelationship = relationships[0] as RelationshipAdapter; // ONE relationship only possible
-                    const key = receivedEventRelationship.direction === "IN" ? "to" : "from";
-                    return filterByProperties({
-                        attributes: entityAdapter.attributes,
-                        whereProperties: wherePropertyValue,
-                        receivedProperties: receivedEventProperties[key],
-                    });
-                }
             }
-        }
-
-        if (wherePropertyKey === "relationship") {
-            // if (!nodes || !relationshipFields || !isRelationshipSubscriptionsEvent(event)) {
-            if (!isRelationshipSubscriptionsEvent(event)) {
-                return false;
-            }
-
-            const receivedEventRelationshipType = event.relationshipName;
-            // TODO: this was f.typeUnescaped
-            const relationships = Array.from(entityAdapter.relationships.values()).filter(
-                (f) => f.type === receivedEventRelationshipType
-            );
-            const receivedEventRelationship = relationships[0]; // ONE relationship only possible
-            if (!receivedEventRelationship) {
-                return false;
-            }
-
-            return filterRelationshipKey({
-                receivedEventRelationship,
-                where: wherePropertyValue,
-                receivedEvent: event,
-            });
         }
 
         if (wherePropertyKey === "jwt") {

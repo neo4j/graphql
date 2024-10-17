@@ -649,10 +649,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               node: Production!
             }
 
-            interface ProductionEventPayload {
-              id: ID
-            }
-
             enum ProductionImplementation {
               Movie
               Series
@@ -822,7 +818,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               node: Series!
             }
 
-            type SeriesEventPayload implements ProductionEventPayload {
+            type SeriesEventPayload {
               episode: Int!
               id: ID
               title: String!

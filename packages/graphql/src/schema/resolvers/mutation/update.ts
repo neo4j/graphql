@@ -30,7 +30,6 @@ import type { Neo4jFeaturesSettings } from "../../../types";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { execute } from "../../../utils";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
-import { publishEventsToSubscriptionMechanism } from "../../subscriptions/publish-events-to-subscription-mechanism";
 import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
 
 export function updateResolver({
@@ -57,8 +56,6 @@ export function updateResolver({
             context,
             info,
         });
-
-        publishEventsToSubscriptionMechanism(executeResult, context.features?.subscriptionsEngine, context.schemaModel);
 
         const nodeProjection = info.fieldNodes[0]?.selectionSet?.selections.find(
             (selection): selection is FieldNode =>

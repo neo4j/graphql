@@ -293,13 +293,10 @@ function makeAugmentedSchema({
     });
 
     if (features?.subscriptions && nodes.length) {
-        // TODO: Update CDC
-        const isCDCEngine = true;
         generateSubscriptionTypes({
             schemaComposer: composer,
             schemaModel,
             userDefinedFieldDirectivesForNode,
-            generateRelationshipTypes: !isCDCEngine,
             features,
         });
     }

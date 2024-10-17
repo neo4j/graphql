@@ -60,22 +60,10 @@ describe("Subscriptions metadata on update", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "WITH [] AS meta
-            MATCH (this:Movie)
+            "MATCH (this:Movie)
             WHERE this.id = $param0
-            WITH this { .* } AS oldProps, this, meta
-            CALL {
-            	WITH *
-            	SET this.id = $this_update_id
-            	RETURN meta as update_meta
-            }
-            WITH *, update_meta as meta
-            WITH this, meta + { event: \\"update\\", id: id(this), properties: { old: oldProps, new: this { .* } }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta
-            WITH *
-            UNWIND (CASE meta WHEN [] then [null] else meta end) AS m
-            RETURN collect(DISTINCT this { .id }) AS data
-            ,
-            collect(DISTINCT m) as meta"
+            SET this.id = $this_update_id
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -107,38 +95,18 @@ describe("Subscriptions metadata on update", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "WITH [] AS meta
-            MATCH (this:Movie)
+            "MATCH (this:Movie)
             WHERE this.id = $param0
-            WITH this { .* } AS oldProps, this, meta
+            SET this.id = $this_update_id
+            WITH this
             CALL {
-            	WITH *
-            	SET this.id = $this_update_id
-            	WITH this, meta
-            CALL {
-            	WITH this, meta
+            	WITH this
             	MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
             	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_this_actors0param0
-            	WITH this_actors0 { .* } AS oldProps, this, meta, this_actors0
-            	CALL {
-            		WITH *
-            		SET this_actors0.name = $this_update_actors0_name
-            		RETURN meta as update_meta
-            	}
-            	WITH *, update_meta as meta
-            	WITH this, this_actors0, meta + { event: \\"update\\", id: id(this_actors0), properties: { old: oldProps, new: this_actors0 { .* } }, timestamp: timestamp(), typename: \\"Actor\\" } AS meta
-            	RETURN collect(meta) as update_meta
+            	SET this_actors0.name = $this_update_actors0_name
+            	RETURN count(*) AS update_this_actors0
             }
-            WITH this, REDUCE(m=meta, n IN update_meta | m + n) AS meta
-            	RETURN meta as update_meta
-            }
-            WITH *, update_meta as meta
-            WITH this, meta + { event: \\"update\\", id: id(this), properties: { old: oldProps, new: this { .* } }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta
-            WITH *
-            UNWIND (CASE meta WHEN [] then [null] else meta end) AS m
-            RETURN collect(DISTINCT this { .id }) AS data
-            ,
-            collect(DISTINCT m) as meta"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
