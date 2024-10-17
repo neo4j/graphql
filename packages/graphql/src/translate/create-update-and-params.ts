@@ -140,11 +140,10 @@ export default function createUpdateAndParams({
 
             const subqueries: string[] = [];
             const intermediateWithMetaStatements: string[] = [];
-            refNodes.forEach((refNode, idx) => {
+            refNodes.forEach((refNode) => {
                 const v = relationField.union ? value[refNode.name] : value;
                 const updates = relationField.typeMeta.array ? v : [v];
                 const subquery: string[] = [];
-                const returnMetaStatement = "";
 
                 updates.forEach((update, index) => {
                     const relationshipVariable = `${varName}_${relationField.typeUnescaped.toLowerCase()}${index}_relationship`;
