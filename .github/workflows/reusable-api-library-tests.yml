@@ -20,16 +20,16 @@ jobs:
           - 2/4
           - 3/4
           - 4/4
-        graphql-version:
-          - "^15.0.0"
-          - "^16.0.0"
-        neo4j-version:
-          - 5-community
-          - 5-enterprise
+        version:
+          [
+            { graphql: "^16.0.0", neo4j: "5-community" },
+            { graphql: "^15.0.0", neo4j: "5-enterprise" },
+            { graphql: "^16.0.0", neo4j: "5-enterprise" },
+          ]
 
     services:
       neo4j:
-        image: neo4j:${{ matrix.neo4j-version }}
+        image: neo4j:${{ matrix.version.neo4j }}
         env:
           NEO4J_AUTH: neo4j/password
           NEO4J_PLUGINS: '["apoc"]'
@@ -46,7 +46,7 @@ jobs:
       - name: Install dependencies
         run: yarn
       - name: Overwrite GraphQL version
-        run: yarn up --exact graphql@${{ matrix.graphql-version }}
+        run: yarn up --exact graphql@${{ matrix.version.graphql }}
       - name: Run TCK tests
         run: yarn --cwd packages/graphql run test:tck --shard=${{ matrix.shard }} --coverage
         env:

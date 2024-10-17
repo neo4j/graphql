@@ -39,10 +39,7 @@ jobs:
 
     strategy:
       matrix:
-        node: [
-          { name: "lts/*", coverage_name: "lts" },
-          { name: "latest", coverage_name: "latest" }
-        ]
+        node: [{ name: "lts/*", coverage_name: "lts" }, { name: "latest", coverage_name: "latest" }]
         packages:
           [
             { package: "introspector", shard: 1/1, coverage_name: 2 },
@@ -51,10 +48,7 @@ jobs:
             { package: "graphql", shard: 3/4, coverage_name: 5 },
             { package: "graphql", shard: 4/4, coverage_name: 6 },
           ]
-        graphql-version: [
-          { version: "^15.0.0", coverage_path: 15 },
-          { version: "^16.0.0", coverage_path: 16 }
-        ]
+        graphql-version: [{ version: "^15.0.0", coverage_path: 15 }, { version: "^16.0.0", coverage_path: 16 }]
 
     runs-on: ubuntu-latest
 
