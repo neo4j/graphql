@@ -21,7 +21,6 @@ import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/mode
 import type { SubscriptionsEvent } from "../../../../types";
 import type { RecordType, RelationshipType } from "../types";
 import { filterByProperties } from "./filters/filter-by-properties";
-import { filterByRelationshipProperties } from "./filters/filter-by-relationship-properties";
 
 export function subscriptionWhere({
     where,
@@ -49,17 +48,6 @@ export function subscriptionWhere({
             attributes: entityAdapter.attributes,
             whereProperties: where,
             receivedProperties: event.properties.old,
-        });
-    }
-
-    if (event.event === "create_relationship" || event.event === "delete_relationship") {
-        // if (!nodes || !relationshipFields) {
-        //     return false;
-        // }
-        return filterByRelationshipProperties({
-            entityAdapter,
-            whereProperties: where,
-            receivedEvent: event,
         });
     }
 

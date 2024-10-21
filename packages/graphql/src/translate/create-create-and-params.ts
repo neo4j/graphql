@@ -32,8 +32,6 @@ import createConnectAndParams from "./create-connect-and-params";
 import { createConnectOrCreateAndParams } from "./create-connect-or-create-and-params";
 import { createRelationshipValidationString } from "./create-relationship-validation-string";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
-import { createConnectionEventMeta } from "./subscriptions/create-connection-event-meta";
-import { createEventMeta } from "./subscriptions/create-event-meta";
 import { addCallbackAndSetParam } from "./utils/callback-utils";
 
 interface Res {
@@ -137,9 +135,7 @@ function createCreateAndParams({
                             return;
                         }
 
-                        if (!context.subscriptionsEnabled) {
-                            res.creates.push(`\nWITH *`);
-                        }
+                        res.creates.push(`\nWITH *`);
 
                         const baseName = `${varNameKey}${relationField.union ? "_" : ""}${unionTypeName}${createIndex}`;
                         const nodeName = `${baseName}_node`;
@@ -166,8 +162,7 @@ function createCreateAndParams({
 
                         const inStr = relationField.direction === "IN" ? "<-" : "-";
                         const outStr = relationField.direction === "OUT" ? "->" : "-";
-                        const relationVarName =
-                            relationField.properties || context.subscriptionsEnabled ? propertiesName : "";
+                        const relationVarName = relationField.properties ? propertiesName : "";
                         const relTypeStr = `[${relationVarName}:${relationField.type}]`;
                         res.creates.push(`MERGE (${varName})${inStr}${relTypeStr}${outStr}(${nodeName})`);
 
@@ -192,25 +187,6 @@ function createCreateAndParams({
                                 res.meta.authorizationSubqueries.push(...authorizationSubqueries);
                             }
                             res.meta.authorizationPredicates.push(...authorizationPredicates);
-                        }
-
-                        if (context.subscriptionsEnabled) {
-                            const [fromVariable, toVariable] =
-                                relationField.direction === "IN" ? [nodeName, varName] : [varName, nodeName];
-                            const [fromTypename, toTypename] =
-                                relationField.direction === "IN"
-                                    ? [refNode.name, node.name]
-                                    : [node.name, refNode.name];
-                            const eventWithMetaStr = createConnectionEventMeta({
-                                event: "create_relationship",
-                                relVariable: propertiesName,
-                                fromVariable,
-                                toVariable,
-                                typename: relationField.typeUnescaped,
-                                fromTypename,
-                                toTypename,
-                            });
-                            res.creates.push(`WITH *, ${eventWithMetaStr}`);
                         }
 
                         const relationshipValidationStr = createRelationshipValidationString({
@@ -352,12 +328,6 @@ function createCreateAndParams({
             authorizationSubqueries: [],
         },
     });
-
-    if (context.subscriptionsEnabled) {
-        const eventWithMetaStr = createEventMeta({ event: "create", nodeVariable: varName, typename: node.name });
-        const withStrs = [eventWithMetaStr];
-        creates.push(`WITH *, ${withStrs.join(", ")}`);
-    }
 
     const { authorizationPredicates, authorizationSubqueries } = meta;
     const authorizationAndParams = createAuthorizationAfterAndParams({
