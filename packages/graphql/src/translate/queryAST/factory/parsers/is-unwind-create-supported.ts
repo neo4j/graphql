@@ -91,12 +91,6 @@ export function isUnwindCreateSupported(
 }
 
 function checkSubscriptionEnabled(context: Neo4jGraphQLTranslationContext): UnwindCreateSupported {
-    if (context.subscriptionsEnabled) {
-        return {
-            isSupported: false,
-            reason: UNSUPPORTED_REASON_SUBSCRIPTION,
-        };
-    }
     return SUPPORTED;
 }
 

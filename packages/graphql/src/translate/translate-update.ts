@@ -21,9 +21,7 @@ import Cypher from "@neo4j/cypher-builder";
 import Debug from "debug";
 import type { Node, Relationship } from "../classes";
 import { CallbackBucket } from "../classes/CallbackBucket";
-import { DEBUG_TRANSLATE, META_CYPHER_VARIABLE } from "../constants";
-import { createConnectionEventMeta } from "../translate/subscriptions/create-connection-event-meta";
-import { filterMetaVariable } from "../translate/subscriptions/filter-meta-variable";
+import { DEBUG_TRANSLATE } from "../constants";
 import type { GraphQLWhereArg, RelationField } from "../types";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { compileCypher } from "../utils/compile-cypher";
@@ -59,10 +57,6 @@ export default async function translateUpdate({
     const varName = "this";
     const callbackBucket: CallbackBucket = new CallbackBucket(context);
     const withVars = [varName];
-
-    if (context.subscriptionsEnabled) {
-        withVars.push(META_CYPHER_VARIABLE);
-    }
 
     let matchAndWhereStr = "";
     let updateStr = "";
@@ -356,8 +350,7 @@ export default async function translateUpdate({
                     }${index}`;
                     const nodeName = `${baseName}_node${relationField.interface ? `_${refNode.name}` : ""}`;
                     const propertiesName = `${baseName}_relationship`;
-                    const relationVarName =
-                        relationField.properties || context.subscriptionsEnabled ? propertiesName : "";
+                    const relationVarName = relationField.properties ? propertiesName : "";
                     const relTypeStr = `[${relationVarName}:${relationField.type}]`;
 
                     if (!relationField.typeMeta.array) {
@@ -420,25 +413,6 @@ export default async function translateUpdate({
                     }
 
                     creates.push(...getAuthorizationStatements(authorizationPredicates, authorizationSubqueries));
-
-                    if (context.subscriptionsEnabled) {
-                        const [fromVariable, toVariable] =
-                            relationField.direction === "IN" ? [nodeName, varName] : [varName, nodeName];
-                        const [fromTypename, toTypename] =
-                            relationField.direction === "IN" ? [refNode.name, node.name] : [node.name, refNode.name];
-                        const eventWithMetaStr = createConnectionEventMeta({
-                            event: "create_relationship",
-                            relVariable: propertiesName,
-                            fromVariable,
-                            toVariable,
-                            typename: relationField.typeUnescaped,
-                            fromTypename,
-                            toTypename,
-                        });
-                        createStrs.push(
-                            `WITH ${eventWithMetaStr}, ${filterMetaVariable([...withVars, nodeName]).join(", ")}`
-                        );
-                    }
                 });
             });
         });
@@ -474,7 +448,6 @@ export default async function translateUpdate({
 
     const updateQuery = new Cypher.Raw((env: Cypher.Environment) => {
         const cypher = [
-            ...(context.subscriptionsEnabled ? [`WITH [] AS ${META_CYPHER_VARIABLE}`] : []),
             matchAndWhereStr,
             deleteStr,
             disconnectStrs.join("\n"),
@@ -493,14 +466,7 @@ export default async function translateUpdate({
             ...(relationshipValidationStr ? [`WITH *`, relationshipValidationStr] : []),
             ...connectionStrs,
             ...interfaceStrs,
-            ...(context.subscriptionsEnabled
-                ? [
-                      `WITH *`,
-                      `UNWIND (CASE ${META_CYPHER_VARIABLE} WHEN [] then [null] else ${META_CYPHER_VARIABLE} end) AS m`,
-                  ]
-                : []),
             compileCypher(projectionStatements, env),
-            ...(context.subscriptionsEnabled ? [`,\ncollect(DISTINCT m) as ${META_CYPHER_VARIABLE}`] : []),
         ]
             .filter(Boolean)
             .join("\n");
