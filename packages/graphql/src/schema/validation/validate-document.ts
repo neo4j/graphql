@@ -19,7 +19,6 @@
 
 import { asArray, type IResolvers } from "@graphql-tools/utils";
 import type {
-    ConstDirectiveNode,
     DefinitionNode,
     DocumentNode,
     EnumTypeDefinitionNode,
@@ -135,9 +134,8 @@ function filterDocument(document: DocumentNode): DocumentNode {
             });
     };
 
-    const filterDirectives = (
-        directives: readonly ConstDirectiveNode[] | undefined
-    ): ConstDirectiveNode[] | undefined => {
+    // currentDirectiveDirective is of type ConstDirectiveNode, has to be any to support GraphQL 15
+    const filterDirectives = (directives: readonly any[] | undefined): any[] | undefined => {
         return directives?.filter((directive) => {
             return !["authentication", "authorization", "subscriptionsAuthorization"].includes(directive.name.value);
         });
