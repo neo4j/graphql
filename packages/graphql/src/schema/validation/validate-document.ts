@@ -69,7 +69,7 @@ import { WarnIfSubscriptionsAuthorizationMissing } from "./custom-rules/warnings
 import { validateSchemaCustomizations } from "./validate-schema-customizations";
 import { validateSDL } from "./validate-sdl";
 
-function filterDocument(document: DocumentNode): DocumentNode {
+function filterDocument(document: DocumentNode, filterDirectives: boolean = false): DocumentNode {
     const nodeNames = document.definitions
         .filter((definition) => {
             if (definition.kind === Kind.OBJECT_TYPE_DEFINITION) {
@@ -129,13 +129,13 @@ function filterDocument(document: DocumentNode): DocumentNode {
                 return {
                     ...field,
                     arguments: filterInputTypes(field.arguments),
-                    directives: filterDirectives(field.directives),
+                    directives: filterDirectives ? filterDirectiveNodes(field.directives) : field.directives,
                 };
             });
     };
 
     // currentDirectiveDirective is of type ConstDirectiveNode, has to be any to support GraphQL 15
-    const filterDirectives = (directives: readonly any[] | undefined): any[] | undefined => {
+    const filterDirectiveNodes = (directives: readonly any[] | undefined): any[] | undefined => {
         return directives?.filter((directive) => {
             return !["authentication", "authorization", "subscriptionsAuthorization"].includes(directive.name.value);
         });
@@ -175,7 +175,7 @@ function filterDocument(document: DocumentNode): DocumentNode {
                     {
                         ...def,
                         fields,
-                        directives: filterDirectives(def.directives),
+                        directives: filterDirectives ? filterDirectiveNodes(def.directives) : def.directives,
                     },
                 ];
             }
@@ -295,8 +295,8 @@ function validateDocument({
     }
 
     // TODO: how to improve this??
-    // validates `@customResolver`
-    validateSchemaCustomizations({ document, schema });
+    // validates `@customResolver`, which needs to additionally have authorization directives filtered out for mergeSchemas not to error
+    validateSchemaCustomizations({ document, schema: extendSchema(schemaToExtend, filterDocument(document, true)) });
 }
 
 export default validateDocument;
