@@ -19,6 +19,7 @@
 
 import { asArray, type IResolvers } from "@graphql-tools/utils";
 import type {
+    ConstDirectiveNode,
     DefinitionNode,
     DocumentNode,
     EnumTypeDefinitionNode,
@@ -129,8 +130,17 @@ function filterDocument(document: DocumentNode): DocumentNode {
                 return {
                     ...field,
                     arguments: filterInputTypes(field.arguments),
+                    directives: filterDirectives(field.directives),
                 };
             });
+    };
+
+    const filterDirectives = (
+        directives: readonly ConstDirectiveNode[] | undefined
+    ): ConstDirectiveNode[] | undefined => {
+        return directives?.filter((directive) => {
+            return !["authentication", "authorization", "subscriptionsAuthorization"].includes(directive.name.value);
+        });
     };
 
     const filteredDocument: DocumentNode = {
@@ -167,6 +177,7 @@ function filterDocument(document: DocumentNode): DocumentNode {
                     {
                         ...def,
                         fields,
+                        directives: filterDirectives(def.directives),
                     },
                 ];
             }
