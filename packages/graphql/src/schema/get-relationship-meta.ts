@@ -21,10 +21,8 @@ import type { DirectiveNode, FieldDefinitionNode } from "graphql";
 import type { RelationshipNestedOperationsOption, RelationshipQueryDirectionOption } from "../constants";
 import { relationshipDirective } from "../graphql/directives/relationship";
 import { parseArguments } from "../schema-model/parser/parse-arguments";
-
 import Cypher from "@neo4j/cypher-builder";
-
-type RelationshipDirection = "IN" | "OUT";
+import type { RelationshipDirection } from "../schema-model/relationship/Relationship";
 
 type RelationshipMeta = {
     direction: RelationshipDirection;
