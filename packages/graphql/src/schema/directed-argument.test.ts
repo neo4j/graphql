@@ -24,7 +24,7 @@ import { addDirectedArgument, getDirectedArgument } from "./directed-argument";
 
 describe("Directed argument", () => {
     describe("getDirectedArgument", () => {
-        test("should return default true argument for DEFAULT_DIRECTED", () => {
+        test("should return default true argument for DEFAULT_DIRECTED  (deprecated)", () => {
             expect(
                 getDirectedArgument(
                     {
@@ -39,7 +39,7 @@ describe("Directed argument", () => {
             });
         });
 
-        test("should return default false argument for DEFAULT_UNDIRECTED", () => {
+        test("should return default false argument for DEFAULT_UNDIRECTED  (deprecated)", () => {
             expect(
                 getDirectedArgument(
                     {
@@ -54,7 +54,7 @@ describe("Directed argument", () => {
             });
         });
 
-        test("should return an undefined argument for DIRECTED_ONLY", () => {
+        test("should return an undefined argument for DIRECTED_ONLY (deprecated)", () => {
             expect(
                 getDirectedArgument(
                     {
@@ -65,11 +65,33 @@ describe("Directed argument", () => {
             ).toBeUndefined();
         });
 
-        test("should return an undefined argument for UNDIRECTED_ONLY", () => {
+        test("should return an undefined argument for UNDIRECTED_ONLY (deprecated)", () => {
             expect(
                 getDirectedArgument(
                     {
                         queryDirection: RelationshipQueryDirectionOption.UNDIRECTED_ONLY,
+                    } as RelationshipAdapter,
+                    {}
+                )
+            ).toBeUndefined();
+        });
+
+        test("should return an undefined argument for DIRECTED", () => {
+            expect(
+                getDirectedArgument(
+                    {
+                        queryDirection: RelationshipQueryDirectionOption.DIRECTED,
+                    } as RelationshipAdapter,
+                    {}
+                )
+            ).toBeUndefined();
+        });
+
+        test("should return an undefined argument for UNDIRECTED", () => {
+            expect(
+                getDirectedArgument(
+                    {
+                        queryDirection: RelationshipQueryDirectionOption.UNDIRECTED,
                     } as RelationshipAdapter,
                     {}
                 )
@@ -111,6 +133,19 @@ describe("Directed argument", () => {
                 { arg1: "dsa" },
                 {
                     queryDirection: RelationshipQueryDirectionOption.DIRECTED_ONLY,
+                } as RelationshipAdapter,
+                {}
+            );
+            expect(args).toEqual({
+                arg1: "dsa",
+            });
+        });
+
+        test("should not add any argument if DIRECTED", () => {
+            const args = addDirectedArgument(
+                { arg1: "dsa" },
+                {
+                    queryDirection: RelationshipQueryDirectionOption.DIRECTED,
                 } as RelationshipAdapter,
                 {}
             );

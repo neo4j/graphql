@@ -31,7 +31,13 @@ export const RelationshipQueryDirectionEnum = new GraphQLEnumType({
             deprecationReason:
                 "DEFAULT_UNDIRECTED is deprecated without alternative and it will be removed in future versions, this is following the deprecation of the generated `directed` argument",
         },
-        [RelationshipQueryDirectionOption.DIRECTED_ONLY]: {},
-        [RelationshipQueryDirectionOption.UNDIRECTED_ONLY]: {},
+        [RelationshipQueryDirectionOption.DIRECTED_ONLY]: {
+            deprecationReason: "DIRECTED_ONLY is deprecated, please use DIRECTED.",
+        },
+        [RelationshipQueryDirectionOption.UNDIRECTED_ONLY]: {
+            deprecationReason: "UNDIRECTED_ONLY is deprecated, please use UNDIRECTED.",
+        },
+        [RelationshipQueryDirectionOption.DIRECTED]: {},
+        [RelationshipQueryDirectionOption.UNDIRECTED]: {},
     },
 });

@@ -65,6 +65,7 @@ import { WarnIfAuthorizationFeatureDisabled } from "./custom-rules/warnings/auth
 import { WarnIfAMaxLimitCanBeBypassedThroughInterface } from "./custom-rules/warnings/limit-max-can-be-bypassed";
 import { WarnIfListOfListsFieldDefinition } from "./custom-rules/warnings/list-of-lists";
 import { WarnObjectFieldsWithoutResolver } from "./custom-rules/warnings/object-fields-without-resolver";
+import { WarnIfQueryDirectionIsUsedWithDeprecatedValues } from "./custom-rules/warnings/query-direction-deprecated-values";
 import { WarnIfSubscriptionsAuthorizationMissing } from "./custom-rules/warnings/subscriptions-authorization-missing";
 import { WarnIfTypeIsNotMarkedAsNode } from "./custom-rules/warnings/warn-if-type-is-not-marked-as-node";
 import { validateSchemaCustomizations } from "./validate-schema-customizations";
@@ -222,6 +223,7 @@ function runValidationRulesOnFilteredDocument({
             }),
             WarnIfSubscriptionsAuthorizationMissing(Boolean(features?.subscriptions)),
             WarnIfTypeIsNotMarkedAsNode(),
+            WarnIfQueryDirectionIsUsedWithDeprecatedValues,
         ],
         schema
     );

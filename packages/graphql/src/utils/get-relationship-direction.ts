@@ -47,7 +47,8 @@ function getRelationshipDirection(
      **/
     if (
         fieldArgs.directed === false ||
-        relationField.queryDirection === RelationshipQueryDirectionOption.UNDIRECTED_ONLY
+        relationField.queryDirection === RelationshipQueryDirectionOption.UNDIRECTED_ONLY ||
+        relationField.queryDirection === RelationshipQueryDirectionOption.UNDIRECTED
     ) {
         return "undirected";
     }

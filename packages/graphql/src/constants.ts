@@ -77,6 +77,8 @@ export enum RelationshipQueryDirectionOption {
     DEFAULT_UNDIRECTED = "DEFAULT_UNDIRECTED",
     DIRECTED_ONLY = "DIRECTED_ONLY",
     UNDIRECTED_ONLY = "UNDIRECTED_ONLY",
+    DIRECTED = "DIRECTED",
+    UNDIRECTED = "UNDIRECTED",
 }
 
 export enum RelationshipNestedOperationsOption {
