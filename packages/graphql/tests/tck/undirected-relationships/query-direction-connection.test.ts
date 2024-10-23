@@ -69,7 +69,7 @@ describe("QueryDirection in relationships connection", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 
-    test("query connection with a DIRECTED_ONLY relationship", async () => {
+    test("query connection with a DIRECTED_ONLY (deprecated) relationship", async () => {
         typeDefs = /* GraphQL */ `
             type User @node {
                 name: String!
@@ -112,11 +112,100 @@ describe("QueryDirection in relationships connection", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
-    test("query with a UNDIRECTED_ONLY relationship", async () => {
+
+    test("query connection with a DIRECTED (deprecated) relationship", async () => {
+        typeDefs = /* GraphQL */ `
+            type User @node {
+                name: String!
+                friends: [User!]! @relationship(type: "FRIENDS_WITH", direction: OUT, queryDirection: DIRECTED)
+            }
+        `;
+
+        neoSchema = new Neo4jGraphQL({
+            typeDefs,
+        });
+        const query = /* GraphQL */ `
+            query FriendsAggregate {
+                users {
+                    friendsConnection {
+                        totalCount
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:User)
+            CALL {
+                WITH this
+                MATCH (this)-[this0:FRIENDS_WITH]->(this1:User)
+                WITH collect({ node: this1, relationship: this0 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"User\\" } }) AS var2
+                }
+                RETURN { edges: var2, totalCount: totalCount } AS var3
+            }
+            RETURN this { friendsConnection: var3 } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+    });
+
+    test("query with a UNDIRECTED_ONLY (deprecated) relationship", async () => {
         typeDefs = /* GraphQL */ `
             type User @node {
                 name: String!
                 friends: [User!]! @relationship(type: "FRIENDS_WITH", direction: OUT, queryDirection: UNDIRECTED_ONLY)
+            }
+        `;
+
+        neoSchema = new Neo4jGraphQL({
+            typeDefs,
+        });
+        const query = /* GraphQL */ `
+            query FriendsAggregate {
+                users {
+                    friendsConnection {
+                        totalCount
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:User)
+            CALL {
+                WITH this
+                MATCH (this)-[this0:FRIENDS_WITH]-(this1:User)
+                WITH collect({ node: this1, relationship: this0 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"User\\" } }) AS var2
+                }
+                RETURN { edges: var2, totalCount: totalCount } AS var3
+            }
+            RETURN this { friendsConnection: var3 } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+    });
+
+    test("query with a UNDIRECTED relationship", async () => {
+        typeDefs = /* GraphQL */ `
+            type User @node {
+                name: String!
+                friends: [User!]! @relationship(type: "FRIENDS_WITH", direction: OUT, queryDirection: UNDIRECTED)
             }
         `;
 
