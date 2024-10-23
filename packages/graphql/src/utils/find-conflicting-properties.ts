@@ -18,6 +18,7 @@
  */
 
 import type { Node } from "../classes";
+import { parseMutationField } from "../translate/queryAST/factory/parsers/parse-mutation-field";
 import mapToDbProperty from "./map-to-db-property";
 
 /* returns conflicting mutation input properties */
@@ -31,16 +32,18 @@ export function findConflictingProperties({
     if (!input) {
         return [];
     }
-    const dbPropertiesToInputFieldNames: Record<string, string[]> = Object.keys(input).reduce((acc, fieldName) => {
+    const dbPropertiesToInputFieldNames: Record<string, string[]> = Object.keys(input).reduce((acc, rawField) => {
+        const { fieldName } = parseMutationField(rawField);
+
         const dbName = mapToDbProperty(node, fieldName);
         // some input fields (eg relation fields) have no corresponding db name in the map
         if (!dbName) {
             return acc;
         }
         if (acc[dbName]) {
-            acc[dbName].push(fieldName);
+            acc[dbName].push(rawField);
         } else {
-            acc[dbName] = [fieldName];
+            acc[dbName] = [rawField];
         }
         return acc;
     }, {});
