@@ -22,7 +22,6 @@ import pluralize from "pluralize";
 import type { Node, Relationship } from "../classes";
 import { Neo4jGraphQLError } from "../classes";
 import type { CallbackBucket } from "../classes/CallbackBucket";
-import { META_CYPHER_VARIABLE, META_OLD_PROPS_CYPHER_VARIABLE } from "../constants";
 import type { BaseField } from "../types";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { caseWhere } from "../utils/case-where";
@@ -45,8 +44,6 @@ import createDeleteAndParams from "./create-delete-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
 import { createRelationshipValidationString } from "./create-relationship-validation-string";
 import createSetRelationshipProperties from "./create-set-relationship-properties";
-import { createEventMeta } from "./subscriptions/create-event-meta";
-import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 import { addCallbackAndSetParam } from "./utils/callback-utils";
 import { getAuthorizationStatements } from "./utils/get-authorization-statements";
 import { indentBlock } from "./utils/indent-block";
@@ -769,27 +766,4 @@ export default function createUpdateAndParams({
 
 function validateNonNullProperty(res: Res, varName: string, field: BaseField) {
     res.meta.preArrayMethodValidationStrs.push([`${varName}.${field.dbPropertyName}`, `${field.dbPropertyName}`]);
-}
-
-function wrapInSubscriptionsMetaCall({
-    statements,
-    nodeVariable,
-    typename,
-    withVars,
-}: {
-    statements: string[];
-    nodeVariable: string;
-    typename: string;
-    withVars: string[];
-}): string[] {
-    const updateMetaVariable = "update_meta";
-    const preCallWith = `WITH ${nodeVariable} { .* } AS ${META_OLD_PROPS_CYPHER_VARIABLE}, ${withVars.join(", ")}`;
-
-    const callBlock = ["WITH *", ...statements, `RETURN ${META_CYPHER_VARIABLE} as ${updateMetaVariable}`];
-    const postCallWith = `WITH *, ${updateMetaVariable} as ${META_CYPHER_VARIABLE}`;
-
-    const eventMeta = createEventMeta({ event: "update", nodeVariable, typename });
-    const eventMetaWith = `WITH ${filterMetaVariable(withVars).join(", ")}, ${eventMeta}`;
-
-    return [preCallWith, "CALL {", ...indentBlock(callBlock), "}", postCallWith, eventMetaWith];
 }

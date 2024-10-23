@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { GraphQLError } from "graphql";
+import { GraphQLError } from "graphql";
 import { int } from "neo4j-driver";
 import { generate } from "randomstring";
 import { TestHelper } from "../utils/tests-helper";
@@ -215,12 +215,9 @@ describe("Mathematical operations tests", () => {
         const gqlResult = await testHelper.executeGraphQL(query, {
             variableValues: { id, value: 10 },
         });
-        expect(gqlResult.errors).toBeDefined();
-        expect(
-            (gqlResult.errors as GraphQLError[]).some((el) =>
-                el.message.includes("Cannot mutate the same field multiple times in one Mutation")
-            )
-        ).toBeTruthy();
+        expect(gqlResult.errors).toEqual([
+            new GraphQLError(`Conflicting modification of [[viewers]], [[viewers_INCREMENT]] on type ${movie}`),
+        ]);
         const storedValue = await testHelper.executeCypher(
             `
                 MATCH (n:${movie.name} {id: $id}) RETURN n.viewers AS viewers

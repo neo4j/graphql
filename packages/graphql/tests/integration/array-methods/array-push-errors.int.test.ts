@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { GraphQLError } from "graphql";
+import { GraphQLError } from "graphql";
 import { gql } from "graphql-tag";
 import { IncomingMessage } from "http";
 import { Socket } from "net";
@@ -206,12 +206,9 @@ describe("array-push", () => {
 
         const gqlResult = await testHelper.executeGraphQL(update);
 
-        expect(gqlResult.errors).toBeDefined();
-        expect(
-            (gqlResult.errors as GraphQLError[]).some((el) =>
-                el.message.includes("Cannot mutate the same field multiple times in one Mutation")
-            )
-        ).toBeTruthy();
+        expect(gqlResult.errors).toEqual([
+            new GraphQLError(`Conflicting modification of [[tags]], [[tags_PUSH]] on type ${typeMovie}`),
+        ]);
         expect(gqlResult.data).toBeNull();
     });
 
