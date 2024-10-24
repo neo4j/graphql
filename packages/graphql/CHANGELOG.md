@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 5.9.2
+
+### Patch Changes
+
+-   [#5699](https://github.com/neo4j/graphql/pull/5699) [`2a69218`](https://github.com/neo4j/graphql/commit/2a692188fa6fb52a65b1e216c71af5b4d01ff099) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix generated filters when comparing a relationship to `null`
+
 ## 5.9.1
 
 ### Patch Changes
