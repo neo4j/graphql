@@ -1,5 +1,170 @@
 # @neo4j/graphql
 
+## 6.0.0
+
+### Major Changes
+
+-   [#5638](https://github.com/neo4j/graphql/pull/5638) [`cab1a8d`](https://github.com/neo4j/graphql/commit/cab1a8db4433f0390fa2508d80efa2c022e90e7a) Thanks [@darrellwarde](https://github.com/darrellwarde)! - The Neo4j GraphQL Library now requires a Neo4j 5.x database.
+
+-   [#5639](https://github.com/neo4j/graphql/pull/5639) [`4438b60`](https://github.com/neo4j/graphql/commit/4438b60ab2cad59320f348fa3ac912dd1c75dab4) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Remove aggregation filters which are not actually aggregation filters, which were deprecated in 5.x.
+
+-   [#5637](https://github.com/neo4j/graphql/pull/5637) [`8832dd6`](https://github.com/neo4j/graphql/commit/8832dd67cfc30faa920dc17831cb241bca757911) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Remove deprecated relationship filters without suffix. Queries which previously used these should migrate over to `_SOME` filters.
+
+-   [#5662](https://github.com/neo4j/graphql/pull/5662) [`98e04db`](https://github.com/neo4j/graphql/commit/98e04db04fec55bbd244bc15c52a04a3f6e43057) Thanks [@angrykoala](https://github.com/angrykoala)! - Remove support for relationship subscriptions:
+
+    -   `*RelationshipCreated`
+    -   `*RelationshipDeleted`
+
+-   [#5648](https://github.com/neo4j/graphql/pull/5648) [`c716439`](https://github.com/neo4j/graphql/commit/c716439b69514f4c854c3299add992a2e9dac8c6) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Remove no-op option to remove `stringAggregation` deprecated fields.
+
+-   [#5634](https://github.com/neo4j/graphql/pull/5634) [`7e356f1`](https://github.com/neo4j/graphql/commit/7e356f17330d5567e77f182d8186b5bfa7052581) Thanks [@darrellwarde](https://github.com/darrellwarde)! - The deprecated `bookmark` field has been removed due to bookmarks now be handled internally by the database driver.
+
+-   [#5662](https://github.com/neo4j/graphql/pull/5662) [`98e04db`](https://github.com/neo4j/graphql/commit/98e04db04fec55bbd244bc15c52a04a3f6e43057) Thanks [@angrykoala](https://github.com/angrykoala)! - Removes support for non-cdc subscriptions. This means the only available engine for subscriptions is `Neo4jGraphQLSubscriptionsCDCEngine`:
+
+    ```ts
+    new Neo4jGraphQL({
+        typeDefs,
+        driver,
+        features: {
+            subscriptions: new Neo4jGraphQLSubscriptionsCDCEngine({
+                driver,
+            }),
+        },
+    });
+    ```
+
+    The default behaviour of subscriptions has also been updated to use CDC, so now passing `true` will use the CDC engine with the default parameters and driver:
+
+    ```ts
+    new Neo4jGraphQL({
+        typeDefs,
+        driver,
+        features: {
+            subscriptions: true,
+        },
+    });
+    ```
+
+-   [#5624](https://github.com/neo4j/graphql/pull/5624) [`87917e4`](https://github.com/neo4j/graphql/commit/87917e41cf79023ae20323274631df2dc8543da5) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Removed deprecated `_NOT` filters, use the Boolean operator `NOT` instead.
+
+    ** deprecated syntax **
+
+    ```graphql
+    query {
+        movies(where: { title_NOT: "The Matrix" }) {
+            title
+        }
+    }
+    ```
+
+    ** recommended syntax **
+
+    ```graphql
+    query {
+        movies(where: { NOT: { title: "The Matrix" } }) {
+            title
+        }
+    }
+    ```
+
+    As part of the change, the option: `negationFilters` was removed from the `excludeDeprecatedFields` settings.
+
+-   [#5649](https://github.com/neo4j/graphql/pull/5649) [`8206edd`](https://github.com/neo4j/graphql/commit/8206eddb54597d60012c8e30cc0c033b2714348f) Thanks [@darrellwarde](https://github.com/darrellwarde)! - The deprecated `options` argument of `assertIndexesAndConstraints` has been removed. Database migrations are outside of the scope of the Neo4j GraphQL Library, and all indexes and constraints will have to be managed manually.
+
+-   [#5630](https://github.com/neo4j/graphql/pull/5630) [`af866e0`](https://github.com/neo4j/graphql/commit/af866e058d7ba05f50fe0986cbbf63f252439e09) Thanks [@angrykoala](https://github.com/angrykoala)! - Remove deprecated top level arguments for nested operations in mutations:
+
+    -   create
+    -   delete
+    -   connect
+    -   disconnect
+    -   connectOrCreate
+
+    For example, the following is no longer valid:
+
+    _invalid_
+
+    ```graphql
+    mutation UpdatePeople {
+        updatePeople(create: { movies: { node: { title: "The Good" } } }) {
+            people {
+                name
+            }
+        }
+    }
+    ```
+
+    _valid_
+
+    ```graphql
+    mutation UpdatePeople {
+        updatePeople(update: { movies: { create: { node: { title: "The Good" } } } }) {
+            people {
+                name
+            }
+        }
+    }
+    ```
+
+-   [#5608](https://github.com/neo4j/graphql/pull/5608) [`2174267`](https://github.com/neo4j/graphql/commit/2174267cbe4defb9d08c3da98a54a0ad0033044f) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Changed the generated `sort` argument on the top-level Connection field as a list of non-nullable elements in case the target is an Interface.
+
+    From:
+
+    ```graphql
+    productionsConnection(after: String, first: Int, sort: [ProductionSort], where: ProductionWhere): ProductionsConnection!
+    ```
+
+    To:
+
+    ```graphql
+    productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
+    ```
+
+-   [#5668](https://github.com/neo4j/graphql/pull/5668) [`ffb2ae3`](https://github.com/neo4j/graphql/commit/ffb2ae31cde5e07ff6c09ec1f592512909f69f81) Thanks [@angrykoala](https://github.com/angrykoala)! - Remove exported types for custom subscriptions engine:
+
+    -   `Neo4jGraphQLSubscriptionsEngine`
+    -   `SubscriptionsEvent`
+
+-   [#5693](https://github.com/neo4j/graphql/pull/5693) [`8322ec3`](https://github.com/neo4j/graphql/commit/8322ec388f84aaa33cb2dfbee0a7fb26a228aa29) Thanks [@angrykoala](https://github.com/angrykoala)! - Throws an error when the same field is updated multiple times on same update operation.
+
+    For example:
+
+    ```graphql
+    mutation {
+        updateMovies(update: { tags_POP: 1, tags_PUSH: "d" }) {
+            movies {
+                title
+                tags
+            }
+        }
+    }
+    ```
+
+-   [#5654](https://github.com/neo4j/graphql/pull/5654) [`3332ac6`](https://github.com/neo4j/graphql/commit/3332ac6f9a9e56827f3065abbe9752cb79d85401) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Removed deprecated string aggregation filters as `name_SHORTEST_GT` in favor of the `_LENGTH` version: `name_SHORTEST_LENGTH_GT`.
+
+-   [#5638](https://github.com/neo4j/graphql/pull/5638) [`cab1a8d`](https://github.com/neo4j/graphql/commit/cab1a8db4433f0390fa2508d80efa2c022e90e7a) Thanks [@darrellwarde](https://github.com/darrellwarde)! - The Neo4j GraphQL Library now requires Node.js 20 or greater.
+
+-   [#5654](https://github.com/neo4j/graphql/pull/5654) [`38be579`](https://github.com/neo4j/graphql/commit/38be5798fabea053887aaf8c366311dd3cf86139) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Removed `aggregationFilters` from `excludeDeprecatedFields` settings.
+
+### Minor Changes
+
+-   [#5636](https://github.com/neo4j/graphql/pull/5636) [`74e4d30`](https://github.com/neo4j/graphql/commit/74e4d30d1cf6566aff5312de61efc508d9876ea0) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Added aggregation filter `count_EQ` filters: `{ count_EQ: 10 }`, this is the replacement for the deprecated version `{ count: 10 }`.
+
+-   [#5567](https://github.com/neo4j/graphql/pull/5567) [`233aac6`](https://github.com/neo4j/graphql/commit/233aac676ccbe17da3e66cbc2a81dc250fe452c4) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Added scalar `_EQ` filters: `{ title_EQ: "The Matrix" }`, this is an alternative version of the deprecated version `{ title: "The Matrix" }`.
+
+### Patch Changes
+
+-   [#5636](https://github.com/neo4j/graphql/pull/5636) [`de984a2`](https://github.com/neo4j/graphql/commit/de984a2ab3a8e3e196d2b6064eec2ad139ec3da2) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Deprecated implicit aggregation filter: `count`, `{ count: 10 }` in favor of the explicit version: `{ count_EQ: 10 }`.
+
+-   [#5608](https://github.com/neo4j/graphql/pull/5608) [`c64f6b4`](https://github.com/neo4j/graphql/commit/c64f6b4a9e46da8e43388ea4be9a4f54cd50a1ae) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Deprecated the `options` argument in favor of the limit`, `offset`, and `sort` arguments.
+
+-   [#5694](https://github.com/neo4j/graphql/pull/5694) [`887a098`](https://github.com/neo4j/graphql/commit/887a098f1d7b78ef1e15470a0a13d8ee7f537158) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Deprecated `DEFAULT_DIRECTED` / `DEFAULT_UNDIRECTED` `DIRECTED_ONLY` / `UNDIRECTED_ONLY` as `@relationship.queryDirection` argument values. The options that started with the `DEFAULT` are deprecated following the deprecation of the generated `directed` argument. The options with the suffix `_ONLY` have been changed to `DIRECTED` / `UNDIRECTED` as the suffix `_ONLY`.
+
+-   [#5567](https://github.com/neo4j/graphql/pull/5567) [`233aac6`](https://github.com/neo4j/graphql/commit/233aac676ccbe17da3e66cbc2a81dc250fe452c4) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Deprecated implicit scalar filter as `{ title: "The Matrix" }` in favor of the explicit version: `{ title_EQ: "The Matrix" }`.
+
+-   [#5567](https://github.com/neo4j/graphql/pull/5567) [`233aac6`](https://github.com/neo4j/graphql/commit/233aac676ccbe17da3e66cbc2a81dc250fe452c4) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Add a warning to instruct users about future requirements for marking Neoj4 nodes with the `@node` directive.
+
+-   [#5651](https://github.com/neo4j/graphql/pull/5651) [`45e0233`](https://github.com/neo4j/graphql/commit/45e023377c1d26d2e1a584444d26f403f6496e90) Thanks [@darrellwarde](https://github.com/darrellwarde)! - The `directed` argument has been marked as deprecated.
+
 ## 5.9.0
 
 ### Minor Changes
