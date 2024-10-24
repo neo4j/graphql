@@ -23,7 +23,7 @@ import type { Attribute } from "../Attribute";
 import type { AttributeType } from "../AttributeType";
 import { ListType } from "../AttributeType";
 import { AttributeTypeHelper } from "../AttributeTypeHelper";
-import { AggregationAdapter } from "./AggregationAdapter";
+import type { AggregationAdapter } from "./AggregationAdapter";
 import { ListAdapter } from "./ListAdapter";
 import { MathAdapter } from "./MathAdapter";
 
@@ -68,13 +68,6 @@ export class AttributeAdapter {
             this._mathModel = new MathAdapter(this);
         }
         return this._mathModel;
-    }
-
-    get aggregationModel(): AggregationAdapter {
-        if (!this._aggregationModel) {
-            this._aggregationModel = new AggregationAdapter(this);
-        }
-        return this._aggregationModel;
     }
 
     /**
@@ -127,7 +120,8 @@ export class AttributeAdapter {
         return (
             !this.typeHelper.isList() &&
             !this.isCustomResolvable() &&
-            (this.typeHelper.isScalar() || this.typeHelper.isEnum() || this.typeHelper.isSpatial() || this.isCypher())
+            (this.typeHelper.isScalar() || this.typeHelper.isEnum() || this.typeHelper.isSpatial()) &&
+            (!this.isCypher() || !this.args.some((arg) => arg.type.isRequired))
         );
     }
 
