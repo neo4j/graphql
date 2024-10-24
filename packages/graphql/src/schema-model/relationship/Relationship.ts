@@ -27,7 +27,7 @@ import type { Entity } from "../entity/Entity";
 
 export type RelationshipDirection = "IN" | "OUT";
 export type QueryDirection = keyof typeof RelationshipQueryDirectionOption;
-// "DEFAULT_DIRECTED" | "DEFAULT_UNDIRECTED" | "DIRECTED_ONLY" | "UNDIRECTED_ONLY";
+// "DEFAULT_DIRECTED" | "DEFAULT_UNDIRECTED" | "DIRECTED_ONLY" | "UNDIRECTED_ONLY" | "DIRECTED" | "UNDIRECTED";
 export type NestedOperation = keyof typeof RelationshipNestedOperationsOption;
 // "CREATE" | "UPDATE" | "DELETE" | "CONNECT" | "DISCONNECT" | "CONNECT_OR_CREATE";
 

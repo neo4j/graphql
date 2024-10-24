@@ -24,47 +24,11 @@ describe("QueryDirection in relationships aggregations", () => {
     let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
-    test("query with directed and undirected relationships with a DEFAULT_UNDIRECTED", async () => {
+    test("query connection with a DIRECTED relationship", async () => {
         typeDefs = /* GraphQL */ `
             type User @node {
                 name: String!
-                friends: [User!]!
-                    @relationship(type: "FRIENDS_WITH", direction: OUT, queryDirection: DEFAULT_UNDIRECTED)
-            }
-        `;
-
-        neoSchema = new Neo4jGraphQL({
-            typeDefs,
-        });
-        const query = /* GraphQL */ `
-            query Users {
-                users {
-                    friendsAggregate {
-                        count
-                    }
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
-            CALL {
-                WITH this
-                MATCH (this)-[this0:FRIENDS_WITH]-(this1:User)
-                RETURN count(this1) AS var2
-            }
-            RETURN this { friendsAggregate: { count: var2 } } AS this"
-        `);
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
-    });
-
-    test("query connection with a DIRECTED_ONLY relationship", async () => {
-        typeDefs = /* GraphQL */ `
-            type User @node {
-                name: String!
-                friends: [User!]! @relationship(type: "FRIENDS_WITH", direction: OUT, queryDirection: DIRECTED_ONLY)
+                friends: [User!]! @relationship(type: "FRIENDS_WITH", direction: OUT, queryDirection: DIRECTED)
             }
         `;
 
@@ -95,11 +59,11 @@ describe("QueryDirection in relationships aggregations", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 
-    test("query with a UNDIRECTED_ONLY relationship", async () => {
+    test("query with a UNDIRECTED relationship", async () => {
         typeDefs = /* GraphQL */ `
             type User @node {
                 name: String!
-                friends: [User!]! @relationship(type: "FRIENDS_WITH", direction: OUT, queryDirection: UNDIRECTED_ONLY)
+                friends: [User!]! @relationship(type: "FRIENDS_WITH", direction: OUT, queryDirection: UNDIRECTED)
             }
         `;
 

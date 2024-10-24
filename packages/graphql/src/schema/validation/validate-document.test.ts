@@ -304,6 +304,102 @@ describe("default max limit bypass warning", () => {
     });
 });
 
+describe("warns if queryDirection deprecated values are used", () => {
+    let warn: jest.SpyInstance;
+
+    beforeEach(() => {
+        warn = jest.spyOn(console, "warn").mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+        warn.mockReset();
+    });
+
+    test("should warn if queryDirection with DEFAULT prefix is used", () => {
+        const doc = gql`
+            type Actor @node {
+                name: String
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+            }
+            type Movie @node {
+                title: String
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: IN, queryDirection: DEFAULT_DIRECTED)
+            }
+        `;
+
+        validateDocument({
+            document: doc,
+            additionalDefinitions,
+            features: {},
+        });
+        expect(warn).toHaveBeenCalledExactlyOnceWith(
+            `Found @relationship argument "queryDirection" used with DEFAULT_DIRECTED which is deprecated. \n These default values were used to set a default for the "directed" argument, which is also now deprecated.`
+        );
+    });
+
+    test("should warn if queryDirection with DIRECTED_ONLY suffix is used", () => {
+        const doc = gql`
+            type Actor @node {
+                name: String
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+            }
+            type Movie @node {
+                title: String
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: IN, queryDirection: DIRECTED_ONLY)
+            }
+        `;
+
+        validateDocument({
+            document: doc,
+            additionalDefinitions,
+            features: {},
+        });
+        expect(warn).toHaveBeenCalledExactlyOnceWith(
+            `Found @relationship argument "queryDirection" used with DIRECTED_ONLY which is deprecated. Please use "DIRECTED" or "UNDIRECTED" instead.`
+        );
+    });
+
+    test("should warn once if multiple deprecation values are used", () => {
+        const doc = gql`
+            type Actor @node {
+                name: String
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, queryDirection: DEFAULT_DIRECTED)
+            }
+            type Movie @node {
+                title: String
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: IN, queryDirection: DIRECTED_ONLY)
+            }
+        `;
+
+        validateDocument({
+            document: doc,
+            additionalDefinitions,
+            features: {},
+        });
+        expect(warn).toHaveBeenCalledTimes(1);
+    });
+
+    test("should not warn if no deprecation values are used", () => {
+        const doc = gql`
+            type Actor @node {
+                name: String
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, queryDirection: DIRECTED)
+            }
+            type Movie @node {
+                title: String
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: IN, queryDirection: UNDIRECTED)
+            }
+        `;
+
+        validateDocument({
+            document: doc,
+            additionalDefinitions,
+            features: {},
+        });
+        expect(warn).toHaveBeenCalledTimes(0);
+    });
+});
+
 describe("validation 2.0", () => {
     describe("Directive Argument (existence)", () => {
         describe("@cypher", () => {

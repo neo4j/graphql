@@ -43,8 +43,6 @@ export function getDirectedArgument(
         case RelationshipQueryDirectionOption.DEFAULT_UNDIRECTED:
             defaultValue = false;
             break;
-        case RelationshipQueryDirectionOption.DIRECTED_ONLY:
-        case RelationshipQueryDirectionOption.UNDIRECTED_ONLY:
         default:
             return undefined;
     }

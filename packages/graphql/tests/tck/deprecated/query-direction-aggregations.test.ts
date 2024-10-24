@@ -20,15 +20,16 @@
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
-describe("QueryDirection in relationships", () => {
+describe("QueryDirection in relationships aggregations (deprecated _DEFAULT/_ONLY options)", () => {
     let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
-    test("query with a DIRECTED relationship", async () => {
+    test("query with directed and undirected relationships with a DEFAULT_UNDIRECTED", async () => {
         typeDefs = /* GraphQL */ `
             type User @node {
                 name: String!
-                friends: [User!]! @relationship(type: "FRIENDS_WITH", direction: OUT, queryDirection: DIRECTED)
+                friends: [User!]!
+                    @relationship(type: "FRIENDS_WITH", direction: OUT, queryDirection: DEFAULT_UNDIRECTED)
             }
         `;
 
@@ -36,49 +37,10 @@ describe("QueryDirection in relationships", () => {
             typeDefs,
         });
         const query = /* GraphQL */ `
-            query {
+            query Users {
                 users {
-                    name
-                    friends: friends {
-                        name
-                    }
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
-            CALL {
-                WITH this
-                MATCH (this)-[this0:FRIENDS_WITH]->(this1:User)
-                WITH this1 { .name } AS this1
-                RETURN collect(this1) AS var2
-            }
-            RETURN this { .name, friends: var2 } AS this"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
-    });
-
-    test("query with a UNDIRECTED relationship", async () => {
-        typeDefs = /* GraphQL */ `
-            type User @node {
-                name: String!
-                friends: [User!]! @relationship(type: "FRIENDS_WITH", direction: OUT, queryDirection: UNDIRECTED)
-            }
-        `;
-
-        neoSchema = new Neo4jGraphQL({
-            typeDefs,
-        });
-        const query = /* GraphQL */ `
-            query {
-                users {
-                    name
-                    friends: friends {
-                        name
+                    friendsAggregate {
+                        count
                     }
                 }
             }
@@ -91,12 +53,80 @@ describe("QueryDirection in relationships", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this0:FRIENDS_WITH]-(this1:User)
-                WITH this1 { .name } AS this1
-                RETURN collect(this1) AS var2
+                RETURN count(this1) AS var2
             }
-            RETURN this { .name, friends: var2 } AS this"
+            RETURN this { friendsAggregate: { count: var2 } } AS this"
         `);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+    });
 
+    test("query connection with a DIRECTED_ONLY relationship", async () => {
+        typeDefs = /* GraphQL */ `
+            type User @node {
+                name: String!
+                friends: [User!]! @relationship(type: "FRIENDS_WITH", direction: OUT, queryDirection: DIRECTED_ONLY)
+            }
+        `;
+
+        neoSchema = new Neo4jGraphQL({
+            typeDefs,
+        });
+        const query = /* GraphQL */ `
+            query Users {
+                users {
+                    friendsAggregate {
+                        count
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:User)
+            CALL {
+                WITH this
+                MATCH (this)-[this0:FRIENDS_WITH]->(this1:User)
+                RETURN count(this1) AS var2
+            }
+            RETURN this { friendsAggregate: { count: var2 } } AS this"
+        `);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+    });
+
+    test("query with a UNDIRECTED_ONLY relationship", async () => {
+        typeDefs = /* GraphQL */ `
+            type User @node {
+                name: String!
+                friends: [User!]! @relationship(type: "FRIENDS_WITH", direction: OUT, queryDirection: UNDIRECTED_ONLY)
+            }
+        `;
+
+        neoSchema = new Neo4jGraphQL({
+            typeDefs,
+        });
+        const query = /* GraphQL */ `
+            query Users {
+                users {
+                    friendsAggregate {
+                        count
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:User)
+            CALL {
+                WITH this
+                MATCH (this)-[this0:FRIENDS_WITH]-(this1:User)
+                RETURN count(this1) AS var2
+            }
+            RETURN this { friendsAggregate: { count: var2 } } AS this"
+        `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 });

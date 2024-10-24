@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQLError } from "../classes/Error";
 import { RelationshipQueryDirectionOption } from "../constants";
 import type { RelationField } from "../types";
 
@@ -43,31 +42,15 @@ function getRelationshipDirection(
     relationField: RelationField,
     fieldArgs: { directed?: boolean }
 ): QueryRelationshipDirection {
-    const directedValue = relationField.direction;
-    const undirectedValue = "undirected";
-
-    switch (relationField.queryDirection) {
-        case RelationshipQueryDirectionOption.DEFAULT_DIRECTED:
-            if (fieldArgs.directed === false) {
-                return undirectedValue;
-            }
-            return directedValue;
-        case RelationshipQueryDirectionOption.DEFAULT_UNDIRECTED:
-            if (fieldArgs.directed === true) {
-                return directedValue;
-            }
-            return undirectedValue;
-        case RelationshipQueryDirectionOption.DIRECTED_ONLY:
-            if (fieldArgs.directed === false) {
-                throw new Error("Invalid direction in 'DIRECTED_ONLY' relationship");
-            }
-            return directedValue;
-        case RelationshipQueryDirectionOption.UNDIRECTED_ONLY:
-            if (fieldArgs.directed === true) {
-                throw new Error("Invalid direction in 'UNDIRECTED_ONLY' relationship");
-            }
-            return undirectedValue;
-        default:
-            throw new Neo4jGraphQLError(`Invalid queryDirection argument ${relationField.queryDirection}`);
+    /**
+     * Duplicate of the schema-model `getCypherDirection` method;
+     **/
+    if (
+        fieldArgs.directed === false ||
+        relationField.queryDirection === RelationshipQueryDirectionOption.UNDIRECTED_ONLY ||
+        relationField.queryDirection === RelationshipQueryDirectionOption.UNDIRECTED
+    ) {
+        return "undirected";
     }
+    return relationField.direction;
 }

@@ -29,6 +29,7 @@ import type { RelationshipNestedOperationsOption, RelationshipQueryDirectionOpti
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 import type { DefaultAnnotationValue } from "../schema-model/annotation/DefaultAnnotation";
 import type { VectorField } from "../schema-model/annotation/VectorAnnotation";
+import type { RelationshipDirection } from "../schema-model/relationship/Relationship";
 import type { JwtPayload } from "./jwt-payload";
 import type { Neo4jGraphQLContext } from "./neo4j-graphql-context";
 
@@ -135,7 +136,7 @@ export interface BaseField {
  * Representation of the `@relationship` directive and its meta.
  */
 export interface RelationField extends BaseField {
-    direction: "OUT" | "IN";
+    direction: RelationshipDirection;
     typeUnescaped: string;
     type: string;
     connectionPrefix?: string;
