@@ -17,13 +17,13 @@
  * limitations under the License.
  */
 
-import { ConcreteEntity } from "../ConcreteEntity";
-import { Attribute } from "../../attribute/Attribute";
-import { GraphQLBuiltInScalarType, ScalarType } from "../../attribute/AttributeType";
-import { ConcreteEntityAdapter } from "./ConcreteEntityAdapter";
-import { AttributeAdapter } from "../../attribute/model-adapters/AttributeAdapter";
 import { CypherAnnotation } from "../../annotation/CypherAnnotation";
 import { UniqueAnnotation } from "../../annotation/UniqueAnnotation";
+import { Attribute } from "../../attribute/Attribute";
+import { GraphQLBuiltInScalarType, ScalarType } from "../../attribute/AttributeType";
+import { AttributeAdapter } from "../../attribute/model-adapters/AttributeAdapter";
+import { ConcreteEntity } from "../ConcreteEntity";
+import { ConcreteEntityAdapter } from "./ConcreteEntityAdapter";
 
 describe("ConcreteEntityAdapter", () => {
     let userAdapter: ConcreteEntityAdapter;
@@ -123,8 +123,6 @@ describe("ConcreteEntityAdapter", () => {
                 subscribe: {
                     created: "userCreated",
                     deleted: "userDeleted",
-                    relationship_created: "userRelationshipCreated",
-                    relationship_deleted: "userRelationshipDeleted",
                     updated: "userUpdated",
                 },
                 update: "updateUsers",

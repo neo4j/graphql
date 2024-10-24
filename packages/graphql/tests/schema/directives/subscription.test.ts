@@ -73,7 +73,7 @@ describe("@subscription directive", () => {
                     actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type Movie @subscription(events: [UPDATED, DELETED, RELATIONSHIP_CREATED, RELATIONSHIP_DELETED]) @node {
+                type Movie @subscription(events: [UPDATED, DELETED]) @node {
                     title: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
@@ -110,7 +110,7 @@ describe("@subscription directive", () => {
                     actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type Movie @subscription(events: [CREATED, DELETED, RELATIONSHIP_CREATED, RELATIONSHIP_DELETED]) @node {
+                type Movie @subscription(events: [CREATED, DELETED]) @node {
                     title: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
@@ -147,7 +147,7 @@ describe("@subscription directive", () => {
                     actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type Movie @subscription(events: [CREATED, UPDATED, RELATIONSHIP_CREATED, RELATIONSHIP_DELETED]) @node {
+                type Movie @subscription(events: [CREATED, UPDATED]) @node {
                     title: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
@@ -197,7 +197,7 @@ describe("@subscription directive", () => {
     });
 
     describe("on SCHEMA", () => {
-        test("default arguments should enable subscription for CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP", async () => {
+        test("default arguments should enable subscription for CREATE, UPDATE, DELETE", async () => {
             const typeDefs = gql`
                 type Actor @node {
                     username: String!
@@ -248,7 +248,7 @@ describe("@subscription directive", () => {
                     title: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
-                extend schema @subscription(events: [UPDATED, DELETED, RELATIONSHIP_CREATED, RELATIONSHIP_DELETED])
+                extend schema @subscription(events: [UPDATED, DELETED])
             `;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: new TestCDCEngine() } });
@@ -286,7 +286,7 @@ describe("@subscription directive", () => {
                     title: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
-                extend schema @subscription(events: [CREATED, DELETED, RELATIONSHIP_CREATED, RELATIONSHIP_DELETED])
+                extend schema @subscription(events: [CREATED, DELETED])
             `;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: new TestCDCEngine() } });
@@ -324,7 +324,7 @@ describe("@subscription directive", () => {
                     title: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
-                extend schema @subscription(events: [CREATED, UPDATED, RELATIONSHIP_CREATED, RELATIONSHIP_DELETED])
+                extend schema @subscription(events: [CREATED, UPDATED])
             `;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: new TestCDCEngine() } });
@@ -348,103 +348,6 @@ describe("@subscription directive", () => {
 
             expect(actorDeleted).toBeUndefined();
             expect(movieDeleted).toBeUndefined();
-        });
-
-        test("should disable subscription for CREATE_RELATIONSHIP", async () => {
-            const typeDefs = gql`
-                type Actor @node {
-                    username: String!
-                    password: String!
-                    actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
-                }
-
-                type Movie @node {
-                    title: String
-                    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
-                }
-                extend schema @subscription(events: [CREATED, UPDATED, DELETED, RELATIONSHIP_DELETED])
-            `;
-
-            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: new TestCDCEngine() } });
-            const schema = await neoSchema.getSchema();
-            const subscriptionFields = schema.getSubscriptionType()?.getFields() as GraphQLFieldMap<any, any>;
-
-            const actorCreated = subscriptionFields["actorCreated"];
-            const movieCreated = subscriptionFields["movieCreated"];
-
-            expect(actorCreated).toBeDefined();
-            expect(movieCreated).toBeDefined();
-
-            const actorUpdated = subscriptionFields["actorUpdated"];
-            const movieUpdated = subscriptionFields["movieUpdated"];
-
-            expect(actorUpdated).toBeDefined();
-            expect(movieUpdated).toBeDefined();
-
-            const actorDeleted = subscriptionFields["actorDeleted"];
-            const movieDeleted = subscriptionFields["movieDeleted"];
-
-            expect(actorDeleted).toBeDefined();
-            expect(movieDeleted).toBeDefined();
-        });
-
-        test("should disable subscription for DELETE_RELATIONSHIP", async () => {
-            const typeDefs = gql`
-                type Actor @node {
-                    username: String!
-                    password: String!
-                    actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
-                }
-
-                type Movie @node {
-                    title: String
-                    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
-                }
-                extend schema @subscription(events: [CREATED, UPDATED, DELETED, RELATIONSHIP_CREATED])
-            `;
-
-            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: new TestCDCEngine() } });
-            const schema = await neoSchema.getSchema();
-            const subscriptionFields = schema.getSubscriptionType()?.getFields() as GraphQLFieldMap<any, any>;
-
-            const actorCreated = subscriptionFields["actorCreated"];
-            const movieCreated = subscriptionFields["movieCreated"];
-
-            expect(actorCreated).toBeDefined();
-            expect(movieCreated).toBeDefined();
-
-            const actorUpdated = subscriptionFields["actorUpdated"];
-            const movieUpdated = subscriptionFields["movieUpdated"];
-
-            expect(actorUpdated).toBeDefined();
-            expect(movieUpdated).toBeDefined();
-
-            const actorDeleted = subscriptionFields["actorDeleted"];
-            const movieDeleted = subscriptionFields["movieDeleted"];
-
-            expect(actorDeleted).toBeDefined();
-            expect(movieDeleted).toBeDefined();
-        });
-
-        test("should disable subscription for CREATE, DELETE, UPDATE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP", async () => {
-            const typeDefs = gql`
-                type Actor @node {
-                    username: String!
-                    password: String!
-                    actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
-                }
-
-                type Movie @node {
-                    title: String
-                    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
-                }
-                extend schema @subscription(events: [])
-            `;
-
-            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: new TestCDCEngine() } });
-            const schema = await neoSchema.getSchema();
-            const subscriptionType = schema.getSubscriptionType();
-            expect(subscriptionType).toBeUndefined();
         });
 
         test("should not throw an Error when is mixed with @query", async () => {

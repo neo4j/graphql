@@ -91,7 +91,7 @@ function createSubscriptionsAuthorizationFilterRule(
             return {
                 events: {
                     type: new GraphQLList(SUBSCRIPTIONS_AUTHORIZATION_FILTER_EVENT),
-                    defaultValue: ["CREATED", "UPDATED", "DELETED", "RELATIONSHIP_CREATED", "RELATIONSHIP_DELETED"],
+                    defaultValue: ["CREATED", "UPDATED", "DELETED"],
                 },
                 requireAuthentication: {
                     type: GraphQLBoolean,

@@ -498,9 +498,7 @@ describe("ConcreteEntity Annotations & Attributes", () => {
 
         const userSubscription = userEntity?.annotations.subscription;
         expect(userSubscription).toBeDefined();
-        expect(userSubscription?.events).toStrictEqual(
-            new Set(["CREATED", "UPDATED", "DELETED", "RELATIONSHIP_CREATED", "RELATIONSHIP_DELETED"])
-        );
+        expect(userSubscription?.events).toStrictEqual(new Set(["CREATED", "UPDATED", "DELETED"]));
 
         const accountSubscription = accountEntity?.annotations.subscription;
         expect(accountSubscription).toBeDefined();

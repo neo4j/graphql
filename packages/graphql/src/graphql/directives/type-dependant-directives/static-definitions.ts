@@ -69,7 +69,5 @@ export const SUBSCRIPTIONS_AUTHORIZATION_FILTER_EVENT = new GraphQLEnumType({
         CREATED: { value: "CREATED" },
         UPDATED: { value: "UPDATED" },
         DELETED: { value: "DELETED" },
-        RELATIONSHIP_CREATED: { value: "RELATIONSHIP_CREATED" },
-        RELATIONSHIP_DELETED: { value: "RELATIONSHIP_DELETED" },
     },
 });

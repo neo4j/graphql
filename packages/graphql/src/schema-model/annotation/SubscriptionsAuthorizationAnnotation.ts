@@ -18,17 +18,10 @@
  */
 
 import type { GraphQLWhereArg } from "../../types";
-import type { Annotation } from "./Annotation";
 import type { ValueOf } from "../../utils/value-of";
+import type { Annotation } from "./Annotation";
 
-
-export const SubscriptionsAuthorizationFilterEventRule = [
-    "CREATED",
-    "UPDATED",
-    "DELETED",
-    "RELATIONSHIP_CREATED",
-    "RELATIONSHIP_DELETED",
-] as const;
+export const SubscriptionsAuthorizationFilterEventRule = ["CREATED", "UPDATED", "DELETED"] as const;
 
 export type SubscriptionsAuthorizationFilterEvent = ValueOf<typeof SubscriptionsAuthorizationFilterEventRule>;
 
