@@ -39,7 +39,7 @@
         "@types/body-parser": "1.19.5",
         "@types/cors": "2.8.17",
         "@types/debug": "4.1.12",
-        "@types/jest": "29.5.13",
+        "@types/jest": "29.5.14",
         "@types/node": "20.16.14",
         "camelcase": "6.3.0",
         "graphql-ws": "5.16.0",
