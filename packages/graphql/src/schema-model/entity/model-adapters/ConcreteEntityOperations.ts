@@ -28,8 +28,6 @@ type RootTypeFieldNames = ImplementingTypeRootTypeFieldNames & {
         created: string;
         updated: string;
         deleted: string;
-        relationship_created: string;
-        relationship_deleted: string;
     };
 };
 
@@ -67,13 +65,6 @@ export class ConcreteEntityOperations extends ImplementingEntityOperations<Concr
         return `${this.entityAdapter.name}RelationshipsSubscriptionWhere`;
     }
 
-    public get relationshipCreatedSubscriptionWhereInputTypeName(): string {
-        return `${this.entityAdapter.name}RelationshipCreatedSubscriptionWhere`;
-    }
-
-    public get relationshipDeletedSubscriptionWhereInputTypeName(): string {
-        return `${this.entityAdapter.name}RelationshipDeletedSubscriptionWhere`;
-    }
     // top-level connection type name
     public get connectionFieldTypename(): string {
         return `${this.pascalCasePlural}Connection`;
@@ -90,8 +81,6 @@ export class ConcreteEntityOperations extends ImplementingEntityOperations<Concr
                 created: `${this.entityAdapter.singular}Created`,
                 updated: `${this.entityAdapter.singular}Updated`,
                 deleted: `${this.entityAdapter.singular}Deleted`,
-                relationship_deleted: `${this.entityAdapter.singular}RelationshipDeleted`,
-                relationship_created: `${this.entityAdapter.singular}RelationshipCreated`,
             },
         };
     }

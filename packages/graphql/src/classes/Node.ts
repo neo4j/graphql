@@ -86,8 +86,6 @@ export type RootTypeFieldNames = {
         created: string;
         updated: string;
         deleted: string;
-        relationship_created: string;
-        relationship_deleted: string;
     };
 };
 
@@ -215,8 +213,6 @@ class Node extends GraphElement {
                 created: `${this.singular}Created`,
                 updated: `${this.singular}Updated`,
                 deleted: `${this.singular}Deleted`,
-                relationship_created: `${this.singular}RelationshipCreated`,
-                relationship_deleted: `${this.singular}RelationshipDeleted`,
             },
         };
     }

@@ -23,8 +23,6 @@ export enum SubscriptionEvent {
     CREATED = "CREATED",
     UPDATED = "UPDATED",
     DELETED = "DELETED",
-    RELATIONSHIP_CREATED = "RELATIONSHIP_CREATED",
-    RELATIONSHIP_DELETED = "RELATIONSHIP_DELETED",
 }
 
 const SubscriptionEventType = new GraphQLEnumType({
@@ -33,8 +31,6 @@ const SubscriptionEventType = new GraphQLEnumType({
         [SubscriptionEvent.CREATED]: { value: SubscriptionEvent.CREATED },
         [SubscriptionEvent.UPDATED]: { value: SubscriptionEvent.UPDATED },
         [SubscriptionEvent.DELETED]: { value: SubscriptionEvent.DELETED },
-        [SubscriptionEvent.RELATIONSHIP_CREATED]: { value: SubscriptionEvent.RELATIONSHIP_CREATED },
-        [SubscriptionEvent.RELATIONSHIP_DELETED]: { value: SubscriptionEvent.RELATIONSHIP_DELETED },
     },
 });
 
@@ -45,13 +41,7 @@ export const subscriptionDirective = new GraphQLDirective({
         events: {
             description: "Enable/Disable subscription events for this type",
             type: new GraphQLNonNull(new GraphQLList(SubscriptionEventType)),
-            defaultValue: [
-                SubscriptionEvent.CREATED,
-                SubscriptionEvent.UPDATED,
-                SubscriptionEvent.DELETED,
-                SubscriptionEvent.RELATIONSHIP_CREATED,
-                SubscriptionEvent.RELATIONSHIP_DELETED,
-            ],
+            defaultValue: [SubscriptionEvent.CREATED, SubscriptionEvent.UPDATED, SubscriptionEvent.DELETED],
         },
     },
     locations: [DirectiveLocation.OBJECT, DirectiveLocation.SCHEMA],

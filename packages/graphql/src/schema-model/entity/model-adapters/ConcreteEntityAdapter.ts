@@ -146,18 +146,6 @@ export class ConcreteEntityAdapter {
             this.annotations.subscription.events.has(SubscriptionEvent.DELETED)
         );
     }
-    get isSubscribableOnRelationshipCreate(): boolean {
-        return (
-            this.annotations.subscription === undefined ||
-            this.annotations.subscription.events.has(SubscriptionEvent.RELATIONSHIP_CREATED)
-        );
-    }
-    get isSubscribableOnRelationshipDelete(): boolean {
-        return (
-            this.annotations.subscription === undefined ||
-            this.annotations.subscription.events.has(SubscriptionEvent.RELATIONSHIP_DELETED)
-        );
-    }
 
     /**
      * Categories

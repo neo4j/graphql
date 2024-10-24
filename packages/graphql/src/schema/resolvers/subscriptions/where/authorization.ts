@@ -74,9 +74,5 @@ function authorizationEventMatchesEvent(
             return event === "update";
         case "DELETED":
             return event === "delete";
-        case "RELATIONSHIP_CREATED":
-            return event === "create_relationship";
-        case "RELATIONSHIP_DELETED":
-            return event === "delete_relationship";
     }
 }
