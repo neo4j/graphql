@@ -46,7 +46,7 @@
         "prettier": "2.8.8",
         "set-tz": "0.2.0",
         "ts-jest": "29.2.5",
-        "typescript": "5.1.6"
+        "typescript": "5.6.3"
     },
     "packageManager": "yarn@4.5.1",
     "dependencies": {
