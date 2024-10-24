@@ -127,7 +127,8 @@ export class AttributeAdapter {
         return (
             !this.typeHelper.isList() &&
             !this.isCustomResolvable() &&
-            (this.typeHelper.isScalar() || this.typeHelper.isEnum() || this.typeHelper.isSpatial() || this.isCypher())
+            (this.typeHelper.isScalar() || this.typeHelper.isEnum() || this.typeHelper.isSpatial()) &&
+            (!this.isCypher() || !this.args.some((arg) => arg.type.isRequired))
         );
     }
 

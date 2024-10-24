@@ -18,14 +18,13 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 import { TestCDCEngine } from "../../utils/builders/TestCDCEngine";
 
 describe("Cypher", () => {
     test("Custom Directive Simple", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Actor @node {
                 name: String
             }
@@ -327,7 +326,6 @@ describe("Cypher", () => {
             Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
             \\"\\"\\"
             input MovieSort {
-              actor: SortDirection
               custom_big_int: SortDirection
               custom_boolean: SortDirection
               custom_cartesian_point: SortDirection
@@ -591,7 +589,7 @@ describe("Cypher", () => {
     });
 
     test("Filters should not be generated on list custom cypher fields", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Movie {
                 custom_cypher_string_list: [String]
                     @cypher(statement: "RETURN ['a','b','c'] as list", columnName: "list")
@@ -712,7 +710,7 @@ describe("Cypher", () => {
     });
 
     test("Filters should not be generated on custom cypher fields with arguments", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Movie {
                 custom_string_with_param(param: String): String
                     @cypher(statement: "RETURN $param as c", columnName: "c")
@@ -849,7 +847,7 @@ describe("Cypher", () => {
     });
 
     test("Filters should not be generated on Relationship/Object custom cypher fields", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Movie {
                 actors: [Actor]
                     @cypher(
@@ -1071,7 +1069,7 @@ describe("Cypher", () => {
     });
 
     test("Sort On Primitive Field", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Actor @node {
                 name: String
                 totalScreenTime: Int!
@@ -1321,7 +1319,7 @@ describe("Cypher", () => {
     });
 
     test("Filters should not be generated on custom cypher fields for subscriptions", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Movie {
                 title: String
                 custom_title: String @cypher(statement: "RETURN 'hello' as t", columnName: "t")
