@@ -37,7 +37,7 @@
         "@graphql-codegen/typescript": "^4.0.0",
         "@graphql-tools/merge": "^9.0.0",
         "@neo4j/graphql": "^5.9.1",
-        "prettier": "^2.7.1"
+        "prettier": "^3.0.0"
     },
     "peerDependencies": {
         "graphql": "^16.0.0",
