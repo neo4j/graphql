@@ -91,35 +91,5 @@ module.exports = {
                 "jest/expect-expect": ["warn", { assertFunctionNames: ["expect", "expectTypeOf"] }],
             },
         },
-        {
-            files: ["**/*.tsx"],
-            extends: ["plugin:react/recommended", "plugin:react/jsx-runtime", "plugin:jsx-a11y/recommended"],
-            plugins: ["simple-import-sort"],
-            settings: {
-                react: {
-                    version: "detect",
-                },
-            },
-            rules: {
-                "simple-import-sort/imports": [
-                    "error",
-                    {
-                        groups: [
-                            // Matches any import statement that are 'react'
-                            ["^react$"],
-
-                            // Matches any import statement that starts with '@' followed by any word character
-                            ["^@?\\w"],
-
-                            // Matches any import statement that starts with a dot, but not when it is followed by a forward slash (i.e., not a relative import), and not when it is followed by nothing (i.e., not an absolute import). Also matches import statements that start with two dots, followed by either nothing or a forward slash (i.e., a relative parent import).
-                            ["^\\.(?!/?$)", "^\\.\\./?$"],
-
-                            // Side effect imports.
-                            ["^\\u0000"],
-                        ],
-                    },
-                ],
-            },
-        },
     ],
 };

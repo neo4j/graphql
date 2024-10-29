@@ -4,10 +4,11 @@ on:
   pull_request_target:
     branches:
       - dev
+      - lts
 
 jobs:
   label:
-    if: "!startsWith(github.event.pull_request.head.ref, 'renovate/')"
+    if: ${{ !startsWith(github.event.pull_request.head.ref, 'renovate/') }}
 
     runs-on: ubuntu-latest
 
