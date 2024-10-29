@@ -227,9 +227,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/server@npm:4.11.0, @apollo/server@npm:^4.7.0":
-  version: 4.11.0
-  resolution: "@apollo/server@npm:4.11.0"
+"@apollo/server@npm:4.11.1, @apollo/server@npm:^4.7.0":
+  version: 4.11.1
+  resolution: "@apollo/server@npm:4.11.1"
   dependencies:
     "@apollo/cache-control-types": "npm:^1.0.3"
     "@apollo/server-gateway-interface": "npm:^1.1.1"
@@ -247,7 +247,7 @@ __metadata:
     "@types/node-fetch": "npm:^2.6.1"
     async-retry: "npm:^1.2.1"
     cors: "npm:^2.8.5"
-    express: "npm:^4.17.1"
+    express: "npm:^4.21.1"
     loglevel: "npm:^1.6.8"
     lru-cache: "npm:^7.10.1"
     negotiator: "npm:^0.6.3"
@@ -257,7 +257,7 @@ __metadata:
     whatwg-mimetype: "npm:^3.0.0"
   peerDependencies:
     graphql: ^16.6.0
-  checksum: 10c0/5c07f818ba2a943c176a3e3d50115c6fba2dc1b6e818635202cf22f0dacc6e2b39e0c53315399d1e46357072db438bbcd4ebc13afeb0f18bb5378134c100f8f5
+  checksum: 10c0/e67c49acc62afa37f225d92e556004fb314d238ef4359f222ec2df2c833387ee7d803e61e8b4c31070fe53d423f4265858ce372ae9e29907a7225e70d342dabc
   languageName: node
   linkType: hard
 
@@ -2076,7 +2076,7 @@ __metadata:
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
     "@apollo/gateway": "npm:2.9.3"
-    "@apollo/server": "npm:4.11.0"
+    "@apollo/server": "npm:4.11.1"
     "@apollo/subgraph": "npm:^2.2.3"
     "@graphql-tools/merge": "npm:^9.0.0"
     "@graphql-tools/resolvers-composition": "npm:^7.0.0"
@@ -7552,7 +7552,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"express@npm:^4.17.1":
+"express@npm:^4.21.1":
   version: 4.21.1
   resolution: "express@npm:4.21.1"
   dependencies:
