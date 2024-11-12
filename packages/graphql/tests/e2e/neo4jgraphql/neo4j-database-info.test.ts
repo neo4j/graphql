@@ -89,8 +89,8 @@ describe("Create with specific neo4jDatabaseInfo set incorrectly", () => {
     let server: TestGraphQLServer;
 
     beforeAll(async () => {
-        const typeDefs = `
-         type ${typeMovie} {
+        const typeDefs = /* GraphQL */ `
+         type ${typeMovie} @node {
              title: String
          }
          `;
@@ -115,7 +115,7 @@ describe("Create with specific neo4jDatabaseInfo set incorrectly", () => {
         const result = await createMovie("dsa");
 
         expect(result.body.errors[0].message).toBe(
-            "Context creation failed: Could not coerce provided version this_seems_not_valid"
+            "Context creation failed: Could not coerce provided version this_seems_not_valid",
         );
     });
 

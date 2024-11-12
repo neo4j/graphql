@@ -22,7 +22,7 @@ import { formatCypher, formatParams, translateQuery } from "../../../utils/tck-t
 
 describe("cypher directive filtering - Auth", () => {
     test("Int cypher field AND String title field", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
                 special_count: Int
@@ -36,7 +36,7 @@ describe("cypher directive filtering - Auth", () => {
             }
         `;
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 movies(where: { special_count_GTE: 1, title_EQ: "CustomType One" }) {
                     special_count
@@ -91,7 +91,7 @@ describe("cypher directive filtering - Auth", () => {
     });
 
     test("unmatched Int cypher field AND String title field", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
                 special_count: Int
@@ -105,7 +105,7 @@ describe("cypher directive filtering - Auth", () => {
             }
         `;
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 movies(where: { special_count_GTE: 1, title_EQ: "CustomType Unknown" }) {
                     special_count
@@ -160,7 +160,7 @@ describe("cypher directive filtering - Auth", () => {
     });
 
     test("Int cypher field, selecting String title field", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
                 special_count: Int
@@ -174,7 +174,7 @@ describe("cypher directive filtering - Auth", () => {
             }
         `;
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 movies(where: { special_count_GTE: 1 }) {
                     title

@@ -22,21 +22,22 @@ import { formatCypher, formatParams, translateQuery } from "../../../utils/tck-t
 
 describe("cypher directive filtering - Aggregation", () => {
     test("String aggregation", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
                 released: Int
-                custom_field: String @cypher(
-                    statement: """
-                    MATCH (this)
-                    RETURN this.custom_field as s
-                    """
-                    columnName: "s"
-                )
+                custom_field: String
+                    @cypher(
+                        statement: """
+                        MATCH (this)
+                        RETURN this.custom_field as s
+                        """
+                        columnName: "s"
+                    )
             }
         `;
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 moviesAggregate(where: { custom_field_STARTS_WITH: "he" }) {
                     title {
@@ -84,21 +85,22 @@ describe("cypher directive filtering - Aggregation", () => {
     });
 
     test("Int aggregation", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
                 released: Int
-                custom_field: Int @cypher(
-                    statement: """
-                    MATCH (this)
-                    RETURN this.custom_field as s
-                    """
-                    columnName: "s"
-                )
+                custom_field: Int
+                    @cypher(
+                        statement: """
+                        MATCH (this)
+                        RETURN this.custom_field as s
+                        """
+                        columnName: "s"
+                    )
             }
         `;
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 moviesAggregate(where: { custom_field_GT: 0 }) {
                     released {
@@ -146,21 +148,22 @@ describe("cypher directive filtering - Aggregation", () => {
     });
 
     test("String list aggregation", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
                 released: Int
-                custom_field: [String] @cypher(
-                    statement: """
-                    MATCH (this)
-                    RETURN this.custom_field as s
-                    """
-                    columnName: "s"
-                )
+                custom_field: [String]
+                    @cypher(
+                        statement: """
+                        MATCH (this)
+                        RETURN this.custom_field as s
+                        """
+                        columnName: "s"
+                    )
             }
         `;
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 moviesAggregate(where: { custom_field_INCLUDES: "test" }) {
                     title {
@@ -209,21 +212,22 @@ describe("cypher directive filtering - Aggregation", () => {
     });
 
     test("Int list aggregation", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
                 released: Int
-                custom_field: [Int] @cypher(
-                    statement: """
-                    MATCH (this)
-                    RETURN this.custom_field as s
-                    """
-                    columnName: "s"
-                )
+                custom_field: [Int]
+                    @cypher(
+                        statement: """
+                        MATCH (this)
+                        RETURN this.custom_field as s
+                        """
+                        columnName: "s"
+                    )
             }
         `;
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 moviesAggregate(where: { custom_field_INCLUDES: 2 }) {
                     title {

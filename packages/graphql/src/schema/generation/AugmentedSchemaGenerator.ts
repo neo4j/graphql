@@ -70,7 +70,7 @@ export class AugmentedSchemaGenerator {
 
         for (const entity of this.schemaModel.entities.values()) {
             const model = getEntityAdapter(entity);
-
+            
             // TODO: check if these can be created ad-hoc
             if (model instanceof ConcreteEntityAdapter || model instanceof InterfaceEntityAdapter) {
                 for (const attribute of model.attributes.values()) {

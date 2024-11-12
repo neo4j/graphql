@@ -39,7 +39,7 @@ describe("cypher directive filtering - List Auth", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor {
+            type Actor @node {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -125,7 +125,7 @@ describe("cypher directive filtering - List Auth", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor {
+            type Actor @node {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -198,7 +198,7 @@ describe("cypher directive filtering - List Auth", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor {
+            type Actor @node {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -283,7 +283,7 @@ describe("cypher directive filtering - List Auth", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor {
+            type Actor @node {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -334,9 +334,8 @@ describe("cypher directive filtering - List Auth", () => {
             }
 
             type Actor
-                @authorization(
-                    filter: [{ where: { node: { movies_SOME: { custom_list_EQ: "$jwt.custom_value" } } } }]
-                ) {
+                @node
+                @authorization(filter: [{ where: { node: { movies_SOME: { custom_list_EQ: "$jwt.custom_value" } } } }]) {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -416,7 +415,7 @@ describe("cypher directive filtering - List Auth", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor {
+            type Actor @node {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }

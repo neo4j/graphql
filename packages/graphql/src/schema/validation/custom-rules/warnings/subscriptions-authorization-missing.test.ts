@@ -81,6 +81,7 @@ describe("WarnObjectFieldsWithoutResolver", () => {
         test("does not warn if both directives are used on type", () => {
             const doc = gql`
                 type User
+                    @node
                     @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
                     @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
                     id: ID!

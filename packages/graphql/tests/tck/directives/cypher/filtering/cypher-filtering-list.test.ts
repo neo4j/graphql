@@ -22,10 +22,10 @@ import { formatCypher, formatParams, translateQuery } from "../../../utils/tck-t
 
 describe("cypher directive filtering - Lists", () => {
     test("Int cypher field AND String title field", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
-                custom_cypher_list: [String] 
+                custom_cypher_list: [String]
                     @cypher(
                         statement: """
                         RETURN ['a', 'b', 'c'] as list
@@ -35,7 +35,7 @@ describe("cypher directive filtering - Lists", () => {
             }
         `;
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 movies(where: { custom_cypher_list_INCLUDES: "a" }) {
                     title

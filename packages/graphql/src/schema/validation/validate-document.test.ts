@@ -2533,6 +2533,7 @@ describe("validation 2.0", () => {
             test("@fulltext duplicate index names", () => {
                 const doc = gql`
                     type User
+                        @node
                         @fulltext(
                             indexes: [
                                 { indexName: "a", queryName: "a", fields: ["name"] }
@@ -2586,6 +2587,7 @@ describe("validation 2.0", () => {
             test("@fulltext duplicate query names", () => {
                 const doc = gql`
                     type User
+                        @node
                         @fulltext(
                             indexes: [
                                 { indexName: "a", queryName: "a", fields: ["name"] }
@@ -2658,6 +2660,7 @@ describe("validation 2.0", () => {
             test("@fulltext correct usage", () => {
                 const doc = gql`
                     type User
+                        @node
                         @fulltext(
                             indexes: [
                                 { indexName: "a", queryName: "a", fields: ["name"] }
@@ -3241,7 +3244,7 @@ describe("validation 2.0", () => {
 
             test("@query and @mutation", () => {
                 const doc = gql`
-                    type User @query(read: false) {
+                    type User @node @query(read: false) {
                         id: ID
                         name: String
                     }
@@ -3497,7 +3500,7 @@ describe("validation 2.0", () => {
 
             test("@query both on extension and object", () => {
                 const doc = gql`
-                    type User @query(read: false) {
+                    type User @node @query(read: false) {
                         id: ID
                         name: String
                     }
@@ -3517,7 +3520,7 @@ describe("validation 2.0", () => {
 
             test("@query both on schema and object", () => {
                 const doc = gql`
-                    type User @query(read: false) {
+                    type User @node @query(read: false) {
                         id: ID
                         name: String
                     }

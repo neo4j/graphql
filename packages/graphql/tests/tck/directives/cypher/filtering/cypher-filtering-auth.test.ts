@@ -36,7 +36,7 @@ describe("cypher directive filtering - Auth", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor {
+            type Actor @node {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -44,7 +44,7 @@ describe("cypher directive filtering - Auth", () => {
 
         const token = createBearerToken("secret", { custom_value: "hello" });
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 movies {
                     title
@@ -106,7 +106,7 @@ describe("cypher directive filtering - Auth", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor {
+            type Actor @node {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -114,7 +114,7 @@ describe("cypher directive filtering - Auth", () => {
 
         const token = createBearerToken("secret", { custom_value: "hello" });
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 movies {
                     custom_field
@@ -186,7 +186,7 @@ describe("cypher directive filtering - Auth", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor {
+            type Actor @node {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -194,7 +194,7 @@ describe("cypher directive filtering - Auth", () => {
 
         const token = createBearerToken("secret", { custom_value: "hello" });
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 movies {
                     title
@@ -236,9 +236,8 @@ describe("cypher directive filtering - Auth", () => {
             }
 
             type Actor
-                @authorization(
-                    filter: [{ where: { node: { movies_SOME: { custom_field_EQ: "$jwt.custom_value" } } } }]
-                ) {
+                @node
+                @authorization(filter: [{ where: { node: { movies_SOME: { custom_field_EQ: "$jwt.custom_value" } } } }]) {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -246,7 +245,7 @@ describe("cypher directive filtering - Auth", () => {
 
         const token = createBearerToken("secret", { custom_value: "hello" });
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 actors {
                     name
@@ -314,7 +313,7 @@ describe("cypher directive filtering - Auth", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor {
+            type Actor @node {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -322,7 +321,7 @@ describe("cypher directive filtering - Auth", () => {
 
         const token = createBearerToken("secret", { custom_value: "hello" });
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 movies {
                     title
@@ -392,7 +391,7 @@ describe("cypher directive filtering - Auth", () => {
 
         const token = createBearerToken("secret", { custom_value: "hello" });
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 movies {
                     title

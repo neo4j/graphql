@@ -49,7 +49,7 @@ describe("cypher directive", () => {
                     charset: "alphabetic",
                 });
 
-                const typeDefs = `
+                const typeDefs = /* GraphQL */ `
                     type ${Movie} @node {
                         title: String!
                         actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
@@ -74,8 +74,8 @@ describe("cypher directive", () => {
 
                 await testHelper.initNeo4jGraphQL({ typeDefs });
 
-                const source = `
-                    query($title: String!) {
+                const source = /* GraphQL */ `
+                    query ($title: String!) {
                         customMovies(title: $title) {
                             title
                             actors {
@@ -114,7 +114,7 @@ describe("cypher directive", () => {
                     charset: "alphabetic",
                 });
 
-                const typeDefs = `
+                const typeDefs = /* GraphQL */ `
                     type ${Movie} @node {
                         title: String!
                         actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
@@ -137,11 +137,11 @@ describe("cypher directive", () => {
 
                 await testHelper.initNeo4jGraphQL({ typeDefs });
 
-                const source = `
-                    query($title: String!, $name: String) {
+                const source = /* GraphQL */ `
+                    query ($title: String!, $name: String) {
                         customMovies(title: $title) {
                             title
-                            actors(where: {name_EQ: $name}) {
+                            actors(where: { name_EQ: $name }) {
                                 name
                             }
                         }
@@ -177,7 +177,7 @@ describe("cypher directive", () => {
                     charset: "alphabetic",
                 });
 
-                const typeDefs = `
+                const typeDefs = /* GraphQL */ `
                     type JWT @jwt {
                         roles: [String!]!
                     }
@@ -187,7 +187,7 @@ describe("cypher directive", () => {
                         actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
                     }
 
-                    type ${Actor} @authorization(validate: [{ operations: [READ], where: { jwt: { roles_INCLUDES:"admin" } } }]) {
+                    type ${Actor} @node @authorization(validate: [{ operations: [READ], where: { jwt: { roles_INCLUDES:"admin" } } }]) {
                         name: String!
                         movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
@@ -208,11 +208,11 @@ describe("cypher directive", () => {
                     features: { authorization: { key: "secret" } },
                 });
 
-                const source = `
-                    query($title: String!, $name: String) {
+                const source = /* GraphQL */ `
+                    query ($title: String!, $name: String) {
                         customMovies(title: $title) {
                             title
-                            actors(where: {name_EQ: $name}) {
+                            actors(where: { name_EQ: $name }) {
                                 name
                             }
                         }
@@ -253,7 +253,7 @@ describe("cypher directive", () => {
                     charset: "alphabetic",
                 });
 
-                const typeDefs = `
+                const typeDefs = /* GraphQL */ `
                     type ${Movie} @node {
                         title: String!
                         actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
@@ -277,8 +277,8 @@ describe("cypher directive", () => {
 
                 await testHelper.initNeo4jGraphQL({ typeDefs });
 
-                const source = `
-                    query($titles: [String!]!) {
+                const source = /* GraphQL */ `
+                    query ($titles: [String!]!) {
                         customMovies(titles: $titles) {
                             title
                             actors {
@@ -335,7 +335,7 @@ describe("cypher directive", () => {
                     charset: "alphabetic",
                 });
 
-                const typeDefs = `
+                const typeDefs = /* GraphQL */ `
                     type ${Movie} @node {
                         title: String!
                         actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
@@ -367,8 +367,8 @@ describe("cypher directive", () => {
 
                 await testHelper.initNeo4jGraphQL({ typeDefs });
 
-                const source = `
-                    query($title: String!) {
+                const source = /* GraphQL */ `
+                    query ($title: String!) {
                         movie(title: $title) {
                             title
                             actorsConnection {
@@ -436,7 +436,7 @@ describe("cypher directive", () => {
                     charset: "alphabetic",
                 });
 
-                const typeDefs = `
+                const typeDefs = /* GraphQL */ `
                     type ${Movie} @node {
                         title: String!
                         actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
@@ -461,8 +461,8 @@ describe("cypher directive", () => {
 
                 await testHelper.initNeo4jGraphQL({ typeDefs });
 
-                const source = `
-                    mutation($title: String!) {
+                const source = /* GraphQL */ `
+                    mutation ($title: String!) {
                         customMovies(title: $title) {
                             title
                             actors {
@@ -501,7 +501,7 @@ describe("cypher directive", () => {
                     charset: "alphabetic",
                 });
 
-                const typeDefs = `
+                const typeDefs = /* GraphQL */ `
                     type ${Movie} @node {
                         title: String!
                         actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
@@ -523,11 +523,11 @@ describe("cypher directive", () => {
 
                 await testHelper.initNeo4jGraphQL({ typeDefs });
 
-                const source = `
-                    mutation($title: String!, $name: String) {
+                const source = /* GraphQL */ `
+                    mutation ($title: String!, $name: String) {
                         customMovies(title: $title) {
                             title
-                            actors(where: {name_EQ: $name}) {
+                            actors(where: { name_EQ: $name }) {
                                 name
                             }
                         }
@@ -563,7 +563,7 @@ describe("cypher directive", () => {
                     charset: "alphabetic",
                 });
 
-                const typeDefs = `
+                const typeDefs = /* GraphQL */ `
                     type JWT @jwt {
                         roles: [String!]!
                     }
@@ -573,7 +573,7 @@ describe("cypher directive", () => {
                         actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
                     }
 
-                    type ${Actor} @authorization(validate: [{ operations: [READ], where: { jwt: { roles_INCLUDES: "admin" } } }]) {
+                    type ${Actor} @node @authorization(validate: [{ operations: [READ], where: { jwt: { roles_INCLUDES: "admin" } } }]) {
                         name: String!
                         movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
@@ -592,11 +592,11 @@ describe("cypher directive", () => {
                     features: { authorization: { key: "secret" } },
                 });
 
-                const source = `
-                    mutation($title: String!, $name: String) {
+                const source = /* GraphQL */ `
+                    mutation ($title: String!, $name: String) {
                         customMovies(title: $title) {
                             title
-                            actors(where: {name_EQ: $name}) {
+                            actors(where: { name_EQ: $name }) {
                                 name
                             }
                         }
@@ -637,7 +637,7 @@ describe("cypher directive", () => {
                 Destination = testHelper.createUniqueType("Destination");
                 Town = testHelper.createUniqueType("Town");
 
-                const typeDefs = `
+                const typeDefs = /* GraphQL */ `
                 type ${Destination} @node {
                     id: ID!
                     preposition(caseName: String = null): String! @cypher(statement: "RETURN coalesce($caseName, '${defaultPreposition}') as result", columnName: "result")
@@ -670,13 +670,13 @@ describe("cypher directive", () => {
             });
 
             test("should return default value", async () => {
-                const source = `
-                        query($id: ID!) {
-                            townDestinationList(id: $id) {
-                                id
-                                preposition
-                            }
+                const source = /* GraphQL */ `
+                    query ($id: ID!) {
+                        townDestinationList(id: $id) {
+                            id
+                            preposition
                         }
+                    }
                 `;
 
                 const expectedTownDestinationList = [{ id: destinationId, preposition: defaultPreposition }];
@@ -694,14 +694,14 @@ describe("cypher directive", () => {
             });
 
             test("should return test value", async () => {
-                const source = `
-                        query($id: ID!, $caseName: String) {
-                            townDestinationList(id: $id) {
-                                id
-                                preposition(caseName: $caseName)
-                            }
+                const source = /* GraphQL */ `
+                    query ($id: ID!, $caseName: String) {
+                        townDestinationList(id: $id) {
+                            id
+                            preposition(caseName: $caseName)
                         }
-                    `;
+                    }
+                `;
 
                 const expectedTownDestinationList = [{ id: destinationId, preposition: testCaseName }];
 
@@ -731,7 +731,7 @@ describe("cypher directive", () => {
                 Destination = testHelper.createUniqueType("Destination");
                 Town = testHelper.createUniqueType("Town");
 
-                const typeDefs = `
+                const typeDefs = /* GraphQL */ `
                 type ${Destination} @node {
                     id: ID!
                     preposition(caseName: String): String! @cypher(statement: "RETURN coalesce($caseName, '${defaultPreposition}') as result", columnName: "result")
@@ -764,13 +764,13 @@ describe("cypher directive", () => {
             });
 
             test("should return default value", async () => {
-                const source = `
-                        query($id: ID!) {
-                            townDestinationList(id: $id) {
-                                id
-                                preposition
-                            }
+                const source = /* GraphQL */ `
+                    query ($id: ID!) {
+                        townDestinationList(id: $id) {
+                            id
+                            preposition
                         }
+                    }
                 `;
 
                 const expectedTownDestinationList = [{ id: destinationId, preposition: defaultPreposition }];
@@ -788,14 +788,14 @@ describe("cypher directive", () => {
             });
 
             test("should return test value", async () => {
-                const source = `
-                        query($id: ID!, $caseName: String) {
-                            townDestinationList(id: $id) {
-                                id
-                                preposition(caseName: $caseName)
-                            }
+                const source = /* GraphQL */ `
+                    query ($id: ID!, $caseName: String) {
+                        townDestinationList(id: $id) {
+                            id
+                            preposition(caseName: $caseName)
                         }
-                    `;
+                    }
+                `;
 
                 const expectedTownDestinationList = [{ id: destinationId, preposition: testCaseName }];
 
@@ -826,7 +826,7 @@ describe("cypher directive", () => {
                 Movie = new UniqueType("Movie");
                 User = new UniqueType("User");
 
-                const typeDefs = `
+                const typeDefs = /* GraphQL */ `
                 union PostMovieUser = ${Post} | ${Movie} | ${User}
 
                 type ${Post} @node {
@@ -868,7 +868,7 @@ describe("cypher directive", () => {
             });
 
             test("should return __typename", async () => {
-                const source = `
+                const source = /* GraphQL */ `
                         query {
                             ${User.plural} (where: { id_EQ: "${userId}" }) {
                                 updates {
