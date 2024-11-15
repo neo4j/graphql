@@ -42,9 +42,6 @@ export function WarnIfTypeIsNotMarkedAsNode() {
                     }
                 }
                 if (!hasNodeDirective) {
-                    if (!process.env.sdiis) {
-                        throw new Error("All types representing Neo4j nodes must be marked with the @node directive.");
-                    }
                     console.warn(
                         `Future library versions will require marking all types representing Neo4j nodes with the @node directive.`
                     );

@@ -115,7 +115,8 @@ function parseTypeNode(
                 return new InterfaceType(typeNode.name.value, isRequired);
             } else if (isInput(definitionCollection, typeNode.name.value)) {
                 return new InputType(typeNode.name.value, isRequired);
-            } else {
+            }
+            else {
                 return new UnknownType(typeNode.name.value, isRequired);
             }
         }
@@ -146,7 +147,7 @@ export function isUserScalar(definitionCollection: DefinitionCollection, name: s
 }
 
 export function isObject(definitionCollection: DefinitionCollection, name: string) {
-    return definitionCollection.nodes.has(name);
+    return definitionCollection.objectTypes.has(name);
 }
 
 function isInput(definitionCollection: DefinitionCollection, name: string) {

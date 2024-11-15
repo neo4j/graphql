@@ -22,9 +22,9 @@ import type { NamedTypeNode } from "graphql";
 import { Node } from "../classes";
 import type { LimitDirective } from "../classes/LimitDirective";
 import type { NodeDirective } from "../classes/NodeDirective";
+import type { DefinitionCollection } from "../schema-model/parser/definition-collection";
 import type { Neo4jGraphQLCallbacks } from "../types";
 import { asArray, haveSharedElement } from "../utils/utils";
-import type { DefinitionNodes } from "./get-definition-nodes";
 import getObjFieldMeta from "./get-obj-field-meta";
 import parseNodeDirective from "./parse-node-directive";
 import { parseLimitDirective } from "./parse/parse-limit-directive";
@@ -40,7 +40,7 @@ type Nodes = {
 };
 
 function getNodes(
-    definitionNodes: DefinitionNodes,
+    definitionCollection: DefinitionCollection,
     options: {
         callbacks?: Neo4jGraphQLCallbacks;
         userCustomResolvers?: IResolvers | Array<IResolvers>;
@@ -53,7 +53,8 @@ function getNodes(
     const relationshipPropertyInterfaceNames = new Set<string>();
     const interfaceRelationshipNames = new Set<string>();
 
-    const nodes = definitionNodes.objectTypes
+    const nodes = [...definitionCollection.nodes
+        .values()]
         .filter((definition) => {
             const directiveNames = (definition.directives || []).map((d) => d.name.value);
             const excludeObjectFromNode = haveSharedElement(directiveNames, ["relationshipProperties"]);
@@ -100,11 +101,11 @@ function getNodes(
 
             const nodeFields = getObjFieldMeta({
                 obj: definition,
-                enums: definitionNodes.enumTypes,
-                interfaces: definitionNodes.interfaceTypes,
-                objects: definitionNodes.objectTypes,
-                scalars: definitionNodes.scalarTypes,
-                unions: definitionNodes.unionTypes,
+                enums: [...definitionCollection.enumTypes.values()],
+                interfaces: [...definitionCollection.interfaceTypes.values()],
+                objects: [...definitionCollection.nodes.values()],
+                scalars: [...definitionCollection.scalarTypes.values()],
+                unions: [...definitionCollection.unionTypes.values()],
                 callbacks: options.callbacks,
                 customResolvers,
             });

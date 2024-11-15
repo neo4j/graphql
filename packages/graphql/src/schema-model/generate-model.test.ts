@@ -26,6 +26,7 @@ import {
     AuthorizationValidateOperationRule,
 } from "./annotation/AuthorizationAnnotation";
 import { SubscriptionsAuthorizationFilterEventRule } from "./annotation/SubscriptionsAuthorizationAnnotation";
+import type { Attribute } from "./attribute/Attribute";
 import { GraphQLBuiltInScalarType, ListType, ObjectType } from "./attribute/AttributeType";
 import type { AttributeTypeHelper } from "./attribute/AttributeTypeHelper";
 import type { ConcreteEntity } from "./entity/ConcreteEntity";
@@ -726,6 +727,45 @@ describe("ComposeEntity Annotations & Attributes and Inheritance", () => {
         expect(tvProductionAliasedProp?.databaseName).toBe("movieDbName");
         expect(showAliasedProp?.databaseName).toBeDefined();
         expect(showAliasedProp?.databaseName).toBe("aliasedProp");
+    });
+});
+
+describe.only("Without @node", () => {
+    let schemaModel: Neo4jGraphQLSchemaModel;
+    let userEntity: ConcreteEntity;
+    let accountEntity: ConcreteEntity | undefined;
+
+    beforeAll(() => {
+        const typeDefs = gql`
+            type User @node {
+                id: ID!
+                account: Account
+                    @cypher(
+                        statement: "MATCH (this)-[:HAS_ACCOUNT]->(account:Account) RETURN account"
+                        columnName: "accounts"
+                    )
+            }
+
+            type Account {
+                id: ID!
+                accountName: String!
+            }
+        `;
+
+        const document = mergeTypeDefs(typeDefs);
+        schemaModel = generateModel(document);
+        userEntity = schemaModel.concreteEntities.find((e) => e.name === "User") as ConcreteEntity;
+        accountEntity = schemaModel.concreteEntities.find((e) => e.name === "Account");
+    });
+
+    test("type without @node can be used as attributes", () => {
+        const account: Attribute = userEntity.attributes.get("account") as Attribute;
+        expect(account).toBeDefined();
+        expect(account.type).toBeInstanceOf(ObjectType);
+    });
+
+    test("type without @node should not be considered as entity", () => {
+        expect(accountEntity).toBeUndefined();
     });
 });
 

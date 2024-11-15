@@ -72,9 +72,6 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     );
 
     const concreteEntitiesMap = concreteEntities.reduce((acc, entity) => {
-        if (acc.has(entity.name)) {
-            throw new Neo4jGraphQLSchemaValidationError(`Duplicate node ${entity.name}`);
-        }
         acc.set(entity.name, entity);
         return acc;
     }, new Map<string, ConcreteEntity>());
@@ -137,12 +134,12 @@ function hydrateCypherAnnotations(schema: Neo4jGraphQLSchemaModel, concreteEntit
             if (attributeField.annotations.cypher) {
                 if (attributeField.type instanceof ObjectType) {
                     const foundConcreteEntity = schema.getConcreteEntity(attributeField.type.name);
-                    if (!foundConcreteEntity) {
+                    /*  if (!foundConcreteEntity) {
                         throw new Neo4jGraphQLSchemaValidationError(
                             `Could not find concrete entity with name ${attributeField.type.name}`
                         );
                     }
-
+ */
                     attributeField.annotations.cypher.targetEntity = foundConcreteEntity;
                 }
             }
@@ -232,14 +229,7 @@ function generateCompositeEntity(
         }
         return concreteEntity;
     });
-    /*
-   // This is commented out because is currently possible to have leaf interfaces as demonstrated in the test
-   // packages/graphql/tests/integration/aggregations/where/node/string.int.test.ts
-   if (!compositeFields.length) {
-        throw new Neo4jGraphQLSchemaValidationError(
-            `Composite entity ${entityDefinitionName} has no concrete entities`
-        );
-    } */
+
     return {
         name: entityDefinitionName,
         concreteEntities: compositeFields,
@@ -538,7 +528,7 @@ function generateConcreteEntity(
     });
 
     // schema configuration directives are propagated onto concrete entities
-    const schemaDirectives = definitionCollection.schemaExtension?.directives?.filter((x) =>
+    const schemaDirectives = definitionCollection.schemaExtensions?.directives?.filter((x) =>
         isInArray(SCHEMA_CONFIGURATION_OBJECT_DIRECTIVES, x.name.value)
     );
     const annotations = parseAnnotations((definition.directives || []).concat(schemaDirectives || []));

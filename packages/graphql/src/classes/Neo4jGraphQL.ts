@@ -23,7 +23,7 @@ import type { IExecutableSchemaDefinition } from "@graphql-tools/schema";
 import { addResolversToSchema, makeExecutableSchema } from "@graphql-tools/schema";
 import { forEachField, getResolversFromSchema } from "@graphql-tools/utils";
 import Debug from "debug";
-import type { DocumentNode, GraphQLSchema } from "graphql";
+import { print, type DocumentNode, type GraphQLSchema } from "graphql";
 import type { Driver, SessionConfig } from "neo4j-driver";
 import { DEBUG_ALL } from "../constants";
 import { makeAugmentedSchema } from "../schema";
@@ -389,6 +389,8 @@ class Neo4jGraphQL {
                 userCustomResolvers: this.resolvers,
                 schemaModel: this.schemaModel,
             });
+
+            //console.log(print(typeDefs));
 
             if (this.validate) {
                 validateUserDefinition({ userDocument: document, augmentedDocument: typeDefs, jwt: jwt?.type });
