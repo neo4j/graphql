@@ -27,14 +27,22 @@ describe("@node", () => {
             type Actor @node {
                 name: String
             }
-
-            type Movie {
+            ## Movie should not be considered for schema augmentation
+            type Movie implements Production {
                 id: ID
+            }
+            ## Production should not be considered for schema augmentation as it has no implemented nodes.
+            interface Production {
+                id: ID
+            }
+
+            type Query {
+                movie: Movie @cypher(statement: "RETURN { id: '1' } as movie", columnName: "movie")
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
-        expect(printedSchema).not.toContain("movies");
+
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
               query: Query
@@ -119,6 +127,10 @@ describe("@node", () => {
               relationshipsDeleted: Int!
             }
 
+            type Movie {
+              id: ID
+            }
+
             type Mutation {
               createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
               deleteActors(where: ActorWhere): DeleteInfo!
@@ -137,6 +149,7 @@ describe("@node", () => {
               actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
+              movie: Movie
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -169,175 +182,156 @@ describe("@node", () => {
         `);
     });
 
-    test.only("type Actor, ActorWhere", async () => {
+    test.only("test", async () => {
         const typeDefs = /* GraphQL */ `
-            type Actor {
-                id: ID
+            type Actor @node {
+                name: String
             }
 
-            type Movie @node {
+            ## Production should not be considered for schema augmentation as it has no implemented nodes.
+            interface Production {
                 id: ID
-                actor: Actor @cypher(statement: "MATCH(a:Actor) LIMIT 1 AS actor", columnName: "actor")
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        try {
-            await neoSchema.getSchema();
-        } catch (error) {
-            console.log(error);
-        }
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
-        const schema = await neoSchema.getSchema();
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(schema));
         expect(printedSchema).toMatchInlineSnapshot(`
-            "schema {
-              query: Query
-              mutation: Mutation
-            }
+          "schema {
+            query: Query
+            mutation: Mutation
+          }
 
-            type Actor {
-              id: ID
-            }
+          type Actor {
+            name: String
+          }
 
-            input ActorWhere {
-              AND: [ActorWhere!]
-              NOT: ActorWhere
-              OR: [ActorWhere!]
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
-            }
+          type ActorAggregateSelection {
+            count: Int!
+            name: StringAggregateSelection!
+          }
 
+          input ActorCreateInput {
+            name: String
+          }
+
+          type ActorEdge {
+            cursor: String!
+            node: Actor!
+          }
+
+          input ActorOptions {
+            limit: Int
+            offset: Int
             \\"\\"\\"
-            Information about the number of nodes and relationships created during a create mutation
+            Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
             \\"\\"\\"
-            type CreateInfo {
-              nodesCreated: Int!
-              relationshipsCreated: Int!
-            }
+            sort: [ActorSort!]
+          }
 
-            type CreateMoviesMutationResponse {
-              info: CreateInfo!
-              movies: [Movie!]!
-            }
+          \\"\\"\\"
+          Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
+          \\"\\"\\"
+          input ActorSort {
+            name: SortDirection
+          }
 
-            \\"\\"\\"
-            Information about the number of nodes and relationships deleted during a delete mutation
-            \\"\\"\\"
-            type DeleteInfo {
-              nodesDeleted: Int!
-              relationshipsDeleted: Int!
-            }
+          input ActorUpdateInput {
+            name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
+            name_SET: String
+          }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
+          input ActorWhere {
+            AND: [ActorWhere!]
+            NOT: ActorWhere
+            OR: [ActorWhere!]
+            name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+            name_CONTAINS: String
+            name_ENDS_WITH: String
+            name_EQ: String
+            name_IN: [String]
+            name_STARTS_WITH: String
+          }
 
-            type Movie {
-              actor: Actor
-              id: ID
-            }
+          type ActorsConnection {
+            edges: [ActorEdge!]!
+            pageInfo: PageInfo!
+            totalCount: Int!
+          }
 
-            type MovieAggregateSelection {
-              count: Int!
-              id: IDAggregateSelection!
-            }
+          type CreateActorsMutationResponse {
+            actors: [Actor!]!
+            info: CreateInfo!
+          }
 
-            input MovieCreateInput {
-              id: ID
-            }
+          \\"\\"\\"
+          Information about the number of nodes and relationships created during a create mutation
+          \\"\\"\\"
+          type CreateInfo {
+            nodesCreated: Int!
+            relationshipsCreated: Int!
+          }
 
-            type MovieEdge {
-              cursor: String!
-              node: Movie!
-            }
+          \\"\\"\\"
+          Information about the number of nodes and relationships deleted during a delete mutation
+          \\"\\"\\"
+          type DeleteInfo {
+            nodesDeleted: Int!
+            relationshipsDeleted: Int!
+          }
 
-            input MovieOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [MovieSort!]
-            }
+          type Movie {
+            id: ID
+          }
 
-            \\"\\"\\"
-            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
-            \\"\\"\\"
-            input MovieSort {
-              id: SortDirection
-            }
+          type Mutation {
+            createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
+            deleteActors(where: ActorWhere): DeleteInfo!
+            updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+          }
 
-            input MovieUpdateInput {
-              id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-              id_SET: ID
-            }
+          \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+          type PageInfo {
+            endCursor: String
+            hasNextPage: Boolean!
+            hasPreviousPage: Boolean!
+            startCursor: String
+          }
 
-            input MovieWhere {
-              AND: [MovieWhere!]
-              NOT: MovieWhere
-              OR: [MovieWhere!]
-              actor: ActorWhere
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
-            }
+          type Query {
+            actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
+            actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+            actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
+            movie: Movie
+          }
 
-            type MoviesConnection {
-              edges: [MovieEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
+          \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
+          enum SortDirection {
+            \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+            ASC
+            \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+            DESC
+          }
 
-            type Mutation {
-              createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
-              deleteMovies(where: MovieWhere): DeleteInfo!
-              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-            }
+          type StringAggregateSelection {
+            longest: String
+            shortest: String
+          }
 
-            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
-            type PageInfo {
-              endCursor: String
-              hasNextPage: Boolean!
-              hasPreviousPage: Boolean!
-              startCursor: String
-            }
+          type UpdateActorsMutationResponse {
+            actors: [Actor!]!
+            info: UpdateInfo!
+          }
 
-            type Query {
-              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-            }
-
-            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
-            enum SortDirection {
-              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-              ASC
-              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-              DESC
-            }
-
-            \\"\\"\\"
-            Information about the number of nodes and relationships created and deleted during an update mutation
-            \\"\\"\\"
-            type UpdateInfo {
-              nodesCreated: Int!
-              nodesDeleted: Int!
-              relationshipsCreated: Int!
-              relationshipsDeleted: Int!
-            }
-
-            type UpdateMoviesMutationResponse {
-              info: UpdateInfo!
-              movies: [Movie!]!
-            }"
-        `);
+          \\"\\"\\"
+          Information about the number of nodes and relationships created and deleted during an update mutation
+          \\"\\"\\"
+          type UpdateInfo {
+            nodesCreated: Int!
+            nodesDeleted: Int!
+            relationshipsCreated: Int!
+            relationshipsDeleted: Int!
+          }"
+      `);
     });
 });

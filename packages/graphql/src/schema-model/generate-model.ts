@@ -128,18 +128,19 @@ function addCompositeEntitiesToConcreteEntity(compositeEntities: CompositeEntity
     });
 }
 
+// TODO: currently the below is used only for Filtering purposes, and therefore the target is set only for ObjectTypes but in the future we might want to use it for other types as well
 function hydrateCypherAnnotations(schema: Neo4jGraphQLSchemaModel, concreteEntities: ConcreteEntity[]) {
     for (const concreteEntity of concreteEntities) {
         for (const attributeField of concreteEntity.attributes.values()) {
             if (attributeField.annotations.cypher) {
                 if (attributeField.type instanceof ObjectType) {
                     const foundConcreteEntity = schema.getConcreteEntity(attributeField.type.name);
-                    /*  if (!foundConcreteEntity) {
+                  /*   if (!foundConcreteEntity) {
                         throw new Neo4jGraphQLSchemaValidationError(
                             `Could not find concrete entity with name ${attributeField.type.name}`
                         );
-                    }
- */
+                    } */
+
                     attributeField.annotations.cypher.targetEntity = foundConcreteEntity;
                 }
             }

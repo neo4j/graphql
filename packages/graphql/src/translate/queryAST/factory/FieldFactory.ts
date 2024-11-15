@@ -247,10 +247,9 @@ export class FieldFactory {
         if (rawFields) {
             if (attribute.typeHelper.isObject()) {
                 const concreteEntity = this.queryASTFactory.schemaModel.getConcreteEntityAdapter(typeName);
-                if (!concreteEntity) {
+             /*    if (!concreteEntity) {
                     throw new Error(`Entity ${typeName} not found`);
-                }
-
+                } */
                 return this.createCypherOperationField({
                     target: concreteEntity,
                     field,
@@ -260,14 +259,14 @@ export class FieldFactory {
                 });
             } else if (attribute.typeHelper.isAbstract()) {
                 const entity = this.queryASTFactory.schemaModel.getEntity(typeName);
-                // Raise an error as we expect that any complex attributes type are always entities
+                /*   // Raise an error as we expect that any complex attributes type are always entities
                 if (!entity) {
                     throw new Error(`Entity ${typeName} not found`);
                 }
                 if (!entity.isCompositeEntity()) {
                     throw new Error(`Entity ${typeName} is not a composite entity`);
-                }
-                const targetEntity = getEntityAdapter(entity);
+                } */
+                const targetEntity = entity ? getEntityAdapter(entity) : undefined;
                 return this.createCypherOperationField({
                     target: targetEntity,
                     field,

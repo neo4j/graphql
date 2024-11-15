@@ -22,8 +22,8 @@ import { AttributeAdapter } from "../../../../schema-model/attribute/model-adapt
 import type { EntityAdapter } from "../../../../schema-model/entity/EntityAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../../../../types/neo4j-graphql-translation-context";
 import { TypenameFilter } from "../../ast/filters/property-filters/TypenameFilter";
-import { CypherOperation } from "../../ast/operations/CypherOperation";
-import { CypherScalarOperation } from "../../ast/operations/CypherScalarOperation";
+import { CypherAttributeOperation } from "../../ast/operations/CypherAttributeOperation";
+import { CypherEntityOperation } from "../../ast/operations/CypherEntityOperation";
 import { CompositeCypherOperation } from "../../ast/operations/composite/CompositeCypherOperation";
 import { CompositeReadPartial } from "../../ast/operations/composite/CompositeReadPartial";
 import { CustomCypherSelection } from "../../ast/selection/CustomCypherSelection";
@@ -50,17 +50,17 @@ export class CustomCypherFactory {
         entity?: EntityAdapter;
         cypherAttributeField: AttributeAdapter;
         cypherArguments?: Record<string, any>;
-    }): CypherOperation | CompositeCypherOperation | CypherScalarOperation {
+    }): CypherEntityOperation | CompositeCypherOperation | CypherAttributeOperation {
         const selection = new CustomCypherSelection({
             operationField: cypherAttributeField,
             rawArguments: cypherArguments,
             isNested: true,
         });
         if (!entity) {
-            return new CypherScalarOperation(selection, cypherAttributeField, true);
+            return new CypherAttributeOperation(selection, cypherAttributeField, true);
         }
         if (isConcreteEntity(entity)) {
-            const customCypher = new CypherOperation({
+            const customCypher = new CypherEntityOperation({
                 cypherAttributeField: cypherAttributeField,
                 target: entity,
                 selection,
@@ -107,7 +107,7 @@ export class CustomCypherFactory {
         resolveTree: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
         entity?: EntityAdapter;
-    }): CypherOperation | CompositeCypherOperation | CypherScalarOperation {
+    }): CypherEntityOperation | CompositeCypherOperation | CypherAttributeOperation {
         const operationAttribute =
             context.schemaModel.operations.Query?.findAttribute(resolveTree.name) ??
             context.schemaModel.operations.Mutation?.findAttribute(resolveTree.name);
@@ -123,10 +123,10 @@ export class CustomCypherFactory {
             isNested: false,
         });
         if (!entity) {
-            return new CypherScalarOperation(selection, operationField, false);
+            return new CypherAttributeOperation(selection, operationField, false);
         }
         if (isConcreteEntity(entity)) {
-            const customCypher = new CypherOperation({
+            const customCypher = new CypherEntityOperation({
                 cypherAttributeField: operationField,
                 target: entity,
                 selection,

@@ -67,7 +67,7 @@ describe("cypherParams", () => {
         expect((gqlResult.data as any).id).toEqual(id);
     });
 
-    test.only("should inject cypherParams on field level nested query", async () => {
+    test("should inject cypherParams on field level nested query", async () => {
         const typeDefs = /* GraphQL */ `
             type CypherParams {
                 id: ID

@@ -126,7 +126,7 @@ export class AttributeAdapter {
             (this.typeHelper.isEnum() ||
                 this.typeHelper.isSpatial() ||
                 this.typeHelper.isScalar() ||
-                this.isCypherRelationshipField()) &&
+                (this.isCypherRelationshipField() && !this.typeHelper.isList())) &&
             this.isFilterable() &&
             !this.isCustomResolvable()
         );

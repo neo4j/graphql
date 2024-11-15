@@ -26,7 +26,7 @@ import type { EntitySelection, SelectionClause } from "../selection/EntitySelect
 import { ReadOperation } from "./ReadOperation";
 import type { OperationTranspileResult } from "./operations";
 
-export class CypherOperation extends ReadOperation {
+export class CypherEntityOperation extends ReadOperation {
     private cypherAttributeField: AttributeAdapter;
 
     constructor({

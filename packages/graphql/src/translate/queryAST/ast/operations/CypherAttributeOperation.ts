@@ -27,7 +27,7 @@ import { Operation, type OperationTranspileResult } from "./operations";
 /**
  * This operation is used to return top-level and nested @cypher fields that returns a scalar value.
  **/
-export class CypherScalarOperation extends Operation {
+export class CypherAttributeOperation extends Operation {
     private selection: EntitySelection;
     public cypherAttributeField: AttributeAdapter;
     private isNested: boolean;

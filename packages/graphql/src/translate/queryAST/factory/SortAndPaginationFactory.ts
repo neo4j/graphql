@@ -28,7 +28,7 @@ import type {
 } from "../../../types";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { asArray } from "../../../utils/utils";
-import { CypherScalarOperation } from "../ast/operations/CypherScalarOperation";
+import { CypherAttributeOperation } from "../ast/operations/CypherAttributeOperation";
 import { Pagination } from "../ast/pagination/Pagination";
 import { CypherPropertySort } from "../ast/sort/CypherPropertySort";
 import { PropertySort } from "../ast/sort/PropertySort";
@@ -154,7 +154,7 @@ export class SortAndPaginationFactory {
                     context,
                     cypherAttributeField: attribute,
                 });
-                if (!(cypherOperation instanceof CypherScalarOperation)) {
+                if (!(cypherOperation instanceof CypherAttributeOperation)) {
                     throw new Error("Transpile error: sorting is supported only for @cypher scalar properties");
                 }
                 return new CypherPropertySort({

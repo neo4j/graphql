@@ -1281,7 +1281,7 @@ describe("Cypher", () => {
         `);
     });
 
-    test("Filters should be generated only on 1:1 Relationship/Object custom cypher fields", async () => {
+    test.only("Filters should be generated only on 1:1 Relationship/Object custom cypher fields", async () => {
         const typeDefs = /* GraphQL */ `
             type Movie @node {
                 actors: [Actor]

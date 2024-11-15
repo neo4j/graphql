@@ -32,7 +32,7 @@ import type { Pagination } from "../pagination/Pagination";
 import type { EntitySelection } from "../selection/EntitySelection";
 import { CypherPropertySort } from "../sort/CypherPropertySort";
 import type { Sort, SortField } from "../sort/Sort";
-import { CypherScalarOperation } from "./CypherScalarOperation";
+import { CypherAttributeOperation } from "./CypherAttributeOperation";
 import type { OperationTranspileResult } from "./operations";
 import { Operation } from "./operations";
 
@@ -399,7 +399,7 @@ export class ConnectionReadOperation extends Operation {
                 if (
                     nodeField instanceof OperationField &&
                     nodeField.isCypherField() &&
-                    nodeField.operation instanceof CypherScalarOperation
+                    nodeField.operation instanceof CypherAttributeOperation
                 ) {
                     const cypherFieldName = nodeField.operation.cypherAttributeField.name;
                     if (cypherSortFieldsFlagMap[cypherFieldName]) {

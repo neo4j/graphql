@@ -305,14 +305,6 @@ function makeAugmentedSchema({
             return;
         }
     });
-    /*  userDefinedObjectTypes.forEach((objectType) => {
-        withWhereInputType({
-            entityAdapter: concreteEntityAdapter,
-            userDefinedFieldDirectives,
-            features,
-            composer,
-        });
-    }); */
 
     if (features?.subscriptions && nodes.length) {
         generateSubscriptionTypes({
