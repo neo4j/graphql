@@ -173,7 +173,6 @@ describe("@node", () => {
         const typeDefs = /* GraphQL */ `
             type Actor @node {
                 name: String
-                movies: [Movie] @cypher(statement: "MATCH (m:Movie) RETURN m", columnName: "movies")
             }
 
             type Movie implements Production {
@@ -198,7 +197,6 @@ describe("@node", () => {
             }
 
             type Actor {
-              movies: [Movie]
               name: String
             }
 
@@ -279,10 +277,6 @@ describe("@node", () => {
             type DeleteInfo {
               nodesDeleted: Int!
               relationshipsDeleted: Int!
-            }
-
-            type Movie implements Production {
-              name: String
             }
 
             type Mutation {

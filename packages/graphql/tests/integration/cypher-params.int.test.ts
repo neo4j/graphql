@@ -69,7 +69,7 @@ describe("cypherParams", () => {
 
     test("should inject cypherParams on field level nested query", async () => {
         const typeDefs = /* GraphQL */ `
-            type CypherParams {
+            type CypherParams @node {
                 id: ID
             }
 

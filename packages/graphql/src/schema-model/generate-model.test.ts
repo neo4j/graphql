@@ -26,7 +26,6 @@ import {
     AuthorizationValidateOperationRule,
 } from "./annotation/AuthorizationAnnotation";
 import { SubscriptionsAuthorizationFilterEventRule } from "./annotation/SubscriptionsAuthorizationAnnotation";
-import type { Attribute } from "./attribute/Attribute";
 import { GraphQLBuiltInScalarType, ListType, ObjectType } from "./attribute/AttributeType";
 import type { AttributeTypeHelper } from "./attribute/AttributeTypeHelper";
 import type { ConcreteEntity } from "./entity/ConcreteEntity";
@@ -727,89 +726,6 @@ describe("ComposeEntity Annotations & Attributes and Inheritance", () => {
         expect(tvProductionAliasedProp?.databaseName).toBe("movieDbName");
         expect(showAliasedProp?.databaseName).toBeDefined();
         expect(showAliasedProp?.databaseName).toBe("aliasedProp");
-    });
-});
-
-describe("Test @node changes", () => {
-    let schemaModel: Neo4jGraphQLSchemaModel;
-    let userEntity: ConcreteEntity;
-    let companyEntity: ConcreteEntity;
-    let accountEntity: ConcreteEntity | undefined;
-
-    beforeAll(() => {
-        const typeDefs = gql`
-            type User @node {
-                id: ID!
-                account: Account
-                    @cypher(
-                        statement: "MATCH (this)-[:HAS_ACCOUNT]->(account:Account) RETURN account"
-                        columnName: "accounts"
-                    )
-                accounts: [Account]
-                    @cypher(
-                        statement: "MATCH (this)-[:HAS_ACCOUNT]->(account:Account) RETURN account"
-                        columnName: "accounts"
-                    )
-                mandatoryAccounts: [Account!]!
-                    @cypher(
-                        statement: "MATCH (this)-[:HAS_ACCOUNT]->(account:Account) RETURN account"
-                        columnName: "accounts"
-                    )
-            }
-
-            type Company @node {
-                name: String
-                employees: [User]
-                    @cypher(statement: "MATCH (this)-[:WORKS_FOR]->(ey:Employee) RETURN ey", columnName: "ey")
-                employeeOfTheMonth: User
-                    @cypher(
-                        statement: "MATCH (this)-[:EMPLOYEE_OF_THE_MONTH]->(ey:Employee) RETURN ey"
-                        columnName: "eom"
-                    )
-            }
-
-            type Account {
-                id: ID!
-                accountName: String!
-            }
-        `;
-
-        const document = mergeTypeDefs(typeDefs);
-        schemaModel = generateModel(document);
-        userEntity = schemaModel.concreteEntities.find((e) => e.name === "User") as ConcreteEntity;
-        companyEntity = schemaModel.concreteEntities.find((e) => e.name === "Company") as ConcreteEntity;
-        accountEntity = schemaModel.concreteEntities.find((e) => e.name === "Account");
-    });
-
-    test("type without @node should not be considered as entity", () => {
-        expect(userEntity).toBeDefined();
-        expect(companyEntity).toBeDefined();
-        expect(accountEntity).toBeUndefined();
-    });
-
-    test("type without @node can be used as attributes", () => {
-        const account: Attribute = userEntity.attributes.get("account") as Attribute;
-        const accounts: Attribute = userEntity.attributes.get("accounts") as Attribute;
-        const mandatoryAccounts: Attribute = userEntity.attributes.get("mandatoryAccounts") as Attribute;
-        expect(account).toBeDefined();
-        expect(account.type).toBeInstanceOf(ObjectType);
-
-        expect(accounts).toBeDefined();
-        expect(accounts.type).toBeInstanceOf(ListType);
-        expect(accounts.type.isRequired).toBe(false);
-        expect((accounts.type as ListType).ofType.isRequired).toBe(false);
-
-        expect(mandatoryAccounts).toBeDefined();
-        expect(mandatoryAccounts.type).toBeInstanceOf(ListType);
-        expect(mandatoryAccounts.type.isRequired).toBe(true);
-        expect((mandatoryAccounts.type as ListType).ofType.isRequired).toBe(true);
-    });
-
-    test("type with @node can be used as attributes", () => {
-        expect(companyEntity.attributes.has("employees")).toBeTrue();
-        expect(companyEntity.attributes.has("employeeOfTheMonth")).toBeTrue();
-        expect(companyEntity.attributes.get("employees")?.type).toBeInstanceOf(ListType);
-        expect(companyEntity.attributes.get("employeeOfTheMonth")?.type).toBeInstanceOf(ObjectType);
     });
 });
 

@@ -39,7 +39,8 @@ import type { Operations } from "./Neo4jGraphQLSchemaModel";
 import { Neo4jGraphQLSchemaModel } from "./Neo4jGraphQLSchemaModel";
 import { Operation } from "./Operation";
 import type { Attribute } from "./attribute/Attribute";
-import { ObjectType } from "./attribute/AttributeType";
+import type { AttributeType } from "./attribute/AttributeType";
+import { ListType, ObjectType } from "./attribute/AttributeType";
 import type { CompositeEntity } from "./entity/CompositeEntity";
 import { ConcreteEntity } from "./entity/ConcreteEntity";
 import type { Entity } from "./entity/Entity";
@@ -128,15 +129,31 @@ function addCompositeEntitiesToConcreteEntity(compositeEntities: CompositeEntity
     });
 }
 
+function getCypherTarget(schema: Neo4jGraphQLSchemaModel, attributeType: AttributeType): ConcreteEntity | undefined {
+    if (attributeType instanceof ListType) {
+        return getCypherTarget(schema, attributeType.ofType);
+    }
+    if (attributeType instanceof ObjectType) {
+        const foundConcreteEntity = schema.getConcreteEntity(attributeType.name);
+        if (!foundConcreteEntity) {
+            throw new Neo4jGraphQLSchemaValidationError(
+                `@cypher field must target type annotated with the @node directive${attributeType.name}, `
+            );
+        }
+        return schema.getConcreteEntity(attributeType.name);
+    }
+    if (attributeType instanceof InterfaceEntity || attributeType instanceof UnionEntity) {
+        throw new Error("@cypher field target cannot be an interface or an union");
+    }
+}
+
 // TODO: currently the below is used only for Filtering purposes, and therefore the target is set only for ObjectTypes but in the future we might want to use it for other types as well
 function hydrateCypherAnnotations(schema: Neo4jGraphQLSchemaModel, concreteEntities: ConcreteEntity[]) {
     for (const concreteEntity of concreteEntities) {
         for (const attributeField of concreteEntity.attributes.values()) {
             if (attributeField.annotations.cypher) {
-                if (attributeField.type instanceof ObjectType) {
-                    const foundConcreteEntity = schema.getConcreteEntity(attributeField.type.name);
-                    attributeField.annotations.cypher.targetEntity = foundConcreteEntity;
-                }
+                const target = getCypherTarget(schema, attributeField.type);
+                attributeField.annotations.cypher.targetEntity = target;
             }
         }
     }
