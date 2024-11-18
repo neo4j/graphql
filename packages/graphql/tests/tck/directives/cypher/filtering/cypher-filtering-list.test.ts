@@ -21,7 +21,7 @@ import { Neo4jGraphQL } from "../../../../../src";
 import { formatCypher, formatParams, translateQuery } from "../../../utils/tck-test-utils";
 
 describe("cypher directive filtering - Lists", () => {
-    test.only("Int cypher field AND String title field", async () => {
+    test("Int cypher field AND String title field", async () => {
         const typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String

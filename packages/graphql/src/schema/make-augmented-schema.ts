@@ -370,8 +370,8 @@ function makeAugmentedSchema({
     if (!Object.values(composer.Subscription.getFields()).length) {
         composer.delete("Subscription");
     }
-
     const generatedTypeDefs = composer.toSDL();
+
     let parsedDoc = parse(generatedTypeDefs);
 
     const documentNames = new Set(parsedDoc.definitions.filter(definitionNodeHasName).map((x) => x.name.value));
