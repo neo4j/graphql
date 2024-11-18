@@ -135,12 +135,6 @@ function hydrateCypherAnnotations(schema: Neo4jGraphQLSchemaModel, concreteEntit
             if (attributeField.annotations.cypher) {
                 if (attributeField.type instanceof ObjectType) {
                     const foundConcreteEntity = schema.getConcreteEntity(attributeField.type.name);
-                  /*   if (!foundConcreteEntity) {
-                        throw new Neo4jGraphQLSchemaValidationError(
-                            `Could not find concrete entity with name ${attributeField.type.name}`
-                        );
-                    } */
-
                     attributeField.annotations.cypher.targetEntity = foundConcreteEntity;
                 }
             }
@@ -223,13 +217,11 @@ function generateCompositeEntity(
     entityImplementingTypeNames: string[],
     concreteEntities: Map<string, ConcreteEntity>
 ): { name: string; concreteEntities: ConcreteEntity[] } {
-    const compositeFields = entityImplementingTypeNames.map((type) => {
-        const concreteEntity = concreteEntities.get(type);
-        if (!concreteEntity) {
-            throw new Neo4jGraphQLSchemaValidationError(`Could not find concrete entity with name ${type}`);
-        }
-        return concreteEntity;
-    });
+    const compositeFields = filterTruthy(
+        entityImplementingTypeNames.map((type) => {
+            return concreteEntities.get(type);
+        })
+    );
 
     return {
         name: entityDefinitionName,
