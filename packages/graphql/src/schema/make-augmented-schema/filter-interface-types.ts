@@ -20,7 +20,7 @@
 import type { InterfaceTypeDefinitionNode } from "graphql";
 
 export function filterInterfaceTypes(
-    interfaceTypes: InterfaceTypeDefinitionNode[],
+    interfaceTypes: Iterable<InterfaceTypeDefinitionNode>,
     interfaceRelationshipNames: Set<string>
 ): {
     interfaceRelationships: InterfaceTypeDefinitionNode[];

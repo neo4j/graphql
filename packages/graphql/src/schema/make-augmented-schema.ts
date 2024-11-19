@@ -40,7 +40,7 @@ import { augmentFulltextSchema } from "./augment/fulltext";
 import { ensureNonEmptyInput } from "./ensure-non-empty-input";
 import getCustomResolvers from "./get-custom-resolvers";
 import type { ObjectFields } from "./get-obj-field-meta";
-import getObjFieldMeta from "./get-obj-field-meta";
+import { getObjFieldMeta } from "./get-obj-field-meta";
 import { cypherResolver } from "./resolvers/field/cypher";
 import { createResolver } from "./resolvers/mutation/create";
 import { deleteResolver } from "./resolvers/mutation/delete";
@@ -122,7 +122,6 @@ function makeAugmentedSchema({
     const {
         interfaceTypes,
         scalarTypes,
-        objectTypes,
         userDefinedObjectTypes,
         enumTypes,
         unionTypes,
@@ -175,15 +174,11 @@ function makeAugmentedSchema({
 
     const getNodesResult = getNodes(definitionCollection, { callbacks, userCustomResolvers });
 
-    const { nodes, relationshipPropertyInterfaceNames, interfaceRelationshipNames } = getNodesResult;
+    const { nodes, interfaceRelationshipNames } = getNodesResult;
 
     const hasGlobalNodes = addGlobalNodeFields(nodes, composer, schemaModel.concreteEntities);
 
-    const { filteredInterfaceTypes } = filterInterfaceTypes([...interfaceTypes.values()], interfaceRelationshipNames);
-
-    const relationshipProperties: ObjectTypeDefinitionNode[] = [...objectTypes.values()].filter((objectType) => {
-        return relationshipPropertyInterfaceNames.has(objectType.name.value);
-    });
+    const { filteredInterfaceTypes } = filterInterfaceTypes(interfaceTypes.values(), interfaceRelationshipNames);
 
     const {
         userDefinedFieldDirectivesForNode,
@@ -199,19 +194,16 @@ function makeAugmentedSchema({
      * actual functional logic is in schemaModel.concreteEntities.forEach
      */
     const relationshipFields = new Map<string, ObjectFields>();
-    relationshipProperties.forEach((relationship) => {
+    for (const relationship of definitionCollection.relationshipProperties.values()) {
         const relFields = getObjFieldMeta({
-            enums: [...enumTypes.values()],
             interfaces: filteredInterfaceTypes,
-            objects: [...objectTypes.values()],
-            scalars: [...scalarTypes.values()],
-            unions: [...unionTypes.values()],
+            definitionCollection,
             obj: relationship,
             callbacks,
         });
 
         relationshipFields.set(relationship.name.value, relFields);
-    });
+    }
 
     // this is the new "functional" way for the above forEach
     // helper to only create relationshipProperties Interface types once, even if multiple relationships reference it
@@ -331,11 +323,8 @@ function makeAugmentedSchema({
              */
             const objectFields = getObjFieldMeta({
                 obj: customResolvers[`customCypher${type}`],
-                scalars: [...scalarTypes.values()],
-                enums: [...enumTypes.values()],
                 interfaces: filteredInterfaceTypes,
-                unions: [...unionTypes.values()],
-                objects: [...objectTypes.values()],
+                definitionCollection,
                 callbacks,
             });
             const field = objectFields.cypherFields.find((f) => f.fieldName === attributeAdapter.name) as CypherField;
