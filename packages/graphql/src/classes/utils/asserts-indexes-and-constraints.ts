@@ -133,7 +133,7 @@ async function checkIndexesAndConstraints({
     schemaModel: Neo4jGraphQLSchemaModel;
     session: Session;
 }): Promise<void> {
-    const missingConstraints = await getMissingConstraints({ schemaModel, session });
+    const missingConstraints = await getMissingConstraints({ session });
 
     if (missingConstraints.length) {
         const missingConstraintMessages = missingConstraints.map(
@@ -193,13 +193,7 @@ async function checkIndexesAndConstraints({
 
 type MissingConstraint = { constraintName: string; label: string; property: string };
 
-async function getMissingConstraints({
-    schemaModel,
-    session,
-}: {
-    schemaModel: Neo4jGraphQLSchemaModel;
-    session: Session;
-}): Promise<MissingConstraint[]> {
+async function getMissingConstraints({ session }: { session: Session }): Promise<MissingConstraint[]> {
     const existingConstraints: Record<string, string[]> = {};
 
     const constraintsCypher = "SHOW UNIQUE CONSTRAINTS";
