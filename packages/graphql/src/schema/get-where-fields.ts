@@ -69,10 +69,6 @@ export function getWhereFieldsForAttributes({
                 continue;
             }
 
-            /* if (field.isObjectField()) {
-                continue;
-            } */
-
             if (field.annotations.cypher.targetEntity) {
                 const targetEntityAdapter = new ConcreteEntityAdapter(field.annotations.cypher.targetEntity);
                 result[field.name] = {
