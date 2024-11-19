@@ -115,9 +115,9 @@ function makeAugmentedSchema({
     const callbacks = features?.populatedBy?.callbacks;
 
     let relationships: Relationship[] = [];
-
-    // const definitionNodes = getDefinitionNodes(document);
-    const definitionNodes = getDefinitionCollection(document);
+    //TODO: definition collection is being used to harmonize schema generation with schema model,
+    //however make augmented schema inner methods are still accepting arrays as they were defined by the previous getDefinitionNodes
+    const definitionCollection = getDefinitionCollection(document);
 
     const {
         interfaceTypes,
@@ -129,14 +129,13 @@ function makeAugmentedSchema({
         inputTypes,
         directives,
         schemaExtensions,
-    } = definitionNodes;
+    } = definitionCollection;
 
     const customResolvers = getCustomResolvers(document);
 
-    // TODO: maybe use schemaModel.definitionCollection instead of definitionNodes? need to add inputObjectTypes and customResolvers
     const schemaGenerator = new AugmentedSchemaGenerator(
         schemaModel,
-        definitionNodes,
+        definitionCollection,
         [customResolvers.customQuery, customResolvers.customMutation, customResolvers.customSubscription].filter(
             (x): x is ObjectTypeDefinitionNode => Boolean(x)
         )
@@ -174,7 +173,7 @@ function makeAugmentedSchema({
 
     const aggregationTypesMapper = new AggregationTypesMapper(composer, subgraph);
 
-    const getNodesResult = getNodes(definitionNodes, { callbacks, userCustomResolvers });
+    const getNodesResult = getNodes(definitionCollection, { callbacks, userCustomResolvers });
 
     const { nodes, relationshipPropertyInterfaceNames, interfaceRelationshipNames } = getNodesResult;
 
@@ -192,7 +191,7 @@ function makeAugmentedSchema({
         propagatedDirectivesForNode,
         userDefinedDirectivesForInterface,
         userDefinedDirectivesForUnion,
-    } = getUserDefinedDirectives(definitionNodes);
+    } = getUserDefinedDirectives(definitionCollection);
 
     /**
      * TODO [translation-layer-compatibility]
