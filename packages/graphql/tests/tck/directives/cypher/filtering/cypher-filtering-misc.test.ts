@@ -365,7 +365,7 @@ describe("cypher directive filtering - Auth", () => {
             query {
                 movies(where: { custom_field_EQ: "hello world!" }) {
                     title
-                    actors(where: { another_custom_field: "goodbye!", name_EQ: "Keanu Reeves" }) {
+                    actors(where: { another_custom_field_EQ: "goodbye!", name_EQ: "Keanu Reeves" }) {
                         name
                     }
                 }

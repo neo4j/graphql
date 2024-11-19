@@ -231,7 +231,6 @@ function runValidationRulesOnFilteredDocument({
                 customResolvers: asArray(userCustomResolvers ?? []),
             }),
             WarnIfSubscriptionsAuthorizationMissing(Boolean(features?.subscriptions)),
-            WarnIfQueryDirectionIsUsedWithDeprecatedValues,
         ],
         schema
     );

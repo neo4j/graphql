@@ -59,15 +59,6 @@ describe("@node", () => {
               node: Actor!
             }
 
-            input ActorOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [ActorSort!]
-            }
-
             \\"\\"\\"
             Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
             \\"\\"\\"
@@ -76,7 +67,6 @@ describe("@node", () => {
             }
 
             input ActorUpdateInput {
-              name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
               name_SET: String
             }
 
@@ -84,7 +74,6 @@ describe("@node", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -134,7 +123,7 @@ describe("@node", () => {
             }
 
             type Query {
-              actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
+              actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
             }
@@ -214,15 +203,6 @@ describe("@node", () => {
               node: Actor!
             }
 
-            input ActorOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [ActorSort!]
-            }
-
             \\"\\"\\"
             Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
             \\"\\"\\"
@@ -231,7 +211,6 @@ describe("@node", () => {
             }
 
             input ActorUpdateInput {
-              name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
               name_SET: String
             }
 
@@ -239,7 +218,6 @@ describe("@node", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -314,15 +292,6 @@ describe("@node", () => {
               Series
             }
 
-            input ProductionOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more ProductionSort objects to sort Productions by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [ProductionSort!]
-            }
-
             \\"\\"\\"
             Fields to sort Productions by. The order in which sorts are applied is not guaranteed when specifying many fields in one ProductionSort object.
             \\"\\"\\"
@@ -334,7 +303,6 @@ describe("@node", () => {
               AND: [ProductionWhere!]
               NOT: ProductionWhere
               OR: [ProductionWhere!]
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -350,13 +318,13 @@ describe("@node", () => {
             }
 
             type Query {
-              actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
+              actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
-              productions(limit: Int, offset: Int, options: ProductionOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ProductionSort!], where: ProductionWhere): [Production!]!
+              productions(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
               productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
               productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
-              series(limit: Int, offset: Int, options: SeriesOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [SeriesSort!], where: SeriesWhere): [Series!]!
+              series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
             }
@@ -385,15 +353,6 @@ describe("@node", () => {
               node: Series!
             }
 
-            input SeriesOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [SeriesSort!]
-            }
-
             \\"\\"\\"
             Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.
             \\"\\"\\"
@@ -402,7 +361,6 @@ describe("@node", () => {
             }
 
             input SeriesUpdateInput {
-              name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
               name_SET: String
             }
 
@@ -410,7 +368,6 @@ describe("@node", () => {
               AND: [SeriesWhere!]
               NOT: SeriesWhere
               OR: [SeriesWhere!]
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -495,15 +452,6 @@ describe("@node", () => {
               node: Actor!
             }
 
-            input ActorOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [ActorSort!]
-            }
-
             \\"\\"\\"
             Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
             \\"\\"\\"
@@ -512,7 +460,6 @@ describe("@node", () => {
             }
 
             input ActorUpdateInput {
-              name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
               name_SET: String
             }
 
@@ -520,7 +467,6 @@ describe("@node", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -588,19 +534,13 @@ describe("@node", () => {
             }
 
             type Query {
-              actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
+              actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
-              productions(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: ProductionWhere): [Production!]!
-              series(limit: Int, offset: Int, options: SeriesOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [SeriesSort!], where: SeriesWhere): [Series!]!
+              productions(limit: Int, offset: Int, where: ProductionWhere): [Production!]!
+              series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
-            }
-
-            \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
-            input QueryOptions {
-              limit: Int
-              offset: Int
             }
 
             type Series {
@@ -627,15 +567,6 @@ describe("@node", () => {
               node: Series!
             }
 
-            input SeriesOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [SeriesSort!]
-            }
-
             \\"\\"\\"
             Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.
             \\"\\"\\"
@@ -644,7 +575,6 @@ describe("@node", () => {
             }
 
             input SeriesUpdateInput {
-              name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
               name_SET: String
             }
 
@@ -652,7 +582,6 @@ describe("@node", () => {
               AND: [SeriesWhere!]
               NOT: SeriesWhere
               OR: [SeriesWhere!]
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
