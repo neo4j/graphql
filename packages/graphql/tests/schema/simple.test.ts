@@ -41,6 +41,10 @@ describe("Simple", () => {
               mutation: Mutation
             }
 
+            input BooleanScalarFilters {
+              equals: String
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -69,9 +73,27 @@ describe("Simple", () => {
               sum: Float
             }
 
+            input FloatScalarFilters {
+              equals: Float
+              greaterThan: Float
+              greaterThanEquals: Float
+              in: [Float!]
+              lessThan: Float
+              lessThanEquals: Float
+            }
+
             type IDAggregateSelection {
               longest: ID
               shortest: ID
+            }
+
+            input IDScalarFilters {
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
             }
 
             type IntAggregateSelection {
@@ -79,6 +101,15 @@ describe("Simple", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            input IntScalarFilters {
+              equals: Int
+              greaterThan: Int
+              greaterThanEquals: Int
+              in: [Int!]
+              lessThan: Int
+              lessThanEquals: Int
             }
 
             type Movie {
@@ -130,37 +161,31 @@ describe("Simple", () => {
               isActive_SET: Boolean
             }
 
-            input IntScalarFilter {
-              equals: Int
-              greaterThan: Int
-              greaterThanEquals: Int
-              in: [Int!]
-              lessThan: Int
-              lessThanEquals: Int
-            }
-
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              actorCount: IntScalarFilter
-              actorCount_EQ: Int @deprecated(reason: \\"Use generic\\")
-              actorCount_GT: Int @deprecated(reason: \\"Use generic\\") 
-              actorCount_GTE: Int @deprecated(reason: \\"Use generic\\")
-              actorCount_IN: [Int] @deprecated(reason: \\"Use generic\\")
-              actorCount_LT: Int @deprecated(reason: \\"Use generic\\")
-              actorCount_LTE: Int @deprecated(reason: \\"Use generic\\")
+              actorCount: IntScalarFilters
+              actorCount_EQ: Int
+              actorCount_GT: Int
+              actorCount_GTE: Int
+              actorCount_IN: [Int]
+              actorCount_LT: Int
+              actorCount_LTE: Int
+              averageRating: FloatScalarFilters
               averageRating_EQ: Float
               averageRating_GT: Float
               averageRating_GTE: Float
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
+              isActive: BooleanScalarFilters
               isActive_EQ: Boolean
             }
 
@@ -196,6 +221,15 @@ describe("Simple", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            input StringScalarFilters {
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
             }
 
             \\"\\"\\"

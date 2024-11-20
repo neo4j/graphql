@@ -55,6 +55,7 @@ export function getWhereFieldsForAttributes({
         }
     > = {};
     const scalarFilters = new ScalarFilters(composer);
+
     // Add the where fields for each attribute
     for (const field of attributes) {
         const userDefinedDirectivesOnField = userDefinedFieldDirectives?.get(field.name);
@@ -83,7 +84,7 @@ export function getWhereFieldsForAttributes({
             }
         }
         result[field.name] = {
-            type: scalarFilters.intScalarFilters,
+            type: scalarFilters.getInputTypeFromAttributeType(field),
             directives: deprecatedDirectives,
         };
 

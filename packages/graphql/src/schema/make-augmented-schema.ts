@@ -76,6 +76,7 @@ import { createConnectionFields } from "./create-connection-fields";
 import { addGlobalNodeFields } from "./create-global-nodes";
 import { createRelationshipFields } from "./create-relationship-fields/create-relationship-fields";
 import { AugmentedSchemaGenerator } from "./generation/AugmentedSchemaGenerator";
+import { ScalarFilters } from "./generation/ScalarFilters";
 import { withAggregateSelectionType } from "./generation/aggregate-types";
 import { withCreateInputType } from "./generation/create-input";
 import { withInterfaceType } from "./generation/interface-type";
@@ -355,8 +356,32 @@ function makeAugmentedSchema({
         composer.delete("Subscription");
     }
 
-    const generatedTypeDefs = composer.toSDL();
-    let parsedDoc = parse(generatedTypeDefs);
+    const scalarFilters = new ScalarFilters(composer);
+    const stringFilterITC = scalarFilters.stringScalarFilters;
+    // const booleanScalarFiltersITC = scalarFilters.booleanScalarFilters;
+    // const idScalarFiltersITC = scalarFilters.idScalarFilters;
+    // const intScalarFiltersITC = scalarFilters.intScalarFilters;
+    // const floatScalarFiltersITC = scalarFilters.floatScalarFilters;
+    // const bigIntScalarFiltersITC = scalarFilters.bigIntScalarFilters;
+
+    const additionalInputTypes = [
+        stringFilterITC,
+        // booleanScalarFiltersITC,
+        // idScalarFiltersITC,
+        // intScalarFiltersITC,
+        // floatScalarFiltersITC,
+      //  bigIntScalarFiltersITC,
+    ];
+    const excludeAdditionalInputTypes = additionalInputTypes.map((additionalInputType) =>
+        additionalInputType.getTypeName()
+    );
+    const generatedTypeDefs = composer.toSDL({
+        exclude: excludeAdditionalInputTypes,
+    });
+
+    const additionalInputTypeSDL = additionalInputTypes.map((additionalInputType) => additionalInputType.toSDL());
+
+    let parsedDoc = parse(generatedTypeDefs.concat(additionalInputTypeSDL.join("\n")));
 
     const documentNames = new Set(parsedDoc.definitions.filter(definitionNodeHasName).map((x) => x.name.value));
     const resolveMethods = getResolveAndSubscriptionMethods(composer);

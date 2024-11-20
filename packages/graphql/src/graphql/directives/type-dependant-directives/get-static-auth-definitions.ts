@@ -62,6 +62,7 @@ export function getStaticAuthorizationDefinitions(
 
     const JWTPayloadWhere = createJWTPayloadWhere(userDocument, schema, JWTPayloadDefinition);
     const JWTPayloadWhereAST = astFromInputObjectType(JWTPayloadWhere, schema);
+
     ASTs.push(JWTPayloadWhereAST);
     return ASTs;
 }
@@ -79,6 +80,7 @@ function createJWTPayloadWhere(
     const jwtFieldAttributeAdapters = [...jwtStandardTypeDefinitionFields, ...jwtPayloadDefinitionFields].map(
         (field) => new AttributeAdapter(parseAttribute(field, definitionCollection))
     );
+
     const composer = new SchemaComposer();
     const inputFieldsType = getWhereFieldsForAttributes({
         attributes: jwtFieldAttributeAdapters,
