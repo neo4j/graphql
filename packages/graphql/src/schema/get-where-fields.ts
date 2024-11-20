@@ -18,11 +18,12 @@
  */
 
 import type { DirectiveNode } from "graphql";
-import type { Directive } from "graphql-compose";
+import type { Directive, InputTypeComposer, SchemaComposer } from "graphql-compose";
 import { DEPRECATED } from "../constants";
 import type { AttributeAdapter } from "../schema-model/attribute/model-adapters/AttributeAdapter";
 import { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { Neo4jFeaturesSettings } from "../types";
+import { ScalarFilters } from "./generation/ScalarFilters";
 import { graphqlDirectivesToCompose } from "./to-compose";
 
 // TODO: refactoring needed!
@@ -32,25 +33,28 @@ export function getWhereFieldsForAttributes({
     userDefinedFieldDirectives,
     features,
     ignoreCypherFieldFilters,
+    composer,
 }: {
     attributes: AttributeAdapter[];
     userDefinedFieldDirectives?: Map<string, DirectiveNode[]>;
     features: Neo4jFeaturesSettings | undefined;
     ignoreCypherFieldFilters: boolean;
+    composer: SchemaComposer;
 }): Record<
     string,
     {
-        type: string;
+        type: string | InputTypeComposer;
         directives: Directive[];
     }
 > {
     const result: Record<
         string,
         {
-            type: string;
+            type: string | InputTypeComposer;
             directives: Directive[];
         }
     > = {};
+    const scalarFilters = new ScalarFilters(composer);
     // Add the where fields for each attribute
     for (const field of attributes) {
         const userDefinedDirectivesOnField = userDefinedFieldDirectives?.get(field.name);
@@ -78,6 +82,10 @@ export function getWhereFieldsForAttributes({
                 continue;
             }
         }
+        result[field.name] = {
+            type: scalarFilters.intScalarFilters,
+            directives: deprecatedDirectives,
+        };
 
         result[`${field.name}_EQ`] = {
             type: field.getInputTypeNames().where.pretty,

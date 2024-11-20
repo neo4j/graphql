@@ -130,16 +130,26 @@ describe("Simple", () => {
               isActive_SET: Boolean
             }
 
+            input IntScalarFilter {
+              equals: Int
+              greaterThan: Int
+              greaterThanEquals: Int
+              in: [Int!]
+              lessThan: Int
+              lessThanEquals: Int
+            }
+
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              actorCount_EQ: Int
-              actorCount_GT: Int
-              actorCount_GTE: Int
-              actorCount_IN: [Int]
-              actorCount_LT: Int
-              actorCount_LTE: Int
+              actorCount: IntScalarFilter
+              actorCount_EQ: Int @deprecated(reason: \\"Use generic\\")
+              actorCount_GT: Int @deprecated(reason: \\"Use generic\\") 
+              actorCount_GTE: Int @deprecated(reason: \\"Use generic\\")
+              actorCount_IN: [Int] @deprecated(reason: \\"Use generic\\")
+              actorCount_LT: Int @deprecated(reason: \\"Use generic\\")
+              actorCount_LTE: Int @deprecated(reason: \\"Use generic\\")
               averageRating_EQ: Float
               averageRating_GT: Float
               averageRating_GTE: Float
