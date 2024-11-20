@@ -115,8 +115,7 @@ function parseTypeNode(
                 return new InterfaceType(typeNode.name.value, isRequired);
             } else if (isInput(definitionCollection, typeNode.name.value)) {
                 return new InputType(typeNode.name.value, isRequired);
-            }
-            else {
+            } else {
                 return new UnknownType(typeNode.name.value, isRequired);
             }
         }
