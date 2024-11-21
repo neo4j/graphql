@@ -75,11 +75,7 @@ export const typeDefs = gql`
         research: [ProductResearch!]! @relationship(type: "HAS_RESEARCH", direction: OUT)
     }
 
-<<<<<<< HEAD
-    type DeprecatedProduct @key(fields: "sku package") @node {
-=======
     type DeprecatedProduct @node @key(fields: "sku package") {
->>>>>>> 355e1ec07 (fix subgraph tests)
         sku: String!
         package: String!
         reason: String
@@ -97,7 +93,6 @@ export const typeDefs = gql`
         id: ID!
     }
 
-<<<<<<< HEAD
     type ProductResearch @key(fields: "study { caseNumber }") @node {
         study: CaseStudy!
             @cypher(
@@ -107,10 +102,6 @@ export const typeDefs = gql`
                 """
                 columnName: "res"
             )
-=======
-    type ProductResearch @node  @key(fields: "study { caseNumber }") {
-        study: CaseStudy! @relationship(type: "HAS_STUDY", direction: OUT)
->>>>>>> 355e1ec07 (fix subgraph tests)
         outcome: String
     }
 
@@ -119,11 +110,7 @@ export const typeDefs = gql`
         description: String
     }
 
-<<<<<<< HEAD
     type ProductDimension @shareable @node {
-=======
-    type ProductDimension @node @shareable {
->>>>>>> 355e1ec07 (fix subgraph tests)
         size: String
         weight: Float
         unit: String @inaccessible
@@ -142,11 +129,7 @@ export const typeDefs = gql`
 
     # Should be extend type as below
     # extend type User @key(fields: "email") {
-<<<<<<< HEAD
     type User @key(fields: "email") @node @extends {
-=======
-    type User @node @key(fields: "email") @extends {
->>>>>>> 355e1ec07 (fix subgraph tests)
         averageProductsCreatedPerYear: Int @requires(fields: "totalProductsCreated yearsOfEmployment")
         email: ID! @external
         name: String @override(from: "users")
