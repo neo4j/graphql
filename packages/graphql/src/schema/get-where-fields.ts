@@ -17,13 +17,13 @@
  * limitations under the License.
  */
 
-import type { DirectiveNode } from "graphql";
-import type { Directive, InputTypeComposer, SchemaComposer } from "graphql-compose";
+import type { DirectiveNode, GraphQLInputType } from "graphql";
+import type { Directive } from "graphql-compose";
 import { DEPRECATED } from "../constants";
 import type { AttributeAdapter } from "../schema-model/attribute/model-adapters/AttributeAdapter";
 import { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { Neo4jFeaturesSettings } from "../types";
-import { ScalarFilters } from "./generation/ScalarFilters";
+import { getInputTypeFromAttributeType } from "./generation/get-input-type-from-attribute-type";
 import { graphqlDirectivesToCompose } from "./to-compose";
 
 // TODO: refactoring needed!
@@ -33,28 +33,25 @@ export function getWhereFieldsForAttributes({
     userDefinedFieldDirectives,
     features,
     ignoreCypherFieldFilters,
-    composer,
 }: {
     attributes: AttributeAdapter[];
     userDefinedFieldDirectives?: Map<string, DirectiveNode[]>;
     features: Neo4jFeaturesSettings | undefined;
     ignoreCypherFieldFilters: boolean;
-    composer: SchemaComposer;
 }): Record<
     string,
     {
-        type: string | InputTypeComposer;
+        type: string | GraphQLInputType;
         directives: Directive[];
     }
 > {
     const result: Record<
         string,
         {
-            type: string | InputTypeComposer;
+            type: string | GraphQLInputType;
             directives: Directive[];
         }
     > = {};
-    const scalarFilters = new ScalarFilters(composer);
 
     // Add the where fields for each attribute
     for (const field of attributes) {
@@ -84,7 +81,7 @@ export function getWhereFieldsForAttributes({
             }
         }
         result[field.name] = {
-            type: scalarFilters.getInputTypeFromAttributeType(field),
+            type: getInputTypeFromAttributeType(field),
             directives: deprecatedDirectives,
         };
 

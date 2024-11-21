@@ -81,14 +81,14 @@ function createJWTPayloadWhere(
         (field) => new AttributeAdapter(parseAttribute(field, definitionCollection))
     );
 
-    const composer = new SchemaComposer();
     const inputFieldsType = getWhereFieldsForAttributes({
         attributes: jwtFieldAttributeAdapters,
         userDefinedFieldDirectives: undefined,
         features: undefined,
         ignoreCypherFieldFilters: false,
-        composer,
     });
+
+    const composer = new SchemaComposer();
 
     const inputTC = composer.createInputTC({
         name: "JWTPayloadWhere",

@@ -41,8 +41,9 @@ describe("Simple", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"Boolean filters\\"\\"\\"
             input BooleanScalarFilters {
-              equals: String
+              equals: Boolean
             }
 
             \\"\\"\\"
@@ -73,6 +74,7 @@ describe("Simple", () => {
               sum: Float
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
             input FloatScalarFilters {
               equals: Float
               greaterThan: Float
@@ -87,13 +89,17 @@ describe("Simple", () => {
               shortest: ID
             }
 
+            \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
-              in: [String!]
-              lessThan: String
-              lessThanEquals: String
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              startsWith: ID
             }
 
             type IntAggregateSelection {
@@ -103,6 +109,7 @@ describe("Simple", () => {
               sum: Int
             }
 
+            \\"\\"\\"Int filters\\"\\"\\"
             input IntScalarFilters {
               equals: Int
               greaterThan: Int
@@ -221,15 +228,6 @@ describe("Simple", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            input StringScalarFilters {
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
-              in: [String!]
-              lessThan: String
-              lessThanEquals: String
             }
 
             \\"\\"\\"

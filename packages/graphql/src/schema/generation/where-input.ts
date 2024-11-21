@@ -95,7 +95,6 @@ export function withWhereInputType({
         userDefinedFieldDirectives,
         features,
         ignoreCypherFieldFilters,
-        composer,
     });
     if (returnUndefinedIfEmpty && isEmptyObject(whereFields)) {
         return undefined;
@@ -140,13 +139,11 @@ function makeWhereFields({
     userDefinedFieldDirectives,
     features,
     ignoreCypherFieldFilters,
-    composer,
 }: {
     entityAdapter: EntityAdapter | RelationshipAdapter;
     userDefinedFieldDirectives?: Map<string, DirectiveNode[]>;
     features: Neo4jFeaturesSettings | undefined;
     ignoreCypherFieldFilters: boolean;
-    composer: SchemaComposer;
 }): InputTypeComposerFieldConfigMapDefinition {
     if (entityAdapter instanceof UnionEntityAdapter) {
         const fields: InputTypeComposerFieldConfigMapDefinition = {};
@@ -161,7 +158,6 @@ function makeWhereFields({
         userDefinedFieldDirectives,
         features,
         ignoreCypherFieldFilters,
-        composer,
     });
 }
 

@@ -26,6 +26,7 @@ import Debug from "debug";
 import { type DocumentNode, type GraphQLSchema } from "graphql";
 import type { Driver, SessionConfig } from "neo4j-driver";
 import { DEBUG_ALL } from "../constants";
+import { StringScalarFilters } from "../graphql/input-objects/generic-operators/StringScalarFilters";
 import { makeAugmentedSchema } from "../schema";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 import { generateModel } from "../schema-model/generate-model";
@@ -396,7 +397,12 @@ class Neo4jGraphQL {
             });
 
             if (this.validate) {
-                validateUserDefinition({ userDocument: document, augmentedDocument: typeDefs, jwt: jwt?.type });
+                validateUserDefinition({
+                    userDocument: document,
+                    additionalTypes: [StringScalarFilters],
+                    augmentedDocument: typeDefs,
+                    jwt: jwt?.type,
+                });
             }
 
             this._nodes = nodes;
