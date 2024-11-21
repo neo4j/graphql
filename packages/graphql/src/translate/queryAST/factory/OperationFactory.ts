@@ -32,8 +32,8 @@ import { filterTruthy, isRecord } from "../../../utils/utils";
 import type { Filter } from "../ast/filters/Filter";
 import type { AggregationOperation } from "../ast/operations/AggregationOperation";
 import type { ConnectionReadOperation } from "../ast/operations/ConnectionReadOperation";
-import type { CypherOperation } from "../ast/operations/CypherOperation";
-import type { CypherScalarOperation } from "../ast/operations/CypherScalarOperation";
+import type { CypherAttributeOperation } from "../ast/operations/CypherAttributeOperation";
+import type { CypherEntityOperation } from "../ast/operations/CypherEntityOperation";
 import type { ReadOperation } from "../ast/operations/ReadOperation";
 import type { CompositeAggregationOperation } from "../ast/operations/composite/CompositeAggregationOperation";
 import type { CompositeConnectionReadOperation } from "../ast/operations/composite/CompositeConnectionReadOperation";
@@ -277,7 +277,7 @@ export class OperationsFactory {
         entity?: EntityAdapter;
         cypherAttributeField: AttributeAdapter;
         cypherArguments?: Record<string, any>;
-    }): CypherOperation | CompositeCypherOperation | CypherScalarOperation {
+    }): CypherEntityOperation | CompositeCypherOperation | CypherAttributeOperation {
         return this.customCypherFactory.createCustomCypherOperation(arg);
     }
     /**

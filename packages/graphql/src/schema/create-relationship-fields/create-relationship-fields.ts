@@ -176,7 +176,6 @@ export function createRelationshipFields({
     userDefinedFieldDirectivesForNode: Map<string, Map<string, DirectiveNode[]>>;
     features?: Neo4jFeaturesSettings;
 }): void {
-    // HERE?
     const relationships =
         entityAdapter instanceof ConcreteEntityAdapter
             ? entityAdapter.relationships
@@ -317,7 +316,7 @@ function createRelationshipFieldsForTarget({
     });
 
     if (relationshipAdapter.target instanceof InterfaceEntityAdapter) {
-        withFieldInputType({ relationshipAdapter, composer, userDefinedFieldDirectives, features });
+        withFieldInputType({ relationshipAdapter, composer, userDefinedFieldDirectives });
     }
     composeNode.addFields(
         augmentObjectOrInterfaceTypeWithRelationshipField({

@@ -46,11 +46,9 @@ function isEmptyObject(obj: Record<string, unknown>): boolean {
 export function withUniqueWhereInputType({
     concreteEntityAdapter,
     composer,
-    features,
 }: {
     concreteEntityAdapter: ConcreteEntityAdapter;
     composer: SchemaComposer;
-    features?: Neo4jFeaturesSettings;
 }): InputTypeComposer {
     const uniqueWhereFields: InputTypeComposerFieldConfigMapDefinition = {};
 

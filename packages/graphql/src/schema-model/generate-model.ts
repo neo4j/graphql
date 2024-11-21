@@ -39,7 +39,8 @@ import type { Operations } from "./Neo4jGraphQLSchemaModel";
 import { Neo4jGraphQLSchemaModel } from "./Neo4jGraphQLSchemaModel";
 import { Operation } from "./Operation";
 import type { Attribute } from "./attribute/Attribute";
-import { ObjectType } from "./attribute/AttributeType";
+import type { AttributeType } from "./attribute/AttributeType";
+import { ListType, ObjectType } from "./attribute/AttributeType";
 import type { CompositeEntity } from "./entity/CompositeEntity";
 import { ConcreteEntity } from "./entity/ConcreteEntity";
 import type { Entity } from "./entity/Entity";
@@ -72,9 +73,6 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     );
 
     const concreteEntitiesMap = concreteEntities.reduce((acc, entity) => {
-        if (acc.has(entity.name)) {
-            throw new Neo4jGraphQLSchemaValidationError(`Duplicate node ${entity.name}`);
-        }
         acc.set(entity.name, entity);
         return acc;
     }, new Map<string, ConcreteEntity>());
@@ -131,20 +129,31 @@ function addCompositeEntitiesToConcreteEntity(compositeEntities: CompositeEntity
     });
 }
 
+function getCypherTarget(schema: Neo4jGraphQLSchemaModel, attributeType: AttributeType): ConcreteEntity | undefined {
+    if (attributeType instanceof ListType) {
+        return getCypherTarget(schema, attributeType.ofType);
+    }
+    if (attributeType instanceof ObjectType) {
+        const foundConcreteEntity = schema.getConcreteEntity(attributeType.name);
+        if (!foundConcreteEntity) {
+            throw new Neo4jGraphQLSchemaValidationError(
+                `@cypher field must target type annotated with the @node directive${attributeType.name}, `
+            );
+        }
+        return schema.getConcreteEntity(attributeType.name);
+    }
+    if (attributeType instanceof InterfaceEntity || attributeType instanceof UnionEntity) {
+        throw new Error("@cypher field target cannot be an interface or an union");
+    }
+}
+
+// TODO: currently the below is used only for Filtering purposes, and therefore the target is set only for ObjectTypes but in the future we might want to use it for other types as well
 function hydrateCypherAnnotations(schema: Neo4jGraphQLSchemaModel, concreteEntities: ConcreteEntity[]) {
     for (const concreteEntity of concreteEntities) {
         for (const attributeField of concreteEntity.attributes.values()) {
             if (attributeField.annotations.cypher) {
-                if (attributeField.type instanceof ObjectType) {
-                    const foundConcreteEntity = schema.getConcreteEntity(attributeField.type.name);
-                    if (!foundConcreteEntity) {
-                        throw new Neo4jGraphQLSchemaValidationError(
-                            `Could not find concrete entity with name ${attributeField.type.name}`
-                        );
-                    }
-
-                    attributeField.annotations.cypher.targetEntity = foundConcreteEntity;
-                }
+                const target = getCypherTarget(schema, attributeField.type);
+                attributeField.annotations.cypher.targetEntity = target;
             }
         }
     }
@@ -225,21 +234,12 @@ function generateCompositeEntity(
     entityImplementingTypeNames: string[],
     concreteEntities: Map<string, ConcreteEntity>
 ): { name: string; concreteEntities: ConcreteEntity[] } {
-    const compositeFields = entityImplementingTypeNames.map((type) => {
-        const concreteEntity = concreteEntities.get(type);
-        if (!concreteEntity) {
-            throw new Neo4jGraphQLSchemaValidationError(`Could not find concrete entity with name ${type}`);
-        }
-        return concreteEntity;
-    });
-    /*
-   // This is commented out because is currently possible to have leaf interfaces as demonstrated in the test
-   // packages/graphql/tests/integration/aggregations/where/node/string.int.test.ts
-   if (!compositeFields.length) {
-        throw new Neo4jGraphQLSchemaValidationError(
-            `Composite entity ${entityDefinitionName} has no concrete entities`
-        );
-    } */
+    const compositeFields = filterTruthy(
+        entityImplementingTypeNames.map((type) => {
+            return concreteEntities.get(type);
+        })
+    );
+
     return {
         name: entityDefinitionName,
         concreteEntities: compositeFields,
@@ -538,7 +538,7 @@ function generateConcreteEntity(
     });
 
     // schema configuration directives are propagated onto concrete entities
-    const schemaDirectives = definitionCollection.schemaExtension?.directives?.filter((x) =>
+    const schemaDirectives = definitionCollection.schemaExtensions?.directives?.filter((x) =>
         isInArray(SCHEMA_CONFIGURATION_OBJECT_DIRECTIVES, x.name.value)
     );
     const annotations = parseAnnotations((definition.directives || []).concat(schemaDirectives || []));

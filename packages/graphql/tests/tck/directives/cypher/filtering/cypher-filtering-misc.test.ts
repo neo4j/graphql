@@ -22,7 +22,7 @@ import { formatCypher, formatParams, translateQuery } from "../../../utils/tck-t
 
 describe("cypher directive filtering - Auth", () => {
     test("With relationship filter (non-Cypher field)", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
                 custom_field: String
@@ -35,22 +35,15 @@ describe("cypher directive filtering - Auth", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor {
+            type Actor @node {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
-                movies(
-                    where: {
-                        custom_field_EQ: "hello world!"
-                        actors_SOME: {
-                            name_EQ: "Keanu Reeves"
-                        } 
-                    }
-                ) {
+                movies(where: { custom_field_EQ: "hello world!", actors_SOME: { name_EQ: "Keanu Reeves" } }) {
                     custom_field
                     title
                     actors {
@@ -111,7 +104,7 @@ describe("cypher directive filtering - Auth", () => {
     });
 
     test("In a nested filter", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
                 custom_field: String
@@ -124,13 +117,13 @@ describe("cypher directive filtering - Auth", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor {
+            type Actor @node {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 actors {
                     name
@@ -178,7 +171,7 @@ describe("cypher directive filtering - Auth", () => {
     });
 
     test("With a nested filter", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
                 custom_field: String
@@ -191,13 +184,13 @@ describe("cypher directive filtering - Auth", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor {
+            type Actor @node {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 movies(where: { custom_field_EQ: "hello world!" }) {
                     title
@@ -247,7 +240,7 @@ describe("cypher directive filtering - Auth", () => {
     });
 
     test("With two cypher fields", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
                 custom_field: String
@@ -267,7 +260,7 @@ describe("cypher directive filtering - Auth", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor {
+            type Actor @node {
                 name: String
                 another_custom_field: String
                     @cypher(
@@ -280,7 +273,7 @@ describe("cypher directive filtering - Auth", () => {
             }
         `;
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 movies(where: { custom_field_EQ: "hello world!", another_custom_field_GT: 50 }) {
                     title
@@ -342,7 +335,7 @@ describe("cypher directive filtering - Auth", () => {
     });
 
     test("With two cypher fields, one nested", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
                 custom_field: String
@@ -355,7 +348,7 @@ describe("cypher directive filtering - Auth", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor {
+            type Actor @node {
                 name: String
                 another_custom_field: String
                     @cypher(
@@ -368,11 +361,11 @@ describe("cypher directive filtering - Auth", () => {
             }
         `;
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 movies(where: { custom_field_EQ: "hello world!" }) {
                     title
-                    actors(where: { another_custom_field_EQ: "goodbye!" name_EQ: "Keanu Reeves" }) {
+                    actors(where: { another_custom_field_EQ: "goodbye!", name_EQ: "Keanu Reeves" }) {
                         name
                     }
                 }

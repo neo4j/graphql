@@ -18,13 +18,13 @@
  */
 
 import type { DocumentNode, GraphQLSchema } from "graphql";
-import { getDefinitionNodes } from "../get-definition-nodes";
+import { getDefinitionCollection } from "../../schema-model/parser/definition-collection";
 import { validateCustomResolverRequires } from "./validate-custom-resolver-requires";
 
 export function validateSchemaCustomizations({ document, schema }: { document: DocumentNode; schema: GraphQLSchema }) {
-    const definitionNodes = getDefinitionNodes(document);
+    const definitionCollection = getDefinitionCollection(document);
 
-    for (const objectType of definitionNodes.objectTypes) {
+    for (const objectType of definitionCollection.objectTypes.values()) {
         validateCustomResolverRequires(objectType, schema);
     }
 }

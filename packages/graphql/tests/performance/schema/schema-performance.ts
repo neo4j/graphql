@@ -29,7 +29,7 @@ const basicTypeDefs = `
     }
 
     type Article @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) @node {
-        id: ID! @id @unique @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+        id: ID! @id  @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
         blocks: [Block!]! @relationship(type: "HAS_BLOCK", direction: OUT, properties: "HasBlock")
         images: [Image!]! @relationship(type: "HAS_IMAGE", direction: OUT)
     }
@@ -43,16 +43,16 @@ const basicTypeDefs = `
     }
 
     type TextBlock implements Block @node {
-        id: ID @id @unique
+        id: ID @id
         text: String
     }
 
     type DividerBlock implements Block @node {
-        id: ID @id @unique
+        id: ID @id
     }
 
     type ImageBlock implements Block @node {
-        id: ID @id @unique
+        id: ID @id
         images: [Image!]! @relationship(type: "HAS_IMAGE", direction: OUT)
     }
 
@@ -85,6 +85,8 @@ export async function schemaPerformance() {
         typeDefs,
     });
     console.time("Schema Generation");
-    await neoSchema.getSchema();
+    await neoSchema.getSchema().catch((e) => {
+        console.error(e);
+    });
     console.timeEnd("Schema Generation");
 }

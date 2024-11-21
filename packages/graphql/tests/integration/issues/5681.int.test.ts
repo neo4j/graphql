@@ -51,6 +51,7 @@ describe("https://github.com/neo4j/graphql/issues/5635", () => {
             }
 
             type ${User}
+                @node
                 @authorization(
                     validate: [
                         { where: { node: { userId_EQ: "$jwt.sub" } } }
@@ -69,6 +70,7 @@ describe("https://github.com/neo4j/graphql/issues/5635", () => {
             }
 
             type ${Tenant}
+                @node
                 @authentication(
                     operations: [UPDATE, DELETE, CREATE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP, SUBSCRIBE]
                     jwt: { roles_INCLUDES: "overlord" }
@@ -83,6 +85,7 @@ describe("https://github.com/neo4j/graphql/issues/5635", () => {
             }
 
             type ${Garage}
+                @node
                 @authentication(
                     operations: [UPDATE, DELETE, CREATE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP, SUBSCRIBE]
                     jwt: { roles_INCLUDES: "overlord" }
@@ -95,6 +98,7 @@ describe("https://github.com/neo4j/graphql/issues/5635", () => {
             }
 
             type ${VehicleCard}
+                @node
                 @authentication(
                     operations: [UPDATE, DELETE, CREATE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP, SUBSCRIBE]
                     jwt: { roles_INCLUDES: "overlord" }
@@ -129,7 +133,7 @@ describe("https://github.com/neo4j/graphql/issues/5635", () => {
     test("should not throw invalid argument error", async () => {
         const myUserId = "userId";
 
-        const ADD_TENANT = /*GraphQL*/ `
+        const ADD_TENANT = /* GraphQL */ `
             mutation addTenant($input: [${Tenant}CreateInput!]!) {
                 ${Tenant.operations.create}(input: $input) {
                     ${Tenant.plural} {
@@ -167,7 +171,7 @@ describe("https://github.com/neo4j/graphql/issues/5635", () => {
             },
         });
 
-        const ADD_GARAGES = /*GraphQL*/ `
+        const ADD_GARAGES = /* GraphQL */ `
             mutation addGarages($input: [${Garage}CreateInput!]!) {
                 ${Garage.operations.create}(input: $input) {
                     ${Garage.plural} {
@@ -205,7 +209,7 @@ describe("https://github.com/neo4j/graphql/issues/5635", () => {
             },
         });
 
-        const ADD_VEHICLE_CARD = /*GraphQL*/ `
+        const ADD_VEHICLE_CARD = /* GraphQL */ `
             mutation addVehicleCard($input: [${VehicleCard}CreateInput!]!) {
                 ${VehicleCard.operations.create}(input: $input) {
                     ${VehicleCard.plural} {

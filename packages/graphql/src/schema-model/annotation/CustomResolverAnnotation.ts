@@ -19,9 +19,9 @@
 
 import type { DocumentNode, FieldDefinitionNode } from "graphql";
 import { parse } from "graphql";
-import { selectionSetToResolveTree } from "../../schema/get-custom-resolver-meta";
-import { getDefinitionNodes } from "../../schema/get-definition-nodes";
 import type { ResolveTree } from "graphql-parse-resolve-info";
+import { selectionSetToResolveTree } from "../../schema/get-custom-resolver-meta";
+import { getDefinitionCollection } from "../parser/definition-collection";
 import type { Annotation } from "./Annotation";
 
 export class CustomResolverAnnotation implements Annotation {
@@ -37,16 +37,18 @@ export class CustomResolverAnnotation implements Annotation {
         if (!this.requires) {
             return;
         }
-        const definitionNodes = getDefinitionNodes(document);
+        const definitionCollection = getDefinitionCollection(document);
 
-        const { interfaceTypes, objectTypes, unionTypes } = definitionNodes;
+        const { interfaceTypes, objectTypes, unionTypes } = definitionCollection;
 
         const selectionSetDocument = parse(`{ ${this.requires} }`);
+        // TODO: likely selectionSetToResolveTree could be change to accept Maps instead of Arrays.
+        // initially these were arrays as they were coming from getDefinitionNodes that was returning arrays
         this.parsedRequires = selectionSetToResolveTree(
             objectFields || [],
-            objectTypes,
-            interfaceTypes,
-            unionTypes,
+            [...objectTypes.values()],
+            [...interfaceTypes.values()],
+            [...unionTypes.values()],
             selectionSetDocument
         );
     }

@@ -23,13 +23,13 @@ import type { IExecutableSchemaDefinition } from "@graphql-tools/schema";
 import { addResolversToSchema, makeExecutableSchema } from "@graphql-tools/schema";
 import { forEachField, getResolversFromSchema } from "@graphql-tools/utils";
 import Debug from "debug";
-import type { DocumentNode, GraphQLSchema } from "graphql";
+import { type DocumentNode, type GraphQLSchema } from "graphql";
 import type { Driver, SessionConfig } from "neo4j-driver";
 import { DEBUG_ALL } from "../constants";
 import { makeAugmentedSchema } from "../schema";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 import { generateModel } from "../schema-model/generate-model";
-import { getDefinitionNodes } from "../schema/get-definition-nodes";
+import { getDefinitionCollection } from "../schema-model/parser/definition-collection";
 import { makeDocumentToAugment } from "../schema/make-document-to-augment";
 import type { WrapResolverArguments } from "../schema/resolvers/composition/wrap-query-and-mutation";
 import { wrapQueryAndMutation } from "../schema/resolvers/composition/wrap-query-and-mutation";
@@ -365,12 +365,17 @@ class Neo4jGraphQL {
                     interfaceTypes: interfaces,
                     unionTypes: unions,
                     objectTypes: objects,
-                } = getDefinitionNodes(initialDocument);
+                } = getDefinitionCollection(initialDocument);
 
                 validateDocument({
                     document: initialDocument,
                     features: this.features,
-                    additionalDefinitions: { enums, interfaces, unions, objects },
+                    additionalDefinitions: {
+                        enums: [...enums.values()],
+                        interfaces: [...interfaces.values()],
+                        unions: [...unions.values()],
+                        objects: [...objects.values()],
+                    },
                     userCustomResolvers: this.resolvers,
                 });
             }
@@ -421,7 +426,7 @@ class Neo4jGraphQL {
                 interfaceTypes: interfaces,
                 unionTypes: unions,
                 objectTypes: objects,
-            } = getDefinitionNodes(initialDocument);
+            } = getDefinitionCollection(initialDocument);
 
             validateDocument({
                 document: initialDocument,
@@ -429,10 +434,10 @@ class Neo4jGraphQL {
                 additionalDefinitions: {
                     additionalDirectives: directives,
                     additionalTypes: types,
-                    enums,
-                    interfaces,
-                    unions,
-                    objects,
+                    enums: [...enums.values()],
+                    interfaces: [...interfaces.values()],
+                    unions: [...unions.values()],
+                    objects: [...objects.values()],
                 },
                 userCustomResolvers: this.resolvers,
             });

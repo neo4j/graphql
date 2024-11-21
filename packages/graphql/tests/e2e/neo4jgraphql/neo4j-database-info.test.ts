@@ -89,8 +89,8 @@ describe("Create with specific neo4jDatabaseInfo set incorrectly", () => {
     let server: TestGraphQLServer;
 
     beforeAll(async () => {
-        const typeDefs = `
-         type ${typeMovie} {
+        const typeDefs = /* GraphQL */ `
+         type ${typeMovie} @node {
              title: String
          }
          `;

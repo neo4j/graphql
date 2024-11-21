@@ -43,8 +43,8 @@ describe("auth claim", () => {
     });
 
     test("should allow checks against standard claim properties when jwt payload is undefined", async () => {
-        const typeDefs = `
-                type ${User} @authorization(validate: [ { operations: [READ], when: BEFORE, where: { jwt: { iss_EQ: "test" } } }]) {
+        const typeDefs = /* GraphQL */ `
+                type ${User} @node @authorization(validate: [ { operations: [READ], when: BEFORE, where: { jwt: { iss_EQ: "test" } } }]) {
                     id: ID
                     password: String
                 }
@@ -59,7 +59,7 @@ describe("auth claim", () => {
             },
         });
 
-        const query = `
+        const query = /* GraphQL */ `
             {
                 ${User.plural} {
                     password
@@ -82,12 +82,12 @@ describe("auth claim", () => {
     });
 
     test("should allow checks against standard claim properties when jwt payload is defined", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
                 type JWTPayload @jwt {
                     myClaim: String
                 }
 
-                type ${User} @authorization(validate: [ { operations: [READ], when: BEFORE, where: { jwt: { iss_EQ: "test" } } }]) {
+                type ${User} @node @authorization(validate: [ { operations: [READ], when: BEFORE, where: { jwt: { iss_EQ: "test" } } }]) {
                     id: ID
                     password: String
                 }
@@ -102,7 +102,7 @@ describe("auth claim", () => {
             },
         });
 
-        const query = `
+        const query = /* GraphQL */ `
             {
                 ${User.plural} {
                     password

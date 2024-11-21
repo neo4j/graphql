@@ -22,7 +22,7 @@ import { formatCypher, formatParams, translateQuery } from "../../../utils/tck-t
 
 describe("cypher directive filtering - Auth", () => {
     test("Point cypher field", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
                 special_location: Point
@@ -35,16 +35,9 @@ describe("cypher directive filtering - Auth", () => {
             }
         `;
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
-                movies(
-                    where: {
-                        special_location_DISTANCE: {
-                            point: { latitude: 1, longitude: 1 }
-                            distance: 0
-                        }
-                    }
-                ) {
+                movies(where: { special_location_DISTANCE: { point: { latitude: 1, longitude: 1 }, distance: 0 } }) {
                     title
                     special_location {
                         latitude
@@ -101,7 +94,7 @@ describe("cypher directive filtering - Auth", () => {
     });
 
     test("CartesianPoint cypher field", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
                 special_location: CartesianPoint
@@ -114,16 +107,9 @@ describe("cypher directive filtering - Auth", () => {
             }
         `;
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
-                movies(
-                    where: {
-                        special_location_DISTANCE: {
-                            point: { x: 1, y: 1, z: 2 }
-                            distance: 1
-                        }
-                    }
-                ) {
+                movies(where: { special_location_DISTANCE: { point: { x: 1, y: 1, z: 2 }, distance: 1 } }) {
                     title
                     special_location {
                         x

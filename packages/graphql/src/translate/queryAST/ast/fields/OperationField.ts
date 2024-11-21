@@ -20,8 +20,8 @@
 import Cypher from "@neo4j/cypher-builder";
 import { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
-import { CypherOperation } from "../operations/CypherOperation";
-import { CypherScalarOperation } from "../operations/CypherScalarOperation";
+import { CypherAttributeOperation } from "../operations/CypherAttributeOperation";
+import { CypherEntityOperation } from "../operations/CypherEntityOperation";
 import { CompositeCypherOperation } from "../operations/composite/CompositeCypherOperation";
 import type { Operation } from "../operations/operations";
 import { Field } from "./Field";
@@ -55,11 +55,11 @@ export class OperationField extends Field {
     }
 
     public isCypherField(): this is this & {
-        operation: CypherOperation | CypherScalarOperation | CompositeCypherOperation;
+        operation: CypherEntityOperation | CypherAttributeOperation | CompositeCypherOperation;
     } {
         return (
-            this.operation instanceof CypherOperation ||
-            this.operation instanceof CypherScalarOperation ||
+            this.operation instanceof CypherEntityOperation ||
+            this.operation instanceof CypherAttributeOperation ||
             this.operation instanceof CompositeCypherOperation
         );
     }

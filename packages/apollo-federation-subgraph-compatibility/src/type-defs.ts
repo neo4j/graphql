@@ -42,7 +42,7 @@ export const typeDefs = gql`
 
     directive @custom on OBJECT
 
-    type Product @custom @key(fields: "id") @key(fields: "sku package") @key(fields: "sku variation { id }") @node {
+    type Product @node @custom @key(fields: "id") @key(fields: "sku package") @key(fields: "sku variation { id }") {
         id: ID!
         sku: String
         package: String
@@ -75,7 +75,7 @@ export const typeDefs = gql`
         research: [ProductResearch!]! @relationship(type: "HAS_RESEARCH", direction: OUT)
     }
 
-    type DeprecatedProduct @key(fields: "sku package") @node {
+    type DeprecatedProduct @node @key(fields: "sku package") {
         sku: String!
         package: String!
         reason: String
@@ -137,7 +137,7 @@ export const typeDefs = gql`
         yearsOfEmployment: Int! @external
     }
 
-    type Inventory @interfaceObject @key(fields: "id") {
+    type Inventory @node @interfaceObject @key(fields: "id") {
         id: ID!
         deprecatedProducts: [DeprecatedProduct!]! @relationship(type: "HAS_DEPRECATED_PRODUCT", direction: OUT)
     }

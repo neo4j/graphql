@@ -22,7 +22,7 @@ import { formatCypher, formatParams, translateQuery } from "../../../utils/tck-t
 
 describe("cypher directive filtering - Auth", () => {
     test("DateTime cypher field", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
                 special_time: DateTime
@@ -35,13 +35,9 @@ describe("cypher directive filtering - Auth", () => {
             }
         `;
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
-                movies(
-                    where: {
-                        special_time_GT: "2024-09-02T00:00:00Z"
-                    }
-                ) {
+                movies(where: { special_time_GT: "2024-09-02T00:00:00Z" }) {
                     special_time
                     title
                 }
@@ -98,7 +94,7 @@ describe("cypher directive filtering - Auth", () => {
     });
 
     test("Duration cypher field", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
                 special_duration: Duration
@@ -110,13 +106,9 @@ describe("cypher directive filtering - Auth", () => {
                     )
             }
         `;
-        const query = `
+        const query = /* GraphQL */ `
             query {
-                movies(
-                    where: {
-                        special_duration_EQ: "P14DT16H12M"
-                    }
-                ) {
+                movies(where: { special_duration_EQ: "P14DT16H12M" }) {
                     title
                 }
             }

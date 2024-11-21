@@ -154,7 +154,7 @@ function makeRelationshipsInputType({
             features,
         });
     } else {
-        return withFieldInputType({ relationshipAdapter, composer, userDefinedFieldDirectives, features });
+        return withFieldInputType({ relationshipAdapter, composer, userDefinedFieldDirectives });
     }
 }
 
@@ -197,7 +197,6 @@ function makeUnionCreateInputTypeFields({
     composer,
     deprecatedDirectives,
     userDefinedFieldDirectives,
-    features,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
@@ -215,7 +214,6 @@ function makeUnionCreateInputTypeFields({
             ifUnionMemberEntity: memberEntity,
             composer,
             userDefinedFieldDirectives,
-            features,
         });
         if (fieldInput) {
             fields[memberEntity.name] = {
@@ -232,13 +230,11 @@ export function withFieldInputType({
     composer,
     userDefinedFieldDirectives,
     ifUnionMemberEntity,
-    features,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     ifUnionMemberEntity?: ConcreteEntityAdapter;
-    features?: Neo4jFeaturesSettings;
 }): InputTypeComposer | undefined {
     const typeName = relationshipAdapter.operations.getFieldInputTypeName(ifUnionMemberEntity);
     if (composer.has(typeName)) {
@@ -252,7 +248,6 @@ export function withFieldInputType({
         composer,
         userDefinedFieldDirectives,
         ifUnionMemberEntity,
-        features,
     });
     if (!Object.keys(fields).length) {
         return;
@@ -269,13 +264,11 @@ function makeFieldInputTypeFields({
     composer,
     userDefinedFieldDirectives,
     ifUnionMemberEntity,
-    features,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     ifUnionMemberEntity?: ConcreteEntityAdapter;
-    features?: Neo4jFeaturesSettings;
 }): InputTypeComposerFieldConfigMapDefinition {
     const fields = {};
 

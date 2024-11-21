@@ -22,13 +22,13 @@ import { formatCypher, formatParams, translateQuery } from "../../../utils/tck-t
 
 describe("cypher directive filtering", () => {
     test("Connect filter", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor {
+            type Actor @node {
                 name: String
                 custom_field: String
                     @cypher(
@@ -41,7 +41,7 @@ describe("cypher directive filtering", () => {
             }
         `;
 
-        const query = `
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [

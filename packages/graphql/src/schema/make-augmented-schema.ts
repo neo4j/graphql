@@ -39,9 +39,8 @@ import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper"
 import { augmentFulltextSchema } from "./augment/fulltext";
 import { ensureNonEmptyInput } from "./ensure-non-empty-input";
 import getCustomResolvers from "./get-custom-resolvers";
-import { getDefinitionNodes } from "./get-definition-nodes";
 import type { ObjectFields } from "./get-obj-field-meta";
-import getObjFieldMeta from "./get-obj-field-meta";
+import { getObjFieldMeta } from "./get-obj-field-meta";
 import { cypherResolver } from "./resolvers/field/cypher";
 import { createResolver } from "./resolvers/mutation/create";
 import { deleteResolver } from "./resolvers/mutation/delete";
@@ -68,9 +67,10 @@ import { UnionEntity } from "../schema-model/entity/UnionEntity";
 import { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { InterfaceEntityAdapter } from "../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../schema-model/entity/model-adapters/UnionEntityAdapter";
+import { getDefinitionCollection } from "../schema-model/parser/definition-collection";
 import { RelationshipDeclarationAdapter } from "../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { CypherField, Neo4jFeaturesSettings } from "../types";
-import { filterTruthy } from "../utils/utils";
+import { asArray, filterTruthy } from "../utils/utils";
 import { augmentVectorSchema } from "./augment/vector";
 import { createConnectionFields } from "./create-connection-fields";
 import { addGlobalNodeFields } from "./create-global-nodes";
@@ -116,15 +116,26 @@ function makeAugmentedSchema({
     const callbacks = features?.populatedBy?.callbacks;
 
     let relationships: Relationship[] = [];
+    //TODO: definition collection is being used to harmonize schema generation with schema model,
+    //however make augmented schema inner methods are still accepting arrays as they were defined by the previous getDefinitionNodes
+    const definitionCollection = getDefinitionCollection(document);
 
-    const definitionNodes = getDefinitionNodes(document);
+    const {
+        interfaceTypes,
+        scalarTypes,
+        userDefinedObjectTypes,
+        enumTypes,
+        unionTypes,
+        inputTypes,
+        directives,
+        schemaExtensions,
+    } = definitionCollection;
+
     const customResolvers = getCustomResolvers(document);
-    const { interfaceTypes, scalarTypes, objectTypes, enumTypes, unionTypes, schemaExtensions } = definitionNodes;
 
-    // TODO: maybe use schemaModel.definitionCollection instead of definitionNodes? need to add inputObjectTypes and customResolvers
     const schemaGenerator = new AugmentedSchemaGenerator(
         schemaModel,
-        definitionNodes,
+        definitionCollection,
         [customResolvers.customQuery, customResolvers.customMutation, customResolvers.customSubscription].filter(
             (x): x is ObjectTypeDefinitionNode => Boolean(x)
         )
@@ -134,17 +145,19 @@ function makeAugmentedSchema({
 
     // TODO: move these to SchemaGenerator once the other types are moved (in the meantime references to object types are causing errors because they are not present in the generated schema)
     const pipedDefs = [
-        ...definitionNodes.enumTypes,
-        ...definitionNodes.scalarTypes,
-        ...definitionNodes.inputObjectTypes,
-        ...definitionNodes.unionTypes,
-        ...definitionNodes.directives,
+        ...userDefinedObjectTypes.values(),
+        ...enumTypes.values(),
+        ...scalarTypes.values(),
+        ...inputTypes.values(),
+        ...unionTypes.values(),
+        ...directives.values(),
         ...filterTruthy([
             customResolvers.customQuery,
             customResolvers.customMutation,
             customResolvers.customSubscription,
         ]),
     ];
+
     if (pipedDefs.length) {
         composer.addTypeDefs(print({ kind: Kind.DOCUMENT, definitions: pipedDefs }));
     }
@@ -160,17 +173,13 @@ function makeAugmentedSchema({
 
     const aggregationTypesMapper = new AggregationTypesMapper(composer, subgraph);
 
-    const getNodesResult = getNodes(definitionNodes, { callbacks, userCustomResolvers });
+    const getNodesResult = getNodes(definitionCollection, { callbacks, userCustomResolvers });
 
-    const { nodes, relationshipPropertyInterfaceNames, interfaceRelationshipNames } = getNodesResult;
+    const { nodes, interfaceRelationshipNames } = getNodesResult;
 
     const hasGlobalNodes = addGlobalNodeFields(nodes, composer, schemaModel.concreteEntities);
 
-    const { filteredInterfaceTypes } = filterInterfaceTypes(interfaceTypes, interfaceRelationshipNames);
-
-    const relationshipProperties: ObjectTypeDefinitionNode[] = objectTypes.filter((objectType) => {
-        return relationshipPropertyInterfaceNames.has(objectType.name.value);
-    });
+    const { filteredInterfaceTypes } = filterInterfaceTypes(interfaceTypes.values(), interfaceRelationshipNames);
 
     const {
         userDefinedFieldDirectivesForNode,
@@ -178,7 +187,7 @@ function makeAugmentedSchema({
         propagatedDirectivesForNode,
         userDefinedDirectivesForInterface,
         userDefinedDirectivesForUnion,
-    } = getUserDefinedDirectives(definitionNodes);
+    } = getUserDefinedDirectives(definitionCollection);
 
     /**
      * TODO [translation-layer-compatibility]
@@ -186,19 +195,16 @@ function makeAugmentedSchema({
      * actual functional logic is in schemaModel.concreteEntities.forEach
      */
     const relationshipFields = new Map<string, ObjectFields>();
-    relationshipProperties.forEach((relationship) => {
+    for (const relationship of definitionCollection.relationshipProperties.values()) {
         const relFields = getObjFieldMeta({
-            enums: enumTypes,
             interfaces: filteredInterfaceTypes,
-            objects: objectTypes,
-            scalars: scalarTypes,
-            unions: unionTypes,
+            definitionCollection,
             obj: relationship,
             callbacks,
         });
 
         relationshipFields.set(relationship.name.value, relFields);
-    });
+    }
 
     // this is the new "functional" way for the above forEach
     // helper to only create relationshipProperties Interface types once, even if multiple relationships reference it
@@ -257,6 +263,7 @@ function makeAugmentedSchema({
             if (!node) {
                 throw new Error(`Node not found with the name ${entity.name}`);
             }
+
             const concreteEntityAdapter = new ConcreteEntityAdapter(entity);
             const userDefinedFieldDirectives = userDefinedFieldDirectivesForNode.get(concreteEntityAdapter.name);
             if (!userDefinedFieldDirectives) {
@@ -317,11 +324,8 @@ function makeAugmentedSchema({
              */
             const objectFields = getObjFieldMeta({
                 obj: customResolvers[`customCypher${type}`],
-                scalars: scalarTypes,
-                enums: enumTypes,
                 interfaces: filteredInterfaceTypes,
-                unions: unionTypes,
-                objects: objectTypes,
+                definitionCollection,
                 callbacks,
             });
             const field = objectFields.cypherFields.find((f) => f.fieldName === attributeAdapter.name) as CypherField;
@@ -443,17 +447,19 @@ function makeAugmentedSchema({
     });
 
     // do not propagate Neo4jGraphQL directives on schema extensions
-    const schemaExtensionsWithoutNeo4jDirectives = schemaExtensions.map((schemaExtension): SchemaExtensionNode => {
-        return {
-            kind: schemaExtension.kind,
-            loc: schemaExtension.loc,
-            operationTypes: schemaExtension.operationTypes,
-            directives: schemaExtension.directives?.filter(
-                (schemaDirective) =>
-                    !["query", "mutation", "subscription", "authentication"].includes(schemaDirective.name.value)
-            ),
-        };
-    });
+    const schemaExtensionsWithoutNeo4jDirectives = asArray(schemaExtensions).map(
+        (schemaExtension): SchemaExtensionNode => {
+            return {
+                kind: schemaExtension.kind,
+                loc: schemaExtension.loc,
+                operationTypes: schemaExtension.operationTypes,
+                directives: schemaExtension.directives?.filter(
+                    (schemaDirective) =>
+                        !["query", "mutation", "subscription", "authentication"].includes(schemaDirective.name.value)
+                ),
+            };
+        }
+    );
     const seen = {};
     parsedDoc = {
         ...parsedDoc,

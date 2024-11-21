@@ -49,6 +49,7 @@ import { isRootType } from "../../utils/is-root-type";
 import { DirectiveArgumentOfCorrectType } from "./custom-rules/directive-argument-of-correct-type";
 import { directiveIsValid } from "./custom-rules/directives/valid-directive";
 import { ValidDirectiveAtFieldLocation } from "./custom-rules/directives/valid-directive-field-location";
+import { ErrorIfSingleRelationships } from "./custom-rules/error-single-relationships";
 import { ValidJwtDirectives } from "./custom-rules/features/valid-jwt-directives";
 import { ValidRelationshipDeclaration } from "./custom-rules/features/valid-relationship-declaration";
 import { ValidRelationshipProperties } from "./custom-rules/features/valid-relationship-properties";
@@ -66,7 +67,6 @@ import { WarnIfAMaxLimitCanBeBypassedThroughInterface } from "./custom-rules/war
 import { WarnIfListOfListsFieldDefinition } from "./custom-rules/warnings/list-of-lists";
 import { WarnObjectFieldsWithoutResolver } from "./custom-rules/warnings/object-fields-without-resolver";
 import { WarnIfSubscriptionsAuthorizationMissing } from "./custom-rules/warnings/subscriptions-authorization-missing";
-import { WarnIfTypeIsNotMarkedAsNode } from "./custom-rules/warnings/warn-if-type-is-not-marked-as-node";
 import { validateSchemaCustomizations } from "./validate-schema-customizations";
 import { validateSDL } from "./validate-sdl";
 
@@ -225,12 +225,12 @@ function runValidationRulesOnFilteredDocument({
             DirectiveArgumentOfCorrectType(false),
             WarnIfAuthorizationFeatureDisabled(features?.authorization),
             WarnIfListOfListsFieldDefinition,
+            ErrorIfSingleRelationships,
             WarnIfAMaxLimitCanBeBypassedThroughInterface(),
             WarnObjectFieldsWithoutResolver({
                 customResolvers: asArray(userCustomResolvers ?? []),
             }),
             WarnIfSubscriptionsAuthorizationMissing(Boolean(features?.subscriptions)),
-            WarnIfTypeIsNotMarkedAsNode(),
         ],
         schema
     );

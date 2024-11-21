@@ -516,21 +516,4 @@ describe("Relationship", () => {
             }"
         `);
     });
-
-    test("Fails on non list relationship", async () => {
-        const typeDefs = gql`
-            type Actor @node {
-                name: String
-            }
-
-            type Movie @node {
-                id: ID
-                actors: Actor @relationship(type: "ACTED_IN", direction: IN)
-            }
-        `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        await expect(async () => {
-            await neoSchema.getSchema();
-        }).rejects.toThrow("@relationship on non-list field [Movie.actors] not supported");
-    });
 });

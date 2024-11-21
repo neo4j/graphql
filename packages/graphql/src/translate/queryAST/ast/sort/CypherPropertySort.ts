@@ -21,14 +21,14 @@ import Cypher from "@neo4j/cypher-builder";
 import type { AttributeAdapter } from "../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
-import type { CypherScalarOperation } from "../operations/CypherScalarOperation";
+import type { CypherAttributeOperation } from "../operations/CypherAttributeOperation";
 import type { SortField } from "./Sort";
 import { Sort } from "./Sort";
 
 export class CypherPropertySort extends Sort {
     private attribute: AttributeAdapter;
     private direction: Cypher.Order;
-    private cypherOperation: CypherScalarOperation;
+    private cypherOperation: CypherAttributeOperation;
 
     constructor({
         attribute,
@@ -37,7 +37,7 @@ export class CypherPropertySort extends Sort {
     }: {
         attribute: AttributeAdapter;
         direction: Cypher.Order;
-        cypherOperation: CypherScalarOperation;
+        cypherOperation: CypherAttributeOperation;
     }) {
         super();
         this.attribute = attribute;

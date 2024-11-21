@@ -22,7 +22,11 @@ import { Neo4jGraphQL } from "@neo4j/graphql";
 import { printSchema } from "graphql";
 
 // Augment schema with simple typeDefs input
-const typeDefs = `type Movie{ id: ID!}`;
+const typeDefs = /* GraphQL */ `
+    type Movie @node {
+        id: ID!
+    }
+`;
 const neoSchema = new Neo4jGraphQL({ typeDefs });
 
 neoSchema.getSchema().then((schema) => {
