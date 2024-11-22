@@ -51,6 +51,7 @@ import { Neo4jGraphQLSubscriptionsCDCEngine } from "./subscription/Neo4jGraphQLS
 import { assertIndexesAndConstraints } from "./utils/asserts-indexes-and-constraints";
 import { generateResolverComposition } from "./utils/generate-resolvers-composition";
 import checkNeo4jCompat from "./utils/verify-database";
+import { IntScalarFilters } from "../graphql/input-objects/generic-operators/IntScalarFilters";
 
 type TypeDefinitions = string | DocumentNode | TypeDefinitions[] | (() => TypeDefinitions);
 
@@ -395,15 +396,15 @@ class Neo4jGraphQL {
                 userCustomResolvers: this.resolvers,
                 schemaModel: this.schemaModel,
             });
-
+            
             if (this.validate) {
                 validateUserDefinition({
                     userDocument: document,
-                    additionalTypes: [StringScalarFilters],
                     augmentedDocument: typeDefs,
                     jwt: jwt?.type,
                 });
             }
+            
 
             this._nodes = nodes;
             this._relationships = relationships;

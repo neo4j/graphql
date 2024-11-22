@@ -364,7 +364,9 @@ function makeAugmentedSchema({
     let parsedDoc = parse(generatedTypeDefs);
 
     const documentNames = new Set(parsedDoc.definitions.filter(definitionNodeHasName).map((x) => x.name.value));
+    
     const resolveMethods = getResolveAndSubscriptionMethods(composer);
+
 
     const generatedResolveMethods: GraphQLToolsResolveMethods<any> = {};
 
@@ -384,6 +386,7 @@ function makeAugmentedSchema({
         }, {}),
         ...(hasGlobalNodes ? { Node: { __resolveType: (root) => root.__resolveType } } : {}),
     };
+  
 
     // TODO: improve this logic so we don't iterate through the entire document for each compositeEntity
     // It is possible to make types "writeonly". In this case adding a resolver for them breaks schema generation.
@@ -437,6 +440,7 @@ function makeAugmentedSchema({
         }
     );
     const seen = {};
+ 
     parsedDoc = {
         ...parsedDoc,
         definitions: [

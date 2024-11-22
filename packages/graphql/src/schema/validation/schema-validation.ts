@@ -21,14 +21,22 @@ import type {
     DefinitionNode,
     DocumentNode,
     GraphQLDirective,
+    GraphQLInputObjectType,
     GraphQLNamedType,
+    InputObjectTypeDefinitionNode,
     ObjectTypeDefinitionNode,
 } from "graphql";
-import { GraphQLSchema, specifiedDirectives, visit } from "graphql";
+import { GraphQLSchema, Kind, specifiedDirectives, visit } from "graphql";
 import type { SDLValidationRule } from "graphql/validation/ValidationContext";
 import { specifiedSDLRules } from "graphql/validation/specifiedRules";
 import { createAuthenticationDirectiveDefinition } from "../../graphql/directives/type-dependant-directives/authentication";
 import { getStaticAuthorizationDefinitions } from "../../graphql/directives/type-dependant-directives/get-static-auth-definitions";
+import { BigIntScalarFilters } from "../../graphql/input-objects/generic-operators/BigIntScalarFilters";
+import { BooleanScalarFilters } from "../../graphql/input-objects/generic-operators/BooleanScalarFilters";
+import { FloatScalarFilters } from "../../graphql/input-objects/generic-operators/FloatScalarFilters";
+import { IDScalarFilters } from "../../graphql/input-objects/generic-operators/IDScalarFilters";
+import { IntScalarFilters } from "../../graphql/input-objects/generic-operators/IntScalarFilters";
+import { StringScalarFilters } from "../../graphql/input-objects/generic-operators/StringScalarFilters";
 import { EnricherContext } from "./EnricherContext";
 import { DirectiveArgumentOfCorrectType } from "./custom-rules/directive-argument-of-correct-type";
 import { makeReplaceWildcardVisitor } from "./custom-rules/replace-wildcard-value";
@@ -94,10 +102,26 @@ export function validateUserDefinition({
 }): void {
     rules = rules ? rules : [...specifiedSDLRules, DirectiveArgumentOfCorrectType()];
     let validationDocument = makeValidationDocument(userDocument, augmentedDocument, jwt);
+    const genericFiltersName: GraphQLInputObjectType[] = [
+        BooleanScalarFilters,
+        IDScalarFilters,
+        StringScalarFilters,
+        FloatScalarFilters,
+        IntScalarFilters,
+        BigIntScalarFilters,
+    ];
+    const filtersAlreadyInDocument: InputObjectTypeDefinitionNode[] = augmentedDocument.definitions.filter(
+        (def): def is InputObjectTypeDefinitionNode =>
+            def.kind === Kind.INPUT_OBJECT_TYPE_DEFINITION &&
+            genericFiltersName.map((input) => input.name).includes(def.name.value)
+    );
+    const filtersToAdd = genericFiltersName.filter(
+        (filter) => !filtersAlreadyInDocument.find((def) => def.name.value === filter.name)
+    );
 
     const schemaToExtend = new GraphQLSchema({
         directives: [...specifiedDirectives, ...additionalDirectives],
-        types: [...additionalTypes],
+        types: [...filtersToAdd, ...additionalTypes],
     });
 
     const replaceWildcardValue = makeReplaceWildcardVisitor({ jwt, schema: schemaToExtend });
