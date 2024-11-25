@@ -21,7 +21,7 @@ import { generate } from "randomstring";
 import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../../utils/tests-helper";
 
-describe("Advanced Filtering", () => {
+describe("Advanced Filtering - deprecated", () => {
     const testHelper = new TestHelper();
 
     afterEach(async () => {
@@ -32,7 +32,7 @@ describe("Advanced Filtering", () => {
         test("should find Movies IN strings", async () => {
             const randomType = testHelper.createUniqueType("Movie");
 
-            const typeDefs = /* GraphQL */ `
+            const typeDefs = `
                         type ${randomType.name} @node {
                             property: ${type}
                         }
@@ -57,18 +57,18 @@ describe("Advanced Filtering", () => {
 
             await testHelper.executeCypher(
                 `
-                    CREATE (:${randomType.name} {property: $value})
-                `,
+                            CREATE (:${randomType.name} {property: $value})
+                        `,
                 { value }
             );
 
-            const query = /* GraphQL */ `
-                    {
-                        ${randomType.plural}(where: { property: { in: ["${value}", "${randomValue1}", "${randomValue2}"]}  }) {
-                            property
-                        }
-                    }
-                `;
+            const query = `
+                            {
+                                ${randomType.plural}(where: { property_IN: ["${value}", "${randomValue1}", "${randomValue2}"] }) {
+                                    property
+                                }
+                            }
+                        `;
 
             const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -80,11 +80,11 @@ describe("Advanced Filtering", () => {
         test("should find Movies REGEX", async () => {
             const randomType = testHelper.createUniqueType("Movie");
 
-            const typeDefs = /* GraphQL */ `
-                type ${randomType.name} @node {
-                    property: ${type}
-                }
-            `;
+            const typeDefs = `
+                        type ${randomType.name} @node {
+                            property: ${type}
+                        }
+                    `;
 
             await testHelper.initNeo4jGraphQL({
                 typeDefs,
@@ -104,18 +104,18 @@ describe("Advanced Filtering", () => {
 
             await testHelper.executeCypher(
                 `
-                    CREATE (:${randomType.name} {property: $value})
-                `,
+                            CREATE (:${randomType.name} {property: $value})
+                        `,
                 { value: `${value}${value}` }
             );
 
-            const query = /* GraphQL */ `
-                {
-                    ${randomType.plural}(where: { property: { matches: "(?i)${value}.*" } }) {
-                        property
-                    }
-                }
-            `;
+            const query = `
+                            {
+                                ${randomType.plural}(where: { property_MATCHES: "(?i)${value}.*" }) {
+                                    property
+                                }
+                            }
+                        `;
 
             const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -127,11 +127,11 @@ describe("Advanced Filtering", () => {
         test("should find Movies NOT string", async () => {
             const randomType = testHelper.createUniqueType("Movie");
 
-            const typeDefs = /* GraphQL */ `
-                type ${randomType.name} @node {
-                    property: ${type}
-                }
-            `;
+            const typeDefs = `
+                        type ${randomType.name} @node {
+                            property: ${type}
+                        }
+                    `;
 
             await testHelper.initNeo4jGraphQL({ typeDefs });
 
@@ -147,19 +147,19 @@ describe("Advanced Filtering", () => {
 
             await testHelper.executeCypher(
                 `
-                    CREATE (:${randomType.name} {property: $value})
-                    CREATE (:${randomType.name} {property: $randomValue1})
-                `,
+                            CREATE (:${randomType.name} {property: $value})
+                            CREATE (:${randomType.name} {property: $randomValue1})
+                        `,
                 { value, randomValue1 }
             );
 
-            const query = /* GraphQL */ `
-                {
-                    ${randomType.plural}(where: { NOT: { property: { equals: "${randomValue1}" } } }) {
-                        property
-                    }
-                }
-            `;
+            const query = `
+                            {
+                                ${randomType.plural}(where: { NOT: { property_EQ: "${randomValue1}" } }) {
+                                    property
+                                }
+                            }
+                        `;
 
             const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -173,11 +173,11 @@ describe("Advanced Filtering", () => {
         test("should find Movies CONTAINS string", async () => {
             const randomType = testHelper.createUniqueType("Movie");
 
-            const typeDefs = /* GraphQL */ `
-                type ${randomType.name} @node {
-                    property: ${type}
-                }
-            `;
+            const typeDefs = `
+                        type ${randomType.name} @node {
+                            property: ${type}
+                        }
+                    `;
 
             await testHelper.initNeo4jGraphQL({ typeDefs });
 
@@ -190,20 +190,20 @@ describe("Advanced Filtering", () => {
 
             await testHelper.executeCypher(
                 `
-                    CREATE (:${randomType.name} {property: $superValue})
-                    CREATE (:${randomType.name} {property: $superValue})
-                    CREATE (:${randomType.name} {property: $superValue})
-                `,
+                            CREATE (:${randomType.name} {property: $superValue})
+                            CREATE (:${randomType.name} {property: $superValue})
+                            CREATE (:${randomType.name} {property: $superValue})
+                        `,
                 { superValue }
             );
 
-            const query = /* GraphQL */ `
-                {
-                    ${randomType.plural}(where: { property: { contains: "${value}" } }) {
-                        property
-                    }
-                }
-            `;
+            const query = `
+                            {
+                                ${randomType.plural}(where: { property_CONTAINS: "${value}" }) {
+                                    property
+                                }
+                            }
+                        `;
 
             const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -217,11 +217,11 @@ describe("Advanced Filtering", () => {
         test("should find Movies STARTS_WITH string", async () => {
             const randomType = testHelper.createUniqueType("Movie");
 
-            const typeDefs = /* GraphQL */ `
-                type ${randomType.name} @node {
-                    property: ${type}
-                }
-            `;
+            const typeDefs = `
+                        type ${randomType.name} @node {
+                            property: ${type}
+                        }
+                    `;
 
             await testHelper.initNeo4jGraphQL({ typeDefs });
 
@@ -234,20 +234,20 @@ describe("Advanced Filtering", () => {
 
             await testHelper.executeCypher(
                 `
-                    CREATE (:${randomType.name} {property: $superValue})
-                    CREATE (:${randomType.name} {property: $superValue})
-                    CREATE (:${randomType.name} {property: $superValue})
-                `,
+                            CREATE (:${randomType.name} {property: $superValue})
+                            CREATE (:${randomType.name} {property: $superValue})
+                            CREATE (:${randomType.name} {property: $superValue})
+                        `,
                 { superValue }
             );
 
-            const query = /* GraphQL */ `
-                {
-                    ${randomType.plural}(where: { property: { startsWith: "${value}" } }) {
-                        property
-                    }
-                }
-            `;
+            const query = `
+                            {
+                                ${randomType.plural}(where: { property_STARTS_WITH: "${value}" }) {
+                                    property
+                                }
+                            }
+                        `;
 
             const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -263,11 +263,11 @@ describe("Advanced Filtering", () => {
         test("should find Movies ENDS_WITH string", async () => {
             const randomType = testHelper.createUniqueType("Movie");
 
-            const typeDefs = /* GraphQL */ `
-                type ${randomType.name} @node {
-                    property: ${type}
-                }
-            `;
+            const typeDefs = `
+                        type ${randomType.name} @node {
+                            property: ${type}
+                        }
+                    `;
 
             await testHelper.initNeo4jGraphQL({ typeDefs });
 
@@ -285,20 +285,20 @@ describe("Advanced Filtering", () => {
 
             await testHelper.executeCypher(
                 `
-                    CREATE (:${randomType.name} {property: $value})
-                    CREATE (:${randomType.name} {property: $notValue})
-                    CREATE (:${randomType.name} {property: $superValue})
-                `,
+                            CREATE (:${randomType.name} {property: $value})
+                            CREATE (:${randomType.name} {property: $notValue})
+                            CREATE (:${randomType.name} {property: $superValue})
+                        `,
                 { value, notValue, superValue }
             );
 
-            const query = /* GraphQL */ `
-                {
-                    ${randomType.plural}(where: { property: { endsWith: "${value}" } }) {
-                        property
-                    }
-                }
-            `;
+            const query = `
+                            {
+                                ${randomType.plural}(where: { property_ENDS_WITH: "${value}" }) {
+                                    property
+                                }
+                            }
+                        `;
 
             const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -312,11 +312,11 @@ describe("Advanced Filtering", () => {
         test("should find Movies implicit EQ string", async () => {
             const movieType = testHelper.createUniqueType("Movie");
 
-            const typeDefs = /* GraphQL */ `
-                type ${movieType.name} @node {
-                    title: String
-                }
-            `;
+            const typeDefs = `
+                        type ${movieType.name} @node {
+                            title: String
+                        }
+                    `;
 
             await testHelper.initNeo4jGraphQL({
                 typeDefs,
@@ -329,21 +329,21 @@ describe("Advanced Filtering", () => {
 
             await testHelper.executeCypher(
                 `
-                    CREATE (:${movieType.name} {title: $animatrix})
-                    CREATE (:${movieType.name} {title: $matrix})
-                    CREATE (:${movieType.name} {title: $matrixReloaded})
-                    CREATE (:${movieType.name} {title: $matrixRevolutions})
-                `,
+                            CREATE (:${movieType.name} {title: $animatrix})
+                            CREATE (:${movieType.name} {title: $matrix})
+                            CREATE (:${movieType.name} {title: $matrixReloaded})
+                            CREATE (:${movieType.name} {title: $matrixRevolutions})
+                        `,
                 { animatrix, matrix, matrixReloaded, matrixRevolutions }
             );
 
-            const query = /* GraphQL */ `
-                {
-                    ${movieType.plural}(where: { title: { equals: "${matrix}" }}) {
-                        title
-                    }
-                }
-            `;
+            const query = `
+                            {
+                                ${movieType.plural}(where: { title_EQ: "${matrix}" }) {
+                                    title
+                                }
+                            }
+                        `;
 
             const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -360,11 +360,11 @@ describe("Advanced Filtering", () => {
         test("should find Movies EQ string", async () => {
             const movieType = testHelper.createUniqueType("Movie");
 
-            const typeDefs = /* GraphQL */ `
-                type ${movieType.name} @node {
-                    title: String
-                }
-            `;
+            const typeDefs = `
+                        type ${movieType.name} @node {
+                            title: String
+                        }
+                    `;
 
             await testHelper.initNeo4jGraphQL({
                 typeDefs,
@@ -377,21 +377,21 @@ describe("Advanced Filtering", () => {
 
             await testHelper.executeCypher(
                 `
-                    CREATE (:${movieType.name} {title: $animatrix})
-                    CREATE (:${movieType.name} {title: $matrix})
-                    CREATE (:${movieType.name} {title: $matrixReloaded})
-                    CREATE (:${movieType.name} {title: $matrixRevolutions})
-                `,
+                            CREATE (:${movieType.name} {title: $animatrix})
+                            CREATE (:${movieType.name} {title: $matrix})
+                            CREATE (:${movieType.name} {title: $matrixReloaded})
+                            CREATE (:${movieType.name} {title: $matrixRevolutions})
+                        `,
                 { animatrix, matrix, matrixReloaded, matrixRevolutions }
             );
 
-            const query = /* GraphQL */ `
-                {
-                    ${movieType.plural}(where: { title: { equals: "${matrix}" } }) {
-                        title
-                    }
-                }
-            `;
+            const query = `
+                            {
+                                ${movieType.plural}(where: { title_EQ: "${matrix}" }) {
+                                    title
+                                }
+                            }
+                        `;
 
             const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -408,11 +408,11 @@ describe("Advanced Filtering", () => {
         test("should find Movies GT string", async () => {
             const movieType = testHelper.createUniqueType("Movie");
 
-            const typeDefs = /* GraphQL */ `
-                type ${movieType.name} @node {
-                    title: String
-                }
-            `;
+            const typeDefs = `
+                        type ${movieType.name} @node {
+                            title: String
+                        }
+                    `;
 
             await testHelper.initNeo4jGraphQL({
                 features: {
@@ -435,21 +435,21 @@ describe("Advanced Filtering", () => {
 
             await testHelper.executeCypher(
                 `
-                    CREATE (:${movieType.name} {title: $animatrix})
-                    CREATE (:${movieType.name} {title: $matrix})
-                    CREATE (:${movieType.name} {title: $matrixReloaded})
-                    CREATE (:${movieType.name} {title: $matrixRevolutions})
-                `,
+                            CREATE (:${movieType.name} {title: $animatrix})
+                            CREATE (:${movieType.name} {title: $matrix})
+                            CREATE (:${movieType.name} {title: $matrixReloaded})
+                            CREATE (:${movieType.name} {title: $matrixRevolutions})
+                        `,
                 { animatrix, matrix, matrixReloaded, matrixRevolutions }
             );
 
-            const query = /* GraphQL */ `
-                {
-                    ${movieType.plural}(where: { title: { greaterThan: "${matrix}" } }) {
-                        title
-                    }
-                }
-            `;
+            const query = `
+                            {
+                                ${movieType.plural}(where: { title_GT: "${matrix}" }) {
+                                    title
+                                }
+                            }
+                        `;
 
             const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -468,11 +468,11 @@ describe("Advanced Filtering", () => {
         test("should find Movies LT string", async () => {
             const movieType = testHelper.createUniqueType("Movie");
 
-            const typeDefs = /* GraphQL */ `
-                type ${movieType.name} @node {
-                    title: String
-                }
-            `;
+            const typeDefs = `
+                        type ${movieType.name} @node {
+                            title: String
+                        }
+                    `;
 
             await testHelper.initNeo4jGraphQL({
                 features: {
@@ -495,21 +495,21 @@ describe("Advanced Filtering", () => {
 
             await testHelper.executeCypher(
                 `
-                    CREATE (:${movieType.name} {title: $matrix})
-                    CREATE (:${movieType.name} {title: $matrixReloaded})
-                    CREATE (:${movieType.name} {title: $matrixRevolutions})
-                    CREATE (:${movieType.name} {title: $matrixResurrections})
-                `,
+                            CREATE (:${movieType.name} {title: $matrix})
+                            CREATE (:${movieType.name} {title: $matrixReloaded})
+                            CREATE (:${movieType.name} {title: $matrixRevolutions})
+                            CREATE (:${movieType.name} {title: $matrixResurrections})
+                        `,
                 { matrix, matrixReloaded, matrixRevolutions, matrixResurrections }
             );
 
-            const query = /* GraphQL */ `
-                {
-                    ${movieType.plural}(where: { title: { lessThan: "${matrixRevolutions}" } }) {
-                        title
-                    }
-                }
-            `;
+            const query = `
+                            {
+                                ${movieType.plural}(where: { title_LT: "${matrixRevolutions}" }) {
+                                    title
+                                }
+                            }
+                        `;
 
             const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -528,11 +528,11 @@ describe("Advanced Filtering", () => {
         test("should find Movies GTE string", async () => {
             const movieType = testHelper.createUniqueType("Movie");
 
-            const typeDefs = /* GraphQL */ `
-                type ${movieType.name} @node {
-                    title: String
-                }
-            `;
+            const typeDefs = `
+                        type ${movieType.name} @node {
+                            title: String
+                        }
+                    `;
 
             await testHelper.initNeo4jGraphQL({
                 features: {
@@ -555,21 +555,21 @@ describe("Advanced Filtering", () => {
 
             await testHelper.executeCypher(
                 `
-                    CREATE (:${movieType.name} {title: $animatrix})
-                    CREATE (:${movieType.name} {title: $matrix})
-                    CREATE (:${movieType.name} {title: $matrixReloaded})
-                    CREATE (:${movieType.name} {title: $matrixRevolutions})
-                `,
+                            CREATE (:${movieType.name} {title: $animatrix})
+                            CREATE (:${movieType.name} {title: $matrix})
+                            CREATE (:${movieType.name} {title: $matrixReloaded})
+                            CREATE (:${movieType.name} {title: $matrixRevolutions})
+                        `,
                 { animatrix, matrix, matrixReloaded, matrixRevolutions }
             );
 
-            const query = /* GraphQL */ `
-                {
-                    ${movieType.plural}(where: { title: { greaterThanEquals: "${matrix}" } }) {
-                        title
-                    }
-                }
-            `;
+            const query = `
+                            {
+                                ${movieType.plural}(where: { title_GTE: "${matrix}" }) {
+                                    title
+                                }
+                            }
+                        `;
 
             const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -588,11 +588,11 @@ describe("Advanced Filtering", () => {
         test("should find Movies LTE string", async () => {
             const movieType = testHelper.createUniqueType("Movie");
 
-            const typeDefs = /* GraphQL */ `
-                type ${movieType.name} @node {
-                    title: String
-                }
-            `;
+            const typeDefs = `
+                        type ${movieType.name} @node {
+                            title: String
+                        }
+                    `;
 
             await testHelper.initNeo4jGraphQL({
                 features: {
@@ -615,21 +615,22 @@ describe("Advanced Filtering", () => {
 
             await testHelper.executeCypher(
                 `
-                    CREATE (:${movieType.name} {title: $matrix})
-                    CREATE (:${movieType.name} {title: $matrixReloaded})
-                    CREATE (:${movieType.name} {title: $matrixRevolutions})
-                    CREATE (:${movieType.name} {title: $matrixResurrections})
-                `,
+                            CREATE (:${movieType.name} {title: $matrix})
+                            CREATE (:${movieType.name} {title: $matrixReloaded})
+                            CREATE (:${movieType.name} {title: $matrixRevolutions})
+                            CREATE (:${movieType.name} {title: $matrixResurrections})
+
+                        `,
                 { matrix, matrixReloaded, matrixRevolutions, matrixResurrections }
             );
 
-            const query = /* GraphQL */ `
-                {
-                    ${movieType.plural}(where: { title: { lessThanEquals: "${matrixRevolutions}" } }) {
-                        title
-                    }
-                }
-            `;
+            const query = `
+                            {
+                                ${movieType.plural}(where: { title_LTE: "${matrixRevolutions}" }) {
+                                    title
+                                }
+                            }
+                        `;
 
             const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -655,11 +656,11 @@ describe("Advanced Filtering", () => {
         test("should find Movies NOT number", async () => {
             const randomType = testHelper.createUniqueType("Movie");
 
-            const typeDefs = /* GraphQL */ `
-                type ${randomType.name} @node {
-                    property: ${type}
-                }
-            `;
+            const typeDefs = `
+                        type ${randomType.name} @node {
+                            property: ${type}
+                        }
+                    `;
 
             await testHelper.initNeo4jGraphQL({ typeDefs });
 
@@ -681,19 +682,19 @@ describe("Advanced Filtering", () => {
 
             await testHelper.executeCypher(
                 `
-                    CREATE (:${randomType.name} {property: $property})
-                    CREATE (:${randomType.name} {property: $notProperty})
-                `,
+                            CREATE (:${randomType.name} {property: $property})
+                            CREATE (:${randomType.name} {property: $notProperty})
+                        `,
                 { property, notProperty }
             );
 
-            const query = /* GraphQL */ `
-                {
-                    ${randomType.plural}(where: { NOT: { property: { equals:  ${notProperty} }} }) {
-                        property
-                    }
-                }
-            `;
+            const query = `
+                            {
+                                ${randomType.plural}(where: { NOT: { property_EQ: ${notProperty} } }) {
+                                    property
+                                }
+                            }
+                        `;
 
             const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -706,11 +707,11 @@ describe("Advanced Filtering", () => {
         test("should find Movies IN numbers", async () => {
             const randomType = testHelper.createUniqueType("Movie");
 
-            const typeDefs = /* GraphQL */ `
-                type ${randomType.name} @node {
-                    property: ${type}
-                }
-            `;
+            const typeDefs = `
+                        type ${randomType.name} @node {
+                            property: ${type}
+                        }
+                    `;
 
             await testHelper.initNeo4jGraphQL({ typeDefs });
 
@@ -740,18 +741,18 @@ describe("Advanced Filtering", () => {
 
             await testHelper.executeCypher(
                 `
-                    CREATE (:${randomType.name} {property: $value})
-                `,
+                            CREATE (:${randomType.name} {property: $value})
+                        `,
                 { value }
             );
 
-            const query = /* GraphQL */ `
-                {
-                    ${randomType.plural}(where: { property: { in: [${value}, ${randomValue1}, ${randomValue2}] } }) {
-                        property
-                    }
-                }
-            `;
+            const query = `
+                            {
+                                ${randomType.plural}(where: { property_IN: [${value}, ${randomValue1}, ${randomValue2}] }) {
+                                    property
+                                }
+                            }
+                        `;
 
             const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -764,11 +765,11 @@ describe("Advanced Filtering", () => {
         test("should find Movies LT number", async () => {
             const randomType = testHelper.createUniqueType("Movie");
 
-            const typeDefs = /* GraphQL */ `
-                type ${randomType.name} @node {
-                    property: ${type}
-                }
-            `;
+            const typeDefs = `
+                        type ${randomType.name} @node {
+                            property: ${type}
+                        }
+                    `;
 
             await testHelper.initNeo4jGraphQL({ typeDefs });
 
@@ -784,19 +785,19 @@ describe("Advanced Filtering", () => {
 
             await testHelper.executeCypher(
                 `
-                    CREATE (:${randomType.name} {property: $value})
-                    CREATE (:${randomType.name} {property: $lessThanValue})
-                `,
+                            CREATE (:${randomType.name} {property: $value})
+                            CREATE (:${randomType.name} {property: $lessThanValue})
+                        `,
                 { value, lessThanValue }
             );
 
-            const query = /* GraphQL */ `
-                {
-                    ${randomType.plural}(where: { property: {lessThan: ${lessThanValue + 1}} }) {
-                        property
-                    }
-                }
-            `;
+            const query = `
+                            {
+                                ${randomType.plural}(where: { property_LT: ${lessThanValue + 1} }) {
+                                    property
+                                }
+                            }
+                        `;
 
             const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -809,11 +810,11 @@ describe("Advanced Filtering", () => {
         test("should find Movies LTE number", async () => {
             const randomType = testHelper.createUniqueType("Movie");
 
-            const typeDefs = /* GraphQL */ `
-                type ${randomType.name} @node {
-                    property: ${type}
-                }
-            `;
+            const typeDefs = `
+                        type ${randomType.name} @node {
+                            property: ${type}
+                        }
+                    `;
 
             await testHelper.initNeo4jGraphQL({ typeDefs });
 
@@ -829,19 +830,19 @@ describe("Advanced Filtering", () => {
 
             await testHelper.executeCypher(
                 `
-                    CREATE (:${randomType.name} {property: $value})
-                    CREATE (:${randomType.name} {property: $lessThanValue})
-                `,
+                            CREATE (:${randomType.name} {property: $value})
+                            CREATE (:${randomType.name} {property: $lessThanValue})
+                        `,
                 { value, lessThanValue }
             );
 
-            const query = /* GraphQL */ `
-                {
-                    ${randomType.plural}(where: { property: { lessThanEquals: ${value} } }) {
-                        property
-                    }
-                }
-            `;
+            const query = `
+                            {
+                                ${randomType.plural}(where: { property_LTE: ${value} }) {
+                                    property
+                                }
+                            }
+                        `;
 
             const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -853,11 +854,11 @@ describe("Advanced Filtering", () => {
         test("should find Movies GT number", async () => {
             const randomType = testHelper.createUniqueType("Movie");
 
-            const typeDefs = /* GraphQL */ `
-                type ${randomType.name} @node {
-                    property: ${type}
-                }
-            `;
+            const typeDefs = `
+                        type ${randomType.name} @node {
+                            property: ${type}
+                        }
+                    `;
 
             await testHelper.initNeo4jGraphQL({ typeDefs });
 
@@ -873,19 +874,19 @@ describe("Advanced Filtering", () => {
 
             await testHelper.executeCypher(
                 `
-                    CREATE (:${randomType.name} {property: $value})
-                    CREATE (:${randomType.name} {property: $graterThanValue})
-                `,
+                            CREATE (:${randomType.name} {property: $value})
+                            CREATE (:${randomType.name} {property: $graterThanValue})
+                        `,
                 { value, graterThanValue }
             );
 
-            const query = /* GraphQL */ `
-                {
-                    ${randomType.plural}(where: { property: { greaterThan: ${graterThanValue - 1} } }) {
-                        property
-                    }
-                }
-            `;
+            const query = `
+                            {
+                                ${randomType.plural}(where: { property_GT: ${graterThanValue - 1} }) {
+                                    property
+                                }
+                            }
+                        `;
 
             const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -898,11 +899,11 @@ describe("Advanced Filtering", () => {
         test("should find Movies GTE number", async () => {
             const randomType = testHelper.createUniqueType("Movie");
 
-            const typeDefs = /* GraphQL */ `
-                type ${randomType.name} @node {
-                    property: ${type}
-                }
-            `;
+            const typeDefs = `
+                        type ${randomType.name} @node {
+                            property: ${type}
+                        }
+                    `;
 
             await testHelper.initNeo4jGraphQL({ typeDefs });
 
@@ -918,19 +919,19 @@ describe("Advanced Filtering", () => {
 
             await testHelper.executeCypher(
                 `
-                    CREATE (:${randomType.name} {property: $value})
-                    CREATE (:${randomType.name} {property: $greaterThan})
-                `,
+                            CREATE (:${randomType.name} {property: $value})
+                            CREATE (:${randomType.name} {property: $greaterThan})
+                        `,
                 { value, greaterThan }
             );
 
-            const query = /* GraphQL */ `
-                {
-                    ${randomType.plural}(where: { property: { greaterThanEquals: ${value} } }) {
-                        property
-                    }
-                }
-            `;
+            const query = `
+                            {
+                                ${randomType.plural}(where: { property_GTE: ${value} }) {
+                                    property
+                                }
+                            }
+                        `;
 
             const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -944,11 +945,11 @@ describe("Advanced Filtering", () => {
         test("should find Movies equality equality", async () => {
             const randomType = testHelper.createUniqueType("Movie");
 
-            const typeDefs = /* GraphQL */ `
-                type ${randomType.name} @node {
-                    property: Boolean
-                }
-            `;
+            const typeDefs = `
+                        type ${randomType.name} @node {
+                            property: Boolean
+                        }
+                    `;
 
             await testHelper.initNeo4jGraphQL({ typeDefs });
 
@@ -956,18 +957,18 @@ describe("Advanced Filtering", () => {
 
             await testHelper.executeCypher(
                 `
-                    CREATE (:${randomType.name} {property: $value})
-                `,
+                            CREATE (:${randomType.name} {property: $value})
+                        `,
                 { value }
             );
 
-            const query = /* GraphQL */ `
-                {
-                    ${randomType.plural}(where: { property: { equals: false } }) {
-                        property
-                    }
-                }
-            `;
+            const query = `
+                            {
+                                ${randomType.plural}(where: { property_EQ: false }) {
+                                    property
+                                }
+                            }
+                        `;
 
             const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -979,11 +980,11 @@ describe("Advanced Filtering", () => {
         test("should find Movies NOT boolean", async () => {
             const randomType = testHelper.createUniqueType("Movie");
 
-            const typeDefs = /* GraphQL */ `
-                type ${randomType.name} @node {
-                    property: Boolean
-                }
-            `;
+            const typeDefs = `
+                        type ${randomType.name} @node {
+                            property: Boolean
+                        }
+                    `;
 
             await testHelper.initNeo4jGraphQL({ typeDefs });
 
@@ -991,18 +992,18 @@ describe("Advanced Filtering", () => {
 
             await testHelper.executeCypher(
                 `
-                    CREATE (:${randomType.name} {property: $value})
-                `,
+                            CREATE (:${randomType.name} {property: $value})
+                        `,
                 { value }
             );
 
-            const query = /* GraphQL */ `
-                {
-                    ${randomType.plural}(where: { NOT: { property: { equals: false } } }) {
-                        property
-                    }
-                }
-            `;
+            const query = `
+                            {
+                                ${randomType.plural}(where: { NOT: { property_EQ: false } }) {
+                                    property
+                                }
+                            }
+                        `;
 
             const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -1011,14 +1012,14 @@ describe("Advanced Filtering", () => {
             expect((gqlResult.data as any)[randomType.plural]).toHaveLength(0);
         });
     });
-    // TODO Missing relationship properties
-    describe.skip("Relationship/Connection Filtering", () => {
+
+    describe("Relationship/Connection Filtering", () => {
         describe("equality", () => {
             test("should find using relationship equality on node", async () => {
                 const randomType1 = testHelper.createUniqueType("Movie");
                 const randomType2 = testHelper.createUniqueType("Genre");
 
-                const typeDefs = /* GraphQL */ `
+                const typeDefs = `
                         type ${randomType1.name} @node {
                             id: ID
                             ${randomType2.plural}: [${randomType2.name}!]! @relationship(type: "IN_GENRE", direction: OUT)
@@ -1045,25 +1046,25 @@ describe("Advanced Filtering", () => {
 
                 await testHelper.executeCypher(
                     `
-                        CREATE (root:${randomType1.name} {id: $rootId})
-                        CREATE (:${randomType1.name} {id: $randomId})
-                        CREATE (relation:${randomType2.name} {id: $relationId})
-                        CREATE (:${randomType2.name} {id: $randomId})
-                        MERGE (root)-[:IN_GENRE]->(relation)
-                    `,
+                                CREATE (root:${randomType1.name} {id: $rootId})
+                                CREATE (:${randomType1.name} {id: $randomId})
+                                CREATE (relation:${randomType2.name} {id: $relationId})
+                                CREATE (:${randomType2.name} {id: $randomId})
+                                MERGE (root)-[:IN_GENRE]->(relation)
+                            `,
                     { rootId, relationId, randomId }
                 );
 
-                const query = /* GraphQL */ `
-                    {
-                        ${randomType1.plural}(where: { ${randomType2.plural}_SOME: { id: { equals: "${relationId}" } } }) {
-                            id
-                            ${randomType2.plural} {
+                const query = `
+                        {
+                            ${randomType1.plural}(where: { ${randomType2.plural}_SOME: { id_EQ: "${relationId}" } }) {
                                 id
+                                ${randomType2.plural} {
+                                    id
+                                }
                             }
                         }
-                    }
-                `;
+                    `;
 
                 const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -1080,7 +1081,7 @@ describe("Advanced Filtering", () => {
                 const Movie = testHelper.createUniqueType("Movie");
                 const Genre = testHelper.createUniqueType("Genre");
 
-                const typeDefs = /* GraphQL */ `
+                const typeDefs = `
                         type ${Movie} @node {
                             id: ID
                             genres: [${Genre}!]! @relationship(type: "IN_GENRE", direction: OUT)
@@ -1103,21 +1104,21 @@ describe("Advanced Filtering", () => {
 
                 await testHelper.executeCypher(
                     `
-                        CREATE (:${Movie} {id: $movieId})-[:IN_GENRE]->(:${Genre} {id:$genreId})
-                    `,
+                            CREATE (:${Movie} {id: $movieId})-[:IN_GENRE]->(:${Genre} {id:$genreId})
+                        `,
                     { movieId, genreId }
                 );
 
-                const query = /* GraphQL */ `
-                    {
-                        ${Movie.plural}(where: { genresConnection_SOME: { node: { id: { equals: "${genreId}" } } } }) {
-                            id
-                            genres {
+                const query = `
+                        {
+                            ${Movie.plural}(where: { genresConnection_SOME: { node: { id_EQ: "${genreId}" } } }) {
                                 id
+                                genres {
+                                    id
+                                }
                             }
                         }
-                    }
-                `;
+                    `;
 
                 const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -1137,71 +1138,7 @@ describe("Advanced Filtering", () => {
                 const Movie = testHelper.createUniqueType("Movie");
                 const Genre = testHelper.createUniqueType("Genre");
 
-                const typeDefs = /* GraphQL */ `
-                    type ${Movie} @node {
-                        id: ID
-                        genres: [${Genre}!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "ActedIn")
-                    }
-
-                    type ${Genre} @node {
-                        id: ID
-                    }
-
-                    type ActedIn @relationshipProperties {
-                        id: String
-                    }
-                `;
-
-                await testHelper.initNeo4jGraphQL({ typeDefs });
-
-                const movieId = generate({
-                    charset: "alphabetic",
-                });
-
-                const genreId = generate({
-                    charset: "alphabetic",
-                });
-
-                const actedInId = generate({
-                    charset: "alphabetic",
-                });
-
-                await testHelper.executeCypher(
-                    `
-                        CREATE (movie:${Movie} {id: $movieId})-[:IN_GENRE {id:$actedInId}]->(:${Genre} {id:$genreId})
-                    `,
-                    { movieId, genreId, actedInId }
-                );
-
-                const query = /* GraphQL */ `
-                    {
-                        ${Movie.plural}(where: { genresConnection_SOME: { edge: { id: { equals: "${actedInId}" } } } }) {
-                            id
-                            genres {
-                                id
-                            }
-                        }
-                    }
-                `;
-
-                const gqlResult = await testHelper.executeGraphQL(query);
-
-                expect(gqlResult.errors).toBeUndefined();
-                expect(gqlResult.data as any).toEqual({
-                    [Movie.plural]: [
-                        {
-                            id: movieId,
-                            genres: [{ id: genreId }],
-                        },
-                    ],
-                });
-            });
-
-            test("should find relationship and node property equality using connection", async () => {
-                const Movie = testHelper.createUniqueType("Movie");
-                const Genre = testHelper.createUniqueType("Genre");
-
-                const typeDefs = /* GraphQL */ `
+                const typeDefs = `
                         type ${Movie} @node {
                             id: ID
                             genres: [${Genre}!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "ActedIn")
@@ -1232,14 +1169,78 @@ describe("Advanced Filtering", () => {
 
                 await testHelper.executeCypher(
                     `
-                        CREATE (:${Movie} {id: $movieId})-[:IN_GENRE {id:$actedInId}]->(:${Genre} {id:$genreId})
-                    `,
+                            CREATE (movie:${Movie} {id: $movieId})-[:IN_GENRE {id:$actedInId}]->(:${Genre} {id:$genreId})
+                        `,
                     { movieId, genreId, actedInId }
                 );
 
-                const query = /* GraphQL */ `
+                const query = `
                         {
-                            ${Movie.plural}(where: { genresConnection_SOME: { node: { id: { equals: "${genreId}" }} edge: { id: { equals: "${actedInId}" } } } }) {
+                            ${Movie.plural}(where: { genresConnection_SOME: { edge: { id_EQ: "${actedInId}" } } }) {
+                                id
+                                genres {
+                                    id
+                                }
+                            }
+                        }
+                    `;
+
+                const gqlResult = await testHelper.executeGraphQL(query);
+
+                expect(gqlResult.errors).toBeUndefined();
+                expect(gqlResult.data as any).toEqual({
+                    [Movie.plural]: [
+                        {
+                            id: movieId,
+                            genres: [{ id: genreId }],
+                        },
+                    ],
+                });
+            });
+
+            test("should find relationship and node property equality using connection", async () => {
+                const Movie = testHelper.createUniqueType("Movie");
+                const Genre = testHelper.createUniqueType("Genre");
+
+                const typeDefs = `
+                        type ${Movie} @node {
+                            id: ID
+                            genres: [${Genre}!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "ActedIn")
+                        }
+
+                        type ${Genre} @node {
+                            id: ID
+                        }
+
+                        type ActedIn @relationshipProperties {
+                            id: String
+                        }
+                `;
+
+                await testHelper.initNeo4jGraphQL({ typeDefs });
+
+                const movieId = generate({
+                    charset: "alphabetic",
+                });
+
+                const genreId = generate({
+                    charset: "alphabetic",
+                });
+
+                const actedInId = generate({
+                    charset: "alphabetic",
+                });
+
+                await testHelper.executeCypher(
+                    `
+                            CREATE (:${Movie} {id: $movieId})-[:IN_GENRE {id:$actedInId}]->(:${Genre} {id:$genreId})
+                        `,
+                    { movieId, genreId, actedInId }
+                );
+
+                const query = `
+                        {
+                            ${Movie.plural}(where: { genresConnection_SOME: { node: { id_EQ: "${genreId}" } edge: { id_EQ: "${actedInId}" } } }) {
                                 id
                                 genres {
                                     id
@@ -1268,15 +1269,15 @@ describe("Advanced Filtering", () => {
                 const randomType1 = testHelper.createUniqueType("Movie");
                 const randomType2 = testHelper.createUniqueType("Genre");
 
-                const typeDefs = /* GraphQL */ `
-                    type ${randomType1.name} @node {
-                        id: ID
-                        ${randomType2.plural}: [${randomType2.name}!]! @relationship(type: "IN_GENRE", direction: OUT)
-                    }
+                const typeDefs = `
+                        type ${randomType1.name} @node {
+                            id: ID
+                            ${randomType2.plural}: [${randomType2.name}!]! @relationship(type: "IN_GENRE", direction: OUT)
+                        }
 
-                    type ${randomType2.name} @node {
-                        id: ID
-                    }
+                        type ${randomType2.name} @node {
+                            id: ID
+                        }
                 `;
 
                 await testHelper.initNeo4jGraphQL({ typeDefs });
@@ -1297,19 +1298,19 @@ describe("Advanced Filtering", () => {
 
                 await testHelper.executeCypher(
                     `
-                        CREATE (root1:${randomType1.name} {id: $rootId1})
-                        CREATE (root2:${randomType1.name} {id: $rootId2})
-                        CREATE (relation1:${randomType2.name} {id: $relationId1})
-                        CREATE (relation2:${randomType2.name} {id: $relationId2})
-                        MERGE (root1)-[:IN_GENRE]->(relation1)
-                        MERGE (root2)-[:IN_GENRE]->(relation2)
-                    `,
+                                CREATE (root1:${randomType1.name} {id: $rootId1})
+                                CREATE (root2:${randomType1.name} {id: $rootId2})
+                                CREATE (relation1:${randomType2.name} {id: $relationId1})
+                                CREATE (relation2:${randomType2.name} {id: $relationId2})
+                                MERGE (root1)-[:IN_GENRE]->(relation1)
+                                MERGE (root2)-[:IN_GENRE]->(relation2)
+                            `,
                     { rootId1, rootId2, relationId1, relationId2 }
                 );
 
                 const query = /* GraphQL */ `
                         {
-                            ${randomType1.plural}(where: { NOT: { ${randomType2.plural}_SOME: { id: { equals: "${relationId2}" }} } }) {
+                            ${randomType1.plural}(where: { NOT: { ${randomType2.plural}_SOME: { id_EQ: "${relationId2}" } } }) {
                                 id
                                 ${randomType2.plural} {
                                     id
@@ -1333,19 +1334,19 @@ describe("Advanced Filtering", () => {
                 const randomType1 = testHelper.createUniqueType("Movie");
                 const randomType2 = testHelper.createUniqueType("Genre");
 
-                const typeDefs = /* GraphQL */ `
-                    type ${randomType1.name} @node {
-                        id: ID
-                        ${randomType2.plural}: [${randomType2.name}!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "ActedIn")
-                    }
+                const typeDefs = `
+                        type ${randomType1.name} @node {
+                            id: ID
+                            ${randomType2.plural}: [${randomType2.name}!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "ActedIn")
+                        }
 
-                    type ${randomType2.name} @node {
-                        id: ID
-                    }
+                        type ${randomType2.name} @node {
+                            id: ID
+                        }
 
-                    type ActedIn @relationshipProperties {
-                        id: ID
-                    }
+                        type ActedIn @relationshipProperties {
+                            id: ID
+                        }
                 `;
 
                 await testHelper.initNeo4jGraphQL({ typeDefs });
@@ -1369,15 +1370,15 @@ describe("Advanced Filtering", () => {
 
                 await testHelper.executeCypher(
                     `
-                        CREATE (:${randomType1.name} {id: $rootId1})-[:IN_GENRE {id: $actedInId}]->(:${randomType2.name} {id: $relationId1})
-                        CREATE (:${randomType1.name} {id: $rootId2})-[:IN_GENRE {id: randomUUID()}]->(:${randomType2.name} {id: $relationId2})
-                    `,
+                            CREATE (:${randomType1.name} {id: $rootId1})-[:IN_GENRE {id: $actedInId}]->(:${randomType2.name} {id: $relationId1})
+                            CREATE (:${randomType1.name} {id: $rootId2})-[:IN_GENRE {id: randomUUID()}]->(:${randomType2.name} {id: $relationId2})
+                        `,
                     { rootId1, rootId2, relationId1, relationId2, actedInId }
                 );
 
-                const query = /* GraphQL */ `
+                const query = `
                         {
-                            ${randomType1.plural}(where: { ${randomType2.plural}Connection_NONE: { edge: { id: { equals: "${actedInId}"} } } }) {
+                            ${randomType1.plural}(where: { ${randomType2.plural}Connection_NONE: { edge: { id_EQ: "${actedInId}" } } }) {
                                 id
                                 ${randomType2.plural} {
                                     id
@@ -1417,19 +1418,19 @@ describe("Advanced Filtering", () => {
                 Movie = testHelper.createUniqueType("Movie");
                 Actor = testHelper.createUniqueType("Actor");
 
-                const typeDefs = /* GraphQL */ `
-                    type ${Movie} @node {
-                        id: ID! @id
-                        budget: Int!
-                        actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
-                    }
+                const typeDefs = `
+                type ${Movie} @node {
+                    id: ID! @id
+                    budget: Int!
+                    actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
+                }
 
-                    type ${Actor} @node {
-                        id: ID! @id
-                        flag: Boolean!
-                        actedIn: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
-                    }
-                `;
+                type ${Actor} @node {
+                    id: ID! @id
+                    flag: Boolean!
+                    actedIn: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
+                }
+            `;
 
                 await testHelper.initNeo4jGraphQL({ typeDefs });
                 await testHelper.executeCypher(
@@ -1456,9 +1457,9 @@ describe("Advanced Filtering", () => {
                 function generateQuery(predicate: "ALL" | "NONE" | "SINGLE" | "SOME") {
                     return /* GraphQL */ `
                     query($movieIds: [ID!]!) {
-                        ${Movie.plural}(where: { AND: [{ id: { in: $movieIds }}, { actors_${predicate}: { NOT: { flag: { equals: false }} } }] }) {
+                        ${Movie.plural}(where: { AND: [{ id_IN: $movieIds }, { actors_${predicate}: { NOT: { flag_EQ: false } } }] }) {
                             id
-                            actors(where: { NOT: { flag: {equals: false} } }) {
+                            actors(where: { NOT: { flag_EQ: false } }) {
                                 id
                                 flag
                             }
@@ -1541,11 +1542,11 @@ describe("Advanced Filtering", () => {
             });
 
             describe("on relationship using NOT operator", () => {
-                const generateQuery = (predicate: "ALL" | "NONE" | "SINGLE" | "SOME") => /* GraphQL */ `
+                const generateQuery = (predicate: "ALL" | "NONE" | "SINGLE" | "SOME") => `
                     query($movieIds: [ID!]!) {
-                        ${Movie.plural}(where: { AND: [{ id: { in: $movieIds }}, { actors_${predicate}: { NOT: { flag: {equals: false }} } }] }) {
+                        ${Movie.plural}(where: { AND: [{ id_IN: $movieIds }, { actors_${predicate}: { NOT: { flag_EQ: false } } }] }) {
                             id
-                            actors(where: { NOT: { flag: { equals: false }} }) {
+                            actors(where: { NOT: { flag_EQ: false } }) {
                                 id
                                 flag
                             }
@@ -1629,9 +1630,9 @@ describe("Advanced Filtering", () => {
             describe("on connection", () => {
                 const generateQuery = (predicate: "ALL" | "NONE" | "SINGLE" | "SOME") => /* GraphQL */ `
                     query($movieIds: [ID!]!) {
-                        ${Movie.plural}(where: { AND: [{ id: {in: $movieIds} }, { actorsConnection_${predicate}: { node: { NOT: { flag: { equals: false} } } }}] }) {
+                        ${Movie.plural}(where: { AND: [{ id_IN: $movieIds }, { actorsConnection_${predicate}: { node: { NOT: { flag_EQ: false } } }}] }) {
                             id
-                            actors(where: { NOT: { flag:{ equals: false }} }) {
+                            actors(where: { NOT: { flag_EQ: false } }) {
                                 id
                                 flag
                             }
@@ -1713,11 +1714,11 @@ describe("Advanced Filtering", () => {
             });
 
             describe("on connection using NOT operator", () => {
-                const generateQuery = (predicate: "ALL" | "NONE" | "SINGLE" | "SOME") => /* GraphQL */ `
+                const generateQuery = (predicate: "ALL" | "NONE" | "SINGLE" | "SOME") => `
                     query($movieIds: [ID!]!) {
-                        ${Movie.plural}(where: { AND: [{ id:{ in: $movieIds }}, { actorsConnection_${predicate}: { node: { NOT: { flag: {equals: false} } } } }] }) {
+                        ${Movie.plural}(where: { AND: [{ id_IN: $movieIds }, { actorsConnection_${predicate}: { node: { NOT: { flag_EQ: false } } } }] }) {
                             id
-                            actors(where: { NOT: { flag: { equals: false } }}) {
+                            actors(where: { NOT: { flag_EQ: false }}) {
                                 id
                                 flag
                             }
@@ -1803,15 +1804,15 @@ describe("Advanced Filtering", () => {
             const randomType1 = testHelper.createUniqueType("Movie");
             const randomType2 = testHelper.createUniqueType("Genre");
 
-            const typeDefs = /* GraphQL */ `
-                type ${randomType1.name} @node {
-                    id: ID
-                    ${randomType2.plural}: [${randomType2.name}!]! @relationship(type: "IN_GENRE", direction: OUT)
-                }
+            const typeDefs = `
+                    type ${randomType1.name} @node {
+                        id: ID
+                        ${randomType2.plural}: [${randomType2.name}!]! @relationship(type: "IN_GENRE", direction: OUT)
+                    }
 
-                type ${randomType2.name} @node {
-                    id: ID
-                }
+                    type ${randomType2.name} @node {
+                        id: ID
+                    }
             `;
 
             await testHelper.initNeo4jGraphQL({ typeDefs });
@@ -1830,22 +1831,22 @@ describe("Advanced Filtering", () => {
 
             await testHelper.executeCypher(
                 `
-                    CREATE (root:${randomType1.name} {id: $rootId})
-                    CREATE (:${randomType1.name} {id: $randomId})
-                    CREATE (relation:${randomType2.name} {id: $relationId})
-                    CREATE (:${randomType2.name} {id: $randomId})
-                    MERGE (root)-[:IN_GENRE]->(relation)
-                `,
+                            CREATE (root:${randomType1.name} {id: $rootId})
+                            CREATE (:${randomType1.name} {id: $randomId})
+                            CREATE (relation:${randomType2.name} {id: $relationId})
+                            CREATE (:${randomType2.name} {id: $randomId})
+                            MERGE (root)-[:IN_GENRE]->(relation)
+                        `,
                 { rootId, relationId, randomId }
             );
 
-            const nullQuery = /* GraphQL */ `
-                {
-                    ${randomType1.plural}(where: { ${randomType2.plural}_SOME: null }) {
-                        id
+            const nullQuery = `
+                    {
+                        ${randomType1.plural}(where: { ${randomType2.plural}_SOME: null }) {
+                            id
+                        }
                     }
-                }
-            `;
+                `;
 
             // Test null checking (nodes without any related nodes on the specified field)
 
@@ -1865,7 +1866,7 @@ describe("Advanced Filtering", () => {
         test("should work for existence and non-existence", async () => {
             const randomType = testHelper.createUniqueType("Movie");
 
-            const typeDefs = /* GraphQL */ `
+            const typeDefs = `
                 type ${randomType.name} @node {
                     id: String!
                     optional: String
@@ -1891,21 +1892,21 @@ describe("Advanced Filtering", () => {
 
             await testHelper.executeCypher(
                 `
-                    CREATE (:${randomType.name} {id: $id1})
-                    CREATE (:${randomType.name} {id: $id2, optional: $optionalValue})
-                `,
+                        CREATE (:${randomType.name} {id: $id1})
+                        CREATE (:${randomType.name} {id: $id2, optional: $optionalValue})
+                    `,
                 { id1, id2, optionalValue }
             );
 
             // Test NULL checking
 
-            const nullQuery = /* GraphQL */ `
-                {
-                    ${randomType.plural}(where: { optional: { equals:  null} }) {
-                        id
+            const nullQuery = `
+                    {
+                        ${randomType.plural}(where: { optional_EQ: null }) {
+                            id
+                        }
                     }
-                }
-            `;
+                `;
 
             const nullResult = await testHelper.executeGraphQL(nullQuery);
 
@@ -1917,13 +1918,13 @@ describe("Advanced Filtering", () => {
 
             // Test NOT NULL checking
 
-            const notNullQuery = /* GraphQL */ `
-                {
-                    ${randomType.plural}(where: { NOT: { optional: { equals: null } } }) {
-                        id
+            const notNullQuery = `
+                    {
+                        ${randomType.plural}(where: { NOT: { optional_EQ: null } }) {
+                            id
+                        }
                     }
-                }
-            `;
+                `;
 
             const notNullResult = await testHelper.executeGraphQL(notNullQuery);
 

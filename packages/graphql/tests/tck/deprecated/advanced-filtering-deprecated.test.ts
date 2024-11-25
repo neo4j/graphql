@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQL } from "../../src";
-import { formatCypher, formatParams, translateQuery } from "./utils/tck-test-utils";
+import { Neo4jGraphQL } from "../../../src";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
-describe("Cypher Advanced Filtering", () => {
+describe("Cypher Advanced Filtering - deprecated", () => {
     let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
@@ -60,10 +60,10 @@ describe("Cypher Advanced Filtering", () => {
         });
     });
 
-    test("equals", async () => {
+    test("implicit EQ", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { title: { equals: "The Matrix" } }) {
+                movies(where: { title_EQ: "The Matrix" }) {
                     title
                 }
             }
@@ -84,10 +84,34 @@ describe("Cypher Advanced Filtering", () => {
         `);
     });
 
-    test("in", async () => {
+    test("EQ", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { _id: { in: ["123"] } }) {
+                movies(where: { title_EQ: "The Matrix" }) {
+                    title
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Movie)
+            WHERE this.title = $param0
+            RETURN this { .title } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"The Matrix\\"
+            }"
+        `);
+    });
+
+    test("IN", async () => {
+        const query = /* GraphQL */ `
+            {
+                movies(where: { _id_IN: ["123"] }) {
                     _id
                 }
             }
@@ -110,10 +134,10 @@ describe("Cypher Advanced Filtering", () => {
         `);
     });
 
-    test("matches", async () => {
+    test("REGEX", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { id: { matches: "(?i)123.*" } }) {
+                movies(where: { id_MATCHES: "(?i)123.*" }) {
                     id
                 }
             }
@@ -137,7 +161,7 @@ describe("Cypher Advanced Filtering", () => {
     test("NOT", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { NOT: { id: { equals: "123" } } }) {
+                movies(where: { NOT: { id_EQ: "123" } }) {
                     id
                 }
             }
@@ -158,10 +182,10 @@ describe("Cypher Advanced Filtering", () => {
         `);
     });
 
-    test("contains", async () => {
+    test("CONTAINS", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { id: { contains: "123" } }) {
+                movies(where: { id_CONTAINS: "123" }) {
                     id
                 }
             }
@@ -182,10 +206,10 @@ describe("Cypher Advanced Filtering", () => {
         `);
     });
 
-    test("startsWith", async () => {
+    test("STARTS_WITH", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { id: { startsWith: "123" } }) {
+                movies(where: { id_STARTS_WITH: "123" }) {
                     id
                 }
             }
@@ -206,10 +230,10 @@ describe("Cypher Advanced Filtering", () => {
         `);
     });
 
-    test("endsWith", async () => {
+    test("ENDS_WITH", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { id: { endsWith: "123" } }) {
+                movies(where: { id_ENDS_WITH: "123" }) {
                     id
                 }
             }
@@ -230,10 +254,10 @@ describe("Cypher Advanced Filtering", () => {
         `);
     });
 
-    test("lessThan", async () => {
+    test("LT", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { actorCount: { lessThan: 123 } }) {
+                movies(where: { actorCount_LT: 123 }) {
                     actorCount
                 }
             }
@@ -257,10 +281,10 @@ describe("Cypher Advanced Filtering", () => {
         `);
     });
 
-    test("lessThan BigInt", async () => {
+    test("LT BigInt", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { budget: { lessThan: 9223372036854775807 } }) {
+                movies(where: { budget_LT: 9223372036854775807 }) {
                     budget
                 }
             }
@@ -284,10 +308,10 @@ describe("Cypher Advanced Filtering", () => {
         `);
     });
 
-    test("lessThan String", async () => {
+    test("LT String", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { title: { lessThan: "The Matrix Revolutions" } }) {
+                movies(where: { title_LT: "The Matrix Revolutions" }) {
                     title
                 }
             }
@@ -307,10 +331,10 @@ describe("Cypher Advanced Filtering", () => {
         `);
     });
 
-    test("lessThanEquals", async () => {
+    test("LTE", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { actorCount: { lessThanEquals: 123 } }) {
+                movies(where: { actorCount_LTE: 123 }) {
                     actorCount
                 }
             }
@@ -334,10 +358,10 @@ describe("Cypher Advanced Filtering", () => {
         `);
     });
 
-    test("lessThanEquals BigInt", async () => {
+    test("LTE BigInt", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { budget: { lessThanEquals: 9223372036854775807 } }) {
+                movies(where: { budget_LTE: 9223372036854775807 }) {
                     budget
                 }
             }
@@ -361,10 +385,10 @@ describe("Cypher Advanced Filtering", () => {
         `);
     });
 
-    test("lessThanEquals String", async () => {
+    test("LTE String", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { title: { lessThanEquals: "The Matrix Revolutions" } }) {
+                movies(where: { title_LTE: "The Matrix Revolutions" }) {
                     title
                 }
             }
@@ -384,10 +408,10 @@ describe("Cypher Advanced Filtering", () => {
         `);
     });
 
-    test("greaterThan", async () => {
+    test("GT", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { actorCount: { greaterThan: 123 } }) {
+                movies(where: { actorCount_GT: 123 }) {
                     actorCount
                 }
             }
@@ -411,10 +435,10 @@ describe("Cypher Advanced Filtering", () => {
         `);
     });
 
-    test("greaterThan BigInt", async () => {
+    test("GT BigInt", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { budget: { greaterThan: 9223372036854775000 } }) {
+                movies(where: { budget_GT: 9223372036854775000 }) {
                     budget
                 }
             }
@@ -438,10 +462,10 @@ describe("Cypher Advanced Filtering", () => {
         `);
     });
 
-    test("greaterThan String", async () => {
+    test("GT String", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { title: { greaterThan: "The Matrix Revolutions" } }) {
+                movies(where: { title_GT: "The Matrix Revolutions" }) {
                     title
                 }
             }
@@ -461,10 +485,10 @@ describe("Cypher Advanced Filtering", () => {
         `);
     });
 
-    test("greaterThanEquals", async () => {
+    test("GTE", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { actorCount: { greaterThanEquals: 123 } }) {
+                movies(where: { actorCount_GTE: 123 }) {
                     actorCount
                 }
             }
@@ -488,10 +512,10 @@ describe("Cypher Advanced Filtering", () => {
         `);
     });
 
-    test("greaterThanEquals BigInt", async () => {
+    test("GTE BigInt", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { budget: { greaterThanEquals: 9223372036854775000 } }) {
+                movies(where: { budget_GTE: 9223372036854775000 }) {
                     budget
                 }
             }
@@ -515,10 +539,10 @@ describe("Cypher Advanced Filtering", () => {
         `);
     });
 
-    test("greaterThanEquals String", async () => {
+    test("GTE String", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { title: { greaterThanEquals: "The Matrix Revolutions" } }) {
+                movies(where: { title_GTE: "The Matrix Revolutions" }) {
                     title
                 }
             }
@@ -542,7 +566,7 @@ describe("Cypher Advanced Filtering", () => {
         test("equality", async () => {
             const query = /* GraphQL */ `
                 {
-                    movies(where: { genres_SOME: { name: { equals: "some genre" } } }) {
+                    movies(where: { genres_SOME: { name_EQ: "some genre" } }) {
                         actorCount
                     }
                 }
@@ -569,7 +593,7 @@ describe("Cypher Advanced Filtering", () => {
         test("NONE", async () => {
             const query = /* GraphQL */ `
                 {
-                    movies(where: { genres_NONE: { name: { equals: "some genre" } } }) {
+                    movies(where: { genres_NONE: { name_EQ: "some genre" } }) {
                         actorCount
                     }
                 }
@@ -597,7 +621,7 @@ describe("Cypher Advanced Filtering", () => {
             const generateQuery = (operator: "ALL" | "NONE" | "SINGLE" | "SOME"): string => {
                 const query = /* GraphQL */ `
                     {
-                        movies(where: { genres_${operator}: { name: { equals: "some genre" } } }) {
+                        movies(where: { genres_${operator}: { name_EQ: "some genre" } }) {
                             actorCount
                         }
                     }
@@ -687,7 +711,7 @@ describe("Cypher Advanced Filtering", () => {
         test("Node and relationship properties equality", async () => {
             const query = /* GraphQL */ `
                 {
-                    movies(where: { genresConnection_SOME: { node: { name: { equals: "some genre" } } } }) {
+                    movies(where: { genresConnection_SOME: { node: { name_EQ: "some genre" } } }) {
                         actorCount
                     }
                 }
@@ -714,7 +738,7 @@ describe("Cypher Advanced Filtering", () => {
         test("Node and relationship properties NONE", async () => {
             const query = /* GraphQL */ `
                 {
-                    movies(where: { genresConnection_NONE: { node: { name: { equals: "some genre" } } } }) {
+                    movies(where: { genresConnection_NONE: { node: { name_EQ: "some genre" } } }) {
                         actorCount
                     }
                 }
@@ -742,7 +766,7 @@ describe("Cypher Advanced Filtering", () => {
             const generateQuery = (operator: "ALL" | "NONE" | "SINGLE" | "SOME"): string => {
                 const query = /* GraphQL */ `
                     {
-                        movies(where: { genresConnection_${operator}: { node: { name: { equals: "some genre" }} } }) {
+                        movies(where: { genresConnection_${operator}: { node: { name_EQ: "some genre" } } }) {
                             actorCount
                         }
                     }
