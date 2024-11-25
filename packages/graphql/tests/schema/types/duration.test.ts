@@ -68,9 +68,32 @@ describe("Duration", () => {
               min: Duration
             }
 
+            \\"\\"\\"Duration filters\\"\\"\\"
+            input DurationScalarFilters {
+              equals: Duration
+              greaterThan: Duration
+              greaterThanEquals: Duration
+              in: [Duration!]
+              lessThan: Duration
+              lessThanEquals: Duration
+            }
+
             type IDAggregateSelection {
               longest: ID
               shortest: ID
+            }
+
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              startsWith: ID
             }
 
             type Movie {
@@ -111,12 +134,14 @@ describe("Duration", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              duration: DurationScalarFilters
               duration_EQ: Duration
               duration_GT: Duration
               duration_GTE: Duration
               duration_IN: [Duration]
               duration_LT: Duration
               duration_LTE: Duration
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID

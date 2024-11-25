@@ -20,10 +20,17 @@
 import type { GraphQLInputType } from "graphql";
 import { BigIntScalarFilters } from "../../graphql/input-objects/generic-operators/BigIntScalarFilters";
 import { BooleanScalarFilters } from "../../graphql/input-objects/generic-operators/BooleanScalarFilters";
+import { DateScalarFilters } from "../../graphql/input-objects/generic-operators/DateScalarFilters";
+import { DateTimeScalarFilters } from "../../graphql/input-objects/generic-operators/DateTimeScalarFilters";
+import { DurationScalarFilters } from "../../graphql/input-objects/generic-operators/DurationScalarFilters";
 import { FloatScalarFilters } from "../../graphql/input-objects/generic-operators/FloatScalarFilters";
 import { IDScalarFilters } from "../../graphql/input-objects/generic-operators/IDScalarFilters";
 import { IntScalarFilters } from "../../graphql/input-objects/generic-operators/IntScalarFilters";
+import { LocalDateTimeScalarFilters } from "../../graphql/input-objects/generic-operators/LocalDateTimeScalarFilters";
+import { LocalTimeScalarFilters } from "../../graphql/input-objects/generic-operators/LocalTimeScalarFilters";
+import { CartesianPointFilters, PointFilters } from "../../graphql/input-objects/generic-operators/PointFilters";
 import { StringScalarFilters } from "../../graphql/input-objects/generic-operators/StringScalarFilters";
+import { TimeScalarFilters } from "../../graphql/input-objects/generic-operators/TimeScalarFilters";
 import type { AttributeAdapter } from "../../schema-model/attribute/model-adapters/AttributeAdapter";
 
 export function getInputTypeFromAttributeType(attribute: AttributeAdapter): GraphQLInputType {
@@ -44,6 +51,30 @@ export function getInputTypeFromAttributeType(attribute: AttributeAdapter): Grap
     }
     if (attribute.typeHelper.isBigInt()) {
         return BigIntScalarFilters;
+    }
+    if (attribute.typeHelper.isTime()) {
+        return TimeScalarFilters;
+    }
+    if (attribute.typeHelper.isPoint()) {
+        return PointFilters;
+    }
+    if (attribute.typeHelper.isCartesianPoint()) {
+        return CartesianPointFilters;
+    }
+    if (attribute.typeHelper.isDateTime()) {
+        return DateTimeScalarFilters;
+    }
+    if (attribute.typeHelper.isLocalTime()) {
+        return LocalTimeScalarFilters;
+    }
+    if (attribute.typeHelper.isLocalDateTime()) {
+        return LocalDateTimeScalarFilters;
+    }
+    if (attribute.typeHelper.isDuration()) {
+        return DurationScalarFilters;
+    }
+    if (attribute.typeHelper.isDate()) {
+        return DateScalarFilters;
     }
     throw new Error(`No scalar filter found for attribute ${attribute.type.name}`);
 }

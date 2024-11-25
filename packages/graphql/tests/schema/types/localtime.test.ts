@@ -65,6 +65,19 @@ describe("Localtime", () => {
               shortest: ID
             }
 
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              startsWith: ID
+            }
+
             \\"\\"\\"
             A local time, represented as a time string without timezone information
             \\"\\"\\"
@@ -73,6 +86,16 @@ describe("Localtime", () => {
             type LocalTimeAggregateSelection {
               max: LocalTime
               min: LocalTime
+            }
+
+            \\"\\"\\"LocalTime filters\\"\\"\\"
+            input LocalTimeScalarFilters {
+              equals: LocalTime
+              greaterThan: LocalTime
+              greaterThanEquals: LocalTime
+              in: [LocalTime!]
+              lessThan: LocalTime
+              lessThanEquals: LocalTime
             }
 
             type Movie {
@@ -113,11 +136,13 @@ describe("Localtime", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
+              time: LocalTimeScalarFilters
               time_EQ: LocalTime
               time_GT: LocalTime
               time_GTE: LocalTime

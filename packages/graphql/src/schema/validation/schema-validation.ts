@@ -33,10 +33,15 @@ import { createAuthenticationDirectiveDefinition } from "../../graphql/directive
 import { getStaticAuthorizationDefinitions } from "../../graphql/directives/type-dependant-directives/get-static-auth-definitions";
 import { BigIntScalarFilters } from "../../graphql/input-objects/generic-operators/BigIntScalarFilters";
 import { BooleanScalarFilters } from "../../graphql/input-objects/generic-operators/BooleanScalarFilters";
+import { DateTimeScalarFilters } from "../../graphql/input-objects/generic-operators/DateTimeScalarFilters";
+import { DurationScalarFilters } from "../../graphql/input-objects/generic-operators/DurationScalarFilters";
 import { FloatScalarFilters } from "../../graphql/input-objects/generic-operators/FloatScalarFilters";
 import { IDScalarFilters } from "../../graphql/input-objects/generic-operators/IDScalarFilters";
 import { IntScalarFilters } from "../../graphql/input-objects/generic-operators/IntScalarFilters";
+import { LocalTimeScalarFilters } from "../../graphql/input-objects/generic-operators/LocalTimeScalarFilters";
+import { CartesianPointFilters, PointFilters } from "../../graphql/input-objects/generic-operators/PointFilters";
 import { StringScalarFilters } from "../../graphql/input-objects/generic-operators/StringScalarFilters";
+import { TimeScalarFilters } from "../../graphql/input-objects/generic-operators/TimeScalarFilters";
 import { EnricherContext } from "./EnricherContext";
 import { DirectiveArgumentOfCorrectType } from "./custom-rules/directive-argument-of-correct-type";
 import { makeReplaceWildcardVisitor } from "./custom-rules/replace-wildcard-value";
@@ -109,6 +114,12 @@ export function validateUserDefinition({
         FloatScalarFilters,
         IntScalarFilters,
         BigIntScalarFilters,
+        TimeScalarFilters,
+        DateTimeScalarFilters,
+        DurationScalarFilters,
+        LocalTimeScalarFilters,
+        PointFilters,
+        CartesianPointFilters,
     ];
     const filtersAlreadyInDocument: InputObjectTypeDefinitionNode[] = augmentedDocument.definitions.filter(
         (def): def is InputObjectTypeDefinitionNode =>
