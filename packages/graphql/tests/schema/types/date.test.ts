@@ -55,6 +55,16 @@ describe("Date", () => {
             \\"\\"\\"A date, represented as a 'yyyy-mm-dd' string\\"\\"\\"
             scalar Date
 
+            \\"\\"\\"Date filters\\"\\"\\"
+            input DateScalarFilters {
+              equals: Date
+              greaterThan: Date
+              greaterThanEquals: Date
+              in: [Date!]
+              lessThan: Date
+              lessThanEquals: Date
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships deleted during a delete mutation
             \\"\\"\\"
@@ -66,6 +76,19 @@ describe("Date", () => {
             type IDAggregateSelection {
               longest: ID
               shortest: ID
+            }
+
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              startsWith: ID
             }
 
             type Movie {
@@ -105,12 +128,14 @@ describe("Date", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              date: DateScalarFilters
               date_EQ: Date
               date_GT: Date
               date_GTE: Date
               date_IN: [Date]
               date_LT: Date
               date_LTE: Date
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID

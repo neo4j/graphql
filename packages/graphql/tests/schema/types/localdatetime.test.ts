@@ -65,12 +65,35 @@ describe("Localdatetime", () => {
               shortest: ID
             }
 
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              startsWith: ID
+            }
+
             \\"\\"\\"A local datetime, represented as 'YYYY-MM-DDTHH:MM:SS'\\"\\"\\"
             scalar LocalDateTime
 
             type LocalDateTimeAggregateSelection {
               max: LocalDateTime
               min: LocalDateTime
+            }
+
+            \\"\\"\\"LocalDateTime filters\\"\\"\\"
+            input LocalDateTimeScalarFilters {
+              equals: LocalDateTime
+              greaterThan: LocalDateTime
+              greaterThanEquals: LocalDateTime
+              in: [LocalDateTime!]
+              lessThan: LocalDateTime
+              lessThanEquals: LocalDateTime
             }
 
             type Movie {
@@ -111,11 +134,13 @@ describe("Localdatetime", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
+              localDT: LocalDateTimeScalarFilters
               localDT_EQ: LocalDateTime
               localDT_GT: LocalDateTime
               localDT_GTE: LocalDateTime
