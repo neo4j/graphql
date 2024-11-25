@@ -20,7 +20,6 @@
 import type { GraphQLInputType } from "graphql";
 import { BigIntScalarFilters } from "../../graphql/input-objects/generic-operators/BigIntScalarFilters";
 import { BooleanScalarFilters } from "../../graphql/input-objects/generic-operators/BooleanScalarFilters";
-import { CartesianPointScalarFilters } from "../../graphql/input-objects/generic-operators/CartesianPointScalarFilters";
 import { DateScalarFilters } from "../../graphql/input-objects/generic-operators/DateScalarFilters";
 import { DateTimeScalarFilters } from "../../graphql/input-objects/generic-operators/DateTimeScalarFilters";
 import { DurationScalarFilters } from "../../graphql/input-objects/generic-operators/DurationScalarFilters";
@@ -29,7 +28,7 @@ import { IDScalarFilters } from "../../graphql/input-objects/generic-operators/I
 import { IntScalarFilters } from "../../graphql/input-objects/generic-operators/IntScalarFilters";
 import { LocalDateTimeScalarFilters } from "../../graphql/input-objects/generic-operators/LocalDateTimeScalarFilters";
 import { LocalTimeScalarFilters } from "../../graphql/input-objects/generic-operators/LocalTimeScalarFilters";
-import { PointScalarFilters } from "../../graphql/input-objects/generic-operators/PointScalarFilters";
+import { CartesianPointFilters, PointFilters } from "../../graphql/input-objects/generic-operators/PointFilters";
 import { StringScalarFilters } from "../../graphql/input-objects/generic-operators/StringScalarFilters";
 import { TimeScalarFilters } from "../../graphql/input-objects/generic-operators/TimeScalarFilters";
 import type { AttributeAdapter } from "../../schema-model/attribute/model-adapters/AttributeAdapter";
@@ -57,10 +56,10 @@ export function getInputTypeFromAttributeType(attribute: AttributeAdapter): Grap
         return TimeScalarFilters;
     }
     if (attribute.typeHelper.isPoint()) {
-        return PointScalarFilters;
+        return PointFilters;
     }
     if (attribute.typeHelper.isCartesianPoint()) {
-        return CartesianPointScalarFilters;
+        return CartesianPointFilters;
     }
     if (attribute.typeHelper.isDateTime()) {
         return DateTimeScalarFilters;

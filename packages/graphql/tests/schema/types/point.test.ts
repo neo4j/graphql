@@ -59,15 +59,6 @@ describe("Point", () => {
               relationshipsDeleted: Int!
             }
 
-            \\"\\"\\"Distance filters\\"\\"\\"
-            input DistanceScalarFilters {
-              equals: PointDistance
-              greaterThan: PointDistance
-              greaterThanEquals: PointDistance
-              lessThan: PointDistance
-              lessThanEquals: PointDistance
-            }
-
             type Movie {
               filmedAt: Point!
             }
@@ -100,7 +91,7 @@ describe("Point", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              filmedAt: PointScalarFilters
+              filmedAt: PointFilters
               filmedAt_DISTANCE: PointDistance
               filmedAt_EQ: PointInput
               filmedAt_GT: PointDistance
@@ -148,18 +139,27 @@ describe("Point", () => {
               point: PointInput!
             }
 
+            \\"\\"\\"Distance filters\\"\\"\\"
+            input PointDistanceFilters {
+              equals: PointDistance
+              greaterThan: PointDistance
+              greaterThanEquals: PointDistance
+              lessThan: PointDistance
+              lessThanEquals: PointDistance
+            }
+
+            \\"\\"\\"Point filters\\"\\"\\"
+            input PointFilters {
+              distance: PointDistanceFilters
+              equals: PointInput
+              in: [PointInput!]
+            }
+
             \\"\\"\\"Input type for a point\\"\\"\\"
             input PointInput {
               height: Float
               latitude: Float!
               longitude: Float!
-            }
-
-            \\"\\"\\"Point filters\\"\\"\\"
-            input PointScalarFilters {
-              distance: DistanceScalarFilters
-              equals: PointInput
-              in: [PointInput!]
             }
 
             type Query {
@@ -398,15 +398,6 @@ describe("Point", () => {
               relationshipsDeleted: Int!
             }
 
-            \\"\\"\\"Distance filters\\"\\"\\"
-            input DistanceScalarFilters {
-              equals: PointDistance
-              greaterThan: PointDistance
-              greaterThanEquals: PointDistance
-              lessThan: PointDistance
-              lessThanEquals: PointDistance
-            }
-
             type Movie {
               filmedAt: [Point!]!
             }
@@ -434,7 +425,7 @@ describe("Point", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              filmedAt: PointScalarFilters
+              filmedAt: PointFilters
               filmedAt_EQ: [PointInput!]
               filmedAt_INCLUDES: PointInput
             }
@@ -477,18 +468,27 @@ describe("Point", () => {
               point: PointInput!
             }
 
+            \\"\\"\\"Distance filters\\"\\"\\"
+            input PointDistanceFilters {
+              equals: PointDistance
+              greaterThan: PointDistance
+              greaterThanEquals: PointDistance
+              lessThan: PointDistance
+              lessThanEquals: PointDistance
+            }
+
+            \\"\\"\\"Point filters\\"\\"\\"
+            input PointFilters {
+              distance: PointDistanceFilters
+              equals: PointInput
+              in: [PointInput!]
+            }
+
             \\"\\"\\"Input type for a point\\"\\"\\"
             input PointInput {
               height: Float
               latitude: Float!
               longitude: Float!
-            }
-
-            \\"\\"\\"Point filters\\"\\"\\"
-            input PointScalarFilters {
-              distance: DistanceScalarFilters
-              equals: PointInput
-              in: [PointInput!]
             }
 
             type Query {

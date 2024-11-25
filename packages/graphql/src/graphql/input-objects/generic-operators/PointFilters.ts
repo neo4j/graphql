@@ -20,6 +20,34 @@
 import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull } from "graphql";
 import { CartesianPointDistance } from "../CartesianPointDistance";
 import { CartesianPointInput } from "../CartesianPointInput";
+import { PointDistance } from "../PointDistance";
+import { PointInput } from "../PointInput";
+
+const DistancePointFilters = new GraphQLInputObjectType({
+    name: "PointDistanceFilters",
+    description: "Distance filters",
+    fields: {
+        equals: {
+            type: PointDistance,
+        },
+        greaterThan: { type: PointDistance },
+        greaterThanEquals: { type: PointDistance },
+        lessThan: { type: PointDistance },
+        lessThanEquals: { type: PointDistance },
+    },
+});
+
+export const PointFilters = new GraphQLInputObjectType({
+    name: "PointFilters",
+    description: "Point filters",
+    fields: {
+        equals: {
+            type: PointInput,
+        },
+        in: { type: new GraphQLList(new GraphQLNonNull(PointInput)) },
+        distance: { type: DistancePointFilters },
+    },
+});
 
 const CartesianDistancePointFilters = new GraphQLInputObjectType({
     name: "CartesianDistancePointFilters",
@@ -35,7 +63,7 @@ const CartesianDistancePointFilters = new GraphQLInputObjectType({
     },
 });
 
-export const CartesianPointScalarFilters = new GraphQLInputObjectType({
+export const CartesianPointFilters = new GraphQLInputObjectType({
     name: "CartesianPointFilters",
     description: "Cartesian Point filters",
     fields: {
