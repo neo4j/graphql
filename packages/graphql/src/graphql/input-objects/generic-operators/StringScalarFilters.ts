@@ -26,6 +26,7 @@ export const StringScalarFilters = new GraphQLInputObjectType({
         equals: {
             type: GraphQLString,
         },
+        matches: { type: GraphQLString },
         greaterThan: { type: GraphQLString }, // GT/LT/GTE etc should not be added all the time
         greaterThanEquals: { type: GraphQLString },
         in: { type: new GraphQLList(new GraphQLNonNull(GraphQLString)) },

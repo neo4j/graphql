@@ -26,7 +26,6 @@ import Debug from "debug";
 import { type DocumentNode, type GraphQLSchema } from "graphql";
 import type { Driver, SessionConfig } from "neo4j-driver";
 import { DEBUG_ALL } from "../constants";
-import { StringScalarFilters } from "../graphql/input-objects/generic-operators/StringScalarFilters";
 import { makeAugmentedSchema } from "../schema";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 import { generateModel } from "../schema-model/generate-model";
@@ -51,7 +50,6 @@ import { Neo4jGraphQLSubscriptionsCDCEngine } from "./subscription/Neo4jGraphQLS
 import { assertIndexesAndConstraints } from "./utils/asserts-indexes-and-constraints";
 import { generateResolverComposition } from "./utils/generate-resolvers-composition";
 import checkNeo4jCompat from "./utils/verify-database";
-import { IntScalarFilters } from "../graphql/input-objects/generic-operators/IntScalarFilters";
 
 type TypeDefinitions = string | DocumentNode | TypeDefinitions[] | (() => TypeDefinitions);
 
@@ -396,7 +394,7 @@ class Neo4jGraphQL {
                 userCustomResolvers: this.resolvers,
                 schemaModel: this.schemaModel,
             });
-            
+
             if (this.validate) {
                 validateUserDefinition({
                     userDocument: document,
@@ -404,7 +402,6 @@ class Neo4jGraphQL {
                     jwt: jwt?.type,
                 });
             }
-            
 
             this._nodes = nodes;
             this._relationships = relationships;

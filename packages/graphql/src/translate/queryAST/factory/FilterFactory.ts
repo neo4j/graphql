@@ -420,6 +420,7 @@ export class FilterFactory {
                 }
 
                 const { fieldName, operator, isNot, isConnection, isAggregate } = parseWhereField(key);
+
                 const relationshipDeclaration = entity.findRelationshipDeclarations(fieldName);
                 if (targetEntity && relationshipDeclaration) {
                     const relationship = relationshipDeclaration.relationshipImplementations.find(
@@ -492,7 +493,12 @@ export class FilterFactory {
                         isAggregate,
                     });
                 }
-
+                if (!operator) {
+                    const genericFilters = Object.entries(value).flatMap((filterInput) => {
+                        return this.parseGenericFilter(entity, fieldName, filterInput);
+                    });
+                    return this.wrapMultipleFiltersInLogical(genericFilters);
+                }
                 const attribute = entity.findAttribute(fieldName);
 
                 if (!attribute) {
@@ -513,6 +519,70 @@ export class FilterFactory {
         );
 
         return this.wrapMultipleFiltersInLogical(filters);
+    }
+
+    private parseGenericFilter(
+        entity: ConcreteEntityAdapter,
+        fieldName: string,
+        filterInput: [string, any]
+    ): Filter | Filter[] {
+        const [rawOperator, value] = filterInput;
+        if (isLogicalOperator(rawOperator)) {
+            const nestedFilters = asArray(value).flatMap((nestedWhere) => {
+                return this.createNodeFilters(entity, nestedWhere);
+            });
+            return new LogicalFilter({
+                operation: rawOperator,
+                filters: nestedFilters,
+            });
+        }
+        const operator = this.parseGenericOperator(rawOperator);
+
+        const attribute = entity.findAttribute(fieldName);
+
+        if (!attribute) {
+            if (fieldName === "id" && entity.globalIdField) {
+                return this.createRelayIdPropertyFilter(entity, false, operator, value);
+            }
+            throw new Error(`Attribute ${fieldName} not found`);
+        }
+        const filters = this.createPropertyFilter({
+            attribute,
+            comparisonValue: value,
+            isNot: false,
+            operator,
+        });
+        return this.wrapMultipleFiltersInLogical(asArray(filters));
+    }
+
+    private parseGenericOperator(key: string): FilterOperator {
+        // we convert them to the previous format to keep the same translation logic
+        switch (key) {
+            case "equals":
+                return "EQ";
+            case "in":
+                return "IN";
+            case "lessThan":
+                return "LT";
+            case "lessThanEquals":
+                return "LTE";
+            case "greaterThan":
+                return "GT";
+            case "greaterThanEquals":
+                return "GTE";
+            case "contains":
+                return "CONTAINS";
+            case "startsWith":
+                return "STARTS_WITH";
+            case "endsWith":
+                return "ENDS_WITH";
+            case "matches":
+                return "MATCHES";
+            case "includes":
+                return "INCLUDES";
+            default:
+                throw new Error(`Invalid operator ${key}`);
+        }
     }
 
     private createRelatedNodeFilters({

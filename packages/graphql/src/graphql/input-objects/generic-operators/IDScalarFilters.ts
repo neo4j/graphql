@@ -26,6 +26,7 @@ export const IDScalarFilters = new GraphQLInputObjectType({
         equals: {
             type: GraphQLID,
         },
+        matches: { type: GraphQLID },
         greaterThan: { type: GraphQLID }, // GT/LT/GTE etc should not be added all the time
         greaterThanEquals: { type: GraphQLID },
         in: { type: new GraphQLList(new GraphQLNonNull(GraphQLID)) },
