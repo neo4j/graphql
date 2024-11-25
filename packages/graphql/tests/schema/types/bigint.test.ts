@@ -51,6 +51,16 @@ describe("Bigint", () => {
               sum: BigInt
             }
 
+            \\"\\"\\"BigInt filters\\"\\"\\"
+            input BigIntScalarFilters {
+              equals: BigInt
+              greaterThan: BigInt
+              greaterThanEquals: BigInt
+              in: [BigInt!]
+              lessThan: BigInt
+              lessThanEquals: BigInt
+            }
+
             type CreateFilesMutationResponse {
               files: [File!]!
               info: CreateInfo!
@@ -112,11 +122,13 @@ describe("Bigint", () => {
               AND: [FileWhere!]
               NOT: FileWhere
               OR: [FileWhere!]
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String!]
               name_STARTS_WITH: String
+              size: BigIntScalarFilters
               size_EQ: BigInt
               size_GT: BigInt
               size_GTE: BigInt
@@ -162,6 +174,19 @@ describe("Bigint", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              startsWith: String
             }
 
             type UpdateFilesMutationResponse {

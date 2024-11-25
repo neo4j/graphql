@@ -65,6 +65,19 @@ describe("Time", () => {
               shortest: ID
             }
 
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              startsWith: ID
+            }
+
             type Movie {
               id: ID
               time: Time
@@ -103,11 +116,13 @@ describe("Time", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
+              time: TimeScalarFilters
               time_EQ: Time
               time_GT: Time
               time_GTE: Time
@@ -156,6 +171,16 @@ describe("Time", () => {
             type TimeAggregateSelection {
               max: Time
               min: Time
+            }
+
+            \\"\\"\\"Time filters\\"\\"\\"
+            input TimeScalarFilters {
+              equals: Time
+              greaterThan: Time
+              greaterThanEquals: Time
+              in: [Time!]
+              lessThan: Time
+              lessThanEquals: Time
             }
 
             \\"\\"\\"

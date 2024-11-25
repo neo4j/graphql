@@ -59,6 +59,15 @@ describe("Point", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Distance filters\\"\\"\\"
+            input DistanceScalarFilters {
+              equals: PointDistance
+              greaterThan: PointDistance
+              greaterThanEquals: PointDistance
+              lessThan: PointDistance
+              lessThanEquals: PointDistance
+            }
+
             type Movie {
               filmedAt: Point!
             }
@@ -91,6 +100,7 @@ describe("Point", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              filmedAt: PointScalarFilters
               filmedAt_DISTANCE: PointDistance
               filmedAt_EQ: PointInput
               filmedAt_GT: PointDistance
@@ -145,6 +155,13 @@ describe("Point", () => {
               longitude: Float!
             }
 
+            \\"\\"\\"Point filters\\"\\"\\"
+            input PointScalarFilters {
+              distance: DistanceScalarFilters
+              equals: PointInput
+              in: [PointInput!]
+            }
+
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
@@ -191,6 +208,15 @@ describe("Point", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"Distance filters for cartesian points\\"\\"\\"
+            input CartesianDistancePointFilters {
+              equals: CartesianPointDistance
+              greaterThan: CartesianPointDistance
+              greaterThanEquals: CartesianPointDistance
+              lessThan: CartesianPointDistance
+              lessThanEquals: CartesianPointDistance
+            }
+
             \\"\\"\\"
             A point in a two- or three-dimensional Cartesian coordinate system or in a three-dimensional cylindrical coordinate system. For more information, see https://neo4j.com/docs/graphql/4/type-definitions/types/spatial/#cartesian-point
             \\"\\"\\"
@@ -206,6 +232,13 @@ describe("Point", () => {
             input CartesianPointDistance {
               distance: Float!
               point: CartesianPointInput!
+            }
+
+            \\"\\"\\"Cartesian Point filters\\"\\"\\"
+            input CartesianPointFilters {
+              distance: CartesianDistancePointFilters
+              equals: CartesianPointInput
+              in: [CartesianPointInput!]
             }
 
             \\"\\"\\"Input type for a cartesian point\\"\\"\\"
@@ -268,6 +301,7 @@ describe("Point", () => {
               AND: [MachineWhere!]
               NOT: MachineWhere
               OR: [MachineWhere!]
+              partLocation: CartesianPointFilters
               partLocation_DISTANCE: CartesianPointDistance
               partLocation_EQ: CartesianPointInput
               partLocation_GT: CartesianPointDistance
@@ -364,6 +398,15 @@ describe("Point", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Distance filters\\"\\"\\"
+            input DistanceScalarFilters {
+              equals: PointDistance
+              greaterThan: PointDistance
+              greaterThanEquals: PointDistance
+              lessThan: PointDistance
+              lessThanEquals: PointDistance
+            }
+
             type Movie {
               filmedAt: [Point!]!
             }
@@ -391,6 +434,7 @@ describe("Point", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              filmedAt: PointScalarFilters
               filmedAt_EQ: [PointInput!]
               filmedAt_INCLUDES: PointInput
             }
@@ -426,11 +470,25 @@ describe("Point", () => {
               srid: Int!
             }
 
+            \\"\\"\\"Input type for a point with a distance\\"\\"\\"
+            input PointDistance {
+              \\"\\"\\"The distance in metres to be used when comparing two points\\"\\"\\"
+              distance: Float!
+              point: PointInput!
+            }
+
             \\"\\"\\"Input type for a point\\"\\"\\"
             input PointInput {
               height: Float
               latitude: Float!
               longitude: Float!
+            }
+
+            \\"\\"\\"Point filters\\"\\"\\"
+            input PointScalarFilters {
+              distance: DistanceScalarFilters
+              equals: PointInput
+              in: [PointInput!]
             }
 
             type Query {
@@ -471,6 +529,15 @@ describe("Point", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"Distance filters for cartesian points\\"\\"\\"
+            input CartesianDistancePointFilters {
+              equals: CartesianPointDistance
+              greaterThan: CartesianPointDistance
+              greaterThanEquals: CartesianPointDistance
+              lessThan: CartesianPointDistance
+              lessThanEquals: CartesianPointDistance
+            }
+
             \\"\\"\\"
             A point in a two- or three-dimensional Cartesian coordinate system or in a three-dimensional cylindrical coordinate system. For more information, see https://neo4j.com/docs/graphql/4/type-definitions/types/spatial/#cartesian-point
             \\"\\"\\"
@@ -480,6 +547,19 @@ describe("Point", () => {
               x: Float!
               y: Float!
               z: Float
+            }
+
+            \\"\\"\\"Input type for a cartesian point with a distance\\"\\"\\"
+            input CartesianPointDistance {
+              distance: Float!
+              point: CartesianPointInput!
+            }
+
+            \\"\\"\\"Cartesian Point filters\\"\\"\\"
+            input CartesianPointFilters {
+              distance: CartesianDistancePointFilters
+              equals: CartesianPointInput
+              in: [CartesianPointInput!]
             }
 
             \\"\\"\\"Input type for a cartesian point\\"\\"\\"
@@ -537,6 +617,7 @@ describe("Point", () => {
               AND: [MachineWhere!]
               NOT: MachineWhere
               OR: [MachineWhere!]
+              partLocations: CartesianPointFilters
               partLocations_EQ: [CartesianPointInput!]
               partLocations_INCLUDES: CartesianPointInput
             }

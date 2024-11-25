@@ -36,7 +36,9 @@ import { BooleanScalarFilters } from "../../graphql/input-objects/generic-operat
 import { FloatScalarFilters } from "../../graphql/input-objects/generic-operators/FloatScalarFilters";
 import { IDScalarFilters } from "../../graphql/input-objects/generic-operators/IDScalarFilters";
 import { IntScalarFilters } from "../../graphql/input-objects/generic-operators/IntScalarFilters";
+import { PointScalarFilters } from "../../graphql/input-objects/generic-operators/PointScalarFilters";
 import { StringScalarFilters } from "../../graphql/input-objects/generic-operators/StringScalarFilters";
+import { TimeScalarFilters } from "../../graphql/input-objects/generic-operators/TimeScalarFilters";
 import { EnricherContext } from "./EnricherContext";
 import { DirectiveArgumentOfCorrectType } from "./custom-rules/directive-argument-of-correct-type";
 import { makeReplaceWildcardVisitor } from "./custom-rules/replace-wildcard-value";
@@ -109,6 +111,8 @@ export function validateUserDefinition({
         FloatScalarFilters,
         IntScalarFilters,
         BigIntScalarFilters,
+        TimeScalarFilters,
+        PointScalarFilters,
     ];
     const filtersAlreadyInDocument: InputObjectTypeDefinitionNode[] = augmentedDocument.definitions.filter(
         (def): def is InputObjectTypeDefinitionNode =>
