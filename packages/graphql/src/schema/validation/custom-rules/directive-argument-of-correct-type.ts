@@ -25,7 +25,7 @@ import type {
     GraphQLDirective,
     GraphQLSchema,
 } from "graphql";
-import { buildASTSchema, coerceInputValue, valueFromASTUntyped } from "graphql";
+import { coerceInputValue, valueFromASTUntyped } from "graphql";
 import type { Maybe } from "graphql/jsutils/Maybe";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 import { VALIDATION_ERROR_CODES } from "../utils/validation-error-codes";
@@ -35,15 +35,10 @@ import { getPathToNode } from "./utils/path-parser";
 
 export function DirectiveArgumentOfCorrectType(includeAuthorizationDirectives: boolean = true) {
     return function (context: SDLValidationContext): ASTVisitor {
-        // TODO: find a way to scope this schema instead of creating the whole document
-        // should only contain dynamic directives and their associated types (typeWhere + jwt payload)
-        let schema: GraphQLSchema | undefined;
-        const getSchemaFromDocument = (): GraphQLSchema => {
-            if (!schema) {
-                schema = buildASTSchema(context.getDocument(), { assumeValid: true, assumeValidSDL: true });
-            }
-            return schema;
-        };
+        const schema: GraphQLSchema | undefined | null = context.getSchema();
+        if (!schema) {
+            throw new Error("Validation schema not available");
+        }
 
         return {
             Directive(directiveNode: DirectiveNode, _key, _parent, path, ancenstors) {
@@ -75,10 +70,10 @@ export function DirectiveArgumentOfCorrectType(includeAuthorizationDirectives: b
                 let directiveName: string;
                 let directiveDefinition: Maybe<GraphQLDirective>;
                 if (oneOfAuthorizationDirectives) {
-                    directiveDefinition = getSchemaFromDocument().getDirective(directiveNode.name.value);
+                    directiveDefinition = schema.getDirective(directiveNode.name.value);
                     directiveName = oneOfAuthorizationDirectives;
                 } else {
-                    directiveDefinition = context.getSchema()?.getDirective(directiveNode.name.value);
+                    directiveDefinition = schema.getDirective(directiveNode.name.value);
                     directiveName = directiveNode.name.value;
                 }
 
