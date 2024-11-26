@@ -101,11 +101,13 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              password: StringScalarFilters
               password_CONTAINS: String
               password_ENDS_WITH: String
               password_EQ: String
               password_IN: [String!]
               password_STARTS_WITH: String
+              username: StringScalarFilters
               username_CONTAINS: String
               username_ENDS_WITH: String
               username_EQ: String
@@ -173,6 +175,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -217,6 +220,20 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type UpdateActorsMutationResponse {
@@ -334,11 +351,13 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              password: StringScalarFilters
               password_CONTAINS: String
               password_ENDS_WITH: String
               password_EQ: String
               password_IN: [String!]
               password_STARTS_WITH: String
+              username: StringScalarFilters
               username_CONTAINS: String
               username_ENDS_WITH: String
               username_EQ: String
@@ -377,6 +396,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -419,6 +439,20 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             type StringAggregateSelection @shareable {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             scalar _Any
@@ -528,11 +562,13 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               AND: [ActorSubscriptionWhere!]
               NOT: ActorSubscriptionWhere
               OR: [ActorSubscriptionWhere!]
+              password: StringScalarFilters
               password_CONTAINS: String
               password_ENDS_WITH: String
               password_EQ: String
               password_IN: [String!]
               password_STARTS_WITH: String
+              username: StringScalarFilters
               username_CONTAINS: String
               username_ENDS_WITH: String
               username_EQ: String
@@ -556,11 +592,13 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              password: StringScalarFilters
               password_CONTAINS: String
               password_ENDS_WITH: String
               password_EQ: String
               password_IN: [String!]
               password_STARTS_WITH: String
+              username: StringScalarFilters
               username_CONTAINS: String
               username_ENDS_WITH: String
               username_EQ: String
@@ -641,6 +679,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               AND: [MovieSubscriptionWhere!]
               NOT: MovieSubscriptionWhere
               OR: [MovieSubscriptionWhere!]
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -663,6 +702,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -714,6 +754,20 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             type StringAggregateSelection @shareable {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type Subscription {

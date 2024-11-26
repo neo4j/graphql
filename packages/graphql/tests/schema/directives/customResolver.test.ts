@@ -80,6 +80,20 @@ describe("@customResolver directive", () => {
               shortest: ID
             }
 
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              matches: ID
+              startsWith: ID
+            }
+
             type Mutation {
               createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
               deleteUsers(where: UserWhere): DeleteInfo!
@@ -114,6 +128,20 @@ describe("@customResolver directive", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             \\"\\"\\"
@@ -186,6 +214,7 @@ describe("@customResolver directive", () => {
               AND: [UserInterfaceWhere!]
               NOT: UserInterfaceWhere
               OR: [UserInterfaceWhere!]
+              customResolver: StringScalarFilters
               customResolver_CONTAINS: String
               customResolver_ENDS_WITH: String
               customResolver_EQ: String
@@ -219,16 +248,19 @@ describe("@customResolver directive", () => {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID!]
               id_STARTS_WITH: ID
+              password: StringScalarFilters
               password_CONTAINS: String
               password_ENDS_WITH: String
               password_EQ: String
               password_IN: [String!]
               password_STARTS_WITH: String
+              username: StringScalarFilters
               username_CONTAINS: String
               username_ENDS_WITH: String
               username_EQ: String

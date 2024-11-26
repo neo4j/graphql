@@ -133,6 +133,7 @@ describe("Union Interface Relationships", () => {
               AND: [ActedInWhere!]
               NOT: ActedInWhere
               OR: [ActedInWhere!]
+              screenTime: IntScalarFilters
               screenTime_EQ: Int
               screenTime_GT: Int
               screenTime_GTE: Int
@@ -336,6 +337,7 @@ describe("Union Interface Relationships", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              id: IntScalarFilters
               id_EQ: Int
               id_GT: Int
               id_GTE: Int
@@ -367,6 +369,7 @@ describe("Union Interface Relationships", () => {
               movies_SINGLE: MovieWhere
               \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
               movies_SOME: MovieWhere
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -442,6 +445,7 @@ describe("Union Interface Relationships", () => {
               AND: [DirectedWhere!]
               NOT: DirectedWhere
               OR: [DirectedWhere!]
+              year: IntScalarFilters
               year_EQ: Int
               year_GT: Int
               year_GTE: Int
@@ -504,18 +508,21 @@ describe("Union Interface Relationships", () => {
               AND: [InfluencerWhere!]
               NOT: InfluencerWhere
               OR: [InfluencerWhere!]
+              reputation: IntScalarFilters
               reputation_EQ: Int
               reputation_GT: Int
               reputation_GTE: Int
               reputation_IN: [Int!]
               reputation_LT: Int
               reputation_LTE: Int
+              reviewerId: IntScalarFilters
               reviewerId_EQ: Int
               reviewerId_GT: Int
               reviewerId_GTE: Int
               reviewerId_IN: [Int]
               reviewerId_LT: Int
               reviewerId_LTE: Int
+              url: StringScalarFilters
               url_CONTAINS: String
               url_ENDS_WITH: String
               url_EQ: String
@@ -534,6 +541,16 @@ describe("Union Interface Relationships", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              equals: Int
+              greaterThan: Int
+              greaterThanEquals: Int
+              in: [Int!]
+              lessThan: Int
+              lessThanEquals: Int
             }
 
             type Movie {
@@ -1073,6 +1090,7 @@ describe("Union Interface Relationships", () => {
               directors_SINGLE: DirectorWhere
               \\"\\"\\"Return Movies where some of the related Directors match this filter\\"\\"\\"
               directors_SOME: DirectorWhere
+              imdbId: IntScalarFilters
               imdbId_EQ: Int
               imdbId_GT: Int
               imdbId_GTE: Int
@@ -1104,6 +1122,7 @@ describe("Union Interface Relationships", () => {
               reviewers_SINGLE: ReviewerWhere
               \\"\\"\\"Return Movies where some of the related Reviewers match this filter\\"\\"\\"
               reviewers_SOME: ReviewerWhere
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -1355,6 +1374,7 @@ describe("Union Interface Relationships", () => {
               AND: [PersonWhere!]
               NOT: PersonWhere
               OR: [PersonWhere!]
+              id: IntScalarFilters
               id_EQ: Int
               id_GT: Int
               id_GTE: Int
@@ -1386,17 +1406,20 @@ describe("Union Interface Relationships", () => {
               movies_SINGLE: MovieWhere
               \\"\\"\\"Return People where some of the related Movies match this filter\\"\\"\\"
               movies_SOME: MovieWhere
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String!]
               name_STARTS_WITH: String
+              reputation: IntScalarFilters
               reputation_EQ: Int
               reputation_GT: Int
               reputation_GTE: Int
               reputation_IN: [Int!]
               reputation_LT: Int
               reputation_LTE: Int
+              reviewerId: IntScalarFilters
               reviewerId_EQ: Int
               reviewerId_GT: Int
               reviewerId_GTE: Int
@@ -1477,6 +1500,7 @@ describe("Union Interface Relationships", () => {
               AND: [ReviewWhere!]
               NOT: ReviewWhere
               OR: [ReviewWhere!]
+              score: IntScalarFilters
               score_EQ: Int
               score_GT: Int
               score_GTE: Int
@@ -1536,12 +1560,14 @@ describe("Union Interface Relationships", () => {
               AND: [ReviewerWhere!]
               NOT: ReviewerWhere
               OR: [ReviewerWhere!]
+              reputation: IntScalarFilters
               reputation_EQ: Int
               reputation_GT: Int
               reputation_GTE: Int
               reputation_IN: [Int!]
               reputation_LT: Int
               reputation_LTE: Int
+              reviewerId: IntScalarFilters
               reviewerId_EQ: Int
               reviewerId_GT: Int
               reviewerId_GTE: Int
@@ -1568,6 +1594,20 @@ describe("Union Interface Relationships", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type UpdateActorsMutationResponse {

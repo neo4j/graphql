@@ -111,13 +111,16 @@ describe("Relationship-properties", () => {
               AND: [ActedInWhere!]
               NOT: ActedInWhere
               OR: [ActedInWhere!]
+              leadRole: BooleanScalarFilters
               leadRole_EQ: Boolean
+              screenTime: IntScalarFilters
               screenTime_EQ: Int
               screenTime_GT: Int
               screenTime_GTE: Int
               screenTime_IN: [Int!]
               screenTime_LT: Int
               screenTime_LTE: Int
+              startDate: DateScalarFilters
               startDate_EQ: Date
               startDate_GT: Date
               startDate_GTE: Date
@@ -318,6 +321,7 @@ describe("Relationship-properties", () => {
               movies_SINGLE: MovieWhere
               \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
               movies_SOME: MovieWhere
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -329,6 +333,11 @@ describe("Relationship-properties", () => {
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            \\"\\"\\"Boolean filters\\"\\"\\"
+            input BooleanScalarFilters {
+              equals: Boolean
             }
 
             type CreateActorsMutationResponse {
@@ -352,6 +361,16 @@ describe("Relationship-properties", () => {
             \\"\\"\\"A date, represented as a 'yyyy-mm-dd' string\\"\\"\\"
             scalar Date
 
+            \\"\\"\\"Date filters\\"\\"\\"
+            input DateScalarFilters {
+              equals: Date
+              greaterThan: Date
+              greaterThanEquals: Date
+              in: [Date!]
+              lessThan: Date
+              lessThanEquals: Date
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships deleted during a delete mutation
             \\"\\"\\"
@@ -365,6 +384,16 @@ describe("Relationship-properties", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              equals: Int
+              greaterThan: Int
+              greaterThanEquals: Int
+              in: [Int!]
+              lessThan: Int
+              lessThanEquals: Int
             }
 
             type Movie {
@@ -559,6 +588,7 @@ describe("Relationship-properties", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -609,6 +639,20 @@ describe("Relationship-properties", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type UpdateActorsMutationResponse {
@@ -737,17 +781,20 @@ describe("Relationship-properties", () => {
               AND: [ActedInWhere!]
               NOT: ActedInWhere
               OR: [ActedInWhere!]
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID!]
               id_STARTS_WITH: ID
+              screenTime: IntScalarFilters
               screenTime_EQ: Int
               screenTime_GT: Int
               screenTime_GTE: Int
               screenTime_IN: [Int!]
               screenTime_LT: Int
               screenTime_LTE: Int
+              timestamp: DateTimeScalarFilters
               timestamp_EQ: DateTime
               timestamp_GT: DateTime
               timestamp_GTE: DateTime
@@ -950,6 +997,7 @@ describe("Relationship-properties", () => {
               movies_SINGLE: MovieWhere
               \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
               movies_SOME: MovieWhere
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -989,6 +1037,16 @@ describe("Relationship-properties", () => {
               min: DateTime
             }
 
+            \\"\\"\\"DateTime filters\\"\\"\\"
+            input DateTimeScalarFilters {
+              equals: DateTime
+              greaterThan: DateTime
+              greaterThanEquals: DateTime
+              in: [DateTime!]
+              lessThan: DateTime
+              lessThanEquals: DateTime
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships deleted during a delete mutation
             \\"\\"\\"
@@ -1002,11 +1060,35 @@ describe("Relationship-properties", () => {
               shortest: ID
             }
 
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              matches: ID
+              startsWith: ID
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              equals: Int
+              greaterThan: Int
+              greaterThanEquals: Int
+              in: [Int!]
+              lessThan: Int
+              lessThanEquals: Int
             }
 
             type Movie {
@@ -1203,6 +1285,7 @@ describe("Relationship-properties", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -1253,6 +1336,20 @@ describe("Relationship-properties", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type UpdateActorsMutationResponse {
@@ -1348,11 +1445,13 @@ describe("Relationship-properties", () => {
               AND: [ActedInWhere!]
               NOT: ActedInWhere
               OR: [ActedInWhere!]
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID!]
               id_STARTS_WITH: ID
+              timestamp: DateTimeScalarFilters
               timestamp_EQ: DateTime
               timestamp_GT: DateTime
               timestamp_GTE: DateTime
@@ -1551,6 +1650,7 @@ describe("Relationship-properties", () => {
               movies_SINGLE: MovieWhere
               \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
               movies_SOME: MovieWhere
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -1590,6 +1690,16 @@ describe("Relationship-properties", () => {
               min: DateTime
             }
 
+            \\"\\"\\"DateTime filters\\"\\"\\"
+            input DateTimeScalarFilters {
+              equals: DateTime
+              greaterThan: DateTime
+              greaterThanEquals: DateTime
+              in: [DateTime!]
+              lessThan: DateTime
+              lessThanEquals: DateTime
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships deleted during a delete mutation
             \\"\\"\\"
@@ -1601,6 +1711,20 @@ describe("Relationship-properties", () => {
             type IDAggregateSelection {
               longest: ID
               shortest: ID
+            }
+
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              matches: ID
+              startsWith: ID
             }
 
             type Movie {
@@ -1793,6 +1917,7 @@ describe("Relationship-properties", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -1843,6 +1968,20 @@ describe("Relationship-properties", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type UpdateActorsMutationResponse {

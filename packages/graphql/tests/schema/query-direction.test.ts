@@ -93,6 +93,20 @@ describe("Query Direction", () => {
               shortest: String
             }
 
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created and deleted during an update mutation
             \\"\\"\\"
@@ -288,6 +302,7 @@ describe("Query Direction", () => {
               friends_SINGLE: UserWhere
               \\"\\"\\"Return Users where some of the related Users match this filter\\"\\"\\"
               friends_SOME: UserWhere
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -373,6 +388,20 @@ describe("Query Direction", () => {
               shortest: String
             }
 
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created and deleted during an update mutation
             \\"\\"\\"
@@ -568,6 +597,7 @@ describe("Query Direction", () => {
               friends_SINGLE: UserWhere
               \\"\\"\\"Return Users where some of the related Users match this filter\\"\\"\\"
               friends_SOME: UserWhere
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String

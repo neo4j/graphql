@@ -82,6 +82,16 @@ describe("lower case type names", () => {
               min: DateTime
             }
 
+            \\"\\"\\"DateTime filters\\"\\"\\"
+            input DateTimeScalarFilters {
+              equals: DateTime
+              greaterThan: DateTime
+              greaterThanEquals: DateTime
+              in: [DateTime!]
+              lessThan: DateTime
+              lessThanEquals: DateTime
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships deleted during a delete mutation
             \\"\\"\\"
@@ -95,6 +105,16 @@ describe("lower case type names", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              equals: Int
+              greaterThan: Int
+              greaterThanEquals: Int
+              in: [Int!]
+              lessThan: Int
+              lessThanEquals: Int
             }
 
             type MoviesConnection {
@@ -140,6 +160,20 @@ describe("lower case type names", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type UpdateActorsMutationResponse {
@@ -365,6 +399,7 @@ describe("lower case type names", () => {
               AND: [actorWhere!]
               NOT: actorWhere
               OR: [actorWhere!]
+              createdAt: DateTimeScalarFilters
               createdAt_EQ: DateTime
               createdAt_GT: DateTime
               createdAt_GTE: DateTime
@@ -396,11 +431,13 @@ describe("lower case type names", () => {
               movies_SINGLE: movieWhere
               \\"\\"\\"Return actors where some of the related movies match this filter\\"\\"\\"
               movies_SOME: movieWhere
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String]
               name_STARTS_WITH: String
+              year: IntScalarFilters
               year_EQ: Int
               year_GT: Int
               year_GTE: Int
@@ -639,22 +676,26 @@ describe("lower case type names", () => {
               actors_SINGLE: actorWhere
               \\"\\"\\"Return movies where some of the related actors match this filter\\"\\"\\"
               actors_SOME: actorWhere
+              createdAt: DateTimeScalarFilters
               createdAt_EQ: DateTime
               createdAt_GT: DateTime
               createdAt_GTE: DateTime
               createdAt_IN: [DateTime]
               createdAt_LT: DateTime
               createdAt_LTE: DateTime
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String]
               name_STARTS_WITH: String
+              testId: StringScalarFilters
               testId_CONTAINS: String
               testId_ENDS_WITH: String
               testId_EQ: String
               testId_IN: [String]
               testId_STARTS_WITH: String
+              year: IntScalarFilters
               year_EQ: Int
               year_GT: Int
               year_GTE: Int

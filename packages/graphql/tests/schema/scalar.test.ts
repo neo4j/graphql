@@ -58,6 +58,12 @@ describe("Scalar", () => {
 
             scalar CustomScalar
 
+            \\"\\"\\"CustomScalar filters\\"\\"\\"
+            input CustomScalarScalarFilters {
+              equals: CustomScalar
+              in: [CustomScalar!]
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships deleted during a delete mutation
             \\"\\"\\"
@@ -69,6 +75,20 @@ describe("Scalar", () => {
             type IDAggregateSelection {
               longest: ID
               shortest: ID
+            }
+
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              matches: ID
+              startsWith: ID
             }
 
             type Movie {
@@ -114,15 +134,19 @@ describe("Scalar", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
+              myCustomArrayScalar: CustomScalarScalarFilters
               myCustomArrayScalar_EQ: [CustomScalar!]
               myCustomArrayScalar_INCLUDES: CustomScalar
+              myCustomScalar: CustomScalarScalarFilters
               myCustomScalar_EQ: CustomScalar
               myCustomScalar_IN: [CustomScalar]
+              myRequiredCustomArrayScalar: CustomScalarScalarFilters
               myRequiredCustomArrayScalar_EQ: [CustomScalar!]
               myRequiredCustomArrayScalar_INCLUDES: CustomScalar
             }

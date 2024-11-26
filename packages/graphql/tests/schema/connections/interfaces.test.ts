@@ -223,6 +223,7 @@ describe("Connection with interfaces", () => {
               AND: [CreatureWhere!]
               NOT: CreatureWhere
               OR: [CreatureWhere!]
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
@@ -283,11 +284,35 @@ describe("Connection with interfaces", () => {
               shortest: ID
             }
 
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              matches: ID
+              startsWith: ID
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              equals: Int
+              greaterThan: Int
+              greaterThanEquals: Int
+              in: [Int!]
+              lessThan: Int
+              lessThanEquals: Int
             }
 
             type Movie implements Production {
@@ -436,11 +461,13 @@ describe("Connection with interfaces", () => {
               director_SINGLE: CreatureWhere
               \\"\\"\\"Return Movies where some of the related Creatures match this filter\\"\\"\\"
               director_SOME: CreatureWhere
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -596,6 +623,7 @@ describe("Connection with interfaces", () => {
               AND: [PersonWhere!]
               NOT: PersonWhere
               OR: [PersonWhere!]
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
@@ -801,6 +829,7 @@ describe("Connection with interfaces", () => {
               Return Productions where some of the related Creatures match this filter
               \\"\\"\\"
               director_SOME: CreatureWhere
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
@@ -992,17 +1021,20 @@ describe("Connection with interfaces", () => {
               director_SINGLE: CreatureWhere
               \\"\\"\\"Return Series where some of the related Creatures match this filter\\"\\"\\"
               director_SOME: CreatureWhere
+              episode: IntScalarFilters
               episode_EQ: Int
               episode_GT: Int
               episode_GTE: Int
               episode_IN: [Int!]
               episode_LT: Int
               episode_LTE: Int
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -1021,6 +1053,20 @@ describe("Connection with interfaces", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             \\"\\"\\"

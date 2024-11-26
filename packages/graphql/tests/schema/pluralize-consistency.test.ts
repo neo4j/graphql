@@ -108,6 +108,20 @@ describe("Pluralize consistency", () => {
               shortest: String
             }
 
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
+            }
+
             type SuperFriendsConnection {
               edges: [super_friendEdge!]!
               pageInfo: PageInfo!
@@ -177,6 +191,7 @@ describe("Pluralize consistency", () => {
               AND: [super_friendWhere!]
               NOT: super_friendWhere
               OR: [super_friendWhere!]
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -348,6 +363,7 @@ describe("Pluralize consistency", () => {
               Return super_users where some of the related super_friends match this filter
               \\"\\"\\"
               my_friend_SOME: super_friendWhere
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String

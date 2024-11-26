@@ -90,6 +90,7 @@ export function withWhereInputType({
     if (composer.has(typeName)) {
         return composer.getITC(typeName);
     }
+
     const whereFields = makeWhereFields({
         entityAdapter,
         userDefinedFieldDirectives,
@@ -99,6 +100,7 @@ export function withWhereInputType({
     if (returnUndefinedIfEmpty && isEmptyObject(whereFields)) {
         return undefined;
     }
+
     const whereInputType = composer.createInputTC({
         name: typeName,
         fields: whereFields,

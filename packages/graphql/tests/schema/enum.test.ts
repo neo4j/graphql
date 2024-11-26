@@ -97,6 +97,7 @@ describe("Enum", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              status: StatusEnumScalarFilters
               status_EQ: Status
               status_IN: [Status]
             }
@@ -139,6 +140,12 @@ describe("Enum", () => {
               ACTIVE
               INACTIVE
               PENDING
+            }
+
+            \\"\\"\\"Status filters\\"\\"\\"
+            input StatusEnumScalarFilters {
+              equals: Status
+              in: [Status!]
             }
 
             \\"\\"\\"

@@ -50,6 +50,11 @@ describe("Null", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"Boolean filters\\"\\"\\"
+            input BooleanScalarFilters {
+              equals: Boolean
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -71,6 +76,16 @@ describe("Null", () => {
               min: DateTime
             }
 
+            \\"\\"\\"DateTime filters\\"\\"\\"
+            input DateTimeScalarFilters {
+              equals: DateTime
+              greaterThan: DateTime
+              greaterThanEquals: DateTime
+              in: [DateTime!]
+              lessThan: DateTime
+              lessThanEquals: DateTime
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships deleted during a delete mutation
             \\"\\"\\"
@@ -86,9 +101,33 @@ describe("Null", () => {
               sum: Float
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              equals: Float
+              greaterThan: Float
+              greaterThanEquals: Float
+              in: [Float!]
+              lessThan: Float
+              lessThanEquals: Float
+            }
+
             type IDAggregateSelection {
               longest: ID
               shortest: ID
+            }
+
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              matches: ID
+              startsWith: ID
             }
 
             type IntAggregateSelection {
@@ -96,6 +135,16 @@ describe("Null", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              equals: Int
+              greaterThan: Int
+              greaterThanEquals: Int
+              in: [Int!]
+              lessThan: Int
+              lessThanEquals: Int
             }
 
             type Movie {
@@ -196,30 +245,37 @@ describe("Null", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              actorCount: IntScalarFilters
               actorCount_EQ: Int
               actorCount_GT: Int
               actorCount_GTE: Int
               actorCount_IN: [Int!]
               actorCount_LT: Int
               actorCount_LTE: Int
+              actorCounts: IntScalarFilters
               actorCounts_EQ: [Int!]
               actorCounts_INCLUDES: Int
+              averageRating: FloatScalarFilters
               averageRating_EQ: Float
               averageRating_GT: Float
               averageRating_GTE: Float
               averageRating_IN: [Float!]
               averageRating_LT: Float
               averageRating_LTE: Float
+              averageRatings: FloatScalarFilters
               averageRatings_EQ: [Float!]
               averageRatings_INCLUDES: Float
+              createdAt: DateTimeScalarFilters
               createdAt_EQ: DateTime
               createdAt_GT: DateTime
               createdAt_GTE: DateTime
               createdAt_IN: [DateTime!]
               createdAt_LT: DateTime
               createdAt_LTE: DateTime
+              createdAts: DateTimeScalarFilters
               createdAts_EQ: [DateTime!]
               createdAts_INCLUDES: DateTime
+              filmedAt: PointFilters
               filmedAt_DISTANCE: PointDistance
               filmedAt_EQ: PointInput
               filmedAt_GT: PointDistance
@@ -227,21 +283,27 @@ describe("Null", () => {
               filmedAt_IN: [PointInput!]
               filmedAt_LT: PointDistance
               filmedAt_LTE: PointDistance
+              filmedAts: PointFilters
               filmedAts_EQ: [PointInput!]
               filmedAts_INCLUDES: PointInput
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID!]
               id_STARTS_WITH: ID
+              ids: IDScalarFilters
               ids_EQ: [ID!]
               ids_INCLUDES: ID
+              isActives: BooleanScalarFilters
               isActives_EQ: [Boolean!]
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String!]
               name_STARTS_WITH: String
+              names: StringScalarFilters
               names_EQ: [String!]
               names_INCLUDES: String
             }
@@ -284,6 +346,22 @@ describe("Null", () => {
               point: PointInput!
             }
 
+            \\"\\"\\"Distance filters\\"\\"\\"
+            input PointDistanceFilters {
+              equals: PointDistance
+              greaterThan: PointDistance
+              greaterThanEquals: PointDistance
+              lessThan: PointDistance
+              lessThanEquals: PointDistance
+            }
+
+            \\"\\"\\"Point filters\\"\\"\\"
+            input PointFilters {
+              distance: PointDistanceFilters
+              equals: PointInput
+              in: [PointInput!]
+            }
+
             \\"\\"\\"Input type for a point\\"\\"\\"
             input PointInput {
               height: Float
@@ -308,6 +386,20 @@ describe("Null", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             \\"\\"\\"

@@ -202,6 +202,7 @@ describe("Sort", () => {
               AND: [Node1Where!]
               NOT: Node1Where
               OR: [Node1Where!]
+              property: StringScalarFilters
               property_CONTAINS: String
               property_ENDS_WITH: String
               property_EQ: String
@@ -445,6 +446,20 @@ describe("Sort", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             \\"\\"\\"

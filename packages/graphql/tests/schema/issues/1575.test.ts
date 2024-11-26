@@ -95,6 +95,7 @@ describe("https://github.com/neo4j/graphql/issues/1575", () => {
               AND: [FooWhere!]
               NOT: FooWhere
               OR: [FooWhere!]
+              geo_point: PointFilters
               geo_point_DISTANCE: PointDistance
               geo_point_EQ: PointInput
               geo_point_GT: PointDistance
@@ -102,6 +103,7 @@ describe("https://github.com/neo4j/graphql/issues/1575", () => {
               geo_point_IN: [PointInput]
               geo_point_LT: PointDistance
               geo_point_LTE: PointDistance
+              point: PointFilters
               point_DISTANCE: PointDistance
               point_EQ: PointInput
               point_GT: PointDistance
@@ -147,6 +149,22 @@ describe("https://github.com/neo4j/graphql/issues/1575", () => {
               \\"\\"\\"The distance in metres to be used when comparing two points\\"\\"\\"
               distance: Float!
               point: PointInput!
+            }
+
+            \\"\\"\\"Distance filters\\"\\"\\"
+            input PointDistanceFilters {
+              equals: PointDistance
+              greaterThan: PointDistance
+              greaterThanEquals: PointDistance
+              lessThan: PointDistance
+              lessThanEquals: PointDistance
+            }
+
+            \\"\\"\\"Point filters\\"\\"\\"
+            input PointFilters {
+              distance: PointDistanceFilters
+              equals: PointInput
+              in: [PointInput!]
             }
 
             \\"\\"\\"Input type for a point\\"\\"\\"

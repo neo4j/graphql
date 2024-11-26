@@ -269,11 +269,13 @@ describe("@relationship directive, aggregate argument", () => {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
+                  password: StringScalarFilters
                   password_CONTAINS: String
                   password_ENDS_WITH: String
                   password_EQ: String
                   password_IN: [String!]
                   password_STARTS_WITH: String
+                  username: StringScalarFilters
                   username_CONTAINS: String
                   username_ENDS_WITH: String
                   username_EQ: String
@@ -483,6 +485,7 @@ describe("@relationship directive, aggregate argument", () => {
                   actors_SINGLE: ActorWhere
                   \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
                   actors_SOME: ActorWhere
+                  title: StringScalarFilters
                   title_CONTAINS: String
                   title_ENDS_WITH: String
                   title_EQ: String
@@ -533,6 +536,20 @@ describe("@relationship directive, aggregate argument", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  equals: String
+                  greaterThan: String
+                  greaterThanEquals: String
+                  in: [String!]
+                  lessThan: String
+                  lessThanEquals: String
+                  matches: String
+                  startsWith: String
                 }
 
                 type UpdateActorsMutationResponse {
@@ -621,11 +638,13 @@ describe("@relationship directive, aggregate argument", () => {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
+                  password: StringScalarFilters
                   password_CONTAINS: String
                   password_ENDS_WITH: String
                   password_EQ: String
                   password_IN: [String!]
                   password_STARTS_WITH: String
+                  username: StringScalarFilters
                   username_CONTAINS: String
                   username_ENDS_WITH: String
                   username_EQ: String
@@ -846,6 +865,7 @@ describe("@relationship directive, aggregate argument", () => {
                   actors_SINGLE: ActorWhere
                   \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
                   actors_SOME: ActorWhere
+                  title: StringScalarFilters
                   title_CONTAINS: String
                   title_ENDS_WITH: String
                   title_EQ: String
@@ -896,6 +916,20 @@ describe("@relationship directive, aggregate argument", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  equals: String
+                  greaterThan: String
+                  greaterThanEquals: String
+                  in: [String!]
+                  lessThan: String
+                  lessThanEquals: String
+                  matches: String
+                  startsWith: String
                 }
 
                 type UpdateActorsMutationResponse {
@@ -986,11 +1020,13 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
+                      password: StringScalarFilters
                       password_CONTAINS: String
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
                       password_STARTS_WITH: String
+                      username: StringScalarFilters
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
@@ -1200,6 +1236,7 @@ describe("@relationship directive, aggregate argument", () => {
                       actors_SINGLE: PersonWhere
                       \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                       actors_SOME: PersonWhere
+                      title: StringScalarFilters
                       title_CONTAINS: String
                       title_ENDS_WITH: String
                       title_EQ: String
@@ -1281,12 +1318,14 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [PersonWhere!]
                       NOT: PersonWhere
                       OR: [PersonWhere!]
+                      password: StringScalarFilters
                       password_CONTAINS: String
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
                       password_STARTS_WITH: String
                       typename_IN: [PersonImplementation!]
+                      username: StringScalarFilters
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
@@ -1317,6 +1356,20 @@ describe("@relationship directive, aggregate argument", () => {
                     type StringAggregateSelection {
                       longest: String
                       shortest: String
+                    }
+
+                    \\"\\"\\"String filters\\"\\"\\"
+                    input StringScalarFilters {
+                      contains: String
+                      endsWith: String
+                      equals: String
+                      greaterThan: String
+                      greaterThanEquals: String
+                      in: [String!]
+                      lessThan: String
+                      lessThanEquals: String
+                      matches: String
+                      startsWith: String
                     }
 
                     type UpdateActorsMutationResponse {
@@ -1405,11 +1458,13 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
+                      password: StringScalarFilters
                       password_CONTAINS: String
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
                       password_STARTS_WITH: String
+                      username: StringScalarFilters
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
@@ -1630,6 +1685,7 @@ describe("@relationship directive, aggregate argument", () => {
                       actors_SINGLE: PersonWhere
                       \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                       actors_SOME: PersonWhere
+                      title: StringScalarFilters
                       title_CONTAINS: String
                       title_ENDS_WITH: String
                       title_EQ: String
@@ -1711,12 +1767,14 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [PersonWhere!]
                       NOT: PersonWhere
                       OR: [PersonWhere!]
+                      password: StringScalarFilters
                       password_CONTAINS: String
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
                       password_STARTS_WITH: String
                       typename_IN: [PersonImplementation!]
+                      username: StringScalarFilters
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
@@ -1747,6 +1805,20 @@ describe("@relationship directive, aggregate argument", () => {
                     type StringAggregateSelection {
                       longest: String
                       shortest: String
+                    }
+
+                    \\"\\"\\"String filters\\"\\"\\"
+                    input StringScalarFilters {
+                      contains: String
+                      endsWith: String
+                      equals: String
+                      greaterThan: String
+                      greaterThanEquals: String
+                      in: [String!]
+                      lessThan: String
+                      lessThanEquals: String
+                      matches: String
+                      startsWith: String
                     }
 
                     type UpdateActorsMutationResponse {
@@ -1843,11 +1915,13 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
+                      password: StringScalarFilters
                       password_CONTAINS: String
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
                       password_STARTS_WITH: String
+                      username: StringScalarFilters
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
@@ -2077,6 +2151,7 @@ describe("@relationship directive, aggregate argument", () => {
                       actors_SINGLE: CastMemberWhere
                       \\"\\"\\"Return Movies where some of the related CastMembers match this filter\\"\\"\\"
                       actors_SOME: CastMemberWhere
+                      title: StringScalarFilters
                       title_CONTAINS: String
                       title_ENDS_WITH: String
                       title_EQ: String
@@ -2153,6 +2228,7 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [PersonWhere!]
                       NOT: PersonWhere
                       OR: [PersonWhere!]
+                      name: StringScalarFilters
                       name_CONTAINS: String
                       name_ENDS_WITH: String
                       name_EQ: String
@@ -2184,6 +2260,20 @@ describe("@relationship directive, aggregate argument", () => {
                     type StringAggregateSelection {
                       longest: String
                       shortest: String
+                    }
+
+                    \\"\\"\\"String filters\\"\\"\\"
+                    input StringScalarFilters {
+                      contains: String
+                      endsWith: String
+                      equals: String
+                      greaterThan: String
+                      greaterThanEquals: String
+                      in: [String!]
+                      lessThan: String
+                      lessThanEquals: String
+                      matches: String
+                      startsWith: String
                     }
 
                     type UpdateActorsMutationResponse {
@@ -2282,11 +2372,13 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
+                      password: StringScalarFilters
                       password_CONTAINS: String
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
                       password_STARTS_WITH: String
+                      username: StringScalarFilters
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
@@ -2516,6 +2608,7 @@ describe("@relationship directive, aggregate argument", () => {
                       actors_SINGLE: CastMemberWhere
                       \\"\\"\\"Return Movies where some of the related CastMembers match this filter\\"\\"\\"
                       actors_SOME: CastMemberWhere
+                      title: StringScalarFilters
                       title_CONTAINS: String
                       title_ENDS_WITH: String
                       title_EQ: String
@@ -2592,6 +2685,7 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [PersonWhere!]
                       NOT: PersonWhere
                       OR: [PersonWhere!]
+                      name: StringScalarFilters
                       name_CONTAINS: String
                       name_ENDS_WITH: String
                       name_EQ: String
@@ -2623,6 +2717,20 @@ describe("@relationship directive, aggregate argument", () => {
                     type StringAggregateSelection {
                       longest: String
                       shortest: String
+                    }
+
+                    \\"\\"\\"String filters\\"\\"\\"
+                    input StringScalarFilters {
+                      contains: String
+                      endsWith: String
+                      equals: String
+                      greaterThan: String
+                      greaterThanEquals: String
+                      in: [String!]
+                      lessThan: String
+                      lessThanEquals: String
+                      matches: String
+                      startsWith: String
                     }
 
                     type UpdateActorsMutationResponse {

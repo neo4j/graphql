@@ -96,6 +96,20 @@ describe("Plural option", () => {
               shortest: String
             }
 
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
+            }
+
             type Tech {
               name: String
               value: String
@@ -134,11 +148,13 @@ describe("Plural option", () => {
               AND: [TechWhere!]
               NOT: TechWhere
               OR: [TechWhere!]
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String]
               name_STARTS_WITH: String
+              value: StringScalarFilters
               value_CONTAINS: String
               value_ENDS_WITH: String
               value_EQ: String
@@ -242,6 +258,20 @@ describe("Plural option", () => {
               shortest: String
             }
 
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
+            }
+
             type Tech {
               name: String
               value: String
@@ -280,11 +310,13 @@ describe("Plural option", () => {
               AND: [TechWhere!]
               NOT: TechWhere
               OR: [TechWhere!]
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String]
               name_STARTS_WITH: String
+              value: StringScalarFilters
               value_CONTAINS: String
               value_ENDS_WITH: String
               value_EQ: String
@@ -388,6 +420,20 @@ describe("Plural option", () => {
               shortest: String
             }
 
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
+            }
+
             type Tech {
               name: String
               value: String
@@ -426,11 +472,13 @@ describe("Plural option", () => {
               AND: [TechWhere!]
               NOT: TechWhere
               OR: [TechWhere!]
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String]
               name_STARTS_WITH: String
+              value: StringScalarFilters
               value_CONTAINS: String
               value_ENDS_WITH: String
               value_EQ: String
@@ -534,6 +582,20 @@ describe("Plural option", () => {
               shortest: String
             }
 
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
+            }
+
             type Techs {
               value: String
             }
@@ -573,6 +635,7 @@ describe("Plural option", () => {
               AND: [TechsWhere!]
               NOT: TechsWhere
               OR: [TechsWhere!]
+              value: StringScalarFilters
               value_CONTAINS: String
               value_ENDS_WITH: String
               value_EQ: String
@@ -670,6 +733,20 @@ describe("Plural option", () => {
               shortest: String
             }
 
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
+            }
+
             type TechsConnection {
               edges: [UserEdge!]!
               pageInfo: PageInfo!
@@ -724,6 +801,7 @@ describe("Plural option", () => {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
+              value: StringScalarFilters
               value_CONTAINS: String
               value_ENDS_WITH: String
               value_EQ: String
@@ -806,6 +884,20 @@ describe("Plural option", () => {
               shortest: String
             }
 
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created and deleted during an update mutation
             \\"\\"\\"
@@ -854,6 +946,7 @@ describe("Plural option", () => {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
+              value: StringScalarFilters
               value_CONTAINS: String
               value_ENDS_WITH: String
               value_EQ: String
@@ -942,6 +1035,20 @@ describe("Plural option", () => {
               shortest: String
             }
 
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created and deleted during an update mutation
             \\"\\"\\"
@@ -996,6 +1103,7 @@ describe("Plural option", () => {
               AND: [UsersWhere!]
               NOT: UsersWhere
               OR: [UsersWhere!]
+              value: StringScalarFilters
               value_CONTAINS: String
               value_ENDS_WITH: String
               value_EQ: String

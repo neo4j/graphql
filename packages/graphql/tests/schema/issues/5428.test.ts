@@ -94,6 +94,20 @@ describe("https://github.com/neo4j/graphql/issues/5428", () => {
               shortest: String
             }
 
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
+            }
+
             type Test {
               Name: String
             }
@@ -132,6 +146,7 @@ describe("https://github.com/neo4j/graphql/issues/5428", () => {
             input TestWhere {
               AND: [TestWhere!]
               NOT: TestWhere
+              Name: StringScalarFilters
               Name_CONTAINS: String
               Name_ENDS_WITH: String
               Name_EQ: String

@@ -72,6 +72,20 @@ describe("Directive-preserve", () => {
               shortest: ID
             }
 
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              matches: ID
+              startsWith: ID
+            }
+
             type Movie @preservedTopLevel {
               id: ID @preservedFieldLevel(string: \\"str\\", int: 12, float: 1.2, boolean: true)
             }
@@ -105,6 +119,7 @@ describe("Directive-preserve", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
@@ -217,6 +232,16 @@ describe("Directive-preserve", () => {
               max: Float
               min: Float
               sum: Float
+            }
+
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              equals: Float
+              greaterThan: Float
+              greaterThanEquals: Float
+              in: [Float!]
+              lessThan: Float
+              lessThanEquals: Float
             }
 
             type Genre {
@@ -441,6 +466,7 @@ describe("Directive-preserve", () => {
               movies_SINGLE: MovieWhere
               \\"\\"\\"Return Genres where some of the related Movies match this filter\\"\\"\\"
               movies_SOME: MovieWhere
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -459,6 +485,16 @@ describe("Directive-preserve", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              equals: Int
+              greaterThan: Int
+              greaterThanEquals: Int
+              in: [Int!]
+              lessThan: Int
+              lessThanEquals: Int
             }
 
             type Movie {
@@ -657,17 +693,20 @@ describe("Directive-preserve", () => {
               genres_SINGLE: GenreWhere @deprecated(reason: \\"Do not use\\")
               \\"\\"\\"Return Movies where some of the related Genres match this filter\\"\\"\\"
               genres_SOME: GenreWhere @deprecated(reason: \\"Do not use\\")
+              imdbRating: FloatScalarFilters
               imdbRating_EQ: Float
               imdbRating_GT: Float
               imdbRating_GTE: Float
               imdbRating_IN: [Float]
               imdbRating_LT: Float
               imdbRating_LTE: Float
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
               title_IN: [String]
               title_STARTS_WITH: String
+              year: IntScalarFilters
               year_EQ: Int
               year_GT: Int
               year_GTE: Int
@@ -719,6 +758,20 @@ describe("Directive-preserve", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type UpdateGenresMutationResponse {
@@ -838,6 +891,7 @@ describe("Directive-preserve", () => {
               AND: [ActedInWhere!]
               NOT: ActedInWhere
               OR: [ActedInWhere!]
+              role: StringScalarFilters
               role_CONTAINS: String
               role_ENDS_WITH: String
               role_EQ: String
@@ -1037,6 +1091,7 @@ describe("Directive-preserve", () => {
               actedIn_SINGLE: ProductionWhere
               \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
               actedIn_SOME: ProductionWhere
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -1086,6 +1141,16 @@ describe("Directive-preserve", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              equals: Int
+              greaterThan: Int
+              greaterThanEquals: Int
+              in: [Int!]
+              lessThan: Int
+              lessThanEquals: Int
             }
 
             type Movie implements Production {
@@ -1240,12 +1305,14 @@ describe("Directive-preserve", () => {
               actors_SINGLE: ActorWhere @deprecated(reason: \\"Do not use\\")
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere @deprecated(reason: \\"Do not use\\")
+              runtime: IntScalarFilters
               runtime_EQ: Int
               runtime_GT: Int
               runtime_GTE: Int
               runtime_IN: [Int!]
               runtime_LT: Int
               runtime_LTE: Int
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -1503,6 +1570,7 @@ describe("Directive-preserve", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Productions where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -1690,12 +1758,14 @@ describe("Directive-preserve", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
+              episodes: IntScalarFilters
               episodes_EQ: Int
               episodes_GT: Int
               episodes_GTE: Int
               episodes_IN: [Int!]
               episodes_LT: Int
               episodes_LTE: Int
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -1714,6 +1784,20 @@ describe("Directive-preserve", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type UpdateActorsMutationResponse {
@@ -1839,6 +1923,7 @@ describe("Directive-preserve", () => {
               AND: [ActedInWhere!]
               NOT: ActedInWhere
               OR: [ActedInWhere!]
+              role: StringScalarFilters
               role_CONTAINS: String
               role_ENDS_WITH: String
               role_EQ: String
@@ -2035,6 +2120,7 @@ describe("Directive-preserve", () => {
               actedIn_SINGLE: ProductionWhere
               \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
               actedIn_SOME: ProductionWhere
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -2084,6 +2170,16 @@ describe("Directive-preserve", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              equals: Int
+              greaterThan: Int
+              greaterThanEquals: Int
+              in: [Int!]
+              lessThan: Int
+              lessThanEquals: Int
             }
 
             type Movie implements Production {
@@ -2273,12 +2369,14 @@ describe("Directive-preserve", () => {
               actors_SINGLE: ActorWhere @deprecated(reason: \\"Do not use\\")
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere @deprecated(reason: \\"Do not use\\")
+              runtime: IntScalarFilters
               runtime_EQ: Int
               runtime_GT: Int
               runtime_GTE: Int
               runtime_IN: [Int!]
               runtime_LT: Int
               runtime_LTE: Int
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -2356,6 +2454,7 @@ describe("Directive-preserve", () => {
               AND: [ProductionWhere!]
               NOT: ProductionWhere
               OR: [ProductionWhere!]
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -2578,12 +2677,14 @@ describe("Directive-preserve", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
+              episodes: IntScalarFilters
               episodes_EQ: Int
               episodes_GT: Int
               episodes_GTE: Int
               episodes_IN: [Int!]
               episodes_LT: Int
               episodes_LTE: Int
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -2602,6 +2703,20 @@ describe("Directive-preserve", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type UpdateActorsMutationResponse {
@@ -2715,6 +2830,7 @@ describe("Directive-preserve", () => {
               AND: [ActedInWhere!]
               NOT: ActedInWhere
               OR: [ActedInWhere!]
+              role: StringScalarFilters
               role_CONTAINS: String
               role_ENDS_WITH: String
               role_EQ: String
@@ -2911,6 +3027,7 @@ describe("Directive-preserve", () => {
               actedIn_SINGLE: ProductionWhere
               \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
               actedIn_SOME: ProductionWhere
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -2960,6 +3077,16 @@ describe("Directive-preserve", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              equals: Int
+              greaterThan: Int
+              greaterThanEquals: Int
+              in: [Int!]
+              lessThan: Int
+              lessThanEquals: Int
             }
 
             type Movie implements Production {
@@ -3149,12 +3276,14 @@ describe("Directive-preserve", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
+              runtime: IntScalarFilters
               runtime_EQ: Int
               runtime_GT: Int
               runtime_GTE: Int
               runtime_IN: [Int!]
               runtime_LT: Int
               runtime_LTE: Int
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -3232,6 +3361,7 @@ describe("Directive-preserve", () => {
               AND: [ProductionWhere!]
               NOT: ProductionWhere
               OR: [ProductionWhere!]
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -3454,12 +3584,14 @@ describe("Directive-preserve", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
+              episodes: IntScalarFilters
               episodes_EQ: Int
               episodes_GT: Int
               episodes_GTE: Int
               episodes_IN: [Int!]
               episodes_LT: Int
               episodes_LTE: Int
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -3478,6 +3610,20 @@ describe("Directive-preserve", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type UpdateActorsMutationResponse {
@@ -3714,6 +3860,7 @@ describe("Directive-preserve", () => {
               posts_SINGLE: PostWhere
               \\"\\"\\"Return Blogs where some of the related Posts match this filter\\"\\"\\"
               posts_SOME: PostWhere
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -3822,6 +3969,7 @@ describe("Directive-preserve", () => {
               AND: [PostWhere!]
               NOT: PostWhere
               OR: [PostWhere!]
+              content: StringScalarFilters @deprecated(reason: \\"Do not use post.content\\")
               content_CONTAINS: String @deprecated(reason: \\"Do not use post.content\\")
               content_ENDS_WITH: String @deprecated(reason: \\"Do not use post.content\\")
               content_EQ: String @deprecated(reason: \\"Do not use post.content\\")
@@ -3859,6 +4007,20 @@ describe("Directive-preserve", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type UpdateBlogsMutationResponse {
@@ -4067,6 +4229,7 @@ describe("Directive-preserve", () => {
               content_SINGLE: ContentWhere @deprecated(reason: \\"Do not use user.content\\")
               \\"\\"\\"Return Users where some of the related Contents match this filter\\"\\"\\"
               content_SOME: ContentWhere @deprecated(reason: \\"Do not use user.content\\")
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String

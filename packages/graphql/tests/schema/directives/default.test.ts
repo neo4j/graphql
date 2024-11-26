@@ -57,6 +57,11 @@ describe("@default directive", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"Boolean filters\\"\\"\\"
+            input BooleanScalarFilters {
+              equals: Boolean
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -78,6 +83,16 @@ describe("@default directive", () => {
               min: DateTime
             }
 
+            \\"\\"\\"DateTime filters\\"\\"\\"
+            input DateTimeScalarFilters {
+              equals: DateTime
+              greaterThan: DateTime
+              greaterThanEquals: DateTime
+              in: [DateTime!]
+              lessThan: DateTime
+              lessThanEquals: DateTime
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships deleted during a delete mutation
             \\"\\"\\"
@@ -93,9 +108,33 @@ describe("@default directive", () => {
               sum: Float
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              equals: Float
+              greaterThan: Float
+              greaterThanEquals: Float
+              in: [Float!]
+              lessThan: Float
+              lessThanEquals: Float
+            }
+
             type IDAggregateSelection {
               longest: ID
               shortest: ID
+            }
+
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              matches: ID
+              startsWith: ID
             }
 
             type IntAggregateSelection {
@@ -105,10 +144,26 @@ describe("@default directive", () => {
               sum: Int
             }
 
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              equals: Int
+              greaterThan: Int
+              greaterThanEquals: Int
+              in: [Int!]
+              lessThan: Int
+              lessThanEquals: Int
+            }
+
             enum Location {
               EVERYWHERE
               HERE
               THERE
+            }
+
+            \\"\\"\\"Location filters\\"\\"\\"
+            input LocationEnumScalarFilters {
+              equals: Location
+              in: [Location!]
             }
 
             type Mutation {
@@ -145,6 +200,20 @@ describe("@default directive", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             \\"\\"\\"
@@ -234,11 +303,13 @@ describe("@default directive", () => {
               AND: [UserInterfaceWhere!]
               NOT: UserInterfaceWhere
               OR: [UserInterfaceWhere!]
+              fromInterface: StringScalarFilters
               fromInterface_CONTAINS: String
               fromInterface_ENDS_WITH: String
               fromInterface_EQ: String
               fromInterface_IN: [String!]
               fromInterface_STARTS_WITH: String
+              toBeOverridden: StringScalarFilters
               toBeOverridden_CONTAINS: String
               toBeOverridden_ENDS_WITH: String
               toBeOverridden_EQ: String
@@ -290,40 +361,49 @@ describe("@default directive", () => {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
+              fromInterface: StringScalarFilters
               fromInterface_CONTAINS: String
               fromInterface_ENDS_WITH: String
               fromInterface_EQ: String
               fromInterface_IN: [String!]
               fromInterface_STARTS_WITH: String
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID!]
               id_STARTS_WITH: ID
+              location: LocationEnumScalarFilters
               location_EQ: Location
               location_IN: [Location!]
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String!]
               name_STARTS_WITH: String
+              numberOfFriends: IntScalarFilters
               numberOfFriends_EQ: Int
               numberOfFriends_GT: Int
               numberOfFriends_GTE: Int
               numberOfFriends_IN: [Int!]
               numberOfFriends_LT: Int
               numberOfFriends_LTE: Int
+              rating: FloatScalarFilters
               rating_EQ: Float
               rating_GT: Float
               rating_GTE: Float
               rating_IN: [Float!]
               rating_LT: Float
               rating_LTE: Float
+              toBeOverridden: StringScalarFilters
               toBeOverridden_CONTAINS: String
               toBeOverridden_ENDS_WITH: String
               toBeOverridden_EQ: String
               toBeOverridden_IN: [String!]
               toBeOverridden_STARTS_WITH: String
+              verified: BooleanScalarFilters
+              verifiedDate: DateTimeScalarFilters
               verifiedDate_EQ: DateTime
               verifiedDate_GT: DateTime
               verifiedDate_GTE: DateTime

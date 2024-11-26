@@ -71,6 +71,16 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               min: DateTime
             }
 
+            \\"\\"\\"DateTime filters\\"\\"\\"
+            input DateTimeScalarFilters {
+              equals: DateTime
+              greaterThan: DateTime
+              greaterThanEquals: DateTime
+              in: [DateTime!]
+              lessThan: DateTime
+              lessThanEquals: DateTime
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships deleted during a delete mutation
             \\"\\"\\"
@@ -115,6 +125,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               AND: [FOLLOWSWhere!]
               NOT: FOLLOWSWhere
               OR: [FOLLOWSWhere!]
+              since: DateTimeScalarFilters
               since_EQ: DateTime
               since_GT: DateTime
               since_GTE: DateTime
@@ -126,6 +137,20 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             type IDAggregateSelection {
               longest: ID
               shortest: ID
+            }
+
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              matches: ID
+              startsWith: ID
             }
 
             type Mutation {
@@ -187,12 +212,14 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               AND: [ProfileWhere!]
               NOT: ProfileWhere
               OR: [ProfileWhere!]
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID!]
               id_STARTS_WITH: ID
               typename_IN: [ProfileImplementation!]
+              userName: StringScalarFilters
               userName_CONTAINS: String
               userName_ENDS_WITH: String
               userName_EQ: String
@@ -226,6 +253,20 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             \\"\\"\\"
@@ -432,11 +473,13 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               following_SINGLE: ProfileWhere
               \\"\\"\\"Return Users where some of the related Profiles match this filter\\"\\"\\"
               following_SOME: ProfileWhere
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID!]
               id_STARTS_WITH: ID
+              userName: StringScalarFilters
               userName_CONTAINS: String
               userName_ENDS_WITH: String
               userName_EQ: String

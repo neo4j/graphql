@@ -74,6 +74,7 @@ describe("@node", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -139,6 +140,20 @@ describe("@node", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type UpdateActorsMutationResponse {
@@ -218,6 +233,7 @@ describe("@node", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -303,6 +319,7 @@ describe("@node", () => {
               AND: [ProductionWhere!]
               NOT: ProductionWhere
               OR: [ProductionWhere!]
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -368,6 +385,7 @@ describe("@node", () => {
               AND: [SeriesWhere!]
               NOT: SeriesWhere
               OR: [SeriesWhere!]
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -386,6 +404,20 @@ describe("@node", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type UpdateActorsMutationResponse {
@@ -467,6 +499,7 @@ describe("@node", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -582,6 +615,7 @@ describe("@node", () => {
               AND: [SeriesWhere!]
               NOT: SeriesWhere
               OR: [SeriesWhere!]
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -600,6 +634,20 @@ describe("@node", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type UpdateActorsMutationResponse {

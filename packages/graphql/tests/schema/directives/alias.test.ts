@@ -225,11 +225,13 @@ describe("Alias", () => {
               AND: [ActorActedInPropsWhere!]
               NOT: ActorActedInPropsWhere
               OR: [ActorActedInPropsWhere!]
+              character: StringScalarFilters
               character_CONTAINS: String
               character_ENDS_WITH: String
               character_EQ: String
               character_IN: [String!]
               character_STARTS_WITH: String
+              screenTime: IntScalarFilters
               screenTime_EQ: Int
               screenTime_GT: Int
               screenTime_GTE: Int
@@ -338,11 +340,13 @@ describe("Alias", () => {
               actedIn_SINGLE: MovieWhere
               \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
               actedIn_SOME: MovieWhere
+              city: StringScalarFilters
               city_CONTAINS: String
               city_ENDS_WITH: String
               city_EQ: String
               city_IN: [String]
               city_STARTS_WITH: String
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -389,11 +393,31 @@ describe("Alias", () => {
               sum: Float
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              equals: Float
+              greaterThan: Float
+              greaterThanEquals: Float
+              in: [Float!]
+              lessThan: Float
+              lessThanEquals: Float
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              equals: Int
+              greaterThan: Int
+              greaterThanEquals: Int
+              in: [Int!]
+              lessThan: Int
+              lessThanEquals: Int
             }
 
             type Movie {
@@ -442,12 +466,14 @@ describe("Alias", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              rating: FloatScalarFilters
               rating_EQ: Float
               rating_GT: Float
               rating_GTE: Float
               rating_IN: [Float]
               rating_LT: Float
               rating_LTE: Float
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -498,6 +524,20 @@ describe("Alias", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type UpdateActorsMutationResponse {

@@ -102,6 +102,7 @@ describe("Subscriptions", () => {
               AND: [ActorSubscriptionWhere!]
               NOT: ActorSubscriptionWhere
               OR: [ActorSubscriptionWhere!]
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -124,6 +125,7 @@ describe("Subscriptions", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -135,6 +137,11 @@ describe("Subscriptions", () => {
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            \\"\\"\\"Boolean filters\\"\\"\\"
+            input BooleanScalarFilters {
+              equals: Boolean
             }
 
             type CreateActorsMutationResponse {
@@ -178,9 +185,33 @@ describe("Subscriptions", () => {
               sum: Float
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              equals: Float
+              greaterThan: Float
+              greaterThanEquals: Float
+              in: [Float!]
+              lessThan: Float
+              lessThanEquals: Float
+            }
+
             type IDAggregateSelection {
               longest: ID
               shortest: ID
+            }
+
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              matches: ID
+              startsWith: ID
             }
 
             type IntAggregateSelection {
@@ -188,6 +219,16 @@ describe("Subscriptions", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              equals: Int
+              greaterThan: Int
+              greaterThanEquals: Int
+              in: [Int!]
+              lessThan: Int
+              lessThanEquals: Int
             }
 
             type Movie {
@@ -355,23 +396,27 @@ describe("Subscriptions", () => {
               AND: [MovieSubscriptionWhere!]
               NOT: MovieSubscriptionWhere
               OR: [MovieSubscriptionWhere!]
+              actorCount: IntScalarFilters
               actorCount_EQ: Int
               actorCount_GT: Int
               actorCount_GTE: Int
               actorCount_IN: [Int]
               actorCount_LT: Int
               actorCount_LTE: Int
+              averageRating: FloatScalarFilters
               averageRating_EQ: Float
               averageRating_GT: Float
               averageRating_GTE: Float
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
+              isActive: BooleanScalarFilters
               isActive_EQ: Boolean
             }
 
@@ -400,6 +445,7 @@ describe("Subscriptions", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              actorCount: IntScalarFilters
               actorCount_EQ: Int
               actorCount_GT: Int
               actorCount_GTE: Int
@@ -431,17 +477,20 @@ describe("Subscriptions", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
+              averageRating: FloatScalarFilters
               averageRating_EQ: Float
               averageRating_GT: Float
               averageRating_GTE: Float
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
+              isActive: BooleanScalarFilters
               isActive_EQ: Boolean
             }
 
@@ -488,6 +537,20 @@ describe("Subscriptions", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type Subscription {
@@ -781,6 +844,11 @@ describe("Subscriptions", () => {
               totalCount: Int!
             }
 
+            \\"\\"\\"Boolean filters\\"\\"\\"
+            input BooleanScalarFilters {
+              equals: Boolean
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -822,9 +890,33 @@ describe("Subscriptions", () => {
               sum: Float
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              equals: Float
+              greaterThan: Float
+              greaterThanEquals: Float
+              in: [Float!]
+              lessThan: Float
+              lessThanEquals: Float
+            }
+
             type IDAggregateSelection {
               longest: ID
               shortest: ID
+            }
+
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              matches: ID
+              startsWith: ID
             }
 
             type IntAggregateSelection {
@@ -832,6 +924,16 @@ describe("Subscriptions", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              equals: Int
+              greaterThan: Int
+              greaterThanEquals: Int
+              in: [Int!]
+              lessThan: Int
+              lessThanEquals: Int
             }
 
             type Movie {
@@ -983,23 +1085,27 @@ describe("Subscriptions", () => {
               AND: [MovieSubscriptionWhere!]
               NOT: MovieSubscriptionWhere
               OR: [MovieSubscriptionWhere!]
+              actorCount: IntScalarFilters
               actorCount_EQ: Int
               actorCount_GT: Int
               actorCount_GTE: Int
               actorCount_IN: [Int]
               actorCount_LT: Int
               actorCount_LTE: Int
+              averageRating: FloatScalarFilters
               averageRating_EQ: Float
               averageRating_GT: Float
               averageRating_GTE: Float
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
+              isActive: BooleanScalarFilters
               isActive_EQ: Boolean
             }
 
@@ -1028,6 +1134,7 @@ describe("Subscriptions", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              actorCount: IntScalarFilters
               actorCount_EQ: Int
               actorCount_GT: Int
               actorCount_GTE: Int
@@ -1059,17 +1166,20 @@ describe("Subscriptions", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
+              averageRating: FloatScalarFilters
               averageRating_EQ: Float
               averageRating_GT: Float
               averageRating_GTE: Float
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
+              isActive: BooleanScalarFilters
               isActive_EQ: Boolean
             }
 
@@ -1187,6 +1297,11 @@ describe("Subscriptions", () => {
               Star: StarWhere
             }
 
+            \\"\\"\\"Boolean filters\\"\\"\\"
+            input BooleanScalarFilters {
+              equals: Boolean
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -1233,9 +1348,33 @@ describe("Subscriptions", () => {
               sum: Float
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              equals: Float
+              greaterThan: Float
+              greaterThanEquals: Float
+              in: [Float!]
+              lessThan: Float
+              lessThanEquals: Float
+            }
+
             type IDAggregateSelection {
               longest: ID
               shortest: ID
+            }
+
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              matches: ID
+              startsWith: ID
             }
 
             type IntAggregateSelection {
@@ -1243,6 +1382,16 @@ describe("Subscriptions", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              equals: Int
+              greaterThan: Int
+              greaterThanEquals: Int
+              in: [Int!]
+              lessThan: Int
+              lessThanEquals: Int
             }
 
             type Movie {
@@ -1452,23 +1601,27 @@ describe("Subscriptions", () => {
               AND: [MovieSubscriptionWhere!]
               NOT: MovieSubscriptionWhere
               OR: [MovieSubscriptionWhere!]
+              actorCount: IntScalarFilters
               actorCount_EQ: Int
               actorCount_GT: Int
               actorCount_GTE: Int
               actorCount_IN: [Int]
               actorCount_LT: Int
               actorCount_LTE: Int
+              averageRating: FloatScalarFilters
               averageRating_EQ: Float
               averageRating_GT: Float
               averageRating_GTE: Float
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
+              isActive: BooleanScalarFilters
               isActive_EQ: Boolean
             }
 
@@ -1497,6 +1650,7 @@ describe("Subscriptions", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              actorCount: IntScalarFilters
               actorCount_EQ: Int
               actorCount_GT: Int
               actorCount_GTE: Int
@@ -1527,17 +1681,20 @@ describe("Subscriptions", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
+              averageRating: FloatScalarFilters
               averageRating_EQ: Float
               averageRating_GT: Float
               averageRating_GTE: Float
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
+              isActive: BooleanScalarFilters
               isActive_EQ: Boolean
             }
 
@@ -2172,6 +2329,7 @@ describe("Subscriptions", () => {
               AND: [ActedInWhere!]
               NOT: ActedInWhere
               OR: [ActedInWhere!]
+              screenTime: IntScalarFilters
               screenTime_EQ: Int
               screenTime_GT: Int
               screenTime_GTE: Int
@@ -2409,6 +2567,11 @@ describe("Subscriptions", () => {
               totalCount: Int!
             }
 
+            \\"\\"\\"Boolean filters\\"\\"\\"
+            input BooleanScalarFilters {
+              equals: Boolean
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -2450,9 +2613,33 @@ describe("Subscriptions", () => {
               sum: Float
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              equals: Float
+              greaterThan: Float
+              greaterThanEquals: Float
+              in: [Float!]
+              lessThan: Float
+              lessThanEquals: Float
+            }
+
             type IDAggregateSelection {
               longest: ID
               shortest: ID
+            }
+
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              matches: ID
+              startsWith: ID
             }
 
             type IntAggregateSelection {
@@ -2460,6 +2647,16 @@ describe("Subscriptions", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              equals: Int
+              greaterThan: Int
+              greaterThanEquals: Int
+              in: [Int!]
+              lessThan: Int
+              lessThanEquals: Int
             }
 
             type Movie {
@@ -2626,23 +2823,27 @@ describe("Subscriptions", () => {
               AND: [MovieSubscriptionWhere!]
               NOT: MovieSubscriptionWhere
               OR: [MovieSubscriptionWhere!]
+              actorCount: IntScalarFilters
               actorCount_EQ: Int
               actorCount_GT: Int
               actorCount_GTE: Int
               actorCount_IN: [Int]
               actorCount_LT: Int
               actorCount_LTE: Int
+              averageRating: FloatScalarFilters
               averageRating_EQ: Float
               averageRating_GT: Float
               averageRating_GTE: Float
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
+              isActive: BooleanScalarFilters
               isActive_EQ: Boolean
             }
 
@@ -2671,6 +2872,7 @@ describe("Subscriptions", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              actorCount: IntScalarFilters
               actorCount_EQ: Int
               actorCount_GT: Int
               actorCount_GTE: Int
@@ -2702,17 +2904,20 @@ describe("Subscriptions", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
+              averageRating: FloatScalarFilters
               averageRating_EQ: Float
               averageRating_GT: Float
               averageRating_GTE: Float
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
+              isActive: BooleanScalarFilters
               isActive_EQ: Boolean
             }
 
@@ -2865,6 +3070,7 @@ describe("Subscriptions", () => {
               AND: [ActorSubscriptionWhere!]
               NOT: ActorSubscriptionWhere
               OR: [ActorSubscriptionWhere!]
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -2887,6 +3093,7 @@ describe("Subscriptions", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -2898,6 +3105,11 @@ describe("Subscriptions", () => {
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            \\"\\"\\"Boolean filters\\"\\"\\"
+            input BooleanScalarFilters {
+              equals: Boolean
             }
 
             type CreateActorsMutationResponse {
@@ -2941,9 +3153,33 @@ describe("Subscriptions", () => {
               sum: Float
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              equals: Float
+              greaterThan: Float
+              greaterThanEquals: Float
+              in: [Float!]
+              lessThan: Float
+              lessThanEquals: Float
+            }
+
             type IDAggregateSelection {
               longest: ID
               shortest: ID
+            }
+
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              matches: ID
+              startsWith: ID
             }
 
             type IntAggregateSelection {
@@ -2951,6 +3187,16 @@ describe("Subscriptions", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              equals: Int
+              greaterThan: Int
+              greaterThanEquals: Int
+              in: [Int!]
+              lessThan: Int
+              lessThanEquals: Int
             }
 
             type Movie {
@@ -3113,6 +3359,7 @@ describe("Subscriptions", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              actorCount: IntScalarFilters
               actorCount_EQ: Int
               actorCount_GT: Int
               actorCount_GTE: Int
@@ -3144,17 +3391,20 @@ describe("Subscriptions", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
+              averageRating: FloatScalarFilters
               averageRating_EQ: Float
               averageRating_GT: Float
               averageRating_GTE: Float
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
+              isActive: BooleanScalarFilters
               isActive_EQ: Boolean
             }
 
@@ -3201,6 +3451,20 @@ describe("Subscriptions", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type Subscription {
@@ -3274,6 +3538,11 @@ describe("Subscriptions", () => {
               Star: StarWhere
             }
 
+            \\"\\"\\"Boolean filters\\"\\"\\"
+            input BooleanScalarFilters {
+              equals: Boolean
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -3320,9 +3589,33 @@ describe("Subscriptions", () => {
               sum: Float
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              equals: Float
+              greaterThan: Float
+              greaterThanEquals: Float
+              in: [Float!]
+              lessThan: Float
+              lessThanEquals: Float
+            }
+
             type IDAggregateSelection {
               longest: ID
               shortest: ID
+            }
+
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              matches: ID
+              startsWith: ID
             }
 
             type IntAggregateSelection {
@@ -3330,6 +3623,16 @@ describe("Subscriptions", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              equals: Int
+              greaterThan: Int
+              greaterThanEquals: Int
+              in: [Int!]
+              lessThan: Int
+              lessThanEquals: Int
             }
 
             type Movie {
@@ -3539,23 +3842,27 @@ describe("Subscriptions", () => {
               AND: [MovieSubscriptionWhere!]
               NOT: MovieSubscriptionWhere
               OR: [MovieSubscriptionWhere!]
+              actorCount: IntScalarFilters
               actorCount_EQ: Int
               actorCount_GT: Int
               actorCount_GTE: Int
               actorCount_IN: [Int]
               actorCount_LT: Int
               actorCount_LTE: Int
+              averageRating: FloatScalarFilters
               averageRating_EQ: Float
               averageRating_GT: Float
               averageRating_GTE: Float
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
+              isActive: BooleanScalarFilters
               isActive_EQ: Boolean
             }
 
@@ -3584,6 +3891,7 @@ describe("Subscriptions", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              actorCount: IntScalarFilters
               actorCount_EQ: Int
               actorCount_GT: Int
               actorCount_GTE: Int
@@ -3614,17 +3922,20 @@ describe("Subscriptions", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
+              averageRating: FloatScalarFilters
               averageRating_EQ: Float
               averageRating_GT: Float
               averageRating_GTE: Float
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
+              isActive: BooleanScalarFilters
               isActive_EQ: Boolean
             }
 

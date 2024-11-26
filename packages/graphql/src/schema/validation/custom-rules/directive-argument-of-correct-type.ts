@@ -18,14 +18,14 @@
  */
 
 import type {
+    ArgumentNode,
     ASTVisitor,
     DirectiveNode,
     GraphQLArgument,
-    ArgumentNode,
     GraphQLDirective,
     GraphQLSchema,
 } from "graphql";
-import { coerceInputValue, valueFromASTUntyped, buildASTSchema } from "graphql";
+import { buildASTSchema, coerceInputValue, valueFromASTUntyped } from "graphql";
 import type { Maybe } from "graphql/jsutils/Maybe";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 import { VALIDATION_ERROR_CODES } from "../utils/validation-error-codes";

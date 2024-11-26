@@ -93,18 +93,22 @@ describe("200", () => {
               AND: [CategoryWhere!]
               NOT: CategoryWhere
               OR: [CategoryWhere!]
+              categoryId: IDScalarFilters
               categoryId_CONTAINS: ID
               categoryId_ENDS_WITH: ID
               categoryId_EQ: ID
               categoryId_IN: [ID!]
               categoryId_STARTS_WITH: ID
+              description: StringScalarFilters
               description_CONTAINS: String
               description_ENDS_WITH: String
               description_EQ: String
               description_IN: [String!]
               description_STARTS_WITH: String
+              exampleImageLocations: StringScalarFilters
               exampleImageLocations_EQ: [String!]
               exampleImageLocations_INCLUDES: String
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -138,6 +142,20 @@ describe("200", () => {
               shortest: ID
             }
 
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              matches: ID
+              startsWith: ID
+            }
+
             type Mutation {
               createCategories(input: [CategoryCreateInput!]!): CreateCategoriesMutationResponse!
               deleteCategories(where: CategoryWhere): DeleteInfo!
@@ -169,6 +187,20 @@ describe("200", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type UpdateCategoriesMutationResponse {

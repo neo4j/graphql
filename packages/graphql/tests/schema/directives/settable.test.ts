@@ -97,11 +97,13 @@ describe("@settable", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              description: StringScalarFilters
               description_CONTAINS: String
               description_ENDS_WITH: String
               description_EQ: String
               description_IN: [String]
               description_STARTS_WITH: String
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -146,6 +148,20 @@ describe("@settable", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             \\"\\"\\"
@@ -238,11 +254,13 @@ describe("@settable", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              description: StringScalarFilters
               description_CONTAINS: String
               description_ENDS_WITH: String
               description_EQ: String
               description_IN: [String]
               description_STARTS_WITH: String
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -287,6 +305,20 @@ describe("@settable", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             \\"\\"\\"
@@ -400,11 +432,13 @@ describe("@settable", () => {
               AND: [MovieSubscriptionWhere!]
               NOT: MovieSubscriptionWhere
               OR: [MovieSubscriptionWhere!]
+              description: StringScalarFilters
               description_CONTAINS: String
               description_ENDS_WITH: String
               description_EQ: String
               description_IN: [String]
               description_STARTS_WITH: String
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -427,11 +461,13 @@ describe("@settable", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              description: StringScalarFilters
               description_CONTAINS: String
               description_ENDS_WITH: String
               description_EQ: String
               description_IN: [String]
               description_STARTS_WITH: String
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -476,6 +512,20 @@ describe("@settable", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type Subscription {
@@ -699,6 +749,7 @@ describe("@settable", () => {
                   actedIn_SINGLE: MovieWhere
                   \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
                   actedIn_SOME: MovieWhere
+                  name: StringScalarFilters
                   name_CONTAINS: String
                   name_ENDS_WITH: String
                   name_EQ: String
@@ -780,11 +831,13 @@ describe("@settable", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  description: StringScalarFilters
                   description_CONTAINS: String
                   description_ENDS_WITH: String
                   description_EQ: String
                   description_IN: [String]
                   description_STARTS_WITH: String
+                  title: StringScalarFilters
                   title_CONTAINS: String
                   title_ENDS_WITH: String
                   title_EQ: String
@@ -835,6 +888,20 @@ describe("@settable", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  equals: String
+                  greaterThan: String
+                  greaterThanEquals: String
+                  in: [String!]
+                  lessThan: String
+                  lessThanEquals: String
+                  matches: String
+                  startsWith: String
                 }
 
                 type UpdateActorsMutationResponse {
@@ -1044,6 +1111,7 @@ describe("@settable", () => {
                   actedIn_SINGLE: MovieWhere
                   \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
                   actedIn_SOME: MovieWhere
+                  name: StringScalarFilters
                   name_CONTAINS: String
                   name_ENDS_WITH: String
                   name_EQ: String
@@ -1125,11 +1193,13 @@ describe("@settable", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  description: StringScalarFilters
                   description_CONTAINS: String
                   description_ENDS_WITH: String
                   description_EQ: String
                   description_IN: [String]
                   description_STARTS_WITH: String
+                  title: StringScalarFilters
                   title_CONTAINS: String
                   title_ENDS_WITH: String
                   title_EQ: String
@@ -1180,6 +1250,20 @@ describe("@settable", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  equals: String
+                  greaterThan: String
+                  greaterThanEquals: String
+                  in: [String!]
+                  lessThan: String
+                  lessThanEquals: String
+                  matches: String
+                  startsWith: String
                 }
 
                 type UpdateActorsMutationResponse {
@@ -1407,6 +1491,7 @@ describe("@settable", () => {
                   actedIn_SINGLE: MovieWhere
                   \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
                   actedIn_SOME: MovieWhere
+                  name: StringScalarFilters
                   name_CONTAINS: String
                   name_ENDS_WITH: String
                   name_EQ: String
@@ -1631,11 +1716,13 @@ describe("@settable", () => {
                   actors_SINGLE: ActorWhere
                   \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
                   actors_SOME: ActorWhere
+                  description: StringScalarFilters
                   description_CONTAINS: String
                   description_ENDS_WITH: String
                   description_EQ: String
                   description_IN: [String]
                   description_STARTS_WITH: String
+                  title: StringScalarFilters
                   title_CONTAINS: String
                   title_ENDS_WITH: String
                   title_EQ: String
@@ -1686,6 +1773,20 @@ describe("@settable", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  equals: String
+                  greaterThan: String
+                  greaterThanEquals: String
+                  in: [String!]
+                  lessThan: String
+                  lessThanEquals: String
+                  matches: String
+                  startsWith: String
                 }
 
                 type UpdateActorsMutationResponse {
@@ -1921,6 +2022,7 @@ describe("@settable", () => {
                   actedIn_SINGLE: MovieWhere
                   \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
                   actedIn_SOME: MovieWhere
+                  name: StringScalarFilters
                   name_CONTAINS: String
                   name_ENDS_WITH: String
                   name_EQ: String
@@ -2145,11 +2247,13 @@ describe("@settable", () => {
                   actors_SINGLE: ActorWhere
                   \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
                   actors_SOME: ActorWhere
+                  description: StringScalarFilters
                   description_CONTAINS: String
                   description_ENDS_WITH: String
                   description_EQ: String
                   description_IN: [String]
                   description_STARTS_WITH: String
+                  title: StringScalarFilters
                   title_CONTAINS: String
                   title_ENDS_WITH: String
                   title_EQ: String
@@ -2200,6 +2304,20 @@ describe("@settable", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  equals: String
+                  greaterThan: String
+                  greaterThanEquals: String
+                  in: [String!]
+                  lessThan: String
+                  lessThanEquals: String
+                  matches: String
+                  startsWith: String
                 }
 
                 type UpdateActorsMutationResponse {
@@ -2416,6 +2534,7 @@ describe("@settable", () => {
                   actedIn_SINGLE: ProductionWhere
                   \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
                   actedIn_SOME: ProductionWhere
+                  name: StringScalarFilters
                   name_CONTAINS: String
                   name_ENDS_WITH: String
                   name_EQ: String
@@ -2502,11 +2621,13 @@ describe("@settable", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  description: StringScalarFilters
                   description_CONTAINS: String
                   description_ENDS_WITH: String
                   description_EQ: String
                   description_IN: [String]
                   description_STARTS_WITH: String
+                  title: StringScalarFilters
                   title_CONTAINS: String
                   title_ENDS_WITH: String
                   title_EQ: String
@@ -2608,11 +2729,13 @@ describe("@settable", () => {
                   AND: [SeriesWhere!]
                   NOT: SeriesWhere
                   OR: [SeriesWhere!]
+                  description: StringScalarFilters
                   description_CONTAINS: String
                   description_ENDS_WITH: String
                   description_EQ: String
                   description_IN: [String]
                   description_STARTS_WITH: String
+                  name: StringScalarFilters
                   name_CONTAINS: String
                   name_ENDS_WITH: String
                   name_EQ: String
@@ -2631,6 +2754,20 @@ describe("@settable", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  equals: String
+                  greaterThan: String
+                  greaterThanEquals: String
+                  in: [String!]
+                  lessThan: String
+                  lessThanEquals: String
+                  matches: String
+                  startsWith: String
                 }
 
                 type UpdateActorsMutationResponse {
@@ -2827,6 +2964,7 @@ describe("@settable", () => {
                   actedIn_SINGLE: ProductionWhere
                   \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
                   actedIn_SOME: ProductionWhere
+                  name: StringScalarFilters
                   name_CONTAINS: String
                   name_ENDS_WITH: String
                   name_EQ: String
@@ -2913,11 +3051,13 @@ describe("@settable", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  description: StringScalarFilters
                   description_CONTAINS: String
                   description_ENDS_WITH: String
                   description_EQ: String
                   description_IN: [String]
                   description_STARTS_WITH: String
+                  title: StringScalarFilters
                   title_CONTAINS: String
                   title_ENDS_WITH: String
                   title_EQ: String
@@ -3019,11 +3159,13 @@ describe("@settable", () => {
                   AND: [SeriesWhere!]
                   NOT: SeriesWhere
                   OR: [SeriesWhere!]
+                  description: StringScalarFilters
                   description_CONTAINS: String
                   description_ENDS_WITH: String
                   description_EQ: String
                   description_IN: [String]
                   description_STARTS_WITH: String
+                  name: StringScalarFilters
                   name_CONTAINS: String
                   name_ENDS_WITH: String
                   name_EQ: String
@@ -3042,6 +3184,20 @@ describe("@settable", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  equals: String
+                  greaterThan: String
+                  greaterThanEquals: String
+                  in: [String!]
+                  lessThan: String
+                  lessThanEquals: String
+                  matches: String
+                  startsWith: String
                 }
 
                 type UpdateActorsMutationResponse {
@@ -3270,6 +3426,7 @@ describe("@settable", () => {
                   actedIn_SINGLE: ProductionWhere
                   \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
                   actedIn_SOME: ProductionWhere
+                  name: StringScalarFilters
                   name_CONTAINS: String
                   name_ENDS_WITH: String
                   name_EQ: String
@@ -3499,11 +3656,13 @@ describe("@settable", () => {
                   actors_SINGLE: ActorWhere
                   \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
                   actors_SOME: ActorWhere
+                  description: StringScalarFilters
                   description_CONTAINS: String
                   description_ENDS_WITH: String
                   description_EQ: String
                   description_IN: [String]
                   description_STARTS_WITH: String
+                  title: StringScalarFilters
                   title_CONTAINS: String
                   title_ENDS_WITH: String
                   title_EQ: String
@@ -3605,11 +3764,13 @@ describe("@settable", () => {
                   AND: [SeriesWhere!]
                   NOT: SeriesWhere
                   OR: [SeriesWhere!]
+                  description: StringScalarFilters
                   description_CONTAINS: String
                   description_ENDS_WITH: String
                   description_EQ: String
                   description_IN: [String]
                   description_STARTS_WITH: String
+                  name: StringScalarFilters
                   name_CONTAINS: String
                   name_ENDS_WITH: String
                   name_EQ: String
@@ -3628,6 +3789,20 @@ describe("@settable", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  equals: String
+                  greaterThan: String
+                  greaterThanEquals: String
+                  in: [String!]
+                  lessThan: String
+                  lessThanEquals: String
+                  matches: String
+                  startsWith: String
                 }
 
                 type UpdateActorsMutationResponse {
@@ -3872,6 +4047,7 @@ describe("@settable", () => {
                   actedIn_SINGLE: ProductionWhere
                   \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
                   actedIn_SOME: ProductionWhere
+                  name: StringScalarFilters
                   name_CONTAINS: String
                   name_ENDS_WITH: String
                   name_EQ: String
@@ -4101,11 +4277,13 @@ describe("@settable", () => {
                   actors_SINGLE: ActorWhere
                   \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
                   actors_SOME: ActorWhere
+                  description: StringScalarFilters
                   description_CONTAINS: String
                   description_ENDS_WITH: String
                   description_EQ: String
                   description_IN: [String]
                   description_STARTS_WITH: String
+                  title: StringScalarFilters
                   title_CONTAINS: String
                   title_ENDS_WITH: String
                   title_EQ: String
@@ -4207,11 +4385,13 @@ describe("@settable", () => {
                   AND: [SeriesWhere!]
                   NOT: SeriesWhere
                   OR: [SeriesWhere!]
+                  description: StringScalarFilters
                   description_CONTAINS: String
                   description_ENDS_WITH: String
                   description_EQ: String
                   description_IN: [String]
                   description_STARTS_WITH: String
+                  name: StringScalarFilters
                   name_CONTAINS: String
                   name_ENDS_WITH: String
                   name_EQ: String
@@ -4230,6 +4410,20 @@ describe("@settable", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  equals: String
+                  greaterThan: String
+                  greaterThanEquals: String
+                  in: [String!]
+                  lessThan: String
+                  lessThanEquals: String
+                  matches: String
+                  startsWith: String
                 }
 
                 type UpdateActorsMutationResponse {
@@ -4468,6 +4662,7 @@ describe("@settable", () => {
                   actedIn_SINGLE: ProductionWhere
                   \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
                   actedIn_SOME: ProductionWhere
+                  name: StringScalarFilters
                   name_CONTAINS: String
                   name_ENDS_WITH: String
                   name_EQ: String
@@ -4550,11 +4745,13 @@ describe("@settable", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  description: StringScalarFilters
                   description_CONTAINS: String
                   description_ENDS_WITH: String
                   description_EQ: String
                   description_IN: [String]
                   description_STARTS_WITH: String
+                  title: StringScalarFilters
                   title_CONTAINS: String
                   title_ENDS_WITH: String
                   title_EQ: String
@@ -4635,11 +4832,13 @@ describe("@settable", () => {
                   AND: [ProductionWhere!]
                   NOT: ProductionWhere
                   OR: [ProductionWhere!]
+                  description: StringScalarFilters
                   description_CONTAINS: String
                   description_ENDS_WITH: String
                   description_EQ: String
                   description_IN: [String]
                   description_STARTS_WITH: String
+                  title: StringScalarFilters
                   title_CONTAINS: String
                   title_ENDS_WITH: String
                   title_EQ: String
@@ -4713,11 +4912,13 @@ describe("@settable", () => {
                   AND: [SeriesWhere!]
                   NOT: SeriesWhere
                   OR: [SeriesWhere!]
+                  description: StringScalarFilters
                   description_CONTAINS: String
                   description_ENDS_WITH: String
                   description_EQ: String
                   description_IN: [String]
                   description_STARTS_WITH: String
+                  title: StringScalarFilters
                   title_CONTAINS: String
                   title_ENDS_WITH: String
                   title_EQ: String
@@ -4736,6 +4937,20 @@ describe("@settable", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  equals: String
+                  greaterThan: String
+                  greaterThanEquals: String
+                  in: [String!]
+                  lessThan: String
+                  lessThanEquals: String
+                  matches: String
+                  startsWith: String
                 }
 
                 type UpdateActorsMutationResponse {
@@ -4960,6 +5175,7 @@ describe("@settable", () => {
                   actedIn_SINGLE: ProductionWhere
                   \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
                   actedIn_SOME: ProductionWhere
+                  name: StringScalarFilters
                   name_CONTAINS: String
                   name_ENDS_WITH: String
                   name_EQ: String
@@ -5042,11 +5258,13 @@ describe("@settable", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  description: StringScalarFilters
                   description_CONTAINS: String
                   description_ENDS_WITH: String
                   description_EQ: String
                   description_IN: [String]
                   description_STARTS_WITH: String
+                  title: StringScalarFilters
                   title_CONTAINS: String
                   title_ENDS_WITH: String
                   title_EQ: String
@@ -5122,11 +5340,13 @@ describe("@settable", () => {
                   AND: [ProductionWhere!]
                   NOT: ProductionWhere
                   OR: [ProductionWhere!]
+                  description: StringScalarFilters
                   description_CONTAINS: String
                   description_ENDS_WITH: String
                   description_EQ: String
                   description_IN: [String]
                   description_STARTS_WITH: String
+                  title: StringScalarFilters
                   title_CONTAINS: String
                   title_ENDS_WITH: String
                   title_EQ: String
@@ -5200,11 +5420,13 @@ describe("@settable", () => {
                   AND: [SeriesWhere!]
                   NOT: SeriesWhere
                   OR: [SeriesWhere!]
+                  description: StringScalarFilters
                   description_CONTAINS: String
                   description_ENDS_WITH: String
                   description_EQ: String
                   description_IN: [String]
                   description_STARTS_WITH: String
+                  title: StringScalarFilters
                   title_CONTAINS: String
                   title_ENDS_WITH: String
                   title_EQ: String
@@ -5223,6 +5445,20 @@ describe("@settable", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  equals: String
+                  greaterThan: String
+                  greaterThanEquals: String
+                  in: [String!]
+                  lessThan: String
+                  lessThanEquals: String
+                  matches: String
+                  startsWith: String
                 }
 
                 type UpdateActorsMutationResponse {
@@ -5467,6 +5703,7 @@ describe("@settable", () => {
                   actedIn_SINGLE: ProductionWhere
                   \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
                   actedIn_SOME: ProductionWhere
+                  name: StringScalarFilters
                   name_CONTAINS: String
                   name_ENDS_WITH: String
                   name_EQ: String
@@ -5652,11 +5889,13 @@ describe("@settable", () => {
                   actors_SINGLE: ActorWhere
                   \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
                   actors_SOME: ActorWhere
+                  description: StringScalarFilters
                   description_CONTAINS: String
                   description_ENDS_WITH: String
                   description_EQ: String
                   description_IN: [String]
                   description_STARTS_WITH: String
+                  title: StringScalarFilters
                   title_CONTAINS: String
                   title_ENDS_WITH: String
                   title_EQ: String
@@ -5841,11 +6080,13 @@ describe("@settable", () => {
                   actors_SINGLE: ActorWhere
                   \\"\\"\\"Return Productions where some of the related Actors match this filter\\"\\"\\"
                   actors_SOME: ActorWhere
+                  description: StringScalarFilters
                   description_CONTAINS: String
                   description_ENDS_WITH: String
                   description_EQ: String
                   description_IN: [String]
                   description_STARTS_WITH: String
+                  title: StringScalarFilters
                   title_CONTAINS: String
                   title_ENDS_WITH: String
                   title_EQ: String
@@ -6022,11 +6263,13 @@ describe("@settable", () => {
                   actors_SINGLE: ActorWhere
                   \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
                   actors_SOME: ActorWhere
+                  description: StringScalarFilters
                   description_CONTAINS: String
                   description_ENDS_WITH: String
                   description_EQ: String
                   description_IN: [String]
                   description_STARTS_WITH: String
+                  title: StringScalarFilters
                   title_CONTAINS: String
                   title_ENDS_WITH: String
                   title_EQ: String
@@ -6045,6 +6288,20 @@ describe("@settable", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  equals: String
+                  greaterThan: String
+                  greaterThanEquals: String
+                  in: [String!]
+                  lessThan: String
+                  lessThanEquals: String
+                  matches: String
+                  startsWith: String
                 }
 
                 type UpdateActorsMutationResponse {
@@ -6297,6 +6554,7 @@ describe("@settable", () => {
                   actedIn_SINGLE: ProductionWhere
                   \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
                   actedIn_SOME: ProductionWhere
+                  name: StringScalarFilters
                   name_CONTAINS: String
                   name_ENDS_WITH: String
                   name_EQ: String
@@ -6482,11 +6740,13 @@ describe("@settable", () => {
                   actors_SINGLE: ActorWhere
                   \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
                   actors_SOME: ActorWhere
+                  description: StringScalarFilters
                   description_CONTAINS: String
                   description_ENDS_WITH: String
                   description_EQ: String
                   description_IN: [String]
                   description_STARTS_WITH: String
+                  title: StringScalarFilters
                   title_CONTAINS: String
                   title_ENDS_WITH: String
                   title_EQ: String
@@ -6694,11 +6954,13 @@ describe("@settable", () => {
                   actors_SINGLE: ActorWhere
                   \\"\\"\\"Return Productions where some of the related Actors match this filter\\"\\"\\"
                   actors_SOME: ActorWhere
+                  description: StringScalarFilters
                   description_CONTAINS: String
                   description_ENDS_WITH: String
                   description_EQ: String
                   description_IN: [String]
                   description_STARTS_WITH: String
+                  title: StringScalarFilters
                   title_CONTAINS: String
                   title_ENDS_WITH: String
                   title_EQ: String
@@ -6875,11 +7137,13 @@ describe("@settable", () => {
                   actors_SINGLE: ActorWhere
                   \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
                   actors_SOME: ActorWhere
+                  description: StringScalarFilters
                   description_CONTAINS: String
                   description_ENDS_WITH: String
                   description_EQ: String
                   description_IN: [String]
                   description_STARTS_WITH: String
+                  title: StringScalarFilters
                   title_CONTAINS: String
                   title_ENDS_WITH: String
                   title_EQ: String
@@ -6898,6 +7162,20 @@ describe("@settable", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  equals: String
+                  greaterThan: String
+                  greaterThanEquals: String
+                  in: [String!]
+                  lessThan: String
+                  lessThanEquals: String
+                  matches: String
+                  startsWith: String
                 }
 
                 type UpdateActorsMutationResponse {

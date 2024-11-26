@@ -109,6 +109,7 @@ describe("Interface Relationships", () => {
               AND: [ActedInWhere!]
               NOT: ActedInWhere
               OR: [ActedInWhere!]
+              screenTime: IntScalarFilters
               screenTime_EQ: Int
               screenTime_GT: Int
               screenTime_GTE: Int
@@ -294,6 +295,7 @@ describe("Interface Relationships", () => {
               actedIn_SINGLE: ProductionWhere
               \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
               actedIn_SOME: ProductionWhere
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -345,6 +347,16 @@ describe("Interface Relationships", () => {
               sum: Int
             }
 
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              equals: Int
+              greaterThan: Int
+              greaterThanEquals: Int
+              in: [Int!]
+              lessThan: Int
+              lessThanEquals: Int
+            }
+
             type Movie implements Production {
               runtime: Int!
               title: String!
@@ -385,12 +397,14 @@ describe("Interface Relationships", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              runtime: IntScalarFilters
               runtime_EQ: Int
               runtime_GT: Int
               runtime_GTE: Int
               runtime_IN: [Int!]
               runtime_LT: Int
               runtime_LTE: Int
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -467,6 +481,7 @@ describe("Interface Relationships", () => {
               AND: [ProductionWhere!]
               NOT: ProductionWhere
               OR: [ProductionWhere!]
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -542,12 +557,14 @@ describe("Interface Relationships", () => {
               AND: [SeriesWhere!]
               NOT: SeriesWhere
               OR: [SeriesWhere!]
+              episodes: IntScalarFilters
               episodes_EQ: Int
               episodes_GT: Int
               episodes_GTE: Int
               episodes_IN: [Int!]
               episodes_LT: Int
               episodes_LTE: Int
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -566,6 +583,20 @@ describe("Interface Relationships", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type UpdateActorsMutationResponse {
@@ -692,6 +723,7 @@ describe("Interface Relationships", () => {
               AND: [ActedInWhere!]
               NOT: ActedInWhere
               OR: [ActedInWhere!]
+              screenTime: IntScalarFilters
               screenTime_EQ: Int
               screenTime_GT: Int
               screenTime_GTE: Int
@@ -892,6 +924,7 @@ describe("Interface Relationships", () => {
               actedIn_SINGLE: ProductionWhere
               \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
               actedIn_SOME: ProductionWhere
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -1119,6 +1152,7 @@ describe("Interface Relationships", () => {
               AND: [EpisodeWhere!]
               NOT: EpisodeWhere
               OR: [EpisodeWhere!]
+              runtime: IntScalarFilters
               runtime_EQ: Int
               runtime_GT: Int
               runtime_GTE: Int
@@ -1163,6 +1197,16 @@ describe("Interface Relationships", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              equals: Int
+              greaterThan: Int
+              greaterThanEquals: Int
+              in: [Int!]
+              lessThan: Int
+              lessThanEquals: Int
             }
 
             type Movie implements Production {
@@ -1317,12 +1361,14 @@ describe("Interface Relationships", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
+              runtime: IntScalarFilters
               runtime_EQ: Int
               runtime_GT: Int
               runtime_GTE: Int
               runtime_IN: [Int!]
               runtime_LT: Int
               runtime_LTE: Int
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -1583,6 +1629,7 @@ describe("Interface Relationships", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Productions where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -1899,6 +1946,7 @@ describe("Interface Relationships", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
+              episodeCount: IntScalarFilters
               episodeCount_EQ: Int
               episodeCount_GT: Int
               episodeCount_GTE: Int
@@ -1930,6 +1978,7 @@ describe("Interface Relationships", () => {
               episodes_SINGLE: EpisodeWhere
               \\"\\"\\"Return Series where some of the related Episodes match this filter\\"\\"\\"
               episodes_SOME: EpisodeWhere
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -1948,6 +1997,20 @@ describe("Interface Relationships", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type UpdateActorsMutationResponse {
@@ -2082,6 +2145,7 @@ describe("Interface Relationships", () => {
               AND: [ActedInWhere!]
               NOT: ActedInWhere
               OR: [ActedInWhere!]
+              screenTime: IntScalarFilters
               screenTime_EQ: Int
               screenTime_GT: Int
               screenTime_GTE: Int
@@ -2282,6 +2346,7 @@ describe("Interface Relationships", () => {
               actedIn_SINGLE: ProductionWhere
               \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
               actedIn_SOME: ProductionWhere
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -2509,6 +2574,7 @@ describe("Interface Relationships", () => {
               AND: [EpisodeWhere!]
               NOT: EpisodeWhere
               OR: [EpisodeWhere!]
+              runtime: IntScalarFilters
               runtime_EQ: Int
               runtime_GT: Int
               runtime_GTE: Int
@@ -2553,6 +2619,16 @@ describe("Interface Relationships", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              equals: Int
+              greaterThan: Int
+              greaterThanEquals: Int
+              in: [Int!]
+              lessThan: Int
+              lessThanEquals: Int
             }
 
             type Movie implements Production {
@@ -2707,12 +2783,14 @@ describe("Interface Relationships", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
+              runtime: IntScalarFilters
               runtime_EQ: Int
               runtime_GT: Int
               runtime_GTE: Int
               runtime_IN: [Int!]
               runtime_LT: Int
               runtime_LTE: Int
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -2993,6 +3071,7 @@ describe("Interface Relationships", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Productions where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -3309,6 +3388,7 @@ describe("Interface Relationships", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
+              episodeCount: IntScalarFilters
               episodeCount_EQ: Int
               episodeCount_GT: Int
               episodeCount_GTE: Int
@@ -3340,6 +3420,7 @@ describe("Interface Relationships", () => {
               episodes_SINGLE: EpisodeWhere
               \\"\\"\\"Return Series where some of the related Episodes match this filter\\"\\"\\"
               episodes_SOME: EpisodeWhere
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -3407,6 +3488,7 @@ describe("Interface Relationships", () => {
               AND: [StarredInWhere!]
               NOT: StarredInWhere
               OR: [StarredInWhere!]
+              seasons: IntScalarFilters
               seasons_EQ: Int
               seasons_GT: Int
               seasons_GTE: Int
@@ -3418,6 +3500,20 @@ describe("Interface Relationships", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type UpdateActorsMutationResponse {
@@ -3679,6 +3775,7 @@ describe("Interface Relationships", () => {
               AND: [Interface1Where!]
               NOT: Interface1Where
               OR: [Interface1Where!]
+              field1: StringScalarFilters
               field1_CONTAINS: String
               field1_ENDS_WITH: String
               field1_EQ: String
@@ -3769,6 +3866,7 @@ describe("Interface Relationships", () => {
               AND: [Interface2Where!]
               NOT: Interface2Where
               OR: [Interface2Where!]
+              field2: StringScalarFilters
               field2_CONTAINS: String
               field2_ENDS_WITH: String
               field2_EQ: String
@@ -3844,6 +3942,20 @@ describe("Interface Relationships", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type Type1 {
@@ -4091,6 +4203,7 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface1Where!]
               NOT: Type1Interface1Where
               OR: [Type1Interface1Where!]
+              field1: StringScalarFilters
               field1_CONTAINS: String
               field1_ENDS_WITH: String
               field1_EQ: String
@@ -4170,6 +4283,7 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface2Where!]
               NOT: Type1Interface2Where
               OR: [Type1Interface2Where!]
+              field2: StringScalarFilters
               field2_CONTAINS: String
               field2_ENDS_WITH: String
               field2_EQ: String
@@ -4199,6 +4313,7 @@ describe("Interface Relationships", () => {
               AND: [Type1Where!]
               NOT: Type1Where
               OR: [Type1Where!]
+              field1: StringScalarFilters
               field1_CONTAINS: String
               field1_ENDS_WITH: String
               field1_EQ: String
@@ -4355,6 +4470,7 @@ describe("Interface Relationships", () => {
               AND: [Type2Interface1Where!]
               NOT: Type2Interface1Where
               OR: [Type2Interface1Where!]
+              field1: StringScalarFilters
               field1_CONTAINS: String
               field1_ENDS_WITH: String
               field1_EQ: String
@@ -4434,6 +4550,7 @@ describe("Interface Relationships", () => {
               AND: [Type2Interface2Where!]
               NOT: Type2Interface2Where
               OR: [Type2Interface2Where!]
+              field2: StringScalarFilters
               field2_CONTAINS: String
               field2_ENDS_WITH: String
               field2_EQ: String
@@ -4583,6 +4700,16 @@ describe("Interface Relationships", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              equals: Int
+              greaterThan: Int
+              greaterThanEquals: Int
+              in: [Int!]
+              lessThan: Int
+              lessThanEquals: Int
             }
 
             interface Interface1 {
@@ -4781,6 +4908,7 @@ describe("Interface Relationships", () => {
               AND: [Interface1Where!]
               NOT: Interface1Where
               OR: [Interface1Where!]
+              field1: StringScalarFilters
               field1_CONTAINS: String
               field1_ENDS_WITH: String
               field1_EQ: String
@@ -4871,6 +4999,7 @@ describe("Interface Relationships", () => {
               AND: [Interface2Where!]
               NOT: Interface2Where
               OR: [Interface2Where!]
+              field2: StringScalarFilters
               field2_CONTAINS: String
               field2_ENDS_WITH: String
               field2_EQ: String
@@ -4964,6 +5093,7 @@ describe("Interface Relationships", () => {
               AND: [PropsWhere!]
               NOT: PropsWhere
               OR: [PropsWhere!]
+              propsField: IntScalarFilters
               propsField_EQ: Int
               propsField_GT: Int
               propsField_GTE: Int
@@ -5007,6 +5137,20 @@ describe("Interface Relationships", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type Type1 {
@@ -5263,6 +5407,7 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface1Where!]
               NOT: Type1Interface1Where
               OR: [Type1Interface1Where!]
+              field1: StringScalarFilters
               field1_CONTAINS: String
               field1_ENDS_WITH: String
               field1_EQ: String
@@ -5342,6 +5487,7 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface2Where!]
               NOT: Type1Interface2Where
               OR: [Type1Interface2Where!]
+              field2: StringScalarFilters
               field2_CONTAINS: String
               field2_ENDS_WITH: String
               field2_EQ: String
@@ -5371,6 +5517,7 @@ describe("Interface Relationships", () => {
               AND: [Type1Where!]
               NOT: Type1Where
               OR: [Type1Where!]
+              field1: StringScalarFilters
               field1_CONTAINS: String
               field1_ENDS_WITH: String
               field1_EQ: String
@@ -5536,6 +5683,7 @@ describe("Interface Relationships", () => {
               AND: [Type2Interface1Where!]
               NOT: Type2Interface1Where
               OR: [Type2Interface1Where!]
+              field1: StringScalarFilters
               field1_CONTAINS: String
               field1_ENDS_WITH: String
               field1_EQ: String
@@ -5615,6 +5763,7 @@ describe("Interface Relationships", () => {
               AND: [Type2Interface2Where!]
               NOT: Type2Interface2Where
               OR: [Type2Interface2Where!]
+              field2: StringScalarFilters
               field2_CONTAINS: String
               field2_ENDS_WITH: String
               field2_EQ: String
@@ -5770,6 +5919,16 @@ describe("Interface Relationships", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              equals: Int
+              greaterThan: Int
+              greaterThanEquals: Int
+              in: [Int!]
+              lessThan: Int
+              lessThanEquals: Int
             }
 
             interface Interface1 {
@@ -5988,6 +6147,7 @@ describe("Interface Relationships", () => {
               AND: [Interface1Where!]
               NOT: Interface1Where
               OR: [Interface1Where!]
+              field1: StringScalarFilters
               field1_CONTAINS: String
               field1_ENDS_WITH: String
               field1_EQ: String
@@ -6078,6 +6238,7 @@ describe("Interface Relationships", () => {
               AND: [Interface2Where!]
               NOT: Interface2Where
               OR: [Interface2Where!]
+              field2: StringScalarFilters
               field2_CONTAINS: String
               field2_ENDS_WITH: String
               field2_EQ: String
@@ -6153,6 +6314,20 @@ describe("Interface Relationships", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type Type1 {
@@ -6409,6 +6584,7 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface1Where!]
               NOT: Type1Interface1Where
               OR: [Type1Interface1Where!]
+              field1: StringScalarFilters
               field1_CONTAINS: String
               field1_ENDS_WITH: String
               field1_EQ: String
@@ -6488,6 +6664,7 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface2Where!]
               NOT: Type1Interface2Where
               OR: [Type1Interface2Where!]
+              field2: StringScalarFilters
               field2_CONTAINS: String
               field2_ENDS_WITH: String
               field2_EQ: String
@@ -6553,6 +6730,7 @@ describe("Interface Relationships", () => {
               AND: [Type1PropsWhere!]
               NOT: Type1PropsWhere
               OR: [Type1PropsWhere!]
+              type1Field: IntScalarFilters
               type1Field_EQ: Int
               type1Field_GT: Int
               type1Field_GTE: Int
@@ -6577,6 +6755,7 @@ describe("Interface Relationships", () => {
               AND: [Type1Where!]
               NOT: Type1Where
               OR: [Type1Where!]
+              field1: StringScalarFilters
               field1_CONTAINS: String
               field1_ENDS_WITH: String
               field1_EQ: String
@@ -6742,6 +6921,7 @@ describe("Interface Relationships", () => {
               AND: [Type2Interface1Where!]
               NOT: Type2Interface1Where
               OR: [Type2Interface1Where!]
+              field1: StringScalarFilters
               field1_CONTAINS: String
               field1_ENDS_WITH: String
               field1_EQ: String
@@ -6821,6 +7001,7 @@ describe("Interface Relationships", () => {
               AND: [Type2Interface2Where!]
               NOT: Type2Interface2Where
               OR: [Type2Interface2Where!]
+              field2: StringScalarFilters
               field2_CONTAINS: String
               field2_ENDS_WITH: String
               field2_EQ: String
@@ -6886,6 +7067,7 @@ describe("Interface Relationships", () => {
               AND: [Type2PropsWhere!]
               NOT: Type2PropsWhere
               OR: [Type2PropsWhere!]
+              type2Field: IntScalarFilters
               type2Field_EQ: Int
               type2Field_GT: Int
               type2Field_GTE: Int
@@ -7233,6 +7415,7 @@ describe("Interface Relationships", () => {
               AND: [CommentWhere!]
               NOT: CommentWhere
               OR: [CommentWhere!]
+              content: StringScalarFilters
               content_CONTAINS: String
               content_ENDS_WITH: String
               content_EQ: String
@@ -7263,6 +7446,7 @@ describe("Interface Relationships", () => {
               creator_SINGLE: UserWhere
               \\"\\"\\"Return Comments where some of the related Users match this filter\\"\\"\\"
               creator_SOME: UserWhere
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
@@ -7460,6 +7644,7 @@ describe("Interface Relationships", () => {
               AND: [ContentWhere!]
               NOT: ContentWhere
               OR: [ContentWhere!]
+              content: StringScalarFilters
               content_CONTAINS: String
               content_ENDS_WITH: String
               content_EQ: String
@@ -7490,6 +7675,7 @@ describe("Interface Relationships", () => {
               creator_SINGLE: UserWhere
               \\"\\"\\"Return Contents where some of the related Users match this filter\\"\\"\\"
               creator_SOME: UserWhere
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
@@ -7538,6 +7724,20 @@ describe("Interface Relationships", () => {
             type IDAggregateSelection {
               longest: ID
               shortest: ID
+            }
+
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              matches: ID
+              startsWith: ID
             }
 
             type Mutation {
@@ -7844,6 +8044,7 @@ describe("Interface Relationships", () => {
               comments_SINGLE: CommentWhere
               \\"\\"\\"Return Posts where some of the related Comments match this filter\\"\\"\\"
               comments_SOME: CommentWhere
+              content: StringScalarFilters
               content_CONTAINS: String
               content_ENDS_WITH: String
               content_EQ: String
@@ -7874,6 +8075,7 @@ describe("Interface Relationships", () => {
               creator_SINGLE: UserWhere
               \\"\\"\\"Return Posts where some of the related Users match this filter\\"\\"\\"
               creator_SOME: UserWhere
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
@@ -7913,6 +8115,20 @@ describe("Interface Relationships", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type UpdateCommentsMutationResponse {
@@ -8136,11 +8352,13 @@ describe("Interface Relationships", () => {
               content_SINGLE: ContentWhere
               \\"\\"\\"Return Users where some of the related Contents match this filter\\"\\"\\"
               content_SOME: ContentWhere
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -8256,6 +8474,7 @@ describe("Interface Relationships", () => {
               AND: [ActedInWhere!]
               NOT: ActedInWhere
               OR: [ActedInWhere!]
+              screenTime: IntScalarFilters
               screenTime_EQ: Int
               screenTime_GT: Int
               screenTime_GTE: Int
@@ -8456,6 +8675,7 @@ describe("Interface Relationships", () => {
               actedIn_SINGLE: ShowWhere
               \\"\\"\\"Return Actors where some of the related Shows match this filter\\"\\"\\"
               actedIn_SOME: ShowWhere
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -8505,6 +8725,16 @@ describe("Interface Relationships", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              equals: Int
+              greaterThan: Int
+              greaterThanEquals: Int
+              in: [Int!]
+              lessThan: Int
+              lessThanEquals: Int
             }
 
             type Movie implements Production & Show {
@@ -8659,12 +8889,14 @@ describe("Interface Relationships", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
+              runtime: IntScalarFilters
               runtime_EQ: Int
               runtime_GT: Int
               runtime_GTE: Int
               runtime_IN: [Int!]
               runtime_LT: Int
               runtime_LTE: Int
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -8729,6 +8961,7 @@ describe("Interface Relationships", () => {
               AND: [ProductionWhere!]
               NOT: ProductionWhere
               OR: [ProductionWhere!]
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -8919,12 +9152,14 @@ describe("Interface Relationships", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
+              episodeCount: IntScalarFilters
               episodeCount_EQ: Int
               episodeCount_GT: Int
               episodeCount_GTE: Int
               episodeCount_IN: [Int!]
               episodeCount_LT: Int
               episodeCount_LTE: Int
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -9176,6 +9411,7 @@ describe("Interface Relationships", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Shows where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -9250,6 +9486,7 @@ describe("Interface Relationships", () => {
               AND: [StarredInWhere!]
               NOT: StarredInWhere
               OR: [StarredInWhere!]
+              episodeNr: IntScalarFilters
               episodeNr_EQ: Int
               episodeNr_GT: Int
               episodeNr_GTE: Int
@@ -9261,6 +9498,20 @@ describe("Interface Relationships", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type UpdateActorsMutationResponse {

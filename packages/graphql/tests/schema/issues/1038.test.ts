@@ -82,11 +82,13 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
               AND: [AWSAccountWhere!]
               NOT: AWSAccountWhere
               OR: [AWSAccountWhere!]
+              accountName: StringScalarFilters
               accountName_CONTAINS: String
               accountName_ENDS_WITH: String
               accountName_EQ: String
               accountName_IN: [String]
               accountName_STARTS_WITH: String
+              code: StringScalarFilters
               code_CONTAINS: String
               code_ENDS_WITH: String
               code_EQ: String
@@ -156,11 +158,13 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
               AND: [DNSZoneWhere!]
               NOT: DNSZoneWhere
               OR: [DNSZoneWhere!]
+              awsId: StringScalarFilters
               awsId_CONTAINS: String
               awsId_ENDS_WITH: String
               awsId_EQ: String
               awsId_IN: [String]
               awsId_STARTS_WITH: String
+              zoneType: StringScalarFilters
               zoneType_CONTAINS: String
               zoneType_ENDS_WITH: String
               zoneType_EQ: String
@@ -219,6 +223,20 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type UpdateAwsAccountsMutationResponse {

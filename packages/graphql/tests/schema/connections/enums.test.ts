@@ -78,6 +78,7 @@ describe("Enums", () => {
               AND: [ActedInWhere!]
               NOT: ActedInWhere
               OR: [ActedInWhere!]
+              roleType: RoleTypeEnumScalarFilters
               roleType_EQ: RoleType
               roleType_IN: [RoleType!]
             }
@@ -268,6 +269,7 @@ describe("Enums", () => {
               movies_SINGLE: MovieWhere
               \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
               movies_SOME: MovieWhere
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -493,6 +495,7 @@ describe("Enums", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -537,6 +540,12 @@ describe("Enums", () => {
               SUPPORTING
             }
 
+            \\"\\"\\"RoleType filters\\"\\"\\"
+            input RoleTypeEnumScalarFilters {
+              equals: RoleType
+              in: [RoleType!]
+            }
+
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
@@ -548,6 +557,20 @@ describe("Enums", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type UpdateActorsMutationResponse {

@@ -81,6 +81,16 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               sum: Float
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              equals: Float
+              greaterThan: Float
+              greaterThanEquals: Float
+              in: [Float!]
+              lessThan: Float
+              lessThanEquals: Float
+            }
+
             type Genre {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): GenreMovieMoviesAggregationSelection
@@ -303,6 +313,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               movies_SINGLE: MovieWhere
               \\"\\"\\"Return Genres where some of the related Movies match this filter\\"\\"\\"
               movies_SOME: MovieWhere
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -321,6 +332,16 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              equals: Int
+              greaterThan: Int
+              greaterThanEquals: Int
+              in: [Int!]
+              lessThan: Int
+              lessThanEquals: Int
             }
 
             type Movie {
@@ -519,17 +540,20 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               genres_SINGLE: GenreWhere @deprecated(reason: \\"Do not use genre\\")
               \\"\\"\\"Return Movies where some of the related Genres match this filter\\"\\"\\"
               genres_SOME: GenreWhere @deprecated(reason: \\"Do not use genre\\")
+              imdbRating: FloatScalarFilters
               imdbRating_EQ: Float
               imdbRating_GT: Float
               imdbRating_GTE: Float
               imdbRating_IN: [Float]
               imdbRating_LT: Float
               imdbRating_LTE: Float
+              title: StringScalarFilters @deprecated(reason: \\"Do not use title\\")
               title_CONTAINS: String @deprecated(reason: \\"Do not use title\\")
               title_ENDS_WITH: String @deprecated(reason: \\"Do not use title\\")
               title_EQ: String @deprecated(reason: \\"Do not use title\\")
               title_IN: [String] @deprecated(reason: \\"Do not use title\\")
               title_STARTS_WITH: String @deprecated(reason: \\"Do not use title\\")
+              year: IntScalarFilters
               year_EQ: Int
               year_GT: Int
               year_GTE: Int
@@ -581,6 +605,20 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type UpdateGenresMutationResponse {

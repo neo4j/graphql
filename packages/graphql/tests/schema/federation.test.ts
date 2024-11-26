@@ -292,6 +292,7 @@ describe("Apollo Federation", () => {
               author_SINGLE: UserWhere
               \\"\\"\\"Return Posts where some of the related Users match this filter\\"\\"\\"
               author_SOME: UserWhere
+              content: StringScalarFilters
               content_CONTAINS: String
               content_ENDS_WITH: String
               content_EQ: String
@@ -326,6 +327,20 @@ describe("Apollo Federation", () => {
             type StringAggregateSelection @shareable {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             \\"\\"\\"
@@ -503,6 +518,7 @@ describe("Apollo Federation", () => {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -817,6 +833,7 @@ describe("Apollo Federation", () => {
               author_SINGLE: UserWhere
               \\"\\"\\"Return Posts where some of the related Users match this filter\\"\\"\\"
               author_SOME: UserWhere
+              content: StringScalarFilters
               content_CONTAINS: String
               content_ENDS_WITH: String
               content_EQ: String
@@ -852,6 +869,20 @@ describe("Apollo Federation", () => {
             type StringAggregateSelection @federation__shareable {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             \\"\\"\\"
@@ -911,6 +942,7 @@ describe("Apollo Federation", () => {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String

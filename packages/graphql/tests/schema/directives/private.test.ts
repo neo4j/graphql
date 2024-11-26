@@ -71,6 +71,20 @@ describe("@private directive", () => {
               shortest: ID
             }
 
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              matches: ID
+              startsWith: ID
+            }
+
             type Mutation {
               createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
               deleteUsers(where: UserWhere): DeleteInfo!
@@ -164,6 +178,7 @@ describe("@private directive", () => {
               AND: [UserInterfaceWhere!]
               NOT: UserInterfaceWhere
               OR: [UserInterfaceWhere!]
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
@@ -193,6 +208,7 @@ describe("@private directive", () => {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
@@ -256,6 +272,20 @@ describe("@private directive", () => {
               shortest: ID
             }
 
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              matches: ID
+              startsWith: ID
+            }
+
             type Mutation {
               createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
               deleteUsers(where: UserWhere): DeleteInfo!
@@ -290,6 +320,20 @@ describe("@private directive", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             \\"\\"\\"
@@ -357,6 +401,7 @@ describe("@private directive", () => {
               AND: [UserInterfaceWhere!]
               NOT: UserInterfaceWhere
               OR: [UserInterfaceWhere!]
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
@@ -388,11 +433,13 @@ describe("@private directive", () => {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
+              private: StringScalarFilters
               private_CONTAINS: String
               private_ENDS_WITH: String
               private_EQ: String

@@ -165,6 +165,7 @@ describe("Cypher", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -183,6 +184,30 @@ describe("Cypher", () => {
             \\"\\"\\"
             scalar BigInt
 
+            \\"\\"\\"BigInt filters\\"\\"\\"
+            input BigIntScalarFilters {
+              equals: BigInt
+              greaterThan: BigInt
+              greaterThanEquals: BigInt
+              in: [BigInt!]
+              lessThan: BigInt
+              lessThanEquals: BigInt
+            }
+
+            \\"\\"\\"Boolean filters\\"\\"\\"
+            input BooleanScalarFilters {
+              equals: Boolean
+            }
+
+            \\"\\"\\"Distance filters for cartesian points\\"\\"\\"
+            input CartesianDistancePointFilters {
+              equals: CartesianPointDistance
+              greaterThan: CartesianPointDistance
+              greaterThanEquals: CartesianPointDistance
+              lessThan: CartesianPointDistance
+              lessThanEquals: CartesianPointDistance
+            }
+
             \\"\\"\\"
             A point in a two- or three-dimensional Cartesian coordinate system or in a three-dimensional cylindrical coordinate system. For more information, see https://neo4j.com/docs/graphql/4/type-definitions/types/spatial/#cartesian-point
             \\"\\"\\"
@@ -198,6 +223,13 @@ describe("Cypher", () => {
             input CartesianPointDistance {
               distance: Float!
               point: CartesianPointInput!
+            }
+
+            \\"\\"\\"Cartesian Point filters\\"\\"\\"
+            input CartesianPointFilters {
+              distance: CartesianDistancePointFilters
+              equals: CartesianPointInput
+              in: [CartesianPointInput!]
             }
 
             \\"\\"\\"Input type for a cartesian point\\"\\"\\"
@@ -228,8 +260,28 @@ describe("Cypher", () => {
             \\"\\"\\"A date, represented as a 'yyyy-mm-dd' string\\"\\"\\"
             scalar Date
 
+            \\"\\"\\"Date filters\\"\\"\\"
+            input DateScalarFilters {
+              equals: Date
+              greaterThan: Date
+              greaterThanEquals: Date
+              in: [Date!]
+              lessThan: Date
+              lessThanEquals: Date
+            }
+
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
             scalar DateTime
+
+            \\"\\"\\"DateTime filters\\"\\"\\"
+            input DateTimeScalarFilters {
+              equals: DateTime
+              greaterThan: DateTime
+              greaterThanEquals: DateTime
+              in: [DateTime!]
+              lessThan: DateTime
+              lessThanEquals: DateTime
+            }
 
             \\"\\"\\"
             Information about the number of nodes and relationships deleted during a delete mutation
@@ -242,18 +294,82 @@ describe("Cypher", () => {
             \\"\\"\\"A duration, represented as an ISO 8601 duration string\\"\\"\\"
             scalar Duration
 
+            \\"\\"\\"Duration filters\\"\\"\\"
+            input DurationScalarFilters {
+              equals: Duration
+              greaterThan: Duration
+              greaterThanEquals: Duration
+              in: [Duration!]
+              lessThan: Duration
+              lessThanEquals: Duration
+            }
+
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              equals: Float
+              greaterThan: Float
+              greaterThanEquals: Float
+              in: [Float!]
+              lessThan: Float
+              lessThanEquals: Float
+            }
+
             type IDAggregateSelection {
               longest: ID
               shortest: ID
             }
 
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              matches: ID
+              startsWith: ID
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              equals: Int
+              greaterThan: Int
+              greaterThanEquals: Int
+              in: [Int!]
+              lessThan: Int
+              lessThanEquals: Int
+            }
+
             \\"\\"\\"A local datetime, represented as 'YYYY-MM-DDTHH:MM:SS'\\"\\"\\"
             scalar LocalDateTime
+
+            \\"\\"\\"LocalDateTime filters\\"\\"\\"
+            input LocalDateTimeScalarFilters {
+              equals: LocalDateTime
+              greaterThan: LocalDateTime
+              greaterThanEquals: LocalDateTime
+              in: [LocalDateTime!]
+              lessThan: LocalDateTime
+              lessThanEquals: LocalDateTime
+            }
 
             \\"\\"\\"
             A local time, represented as a time string without timezone information
             \\"\\"\\"
             scalar LocalTime
+
+            \\"\\"\\"LocalTime filters\\"\\"\\"
+            input LocalTimeScalarFilters {
+              equals: LocalTime
+              greaterThan: LocalTime
+              greaterThanEquals: LocalTime
+              in: [LocalTime!]
+              lessThan: LocalTime
+              lessThanEquals: LocalTime
+            }
 
             type Movie {
               actor: Actor
@@ -333,13 +449,16 @@ describe("Cypher", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               actor: ActorWhere
+              custom_big_int: BigIntScalarFilters
               custom_big_int_EQ: BigInt
               custom_big_int_GT: BigInt
               custom_big_int_GTE: BigInt
               custom_big_int_IN: [BigInt]
               custom_big_int_LT: BigInt
               custom_big_int_LTE: BigInt
+              custom_boolean: BooleanScalarFilters
               custom_boolean_EQ: Boolean
+              custom_cartesian_point: CartesianPointFilters
               custom_cartesian_point_DISTANCE: CartesianPointDistance
               custom_cartesian_point_EQ: CartesianPointInput
               custom_cartesian_point_GT: CartesianPointDistance
@@ -347,53 +466,62 @@ describe("Cypher", () => {
               custom_cartesian_point_IN: [CartesianPointInput]
               custom_cartesian_point_LT: CartesianPointDistance
               custom_cartesian_point_LTE: CartesianPointDistance
+              custom_date: DateScalarFilters
               custom_date_EQ: Date
               custom_date_GT: Date
               custom_date_GTE: Date
               custom_date_IN: [Date]
               custom_date_LT: Date
               custom_date_LTE: Date
+              custom_datetime: DateTimeScalarFilters
               custom_datetime_EQ: DateTime
               custom_datetime_GT: DateTime
               custom_datetime_GTE: DateTime
               custom_datetime_IN: [DateTime]
               custom_datetime_LT: DateTime
               custom_datetime_LTE: DateTime
+              custom_duration: DurationScalarFilters
               custom_duration_EQ: Duration
               custom_duration_GT: Duration
               custom_duration_GTE: Duration
               custom_duration_IN: [Duration]
               custom_duration_LT: Duration
               custom_duration_LTE: Duration
+              custom_float: FloatScalarFilters
               custom_float_EQ: Float
               custom_float_GT: Float
               custom_float_GTE: Float
               custom_float_IN: [Float]
               custom_float_LT: Float
               custom_float_LTE: Float
+              custom_id: IDScalarFilters
               custom_id_CONTAINS: ID
               custom_id_ENDS_WITH: ID
               custom_id_EQ: ID
               custom_id_IN: [ID]
               custom_id_STARTS_WITH: ID
+              custom_int: IntScalarFilters
               custom_int_EQ: Int
               custom_int_GT: Int
               custom_int_GTE: Int
               custom_int_IN: [Int]
               custom_int_LT: Int
               custom_int_LTE: Int
+              custom_localdatetime: LocalDateTimeScalarFilters
               custom_localdatetime_EQ: LocalDateTime
               custom_localdatetime_GT: LocalDateTime
               custom_localdatetime_GTE: LocalDateTime
               custom_localdatetime_IN: [LocalDateTime]
               custom_localdatetime_LT: LocalDateTime
               custom_localdatetime_LTE: LocalDateTime
+              custom_localtime: LocalTimeScalarFilters
               custom_localtime_EQ: LocalTime
               custom_localtime_GT: LocalTime
               custom_localtime_GTE: LocalTime
               custom_localtime_IN: [LocalTime]
               custom_localtime_LT: LocalTime
               custom_localtime_LTE: LocalTime
+              custom_point: PointFilters
               custom_point_DISTANCE: PointDistance
               custom_point_EQ: PointInput
               custom_point_GT: PointDistance
@@ -401,47 +529,64 @@ describe("Cypher", () => {
               custom_point_IN: [PointInput]
               custom_point_LT: PointDistance
               custom_point_LTE: PointDistance
+              custom_string: StringScalarFilters
               custom_string_CONTAINS: String
               custom_string_ENDS_WITH: String
               custom_string_EQ: String
               custom_string_IN: [String]
               custom_string_STARTS_WITH: String
+              custom_time: TimeScalarFilters
               custom_time_EQ: Time
               custom_time_GT: Time
               custom_time_GTE: Time
               custom_time_IN: [Time]
               custom_time_LT: Time
               custom_time_LTE: Time
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
+              list_custom_of_ids: IDScalarFilters
               list_custom_of_ids_EQ: [ID]
               list_custom_of_ids_INCLUDES: ID
+              list_of_custom_big_ints: BigIntScalarFilters
               list_of_custom_big_ints_EQ: [BigInt]
               list_of_custom_big_ints_INCLUDES: BigInt
+              list_of_custom_booleans: BooleanScalarFilters
               list_of_custom_booleans_EQ: [Boolean]
+              list_of_custom_cartesian_points: CartesianPointFilters
               list_of_custom_cartesian_points_EQ: [CartesianPointInput]
               list_of_custom_cartesian_points_INCLUDES: CartesianPointInput
+              list_of_custom_dates: DateScalarFilters
               list_of_custom_dates_EQ: [Date]
               list_of_custom_dates_INCLUDES: Date
+              list_of_custom_datetimes: DateTimeScalarFilters
               list_of_custom_datetimes_EQ: [DateTime]
               list_of_custom_datetimes_INCLUDES: DateTime
+              list_of_custom_durations: DurationScalarFilters
               list_of_custom_durations_EQ: [Duration]
               list_of_custom_durations_INCLUDES: Duration
+              list_of_custom_floats: FloatScalarFilters
               list_of_custom_floats_EQ: [Float]
               list_of_custom_floats_INCLUDES: Float
+              list_of_custom_ints: IntScalarFilters
               list_of_custom_ints_EQ: [Int]
               list_of_custom_ints_INCLUDES: Int
+              list_of_custom_localdatetimes: LocalDateTimeScalarFilters
               list_of_custom_localdatetimes_EQ: [LocalDateTime]
               list_of_custom_localdatetimes_INCLUDES: LocalDateTime
+              list_of_custom_localtimes: LocalTimeScalarFilters
               list_of_custom_localtimes_EQ: [LocalTime]
               list_of_custom_localtimes_INCLUDES: LocalTime
+              list_of_custom_points: PointFilters
               list_of_custom_points_EQ: [PointInput]
               list_of_custom_points_INCLUDES: PointInput
+              list_of_custom_strings: StringScalarFilters
               list_of_custom_strings_EQ: [String]
               list_of_custom_strings_INCLUDES: String
+              list_of_custom_times: TimeScalarFilters
               list_of_custom_times_EQ: [Time]
               list_of_custom_times_INCLUDES: Time
             }
@@ -487,6 +632,22 @@ describe("Cypher", () => {
               point: PointInput!
             }
 
+            \\"\\"\\"Distance filters\\"\\"\\"
+            input PointDistanceFilters {
+              equals: PointDistance
+              greaterThan: PointDistance
+              greaterThanEquals: PointDistance
+              lessThan: PointDistance
+              lessThanEquals: PointDistance
+            }
+
+            \\"\\"\\"Point filters\\"\\"\\"
+            input PointFilters {
+              distance: PointDistanceFilters
+              equals: PointInput
+              in: [PointInput!]
+            }
+
             \\"\\"\\"Input type for a point\\"\\"\\"
             input PointInput {
               height: Float
@@ -516,8 +677,32 @@ describe("Cypher", () => {
               shortest: String
             }
 
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
+            }
+
             \\"\\"\\"A time, represented as an RFC3339 time string\\"\\"\\"
             scalar Time
+
+            \\"\\"\\"Time filters\\"\\"\\"
+            input TimeScalarFilters {
+              equals: Time
+              greaterThan: Time
+              greaterThanEquals: Time
+              in: [Time!]
+              lessThan: Time
+              lessThanEquals: Time
+            }
 
             type UpdateActorsMutationResponse {
               actors: [Actor!]!
@@ -609,6 +794,7 @@ describe("Cypher", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              custom_cypher_string_list: StringScalarFilters
               custom_cypher_string_list_EQ: [String]
               custom_cypher_string_list_INCLUDES: String
             }
@@ -637,6 +823,20 @@ describe("Cypher", () => {
               movies(limit: Int, offset: Int, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, where: MovieWhere): MoviesConnection!
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             \\"\\"\\"
@@ -859,6 +1059,7 @@ describe("Cypher", () => {
               NOT: BlogWhere
               OR: [BlogWhere!]
               post: PostWhere
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -955,6 +1156,7 @@ describe("Cypher", () => {
               AND: [PostWhere!]
               NOT: PostWhere
               OR: [PostWhere!]
+              content: StringScalarFilters
               content_CONTAINS: String
               content_ENDS_WITH: String
               content_EQ: String
@@ -989,6 +1191,20 @@ describe("Cypher", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type UpdateBlogsMutationResponse {
@@ -1106,6 +1322,7 @@ describe("Cypher", () => {
               NOT: ActorWhere
               OR: [ActorWhere!]
               movie: MovieWhere
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -1259,6 +1476,20 @@ describe("Cypher", () => {
               shortest: String
             }
 
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
+            }
+
             type UpdateActorsMutationResponse {
               actors: [Actor!]!
               info: UpdateInfo!
@@ -1369,6 +1600,7 @@ describe("Cypher", () => {
               NOT: ActorWhere
               OR: [ActorWhere!]
               movie: MovieWhere
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -1488,6 +1720,20 @@ describe("Cypher", () => {
               shortest: String
             }
 
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
+            }
+
             type UpdateActorsMutationResponse {
               actors: [Actor!]!
               info: UpdateInfo!
@@ -1581,11 +1827,13 @@ describe("Cypher", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String]
               name_STARTS_WITH: String
+              totalScreenTime: IntScalarFilters
               totalScreenTime_EQ: Int
               totalScreenTime_GT: Int
               totalScreenTime_GTE: Int
@@ -1631,6 +1879,30 @@ describe("Cypher", () => {
               shortest: ID
             }
 
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              matches: ID
+              startsWith: ID
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              equals: Int
+              greaterThan: Int
+              greaterThanEquals: Int
+              in: [Int!]
+              lessThan: Int
+              lessThanEquals: Int
+            }
+
             type Movie {
               actors(title: String): [Actor]
               id: ID
@@ -1665,6 +1937,7 @@ describe("Cypher", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
@@ -1715,6 +1988,20 @@ describe("Cypher", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type UpdateActorsMutationResponse {
@@ -1833,6 +2120,7 @@ describe("Cypher", () => {
               AND: [MovieSubscriptionWhere!]
               NOT: MovieSubscriptionWhere
               OR: [MovieSubscriptionWhere!]
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -1855,11 +2143,13 @@ describe("Cypher", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              custom_title: StringScalarFilters
               custom_title_CONTAINS: String
               custom_title_ENDS_WITH: String
               custom_title_EQ: String
               custom_title_IN: [String]
               custom_title_STARTS_WITH: String
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -1904,6 +2194,20 @@ describe("Cypher", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type Subscription {

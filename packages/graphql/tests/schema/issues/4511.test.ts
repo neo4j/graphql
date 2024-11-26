@@ -278,11 +278,35 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               shortest: ID
             }
 
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              matches: ID
+              startsWith: ID
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              equals: Int
+              greaterThan: Int
+              greaterThanEquals: Int
+              in: [Int!]
+              lessThan: Int
+              lessThanEquals: Int
             }
 
             type Movie implements Production {
@@ -409,11 +433,13 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               director_SINGLE: CreatureWhere
               \\"\\"\\"Return Movies where some of the related Creatures match this filter\\"\\"\\"
               director_SOME: CreatureWhere
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -752,6 +778,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               Return Productions where some of the related Creatures match this filter
               \\"\\"\\"
               director_SOME: CreatureWhere
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
@@ -905,17 +932,20 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               AND: [SeriesSubscriptionWhere!]
               NOT: SeriesSubscriptionWhere
               OR: [SeriesSubscriptionWhere!]
+              episode: IntScalarFilters
               episode_EQ: Int
               episode_GT: Int
               episode_GTE: Int
               episode_IN: [Int!]
               episode_LT: Int
               episode_LTE: Int
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -968,17 +998,20 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               director_SINGLE: CreatureWhere
               \\"\\"\\"Return Series where some of the related Creatures match this filter\\"\\"\\"
               director_SOME: CreatureWhere
+              episode: IntScalarFilters
               episode_EQ: Int
               episode_GT: Int
               episode_GTE: Int
               episode_IN: [Int!]
               episode_LT: Int
               episode_LTE: Int
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -997,6 +1030,20 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type Subscription {

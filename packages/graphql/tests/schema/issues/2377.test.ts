@@ -105,6 +105,16 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               min: DateTime
             }
 
+            \\"\\"\\"DateTime filters\\"\\"\\"
+            input DateTimeScalarFilters {
+              equals: DateTime
+              greaterThan: DateTime
+              greaterThanEquals: DateTime
+              in: [DateTime!]
+              lessThan: DateTime
+              lessThanEquals: DateTime
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships deleted during a delete mutation
             \\"\\"\\"
@@ -116,6 +126,20 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             type IDAggregateSelection {
               longest: ID
               shortest: ID
+            }
+
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              matches: ID
+              startsWith: ID
             }
 
             type Mutation {
@@ -136,6 +160,12 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               PropertyA
               PropertyB
               PropertyC
+            }
+
+            \\"\\"\\"Property filters\\"\\"\\"
+            input PropertyEnumScalarFilters {
+              equals: Property
+              in: [Property!]
             }
 
             type Query {
@@ -371,20 +401,25 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               AND: [ResourceEntityWhere!]
               NOT: ResourceEntityWhere
               OR: [ResourceEntityWhere!]
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID!]
               id_STARTS_WITH: ID
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String]
               name_STARTS_WITH: String
+              properties: PropertyEnumScalarFilters
               properties_EQ: [Property!]
               properties_INCLUDES: Property
+              tags: TagEnumScalarFilters
               tags_EQ: [Tag!]
               tags_INCLUDES: Tag
+              type: ResourceTypeEnumScalarFilters
               type_EQ: ResourceType
               type_IN: [ResourceType!]
               typename_IN: [ResourceEntityImplementation!]
@@ -417,6 +452,12 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               ResourceA
               ResourceB
               ResourceC
+            }
+
+            \\"\\"\\"ResourceType filters\\"\\"\\"
+            input ResourceTypeEnumScalarFilters {
+              equals: ResourceType
+              in: [ResourceType!]
             }
 
             input ResourceUpdateInput {
@@ -461,30 +502,38 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               containedBy_SINGLE: ResourceWhere
               \\"\\"\\"Return Resources where some of the related Resources match this filter\\"\\"\\"
               containedBy_SOME: ResourceWhere
+              createdAt: DateTimeScalarFilters
               createdAt_EQ: DateTime
               createdAt_GT: DateTime
               createdAt_GTE: DateTime
               createdAt_IN: [DateTime!]
               createdAt_LT: DateTime
               createdAt_LTE: DateTime
+              externalIds: IDScalarFilters
               externalIds_EQ: [ID!]
               externalIds_INCLUDES: ID
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID!]
               id_STARTS_WITH: ID
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
               name_IN: [String]
               name_STARTS_WITH: String
+              properties: PropertyEnumScalarFilters
               properties_EQ: [Property!]
               properties_INCLUDES: Property
+              tags: TagEnumScalarFilters
               tags_EQ: [Tag!]
               tags_INCLUDES: Tag
+              type: ResourceTypeEnumScalarFilters
               type_EQ: ResourceType
               type_IN: [ResourceType!]
+              updatedAt: DateTimeScalarFilters
               updatedAt_EQ: DateTime
               updatedAt_GT: DateTime
               updatedAt_GTE: DateTime
@@ -512,10 +561,30 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               shortest: String
             }
 
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
+            }
+
             enum Tag {
               TagA
               TagB
               TagC
+            }
+
+            \\"\\"\\"Tag filters\\"\\"\\"
+            input TagEnumScalarFilters {
+              equals: Tag
+              in: [Tag!]
             }
 
             \\"\\"\\"

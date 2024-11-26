@@ -117,6 +117,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               AND: [ActedInWhere!]
               NOT: ActedInWhere
               OR: [ActedInWhere!]
+              screenTime: IntScalarFilters
               screenTime_EQ: Int
               screenTime_GT: Int
               screenTime_GTE: Int
@@ -317,6 +318,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               actedIn_SINGLE: ShowWhere
               \\"\\"\\"Return Actors where some of the related Shows match this filter\\"\\"\\"
               actedIn_SOME: ShowWhere
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -361,6 +363,16 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               min: DateTime
             }
 
+            \\"\\"\\"DateTime filters\\"\\"\\"
+            input DateTimeScalarFilters {
+              equals: DateTime
+              greaterThan: DateTime
+              greaterThanEquals: DateTime
+              in: [DateTime!]
+              lessThan: DateTime
+              lessThanEquals: DateTime
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships deleted during a delete mutation
             \\"\\"\\"
@@ -374,6 +386,16 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              equals: Int
+              greaterThan: Int
+              greaterThanEquals: Int
+              in: [Int!]
+              lessThan: Int
+              lessThanEquals: Int
             }
 
             type Movie implements Show {
@@ -533,18 +555,21 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
+              release: DateTimeScalarFilters
               release_EQ: DateTime
               release_GT: DateTime
               release_GTE: DateTime
               release_IN: [DateTime!]
               release_LT: DateTime
               release_LTE: DateTime
+              runtime: IntScalarFilters
               runtime_EQ: Int
               runtime_GT: Int
               runtime_GTE: Int
               runtime_IN: [Int]
               runtime_LT: Int
               runtime_LTE: Int
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -751,12 +776,14 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
+              episodes: IntScalarFilters
               episodes_EQ: Int
               episodes_GT: Int
               episodes_GTE: Int
               episodes_IN: [Int]
               episodes_LT: Int
               episodes_LTE: Int
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -988,6 +1015,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Shows where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -1013,6 +1041,20 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type UpdateActorsMutationResponse {

@@ -68,9 +68,33 @@ describe("Arrays", () => {
               sum: Float
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              equals: Float
+              greaterThan: Float
+              greaterThanEquals: Float
+              in: [Float!]
+              lessThan: Float
+              lessThanEquals: Float
+            }
+
             type IDAggregateSelection {
               longest: ID
               shortest: ID
+            }
+
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              matches: ID
+              startsWith: ID
             }
 
             type Movie {
@@ -120,17 +144,20 @@ describe("Arrays", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              averageRating: FloatScalarFilters
               averageRating_EQ: Float
               averageRating_GT: Float
               averageRating_GTE: Float
               averageRating_IN: [Float!]
               averageRating_LT: Float
               averageRating_LTE: Float
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID!]
               id_STARTS_WITH: ID
+              ratings: FloatScalarFilters
               ratings_EQ: [Float!]
               ratings_INCLUDES: Float
             }

@@ -98,6 +98,7 @@ describe("https://github.com/neo4j/graphql/issues/5631", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              custom_string_with_zero_param: StringScalarFilters
               custom_string_with_zero_param_CONTAINS: String
               custom_string_with_zero_param_ENDS_WITH: String
               custom_string_with_zero_param_EQ: String
@@ -211,6 +212,20 @@ describe("https://github.com/neo4j/graphql/issues/5631", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type UpdateActorsMutationResponse {

@@ -186,6 +186,7 @@ describe("Bigint", () => {
               in: [String!]
               lessThan: String
               lessThanEquals: String
+              matches: String
               startsWith: String
             }
 

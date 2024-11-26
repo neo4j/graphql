@@ -213,6 +213,7 @@ describe("inheritance", () => {
               friends_SINGLE: PersonWhere
               \\"\\"\\"Return Actors where some of the related People match this filter\\"\\"\\"
               friends_SOME: PersonWhere
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -299,6 +300,7 @@ describe("inheritance", () => {
               AND: [FriendsWithWhere!]
               NOT: FriendsWithWhere
               OR: [FriendsWithWhere!]
+              since: IntScalarFilters
               since_EQ: Int
               since_GT: Int
               since_GTE: Int
@@ -312,6 +314,16 @@ describe("inheritance", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              equals: Int
+              greaterThan: Int
+              greaterThanEquals: Int
+              in: [Int!]
+              lessThan: Int
+              lessThanEquals: Int
             }
 
             type Mutation {
@@ -551,6 +563,7 @@ describe("inheritance", () => {
               friends_SINGLE: PersonWhere
               \\"\\"\\"Return People where some of the related People match this filter\\"\\"\\"
               friends_SOME: PersonWhere
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -579,6 +592,20 @@ describe("inheritance", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type UpdateActorsMutationResponse {

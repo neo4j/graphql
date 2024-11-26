@@ -142,6 +142,33 @@ function makeAugmentedSchema({
     const generatorComposer = schemaGenerator.generate();
     composer.merge(generatorComposer);
 
+    // Generates the filters for enums, which are reused
+    Array.from(enumTypes.values()).forEach((enumType) => {
+        composer.createInputTC({
+            name: `${enumType.name.value}EnumScalarFilters`,
+            description: `${enumType.name.value} filters`,
+            fields: {
+                equals: {
+                    type: enumType.name.value,
+                },
+                in: { type: `[${enumType.name.value}!]` },
+            },
+        });
+    });
+    // Generates the filters for scalar, which are reused
+    Array.from(scalarTypes.values()).forEach((enumType) => {
+        composer.createInputTC({
+            name: `${enumType.name.value}ScalarFilters`,
+            description: `${enumType.name.value} filters`,
+            fields: {
+                equals: {
+                    type: enumType.name.value,
+                },
+                in: { type: `[${enumType.name.value}!]` },
+            },
+        });
+    });
+
     // TODO: move these to SchemaGenerator once the other types are moved (in the meantime references to object types are causing errors because they are not present in the generated schema)
     const pipedDefs = [
         ...userDefinedObjectTypes.values(),
@@ -364,9 +391,8 @@ function makeAugmentedSchema({
     let parsedDoc = parse(generatedTypeDefs);
 
     const documentNames = new Set(parsedDoc.definitions.filter(definitionNodeHasName).map((x) => x.name.value));
-    
-    const resolveMethods = getResolveAndSubscriptionMethods(composer);
 
+    const resolveMethods = getResolveAndSubscriptionMethods(composer);
 
     const generatedResolveMethods: GraphQLToolsResolveMethods<any> = {};
 
@@ -386,7 +412,6 @@ function makeAugmentedSchema({
         }, {}),
         ...(hasGlobalNodes ? { Node: { __resolveType: (root) => root.__resolveType } } : {}),
     };
-  
 
     // TODO: improve this logic so we don't iterate through the entire document for each compositeEntity
     // It is possible to make types "writeonly". In this case adding a resolver for them breaks schema generation.
@@ -440,7 +465,7 @@ function makeAugmentedSchema({
         }
     );
     const seen = {};
- 
+
     parsedDoc = {
         ...parsedDoc,
         definitions: [

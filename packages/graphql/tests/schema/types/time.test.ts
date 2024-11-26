@@ -75,6 +75,7 @@ describe("Time", () => {
               in: [ID!]
               lessThan: ID
               lessThanEquals: ID
+              matches: ID
               startsWith: ID
             }
 

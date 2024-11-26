@@ -188,6 +188,20 @@ describe("@populatedBy tests", () => {
                   shortest: ID
                 }
 
+                \\"\\"\\"ID filters\\"\\"\\"
+                input IDScalarFilters {
+                  contains: ID
+                  endsWith: ID
+                  equals: ID
+                  greaterThan: ID
+                  greaterThanEquals: ID
+                  in: [ID!]
+                  lessThan: ID
+                  lessThanEquals: ID
+                  matches: ID
+                  startsWith: ID
+                }
+
                 type Movie {
                   callback1: String!
                   callback2: String!
@@ -232,21 +246,25 @@ describe("@populatedBy tests", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  callback1: StringScalarFilters
                   callback1_CONTAINS: String
                   callback1_ENDS_WITH: String
                   callback1_EQ: String
                   callback1_IN: [String!]
                   callback1_STARTS_WITH: String
+                  callback2: StringScalarFilters
                   callback2_CONTAINS: String
                   callback2_ENDS_WITH: String
                   callback2_EQ: String
                   callback2_IN: [String!]
                   callback2_STARTS_WITH: String
+                  callback3: StringScalarFilters
                   callback3_CONTAINS: String
                   callback3_ENDS_WITH: String
                   callback3_EQ: String
                   callback3_IN: [String!]
                   callback3_STARTS_WITH: String
+                  id: IDScalarFilters
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
                   id_EQ: ID
@@ -291,6 +309,20 @@ describe("@populatedBy tests", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  equals: String
+                  greaterThan: String
+                  greaterThanEquals: String
+                  in: [String!]
+                  lessThan: String
+                  lessThanEquals: String
+                  matches: String
+                  startsWith: String
                 }
 
                 \\"\\"\\"
@@ -371,11 +403,35 @@ describe("@populatedBy tests", () => {
                   shortest: ID
                 }
 
+                \\"\\"\\"ID filters\\"\\"\\"
+                input IDScalarFilters {
+                  contains: ID
+                  endsWith: ID
+                  equals: ID
+                  greaterThan: ID
+                  greaterThanEquals: ID
+                  in: [ID!]
+                  lessThan: ID
+                  lessThanEquals: ID
+                  matches: ID
+                  startsWith: ID
+                }
+
                 type IntAggregateSelection {
                   average: Float
                   max: Int
                   min: Int
                   sum: Int
+                }
+
+                \\"\\"\\"Int filters\\"\\"\\"
+                input IntScalarFilters {
+                  equals: Int
+                  greaterThan: Int
+                  greaterThanEquals: Int
+                  in: [Int!]
+                  lessThan: Int
+                  lessThanEquals: Int
                 }
 
                 type Movie {
@@ -424,24 +480,28 @@ describe("@populatedBy tests", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  callback1: IntScalarFilters
                   callback1_EQ: Int
                   callback1_GT: Int
                   callback1_GTE: Int
                   callback1_IN: [Int!]
                   callback1_LT: Int
                   callback1_LTE: Int
+                  callback2: IntScalarFilters
                   callback2_EQ: Int
                   callback2_GT: Int
                   callback2_GTE: Int
                   callback2_IN: [Int!]
                   callback2_LT: Int
                   callback2_LTE: Int
+                  callback3: IntScalarFilters
                   callback3_EQ: Int
                   callback3_GT: Int
                   callback3_GTE: Int
                   callback3_IN: [Int!]
                   callback3_LT: Int
                   callback3_LTE: Int
+                  id: IDScalarFilters
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
                   id_EQ: ID
@@ -742,6 +802,7 @@ describe("@populatedBy tests", () => {
                   AND: [GenreWhere!]
                   NOT: GenreWhere
                   OR: [GenreWhere!]
+                  id: IDScalarFilters
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
                   id_EQ: ID
@@ -758,6 +819,20 @@ describe("@populatedBy tests", () => {
                 type IDAggregateSelection {
                   longest: ID
                   shortest: ID
+                }
+
+                \\"\\"\\"ID filters\\"\\"\\"
+                input IDScalarFilters {
+                  contains: ID
+                  endsWith: ID
+                  equals: ID
+                  greaterThan: ID
+                  greaterThanEquals: ID
+                  in: [ID!]
+                  lessThan: ID
+                  lessThanEquals: ID
+                  matches: ID
+                  startsWith: ID
                 }
 
                 type Movie {
@@ -935,6 +1010,7 @@ describe("@populatedBy tests", () => {
                   genres_SINGLE: GenreWhere
                   \\"\\"\\"Return Movies where some of the related Genres match this filter\\"\\"\\"
                   genres_SOME: GenreWhere
+                  id: IDScalarFilters
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
                   id_EQ: ID
@@ -1067,21 +1143,25 @@ describe("@populatedBy tests", () => {
                   AND: [RelPropertiesWhere!]
                   NOT: RelPropertiesWhere
                   OR: [RelPropertiesWhere!]
+                  callback1: StringScalarFilters
                   callback1_CONTAINS: String
                   callback1_ENDS_WITH: String
                   callback1_EQ: String
                   callback1_IN: [String!]
                   callback1_STARTS_WITH: String
+                  callback2: StringScalarFilters
                   callback2_CONTAINS: String
                   callback2_ENDS_WITH: String
                   callback2_EQ: String
                   callback2_IN: [String!]
                   callback2_STARTS_WITH: String
+                  callback3: StringScalarFilters
                   callback3_CONTAINS: String
                   callback3_ENDS_WITH: String
                   callback3_EQ: String
                   callback3_IN: [String!]
                   callback3_STARTS_WITH: String
+                  id: IDScalarFilters
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
                   id_EQ: ID
@@ -1100,6 +1180,20 @@ describe("@populatedBy tests", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  equals: String
+                  greaterThan: String
+                  greaterThanEquals: String
+                  in: [String!]
+                  lessThan: String
+                  lessThanEquals: String
+                  matches: String
+                  startsWith: String
                 }
 
                 type UpdateGenresMutationResponse {
@@ -1231,6 +1325,7 @@ describe("@populatedBy tests", () => {
                   AND: [GenreWhere!]
                   NOT: GenreWhere
                   OR: [GenreWhere!]
+                  id: IDScalarFilters
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
                   id_EQ: ID
@@ -1249,11 +1344,35 @@ describe("@populatedBy tests", () => {
                   shortest: ID
                 }
 
+                \\"\\"\\"ID filters\\"\\"\\"
+                input IDScalarFilters {
+                  contains: ID
+                  endsWith: ID
+                  equals: ID
+                  greaterThan: ID
+                  greaterThanEquals: ID
+                  in: [ID!]
+                  lessThan: ID
+                  lessThanEquals: ID
+                  matches: ID
+                  startsWith: ID
+                }
+
                 type IntAggregateSelection {
                   average: Float
                   max: Int
                   min: Int
                   sum: Int
+                }
+
+                \\"\\"\\"Int filters\\"\\"\\"
+                input IntScalarFilters {
+                  equals: Int
+                  greaterThan: Int
+                  greaterThanEquals: Int
+                  in: [Int!]
+                  lessThan: Int
+                  lessThanEquals: Int
                 }
 
                 type Movie {
@@ -1431,6 +1550,7 @@ describe("@populatedBy tests", () => {
                   genres_SINGLE: GenreWhere
                   \\"\\"\\"Return Movies where some of the related Genres match this filter\\"\\"\\"
                   genres_SOME: GenreWhere
+                  id: IDScalarFilters
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
                   id_EQ: ID
@@ -1580,24 +1700,28 @@ describe("@populatedBy tests", () => {
                   AND: [RelPropertiesWhere!]
                   NOT: RelPropertiesWhere
                   OR: [RelPropertiesWhere!]
+                  callback1: IntScalarFilters
                   callback1_EQ: Int
                   callback1_GT: Int
                   callback1_GTE: Int
                   callback1_IN: [Int!]
                   callback1_LT: Int
                   callback1_LTE: Int
+                  callback2: IntScalarFilters
                   callback2_EQ: Int
                   callback2_GT: Int
                   callback2_GTE: Int
                   callback2_IN: [Int!]
                   callback2_LT: Int
                   callback2_LTE: Int
+                  callback3: IntScalarFilters
                   callback3_EQ: Int
                   callback3_GT: Int
                   callback3_GTE: Int
                   callback3_IN: [Int!]
                   callback3_LT: Int
                   callback3_LTE: Int
+                  id: IDScalarFilters
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
                   id_EQ: ID

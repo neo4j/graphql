@@ -64,11 +64,35 @@ describe("Algebraic", () => {
               shortest: ID
             }
 
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              matches: ID
+              startsWith: ID
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              equals: Int
+              greaterThan: Int
+              greaterThanEquals: Int
+              in: [Int!]
+              lessThan: Int
+              lessThanEquals: Int
             }
 
             type Movie {
@@ -111,11 +135,13 @@ describe("Algebraic", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
+              viewers: IntScalarFilters
               viewers_EQ: Int
               viewers_GT: Int
               viewers_GTE: Int
@@ -202,6 +228,16 @@ describe("Algebraic", () => {
               sum: BigInt
             }
 
+            \\"\\"\\"BigInt filters\\"\\"\\"
+            input BigIntScalarFilters {
+              equals: BigInt
+              greaterThan: BigInt
+              greaterThanEquals: BigInt
+              in: [BigInt!]
+              lessThan: BigInt
+              lessThanEquals: BigInt
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -226,6 +262,20 @@ describe("Algebraic", () => {
             type IDAggregateSelection {
               longest: ID
               shortest: ID
+            }
+
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              matches: ID
+              startsWith: ID
             }
 
             type Movie {
@@ -268,11 +318,13 @@ describe("Algebraic", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
+              viewers: BigIntScalarFilters
               viewers_EQ: BigInt
               viewers_GT: BigInt
               viewers_GTE: BigInt
@@ -376,9 +428,33 @@ describe("Algebraic", () => {
               sum: Float
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              equals: Float
+              greaterThan: Float
+              greaterThanEquals: Float
+              in: [Float!]
+              lessThan: Float
+              lessThanEquals: Float
+            }
+
             type IDAggregateSelection {
               longest: ID
               shortest: ID
+            }
+
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              matches: ID
+              startsWith: ID
             }
 
             type Movie {
@@ -423,11 +499,13 @@ describe("Algebraic", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
+              viewers: FloatScalarFilters
               viewers_EQ: Float
               viewers_GT: Float
               viewers_GTE: Float
@@ -730,6 +808,7 @@ describe("Algebraic", () => {
               directs_SINGLE: MovieWhere
               \\"\\"\\"Return Directors where some of the related Movies match this filter\\"\\"\\"
               directs_SOME: MovieWhere
+              lastName: StringScalarFilters
               lastName_CONTAINS: String
               lastName_ENDS_WITH: String
               lastName_EQ: String
@@ -748,11 +827,35 @@ describe("Algebraic", () => {
               shortest: ID
             }
 
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              matches: ID
+              startsWith: ID
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              equals: Int
+              greaterThan: Int
+              greaterThanEquals: Int
+              in: [Int!]
+              lessThan: Int
+              lessThanEquals: Int
             }
 
             type Movie {
@@ -942,11 +1045,13 @@ describe("Algebraic", () => {
               directedBy_SINGLE: DirectorWhere
               \\"\\"\\"Return Movies where some of the related Directors match this filter\\"\\"\\"
               directedBy_SOME: DirectorWhere
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
+              viewers: IntScalarFilters
               viewers_EQ: Int
               viewers_GT: Int
               viewers_GTE: Int
@@ -998,6 +1103,20 @@ describe("Algebraic", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type UpdateDirectorsMutationResponse {
@@ -1078,11 +1197,35 @@ describe("Algebraic", () => {
               shortest: ID
             }
 
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              matches: ID
+              startsWith: ID
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              equals: Int
+              greaterThan: Int
+              greaterThanEquals: Int
+              in: [Int!]
+              lessThan: Int
+              lessThanEquals: Int
             }
 
             type Movie implements Production {
@@ -1143,11 +1286,13 @@ describe("Algebraic", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
+              viewers: IntScalarFilters
               viewers_EQ: Int
               viewers_GT: Int
               viewers_GTE: Int
@@ -1365,6 +1510,7 @@ describe("Algebraic", () => {
               AND: [PersonWhere!]
               NOT: PersonWhere
               OR: [PersonWhere!]
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -1535,6 +1681,7 @@ describe("Algebraic", () => {
               NOT: ProductionWhere
               OR: [ProductionWhere!]
               typename_IN: [ProductionImplementation!]
+              viewers: IntScalarFilters
               viewers_EQ: Int
               viewers_GT: Int
               viewers_GTE: Int
@@ -1572,6 +1719,20 @@ describe("Algebraic", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             \\"\\"\\"
@@ -1683,12 +1844,14 @@ describe("Algebraic", () => {
               AND: [ActedInWhere!]
               NOT: ActedInWhere
               OR: [ActedInWhere!]
+              pay: FloatScalarFilters
               pay_EQ: Float
               pay_GT: Float
               pay_GTE: Float
               pay_IN: [Float]
               pay_LT: Float
               pay_LTE: Float
+              roles: StringScalarFilters
               roles_EQ: [String!]
               roles_INCLUDES: String
             }
@@ -1724,6 +1887,16 @@ describe("Algebraic", () => {
               max: Float
               min: Float
               sum: Float
+            }
+
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              equals: Float
+              greaterThan: Float
+              greaterThanEquals: Float
+              in: [Float!]
+              lessThan: Float
+              lessThanEquals: Float
             }
 
             type Movie {
@@ -1918,6 +2091,7 @@ describe("Algebraic", () => {
               actors_SINGLE: PersonWhere
               \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
               actors_SOME: PersonWhere
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -2146,6 +2320,7 @@ describe("Algebraic", () => {
               actedInMovies_SINGLE: MovieWhere
               \\"\\"\\"Return People where some of the related Movies match this filter\\"\\"\\"
               actedInMovies_SOME: MovieWhere
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -2173,6 +2348,20 @@ describe("Algebraic", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             \\"\\"\\"

@@ -33,7 +33,7 @@ import { StringScalarFilters } from "../../graphql/input-objects/generic-operato
 import { TimeScalarFilters } from "../../graphql/input-objects/generic-operators/TimeScalarFilters";
 import type { AttributeAdapter } from "../../schema-model/attribute/model-adapters/AttributeAdapter";
 
-export function getInputTypeFromAttributeType(attribute: AttributeAdapter): GraphQLInputType {
+export function getInputTypeFromAttributeType(attribute: AttributeAdapter): GraphQLInputType | string {
     if (attribute.typeHelper.isBoolean()) {
         return BooleanScalarFilters;
     }
@@ -76,5 +76,14 @@ export function getInputTypeFromAttributeType(attribute: AttributeAdapter): Grap
     if (attribute.typeHelper.isDate()) {
         return DateScalarFilters;
     }
+
+    if (attribute.typeHelper.isEnum()) {
+        return `${attribute.getTypeName()}EnumScalarFilters`;
+    }
+
+    if (attribute.typeHelper.isUserScalar()) {
+        return `${attribute.getTypeName()}ScalarFilters`;
+    }
+
     throw new Error(`No scalar filter found for attribute ${attribute.type.name}`);
 }

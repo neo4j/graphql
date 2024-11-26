@@ -33,6 +33,7 @@ import { createAuthenticationDirectiveDefinition } from "../../graphql/directive
 import { getStaticAuthorizationDefinitions } from "../../graphql/directives/type-dependant-directives/get-static-auth-definitions";
 import { BigIntScalarFilters } from "../../graphql/input-objects/generic-operators/BigIntScalarFilters";
 import { BooleanScalarFilters } from "../../graphql/input-objects/generic-operators/BooleanScalarFilters";
+import { DateScalarFilters } from "../../graphql/input-objects/generic-operators/DateScalarFilters";
 import { DateTimeScalarFilters } from "../../graphql/input-objects/generic-operators/DateTimeScalarFilters";
 import { DurationScalarFilters } from "../../graphql/input-objects/generic-operators/DurationScalarFilters";
 import { FloatScalarFilters } from "../../graphql/input-objects/generic-operators/FloatScalarFilters";
@@ -116,6 +117,7 @@ export function validateUserDefinition({
         BigIntScalarFilters,
         TimeScalarFilters,
         DateTimeScalarFilters,
+        DateScalarFilters,
         DurationScalarFilters,
         LocalTimeScalarFilters,
         PointFilters,

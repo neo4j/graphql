@@ -84,11 +84,35 @@ describe("162", () => {
               shortest: ID
             }
 
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              matches: ID
+              startsWith: ID
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              equals: Int
+              greaterThan: Int
+              greaterThanEquals: Int
+              in: [Int!]
+              lessThan: Int
+              lessThanEquals: Int
             }
 
             type Mutation {
@@ -423,6 +447,7 @@ describe("162", () => {
               AND: [TigerJawLevel2Part1Where!]
               NOT: TigerJawLevel2Part1Where
               OR: [TigerJawLevel2Part1Where!]
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
@@ -494,6 +519,7 @@ describe("162", () => {
               AND: [TigerJawLevel2Where!]
               NOT: TigerJawLevel2Where
               OR: [TigerJawLevel2Where!]
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
@@ -557,6 +583,7 @@ describe("162", () => {
               AND: [TigerWhere!]
               NOT: TigerWhere
               OR: [TigerWhere!]
+              x: IntScalarFilters
               x_EQ: Int
               x_GT: Int
               x_GTE: Int

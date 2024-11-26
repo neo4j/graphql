@@ -1042,11 +1042,13 @@ describe("@filterable directive", () => {
                       AND: [ActorSubscriptionWhere!]
                       NOT: ActorSubscriptionWhere
                       OR: [ActorSubscriptionWhere!]
+                      password: StringScalarFilters
                       password_CONTAINS: String
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
                       password_STARTS_WITH: String
+                      username: StringScalarFilters
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
@@ -1096,11 +1098,13 @@ describe("@filterable directive", () => {
                       movies_SINGLE: MovieWhere
                       \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
                       movies_SOME: MovieWhere
+                      password: StringScalarFilters
                       password_CONTAINS: String
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
                       password_STARTS_WITH: String
+                      username: StringScalarFilters
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
@@ -1330,6 +1334,7 @@ describe("@filterable directive", () => {
                       AND: [MovieSubscriptionWhere!]
                       NOT: MovieSubscriptionWhere
                       OR: [MovieSubscriptionWhere!]
+                      title: StringScalarFilters
                       title_CONTAINS: String
                       title_ENDS_WITH: String
                       title_EQ: String
@@ -1378,6 +1383,7 @@ describe("@filterable directive", () => {
                       actors_SINGLE: ActorWhere
                       \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
                       actors_SOME: ActorWhere
+                      title: StringScalarFilters
                       title_CONTAINS: String
                       title_ENDS_WITH: String
                       title_EQ: String
@@ -1428,6 +1434,20 @@ describe("@filterable directive", () => {
                     type StringAggregateSelection {
                       longest: String
                       shortest: String
+                    }
+
+                    \\"\\"\\"String filters\\"\\"\\"
+                    input StringScalarFilters {
+                      contains: String
+                      endsWith: String
+                      equals: String
+                      greaterThan: String
+                      greaterThanEquals: String
+                      in: [String!]
+                      lessThan: String
+                      lessThanEquals: String
+                      matches: String
+                      startsWith: String
                     }
 
                     type Subscription {
@@ -1660,11 +1680,13 @@ describe("@filterable directive", () => {
                       AND: [ActorSubscriptionWhere!]
                       NOT: ActorSubscriptionWhere
                       OR: [ActorSubscriptionWhere!]
+                      password: StringScalarFilters
                       password_CONTAINS: String
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
                       password_STARTS_WITH: String
+                      username: StringScalarFilters
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
@@ -1714,11 +1736,13 @@ describe("@filterable directive", () => {
                       movies_SINGLE: MovieWhere
                       \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
                       movies_SOME: MovieWhere
+                      password: StringScalarFilters
                       password_CONTAINS: String
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
                       password_STARTS_WITH: String
+                      username: StringScalarFilters
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
@@ -1948,6 +1972,7 @@ describe("@filterable directive", () => {
                       AND: [MovieSubscriptionWhere!]
                       NOT: MovieSubscriptionWhere
                       OR: [MovieSubscriptionWhere!]
+                      title: StringScalarFilters
                       title_CONTAINS: String
                       title_ENDS_WITH: String
                       title_EQ: String
@@ -1996,6 +2021,7 @@ describe("@filterable directive", () => {
                       actors_SINGLE: ActorWhere
                       \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
                       actors_SOME: ActorWhere
+                      title: StringScalarFilters
                       title_CONTAINS: String
                       title_ENDS_WITH: String
                       title_EQ: String
@@ -2046,6 +2072,20 @@ describe("@filterable directive", () => {
                     type StringAggregateSelection {
                       longest: String
                       shortest: String
+                    }
+
+                    \\"\\"\\"String filters\\"\\"\\"
+                    input StringScalarFilters {
+                      contains: String
+                      endsWith: String
+                      equals: String
+                      greaterThan: String
+                      greaterThanEquals: String
+                      in: [String!]
+                      lessThan: String
+                      lessThanEquals: String
+                      matches: String
+                      startsWith: String
                     }
 
                     type Subscription {
@@ -2278,11 +2318,13 @@ describe("@filterable directive", () => {
                       AND: [ActorSubscriptionWhere!]
                       NOT: ActorSubscriptionWhere
                       OR: [ActorSubscriptionWhere!]
+                      password: StringScalarFilters
                       password_CONTAINS: String
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
                       password_STARTS_WITH: String
+                      username: StringScalarFilters
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
@@ -2332,11 +2374,13 @@ describe("@filterable directive", () => {
                       movies_SINGLE: MovieWhere
                       \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
                       movies_SOME: MovieWhere
+                      password: StringScalarFilters
                       password_CONTAINS: String
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
                       password_STARTS_WITH: String
+                      username: StringScalarFilters
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
@@ -2648,6 +2692,20 @@ describe("@filterable directive", () => {
                     type StringAggregateSelection {
                       longest: String
                       shortest: String
+                    }
+
+                    \\"\\"\\"String filters\\"\\"\\"
+                    input StringScalarFilters {
+                      contains: String
+                      endsWith: String
+                      equals: String
+                      greaterThan: String
+                      greaterThanEquals: String
+                      in: [String!]
+                      lessThan: String
+                      lessThanEquals: String
+                      matches: String
+                      startsWith: String
                     }
 
                     type Subscription {
@@ -2883,11 +2941,13 @@ describe("@filterable directive", () => {
                       AND: [ActorSubscriptionWhere!]
                       NOT: ActorSubscriptionWhere
                       OR: [ActorSubscriptionWhere!]
+                      password: StringScalarFilters
                       password_CONTAINS: String
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
                       password_STARTS_WITH: String
+                      username: StringScalarFilters
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
@@ -2937,11 +2997,13 @@ describe("@filterable directive", () => {
                       movies_SINGLE: MovieWhere
                       \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
                       movies_SOME: MovieWhere
+                      password: StringScalarFilters
                       password_CONTAINS: String
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
                       password_STARTS_WITH: String
+                      username: StringScalarFilters
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
@@ -3123,6 +3185,7 @@ describe("@filterable directive", () => {
                       AND: [MovieSubscriptionWhere!]
                       NOT: MovieSubscriptionWhere
                       OR: [MovieSubscriptionWhere!]
+                      title: StringScalarFilters
                       title_CONTAINS: String
                       title_ENDS_WITH: String
                       title_EQ: String
@@ -3170,6 +3233,7 @@ describe("@filterable directive", () => {
                       actors_SINGLE: ActorWhere
                       \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
                       actors_SOME: ActorWhere
+                      title: StringScalarFilters
                       title_CONTAINS: String
                       title_ENDS_WITH: String
                       title_EQ: String
@@ -3220,6 +3284,20 @@ describe("@filterable directive", () => {
                     type StringAggregateSelection {
                       longest: String
                       shortest: String
+                    }
+
+                    \\"\\"\\"String filters\\"\\"\\"
+                    input StringScalarFilters {
+                      contains: String
+                      endsWith: String
+                      equals: String
+                      greaterThan: String
+                      greaterThanEquals: String
+                      in: [String!]
+                      lessThan: String
+                      lessThanEquals: String
+                      matches: String
+                      startsWith: String
                     }
 
                     type Subscription {
@@ -3454,11 +3532,13 @@ describe("@filterable directive", () => {
                       AND: [ActorSubscriptionWhere!]
                       NOT: ActorSubscriptionWhere
                       OR: [ActorSubscriptionWhere!]
+                      password: StringScalarFilters
                       password_CONTAINS: String
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
                       password_STARTS_WITH: String
+                      username: StringScalarFilters
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
@@ -3508,11 +3588,13 @@ describe("@filterable directive", () => {
                       movies_SINGLE: MovieWhere
                       \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
                       movies_SOME: MovieWhere
+                      password: StringScalarFilters
                       password_CONTAINS: String
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
                       password_STARTS_WITH: String
+                      username: StringScalarFilters
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
@@ -3742,6 +3824,7 @@ describe("@filterable directive", () => {
                       AND: [MovieSubscriptionWhere!]
                       NOT: MovieSubscriptionWhere
                       OR: [MovieSubscriptionWhere!]
+                      title: StringScalarFilters
                       title_CONTAINS: String
                       title_ENDS_WITH: String
                       title_EQ: String
@@ -3790,6 +3873,7 @@ describe("@filterable directive", () => {
                       actors_SINGLE: ActorWhere
                       \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
                       actors_SOME: ActorWhere
+                      title: StringScalarFilters
                       title_CONTAINS: String
                       title_ENDS_WITH: String
                       title_EQ: String
@@ -3840,6 +3924,20 @@ describe("@filterable directive", () => {
                     type StringAggregateSelection {
                       longest: String
                       shortest: String
+                    }
+
+                    \\"\\"\\"String filters\\"\\"\\"
+                    input StringScalarFilters {
+                      contains: String
+                      endsWith: String
+                      equals: String
+                      greaterThan: String
+                      greaterThanEquals: String
+                      in: [String!]
+                      lessThan: String
+                      lessThanEquals: String
+                      matches: String
+                      startsWith: String
                     }
 
                     type Subscription {
@@ -4074,11 +4172,13 @@ describe("@filterable directive", () => {
                       AND: [ActorSubscriptionWhere!]
                       NOT: ActorSubscriptionWhere
                       OR: [ActorSubscriptionWhere!]
+                      password: StringScalarFilters
                       password_CONTAINS: String
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
                       password_STARTS_WITH: String
+                      username: StringScalarFilters
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
@@ -4128,11 +4228,13 @@ describe("@filterable directive", () => {
                       movies_SINGLE: MovieWhere
                       \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
                       movies_SOME: MovieWhere
+                      password: StringScalarFilters
                       password_CONTAINS: String
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
                       password_STARTS_WITH: String
+                      username: StringScalarFilters
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
@@ -4362,6 +4464,7 @@ describe("@filterable directive", () => {
                       AND: [MovieSubscriptionWhere!]
                       NOT: MovieSubscriptionWhere
                       OR: [MovieSubscriptionWhere!]
+                      title: StringScalarFilters
                       title_CONTAINS: String
                       title_ENDS_WITH: String
                       title_EQ: String
@@ -4386,6 +4489,7 @@ describe("@filterable directive", () => {
                       NOT: MovieWhere
                       OR: [MovieWhere!]
                       actorsAggregate: MovieActorsAggregateInput
+                      title: StringScalarFilters
                       title_CONTAINS: String
                       title_ENDS_WITH: String
                       title_EQ: String
@@ -4436,6 +4540,20 @@ describe("@filterable directive", () => {
                     type StringAggregateSelection {
                       longest: String
                       shortest: String
+                    }
+
+                    \\"\\"\\"String filters\\"\\"\\"
+                    input StringScalarFilters {
+                      contains: String
+                      endsWith: String
+                      equals: String
+                      greaterThan: String
+                      greaterThanEquals: String
+                      in: [String!]
+                      lessThan: String
+                      lessThanEquals: String
+                      matches: String
+                      startsWith: String
                     }
 
                     type Subscription {
@@ -4670,11 +4788,13 @@ describe("@filterable directive", () => {
                       AND: [ActorSubscriptionWhere!]
                       NOT: ActorSubscriptionWhere
                       OR: [ActorSubscriptionWhere!]
+                      password: StringScalarFilters
                       password_CONTAINS: String
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
                       password_STARTS_WITH: String
+                      username: StringScalarFilters
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
@@ -4724,11 +4844,13 @@ describe("@filterable directive", () => {
                       movies_SINGLE: MovieWhere
                       \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
                       movies_SOME: MovieWhere
+                      password: StringScalarFilters
                       password_CONTAINS: String
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
                       password_STARTS_WITH: String
+                      username: StringScalarFilters
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
@@ -4910,6 +5032,7 @@ describe("@filterable directive", () => {
                       AND: [MovieSubscriptionWhere!]
                       NOT: MovieSubscriptionWhere
                       OR: [MovieSubscriptionWhere!]
+                      title: StringScalarFilters
                       title_CONTAINS: String
                       title_ENDS_WITH: String
                       title_EQ: String
@@ -4957,6 +5080,7 @@ describe("@filterable directive", () => {
                       actors_SINGLE: ActorWhere
                       \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
                       actors_SOME: ActorWhere
+                      title: StringScalarFilters
                       title_CONTAINS: String
                       title_ENDS_WITH: String
                       title_EQ: String
@@ -5007,6 +5131,20 @@ describe("@filterable directive", () => {
                     type StringAggregateSelection {
                       longest: String
                       shortest: String
+                    }
+
+                    \\"\\"\\"String filters\\"\\"\\"
+                    input StringScalarFilters {
+                      contains: String
+                      endsWith: String
+                      equals: String
+                      greaterThan: String
+                      greaterThanEquals: String
+                      in: [String!]
+                      lessThan: String
+                      lessThanEquals: String
+                      matches: String
+                      startsWith: String
                     }
 
                     type Subscription {
@@ -5234,11 +5372,13 @@ describe("@filterable directive", () => {
                       AND: [ActorSubscriptionWhere!]
                       NOT: ActorSubscriptionWhere
                       OR: [ActorSubscriptionWhere!]
+                      password: StringScalarFilters
                       password_CONTAINS: String
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
                       password_STARTS_WITH: String
+                      username: StringScalarFilters
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
@@ -5288,11 +5428,13 @@ describe("@filterable directive", () => {
                       movies_SINGLE: MovieWhere
                       \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
                       movies_SOME: MovieWhere
+                      password: StringScalarFilters
                       password_CONTAINS: String
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
                       password_STARTS_WITH: String
+                      username: StringScalarFilters
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
@@ -5470,6 +5612,7 @@ describe("@filterable directive", () => {
                       AND: [MovieSubscriptionWhere!]
                       NOT: MovieSubscriptionWhere
                       OR: [MovieSubscriptionWhere!]
+                      title: StringScalarFilters
                       title_CONTAINS: String
                       title_ENDS_WITH: String
                       title_EQ: String
@@ -5517,6 +5660,7 @@ describe("@filterable directive", () => {
                       actors_SINGLE: PersonWhere
                       \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                       actors_SOME: PersonWhere
+                      title: StringScalarFilters
                       title_CONTAINS: String
                       title_ENDS_WITH: String
                       title_EQ: String
@@ -5595,6 +5739,7 @@ describe("@filterable directive", () => {
                       NOT: PersonWhere
                       OR: [PersonWhere!]
                       typename_IN: [PersonImplementation!]
+                      username: StringScalarFilters
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
@@ -5625,6 +5770,20 @@ describe("@filterable directive", () => {
                     type StringAggregateSelection {
                       longest: String
                       shortest: String
+                    }
+
+                    \\"\\"\\"String filters\\"\\"\\"
+                    input StringScalarFilters {
+                      contains: String
+                      endsWith: String
+                      equals: String
+                      greaterThan: String
+                      greaterThanEquals: String
+                      in: [String!]
+                      lessThan: String
+                      lessThanEquals: String
+                      matches: String
+                      startsWith: String
                     }
 
                     type Subscription {
@@ -5852,11 +6011,13 @@ describe("@filterable directive", () => {
                       AND: [ActorSubscriptionWhere!]
                       NOT: ActorSubscriptionWhere
                       OR: [ActorSubscriptionWhere!]
+                      password: StringScalarFilters
                       password_CONTAINS: String
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
                       password_STARTS_WITH: String
+                      username: StringScalarFilters
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
@@ -5906,11 +6067,13 @@ describe("@filterable directive", () => {
                       movies_SINGLE: MovieWhere
                       \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
                       movies_SOME: MovieWhere
+                      password: StringScalarFilters
                       password_CONTAINS: String
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
                       password_STARTS_WITH: String
+                      username: StringScalarFilters
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
@@ -6121,6 +6284,7 @@ describe("@filterable directive", () => {
                       AND: [MovieSubscriptionWhere!]
                       NOT: MovieSubscriptionWhere
                       OR: [MovieSubscriptionWhere!]
+                      title: StringScalarFilters
                       title_CONTAINS: String
                       title_ENDS_WITH: String
                       title_EQ: String
@@ -6169,6 +6333,7 @@ describe("@filterable directive", () => {
                       actors_SINGLE: PersonWhere
                       \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                       actors_SOME: PersonWhere
+                      title: StringScalarFilters
                       title_CONTAINS: String
                       title_ENDS_WITH: String
                       title_EQ: String
@@ -6247,6 +6412,7 @@ describe("@filterable directive", () => {
                       NOT: PersonWhere
                       OR: [PersonWhere!]
                       typename_IN: [PersonImplementation!]
+                      username: StringScalarFilters
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
@@ -6277,6 +6443,20 @@ describe("@filterable directive", () => {
                     type StringAggregateSelection {
                       longest: String
                       shortest: String
+                    }
+
+                    \\"\\"\\"String filters\\"\\"\\"
+                    input StringScalarFilters {
+                      contains: String
+                      endsWith: String
+                      equals: String
+                      greaterThan: String
+                      greaterThanEquals: String
+                      in: [String!]
+                      lessThan: String
+                      lessThanEquals: String
+                      matches: String
+                      startsWith: String
                     }
 
                     type Subscription {
@@ -6504,11 +6684,13 @@ describe("@filterable directive", () => {
                       AND: [ActorSubscriptionWhere!]
                       NOT: ActorSubscriptionWhere
                       OR: [ActorSubscriptionWhere!]
+                      password: StringScalarFilters
                       password_CONTAINS: String
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
                       password_STARTS_WITH: String
+                      username: StringScalarFilters
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
@@ -6558,11 +6740,13 @@ describe("@filterable directive", () => {
                       movies_SINGLE: MovieWhere
                       \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
                       movies_SOME: MovieWhere
+                      password: StringScalarFilters
                       password_CONTAINS: String
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
                       password_STARTS_WITH: String
+                      username: StringScalarFilters
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
@@ -6740,6 +6924,7 @@ describe("@filterable directive", () => {
                       AND: [MovieSubscriptionWhere!]
                       NOT: MovieSubscriptionWhere
                       OR: [MovieSubscriptionWhere!]
+                      title: StringScalarFilters
                       title_CONTAINS: String
                       title_ENDS_WITH: String
                       title_EQ: String
@@ -6787,6 +6972,7 @@ describe("@filterable directive", () => {
                       actors_SINGLE: PersonWhere
                       \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                       actors_SOME: PersonWhere
+                      title: StringScalarFilters
                       title_CONTAINS: String
                       title_ENDS_WITH: String
                       title_EQ: String
@@ -6865,6 +7051,7 @@ describe("@filterable directive", () => {
                       NOT: PersonWhere
                       OR: [PersonWhere!]
                       typename_IN: [PersonImplementation!]
+                      username: StringScalarFilters
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
@@ -6895,6 +7082,20 @@ describe("@filterable directive", () => {
                     type StringAggregateSelection {
                       longest: String
                       shortest: String
+                    }
+
+                    \\"\\"\\"String filters\\"\\"\\"
+                    input StringScalarFilters {
+                      contains: String
+                      endsWith: String
+                      equals: String
+                      greaterThan: String
+                      greaterThanEquals: String
+                      in: [String!]
+                      lessThan: String
+                      lessThanEquals: String
+                      matches: String
+                      startsWith: String
                     }
 
                     type Subscription {
@@ -7138,11 +7339,13 @@ describe("@filterable directive", () => {
                       AND: [ActorSubscriptionWhere!]
                       NOT: ActorSubscriptionWhere
                       OR: [ActorSubscriptionWhere!]
+                      password: StringScalarFilters
                       password_CONTAINS: String
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
                       password_STARTS_WITH: String
+                      username: StringScalarFilters
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
@@ -7192,11 +7395,13 @@ describe("@filterable directive", () => {
                       movies_SINGLE: MovieWhere
                       \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
                       movies_SOME: MovieWhere
+                      password: StringScalarFilters
                       password_CONTAINS: String
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
                       password_STARTS_WITH: String
+                      username: StringScalarFilters
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
@@ -7381,11 +7586,13 @@ describe("@filterable directive", () => {
                       AND: [AppearanceSubscriptionWhere!]
                       NOT: AppearanceSubscriptionWhere
                       OR: [AppearanceSubscriptionWhere!]
+                      password: StringScalarFilters
                       password_CONTAINS: String
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
                       password_STARTS_WITH: String
+                      username: StringScalarFilters
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
@@ -7435,11 +7642,13 @@ describe("@filterable directive", () => {
                       movies_SINGLE: MovieWhere
                       \\"\\"\\"Return Appearances where some of the related Movies match this filter\\"\\"\\"
                       movies_SOME: MovieWhere
+                      password: StringScalarFilters
                       password_CONTAINS: String
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
                       password_STARTS_WITH: String
+                      username: StringScalarFilters
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
@@ -7685,6 +7894,7 @@ describe("@filterable directive", () => {
                       AND: [MovieSubscriptionWhere!]
                       NOT: MovieSubscriptionWhere
                       OR: [MovieSubscriptionWhere!]
+                      title: StringScalarFilters
                       title_CONTAINS: String
                       title_ENDS_WITH: String
                       title_EQ: String
@@ -7732,6 +7942,7 @@ describe("@filterable directive", () => {
                       actors_SINGLE: PersonWhere
                       \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                       actors_SOME: PersonWhere
+                      title: StringScalarFilters
                       title_CONTAINS: String
                       title_ENDS_WITH: String
                       title_EQ: String
@@ -7796,6 +8007,20 @@ describe("@filterable directive", () => {
                     type StringAggregateSelection {
                       longest: String
                       shortest: String
+                    }
+
+                    \\"\\"\\"String filters\\"\\"\\"
+                    input StringScalarFilters {
+                      contains: String
+                      endsWith: String
+                      equals: String
+                      greaterThan: String
+                      greaterThanEquals: String
+                      in: [String!]
+                      lessThan: String
+                      lessThanEquals: String
+                      matches: String
+                      startsWith: String
                     }
 
                     type Subscription {
@@ -8047,11 +8272,13 @@ describe("@filterable directive", () => {
                       AND: [ActorSubscriptionWhere!]
                       NOT: ActorSubscriptionWhere
                       OR: [ActorSubscriptionWhere!]
+                      password: StringScalarFilters
                       password_CONTAINS: String
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
                       password_STARTS_WITH: String
+                      username: StringScalarFilters
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
@@ -8101,11 +8328,13 @@ describe("@filterable directive", () => {
                       movies_SINGLE: MovieWhere
                       \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
                       movies_SOME: MovieWhere
+                      password: StringScalarFilters
                       password_CONTAINS: String
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
                       password_STARTS_WITH: String
+                      username: StringScalarFilters
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
@@ -8290,11 +8519,13 @@ describe("@filterable directive", () => {
                       AND: [AppearanceSubscriptionWhere!]
                       NOT: AppearanceSubscriptionWhere
                       OR: [AppearanceSubscriptionWhere!]
+                      password: StringScalarFilters
                       password_CONTAINS: String
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
                       password_STARTS_WITH: String
+                      username: StringScalarFilters
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
@@ -8344,11 +8575,13 @@ describe("@filterable directive", () => {
                       movies_SINGLE: MovieWhere
                       \\"\\"\\"Return Appearances where some of the related Movies match this filter\\"\\"\\"
                       movies_SOME: MovieWhere
+                      password: StringScalarFilters
                       password_CONTAINS: String
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
                       password_STARTS_WITH: String
+                      username: StringScalarFilters
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
@@ -8594,6 +8827,7 @@ describe("@filterable directive", () => {
                       AND: [MovieSubscriptionWhere!]
                       NOT: MovieSubscriptionWhere
                       OR: [MovieSubscriptionWhere!]
+                      title: StringScalarFilters
                       title_CONTAINS: String
                       title_ENDS_WITH: String
                       title_EQ: String
@@ -8641,6 +8875,7 @@ describe("@filterable directive", () => {
                       actors_SINGLE: PersonWhere
                       \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                       actors_SOME: PersonWhere
+                      title: StringScalarFilters
                       title_CONTAINS: String
                       title_ENDS_WITH: String
                       title_EQ: String
@@ -8705,6 +8940,20 @@ describe("@filterable directive", () => {
                     type StringAggregateSelection {
                       longest: String
                       shortest: String
+                    }
+
+                    \\"\\"\\"String filters\\"\\"\\"
+                    input StringScalarFilters {
+                      contains: String
+                      endsWith: String
+                      equals: String
+                      greaterThan: String
+                      greaterThanEquals: String
+                      in: [String!]
+                      lessThan: String
+                      lessThanEquals: String
+                      matches: String
+                      startsWith: String
                     }
 
                     type Subscription {
@@ -8956,11 +9205,13 @@ describe("@filterable directive", () => {
                       AND: [ActorSubscriptionWhere!]
                       NOT: ActorSubscriptionWhere
                       OR: [ActorSubscriptionWhere!]
+                      password: StringScalarFilters
                       password_CONTAINS: String
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
                       password_STARTS_WITH: String
+                      username: StringScalarFilters
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
@@ -9010,11 +9261,13 @@ describe("@filterable directive", () => {
                       movies_SINGLE: MovieWhere
                       \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
                       movies_SOME: MovieWhere
+                      password: StringScalarFilters
                       password_CONTAINS: String
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
                       password_STARTS_WITH: String
+                      username: StringScalarFilters
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
@@ -9199,11 +9452,13 @@ describe("@filterable directive", () => {
                       AND: [AppearanceSubscriptionWhere!]
                       NOT: AppearanceSubscriptionWhere
                       OR: [AppearanceSubscriptionWhere!]
+                      password: StringScalarFilters
                       password_CONTAINS: String
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
                       password_STARTS_WITH: String
+                      username: StringScalarFilters
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
@@ -9253,11 +9508,13 @@ describe("@filterable directive", () => {
                       movies_SINGLE: MovieWhere
                       \\"\\"\\"Return Appearances where some of the related Movies match this filter\\"\\"\\"
                       movies_SOME: MovieWhere
+                      password: StringScalarFilters
                       password_CONTAINS: String
                       password_ENDS_WITH: String
                       password_EQ: String
                       password_IN: [String!]
                       password_STARTS_WITH: String
+                      username: StringScalarFilters
                       username_CONTAINS: String
                       username_ENDS_WITH: String
                       username_EQ: String
@@ -9503,6 +9760,7 @@ describe("@filterable directive", () => {
                       AND: [MovieSubscriptionWhere!]
                       NOT: MovieSubscriptionWhere
                       OR: [MovieSubscriptionWhere!]
+                      title: StringScalarFilters
                       title_CONTAINS: String
                       title_ENDS_WITH: String
                       title_EQ: String
@@ -9550,6 +9808,7 @@ describe("@filterable directive", () => {
                       actors_SINGLE: PersonWhere
                       \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                       actors_SOME: PersonWhere
+                      title: StringScalarFilters
                       title_CONTAINS: String
                       title_ENDS_WITH: String
                       title_EQ: String
@@ -9614,6 +9873,20 @@ describe("@filterable directive", () => {
                     type StringAggregateSelection {
                       longest: String
                       shortest: String
+                    }
+
+                    \\"\\"\\"String filters\\"\\"\\"
+                    input StringScalarFilters {
+                      contains: String
+                      endsWith: String
+                      equals: String
+                      greaterThan: String
+                      greaterThanEquals: String
+                      in: [String!]
+                      lessThan: String
+                      lessThanEquals: String
+                      matches: String
+                      startsWith: String
                     }
 
                     type Subscription {

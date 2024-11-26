@@ -96,12 +96,14 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              dob: DateTimeScalarFilters
               dob_EQ: DateTime
               dob_GT: DateTime
               dob_GTE: DateTime
               dob_IN: [DateTime!]
               dob_LT: DateTime
               dob_LTE: DateTime
+              homeAddress: PointFilters
               homeAddress_DISTANCE: PointDistance
               homeAddress_EQ: PointInput
               homeAddress_GT: PointDistance
@@ -109,11 +111,13 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
               homeAddress_IN: [PointInput!]
               homeAddress_LT: PointDistance
               homeAddress_LTE: PointDistance
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID!]
               id_STARTS_WITH: ID
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -153,6 +157,16 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
               min: DateTime
             }
 
+            \\"\\"\\"DateTime filters\\"\\"\\"
+            input DateTimeScalarFilters {
+              equals: DateTime
+              greaterThan: DateTime
+              greaterThanEquals: DateTime
+              in: [DateTime!]
+              lessThan: DateTime
+              lessThanEquals: DateTime
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships deleted during a delete mutation
             \\"\\"\\"
@@ -164,6 +178,20 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
             type IDAggregateSelection {
               longest: ID
               shortest: ID
+            }
+
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              matches: ID
+              startsWith: ID
             }
 
             type Movie {
@@ -356,11 +384,13 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID!]
               id_STARTS_WITH: ID
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -409,6 +439,22 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
               point: PointInput!
             }
 
+            \\"\\"\\"Distance filters\\"\\"\\"
+            input PointDistanceFilters {
+              equals: PointDistance
+              greaterThan: PointDistance
+              greaterThanEquals: PointDistance
+              lessThan: PointDistance
+              lessThanEquals: PointDistance
+            }
+
+            \\"\\"\\"Point filters\\"\\"\\"
+            input PointFilters {
+              distance: PointDistanceFilters
+              equals: PointInput
+              in: [PointInput!]
+            }
+
             \\"\\"\\"Input type for a point\\"\\"\\"
             input PointInput {
               height: Float
@@ -436,6 +482,20 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type UpdateActorsMutationResponse {

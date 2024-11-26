@@ -75,6 +75,20 @@ describe("Relationship nested operations", () => {
               shortest: ID
             }
 
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              matches: ID
+              startsWith: ID
+            }
+
             type Movie {
               actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
               actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection
@@ -211,6 +225,7 @@ describe("Relationship nested operations", () => {
               actors_SINGLE: PersonWhere
               \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
               actors_SOME: PersonWhere
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
@@ -283,11 +298,13 @@ describe("Relationship nested operations", () => {
               AND: [PersonWhere!]
               NOT: PersonWhere
               OR: [PersonWhere!]
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID!]
               id_STARTS_WITH: ID
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -315,6 +332,20 @@ describe("Relationship nested operations", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             \\"\\"\\"
@@ -399,6 +430,20 @@ describe("Relationship nested operations", () => {
             type IDAggregateSelection {
               longest: ID
               shortest: ID
+            }
+
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              matches: ID
+              startsWith: ID
             }
 
             type Movie {
@@ -490,6 +535,7 @@ describe("Relationship nested operations", () => {
               actors_SINGLE: PersonWhere
               \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
               actors_SOME: PersonWhere
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
@@ -558,6 +604,7 @@ describe("Relationship nested operations", () => {
               AND: [PersonOneWhere!]
               NOT: PersonOneWhere
               OR: [PersonOneWhere!]
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -604,6 +651,7 @@ describe("Relationship nested operations", () => {
               AND: [PersonTwoWhere!]
               NOT: PersonTwoWhere
               OR: [PersonTwoWhere!]
+              nameTwo: StringScalarFilters
               nameTwo_CONTAINS: String
               nameTwo_ENDS_WITH: String
               nameTwo_EQ: String
@@ -646,6 +694,20 @@ describe("Relationship nested operations", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             \\"\\"\\"

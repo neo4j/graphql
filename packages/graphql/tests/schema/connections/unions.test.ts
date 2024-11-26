@@ -250,6 +250,7 @@ describe("Unions", () => {
               AND: [AuthorWhere!]
               NOT: AuthorWhere
               OR: [AuthorWhere!]
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -483,6 +484,7 @@ describe("Unions", () => {
               author_SINGLE: AuthorWhere
               \\"\\"\\"Return Books where some of the related Authors match this filter\\"\\"\\"
               author_SOME: AuthorWhere
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -532,6 +534,16 @@ describe("Unions", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              equals: Int
+              greaterThan: Int
+              greaterThanEquals: Int
+              in: [Int!]
+              lessThan: Int
+              lessThanEquals: Int
             }
 
             type Journal {
@@ -726,6 +738,7 @@ describe("Unions", () => {
               author_SINGLE: AuthorWhere
               \\"\\"\\"Return Journals where some of the related Authors match this filter\\"\\"\\"
               author_SOME: AuthorWhere
+              subject: StringScalarFilters
               subject_CONTAINS: String
               subject_ENDS_WITH: String
               subject_EQ: String
@@ -790,6 +803,20 @@ describe("Unions", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type UpdateAuthorsMutationResponse {
@@ -871,6 +898,7 @@ describe("Unions", () => {
               AND: [WroteWhere!]
               NOT: WroteWhere
               OR: [WroteWhere!]
+              words: IntScalarFilters
               words_EQ: Int
               words_GT: Int
               words_GTE: Int

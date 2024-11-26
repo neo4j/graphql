@@ -61,6 +61,16 @@ describe("Timestamps", () => {
               min: DateTime
             }
 
+            \\"\\"\\"DateTime filters\\"\\"\\"
+            input DateTimeScalarFilters {
+              equals: DateTime
+              greaterThan: DateTime
+              greaterThanEquals: DateTime
+              in: [DateTime!]
+              lessThan: DateTime
+              lessThanEquals: DateTime
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships deleted during a delete mutation
             \\"\\"\\"
@@ -72,6 +82,20 @@ describe("Timestamps", () => {
             type IDAggregateSelection {
               longest: ID
               shortest: ID
+            }
+
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              matches: ID
+              startsWith: ID
             }
 
             type Movie {
@@ -115,17 +139,20 @@ describe("Timestamps", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              createdAt: DateTimeScalarFilters
               createdAt_EQ: DateTime
               createdAt_GT: DateTime
               createdAt_GTE: DateTime
               createdAt_IN: [DateTime!]
               createdAt_LT: DateTime
               createdAt_LTE: DateTime
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
+              updatedAt: DateTimeScalarFilters
               updatedAt_EQ: DateTime
               updatedAt_GT: DateTime
               updatedAt_GTE: DateTime

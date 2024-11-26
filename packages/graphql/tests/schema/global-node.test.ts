@@ -65,6 +65,20 @@ describe("Node Interface Types", () => {
               shortest: ID
             }
 
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              matches: ID
+              startsWith: ID
+            }
+
             type Movie implements Node {
               id: ID!
               imdb: ID!
@@ -105,11 +119,13 @@ describe("Node Interface Types", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               id: ID
+              imdb: IDScalarFilters
               imdb_CONTAINS: ID
               imdb_ENDS_WITH: ID
               imdb_EQ: ID
               imdb_IN: [ID!]
               imdb_STARTS_WITH: ID
+              title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
               title_EQ: String
@@ -165,6 +181,20 @@ describe("Node Interface Types", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             \\"\\"\\"

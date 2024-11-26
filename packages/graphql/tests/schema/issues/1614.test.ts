@@ -261,6 +261,12 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               KeyGrip
             }
 
+            \\"\\"\\"CrewPositionType filters\\"\\"\\"
+            input CrewPositionTypeEnumScalarFilters {
+              equals: CrewPositionType
+              in: [CrewPositionType!]
+            }
+
             input CrewPositionUpdateInput {
               position_SET: CrewPositionType
             }
@@ -269,6 +275,7 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               AND: [CrewPositionWhere!]
               NOT: CrewPositionWhere
               OR: [CrewPositionWhere!]
+              position: CrewPositionTypeEnumScalarFilters
               position_EQ: CrewPositionType
               position_IN: [CrewPositionType]
             }
@@ -318,6 +325,7 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
@@ -368,6 +376,20 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             type UpdateCrewMembersMutationResponse {

@@ -65,6 +65,11 @@ describe("Comments", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"Boolean filters\\"\\"\\"
+            input BooleanScalarFilters {
+              equals: Boolean
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -81,6 +86,12 @@ describe("Comments", () => {
             \\"\\"\\"A custom scalar.\\"\\"\\"
             scalar CustomScalar
 
+            \\"\\"\\"CustomScalar filters\\"\\"\\"
+            input CustomScalarScalarFilters {
+              equals: CustomScalar
+              in: [CustomScalar!]
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships deleted during a delete mutation
             \\"\\"\\"
@@ -96,6 +107,16 @@ describe("Comments", () => {
               sum: Float
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              equals: Float
+              greaterThan: Float
+              greaterThanEquals: Float
+              in: [Float!]
+              lessThan: Float
+              lessThanEquals: Float
+            }
+
             \\"\\"\\"An enumeration of movie genres.\\"\\"\\"
             enum Genre {
               ACTION
@@ -103,9 +124,29 @@ describe("Comments", () => {
               ROMANCE
             }
 
+            \\"\\"\\"Genre filters\\"\\"\\"
+            input GenreEnumScalarFilters {
+              equals: Genre
+              in: [Genre!]
+            }
+
             type IDAggregateSelection {
               longest: ID
               shortest: ID
+            }
+
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              matches: ID
+              startsWith: ID
             }
 
             type IntAggregateSelection {
@@ -113,6 +154,16 @@ describe("Comments", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              equals: Int
+              greaterThan: Int
+              greaterThanEquals: Int
+              in: [Int!]
+              lessThan: Int
+              lessThanEquals: Int
             }
 
             \\"\\"\\"A type describing a movie.\\"\\"\\"
@@ -184,27 +235,33 @@ describe("Comments", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              actorCount: IntScalarFilters
               actorCount_EQ: Int
               actorCount_GT: Int
               actorCount_GTE: Int
               actorCount_IN: [Int]
               actorCount_LT: Int
               actorCount_LTE: Int
+              averageRating: FloatScalarFilters
               averageRating_EQ: Float
               averageRating_GT: Float
               averageRating_GTE: Float
               averageRating_IN: [Float]
               averageRating_LT: Float
               averageRating_LTE: Float
+              customScalar: CustomScalarScalarFilters
               customScalar_EQ: CustomScalar
               customScalar_IN: [CustomScalar]
+              genre: GenreEnumScalarFilters
               genre_EQ: Genre
               genre_IN: [Genre]
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
+              isActive: BooleanScalarFilters
               isActive_EQ: Boolean
             }
 
@@ -318,6 +375,7 @@ describe("Comments", () => {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
+                  name: StringScalarFilters
                   name_CONTAINS: String
                   name_ENDS_WITH: String
                   name_EQ: String
@@ -360,6 +418,20 @@ describe("Comments", () => {
                 type IDAggregateSelection {
                   longest: ID
                   shortest: ID
+                }
+
+                \\"\\"\\"ID filters\\"\\"\\"
+                input IDScalarFilters {
+                  contains: ID
+                  endsWith: ID
+                  equals: ID
+                  greaterThan: ID
+                  greaterThanEquals: ID
+                  in: [ID!]
+                  lessThan: ID
+                  lessThanEquals: ID
+                  matches: ID
+                  startsWith: ID
                 }
 
                 type Movie {
@@ -528,6 +600,7 @@ describe("Comments", () => {
                   actors_SINGLE: ActorWhere
                   \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
                   actors_SOME: ActorWhere
+                  id: IDScalarFilters
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
                   id_EQ: ID
@@ -578,6 +651,20 @@ describe("Comments", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  equals: String
+                  greaterThan: String
+                  greaterThanEquals: String
+                  in: [String!]
+                  lessThan: String
+                  lessThanEquals: String
+                  matches: String
+                  startsWith: String
                 }
 
                 type UpdateActorsMutationResponse {
@@ -689,6 +776,7 @@ describe("Comments", () => {
                   AND: [ActedInWhere!]
                   NOT: ActedInWhere
                   OR: [ActedInWhere!]
+                  screenTime: IntScalarFilters
                   screenTime_EQ: Int
                   screenTime_GT: Int
                   screenTime_GTE: Int
@@ -875,6 +963,7 @@ describe("Comments", () => {
                   actedIn_SINGLE: ProductionWhere
                   \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
                   actedIn_SOME: ProductionWhere
+                  name: StringScalarFilters
                   name_CONTAINS: String
                   name_ENDS_WITH: String
                   name_EQ: String
@@ -926,6 +1015,16 @@ describe("Comments", () => {
                   sum: Int
                 }
 
+                \\"\\"\\"Int filters\\"\\"\\"
+                input IntScalarFilters {
+                  equals: Int
+                  greaterThan: Int
+                  greaterThanEquals: Int
+                  in: [Int!]
+                  lessThan: Int
+                  lessThanEquals: Int
+                }
+
                 type Movie implements Production {
                   runtime: Int!
                   title: String!
@@ -966,12 +1065,14 @@ describe("Comments", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  runtime: IntScalarFilters
                   runtime_EQ: Int
                   runtime_GT: Int
                   runtime_GTE: Int
                   runtime_IN: [Int!]
                   runtime_LT: Int
                   runtime_LTE: Int
+                  title: StringScalarFilters
                   title_CONTAINS: String
                   title_ENDS_WITH: String
                   title_EQ: String
@@ -1048,6 +1149,7 @@ describe("Comments", () => {
                   AND: [ProductionWhere!]
                   NOT: ProductionWhere
                   OR: [ProductionWhere!]
+                  title: StringScalarFilters
                   title_CONTAINS: String
                   title_ENDS_WITH: String
                   title_EQ: String
@@ -1123,12 +1225,14 @@ describe("Comments", () => {
                   AND: [SeriesWhere!]
                   NOT: SeriesWhere
                   OR: [SeriesWhere!]
+                  episodes: IntScalarFilters
                   episodes_EQ: Int
                   episodes_GT: Int
                   episodes_GTE: Int
                   episodes_IN: [Int!]
                   episodes_LT: Int
                   episodes_LTE: Int
+                  title: StringScalarFilters
                   title_CONTAINS: String
                   title_ENDS_WITH: String
                   title_EQ: String
@@ -1147,6 +1251,20 @@ describe("Comments", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  equals: String
+                  greaterThan: String
+                  greaterThanEquals: String
+                  in: [String!]
+                  lessThan: String
+                  lessThanEquals: String
+                  matches: String
+                  startsWith: String
                 }
 
                 type UpdateActorsMutationResponse {
@@ -1262,6 +1380,7 @@ describe("Comments", () => {
                   AND: [GenreWhere!]
                   NOT: GenreWhere
                   OR: [GenreWhere!]
+                  id: IDScalarFilters
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
                   id_EQ: ID
@@ -1278,6 +1397,20 @@ describe("Comments", () => {
                 type IDAggregateSelection {
                   longest: ID
                   shortest: ID
+                }
+
+                \\"\\"\\"ID filters\\"\\"\\"
+                input IDScalarFilters {
+                  contains: ID
+                  endsWith: ID
+                  equals: ID
+                  greaterThan: ID
+                  greaterThanEquals: ID
+                  in: [ID!]
+                  lessThan: ID
+                  lessThanEquals: ID
+                  matches: ID
+                  startsWith: ID
                 }
 
                 type Movie {
@@ -1460,6 +1593,7 @@ describe("Comments", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  id: IDScalarFilters
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
                   id_EQ: ID

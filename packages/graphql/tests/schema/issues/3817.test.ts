@@ -123,6 +123,7 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
               AND: [FriendOfWhere!]
               NOT: FriendOfWhere
               OR: [FriendOfWhere!]
+              id: StringScalarFilters
               id_CONTAINS: String
               id_ENDS_WITH: String
               id_EQ: String
@@ -133,6 +134,20 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
             type IDAggregateSelection {
               longest: ID
               shortest: ID
+            }
+
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              equals: ID
+              greaterThan: ID
+              greaterThanEquals: ID
+              in: [ID!]
+              lessThan: ID
+              lessThanEquals: ID
+              matches: ID
+              startsWith: ID
             }
 
             type Mutation {
@@ -338,6 +353,7 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
               friends_SINGLE: PersonWhere
               \\"\\"\\"Return People where some of the related People match this filter\\"\\"\\"
               friends_SOME: PersonWhere
+              id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
@@ -362,6 +378,20 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              equals: String
+              greaterThan: String
+              greaterThanEquals: String
+              in: [String!]
+              lessThan: String
+              lessThanEquals: String
+              matches: String
+              startsWith: String
             }
 
             \\"\\"\\"
