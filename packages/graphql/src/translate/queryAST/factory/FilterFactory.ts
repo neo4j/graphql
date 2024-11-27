@@ -47,6 +47,7 @@ import { CustomCypherSelection } from "../ast/selection/CustomCypherSelection";
 import { getConcreteEntities } from "../utils/get-concrete-entities";
 import { isConcreteEntity } from "../utils/is-concrete-entity";
 import { isInterfaceEntity } from "../utils/is-interface-entity";
+import { isRelationshipEntity } from "../utils/is-relationship-entity";
 import { isUnionEntity } from "../utils/is-union-entity";
 import type { QueryASTFactory } from "./QueryASTFactory";
 import { parseAggregationWhereFields, parseConnectionWhereFields, parseWhereField } from "./parsers/parse-where-field";
@@ -522,14 +523,14 @@ export class FilterFactory {
     }
 
     private parseGenericFilter(
-        entity: ConcreteEntityAdapter,
+        entity: ConcreteEntityAdapter | RelationshipAdapter,
         fieldName: string,
         filterInput: [string, any]
     ): Filter | Filter[] {
         const [rawOperator, value] = filterInput;
         if (isLogicalOperator(rawOperator)) {
             const nestedFilters = asArray(value).flatMap((nestedWhere) => {
-                return this.createNodeFilters(entity, nestedWhere);
+                return this.parseGenericFilter(entity, fieldName, nestedWhere);
             });
             return new LogicalFilter({
                 operation: rawOperator,
@@ -541,16 +542,21 @@ export class FilterFactory {
         const attribute = entity.findAttribute(fieldName);
 
         if (!attribute) {
+            if (isRelationshipEntity(entity)) {
+                throw new Error("Transpilation error: Expected a Concrete Entity found a Relationship");
+            }
             if (fieldName === "id" && entity.globalIdField) {
                 return this.createRelayIdPropertyFilter(entity, false, operator, value);
             }
             throw new Error(`Attribute ${fieldName} not found`);
         }
+        const attachedTo = isRelationshipEntity(entity) ? "relationship" : "node";
         const filters = this.createPropertyFilter({
             attribute,
             comparisonValue: value,
             isNot: false,
             operator,
+            attachedTo,
         });
         return this.wrapMultipleFiltersInLogical(asArray(filters));
     }
@@ -678,6 +684,12 @@ export class FilterFactory {
                 });
             }
             const { fieldName, operator, isNot } = parseWhereField(key);
+            if (!operator) {
+                const genericFilters = Object.entries(value).flatMap((filterInput) => {
+                    return this.parseGenericFilter(relationship, fieldName, filterInput);
+                });
+                return this.wrapMultipleFiltersInLogical(genericFilters);
+            }
             const attribute = relationship.findAttribute(fieldName);
             if (!attribute) {
                 if (fieldName === relationship.propertiesTypeName) {

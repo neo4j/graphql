@@ -1011,8 +1011,8 @@ describe("Advanced Filtering", () => {
             expect((gqlResult.data as any)[randomType.plural]).toHaveLength(0);
         });
     });
-    // TODO Missing relationship properties
-    describe.skip("Relationship/Connection Filtering", () => {
+
+    describe("Relationship/Connection Filtering", () => {
         describe("equality", () => {
             test("should find using relationship equality on node", async () => {
                 const randomType1 = testHelper.createUniqueType("Movie");
