@@ -494,12 +494,7 @@ export class FilterFactory {
                         isAggregate,
                     });
                 }
-                if (!operator) {
-                    const genericFilters = Object.entries(value).flatMap((filterInput) => {
-                        return this.parseGenericFilter(entity, fieldName, filterInput);
-                    });
-                    return this.wrapMultipleFiltersInLogical(genericFilters);
-                }
+
                 const attribute = entity.findAttribute(fieldName);
 
                 if (!attribute) {
@@ -508,6 +503,13 @@ export class FilterFactory {
                     }
 
                     throw new Error(`Attribute ${fieldName} not found`);
+                }
+
+                if (!operator && !attribute.isCypherRelationshipField()) {
+                    const genericFilters = Object.entries(value).flatMap((filterInput) => {
+                        return this.parseGenericFilter(entity, fieldName, filterInput);
+                    });
+                    return this.wrapMultipleFiltersInLogical(genericFilters);
                 }
 
                 return this.createPropertyFilter({
@@ -537,6 +539,7 @@ export class FilterFactory {
                 filters: nestedFilters,
             });
         }
+
         const operator = this.parseGenericOperator(rawOperator);
 
         const attribute = entity.findAttribute(fieldName);
