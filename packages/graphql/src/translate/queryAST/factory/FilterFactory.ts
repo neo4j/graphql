@@ -494,12 +494,7 @@ export class FilterFactory {
                         isAggregate,
                     });
                 }
-                if (!operator) {
-                    const genericFilters = Object.entries(value).flatMap((filterInput) => {
-                        return this.parseGenericFilter(entity, fieldName, filterInput);
-                    });
-                    return this.wrapMultipleFiltersInLogical(genericFilters);
-                }
+
                 const attribute = entity.findAttribute(fieldName);
 
                 if (!attribute) {
@@ -508,6 +503,14 @@ export class FilterFactory {
                     }
 
                     throw new Error(`Attribute ${fieldName} not found`);
+                }
+
+                // This is a bit hacky, basically skipping cypher fields and federation strings being passed to filterFactory
+                if (!operator && !attribute.annotations.cypher && typeof value === "object") {
+                    const genericFilters = Object.entries(value).flatMap((filterInput) => {
+                        return this.parseGenericFilter(entity, fieldName, filterInput);
+                    });
+                    return this.wrapMultipleFiltersInLogical(genericFilters);
                 }
 
                 return this.createPropertyFilter({
@@ -537,6 +540,7 @@ export class FilterFactory {
                 filters: nestedFilters,
             });
         }
+
         const operator = this.parseGenericOperator(rawOperator);
 
         const attribute = entity.findAttribute(fieldName);
