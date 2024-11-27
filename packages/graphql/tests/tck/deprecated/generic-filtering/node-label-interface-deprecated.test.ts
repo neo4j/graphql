@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQL } from "../../../../src";
-import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
+import { Neo4jGraphQL } from "../../../src";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
-describe("Node directive with interface", () => {
+describe("Node directive with interface - deprecated", () => {
     let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
@@ -49,8 +49,8 @@ describe("Node directive with interface", () => {
     test("Read Interface", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { title: { equals: "some title" } }) {
-                    search(where: { name: { equals: "Horror" } }, offset: 1, limit: 10) {
+                movies(where: { title_EQ: "some title" }) {
+                    search(where: { name_EQ: "Horror" }, offset: 1, limit: 10) {
                         ... on Movie {
                             title
                         }

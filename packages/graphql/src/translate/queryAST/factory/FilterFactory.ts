@@ -445,6 +445,12 @@ export class FilterFactory {
                 if (!attribute) {
                     throw new Error(`Attribute ${fieldName} not found`);
                 }
+                if (!operator) {
+                    const genericFilters = Object.entries(value).flatMap((filterInput) => {
+                        return this.parseGenericFilter(entity, fieldName, filterInput);
+                    });
+                    return this.wrapMultipleFiltersInLogical(genericFilters);
+                }
 
                 return this.createPropertyFilter({
                     attribute,
@@ -526,7 +532,7 @@ export class FilterFactory {
     }
 
     private parseGenericFilter(
-        entity: ConcreteEntityAdapter | RelationshipAdapter,
+        entity: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter,
         fieldName: string,
         filterInput: [string, any]
     ): Filter | Filter[] {
@@ -554,8 +560,8 @@ export class FilterFactory {
         const attribute = entity.findAttribute(fieldName);
 
         if (!attribute) {
-            if (isRelationshipEntity(entity)) {
-                throw new Error("Transpilation error: Expected a Concrete Entity found a Relationship");
+            if (isRelationshipEntity(entity) || isInterfaceEntity(entity)) {
+                throw new Error("Transpilation error: Expected concrete entity");
             }
             if (fieldName === "id" && entity.globalIdField) {
                 return this.createRelayIdPropertyFilter(entity, false, operator, value);
