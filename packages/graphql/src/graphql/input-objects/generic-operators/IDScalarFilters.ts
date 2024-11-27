@@ -37,3 +37,12 @@ export const IDScalarFilters = new GraphQLInputObjectType({
         startsWith: { type: GraphQLID },
     },
 });
+
+export const IDListFilters = new GraphQLInputObjectType({
+    name: "IDListFilters",
+    description: "ID list filters",
+    fields: {
+        equals: { type: new GraphQLList(new GraphQLNonNull(IDScalarFilters)) },
+        includes: { type: IDScalarFilters },
+    },
+});

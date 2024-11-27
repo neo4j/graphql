@@ -105,7 +105,7 @@ describe("200", () => {
               description_EQ: String
               description_IN: [String!]
               description_STARTS_WITH: String
-              exampleImageLocations: StringScalarFilters
+              exampleImageLocations: StringListFilters
               exampleImageLocations_EQ: [String!]
               exampleImageLocations_INCLUDES: String
               name: StringScalarFilters
@@ -187,6 +187,12 @@ describe("200", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String list filters\\"\\"\\"
+            input StringListFilters {
+              equals: [String!]
+              includes: String
             }
 
             \\"\\"\\"String filters\\"\\"\\"

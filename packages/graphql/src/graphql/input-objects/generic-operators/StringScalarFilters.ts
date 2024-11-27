@@ -37,3 +37,12 @@ export const StringScalarFilters = new GraphQLInputObjectType({
         startsWith: { type: GraphQLString },
     },
 });
+
+export const StringListFilters = new GraphQLInputObjectType({
+    name: "StringListFilters",
+    description: "String list filters",
+    fields: {
+        equals: { type: new GraphQLList(new GraphQLNonNull(GraphQLString)) },
+        includes: { type: GraphQLString },
+    },
+});

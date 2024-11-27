@@ -18,62 +18,130 @@
  */
 
 import type { GraphQLInputType } from "graphql";
-import { BigIntScalarFilters } from "../../graphql/input-objects/generic-operators/BigIntScalarFilters";
-import { BooleanScalarFilters } from "../../graphql/input-objects/generic-operators/BooleanScalarFilters";
-import { DateScalarFilters } from "../../graphql/input-objects/generic-operators/DateScalarFilters";
-import { DateTimeScalarFilters } from "../../graphql/input-objects/generic-operators/DateTimeScalarFilters";
-import { DurationScalarFilters } from "../../graphql/input-objects/generic-operators/DurationScalarFilters";
-import { FloatScalarFilters } from "../../graphql/input-objects/generic-operators/FloatScalarFilters";
-import { IDScalarFilters } from "../../graphql/input-objects/generic-operators/IDScalarFilters";
-import { IntScalarFilters } from "../../graphql/input-objects/generic-operators/IntScalarFilters";
-import { LocalDateTimeScalarFilters } from "../../graphql/input-objects/generic-operators/LocalDateTimeScalarFilters";
-import { LocalTimeScalarFilters } from "../../graphql/input-objects/generic-operators/LocalTimeScalarFilters";
-import { CartesianPointFilters, PointFilters } from "../../graphql/input-objects/generic-operators/PointFilters";
-import { StringScalarFilters } from "../../graphql/input-objects/generic-operators/StringScalarFilters";
-import { TimeScalarFilters } from "../../graphql/input-objects/generic-operators/TimeScalarFilters";
+import {
+    BigIntListFilters,
+    BigIntScalarFilters,
+} from "../../graphql/input-objects/generic-operators/BigIntScalarFilters";
+import {
+    BooleanListFilters,
+    BooleanScalarFilters,
+} from "../../graphql/input-objects/generic-operators/BooleanScalarFilters";
+import {
+    CartesianPointFilters,
+    CartesianPointListFilters,
+} from "../../graphql/input-objects/generic-operators/CartesianPointFilters";
+import { DateListFilters, DateScalarFilters } from "../../graphql/input-objects/generic-operators/DateScalarFilters";
+import {
+    DateTimeListFilters,
+    DateTimeScalarFilters,
+} from "../../graphql/input-objects/generic-operators/DateTimeScalarFilters";
+import {
+    DurationListFilters,
+    DurationScalarFilters,
+} from "../../graphql/input-objects/generic-operators/DurationScalarFilters";
+import { FloatListFilters, FloatScalarFilters } from "../../graphql/input-objects/generic-operators/FloatScalarFilters";
+import { IDListFilters, IDScalarFilters } from "../../graphql/input-objects/generic-operators/IDScalarFilters";
+import { IntListFilters, IntScalarFilters } from "../../graphql/input-objects/generic-operators/IntScalarFilters";
+import {
+    LocalDateTimeListFilters,
+    LocalDateTimeScalarFilters,
+} from "../../graphql/input-objects/generic-operators/LocalDateTimeScalarFilters";
+import {
+    LocalTimeListFilters,
+    LocalTimeScalarFilters,
+} from "../../graphql/input-objects/generic-operators/LocalTimeScalarFilters";
+import { PointFilters, PointListFilters } from "../../graphql/input-objects/generic-operators/PointFilters";
+import {
+    StringListFilters,
+    StringScalarFilters,
+} from "../../graphql/input-objects/generic-operators/StringScalarFilters";
+import { TimeListFilters, TimeScalarFilters } from "../../graphql/input-objects/generic-operators/TimeScalarFilters";
 import type { AttributeAdapter } from "../../schema-model/attribute/model-adapters/AttributeAdapter";
 
 export function getInputTypeFromAttributeType(attribute: AttributeAdapter): GraphQLInputType | string {
+    // NOTE: static types returned here must be added to schema-validation > validateUserDefinition
     if (attribute.typeHelper.isBoolean()) {
+        if (attribute.typeHelper.isList()) {
+            return BooleanListFilters;
+        }
         return BooleanScalarFilters;
     }
     if (attribute.typeHelper.isID()) {
+        if (attribute.typeHelper.isList()) {
+            return IDListFilters;
+        }
         return IDScalarFilters;
     }
     if (attribute.typeHelper.isString()) {
+        if (attribute.typeHelper.isList()) {
+            return StringListFilters;
+        }
         return StringScalarFilters;
     }
     if (attribute.typeHelper.isInt()) {
+        if (attribute.typeHelper.isList()) {
+            return IntListFilters;
+        }
         return IntScalarFilters;
     }
     if (attribute.typeHelper.isFloat()) {
+        if (attribute.typeHelper.isList()) {
+            return FloatListFilters;
+        }
         return FloatScalarFilters;
     }
     if (attribute.typeHelper.isBigInt()) {
+        if (attribute.typeHelper.isList()) {
+            return BigIntListFilters;
+        }
         return BigIntScalarFilters;
     }
     if (attribute.typeHelper.isTime()) {
+        if (attribute.typeHelper.isList()) {
+            return TimeListFilters;
+        }
         return TimeScalarFilters;
     }
     if (attribute.typeHelper.isPoint()) {
+        if (attribute.typeHelper.isList()) {
+            return PointListFilters;
+        }
         return PointFilters;
     }
     if (attribute.typeHelper.isCartesianPoint()) {
+        if (attribute.typeHelper.isList()) {
+            return CartesianPointListFilters;
+        }
         return CartesianPointFilters;
     }
     if (attribute.typeHelper.isDateTime()) {
+        if (attribute.typeHelper.isList()) {
+            return DateTimeListFilters;
+        }
         return DateTimeScalarFilters;
     }
     if (attribute.typeHelper.isLocalTime()) {
+        if (attribute.typeHelper.isList()) {
+            return LocalTimeListFilters;
+        }
         return LocalTimeScalarFilters;
     }
     if (attribute.typeHelper.isLocalDateTime()) {
+        if (attribute.typeHelper.isList()) {
+            return LocalDateTimeListFilters;
+        }
         return LocalDateTimeScalarFilters;
     }
     if (attribute.typeHelper.isDuration()) {
+        if (attribute.typeHelper.isList()) {
+            return DurationListFilters;
+        }
         return DurationScalarFilters;
     }
     if (attribute.typeHelper.isDate()) {
+        if (attribute.typeHelper.isList()) {
+            return DateListFilters;
+        }
         return DateScalarFilters;
     }
 

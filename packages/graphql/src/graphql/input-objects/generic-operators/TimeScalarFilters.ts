@@ -34,3 +34,12 @@ export const TimeScalarFilters = new GraphQLInputObjectType({
         lessThanEquals: { type: GraphQLTime },
     },
 });
+
+export const TimeListFilters = new GraphQLInputObjectType({
+    name: "TimeListFilters",
+    description: "Time list filters",
+    fields: {
+        equals: { type: new GraphQLList(new GraphQLNonNull(GraphQLTime)) },
+        includes: { type: GraphQLTime },
+    },
+});

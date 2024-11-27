@@ -33,3 +33,12 @@ export const FloatScalarFilters = new GraphQLInputObjectType({
         lessThanEquals: { type: GraphQLFloat },
     },
 });
+
+export const FloatListFilters = new GraphQLInputObjectType({
+    name: "FloatListFilters",
+    description: "Float list filters",
+    fields: {
+        equals: { type: new GraphQLList(new GraphQLNonNull(FloatScalarFilters)) },
+        includes: { type: FloatScalarFilters },
+    },
+});

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { GraphQLBoolean, GraphQLInputObjectType } from "graphql";
+import { GraphQLBoolean, GraphQLInputObjectType, GraphQLList, GraphQLNonNull } from "graphql";
 
 export const BooleanScalarFilters = new GraphQLInputObjectType({
     name: "BooleanScalarFilters",
@@ -26,5 +26,14 @@ export const BooleanScalarFilters = new GraphQLInputObjectType({
         equals: {
             type: GraphQLBoolean,
         },
+    },
+});
+
+export const BooleanListFilters = new GraphQLInputObjectType({
+    name: "BooleanListFilters",
+    description: "Boolean list filters",
+    fields: {
+        equals: { type: new GraphQLList(new GraphQLNonNull(BooleanScalarFilters)) },
+        includes: { type: BooleanScalarFilters },
     },
 });

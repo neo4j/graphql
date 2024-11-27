@@ -77,7 +77,7 @@ describe("Arrays Methods", () => {
               AND: [ActedInWhere!]
               NOT: ActedInWhere
               OR: [ActedInWhere!]
-              pay: FloatScalarFilters
+              pay: FloatListFilters
               pay_EQ: [Float]
               pay_INCLUDES: Float
             }
@@ -331,6 +331,12 @@ describe("Arrays Methods", () => {
               sum: Float
             }
 
+            \\"\\"\\"Float list filters\\"\\"\\"
+            input FloatListFilters {
+              equals: [FloatScalarFilters!]
+              includes: FloatScalarFilters
+            }
+
             \\"\\"\\"Float filters\\"\\"\\"
             input FloatScalarFilters {
               equals: Float
@@ -573,7 +579,7 @@ describe("Arrays Methods", () => {
               id_EQ: ID
               id_IN: [ID!]
               id_STARTS_WITH: ID
-              ratings: FloatScalarFilters
+              ratings: FloatListFilters
               ratings_EQ: [Float!]
               ratings_INCLUDES: Float
             }

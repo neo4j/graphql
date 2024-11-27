@@ -425,7 +425,7 @@ describe("Point", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              filmedAt: PointFilters
+              filmedAt: PointListFilters
               filmedAt_EQ: [PointInput!]
               filmedAt_INCLUDES: PointInput
             }
@@ -461,34 +461,17 @@ describe("Point", () => {
               srid: Int!
             }
 
-            \\"\\"\\"Input type for a point with a distance\\"\\"\\"
-            input PointDistance {
-              \\"\\"\\"The distance in metres to be used when comparing two points\\"\\"\\"
-              distance: Float!
-              point: PointInput!
-            }
-
-            \\"\\"\\"Distance filters\\"\\"\\"
-            input PointDistanceFilters {
-              equals: PointDistance
-              greaterThan: PointDistance
-              greaterThanEquals: PointDistance
-              lessThan: PointDistance
-              lessThanEquals: PointDistance
-            }
-
-            \\"\\"\\"Point filters\\"\\"\\"
-            input PointFilters {
-              distance: PointDistanceFilters
-              equals: PointInput
-              in: [PointInput!]
-            }
-
             \\"\\"\\"Input type for a point\\"\\"\\"
             input PointInput {
               height: Float
               latitude: Float!
               longitude: Float!
+            }
+
+            \\"\\"\\"Point list filters\\"\\"\\"
+            input PointListFilters {
+              equals: [PointInput!]
+              includes: PointInput
             }
 
             type Query {
@@ -569,6 +552,12 @@ describe("Point", () => {
               z: Float
             }
 
+            \\"\\"\\"CartesianPoint list filters\\"\\"\\"
+            input CartesianPointListFilters {
+              equals: [CartesianPointFilters!]
+              includes: CartesianPointFilters
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -617,7 +606,7 @@ describe("Point", () => {
               AND: [MachineWhere!]
               NOT: MachineWhere
               OR: [MachineWhere!]
-              partLocations: CartesianPointFilters
+              partLocations: CartesianPointListFilters
               partLocations_EQ: [CartesianPointInput!]
               partLocations_INCLUDES: CartesianPointInput
             }
