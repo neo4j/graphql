@@ -505,7 +505,8 @@ export class FilterFactory {
                     throw new Error(`Attribute ${fieldName} not found`);
                 }
 
-                if (!operator && !attribute.isCypherRelationshipField()) {
+                // This is a bit hacky, basically skipping cypher fields and federation strings being passed to filterFactory
+                if (!operator && !attribute.annotations.cypher && typeof value === "object") {
                     const genericFilters = Object.entries(value).flatMap((filterInput) => {
                         return this.parseGenericFilter(entity, fieldName, filterInput);
                     });
