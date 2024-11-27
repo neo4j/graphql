@@ -128,6 +128,12 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               shortest: ID
             }
 
+            \\"\\"\\"ID list filters\\"\\"\\"
+            input IDListFilters {
+              equals: [IDScalarFilters!]
+              includes: IDScalarFilters
+            }
+
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -509,7 +515,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               createdAt_IN: [DateTime!]
               createdAt_LT: DateTime
               createdAt_LTE: DateTime
-              externalIds: IDScalarFilters
+              externalIds: IDListFilters
               externalIds_EQ: [ID!]
               externalIds_INCLUDES: ID
               id: IDScalarFilters

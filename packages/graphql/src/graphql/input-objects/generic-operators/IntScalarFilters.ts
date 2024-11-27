@@ -23,13 +23,20 @@ export const IntScalarFilters = new GraphQLInputObjectType({
     name: "IntScalarFilters",
     description: "Int filters",
     fields: {
-        equals: {
-            type: GraphQLInt,
-        },
+        equals: { type: GraphQLInt },
         greaterThan: { type: GraphQLInt },
         greaterThanEquals: { type: GraphQLInt },
         in: { type: new GraphQLList(new GraphQLNonNull(GraphQLInt)) },
         lessThan: { type: GraphQLInt },
         lessThanEquals: { type: GraphQLInt },
+    },
+});
+
+export const IntListFilters = new GraphQLInputObjectType({
+    name: "IntListFilters",
+    description: "Int list filters",
+    fields: {
+        equals: { type: new GraphQLList(new GraphQLNonNull(GraphQLInt)) },
+        includes: { type: GraphQLInt },
     },
 });

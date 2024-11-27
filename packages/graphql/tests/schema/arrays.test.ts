@@ -68,6 +68,12 @@ describe("Arrays", () => {
               sum: Float
             }
 
+            \\"\\"\\"Float list filters\\"\\"\\"
+            input FloatListFilters {
+              equals: [FloatScalarFilters!]
+              includes: FloatScalarFilters
+            }
+
             \\"\\"\\"Float filters\\"\\"\\"
             input FloatScalarFilters {
               equals: Float
@@ -157,7 +163,7 @@ describe("Arrays", () => {
               id_EQ: ID
               id_IN: [ID!]
               id_STARTS_WITH: ID
-              ratings: FloatScalarFilters
+              ratings: FloatListFilters
               ratings_EQ: [Float!]
               ratings_INCLUDES: Float
             }

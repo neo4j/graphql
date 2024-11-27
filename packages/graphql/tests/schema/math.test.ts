@@ -1851,7 +1851,7 @@ describe("Algebraic", () => {
               pay_IN: [Float]
               pay_LT: Float
               pay_LTE: Float
-              roles: StringScalarFilters
+              roles: StringListFilters
               roles_EQ: [String!]
               roles_INCLUDES: String
             }
@@ -2348,6 +2348,12 @@ describe("Algebraic", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String list filters\\"\\"\\"
+            input StringListFilters {
+              equals: [String!]
+              includes: String
             }
 
             \\"\\"\\"String filters\\"\\"\\"

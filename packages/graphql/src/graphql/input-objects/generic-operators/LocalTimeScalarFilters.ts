@@ -34,3 +34,12 @@ export const LocalTimeScalarFilters = new GraphQLInputObjectType({
         lessThanEquals: { type: GraphQLLocalTime },
     },
 });
+
+export const LocalTimeListFilters = new GraphQLInputObjectType({
+    name: "LocalTimeListFilters",
+    description: "LocalTime list filters",
+    fields: {
+        equals: { type: new GraphQLList(new GraphQLNonNull(LocalTimeScalarFilters)) },
+        includes: { type: LocalTimeScalarFilters },
+    },
+});

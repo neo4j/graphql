@@ -50,6 +50,11 @@ describe("Null", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"Boolean list filters\\"\\"\\"
+            input BooleanListFilters {
+              equals: [BooleanScalarFilters!]
+            }
+
             \\"\\"\\"Boolean filters\\"\\"\\"
             input BooleanScalarFilters {
               equals: Boolean
@@ -74,6 +79,12 @@ describe("Null", () => {
             type DateTimeAggregateSelection {
               max: DateTime
               min: DateTime
+            }
+
+            \\"\\"\\"DateTime list filters\\"\\"\\"
+            input DateTimeListFilters {
+              equals: [DateTimeScalarFilters!]
+              includes: DateTimeScalarFilters
             }
 
             \\"\\"\\"DateTime filters\\"\\"\\"
@@ -101,6 +112,12 @@ describe("Null", () => {
               sum: Float
             }
 
+            \\"\\"\\"Float list filters\\"\\"\\"
+            input FloatListFilters {
+              equals: [FloatScalarFilters!]
+              includes: FloatScalarFilters
+            }
+
             \\"\\"\\"Float filters\\"\\"\\"
             input FloatScalarFilters {
               equals: Float
@@ -114,6 +131,12 @@ describe("Null", () => {
             type IDAggregateSelection {
               longest: ID
               shortest: ID
+            }
+
+            \\"\\"\\"ID list filters\\"\\"\\"
+            input IDListFilters {
+              equals: [IDScalarFilters!]
+              includes: IDScalarFilters
             }
 
             \\"\\"\\"ID filters\\"\\"\\"
@@ -135,6 +158,12 @@ describe("Null", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Int list filters\\"\\"\\"
+            input IntListFilters {
+              equals: [Int!]
+              includes: Int
             }
 
             \\"\\"\\"Int filters\\"\\"\\"
@@ -252,7 +281,7 @@ describe("Null", () => {
               actorCount_IN: [Int!]
               actorCount_LT: Int
               actorCount_LTE: Int
-              actorCounts: IntScalarFilters
+              actorCounts: IntListFilters
               actorCounts_EQ: [Int!]
               actorCounts_INCLUDES: Int
               averageRating: FloatScalarFilters
@@ -262,7 +291,7 @@ describe("Null", () => {
               averageRating_IN: [Float!]
               averageRating_LT: Float
               averageRating_LTE: Float
-              averageRatings: FloatScalarFilters
+              averageRatings: FloatListFilters
               averageRatings_EQ: [Float!]
               averageRatings_INCLUDES: Float
               createdAt: DateTimeScalarFilters
@@ -272,7 +301,7 @@ describe("Null", () => {
               createdAt_IN: [DateTime!]
               createdAt_LT: DateTime
               createdAt_LTE: DateTime
-              createdAts: DateTimeScalarFilters
+              createdAts: DateTimeListFilters
               createdAts_EQ: [DateTime!]
               createdAts_INCLUDES: DateTime
               filmedAt: PointFilters
@@ -283,7 +312,7 @@ describe("Null", () => {
               filmedAt_IN: [PointInput!]
               filmedAt_LT: PointDistance
               filmedAt_LTE: PointDistance
-              filmedAts: PointFilters
+              filmedAts: PointListFilters
               filmedAts_EQ: [PointInput!]
               filmedAts_INCLUDES: PointInput
               id: IDScalarFilters
@@ -292,10 +321,10 @@ describe("Null", () => {
               id_EQ: ID
               id_IN: [ID!]
               id_STARTS_WITH: ID
-              ids: IDScalarFilters
+              ids: IDListFilters
               ids_EQ: [ID!]
               ids_INCLUDES: ID
-              isActives: BooleanScalarFilters
+              isActives: BooleanListFilters
               isActives_EQ: [Boolean!]
               name: StringScalarFilters
               name_CONTAINS: String
@@ -303,7 +332,7 @@ describe("Null", () => {
               name_EQ: String
               name_IN: [String!]
               name_STARTS_WITH: String
-              names: StringScalarFilters
+              names: StringListFilters
               names_EQ: [String!]
               names_INCLUDES: String
             }
@@ -369,6 +398,12 @@ describe("Null", () => {
               longitude: Float!
             }
 
+            \\"\\"\\"Point list filters\\"\\"\\"
+            input PointListFilters {
+              equals: [PointInput!]
+              includes: PointInput
+            }
+
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
@@ -386,6 +421,12 @@ describe("Null", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String list filters\\"\\"\\"
+            input StringListFilters {
+              equals: [String!]
+              includes: String
             }
 
             \\"\\"\\"String filters\\"\\"\\"

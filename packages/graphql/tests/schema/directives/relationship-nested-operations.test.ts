@@ -7893,14 +7893,10 @@ describe("Relationship nested operations", () => {
                   startsWith: ID
                 }
 
-                \\"\\"\\"Int filters\\"\\"\\"
-                input IntScalarFilters {
-                  equals: Int
-                  greaterThan: Int
-                  greaterThanEquals: Int
-                  in: [Int!]
-                  lessThan: Int
-                  lessThanEquals: Int
+                \\"\\"\\"Int list filters\\"\\"\\"
+                input IntListFilters {
+                  equals: [Int!]
+                  includes: Int
                 }
 
                 type Movie {
@@ -8131,7 +8127,7 @@ describe("Relationship nested operations", () => {
                   name_EQ: String
                   name_IN: [String]
                   name_STARTS_WITH: String
-                  someExtraProp: IntScalarFilters
+                  someExtraProp: IntListFilters
                   someExtraProp_EQ: [Int!]
                   someExtraProp_INCLUDES: Int
                 }
@@ -8357,14 +8353,10 @@ describe("Relationship nested operations", () => {
                   startsWith: ID
                 }
 
-                \\"\\"\\"Int filters\\"\\"\\"
-                input IntScalarFilters {
-                  equals: Int
-                  greaterThan: Int
-                  greaterThanEquals: Int
-                  in: [Int!]
-                  lessThan: Int
-                  lessThanEquals: Int
+                \\"\\"\\"Int list filters\\"\\"\\"
+                input IntListFilters {
+                  equals: [Int!]
+                  includes: Int
                 }
 
                 type Movie {
@@ -8615,7 +8607,7 @@ describe("Relationship nested operations", () => {
                   name_EQ: String
                   name_IN: [String]
                   name_STARTS_WITH: String
-                  someExtraProp: IntScalarFilters
+                  someExtraProp: IntListFilters
                   someExtraProp_EQ: [Int!]
                   someExtraProp_INCLUDES: Int
                 }
@@ -8841,14 +8833,10 @@ describe("Relationship nested operations", () => {
                   startsWith: ID
                 }
 
-                \\"\\"\\"Int filters\\"\\"\\"
-                input IntScalarFilters {
-                  equals: Int
-                  greaterThan: Int
-                  greaterThanEquals: Int
-                  in: [Int!]
-                  lessThan: Int
-                  lessThanEquals: Int
+                \\"\\"\\"Int list filters\\"\\"\\"
+                input IntListFilters {
+                  equals: [Int!]
+                  includes: Int
                 }
 
                 type Movie {
@@ -9098,7 +9086,7 @@ describe("Relationship nested operations", () => {
                   name_EQ: String
                   name_IN: [String]
                   name_STARTS_WITH: String
-                  someExtraProp: IntScalarFilters
+                  someExtraProp: IntListFilters
                   someExtraProp_EQ: [Int!]
                   someExtraProp_INCLUDES: Int
                 }
@@ -9324,14 +9312,10 @@ describe("Relationship nested operations", () => {
                   startsWith: ID
                 }
 
-                \\"\\"\\"Int filters\\"\\"\\"
-                input IntScalarFilters {
-                  equals: Int
-                  greaterThan: Int
-                  greaterThanEquals: Int
-                  in: [Int!]
-                  lessThan: Int
-                  lessThanEquals: Int
+                \\"\\"\\"Int list filters\\"\\"\\"
+                input IntListFilters {
+                  equals: [Int!]
+                  includes: Int
                 }
 
                 type Movie {
@@ -9572,7 +9556,7 @@ describe("Relationship nested operations", () => {
                   name_EQ: String
                   name_IN: [String]
                   name_STARTS_WITH: String
-                  someExtraProp: IntScalarFilters
+                  someExtraProp: IntListFilters
                   someExtraProp_EQ: [Int!]
                   someExtraProp_INCLUDES: Int
                 }
@@ -9802,14 +9786,10 @@ describe("Relationship nested operations", () => {
                   startsWith: ID
                 }
 
-                \\"\\"\\"Int filters\\"\\"\\"
-                input IntScalarFilters {
-                  equals: Int
-                  greaterThan: Int
-                  greaterThanEquals: Int
-                  in: [Int!]
-                  lessThan: Int
-                  lessThanEquals: Int
+                \\"\\"\\"Int list filters\\"\\"\\"
+                input IntListFilters {
+                  equals: [Int!]
+                  includes: Int
                 }
 
                 type Movie {
@@ -10054,7 +10034,7 @@ describe("Relationship nested operations", () => {
                   name_EQ: String
                   name_IN: [String]
                   name_STARTS_WITH: String
-                  someExtraProp: IntScalarFilters
+                  someExtraProp: IntListFilters
                   someExtraProp_EQ: [Int!]
                   someExtraProp_INCLUDES: Int
                 }
@@ -10280,14 +10260,10 @@ describe("Relationship nested operations", () => {
                   startsWith: ID
                 }
 
-                \\"\\"\\"Int filters\\"\\"\\"
-                input IntScalarFilters {
-                  equals: Int
-                  greaterThan: Int
-                  greaterThanEquals: Int
-                  in: [Int!]
-                  lessThan: Int
-                  lessThanEquals: Int
+                \\"\\"\\"Int list filters\\"\\"\\"
+                input IntListFilters {
+                  equals: [Int!]
+                  includes: Int
                 }
 
                 type Movie {
@@ -10528,7 +10504,7 @@ describe("Relationship nested operations", () => {
                   name_EQ: String
                   name_IN: [String]
                   name_STARTS_WITH: String
-                  someExtraProp: IntScalarFilters
+                  someExtraProp: IntListFilters
                   someExtraProp_EQ: [Int!]
                   someExtraProp_INCLUDES: Int
                 }
@@ -10755,14 +10731,10 @@ describe("Relationship nested operations", () => {
                   startsWith: ID
                 }
 
-                \\"\\"\\"Int filters\\"\\"\\"
-                input IntScalarFilters {
-                  equals: Int
-                  greaterThan: Int
-                  greaterThanEquals: Int
-                  in: [Int!]
-                  lessThan: Int
-                  lessThanEquals: Int
+                \\"\\"\\"Int list filters\\"\\"\\"
+                input IntListFilters {
+                  equals: [Int!]
+                  includes: Int
                 }
 
                 type Movie {
@@ -11144,7 +11116,7 @@ describe("Relationship nested operations", () => {
                   name_EQ: String
                   name_IN: [String]
                   name_STARTS_WITH: String
-                  someExtraProp: IntScalarFilters
+                  someExtraProp: IntListFilters
                   someExtraProp_EQ: [Int!]
                   someExtraProp_INCLUDES: Int
                 }
@@ -11376,14 +11348,10 @@ describe("Relationship nested operations", () => {
                   startsWith: ID
                 }
 
-                \\"\\"\\"Int filters\\"\\"\\"
-                input IntScalarFilters {
-                  equals: Int
-                  greaterThan: Int
-                  greaterThanEquals: Int
-                  in: [Int!]
-                  lessThan: Int
-                  lessThanEquals: Int
+                \\"\\"\\"Int list filters\\"\\"\\"
+                input IntListFilters {
+                  equals: [Int!]
+                  includes: Int
                 }
 
                 type Movie {
@@ -11745,7 +11713,7 @@ describe("Relationship nested operations", () => {
                   name_EQ: String
                   name_IN: [String]
                   name_STARTS_WITH: String
-                  someExtraProp: IntScalarFilters
+                  someExtraProp: IntListFilters
                   someExtraProp_EQ: [Int!]
                   someExtraProp_INCLUDES: Int
                 }

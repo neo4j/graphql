@@ -184,6 +184,12 @@ describe("Cypher", () => {
             \\"\\"\\"
             scalar BigInt
 
+            \\"\\"\\"BigInt list filters\\"\\"\\"
+            input BigIntListFilters {
+              equals: [BigIntScalarFilters!]
+              includes: BigIntScalarFilters
+            }
+
             \\"\\"\\"BigInt filters\\"\\"\\"
             input BigIntScalarFilters {
               equals: BigInt
@@ -192,6 +198,11 @@ describe("Cypher", () => {
               in: [BigInt!]
               lessThan: BigInt
               lessThanEquals: BigInt
+            }
+
+            \\"\\"\\"Boolean list filters\\"\\"\\"
+            input BooleanListFilters {
+              equals: [BooleanScalarFilters!]
             }
 
             \\"\\"\\"Boolean filters\\"\\"\\"
@@ -239,6 +250,12 @@ describe("Cypher", () => {
               z: Float
             }
 
+            \\"\\"\\"CartesianPoint list filters\\"\\"\\"
+            input CartesianPointListFilters {
+              equals: [CartesianPointFilters!]
+              includes: CartesianPointFilters
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -260,6 +277,12 @@ describe("Cypher", () => {
             \\"\\"\\"A date, represented as a 'yyyy-mm-dd' string\\"\\"\\"
             scalar Date
 
+            \\"\\"\\"Date list filters\\"\\"\\"
+            input DateListFilters {
+              equals: [DateScalarFilters!]
+              includes: DateScalarFilters
+            }
+
             \\"\\"\\"Date filters\\"\\"\\"
             input DateScalarFilters {
               equals: Date
@@ -272,6 +295,12 @@ describe("Cypher", () => {
 
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
             scalar DateTime
+
+            \\"\\"\\"DateTime list filters\\"\\"\\"
+            input DateTimeListFilters {
+              equals: [DateTimeScalarFilters!]
+              includes: DateTimeScalarFilters
+            }
 
             \\"\\"\\"DateTime filters\\"\\"\\"
             input DateTimeScalarFilters {
@@ -294,6 +323,12 @@ describe("Cypher", () => {
             \\"\\"\\"A duration, represented as an ISO 8601 duration string\\"\\"\\"
             scalar Duration
 
+            \\"\\"\\"Duration list filters\\"\\"\\"
+            input DurationListFilters {
+              equals: [DurationScalarFilters!]
+              includes: DurationScalarFilters
+            }
+
             \\"\\"\\"Duration filters\\"\\"\\"
             input DurationScalarFilters {
               equals: Duration
@@ -302,6 +337,12 @@ describe("Cypher", () => {
               in: [Duration!]
               lessThan: Duration
               lessThanEquals: Duration
+            }
+
+            \\"\\"\\"Float list filters\\"\\"\\"
+            input FloatListFilters {
+              equals: [FloatScalarFilters!]
+              includes: FloatScalarFilters
             }
 
             \\"\\"\\"Float filters\\"\\"\\"
@@ -319,6 +360,12 @@ describe("Cypher", () => {
               shortest: ID
             }
 
+            \\"\\"\\"ID list filters\\"\\"\\"
+            input IDListFilters {
+              equals: [IDScalarFilters!]
+              includes: IDScalarFilters
+            }
+
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -331,6 +378,12 @@ describe("Cypher", () => {
               lessThanEquals: ID
               matches: ID
               startsWith: ID
+            }
+
+            \\"\\"\\"Int list filters\\"\\"\\"
+            input IntListFilters {
+              equals: [Int!]
+              includes: Int
             }
 
             \\"\\"\\"Int filters\\"\\"\\"
@@ -346,6 +399,12 @@ describe("Cypher", () => {
             \\"\\"\\"A local datetime, represented as 'YYYY-MM-DDTHH:MM:SS'\\"\\"\\"
             scalar LocalDateTime
 
+            \\"\\"\\"LocalDateTime list filters\\"\\"\\"
+            input LocalDateTimeListFilters {
+              equals: [LocalDateTimeScalarFilters!]
+              includes: LocalDateTimeScalarFilters
+            }
+
             \\"\\"\\"LocalDateTime filters\\"\\"\\"
             input LocalDateTimeScalarFilters {
               equals: LocalDateTime
@@ -360,6 +419,12 @@ describe("Cypher", () => {
             A local time, represented as a time string without timezone information
             \\"\\"\\"
             scalar LocalTime
+
+            \\"\\"\\"LocalTime list filters\\"\\"\\"
+            input LocalTimeListFilters {
+              equals: [LocalTimeScalarFilters!]
+              includes: LocalTimeScalarFilters
+            }
 
             \\"\\"\\"LocalTime filters\\"\\"\\"
             input LocalTimeScalarFilters {
@@ -548,45 +613,45 @@ describe("Cypher", () => {
               id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
-              list_custom_of_ids: IDScalarFilters
+              list_custom_of_ids: IDListFilters
               list_custom_of_ids_EQ: [ID]
               list_custom_of_ids_INCLUDES: ID
-              list_of_custom_big_ints: BigIntScalarFilters
+              list_of_custom_big_ints: BigIntListFilters
               list_of_custom_big_ints_EQ: [BigInt]
               list_of_custom_big_ints_INCLUDES: BigInt
-              list_of_custom_booleans: BooleanScalarFilters
+              list_of_custom_booleans: BooleanListFilters
               list_of_custom_booleans_EQ: [Boolean]
-              list_of_custom_cartesian_points: CartesianPointFilters
+              list_of_custom_cartesian_points: CartesianPointListFilters
               list_of_custom_cartesian_points_EQ: [CartesianPointInput]
               list_of_custom_cartesian_points_INCLUDES: CartesianPointInput
-              list_of_custom_dates: DateScalarFilters
+              list_of_custom_dates: DateListFilters
               list_of_custom_dates_EQ: [Date]
               list_of_custom_dates_INCLUDES: Date
-              list_of_custom_datetimes: DateTimeScalarFilters
+              list_of_custom_datetimes: DateTimeListFilters
               list_of_custom_datetimes_EQ: [DateTime]
               list_of_custom_datetimes_INCLUDES: DateTime
-              list_of_custom_durations: DurationScalarFilters
+              list_of_custom_durations: DurationListFilters
               list_of_custom_durations_EQ: [Duration]
               list_of_custom_durations_INCLUDES: Duration
-              list_of_custom_floats: FloatScalarFilters
+              list_of_custom_floats: FloatListFilters
               list_of_custom_floats_EQ: [Float]
               list_of_custom_floats_INCLUDES: Float
-              list_of_custom_ints: IntScalarFilters
+              list_of_custom_ints: IntListFilters
               list_of_custom_ints_EQ: [Int]
               list_of_custom_ints_INCLUDES: Int
-              list_of_custom_localdatetimes: LocalDateTimeScalarFilters
+              list_of_custom_localdatetimes: LocalDateTimeListFilters
               list_of_custom_localdatetimes_EQ: [LocalDateTime]
               list_of_custom_localdatetimes_INCLUDES: LocalDateTime
-              list_of_custom_localtimes: LocalTimeScalarFilters
+              list_of_custom_localtimes: LocalTimeListFilters
               list_of_custom_localtimes_EQ: [LocalTime]
               list_of_custom_localtimes_INCLUDES: LocalTime
-              list_of_custom_points: PointFilters
+              list_of_custom_points: PointListFilters
               list_of_custom_points_EQ: [PointInput]
               list_of_custom_points_INCLUDES: PointInput
-              list_of_custom_strings: StringScalarFilters
+              list_of_custom_strings: StringListFilters
               list_of_custom_strings_EQ: [String]
               list_of_custom_strings_INCLUDES: String
-              list_of_custom_times: TimeScalarFilters
+              list_of_custom_times: TimeListFilters
               list_of_custom_times_EQ: [Time]
               list_of_custom_times_INCLUDES: Time
             }
@@ -655,6 +720,12 @@ describe("Cypher", () => {
               longitude: Float!
             }
 
+            \\"\\"\\"Point list filters\\"\\"\\"
+            input PointListFilters {
+              equals: [PointInput!]
+              includes: PointInput
+            }
+
             type Query {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
@@ -677,6 +748,12 @@ describe("Cypher", () => {
               shortest: String
             }
 
+            \\"\\"\\"String list filters\\"\\"\\"
+            input StringListFilters {
+              equals: [String!]
+              includes: String
+            }
+
             \\"\\"\\"String filters\\"\\"\\"
             input StringScalarFilters {
               contains: String
@@ -693,6 +770,12 @@ describe("Cypher", () => {
 
             \\"\\"\\"A time, represented as an RFC3339 time string\\"\\"\\"
             scalar Time
+
+            \\"\\"\\"Time list filters\\"\\"\\"
+            input TimeListFilters {
+              equals: [Time!]
+              includes: Time
+            }
 
             \\"\\"\\"Time filters\\"\\"\\"
             input TimeScalarFilters {
@@ -794,7 +877,7 @@ describe("Cypher", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              custom_cypher_string_list: StringScalarFilters
+              custom_cypher_string_list: StringListFilters
               custom_cypher_string_list_EQ: [String]
               custom_cypher_string_list_INCLUDES: String
             }
@@ -825,18 +908,10 @@ describe("Cypher", () => {
               moviesConnection(after: String, first: Int, where: MovieWhere): MoviesConnection!
             }
 
-            \\"\\"\\"String filters\\"\\"\\"
-            input StringScalarFilters {
-              contains: String
-              endsWith: String
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
-              in: [String!]
-              lessThan: String
-              lessThanEquals: String
-              matches: String
-              startsWith: String
+            \\"\\"\\"String list filters\\"\\"\\"
+            input StringListFilters {
+              equals: [String!]
+              includes: String
             }
 
             \\"\\"\\"

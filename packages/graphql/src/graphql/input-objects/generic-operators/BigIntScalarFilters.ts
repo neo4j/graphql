@@ -34,3 +34,12 @@ export const BigIntScalarFilters = new GraphQLInputObjectType({
         lessThanEquals: { type: GraphQLBigInt },
     },
 });
+
+export const BigIntListFilters = new GraphQLInputObjectType({
+    name: "BigIntListFilters",
+    description: "BigInt list filters",
+    fields: {
+        equals: { type: new GraphQLList(new GraphQLNonNull(BigIntScalarFilters)) },
+        includes: { type: BigIntScalarFilters },
+    },
+});

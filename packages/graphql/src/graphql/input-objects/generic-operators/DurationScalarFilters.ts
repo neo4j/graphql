@@ -34,3 +34,12 @@ export const DurationScalarFilters = new GraphQLInputObjectType({
         lessThanEquals: { type: GraphQLDuration },
     },
 });
+
+export const DurationListFilters = new GraphQLInputObjectType({
+    name: "DurationListFilters",
+    description: "Duration list filters",
+    fields: {
+        equals: { type: new GraphQLList(new GraphQLNonNull(DurationScalarFilters)) },
+        includes: { type: DurationScalarFilters },
+    },
+});

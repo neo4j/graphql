@@ -34,3 +34,12 @@ export const DateScalarFilters = new GraphQLInputObjectType({
         lessThanEquals: { type: GraphQLDate },
     },
 });
+
+export const DateListFilters = new GraphQLInputObjectType({
+    name: "DateListFilters",
+    description: "Date list filters",
+    fields: {
+        equals: { type: new GraphQLList(new GraphQLNonNull(DateScalarFilters)) },
+        includes: { type: DateScalarFilters },
+    },
+});
