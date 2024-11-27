@@ -53,7 +53,6 @@ describe("Null", () => {
             \\"\\"\\"Boolean list filters\\"\\"\\"
             input BooleanListFilters {
               equals: [BooleanScalarFilters!]
-              includes: BooleanScalarFilters
             }
 
             \\"\\"\\"Boolean filters\\"\\"\\"

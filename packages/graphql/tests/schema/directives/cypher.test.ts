@@ -203,7 +203,6 @@ describe("Cypher", () => {
             \\"\\"\\"Boolean list filters\\"\\"\\"
             input BooleanListFilters {
               equals: [BooleanScalarFilters!]
-              includes: BooleanScalarFilters
             }
 
             \\"\\"\\"Boolean filters\\"\\"\\"
