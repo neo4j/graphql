@@ -31,6 +31,7 @@ import { ArgumentAdapter } from "../schema-model/argument/model-adapters/Argumen
 import type { AttributeAdapter } from "../schema-model/attribute/model-adapters/AttributeAdapter";
 import { parseValueNode } from "../schema-model/parser/parse-value-node";
 import type { InputField } from "../types";
+import { getMutationInputFromAttributeType } from "./generation/get-mutation-input-from-attribute-type";
 import { idResolver } from "./resolvers/field/id";
 import { numericalResolver } from "./resolvers/field/numerical";
 
@@ -142,11 +143,20 @@ export function concreteEntityToUpdateInputFields({
         };
 
         const userDefinedDirectivesOnField = userDefinedFieldDirectives.get(field.name);
+        let userDefinedDirectives: Directive[] = [];
+
         if (userDefinedDirectivesOnField) {
-            newInputField.directives = graphqlDirectivesToCompose(
+            userDefinedDirectives = graphqlDirectivesToCompose(
                 userDefinedDirectivesOnField.filter((directive) => directive.name.value === DEPRECATED)
             );
+
+            newInputField.directives = userDefinedDirectives;
         }
+
+        updateInputFields[field.name] = {
+            type: getMutationInputFromAttributeType(field),
+            directives: userDefinedDirectives,
+        };
 
         updateInputFields[`${field.name}_SET`] = newInputField;
 

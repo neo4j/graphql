@@ -58,7 +58,7 @@ import {
 import { TimeListFilters, TimeScalarFilters } from "../../graphql/input-objects/generic-operators/TimeScalarFilters";
 import type { AttributeAdapter } from "../../schema-model/attribute/model-adapters/AttributeAdapter";
 
-export function getInputTypeFromAttributeType(attribute: AttributeAdapter): GraphQLInputType | string {
+export function getInputFilterFromAttributeType(attribute: AttributeAdapter): GraphQLInputType | string {
     // NOTE: static types returned here must be added to schema-validation > validateUserDefinition
     if (attribute.typeHelper.isBoolean()) {
         if (attribute.typeHelper.isList()) {
