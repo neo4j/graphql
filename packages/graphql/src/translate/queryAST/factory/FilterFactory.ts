@@ -512,7 +512,7 @@ export class FilterFactory {
                 }
 
                 // This is a bit hacky, basically skipping cypher fields and federation strings being passed to filterFactory
-                if (!operator && !attribute.annotations.cypher && typeof value === "object") {
+                if (!operator && !attribute.annotations.cypher?.targetEntity && typeof value === "object") {
                     const genericFilters = Object.entries(value).flatMap((filterInput) => {
                         return this.parseGenericFilter(entity, fieldName, filterInput);
                     });
@@ -702,18 +702,19 @@ export class FilterFactory {
                 });
             }
             const { fieldName, operator, isNot } = parseWhereField(key);
-            if (!operator) {
-                const genericFilters = Object.entries(value).flatMap((filterInput) => {
-                    return this.parseGenericFilter(relationship, fieldName, filterInput);
-                });
-                return this.wrapMultipleFiltersInLogical(genericFilters);
-            }
+
             const attribute = relationship.findAttribute(fieldName);
             if (!attribute) {
                 if (fieldName === relationship.propertiesTypeName) {
                     return this.createEdgeFilters(relationship, value);
                 }
                 return;
+            }
+            if (!operator) {
+                const genericFilters = Object.entries(value).flatMap((filterInput) => {
+                    return this.parseGenericFilter(relationship, fieldName, filterInput);
+                });
+                return this.wrapMultipleFiltersInLogical(genericFilters);
             }
 
             return this.createPropertyFilter({

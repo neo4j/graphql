@@ -18,10 +18,10 @@
  */
 
 import { gql } from "graphql-tag";
-import type { UniqueType } from "../../../../utils/graphql-types";
-import { TestHelper } from "../../../../utils/tests-helper";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../../utils/tests-helper";
 
-describe("type narrowing nested connections", () => {
+describe("type narrowing nested connections - deprecated", () => {
     const testHelper = new TestHelper();
     let gqlQuery: string;
 
@@ -438,7 +438,7 @@ describe("type narrowing nested connections", () => {
         query UntrainedPeople {
             ${UntrainedPerson.plural} {
                 name
-                actedInConnection(where: { edge: { AppearsIn: { sceneNr: { equals: 0 } } } }) {
+                actedInConnection(where: { edge: { AppearsIn: { sceneNr_EQ: 0 } } }) {
                     edges {
                         node {
                             title
@@ -528,7 +528,7 @@ describe("type narrowing nested connections", () => {
         query UntrainedPeople {
             ${UntrainedPerson.plural} {
                 name
-                actedInConnection(where: { edge: { AppearsIn: { sceneNr:{ equals:  ${sceneNr}} }, ActedIn: {screenTime: { equals: ${movieScreenTime} }} } }) {
+                actedInConnection(where: { edge: { AppearsIn: { sceneNr_EQ: ${sceneNr} }, ActedIn: {screenTime_EQ: ${movieScreenTime}} } }) {
                     edges {
                         node {
                             title
