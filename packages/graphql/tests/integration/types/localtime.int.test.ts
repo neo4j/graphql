@@ -222,7 +222,7 @@ describe("LocalTime", () => {
 
             const query = /* GraphQL */ `
                     query ($time: LocalTime!) {
-                        ${Movie.plural}(where: { time_EQ: $time }) {
+                        ${Movie.plural}(where: { time: { equals: $time } }) {
                             id
                             time
                         }
@@ -240,7 +240,7 @@ describe("LocalTime", () => {
             expect(graphqlMovie.id).toEqual(id);
             expect(parseLocalTime(graphqlMovie.time)).toStrictEqual(parsedTime);
         });
-        test.each(["LT", "LTE", "GT", "GTE"])(
+        test.each(["lessThan", "lessThanEquals", "greaterThan", "greaterThanEquals"])(
             "should filter based on time comparison, for filter %s",
             async (filter) => {
                 const futureId = generate({ readable: false });
@@ -300,7 +300,7 @@ describe("LocalTime", () => {
 
                 const graphqlResult = await testHelper.executeGraphQL(query, {
                     variableValues: {
-                        where: { id_IN: [futureId, presentId, pastId], [`time_${filter}`]: present },
+                        where: { id: { in: [futureId, presentId, pastId] }, time: { [filter]: present } },
                     },
                 });
 
@@ -310,13 +310,13 @@ describe("LocalTime", () => {
                 expect(graphqlMovies).toBeDefined();
 
                 /* eslint-disable jest/no-conditional-expect */
-                if (filter === "LT") {
+                if (filter === "lessThan") {
                     expect(graphqlMovies).toHaveLength(1);
                     expect(graphqlMovies[0]?.id).toBe(pastId);
                     expect(parseLocalTime(graphqlMovies[0]?.time)).toStrictEqual(parsedPast);
                 }
 
-                if (filter === "LTE") {
+                if (filter === "lessThanEquals") {
                     expect(graphqlMovies).toHaveLength(2);
                     expect(graphqlMovies[0]?.id).toBe(pastId);
                     expect(parseLocalTime(graphqlMovies[0]?.time)).toStrictEqual(parsedPast);
@@ -325,13 +325,13 @@ describe("LocalTime", () => {
                     expect(parseLocalTime(graphqlMovies[1]?.time)).toStrictEqual(parsedPresent);
                 }
 
-                if (filter === "GT") {
+                if (filter === "greaterThan") {
                     expect(graphqlMovies).toHaveLength(1);
                     expect(graphqlMovies[0]?.id).toBe(futureId);
                     expect(parseLocalTime(graphqlMovies[0]?.time)).toStrictEqual(parsedFuture);
                 }
 
-                if (filter === "GTE") {
+                if (filter === "greaterThanEquals") {
                     expect(graphqlMovies).toHaveLength(2);
                     expect(graphqlMovies[0]?.id).toBe(presentId);
                     expect(parseLocalTime(graphqlMovies[0]?.time)).toStrictEqual(parsedPresent);

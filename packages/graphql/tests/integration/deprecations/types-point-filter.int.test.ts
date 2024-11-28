@@ -21,7 +21,7 @@ import { int } from "neo4j-driver";
 import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../../utils/tests-helper";
 
-describe("Point", () => {
+describe("Point - deprecated", () => {
     const testHelper = new TestHelper();
 
     let Photograph: UniqueType;
@@ -51,121 +51,6 @@ describe("Point", () => {
 
     afterEach(async () => {
         await testHelper.close();
-    });
-
-    test("enables creation of a node with a wgs-84 point", async () => {
-        const id = "abc075b9-bb99-4447-9cdb-b3af98e991bb";
-        const size = 40403;
-        const longitude = parseFloat("98.459");
-        const latitude = parseFloat("44.1705");
-
-        const create = /* GraphQL */ `
-            mutation CreatePhotographs($id: String!, $size: Int!, $longitude: Float!, $latitude: Float!) {
-                ${Photograph.operations.create}(
-                    input: [{ id: $id, size: $size, location: { longitude: $longitude, latitude: $latitude } }]
-                ) {
-                    ${Photograph.plural} {
-                        id
-                        size
-                        location {
-                            latitude
-                            longitude
-                            height
-                            crs
-                        }
-                    }
-                }
-            }
-        `;
-
-        const gqlResult = await testHelper.executeGraphQL(create, {
-            variableValues: { id, size, longitude, latitude },
-        });
-        expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any)[Photograph.operations.create][Photograph.plural][0]).toEqual({
-            id,
-            size,
-            location: {
-                latitude,
-                longitude,
-                height: null,
-                crs: "wgs-84",
-            },
-        });
-
-        const result = await testHelper.executeCypher(`
-                MATCH (p:${Photograph} {id: "${id}"})
-                RETURN p { .id, .size, .location} as p
-            `);
-
-        expect((result.records[0] as any).toObject().p.location.x).toEqual(longitude);
-        expect((result.records[0] as any).toObject().p.location.y).toEqual(latitude);
-        expect((result.records[0] as any).toObject().p.location.srid).toEqual(int(4326));
-    });
-
-    test("enables creation of a node with a wgs-84-3d point", async () => {
-        const id = "2922e9e1-ad37-4966-b940-d7d1915d1997";
-        const size = 94309;
-        const longitude = parseFloat("58.761");
-        const latitude = parseFloat("-64.2159");
-        const height = 0.23457504296675324;
-
-        const create = /* GraphQL */ `
-            mutation CreatePhotographs(
-                $id: String!
-                $size: Int!
-                $longitude: Float!
-                $latitude: Float!
-                $height: Float!
-            ) {
-                ${Photograph.operations.create}(
-                    input: [
-                        {
-                            id: $id
-                            size: $size
-                            location: { longitude: $longitude, latitude: $latitude, height: $height }
-                        }
-                    ]
-                ) {
-                    ${Photograph.plural} {
-                        id
-                        size
-                        location {
-                            latitude
-                            longitude
-                            height
-                            crs
-                        }
-                    }
-                }
-            }
-        `;
-
-        const gqlResult = await testHelper.executeGraphQL(create, {
-            variableValues: { id, size, longitude, latitude, height },
-        });
-
-        expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any)[Photograph.operations.create][Photograph.plural][0]).toEqual({
-            id,
-            size,
-            location: {
-                latitude,
-                longitude,
-                height,
-                crs: "wgs-84-3d",
-            },
-        });
-
-        const result = await testHelper.executeCypher(`
-                MATCH (p:${Photograph} {id: "${id}"})
-                RETURN p { .id, .size, .location} as p
-            `);
-
-        expect((result.records[0] as any).toObject().p.location.x).toEqual(longitude);
-        expect((result.records[0] as any).toObject().p.location.y).toEqual(latitude);
-        expect((result.records[0] as any).toObject().p.location.z).toEqual(height);
-        expect((result.records[0] as any).toObject().p.location.srid).toEqual(int(4979));
     });
 
     test("enables update of a node with a wgs-84 point", async () => {
@@ -331,7 +216,7 @@ describe("Point", () => {
         // Test equality
         const photographsEqualsQuery = /* GraphQL */ `
             query Photographs($longitude: Float!, $latitude: Float!) {
-                ${Photograph.plural}(where: { location: { equals: { longitude: $longitude, latitude: $latitude } } }) {
+                ${Photograph.plural}(where: { location_EQ: { longitude: $longitude, latitude: $latitude } }) {
                     id
                     size
                     location {
@@ -363,7 +248,7 @@ describe("Point", () => {
         // Test IN functionality
         const photographsInQuery = /* GraphQL */ `
             query Photographs($locations: [PointInput!]) {
-                ${Photograph.plural}(where: { location: {in: $locations } }) {
+                ${Photograph.plural}(where: { location_IN: $locations }) {
                     id
                     size
                     location {
@@ -404,7 +289,7 @@ describe("Point", () => {
         const photographsLessThanQuery = /* GraphQL */ `
             query Photographs($longitude: Float!, $latitude: Float!) {
                 ${Photograph.plural}(
-                    where: { location: { distance: { lessThan: { point: { longitude: $longitude, latitude: $latitude }, distance: 1000000 } } } }
+                    where: { location_LT: { point: { longitude: $longitude, latitude: $latitude }, distance: 1000000 } }
                 ) {
                     id
                     size
@@ -438,7 +323,7 @@ describe("Point", () => {
         const photographsGreaterThanQuery = /* GraphQL */ `
             query Photographs($longitude: Float!, $latitude: Float!) {
                 ${Photograph.plural}(
-                    where: { location: { distance: { greaterThan: { point: { longitude: $longitude, latitude: $latitude }, distance: 1 } } } }
+                    where: { location_GT: { point: { longitude: $longitude, latitude: $latitude }, distance: 1 } }
                 ) {
                     id
                     size
@@ -494,7 +379,7 @@ describe("Point", () => {
 
         const photographsQuery = /* GraphQL */ `
             query Photographs($longitude: Float!, $latitude: Float!, $height: Float) {
-                ${Photograph.plural}(where: { location: { equals: { longitude: $longitude, latitude: $latitude, height: $height } } }) {
+                ${Photograph.plural}(where: { location_EQ: { longitude: $longitude, latitude: $latitude, height: $height } }) {
                     id
                     size
                     location {

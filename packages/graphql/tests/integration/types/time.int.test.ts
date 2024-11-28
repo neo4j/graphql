@@ -242,7 +242,7 @@ describe("Time", () => {
 
             const query = /* GraphQL */ `
                     query ($time: Time!) {
-                        ${Movie.plural}(where: { time_EQ: $time }) {
+                        ${Movie.plural}(where: { time: { equals: $time } }) {
                             id
                             time
                         }
@@ -259,7 +259,7 @@ describe("Time", () => {
             expect(parseTime(graphqlMovie.time)).toStrictEqual(parsedTime);
         });
 
-        test.each(["LT", "LTE", "GT", "GTE"])(
+        test.each(["lessThan", "lessThanEquals", "greaterThan", "greaterThanEquals"])(
             "should filter based on time comparison for filter: %s",
             async (filter) => {
                 const typeDefs = /* GraphQL */ `
@@ -334,7 +334,7 @@ describe("Time", () => {
 
                 const graphqlResult = await testHelper.executeGraphQL(query, {
                     variableValues: {
-                        where: { id_IN: [futureId, presentId, pastId], [`time_${filter}`]: present },
+                        where: { id: { in: [futureId, presentId, pastId] }, time: { [filter]: present } },
                     },
                 });
 
