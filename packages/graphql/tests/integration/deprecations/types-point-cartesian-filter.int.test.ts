@@ -41,98 +41,6 @@ describe("CartesianPoint", () => {
         await testHelper.close();
     });
 
-    test("enables creation of a node with a cartesian point", async () => {
-        const serial = "81dfaca5-0365-4bf7-b1fe-6cab702966d0";
-        const x = 0.7811776334419847;
-        const y = 0.7400629911571741;
-
-        const create = /* GraphQL */ `
-            mutation CreateParts($serial: String!, $x: Float!, $y: Float!) {
-                ${Part.operations.create}(input: [{ serial: $serial, location: { x: $x, y: $y } }]) {
-                    ${Part.plural} {
-                        serial
-                        location {
-                            x
-                            y
-                            z
-                            crs
-                        }
-                    }
-                }
-            }
-        `;
-        const gqlResult = await testHelper.executeGraphQL(create, {
-            variableValues: { serial, x, y },
-        });
-
-        expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any)[Part.operations.create][Part.plural][0]).toEqual({
-            serial,
-            location: {
-                x,
-                y,
-                z: null,
-                crs: "cartesian",
-            },
-        });
-
-        const result = await testHelper.executeCypher(`
-                MATCH (p:${Part} {serial: "${serial}"})
-                RETURN p { .serial, .location} as p
-            `);
-
-        expect((result.records[0] as any).toObject().p.location.x).toEqual(x);
-        expect((result.records[0] as any).toObject().p.location.y).toEqual(y);
-        expect((result.records[0] as any).toObject().p.location.srid).toEqual(int(7203));
-    });
-
-    test("enables creation of a node with a cartesian-3d point", async () => {
-        const serial = "8482cc3a-1204-418e-8a31-74d24b27b542";
-        const x = 0.02628162084147334;
-        const y = 0.9550968739204109;
-        const z = 0.4940597955137491;
-
-        const create = /* GraphQL */ `
-            mutation CreateParts($serial: String!, $x: Float!, $y: Float!, $z: Float!) {
-                ${Part.operations.create}(input: [{ serial: $serial, location: { x: $x, y: $y, z: $z } }]) {
-                    ${Part.plural} {
-                        serial
-                        location {
-                            x
-                            y
-                            z
-                            crs
-                        }
-                    }
-                }
-            }
-        `;
-        const gqlResult = await testHelper.executeGraphQL(create, {
-            variableValues: { serial, x, y, z },
-        });
-
-        expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any)[Part.operations.create][Part.plural][0]).toEqual({
-            serial,
-            location: {
-                x,
-                y,
-                z,
-                crs: "cartesian-3d",
-            },
-        });
-
-        const result = await testHelper.executeCypher(`
-                MATCH (p:${Part} {serial: "${serial}"})
-                RETURN p { .serial, .location} as p
-            `);
-
-        expect((result.records[0] as any).toObject().p.location.x).toEqual(x);
-        expect((result.records[0] as any).toObject().p.location.y).toEqual(y);
-        expect((result.records[0] as any).toObject().p.location.z).toEqual(z);
-        expect((result.records[0] as any).toObject().p.location.srid).toEqual(int(9157));
-    });
-
     test("enables update of a node with a cartesian point", async () => {
         const serial = "f5e40cae-f839-4ec3-a12b-45da40e8de7f";
         const x = 0.9797746981494129;
@@ -155,7 +63,7 @@ describe("CartesianPoint", () => {
 
         const update = /* GraphQL */ `
             mutation UpdateParts($serial: String!, $x: Float!, $y: Float!) {
-                ${Part.operations.update}(where: { serial: {equals: $serial } }, update: { location_SET: { x: $x, y: $y } }) {
+                ${Part.operations.update}(where: { serial_EQ: $serial }, update: { location_SET: { x: $x, y: $y } }) {
                     ${Part.plural} {
                         serial
                         location {
@@ -218,7 +126,7 @@ describe("CartesianPoint", () => {
 
         const update = /* GraphQL */ `
             mutation UpdateParts($serial: String!, $x: Float!, $y: Float!, $z: Float!) {
-                ${Part.operations.update}(where: { serial: { equals: $serial } }, update: { location_SET: { x: $x, y: $y, z: $z } }) {
+                ${Part.operations.update}(where: { serial_EQ: $serial }, update: { location_SET: { x: $x, y: $y, z: $z } }) {
                     ${Part.plural} {
                         serial
                         location {
@@ -279,7 +187,7 @@ describe("CartesianPoint", () => {
 
         const partsQuery = /* GraphQL */ `
             query Parts($serial: String!) {
-                ${Part.plural}(where: { serial: {equals: $serial} }) {
+                ${Part.plural}(where: { serial_EQ: $serial }) {
                     serial
                     location {
                         x
@@ -330,7 +238,7 @@ describe("CartesianPoint", () => {
 
         const partsQuery = /* GraphQL */ `
             query Parts($serial: String!) {
-                ${Part.plural}(where: { serial: {equals: $serial } }) {
+                ${Part.plural}(where: { serial_EQ: $serial }) {
                     serial
                     location {
                         x

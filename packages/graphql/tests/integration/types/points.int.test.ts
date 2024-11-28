@@ -334,7 +334,7 @@ describe("[Point]", () => {
         // Test for equality
         const routesQuery = /* GraphQL */ `
             query Routes($waypoints: [PointInput!]) {
-                ${Route.plural}(where: { waypoints_EQ: $waypoints }) {
+                ${Route.plural}(where: { waypoints: { equals: $waypoints } }) {
                     id
                     waypoints {
                         latitude
@@ -357,7 +357,7 @@ describe("[Point]", () => {
         // Test INCLUDES functionality
         const routesIncludesQuery = /* GraphQL */ `
             query RoutesIncludes($waypoint: PointInput) {
-                ${Route.plural}(where: { waypoints_INCLUDES: $waypoint }) {
+                ${Route.plural}(where: { waypoints: {includes: $waypoint } }) {
                     id
                     waypoints {
                         latitude
@@ -404,7 +404,7 @@ describe("[Point]", () => {
 
         const routesQuery = /* GraphQL */ `
             query Routes($id: String!) {
-                ${Route.plural}(where: { id_EQ: $id }) {
+                ${Route.plural}(where: { id: { equals: $id } }) {
                     id
                     waypoints {
                         latitude

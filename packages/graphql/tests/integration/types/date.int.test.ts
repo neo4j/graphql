@@ -143,7 +143,7 @@ describe("Date", () => {
 
             const query = /* GraphQL */ `
                 query {
-                    ${Movie.plural}(where: { date_EQ: "${date.toISOString()}" }) {
+                    ${Movie.plural}(where: { date: { equals: "${date.toISOString()}" }}) {
                         date
                     }
                 }

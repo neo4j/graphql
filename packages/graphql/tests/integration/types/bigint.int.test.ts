@@ -185,7 +185,7 @@ describe("BigInt", () => {
 
             const query = `
                 query {
-                    ${File.plural}(where: { name_EQ: "${name}" }) {
+                    ${File.plural}(where: { name: {equals: "${name}" } }) {
                         name
                         size
                     }

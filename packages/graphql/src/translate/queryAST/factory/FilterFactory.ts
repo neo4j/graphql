@@ -541,6 +541,14 @@ export class FilterFactory {
             });
         }
 
+        if (rawOperator === "distance") {
+            const distanceFilters = Object.entries(value).flatMap((distanceWhere) => {
+                return this.parseGenericFilter(entity, fieldName, distanceWhere);
+            });
+
+            return this.wrapMultipleFiltersInLogical(distanceFilters);
+        }
+
         const operator = this.parseGenericOperator(rawOperator);
 
         const attribute = entity.findAttribute(fieldName);
