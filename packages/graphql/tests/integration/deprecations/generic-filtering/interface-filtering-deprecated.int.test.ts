@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { createBearerToken } from "../../utils/create-bearer-token";
-import { TestHelper } from "../../utils/tests-helper";
+import { createBearerToken } from "../../../utils/create-bearer-token";
+import { TestHelper } from "../../../utils/tests-helper";
 
-describe("Interface filtering", () => {
+describe("Interface filtering - deprecated", () => {
     const secret = "the-secret";
 
     const testHelper = new TestHelper();
@@ -90,9 +90,9 @@ describe("Interface filtering", () => {
     });
 
     test("allow for logical filters on top-level interfaces", async () => {
-        const query = /* GraphQL */ `
+        const query = `
             query actedInWhere {
-                shows(where: { OR: [{ title: { equals: "The Office" } }, { title: { equals: "The Office 2" } }] }) {
+                shows(where: { OR: [{ title_EQ: "The Office" }, { title_EQ: "The Office 2" }] }) {
                     title
                 }
             }
@@ -117,10 +117,10 @@ describe("Interface filtering", () => {
     });
 
     test("allow for logical filters on nested-level interfaces", async () => {
-        const query = /* GraphQL */ `
+        const query = `
             query actedInWhere {
                 ${Actor.plural} {
-                    actedIn(where: { OR: [{ title: {equals: "The Office"} }, { title: { equals: "The Office 2"} }] }) {
+                    actedIn(where: { OR: [{ title_EQ: "The Office" }, { title_EQ: "The Office 2" }] }) {
                         title
                     }
                 }
