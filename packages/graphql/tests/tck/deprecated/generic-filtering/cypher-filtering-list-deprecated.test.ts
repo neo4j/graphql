@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQL } from "../../../../../src";
-import { formatCypher, formatParams, translateQuery } from "../../../utils/tck-test-utils";
+import { Neo4jGraphQL } from "../../../../src";
+import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
-describe("cypher directive filtering - Lists", () => {
+describe("cypher directive filtering - Lists - deprecated", () => {
     test("Int cypher field AND String title field", async () => {
         const typeDefs = /* GraphQL */ `
             type Movie @node {
@@ -37,7 +37,7 @@ describe("cypher directive filtering - Lists", () => {
 
         const query = /* GraphQL */ `
             query {
-                movies(where: { custom_cypher_list: { includes: "a" } }) {
+                movies(where: { custom_cypher_list_INCLUDES: "a" }) {
                     title
                 }
             }
