@@ -110,6 +110,11 @@ describe("Plural option", () => {
               startsWith: String
             }
 
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
+            }
+
             type Tech {
               name: String
               value: String
@@ -140,7 +145,9 @@ describe("Plural option", () => {
             }
 
             input TechUpdateInput {
+              name: StringScalarMutations
               name_SET: String
+              value: StringScalarMutations
               value_SET: String
             }
 
@@ -272,6 +279,11 @@ describe("Plural option", () => {
               startsWith: String
             }
 
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
+            }
+
             type Tech {
               name: String
               value: String
@@ -302,7 +314,9 @@ describe("Plural option", () => {
             }
 
             input TechUpdateInput {
+              name: StringScalarMutations
               name_SET: String
+              value: StringScalarMutations
               value_SET: String
             }
 
@@ -434,6 +448,11 @@ describe("Plural option", () => {
               startsWith: String
             }
 
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
+            }
+
             type Tech {
               name: String
               value: String
@@ -464,7 +483,9 @@ describe("Plural option", () => {
             }
 
             input TechUpdateInput {
+              name: StringScalarMutations
               name_SET: String
+              value: StringScalarMutations
               value_SET: String
             }
 
@@ -596,6 +617,11 @@ describe("Plural option", () => {
               startsWith: String
             }
 
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
+            }
+
             type Techs {
               value: String
             }
@@ -628,6 +654,7 @@ describe("Plural option", () => {
             }
 
             input TechsUpdateInput {
+              value: StringScalarMutations
               value_SET: String
             }
 
@@ -747,6 +774,11 @@ describe("Plural option", () => {
               startsWith: String
             }
 
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
+            }
+
             type TechsConnection {
               edges: [UserEdge!]!
               pageInfo: PageInfo!
@@ -794,6 +826,7 @@ describe("Plural option", () => {
             }
 
             input UserUpdateInput {
+              value: StringScalarMutations
               value_SET: String
             }
 
@@ -898,6 +931,11 @@ describe("Plural option", () => {
               startsWith: String
             }
 
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created and deleted during an update mutation
             \\"\\"\\"
@@ -939,6 +977,7 @@ describe("Plural option", () => {
             }
 
             input UserUpdateInput {
+              value: StringScalarMutations
               value_SET: String
             }
 
@@ -1049,6 +1088,11 @@ describe("Plural option", () => {
               startsWith: String
             }
 
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created and deleted during an update mutation
             \\"\\"\\"
@@ -1096,6 +1140,7 @@ describe("Plural option", () => {
             }
 
             input UsersUpdateInput {
+              value: StringScalarMutations
               value_SET: String
             }
 

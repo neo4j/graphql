@@ -215,7 +215,9 @@ describe("Alias", () => {
             }
 
             input ActorActedInPropsUpdateInput {
+              character: StringScalarMutations
               character_SET: String
+              screenTime: IntScalarMutations
               screenTime_DECREMENT: Int
               screenTime_INCREMENT: Int
               screenTime_SET: Int
@@ -307,7 +309,9 @@ describe("Alias", () => {
 
             input ActorUpdateInput {
               actedIn: [ActorActedInUpdateFieldInput!]
+              city: StringScalarMutations
               city_SET: String
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -403,6 +407,15 @@ describe("Alias", () => {
               lessThanEquals: Float
             }
 
+            \\"\\"\\"Float mutations\\"\\"\\"
+            input FloatScalarMutations {
+              add: Float
+              divide: Float
+              multiply: Float
+              set: Float
+              substract: Float
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
@@ -418,6 +431,13 @@ describe("Alias", () => {
               in: [Int!]
               lessThan: Int
               lessThanEquals: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              decrement: Int
+              increment: Int
+              set: Int
             }
 
             type Movie {
@@ -454,11 +474,13 @@ describe("Alias", () => {
             }
 
             input MovieUpdateInput {
+              rating: FloatScalarMutations
               rating_ADD: Float
               rating_DIVIDE: Float
               rating_MULTIPLY: Float
               rating_SET: Float
               rating_SUBTRACT: Float
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -538,6 +560,11 @@ describe("Alias", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateActorsMutationResponse {

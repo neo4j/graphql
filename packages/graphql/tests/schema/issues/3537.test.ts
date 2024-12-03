@@ -93,7 +93,9 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             input ActorUpdateInput {
+              password: StringScalarMutations
               password_SET: String
+              username: StringScalarMutations
               username_SET: String
             }
 
@@ -168,6 +170,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             input MovieUpdateInput {
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -234,6 +237,11 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateActorsMutationResponse {
@@ -577,7 +585,9 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             input ActorUpdateInput {
+              password: StringScalarMutations
               password_SET: String
+              username: StringScalarMutations
               username_SET: String
             }
 
@@ -688,6 +698,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             input MovieUpdateInput {
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -768,6 +779,11 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type Subscription {

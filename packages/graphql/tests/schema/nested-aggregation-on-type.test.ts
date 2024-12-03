@@ -73,6 +73,7 @@ describe("nested aggregation on interface", () => {
             }
 
             input ActedInUpdateInput {
+              screenTime: IntScalarMutations
               screenTime_DECREMENT: Int
               screenTime_INCREMENT: Int
               screenTime_SET: Int
@@ -278,6 +279,7 @@ describe("nested aggregation on interface", () => {
 
             input ActorUpdateInput {
               actedIn: [ActorActedInUpdateFieldInput!]
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -367,6 +369,15 @@ describe("nested aggregation on interface", () => {
               lessThanEquals: Float
             }
 
+            \\"\\"\\"Float mutations\\"\\"\\"
+            input FloatScalarMutations {
+              add: Float
+              divide: Float
+              multiply: Float
+              set: Float
+              substract: Float
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
@@ -382,6 +393,13 @@ describe("nested aggregation on interface", () => {
               in: [Int!]
               lessThan: Int
               lessThanEquals: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              decrement: Int
+              increment: Int
+              set: Int
             }
 
             type Movie {
@@ -422,14 +440,17 @@ describe("nested aggregation on interface", () => {
             }
 
             input MovieUpdateInput {
+              cost: FloatScalarMutations
               cost_ADD: Float
               cost_DIVIDE: Float
               cost_MULTIPLY: Float
               cost_SET: Float
               cost_SUBTRACT: Float
+              runtime: IntScalarMutations
               runtime_DECREMENT: Int
               runtime_INCREMENT: Int
               runtime_SET: Int
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -516,6 +537,11 @@ describe("nested aggregation on interface", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateActorsMutationResponse {

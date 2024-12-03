@@ -78,6 +78,11 @@ describe("Algebraic", () => {
               startsWith: ID
             }
 
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
@@ -93,6 +98,13 @@ describe("Algebraic", () => {
               in: [Int!]
               lessThan: Int
               lessThanEquals: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              decrement: Int
+              increment: Int
+              set: Int
             }
 
             type Movie {
@@ -125,7 +137,9 @@ describe("Algebraic", () => {
             }
 
             input MovieUpdateInput {
+              id: IDScalarMutations
               id_SET: ID
+              viewers: IntScalarMutations
               viewers_DECREMENT: Int
               viewers_INCREMENT: Int
               viewers_SET: Int
@@ -238,6 +252,13 @@ describe("Algebraic", () => {
               lessThanEquals: BigInt
             }
 
+            \\"\\"\\"BigInt mutations\\"\\"\\"
+            input BigIntScalarMutations {
+              decrement: BigInt
+              increment: BigInt
+              set: BigInt
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -278,6 +299,11 @@ describe("Algebraic", () => {
               startsWith: ID
             }
 
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
             type Movie {
               id: ID
               viewers: BigInt!
@@ -308,7 +334,9 @@ describe("Algebraic", () => {
             }
 
             input MovieUpdateInput {
+              id: IDScalarMutations
               id_SET: ID
+              viewers: BigIntScalarMutations
               viewers_DECREMENT: BigInt
               viewers_INCREMENT: BigInt
               viewers_SET: BigInt
@@ -438,6 +466,15 @@ describe("Algebraic", () => {
               lessThanEquals: Float
             }
 
+            \\"\\"\\"Float mutations\\"\\"\\"
+            input FloatScalarMutations {
+              add: Float
+              divide: Float
+              multiply: Float
+              set: Float
+              substract: Float
+            }
+
             type IDAggregateSelection {
               longest: ID
               shortest: ID
@@ -455,6 +492,11 @@ describe("Algebraic", () => {
               lessThanEquals: ID
               matches: ID
               startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
             }
 
             type Movie {
@@ -487,7 +529,9 @@ describe("Algebraic", () => {
             }
 
             input MovieUpdateInput {
+              id: IDScalarMutations
               id_SET: ID
+              viewers: FloatScalarMutations
               viewers_ADD: Float
               viewers_DIVIDE: Float
               viewers_MULTIPLY: Float
@@ -776,6 +820,7 @@ describe("Algebraic", () => {
 
             input DirectorUpdateInput {
               directs: [DirectorDirectsUpdateFieldInput!]
+              lastName: StringScalarMutations
               lastName_SET: String
             }
 
@@ -841,6 +886,11 @@ describe("Algebraic", () => {
               startsWith: ID
             }
 
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
@@ -856,6 +906,13 @@ describe("Algebraic", () => {
               in: [Int!]
               lessThan: Int
               lessThanEquals: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              decrement: Int
+              increment: Int
+              set: Int
             }
 
             type Movie {
@@ -1010,7 +1067,9 @@ describe("Algebraic", () => {
 
             input MovieUpdateInput {
               directedBy: [MovieDirectedByUpdateFieldInput!]
+              id: IDScalarMutations
               id_SET: ID
+              viewers: IntScalarMutations
               viewers_DECREMENT: Int
               viewers_INCREMENT: Int
               viewers_SET: Int
@@ -1119,6 +1178,11 @@ describe("Algebraic", () => {
               startsWith: String
             }
 
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
+            }
+
             type UpdateDirectorsMutationResponse {
               directors: [Director!]!
               info: UpdateInfo!
@@ -1211,6 +1275,11 @@ describe("Algebraic", () => {
               startsWith: ID
             }
 
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
@@ -1226,6 +1295,13 @@ describe("Algebraic", () => {
               in: [Int!]
               lessThan: Int
               lessThanEquals: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              decrement: Int
+              increment: Int
+              set: Int
             }
 
             type Movie implements Production {
@@ -1275,7 +1351,9 @@ describe("Algebraic", () => {
             }
 
             input MovieUpdateInput {
+              id: IDScalarMutations
               id_SET: ID
+              viewers: IntScalarMutations
               viewers_DECREMENT: Int
               viewers_INCREMENT: Int
               viewers_SET: Int
@@ -1502,6 +1580,7 @@ describe("Algebraic", () => {
             }
 
             input PersonUpdateInput {
+              name: StringScalarMutations
               name_SET: String
               worksInProduction: [PersonWorksInProductionUpdateFieldInput!]
             }
@@ -1671,6 +1750,7 @@ describe("Algebraic", () => {
             }
 
             input ProductionUpdateInput {
+              viewers: IntScalarMutations
               viewers_DECREMENT: Int
               viewers_INCREMENT: Int
               viewers_SET: Int
@@ -1733,6 +1813,11 @@ describe("Algebraic", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             \\"\\"\\"
@@ -1830,11 +1915,13 @@ describe("Algebraic", () => {
             }
 
             input ActedInUpdateInput {
+              pay: FloatScalarMutations
               pay_ADD: Float
               pay_DIVIDE: Float
               pay_MULTIPLY: Float
               pay_SET: Float
               pay_SUBTRACT: Float
+              roles: StringScalarMutations
               roles_POP: Int
               roles_PUSH: [String!]
               roles_SET: [String!]
@@ -1897,6 +1984,15 @@ describe("Algebraic", () => {
               in: [Float!]
               lessThan: Float
               lessThanEquals: Float
+            }
+
+            \\"\\"\\"Float mutations\\"\\"\\"
+            input FloatScalarMutations {
+              add: Float
+              divide: Float
+              multiply: Float
+              set: Float
+              substract: Float
             }
 
             type Movie {
@@ -2059,6 +2155,7 @@ describe("Algebraic", () => {
 
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -2288,6 +2385,7 @@ describe("Algebraic", () => {
 
             input PersonUpdateInput {
               actedInMovies: [PersonActedInMoviesUpdateFieldInput!]
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -2368,6 +2466,11 @@ describe("Algebraic", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             \\"\\"\\"

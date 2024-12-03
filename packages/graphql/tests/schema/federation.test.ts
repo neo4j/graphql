@@ -251,6 +251,7 @@ describe("Apollo Federation", () => {
 
             input PostUpdateInput {
               author: [PostAuthorUpdateFieldInput!]
+              content: StringScalarMutations
               content_SET: String
             }
 
@@ -341,6 +342,11 @@ describe("Apollo Federation", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             \\"\\"\\"
@@ -510,6 +516,7 @@ describe("Apollo Federation", () => {
             }
 
             input UserUpdateInput {
+              name: StringScalarMutations
               name_SET: String
               posts: [UserPostsUpdateFieldInput!]
             }
@@ -792,6 +799,7 @@ describe("Apollo Federation", () => {
 
             input PostUpdateInput {
               author: [PostAuthorUpdateFieldInput!]
+              content: StringScalarMutations
               content_SET: String
             }
 
@@ -885,6 +893,11 @@ describe("Apollo Federation", () => {
               startsWith: String
             }
 
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created and deleted during an update mutation
             \\"\\"\\"
@@ -935,6 +948,7 @@ describe("Apollo Federation", () => {
             }
 
             input UserUpdateInput {
+              name: StringScalarMutations
               name_SET: String
             }
 

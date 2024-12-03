@@ -124,6 +124,7 @@ describe("Union Interface Relationships", () => {
             }
 
             input ActedInUpdateInput {
+              screenTime: IntScalarMutations
               screenTime_DECREMENT: Int
               screenTime_INCREMENT: Int
               screenTime_SET: Int
@@ -326,10 +327,12 @@ describe("Union Interface Relationships", () => {
             }
 
             input ActorUpdateInput {
+              id: IntScalarMutations
               id_DECREMENT: Int
               id_INCREMENT: Int
               id_SET: Int
               movies: [ActorMoviesUpdateFieldInput!]
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -436,6 +439,7 @@ describe("Union Interface Relationships", () => {
             }
 
             input DirectedUpdateInput {
+              year: IntScalarMutations
               year_DECREMENT: Int
               year_INCREMENT: Int
               year_SET: Int
@@ -495,12 +499,15 @@ describe("Union Interface Relationships", () => {
             }
 
             input InfluencerUpdateInput {
+              reputation: IntScalarMutations
               reputation_DECREMENT: Int
               reputation_INCREMENT: Int
               reputation_SET: Int
+              reviewerId: IntScalarMutations
               reviewerId_DECREMENT: Int
               reviewerId_INCREMENT: Int
               reviewerId_SET: Int
+              url: StringScalarMutations
               url_SET: String
             }
 
@@ -551,6 +558,13 @@ describe("Union Interface Relationships", () => {
               in: [Int!]
               lessThan: Int
               lessThanEquals: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              decrement: Int
+              increment: Int
+              set: Int
             }
 
             type Movie {
@@ -1030,10 +1044,12 @@ describe("Union Interface Relationships", () => {
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
               directors: MovieDirectorsUpdateInput
+              imdbId: IntScalarMutations
               imdbId_DECREMENT: Int
               imdbId_INCREMENT: Int
               imdbId_SET: Int
               reviewers: [MovieReviewersUpdateFieldInput!]
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -1357,14 +1373,18 @@ describe("Union Interface Relationships", () => {
             }
 
             input PersonUpdateInput {
+              id: IntScalarMutations
               id_DECREMENT: Int
               id_INCREMENT: Int
               id_SET: Int
               movies: [PersonMoviesUpdateFieldInput!]
+              name: StringScalarMutations
               name_SET: String
+              reputation: IntScalarMutations
               reputation_DECREMENT: Int
               reputation_INCREMENT: Int
               reputation_SET: Int
+              reviewerId: IntScalarMutations
               reviewerId_DECREMENT: Int
               reviewerId_INCREMENT: Int
               reviewerId_SET: Int
@@ -1491,6 +1511,7 @@ describe("Union Interface Relationships", () => {
             }
 
             input ReviewUpdateInput {
+              score: IntScalarMutations
               score_DECREMENT: Int
               score_INCREMENT: Int
               score_SET: Int
@@ -1548,9 +1569,11 @@ describe("Union Interface Relationships", () => {
             }
 
             input ReviewerUpdateInput {
+              reputation: IntScalarMutations
               reputation_DECREMENT: Int
               reputation_INCREMENT: Int
               reputation_SET: Int
+              reviewerId: IntScalarMutations
               reviewerId_DECREMENT: Int
               reviewerId_INCREMENT: Int
               reviewerId_SET: Int
@@ -1608,6 +1631,11 @@ describe("Union Interface Relationships", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateActorsMutationResponse {

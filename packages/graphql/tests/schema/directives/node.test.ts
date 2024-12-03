@@ -67,6 +67,7 @@ describe("@node", () => {
             }
 
             input ActorUpdateInput {
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -156,6 +157,11 @@ describe("@node", () => {
               startsWith: String
             }
 
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
+            }
+
             type UpdateActorsMutationResponse {
               actors: [Actor!]!
               info: UpdateInfo!
@@ -226,6 +232,7 @@ describe("@node", () => {
             }
 
             input ActorUpdateInput {
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -378,6 +385,7 @@ describe("@node", () => {
             }
 
             input SeriesUpdateInput {
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -418,6 +426,11 @@ describe("@node", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateActorsMutationResponse {
@@ -492,6 +505,7 @@ describe("@node", () => {
             }
 
             input ActorUpdateInput {
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -608,6 +622,7 @@ describe("@node", () => {
             }
 
             input SeriesUpdateInput {
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -648,6 +663,11 @@ describe("@node", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateActorsMutationResponse {

@@ -108,6 +108,11 @@ describe("https://github.com/neo4j/graphql/issues/5428", () => {
               startsWith: String
             }
 
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
+            }
+
             type Test {
               Name: String
             }
@@ -140,6 +145,7 @@ describe("https://github.com/neo4j/graphql/issues/5428", () => {
             }
 
             input TestUpdateInput {
+              Name: StringScalarMutations
               Name_SET: String
             }
 

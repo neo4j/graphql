@@ -60,6 +60,11 @@ describe("Null", () => {
               equals: Boolean
             }
 
+            \\"\\"\\"Boolean mutations\\"\\"\\"
+            input BooleanScalarMutations {
+              set: Boolean
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -97,6 +102,11 @@ describe("Null", () => {
               lessThanEquals: DateTime
             }
 
+            \\"\\"\\"DateTime mutations\\"\\"\\"
+            input DateTimeScalarMutations {
+              set: DateTime
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships deleted during a delete mutation
             \\"\\"\\"
@@ -128,6 +138,15 @@ describe("Null", () => {
               lessThanEquals: Float
             }
 
+            \\"\\"\\"Float mutations\\"\\"\\"
+            input FloatScalarMutations {
+              add: Float
+              divide: Float
+              multiply: Float
+              set: Float
+              substract: Float
+            }
+
             type IDAggregateSelection {
               longest: ID
               shortest: ID
@@ -153,6 +172,11 @@ describe("Null", () => {
               startsWith: ID
             }
 
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
@@ -174,6 +198,13 @@ describe("Null", () => {
               in: [Int!]
               lessThan: Int
               lessThanEquals: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              decrement: Int
+              increment: Int
+              set: Int
             }
 
             type Movie {
@@ -235,36 +266,49 @@ describe("Null", () => {
             }
 
             input MovieUpdateInput {
+              actorCount: IntScalarMutations
               actorCount_DECREMENT: Int
               actorCount_INCREMENT: Int
               actorCount_SET: Int
+              actorCounts: IntScalarMutations
               actorCounts_POP: Int
               actorCounts_PUSH: [Int!]
               actorCounts_SET: [Int!]
+              averageRating: FloatScalarMutations
               averageRating_ADD: Float
               averageRating_DIVIDE: Float
               averageRating_MULTIPLY: Float
               averageRating_SET: Float
               averageRating_SUBTRACT: Float
+              averageRatings: FloatScalarMutations
               averageRatings_POP: Int
               averageRatings_PUSH: [Float!]
               averageRatings_SET: [Float!]
+              createdAt: DateTimeScalarMutations
               createdAt_SET: DateTime
+              createdAts: DateTimeScalarMutations
               createdAts_POP: Int
               createdAts_PUSH: [DateTime!]
               createdAts_SET: [DateTime!]
+              filmedAt: PointMutations
               filmedAt_SET: PointInput
+              filmedAts: PointMutations
               filmedAts_POP: Int
               filmedAts_PUSH: [PointInput!]
               filmedAts_SET: [PointInput!]
+              id: IDScalarMutations
               id_SET: ID
+              ids: IDScalarMutations
               ids_POP: Int
               ids_PUSH: [ID!]
               ids_SET: [ID!]
+              isActives: BooleanScalarMutations
               isActives_POP: Int
               isActives_PUSH: [Boolean!]
               isActives_SET: [Boolean!]
+              name: StringScalarMutations
               name_SET: String
+              names: StringScalarMutations
               names_POP: Int
               names_PUSH: [String!]
               names_SET: [String!]
@@ -404,6 +448,11 @@ describe("Null", () => {
               includes: PointInput
             }
 
+            \\"\\"\\"Point mutations\\"\\"\\"
+            input PointMutations {
+              set: PointInput
+            }
+
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
@@ -441,6 +490,11 @@ describe("Null", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             \\"\\"\\"

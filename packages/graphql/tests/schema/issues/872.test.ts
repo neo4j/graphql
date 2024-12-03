@@ -200,6 +200,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
 
             input Actor2UpdateInput {
               movies: [Actor2MoviesUpdateFieldInput!]
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -383,6 +384,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
 
             input ActorUpdateInput {
               movies: [ActorMoviesUpdateFieldInput!]
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -512,6 +514,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             }
 
             input MovieUpdateInput {
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -596,6 +599,11 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateActor2sMutationResponse {

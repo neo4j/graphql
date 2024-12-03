@@ -70,6 +70,7 @@ describe("Arrays Methods", () => {
             }
 
             input ActedInUpdateInput {
+              pay: FloatScalarMutations
               pay_POP: Int
               pay_PUSH: [Float]
               pay_SET: [Float]
@@ -254,6 +255,7 @@ describe("Arrays Methods", () => {
 
             input ActorUpdateInput {
               actedIn: [ActorActedInUpdateFieldInput!]
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -349,6 +351,15 @@ describe("Arrays Methods", () => {
               lessThanEquals: Float
             }
 
+            \\"\\"\\"Float mutations\\"\\"\\"
+            input FloatScalarMutations {
+              add: Float
+              divide: Float
+              multiply: Float
+              set: Float
+              substract: Float
+            }
+
             type IDAggregateSelection {
               longest: ID
               shortest: ID
@@ -366,6 +377,11 @@ describe("Arrays Methods", () => {
               lessThanEquals: ID
               matches: ID
               startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
             }
 
             type Movie {
@@ -528,12 +544,15 @@ describe("Arrays Methods", () => {
 
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
+              averageRating: FloatScalarMutations
               averageRating_ADD: Float
               averageRating_DIVIDE: Float
               averageRating_MULTIPLY: Float
               averageRating_SET: Float
               averageRating_SUBTRACT: Float
+              id: IDScalarMutations
               id_SET: ID
+              ratings: FloatScalarMutations
               ratings_POP: Int
               ratings_PUSH: [Float!]
               ratings_SET: [Float!]
@@ -643,6 +662,11 @@ describe("Arrays Methods", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateActorsMutationResponse {

@@ -87,7 +87,9 @@ describe("https://github.com/neo4j/graphql/issues/1575", () => {
             }
 
             input FooUpdateInput {
+              geo_point: PointMutations
               geo_point_SET: PointInput
+              point: PointMutations
               point_SET: PointInput
             }
 
@@ -172,6 +174,11 @@ describe("https://github.com/neo4j/graphql/issues/1575", () => {
               height: Float
               latitude: Float!
               longitude: Float!
+            }
+
+            \\"\\"\\"Point mutations\\"\\"\\"
+            input PointMutations {
+              set: PointInput
             }
 
             type Query {

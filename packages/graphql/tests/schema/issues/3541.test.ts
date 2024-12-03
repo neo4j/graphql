@@ -380,6 +380,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             input ActorUpdateInput {
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -439,6 +440,11 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               lessThanEquals: ID
               matches: ID
               startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
             }
 
             type Movie @key(fields: \\"title\\") @key(fields: \\"id\\") @shareable {
@@ -559,7 +565,9 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
 
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
+              id: IDScalarMutations
               id_SET: ID
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -656,6 +664,11 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateActorsMutationResponse {

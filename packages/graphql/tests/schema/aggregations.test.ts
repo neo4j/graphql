@@ -70,6 +70,13 @@ describe("Aggregations", () => {
               lessThanEquals: BigInt
             }
 
+            \\"\\"\\"BigInt mutations\\"\\"\\"
+            input BigIntScalarMutations {
+              decrement: BigInt
+              increment: BigInt
+              set: BigInt
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -101,6 +108,11 @@ describe("Aggregations", () => {
               lessThanEquals: DateTime
             }
 
+            \\"\\"\\"DateTime mutations\\"\\"\\"
+            input DateTimeScalarMutations {
+              set: DateTime
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships deleted during a delete mutation
             \\"\\"\\"
@@ -127,6 +139,11 @@ describe("Aggregations", () => {
               lessThanEquals: Duration
             }
 
+            \\"\\"\\"Duration mutations\\"\\"\\"
+            input DurationScalarMutations {
+              set: Duration
+            }
+
             type FloatAggregateSelection {
               average: Float
               max: Float
@@ -142,6 +159,15 @@ describe("Aggregations", () => {
               in: [Float!]
               lessThan: Float
               lessThanEquals: Float
+            }
+
+            \\"\\"\\"Float mutations\\"\\"\\"
+            input FloatScalarMutations {
+              add: Float
+              divide: Float
+              multiply: Float
+              set: Float
+              substract: Float
             }
 
             type IDAggregateSelection {
@@ -163,6 +189,11 @@ describe("Aggregations", () => {
               startsWith: ID
             }
 
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
@@ -178,6 +209,13 @@ describe("Aggregations", () => {
               in: [Int!]
               lessThan: Int
               lessThanEquals: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              decrement: Int
+              increment: Int
+              set: Int
             }
 
             \\"\\"\\"A local datetime, represented as 'YYYY-MM-DDTHH:MM:SS'\\"\\"\\"
@@ -198,6 +236,11 @@ describe("Aggregations", () => {
               lessThanEquals: LocalDateTime
             }
 
+            \\"\\"\\"LocalDateTime mutations\\"\\"\\"
+            input LocalDateTimeScalarMutations {
+              set: LocalDateTime
+            }
+
             \\"\\"\\"
             A local time, represented as a time string without timezone information
             \\"\\"\\"
@@ -216,6 +259,11 @@ describe("Aggregations", () => {
               in: [LocalTime!]
               lessThan: LocalTime
               lessThanEquals: LocalTime
+            }
+
+            \\"\\"\\"LocalTime mutations\\"\\"\\"
+            input LocalTimeScalarMutations {
+              set: LocalTime
             }
 
             type Movie {
@@ -284,24 +332,35 @@ describe("Aggregations", () => {
             }
 
             input MovieUpdateInput {
+              createdAt: DateTimeScalarMutations
               createdAt_SET: DateTime
+              id: IDScalarMutations
               id_SET: ID
+              imdbRating: FloatScalarMutations
               imdbRating_ADD: Float
               imdbRating_DIVIDE: Float
               imdbRating_MULTIPLY: Float
               imdbRating_SET: Float
               imdbRating_SUBTRACT: Float
+              isbn: StringScalarMutations
               isbn_SET: String
+              screenTime: DurationScalarMutations
               screenTime_SET: Duration
+              someBigInt: BigIntScalarMutations
               someBigInt_DECREMENT: BigInt
               someBigInt_INCREMENT: BigInt
               someBigInt_SET: BigInt
+              someInt: IntScalarMutations
               someInt_DECREMENT: Int
               someInt_INCREMENT: Int
               someInt_SET: Int
+              someLocalDateTime: LocalDateTimeScalarMutations
               someLocalDateTime_SET: LocalDateTime
+              someLocalTime: LocalTimeScalarMutations
               someLocalTime_SET: LocalTime
+              someTime: TimeScalarMutations
               someTime_SET: Time
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -438,6 +497,11 @@ describe("Aggregations", () => {
               startsWith: String
             }
 
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
+            }
+
             \\"\\"\\"A time, represented as an RFC3339 time string\\"\\"\\"
             scalar Time
 
@@ -454,6 +518,11 @@ describe("Aggregations", () => {
               in: [Time!]
               lessThan: Time
               lessThanEquals: Time
+            }
+
+            \\"\\"\\"Time mutations\\"\\"\\"
+            input TimeScalarMutations {
+              set: Time
             }
 
             \\"\\"\\"
@@ -537,6 +606,13 @@ describe("Aggregations", () => {
               lessThanEquals: BigInt
             }
 
+            \\"\\"\\"BigInt mutations\\"\\"\\"
+            input BigIntScalarMutations {
+              decrement: BigInt
+              increment: BigInt
+              set: BigInt
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -573,6 +649,11 @@ describe("Aggregations", () => {
               lessThanEquals: DateTime
             }
 
+            \\"\\"\\"DateTime mutations\\"\\"\\"
+            input DateTimeScalarMutations {
+              set: DateTime
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships deleted during a delete mutation
             \\"\\"\\"
@@ -599,6 +680,11 @@ describe("Aggregations", () => {
               lessThanEquals: Duration
             }
 
+            \\"\\"\\"Duration mutations\\"\\"\\"
+            input DurationScalarMutations {
+              set: Duration
+            }
+
             type FloatAggregateSelection {
               average: Float
               max: Float
@@ -614,6 +700,15 @@ describe("Aggregations", () => {
               in: [Float!]
               lessThan: Float
               lessThanEquals: Float
+            }
+
+            \\"\\"\\"Float mutations\\"\\"\\"
+            input FloatScalarMutations {
+              add: Float
+              divide: Float
+              multiply: Float
+              set: Float
+              substract: Float
             }
 
             type IDAggregateSelection {
@@ -635,6 +730,11 @@ describe("Aggregations", () => {
               startsWith: ID
             }
 
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
@@ -650,6 +750,13 @@ describe("Aggregations", () => {
               in: [Int!]
               lessThan: Int
               lessThanEquals: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              decrement: Int
+              increment: Int
+              set: Int
             }
 
             \\"\\"\\"
@@ -842,23 +949,33 @@ describe("Aggregations", () => {
             }
 
             input LikesUpdateInput {
+              someBigInt: BigIntScalarMutations
               someBigInt_DECREMENT: BigInt
               someBigInt_INCREMENT: BigInt
               someBigInt_SET: BigInt
+              someDateTime: DateTimeScalarMutations
               someDateTime_SET: DateTime
+              someDuration: DurationScalarMutations
               someDuration_SET: Duration
+              someFloat: FloatScalarMutations
               someFloat_ADD: Float
               someFloat_DIVIDE: Float
               someFloat_MULTIPLY: Float
               someFloat_SET: Float
               someFloat_SUBTRACT: Float
+              someId: IDScalarMutations
               someId_SET: ID
+              someInt: IntScalarMutations
               someInt_DECREMENT: Int
               someInt_INCREMENT: Int
               someInt_SET: Int
+              someLocalDateTime: LocalDateTimeScalarMutations
               someLocalDateTime_SET: LocalDateTime
+              someLocalTime: LocalTimeScalarMutations
               someLocalTime_SET: LocalTime
+              someString: StringScalarMutations
               someString_SET: String
+              someTime: TimeScalarMutations
               someTime_SET: Time
             }
 
@@ -954,6 +1071,11 @@ describe("Aggregations", () => {
               lessThanEquals: LocalDateTime
             }
 
+            \\"\\"\\"LocalDateTime mutations\\"\\"\\"
+            input LocalDateTimeScalarMutations {
+              set: LocalDateTime
+            }
+
             \\"\\"\\"
             A local time, represented as a time string without timezone information
             \\"\\"\\"
@@ -972,6 +1094,11 @@ describe("Aggregations", () => {
               in: [LocalTime!]
               lessThan: LocalTime
               lessThanEquals: LocalTime
+            }
+
+            \\"\\"\\"LocalTime mutations\\"\\"\\"
+            input LocalTimeScalarMutations {
+              set: LocalTime
             }
 
             type Mutation {
@@ -1247,6 +1374,7 @@ describe("Aggregations", () => {
 
             input PostUpdateInput {
               likes: [PostLikesUpdateFieldInput!]
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -1361,6 +1489,11 @@ describe("Aggregations", () => {
               startsWith: String
             }
 
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
+            }
+
             \\"\\"\\"A time, represented as an RFC3339 time string\\"\\"\\"
             scalar Time
 
@@ -1377,6 +1510,11 @@ describe("Aggregations", () => {
               in: [Time!]
               lessThan: Time
               lessThanEquals: Time
+            }
+
+            \\"\\"\\"Time mutations\\"\\"\\"
+            input TimeScalarMutations {
+              set: Time
             }
 
             \\"\\"\\"
@@ -1465,23 +1603,33 @@ describe("Aggregations", () => {
             }
 
             input UserUpdateInput {
+              someBigInt: BigIntScalarMutations
               someBigInt_DECREMENT: BigInt
               someBigInt_INCREMENT: BigInt
               someBigInt_SET: BigInt
+              someDateTime: DateTimeScalarMutations
               someDateTime_SET: DateTime
+              someDuration: DurationScalarMutations
               someDuration_SET: Duration
+              someFloat: FloatScalarMutations
               someFloat_ADD: Float
               someFloat_DIVIDE: Float
               someFloat_MULTIPLY: Float
               someFloat_SET: Float
               someFloat_SUBTRACT: Float
+              someId: IDScalarMutations
               someId_SET: ID
+              someInt: IntScalarMutations
               someInt_DECREMENT: Int
               someInt_INCREMENT: Int
               someInt_SET: Int
+              someLocalDateTime: LocalDateTimeScalarMutations
               someLocalDateTime_SET: LocalDateTime
+              someLocalTime: LocalTimeScalarMutations
               someLocalTime_SET: LocalTime
+              someString: StringScalarMutations
               someString_SET: String
+              someTime: TimeScalarMutations
               someTime_SET: Time
             }
 

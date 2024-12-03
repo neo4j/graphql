@@ -89,7 +89,9 @@ describe("@settable", () => {
             }
 
             input MovieUpdateInput {
+              description: StringScalarMutations
               description_SET: String
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -162,6 +164,11 @@ describe("@settable", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             \\"\\"\\"
@@ -247,6 +254,7 @@ describe("@settable", () => {
             }
 
             input MovieUpdateInput {
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -319,6 +327,11 @@ describe("@settable", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             \\"\\"\\"
@@ -447,6 +460,7 @@ describe("@settable", () => {
             }
 
             input MovieUpdateInput {
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -526,6 +540,11 @@ describe("@settable", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type Subscription {
@@ -717,6 +736,7 @@ describe("@settable", () => {
 
                 input ActorUpdateInput {
                   actedIn: [ActorActedInUpdateFieldInput!]
+                  name: StringScalarMutations
                   name_SET: String
                 }
 
@@ -823,7 +843,9 @@ describe("@settable", () => {
                 }
 
                 input MovieUpdateInput {
+                  description: StringScalarMutations
                   description_SET: String
+                  title: StringScalarMutations
                   title_SET: String
                 }
 
@@ -902,6 +924,11 @@ describe("@settable", () => {
                   lessThanEquals: String
                   matches: String
                   startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 type UpdateActorsMutationResponse {
@@ -1079,6 +1106,7 @@ describe("@settable", () => {
                 }
 
                 input ActorUpdateInput {
+                  name: StringScalarMutations
                   name_SET: String
                 }
 
@@ -1185,7 +1213,9 @@ describe("@settable", () => {
                 }
 
                 input MovieUpdateInput {
+                  description: StringScalarMutations
                   description_SET: String
+                  title: StringScalarMutations
                   title_SET: String
                 }
 
@@ -1264,6 +1294,11 @@ describe("@settable", () => {
                   lessThanEquals: String
                   matches: String
                   startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 type UpdateActorsMutationResponse {
@@ -1459,6 +1494,7 @@ describe("@settable", () => {
                 }
 
                 input ActorUpdateInput {
+                  name: StringScalarMutations
                   name_SET: String
                 }
 
@@ -1683,7 +1719,9 @@ describe("@settable", () => {
 
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
+                  description: StringScalarMutations
                   description_SET: String
+                  title: StringScalarMutations
                   title_SET: String
                 }
 
@@ -1787,6 +1825,11 @@ describe("@settable", () => {
                   lessThanEquals: String
                   matches: String
                   startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 type UpdateActorsMutationResponse {
@@ -1990,6 +2033,7 @@ describe("@settable", () => {
 
                 input ActorUpdateInput {
                   actedIn: [ActorActedInUpdateFieldInput!]
+                  name: StringScalarMutations
                   name_SET: String
                 }
 
@@ -2214,7 +2258,9 @@ describe("@settable", () => {
 
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
+                  description: StringScalarMutations
                   description_SET: String
+                  title: StringScalarMutations
                   title_SET: String
                 }
 
@@ -2318,6 +2364,11 @@ describe("@settable", () => {
                   lessThanEquals: String
                   matches: String
                   startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 type UpdateActorsMutationResponse {
@@ -2503,6 +2554,7 @@ describe("@settable", () => {
 
                 input ActorUpdateInput {
                   actedIn: ActorActedInUpdateInput
+                  name: StringScalarMutations
                   name_SET: String
                 }
 
@@ -2613,7 +2665,9 @@ describe("@settable", () => {
                 }
 
                 input MovieUpdateInput {
+                  description: StringScalarMutations
                   description_SET: String
+                  title: StringScalarMutations
                   title_SET: String
                 }
 
@@ -2721,7 +2775,9 @@ describe("@settable", () => {
                 }
 
                 input SeriesUpdateInput {
+                  description: StringScalarMutations
                   description_SET: String
+                  name: StringScalarMutations
                   name_SET: String
                 }
 
@@ -2768,6 +2824,11 @@ describe("@settable", () => {
                   lessThanEquals: String
                   matches: String
                   startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 type UpdateActorsMutationResponse {
@@ -2933,6 +2994,7 @@ describe("@settable", () => {
                 }
 
                 input ActorUpdateInput {
+                  name: StringScalarMutations
                   name_SET: String
                 }
 
@@ -3043,7 +3105,9 @@ describe("@settable", () => {
                 }
 
                 input MovieUpdateInput {
+                  description: StringScalarMutations
                   description_SET: String
+                  title: StringScalarMutations
                   title_SET: String
                 }
 
@@ -3151,7 +3215,9 @@ describe("@settable", () => {
                 }
 
                 input SeriesUpdateInput {
+                  description: StringScalarMutations
                   description_SET: String
+                  name: StringScalarMutations
                   name_SET: String
                 }
 
@@ -3198,6 +3264,11 @@ describe("@settable", () => {
                   lessThanEquals: String
                   matches: String
                   startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 type UpdateActorsMutationResponse {
@@ -3395,6 +3466,7 @@ describe("@settable", () => {
                 }
 
                 input ActorUpdateInput {
+                  name: StringScalarMutations
                   name_SET: String
                 }
 
@@ -3623,7 +3695,9 @@ describe("@settable", () => {
 
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
+                  description: StringScalarMutations
                   description_SET: String
+                  title: StringScalarMutations
                   title_SET: String
                 }
 
@@ -3756,7 +3830,9 @@ describe("@settable", () => {
                 }
 
                 input SeriesUpdateInput {
+                  description: StringScalarMutations
                   description_SET: String
+                  name: StringScalarMutations
                   name_SET: String
                 }
 
@@ -3803,6 +3879,11 @@ describe("@settable", () => {
                   lessThanEquals: String
                   matches: String
                   startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 type UpdateActorsMutationResponse {
@@ -4016,6 +4097,7 @@ describe("@settable", () => {
 
                 input ActorUpdateInput {
                   actedIn: ActorActedInUpdateInput
+                  name: StringScalarMutations
                   name_SET: String
                 }
 
@@ -4244,7 +4326,9 @@ describe("@settable", () => {
 
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
+                  description: StringScalarMutations
                   description_SET: String
+                  title: StringScalarMutations
                   title_SET: String
                 }
 
@@ -4377,7 +4461,9 @@ describe("@settable", () => {
                 }
 
                 input SeriesUpdateInput {
+                  description: StringScalarMutations
                   description_SET: String
+                  name: StringScalarMutations
                   name_SET: String
                 }
 
@@ -4424,6 +4510,11 @@ describe("@settable", () => {
                   lessThanEquals: String
                   matches: String
                   startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 type UpdateActorsMutationResponse {
@@ -4630,6 +4721,7 @@ describe("@settable", () => {
 
                 input ActorUpdateInput {
                   actedIn: [ActorActedInUpdateFieldInput!]
+                  name: StringScalarMutations
                   name_SET: String
                 }
 
@@ -4737,7 +4829,9 @@ describe("@settable", () => {
                 }
 
                 input MovieUpdateInput {
+                  description: StringScalarMutations
                   description_SET: String
+                  title: StringScalarMutations
                   title_SET: String
                 }
 
@@ -4824,7 +4918,9 @@ describe("@settable", () => {
                 }
 
                 input ProductionUpdateInput {
+                  description: StringScalarMutations
                   description_SET: String
+                  title: StringScalarMutations
                   title_SET: String
                 }
 
@@ -4904,7 +5000,9 @@ describe("@settable", () => {
                 }
 
                 input SeriesUpdateInput {
+                  description: StringScalarMutations
                   description_SET: String
+                  title: StringScalarMutations
                   title_SET: String
                 }
 
@@ -4951,6 +5049,11 @@ describe("@settable", () => {
                   lessThanEquals: String
                   matches: String
                   startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 type UpdateActorsMutationResponse {
@@ -5143,6 +5246,7 @@ describe("@settable", () => {
                 }
 
                 input ActorUpdateInput {
+                  name: StringScalarMutations
                   name_SET: String
                 }
 
@@ -5250,7 +5354,9 @@ describe("@settable", () => {
                 }
 
                 input MovieUpdateInput {
+                  description: StringScalarMutations
                   description_SET: String
+                  title: StringScalarMutations
                   title_SET: String
                 }
 
@@ -5412,7 +5518,9 @@ describe("@settable", () => {
                 }
 
                 input SeriesUpdateInput {
+                  description: StringScalarMutations
                   description_SET: String
+                  title: StringScalarMutations
                   title_SET: String
                 }
 
@@ -5459,6 +5567,11 @@ describe("@settable", () => {
                   lessThanEquals: String
                   matches: String
                   startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 type UpdateActorsMutationResponse {
@@ -5671,6 +5784,7 @@ describe("@settable", () => {
                 }
 
                 input ActorUpdateInput {
+                  name: StringScalarMutations
                   name_SET: String
                 }
 
@@ -5856,7 +5970,9 @@ describe("@settable", () => {
 
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
+                  description: StringScalarMutations
                   description_SET: String
+                  title: StringScalarMutations
                   title_SET: String
                 }
 
@@ -6230,7 +6346,9 @@ describe("@settable", () => {
 
                 input SeriesUpdateInput {
                   actors: [SeriesActorsUpdateFieldInput!]
+                  description: StringScalarMutations
                   description_SET: String
+                  title: StringScalarMutations
                   title_SET: String
                 }
 
@@ -6302,6 +6420,11 @@ describe("@settable", () => {
                   lessThanEquals: String
                   matches: String
                   startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 type UpdateActorsMutationResponse {
@@ -6522,6 +6645,7 @@ describe("@settable", () => {
 
                 input ActorUpdateInput {
                   actedIn: [ActorActedInUpdateFieldInput!]
+                  name: StringScalarMutations
                   name_SET: String
                 }
 
@@ -6707,7 +6831,9 @@ describe("@settable", () => {
 
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
+                  description: StringScalarMutations
                   description_SET: String
+                  title: StringScalarMutations
                   title_SET: String
                 }
 
@@ -6921,7 +7047,9 @@ describe("@settable", () => {
 
                 input ProductionUpdateInput {
                   actors: [ProductionActorsUpdateFieldInput!]
+                  description: StringScalarMutations
                   description_SET: String
+                  title: StringScalarMutations
                   title_SET: String
                 }
 
@@ -7104,7 +7232,9 @@ describe("@settable", () => {
 
                 input SeriesUpdateInput {
                   actors: [SeriesActorsUpdateFieldInput!]
+                  description: StringScalarMutations
                   description_SET: String
+                  title: StringScalarMutations
                   title_SET: String
                 }
 
@@ -7176,6 +7306,11 @@ describe("@settable", () => {
                   lessThanEquals: String
                   matches: String
                   startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 type UpdateActorsMutationResponse {

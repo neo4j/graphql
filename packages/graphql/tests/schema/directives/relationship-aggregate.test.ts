@@ -261,7 +261,9 @@ describe("@relationship directive, aggregate argument", () => {
                 }
 
                 input ActorUpdateInput {
+                  password: StringScalarMutations
                   password_SET: String
+                  username: StringScalarMutations
                   username_SET: String
                 }
 
@@ -453,6 +455,7 @@ describe("@relationship directive, aggregate argument", () => {
 
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
+                  title: StringScalarMutations
                   title_SET: String
                 }
 
@@ -552,6 +555,11 @@ describe("@relationship directive, aggregate argument", () => {
                   startsWith: String
                 }
 
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
+                }
+
                 type UpdateActorsMutationResponse {
                   actors: [Actor!]!
                   info: UpdateInfo!
@@ -630,7 +638,9 @@ describe("@relationship directive, aggregate argument", () => {
                 }
 
                 input ActorUpdateInput {
+                  password: StringScalarMutations
                   password_SET: String
+                  username: StringScalarMutations
                   username_SET: String
                 }
 
@@ -833,6 +843,7 @@ describe("@relationship directive, aggregate argument", () => {
 
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
+                  title: StringScalarMutations
                   title_SET: String
                 }
 
@@ -932,6 +943,11 @@ describe("@relationship directive, aggregate argument", () => {
                   startsWith: String
                 }
 
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
+                }
+
                 type UpdateActorsMutationResponse {
                   actors: [Actor!]!
                   info: UpdateInfo!
@@ -1012,7 +1028,9 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     input ActorUpdateInput {
+                      password: StringScalarMutations
                       password_SET: String
+                      username: StringScalarMutations
                       username_SET: String
                     }
 
@@ -1204,6 +1222,7 @@ describe("@relationship directive, aggregate argument", () => {
 
                     input MovieUpdateInput {
                       actors: [MovieActorsUpdateFieldInput!]
+                      title: StringScalarMutations
                       title_SET: String
                     }
 
@@ -1310,7 +1329,9 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     input PersonUpdateInput {
+                      password: StringScalarMutations
                       password_SET: String
+                      username: StringScalarMutations
                       username_SET: String
                     }
 
@@ -1370,6 +1391,11 @@ describe("@relationship directive, aggregate argument", () => {
                       lessThanEquals: String
                       matches: String
                       startsWith: String
+                    }
+
+                    \\"\\"\\"String mutations\\"\\"\\"
+                    input StringScalarMutations {
+                      set: String
                     }
 
                     type UpdateActorsMutationResponse {
@@ -1450,7 +1476,9 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     input ActorUpdateInput {
+                      password: StringScalarMutations
                       password_SET: String
+                      username: StringScalarMutations
                       username_SET: String
                     }
 
@@ -1653,6 +1681,7 @@ describe("@relationship directive, aggregate argument", () => {
 
                     input MovieUpdateInput {
                       actors: [MovieActorsUpdateFieldInput!]
+                      title: StringScalarMutations
                       title_SET: String
                     }
 
@@ -1759,7 +1788,9 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     input PersonUpdateInput {
+                      password: StringScalarMutations
                       password_SET: String
+                      username: StringScalarMutations
                       username_SET: String
                     }
 
@@ -1819,6 +1850,11 @@ describe("@relationship directive, aggregate argument", () => {
                       lessThanEquals: String
                       matches: String
                       startsWith: String
+                    }
+
+                    \\"\\"\\"String mutations\\"\\"\\"
+                    input StringScalarMutations {
+                      set: String
                     }
 
                     type UpdateActorsMutationResponse {
@@ -1907,7 +1943,9 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     input ActorUpdateInput {
+                      password: StringScalarMutations
                       password_SET: String
+                      username: StringScalarMutations
                       username_SET: String
                     }
 
@@ -2120,6 +2158,7 @@ describe("@relationship directive, aggregate argument", () => {
 
                     input MovieUpdateInput {
                       actors: MovieActorsUpdateInput
+                      title: StringScalarMutations
                       title_SET: String
                     }
 
@@ -2221,6 +2260,7 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     input PersonUpdateInput {
+                      name: StringScalarMutations
                       name_SET: String
                     }
 
@@ -2274,6 +2314,11 @@ describe("@relationship directive, aggregate argument", () => {
                       lessThanEquals: String
                       matches: String
                       startsWith: String
+                    }
+
+                    \\"\\"\\"String mutations\\"\\"\\"
+                    input StringScalarMutations {
+                      set: String
                     }
 
                     type UpdateActorsMutationResponse {
@@ -2364,7 +2409,9 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     input ActorUpdateInput {
+                      password: StringScalarMutations
                       password_SET: String
+                      username: StringScalarMutations
                       username_SET: String
                     }
 
@@ -2577,6 +2624,7 @@ describe("@relationship directive, aggregate argument", () => {
 
                     input MovieUpdateInput {
                       actors: MovieActorsUpdateInput
+                      title: StringScalarMutations
                       title_SET: String
                     }
 
@@ -2678,6 +2726,7 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     input PersonUpdateInput {
+                      name: StringScalarMutations
                       name_SET: String
                     }
 
@@ -2731,6 +2780,11 @@ describe("@relationship directive, aggregate argument", () => {
                       lessThanEquals: String
                       matches: String
                       startsWith: String
+                    }
+
+                    \\"\\"\\"String mutations\\"\\"\\"
+                    input StringScalarMutations {
+                      set: String
                     }
 
                     type UpdateActorsMutationResponse {

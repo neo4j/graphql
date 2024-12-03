@@ -158,6 +158,7 @@ describe("Cypher", () => {
             }
 
             input ActorUpdateInput {
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -380,6 +381,11 @@ describe("Cypher", () => {
               startsWith: ID
             }
 
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
             \\"\\"\\"Int list filters\\"\\"\\"
             input IntListFilters {
               equals: [Int!]
@@ -506,6 +512,7 @@ describe("Cypher", () => {
             }
 
             input MovieUpdateInput {
+              id: IDScalarMutations
               id_SET: ID
             }
 
@@ -766,6 +773,11 @@ describe("Cypher", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             \\"\\"\\"A time, represented as an RFC3339 time string\\"\\"\\"
@@ -1126,6 +1138,7 @@ describe("Cypher", () => {
             }
 
             input BlogUpdateInput {
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -1224,6 +1237,7 @@ describe("Cypher", () => {
             }
 
             input PostUpdateInput {
+              content: StringScalarMutations
               content_SET: String
             }
 
@@ -1280,6 +1294,11 @@ describe("Cypher", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateBlogsMutationResponse {
@@ -1389,6 +1408,7 @@ describe("Cypher", () => {
             }
 
             input ActorUpdateInput {
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -1565,6 +1585,11 @@ describe("Cypher", () => {
               startsWith: String
             }
 
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
+            }
+
             type UpdateActorsMutationResponse {
               actors: [Actor!]!
               info: UpdateInfo!
@@ -1667,6 +1692,7 @@ describe("Cypher", () => {
             }
 
             input ActorUpdateInput {
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -1809,6 +1835,11 @@ describe("Cypher", () => {
               startsWith: String
             }
 
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
+            }
+
             type UpdateActorsMutationResponse {
               actors: [Actor!]!
               info: UpdateInfo!
@@ -1895,6 +1926,7 @@ describe("Cypher", () => {
             }
 
             input ActorUpdateInput {
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -1968,6 +2000,11 @@ describe("Cypher", () => {
               startsWith: ID
             }
 
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
             \\"\\"\\"Int filters\\"\\"\\"
             input IntScalarFilters {
               equals: Int
@@ -2005,6 +2042,7 @@ describe("Cypher", () => {
             }
 
             input MovieUpdateInput {
+              id: IDScalarMutations
               id_SET: ID
             }
 
@@ -2077,6 +2115,11 @@ describe("Cypher", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateActorsMutationResponse {
@@ -2204,6 +2247,7 @@ describe("Cypher", () => {
             }
 
             input MovieUpdateInput {
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -2283,6 +2327,11 @@ describe("Cypher", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type Subscription {
