@@ -191,9 +191,11 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               in: [Property!]
             }
 
-            \\"\\"\\"Property mutations\\"\\"\\"
-            input PropertyEnumScalarMutations {
-              set: Property
+            \\"\\"\\"Mutations for a list for Property\\"\\"\\"
+            input PropertyListEnumScalarMutations {
+              pop: Property
+              push: [Property!]!
+              set: [Property!]!
             }
 
             type Query {
@@ -505,9 +507,9 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               id_SET: ID
               name: StringScalarMutations
               name_SET: String
-              properties: PropertyEnumScalarMutations
+              properties: PropertyListEnumScalarMutations
               properties_SET: [Property!]
-              tags: TagEnumScalarMutations
+              tags: TagListEnumScalarMutations
               tags_SET: [Tag!]
               type: ResourceTypeEnumScalarMutations
               type_SET: ResourceType
@@ -632,9 +634,11 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               in: [Tag!]
             }
 
-            \\"\\"\\"Tag mutations\\"\\"\\"
-            input TagEnumScalarMutations {
-              set: Tag
+            \\"\\"\\"Mutations for a list for Tag\\"\\"\\"
+            input TagListEnumScalarMutations {
+              pop: Tag
+              push: [Tag!]!
+              set: [Tag!]!
             }
 
             \\"\\"\\"

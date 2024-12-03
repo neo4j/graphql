@@ -165,6 +165,15 @@ function makeAugmentedSchema({
                 set: { type: enumType.name.value },
             },
         });
+        composer.createInputTC({
+            name: `${enumType.name.value}ListEnumScalarMutations`,
+            description: `Mutations for a list for ${enumType.name.value}`,
+            fields: {
+                set: { type: `[${enumType.name.value}!]!` },
+                push: { type: `[${enumType.name.value}!]!` },
+                pop: { type: enumType.name.value },
+            },
+        });
     });
 
     // Generates the filters for scalar, which are reused
@@ -177,6 +186,16 @@ function makeAugmentedSchema({
                     type: enumType.name.value,
                 },
                 in: { type: `[${enumType.name.value}!]` },
+            },
+        });
+
+        composer.createInputTC({
+            name: `${enumType.name.value}ListScalarMutations`,
+            description: `Mutations for a list for ${enumType.name.value}`,
+            fields: {
+                set: { type: `[${enumType.name.value}!]!` },
+                push: { type: `[${enumType.name.value}!]!` },
+                pop: { type: enumType.name.value },
             },
         });
     });

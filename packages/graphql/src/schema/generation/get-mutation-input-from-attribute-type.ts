@@ -165,10 +165,16 @@ export function getMutationInputFromAttributeType(attribute: AttributeAdapter): 
     }
 
     if (attribute.typeHelper.isEnum()) {
+        if (attribute.typeHelper.isList()) {
+            return `${attribute.getTypeName()}ListEnumScalarMutations`;
+        }
         return `${attribute.getTypeName()}EnumScalarMutations`;
     }
 
     if (attribute.typeHelper.isUserScalar()) {
+        if (attribute.typeHelper.isList()) {
+            return `${attribute.getTypeName()}ListScalarMutations`;
+        }
         return `${attribute.getTypeName()}ScalarMutations`;
     }
 

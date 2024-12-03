@@ -58,6 +58,13 @@ describe("Scalar", () => {
 
             scalar CustomScalar
 
+            \\"\\"\\"Mutations for a list for CustomScalar\\"\\"\\"
+            input CustomScalarListScalarMutations {
+              pop: CustomScalar
+              push: [CustomScalar!]!
+              set: [CustomScalar!]!
+            }
+
             \\"\\"\\"CustomScalar filters\\"\\"\\"
             input CustomScalarScalarFilters {
               equals: CustomScalar
@@ -136,11 +143,11 @@ describe("Scalar", () => {
             input MovieUpdateInput {
               id: IDScalarMutations
               id_SET: ID
-              myCustomArrayScalar: CustomScalarScalarMutations
+              myCustomArrayScalar: CustomScalarListScalarMutations
               myCustomArrayScalar_SET: [CustomScalar!]
               myCustomScalar: CustomScalarScalarMutations
               myCustomScalar_SET: CustomScalar
-              myRequiredCustomArrayScalar: CustomScalarScalarMutations
+              myRequiredCustomArrayScalar: CustomScalarListScalarMutations
               myRequiredCustomArrayScalar_SET: [CustomScalar!]
             }
 
