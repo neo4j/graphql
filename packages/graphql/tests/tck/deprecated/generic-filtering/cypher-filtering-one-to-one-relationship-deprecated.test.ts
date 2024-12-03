@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQL } from "../../../../../src";
-import { createBearerToken } from "../../../../utils/create-bearer-token";
-import { formatCypher, formatParams, translateQuery } from "../../../utils/tck-test-utils";
+import { Neo4jGraphQL } from "../../../../src";
+import { createBearerToken } from "../../../utils/create-bearer-token";
+import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
-describe("cypher directive filtering - One To One Relationship", () => {
+describe("cypher directive filtering - One To One Relationship - deprecated", () => {
     test("1 to 1 relationship", async () => {
         const typeDefs = /* GraphQL */ `
             type Movie @node {
@@ -52,7 +52,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
 
         const query = /* GraphQL */ `
             query {
-                movies(where: { actor: { name: { equals: "Keanu Reeves" } } }) {
+                movies(where: { actor: { name_EQ: "Keanu Reeves" } }) {
                     title
                 }
             }
@@ -120,12 +120,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
 
         const query = /* GraphQL */ `
             query {
-                movies(
-                    where: {
-                        released: { equals: 2003 }
-                        actor: { name: { equals: "Keanu Reeves" }, age: { greaterThan: 30 } }
-                    }
-                ) {
+                movies(where: { released_EQ: 2003, actor: { name_EQ: "Keanu Reeves", age_GT: 30 } }) {
                     title
                 }
             }
@@ -203,7 +198,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
 
         const query = /* GraphQL */ `
             query {
-                movies(where: { actor: { name: { equals: "Keanu Reeves" } } }) {
+                movies(where: { actor: { name_EQ: "Keanu Reeves" } }) {
                     title
                     actor {
                         name
@@ -250,7 +245,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
             }"
         `);
     });
-    // TODO: {actor: null} was not migrated to {actors: {equals: null}}. Check if this is correct
+
     test("1 to 1 relationship with null filter", async () => {
         const typeDefs = /* GraphQL */ `
             type Movie @node {
@@ -285,7 +280,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
 
         const query = /* GraphQL */ `
             query {
-                movies(where: { released: { equals: 2003 }, actor: null }) {
+                movies(where: { released_EQ: 2003, actor: null }) {
                     title
                 }
             }
@@ -320,7 +315,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
             }"
         `);
     });
-    // TODO: {actor: null} was not migrated to {actors: {equals: null}}. Check if this is correct
+
     test("1 to 1 relationship with NOT null filter", async () => {
         const typeDefs = /* GraphQL */ `
             type Movie @node {
@@ -355,7 +350,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
 
         const query = /* GraphQL */ `
             query {
-                movies(where: { AND: [{ released: { in: [2003] }, NOT: { actor: null } }] }) {
+                movies(where: { AND: [{ released_IN: [2003], NOT: { actor: null } }] }) {
                     title
                 }
             }
@@ -397,9 +392,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
         const typeDefs = /* GraphQL */ `
             type Movie
                 @node
-                @authorization(
-                    filter: [{ where: { node: { directed_by: { name: { equals: "$jwt.custom_value" } } } } }]
-                ) {
+                @authorization(filter: [{ where: { node: { directed_by: { name_EQ: "$jwt.custom_value" } } } }]) {
                 title: String
                 released: Int
                 directed_by: Person!
@@ -438,7 +431,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
 
         const query = /* GraphQL */ `
             query {
-                people(where: { directed: { title: { equals: "The Matrix" } } }) {
+                people(where: { directed: { title_EQ: "The Matrix" } }) {
                     directed {
                         title
                         directed_by {
@@ -522,9 +515,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
         const typeDefs = /* GraphQL */ `
             type Movie
                 @node
-                @authorization(
-                    filter: [{ where: { node: { directed_by: { name: { equals: "$jwt.custom_value" } } } } }]
-                ) {
+                @authorization(filter: [{ where: { node: { directed_by: { name_EQ: "$jwt.custom_value" } } } }]) {
                 title: String
                 released: Int
                 directed_by: Person!
@@ -563,7 +554,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
 
         const query = /* GraphQL */ `
             query {
-                people(where: { directed: { title: { equals: "The Matrix" } } }) {
+                people(where: { directed: { title_EQ: "The Matrix" } }) {
                     directed {
                         title
                         directed_by {
@@ -649,9 +640,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
                 title: String
                 released: Int
                 directed_by: Person!
-                    @authorization(
-                        filter: [{ where: { node: { directed_by: { name: { equals: "$jwt.custom_value" } } } } }]
-                    )
+                    @authorization(filter: [{ where: { node: { directed_by: { name_EQ: "$jwt.custom_value" } } } }])
                     @cypher(
                         statement: """
                         MATCH (this)<-[:DIRECTED]-(director:Person)
@@ -687,7 +676,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
 
         const query = /* GraphQL */ `
             query {
-                people(where: { directed: { title: { equals: "The Matrix" } } }) {
+                people(where: { directed: { title_EQ: "The Matrix" } }) {
                     directed {
                         title
                         directed_by {
@@ -773,9 +762,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
                 title: String
                 released: Int
                 directed_by: Person!
-                    @authorization(
-                        filter: [{ where: { node: { directed_by: { name: { equals: "$jwt.custom_value" } } } } }]
-                    )
+                    @authorization(filter: [{ where: { node: { directed_by: { name_EQ: "$jwt.custom_value" } } } }])
                     @cypher(
                         statement: """
                         MATCH (this)<-[:DIRECTED]-(director:Person)
@@ -811,7 +798,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
 
         const query = /* GraphQL */ `
             query {
-                people(where: { directed: { title: { equals: "The Matrix" } } }) {
+                people(where: { directed: { title_EQ: "The Matrix" } }) {
                     directed {
                         title
                         directed_by {
@@ -895,9 +882,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
         const typeDefs = /* GraphQL */ `
             type Movie
                 @node
-                @authorization(
-                    validate: [{ where: { node: { directed_by: { name: { equals: "$jwt.custom_value" } } } } }]
-                ) {
+                @authorization(validate: [{ where: { node: { directed_by: { name_EQ: "$jwt.custom_value" } } } }]) {
                 title: String
                 released: Int
                 directed_by: Person!
@@ -936,7 +921,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
 
         const query = /* GraphQL */ `
             query {
-                people(where: { directed: { title: { equals: "The Matrix" } } }) {
+                people(where: { directed: { title_EQ: "The Matrix" } }) {
                     directed {
                         title
                         directed_by {
@@ -1020,9 +1005,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
         const typeDefs = /* GraphQL */ `
             type Movie
                 @node
-                @authorization(
-                    validate: [{ where: { node: { directed_by: { name: { equals: "$jwt.custom_value" } } } } }]
-                ) {
+                @authorization(validate: [{ where: { node: { directed_by: { name_EQ: "$jwt.custom_value" } } } }]) {
                 title: String
                 released: Int
                 directed_by: Person!
@@ -1061,7 +1044,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
 
         const query = /* GraphQL */ `
             query {
-                people(where: { directed: { title: { equals: "The Matrix" } } }) {
+                people(where: { directed: { title_EQ: "The Matrix" } }) {
                     directed {
                         title
                         directed_by {
@@ -1147,9 +1130,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
                 title: String
                 released: Int
                 directed_by: Person!
-                    @authorization(
-                        validate: [{ where: { node: { directed_by: { name: { equals: "$jwt.custom_value" } } } } }]
-                    )
+                    @authorization(validate: [{ where: { node: { directed_by: { name_EQ: "$jwt.custom_value" } } } }])
                     @cypher(
                         statement: """
                         MATCH (this)<-[:DIRECTED]-(director:Person)
@@ -1185,7 +1166,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
 
         const query = /* GraphQL */ `
             query {
-                people(where: { directed: { title: { equals: "The Matrix" } } }) {
+                people(where: { directed: { title_EQ: "The Matrix" } }) {
                     directed {
                         title
                         directed_by {
@@ -1271,9 +1252,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
                 title: String
                 released: Int
                 directed_by: Person!
-                    @authorization(
-                        validate: [{ where: { node: { directed_by: { name: { equals: "$jwt.custom_value" } } } } }]
-                    )
+                    @authorization(validate: [{ where: { node: { directed_by: { name_EQ: "$jwt.custom_value" } } } }])
                     @cypher(
                         statement: """
                         MATCH (this)<-[:DIRECTED]-(director:Person)
@@ -1309,7 +1288,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
 
         const query = /* GraphQL */ `
             query {
-                people(where: { directed: { title: { equals: "The Matrix" } } }) {
+                people(where: { directed: { title_EQ: "The Matrix" } }) {
                     directed {
                         title
                         directed_by {
@@ -1425,7 +1404,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
 
         const query = /* GraphQL */ `
             query {
-                people(where: { directed: { title: { equals: "The Matrix" } } }) {
+                people(where: { directed: { title_EQ: "The Matrix" } }) {
                     directed {
                         title
                         directed_by {
@@ -1556,7 +1535,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
 
         const query = /* GraphQL */ `
             query {
-                movies(where: { directed_by: { name: { equals: "Lilly Wachowski" } }, title: { endsWith: "Matrix" } }) {
+                movies(where: { directed_by: { name_EQ: "Lilly Wachowski" }, title_ENDS_WITH: "Matrix" }) {
                     actorsConnection {
                         totalCount
                         edges {
