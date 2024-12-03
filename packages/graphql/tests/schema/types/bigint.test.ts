@@ -61,6 +61,13 @@ describe("Bigint", () => {
               lessThanEquals: BigInt
             }
 
+            \\"\\"\\"BigInt mutations\\"\\"\\"
+            input BigIntScalarMutations {
+              decrement: BigInt
+              increment: BigInt
+              set: BigInt
+            }
+
             type CreateFilesMutationResponse {
               files: [File!]!
               info: CreateInfo!
@@ -112,7 +119,9 @@ describe("Bigint", () => {
             }
 
             input FileUpdateInput {
+              name: StringScalarMutations
               name_SET: String
+              size: BigIntScalarMutations
               size_DECREMENT: BigInt
               size_INCREMENT: BigInt
               size_SET: BigInt
@@ -188,6 +197,11 @@ describe("Bigint", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateFilesMutationResponse {

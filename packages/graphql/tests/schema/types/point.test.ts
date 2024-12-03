@@ -84,6 +84,7 @@ describe("Point", () => {
             }
 
             input MovieUpdateInput {
+              filmedAt: PointMutations
               filmedAt_SET: PointInput
             }
 
@@ -160,6 +161,11 @@ describe("Point", () => {
               height: Float
               latitude: Float!
               longitude: Float!
+            }
+
+            \\"\\"\\"Point mutations\\"\\"\\"
+            input PointMutations {
+              set: PointInput
             }
 
             type Query {
@@ -248,6 +254,11 @@ describe("Point", () => {
               z: Float
             }
 
+            \\"\\"\\"CartesianPoint mutations\\"\\"\\"
+            input CartesianPointMutations {
+              set: CartesianPointInput
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -294,6 +305,7 @@ describe("Point", () => {
             }
 
             input MachineUpdateInput {
+              partLocation: CartesianPointMutations
               partLocation_SET: CartesianPointInput
             }
 
@@ -416,6 +428,7 @@ describe("Point", () => {
             }
 
             input MovieUpdateInput {
+              filmedAt: PointMutations
               filmedAt_POP: Int
               filmedAt_PUSH: [PointInput!]
               filmedAt_SET: [PointInput!]
@@ -472,6 +485,11 @@ describe("Point", () => {
             input PointListFilters {
               equals: [PointInput!]
               includes: PointInput
+            }
+
+            \\"\\"\\"Point mutations\\"\\"\\"
+            input PointMutations {
+              set: PointInput
             }
 
             type Query {
@@ -558,6 +576,11 @@ describe("Point", () => {
               includes: CartesianPointFilters
             }
 
+            \\"\\"\\"CartesianPoint mutations\\"\\"\\"
+            input CartesianPointMutations {
+              set: CartesianPointInput
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -597,6 +620,7 @@ describe("Point", () => {
             }
 
             input MachineUpdateInput {
+              partLocations: CartesianPointMutations
               partLocations_POP: Int
               partLocations_PUSH: [CartesianPointInput!]
               partLocations_SET: [CartesianPointInput!]

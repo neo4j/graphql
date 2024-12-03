@@ -18,14 +18,24 @@
  */
 
 import type { GraphQLInputType } from "graphql";
+import { BigIntScalarMutations } from "../../graphql/input-objects/generic-mutation-operations/BigIntScalarMutations";
 import { BooleanScalarMutations } from "../../graphql/input-objects/generic-mutation-operations/BooleanScalarMutations";
+import { CartesianPointMutations } from "../../graphql/input-objects/generic-mutation-operations/CartesianPointMutations";
+import { DateScalarMutations } from "../../graphql/input-objects/generic-mutation-operations/DateScalarMutations";
+import { DateTimeScalarMutations } from "../../graphql/input-objects/generic-mutation-operations/DateTimeScalarMutations";
+import { DurationScalarMutations } from "../../graphql/input-objects/generic-mutation-operations/DurationScalarMutations";
 import { FloatScalarMutations } from "../../graphql/input-objects/generic-mutation-operations/FloatScalarMutations";
 import { IDScalarMutations } from "../../graphql/input-objects/generic-mutation-operations/IDScalarMutations";
 import { IntScalarMutations } from "../../graphql/input-objects/generic-mutation-operations/IntScalarMutations";
+import { LocalDateTimeScalarMutations } from "../../graphql/input-objects/generic-mutation-operations/LocalDateTimeScalarMutations";
+import { LocalTimeScalarMutations } from "../../graphql/input-objects/generic-mutation-operations/LocalTimeScalarMutations";
+import { PointMutations } from "../../graphql/input-objects/generic-mutation-operations/PointMutations";
 import { StringScalarMutations } from "../../graphql/input-objects/generic-mutation-operations/StringScalarMutations";
+import { TimeScalarMutations } from "../../graphql/input-objects/generic-mutation-operations/TimeScalarMutations";
 import type { AttributeAdapter } from "../../schema-model/attribute/model-adapters/AttributeAdapter";
 
 export function getMutationInputFromAttributeType(attribute: AttributeAdapter): GraphQLInputType | string {
+    // TODO: Keep working here
     // // NOTE: static types returned here must be added to schema-validation > validateUserDefinition
     if (attribute.typeHelper.isBoolean()) {
         //     if (attribute.typeHelper.isList()) {
@@ -57,60 +67,60 @@ export function getMutationInputFromAttributeType(attribute: AttributeAdapter): 
         //     }
         return FloatScalarMutations;
     }
-    // if (attribute.typeHelper.isBigInt()) {
-    //     if (attribute.typeHelper.isList()) {
-    //         return BigIntListMutations;
-    //     }
-    //     return BigIntScalarMutations;
-    // }
-    // if (attribute.typeHelper.isTime()) {
-    //     if (attribute.typeHelper.isList()) {
-    //         return TimeListMutations;
-    //     }
-    //     return TimeScalarMutations;
-    // }
-    // if (attribute.typeHelper.isPoint()) {
-    //     if (attribute.typeHelper.isList()) {
-    //         return PointListMutations;
-    //     }
-    //     return PointMutations;
-    // }
-    // if (attribute.typeHelper.isCartesianPoint()) {
-    //     if (attribute.typeHelper.isList()) {
-    //         return CartesianPointListMutations;
-    //     }
-    //     return CartesianPointMutations;
-    // }
-    // if (attribute.typeHelper.isDateTime()) {
-    //     if (attribute.typeHelper.isList()) {
-    //         return DateTimeListMutations;
-    //     }
-    //     return DateTimeScalarMutations;
-    // }
-    // if (attribute.typeHelper.isLocalTime()) {
-    //     if (attribute.typeHelper.isList()) {
-    //         return LocalTimeListMutations;
-    //     }
-    //     return LocalTimeScalarMutations;
-    // }
-    // if (attribute.typeHelper.isLocalDateTime()) {
-    //     if (attribute.typeHelper.isList()) {
-    //         return LocalDateTimeListMutations;
-    //     }
-    //     return LocalDateTimeScalarMutations;
-    // }
-    // if (attribute.typeHelper.isDuration()) {
-    //     if (attribute.typeHelper.isList()) {
-    //         return DurationListMutations;
-    //     }
-    //     return DurationScalarMutations;
-    // }
-    // if (attribute.typeHelper.isDate()) {
-    //     if (attribute.typeHelper.isList()) {
-    //         return DateListMutations;
-    //     }
-    //     return DateScalarMutations;
-    // }
+    if (attribute.typeHelper.isBigInt()) {
+        // if (attribute.typeHelper.isList()) {
+        //     return BigIntListMutations;
+        // }
+        return BigIntScalarMutations;
+    }
+    if (attribute.typeHelper.isTime()) {
+        // if (attribute.typeHelper.isList()) {
+        //     return TimeListMutations;
+        // }
+        return TimeScalarMutations;
+    }
+    if (attribute.typeHelper.isPoint()) {
+        // if (attribute.typeHelper.isList()) {
+        //     return PointListMutations;
+        // }
+        return PointMutations;
+    }
+    if (attribute.typeHelper.isCartesianPoint()) {
+        // if (attribute.typeHelper.isList()) {
+        //     return CartesianPointListMutations;
+        // }
+        return CartesianPointMutations;
+    }
+    if (attribute.typeHelper.isDateTime()) {
+        // if (attribute.typeHelper.isList()) {
+        //     return DateTimeListMutations;
+        // }
+        return DateTimeScalarMutations;
+    }
+    if (attribute.typeHelper.isLocalTime()) {
+        // if (attribute.typeHelper.isList()) {
+        //     return LocalTimeListMutations;
+        // }
+        return LocalTimeScalarMutations;
+    }
+    if (attribute.typeHelper.isLocalDateTime()) {
+        // if (attribute.typeHelper.isList()) {
+        //     return LocalDateTimeListMutations;
+        // }
+        return LocalDateTimeScalarMutations;
+    }
+    if (attribute.typeHelper.isDuration()) {
+        // if (attribute.typeHelper.isList()) {
+        //     return DurationListMutations;
+        // }
+        return DurationScalarMutations;
+    }
+    if (attribute.typeHelper.isDate()) {
+        // if (attribute.typeHelper.isList()) {
+        //     return DateListMutations;
+        // }
+        return DateScalarMutations;
+    }
 
     // if (attribute.typeHelper.isEnum()) {
     //     return `${attribute.getTypeName()}EnumScalarFilters`;
