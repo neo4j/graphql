@@ -19,6 +19,7 @@
 
 import { GraphQLInputObjectType } from "graphql";
 import { GraphQLTime } from "../../scalars";
+import { listMutation } from "./ListMutation";
 
 export const TimeScalarMutations = new GraphQLInputObjectType({
     name: "TimeScalarMutations",
@@ -27,3 +28,5 @@ export const TimeScalarMutations = new GraphQLInputObjectType({
         set: { type: GraphQLTime },
     },
 });
+
+export const TimeListMutations = listMutation(GraphQLTime);

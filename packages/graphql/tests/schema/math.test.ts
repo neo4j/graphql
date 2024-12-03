@@ -1921,7 +1921,7 @@ describe("Algebraic", () => {
               pay_MULTIPLY: Float
               pay_SET: Float
               pay_SUBTRACT: Float
-              roles: StringScalarMutations
+              roles: ListStringMutations
               roles_POP: Int
               roles_PUSH: [String!]
               roles_SET: [String!]
@@ -1993,6 +1993,13 @@ describe("Algebraic", () => {
               multiply: Float
               set: Float
               substract: Float
+            }
+
+            \\"\\"\\"Mutations for a list for String\\"\\"\\"
+            input ListStringMutations {
+              pop: Int
+              push: [String!]
+              set: [String!]
             }
 
             type Movie {

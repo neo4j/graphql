@@ -18,6 +18,7 @@
  */
 
 import { GraphQLFloat, GraphQLInputObjectType } from "graphql";
+import { listMutation } from "./ListMutation";
 
 export const FloatScalarMutations = new GraphQLInputObjectType({
     name: "FloatScalarMutations",
@@ -30,3 +31,5 @@ export const FloatScalarMutations = new GraphQLInputObjectType({
         divide: { type: GraphQLFloat },
     },
 });
+
+export const FloatListMutations = listMutation(GraphQLFloat);

@@ -18,6 +18,7 @@
  */
 
 import { GraphQLInputObjectType, GraphQLInt } from "graphql";
+import { listMutation } from "./ListMutation";
 
 export const IntScalarMutations = new GraphQLInputObjectType({
     name: "IntScalarMutations",
@@ -28,3 +29,5 @@ export const IntScalarMutations = new GraphQLInputObjectType({
         decrement: { type: GraphQLInt },
     },
 });
+
+export const IntListMutations = listMutation(GraphQLInt);

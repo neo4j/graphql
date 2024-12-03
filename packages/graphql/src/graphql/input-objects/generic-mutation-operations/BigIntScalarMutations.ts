@@ -19,6 +19,7 @@
 
 import { GraphQLInputObjectType } from "graphql";
 import { GraphQLBigInt } from "../../scalars";
+import { listMutation } from "./ListMutation";
 
 export const BigIntScalarMutations = new GraphQLInputObjectType({
     name: "BigIntScalarMutations",
@@ -29,3 +30,5 @@ export const BigIntScalarMutations = new GraphQLInputObjectType({
         decrement: { type: GraphQLBigInt },
     },
 });
+
+export const BigIntListMutations = listMutation(GraphQLBigInt);

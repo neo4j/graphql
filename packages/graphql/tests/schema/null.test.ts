@@ -60,11 +60,6 @@ describe("Null", () => {
               equals: Boolean
             }
 
-            \\"\\"\\"Boolean mutations\\"\\"\\"
-            input BooleanScalarMutations {
-              set: Boolean
-            }
-
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -207,6 +202,55 @@ describe("Null", () => {
               set: Int
             }
 
+            \\"\\"\\"Mutations for a list for Boolean\\"\\"\\"
+            input ListBooleanMutations {
+              pop: Int
+              push: [Boolean!]
+              set: [Boolean!]
+            }
+
+            \\"\\"\\"Mutations for a list for DateTime\\"\\"\\"
+            input ListDateTimeMutations {
+              pop: Int
+              push: [DateTime!]
+              set: [DateTime!]
+            }
+
+            \\"\\"\\"Mutations for a list for Float\\"\\"\\"
+            input ListFloatMutations {
+              pop: Int
+              push: [Float!]
+              set: [Float!]
+            }
+
+            \\"\\"\\"Mutations for a list for ID\\"\\"\\"
+            input ListIDMutations {
+              pop: Int
+              push: [ID!]
+              set: [ID!]
+            }
+
+            \\"\\"\\"Mutations for a list for Int\\"\\"\\"
+            input ListIntMutations {
+              pop: Int
+              push: [Int!]
+              set: [Int!]
+            }
+
+            \\"\\"\\"Mutations for a list for PointInput\\"\\"\\"
+            input ListPointInputMutations {
+              pop: Int
+              push: [PointInput!]
+              set: [PointInput!]
+            }
+
+            \\"\\"\\"Mutations for a list for String\\"\\"\\"
+            input ListStringMutations {
+              pop: Int
+              push: [String!]
+              set: [String!]
+            }
+
             type Movie {
               actorCount: Int!
               actorCounts: [Int!]!
@@ -270,7 +314,7 @@ describe("Null", () => {
               actorCount_DECREMENT: Int
               actorCount_INCREMENT: Int
               actorCount_SET: Int
-              actorCounts: IntScalarMutations
+              actorCounts: ListIntMutations
               actorCounts_POP: Int
               actorCounts_PUSH: [Int!]
               actorCounts_SET: [Int!]
@@ -280,35 +324,35 @@ describe("Null", () => {
               averageRating_MULTIPLY: Float
               averageRating_SET: Float
               averageRating_SUBTRACT: Float
-              averageRatings: FloatScalarMutations
+              averageRatings: ListFloatMutations
               averageRatings_POP: Int
               averageRatings_PUSH: [Float!]
               averageRatings_SET: [Float!]
               createdAt: DateTimeScalarMutations
               createdAt_SET: DateTime
-              createdAts: DateTimeScalarMutations
+              createdAts: ListDateTimeMutations
               createdAts_POP: Int
               createdAts_PUSH: [DateTime!]
               createdAts_SET: [DateTime!]
               filmedAt: PointMutations
               filmedAt_SET: PointInput
-              filmedAts: PointMutations
+              filmedAts: ListPointInputMutations
               filmedAts_POP: Int
               filmedAts_PUSH: [PointInput!]
               filmedAts_SET: [PointInput!]
               id: IDScalarMutations
               id_SET: ID
-              ids: IDScalarMutations
+              ids: ListIDMutations
               ids_POP: Int
               ids_PUSH: [ID!]
               ids_SET: [ID!]
-              isActives: BooleanScalarMutations
+              isActives: ListBooleanMutations
               isActives_POP: Int
               isActives_PUSH: [Boolean!]
               isActives_SET: [Boolean!]
               name: StringScalarMutations
               name_SET: String
-              names: StringScalarMutations
+              names: ListStringMutations
               names_POP: Int
               names_PUSH: [String!]
               names_SET: [String!]

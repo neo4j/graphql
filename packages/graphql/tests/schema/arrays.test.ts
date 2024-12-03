@@ -117,6 +117,13 @@ describe("Arrays", () => {
               set: ID
             }
 
+            \\"\\"\\"Mutations for a list for Float\\"\\"\\"
+            input ListFloatMutations {
+              pop: Int
+              push: [Float!]
+              set: [Float!]
+            }
+
             type Movie {
               averageRating: Float!
               id: ID!
@@ -157,7 +164,7 @@ describe("Arrays", () => {
               averageRating_SUBTRACT: Float
               id: IDScalarMutations
               id_SET: ID
-              ratings: FloatScalarMutations
+              ratings: ListFloatMutations
               ratings_POP: Int
               ratings_PUSH: [Float!]
               ratings_SET: [Float!]

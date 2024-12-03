@@ -17,16 +17,17 @@
  * limitations under the License.
  */
 
-import { GraphQLInputObjectType } from "graphql";
-import { CartesianPointInput } from "../CartesianPointInput";
-import { listMutation } from "./ListMutation";
+import type { GraphQLScalarType } from "graphql";
+import { GraphQLInputObjectType, GraphQLInt, GraphQLList, GraphQLNonNull } from "graphql";
 
-export const CartesianPointMutations = new GraphQLInputObjectType({
-    name: "CartesianPointMutations",
-    description: "CartesianPoint mutations",
-    fields: {
-        set: { type: CartesianPointInput },
-    },
-});
-
-export const CartesianPointListMutations = listMutation(CartesianPointInput);
+export function listMutation(inputObject: GraphQLInputObjectType | GraphQLScalarType): GraphQLInputObjectType {
+    return new GraphQLInputObjectType({
+        name: `List${inputObject.name}Mutations`,
+        description: `Mutations for a list for ${inputObject.name}`,
+        fields: {
+            set: { type: new GraphQLList(new GraphQLNonNull(inputObject)) },
+            push: { type: new GraphQLList(new GraphQLNonNull(inputObject)) },
+            pop: { type: GraphQLInt },
+        },
+    });
+}

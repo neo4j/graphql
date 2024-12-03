@@ -158,6 +158,13 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               set: ID
             }
 
+            \\"\\"\\"Mutations for a list for ID\\"\\"\\"
+            input ListIDMutations {
+              pop: Int
+              push: [ID!]
+              set: [ID!]
+            }
+
             type Mutation {
               createResources(input: [ResourceCreateInput!]!): CreateResourcesMutationResponse!
               deleteResources(delete: ResourceDeleteInput, where: ResourceWhere): DeleteInfo!
@@ -490,7 +497,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               containedBy: [ResourceContainedByUpdateFieldInput!]
               createdAt: DateTimeScalarMutations
               createdAt_SET: DateTime
-              externalIds: IDScalarMutations
+              externalIds: ListIDMutations
               externalIds_POP: Int
               externalIds_PUSH: [ID!]
               externalIds_SET: [ID!]

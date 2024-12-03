@@ -18,6 +18,7 @@
  */
 
 import { GraphQLInputObjectType, GraphQLString } from "graphql";
+import { listMutation } from "./ListMutation";
 
 export const StringScalarMutations = new GraphQLInputObjectType({
     name: "StringScalarMutations",
@@ -26,3 +27,5 @@ export const StringScalarMutations = new GraphQLInputObjectType({
         set: { type: GraphQLString },
     },
 });
+
+export const StringListMutations = listMutation(GraphQLString);

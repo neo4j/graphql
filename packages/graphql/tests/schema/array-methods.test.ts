@@ -68,7 +68,7 @@ describe("Arrays Methods", () => {
             }
 
             input ActedInUpdateInput {
-              pay: FloatScalarMutations
+              pay: ListFloatMutations
               pay_POP: Int
               pay_PUSH: [Float]
               pay_SET: [Float]
@@ -382,6 +382,13 @@ describe("Arrays Methods", () => {
               set: ID
             }
 
+            \\"\\"\\"Mutations for a list for Float\\"\\"\\"
+            input ListFloatMutations {
+              pop: Int
+              push: [Float!]
+              set: [Float!]
+            }
+
             type Movie {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
@@ -550,7 +557,7 @@ describe("Arrays Methods", () => {
               averageRating_SUBTRACT: Float
               id: IDScalarMutations
               id_SET: ID
-              ratings: FloatScalarMutations
+              ratings: ListFloatMutations
               ratings_POP: Int
               ratings_PUSH: [Float!]
               ratings_SET: [Float!]

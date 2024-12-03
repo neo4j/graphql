@@ -19,6 +19,7 @@
 
 import { GraphQLInputObjectType } from "graphql";
 import { GraphQLLocalTime } from "../../scalars";
+import { listMutation } from "./ListMutation";
 
 export const LocalTimeScalarMutations = new GraphQLInputObjectType({
     name: "LocalTimeScalarMutations",
@@ -27,3 +28,5 @@ export const LocalTimeScalarMutations = new GraphQLInputObjectType({
         set: { type: GraphQLLocalTime },
     },
 });
+
+export const LocalTimeListMutations = listMutation(GraphQLLocalTime);

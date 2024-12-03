@@ -18,6 +18,7 @@
  */
 
 import { GraphQLBoolean, GraphQLInputObjectType } from "graphql";
+import { listMutation } from "./ListMutation";
 
 export const BooleanScalarMutations = new GraphQLInputObjectType({
     name: "BooleanScalarMutations",
@@ -26,3 +27,5 @@ export const BooleanScalarMutations = new GraphQLInputObjectType({
         set: { type: GraphQLBoolean },
     },
 });
+
+export const BooleanListMutations = listMutation(GraphQLBoolean);

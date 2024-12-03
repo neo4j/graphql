@@ -8154,11 +8154,11 @@ describe("Relationship nested operations", () => {
                   includes: Int
                 }
 
-                \\"\\"\\"Int mutations\\"\\"\\"
-                input IntScalarMutations {
-                  decrement: Int
-                  increment: Int
-                  set: Int
+                \\"\\"\\"Mutations for a list for Int\\"\\"\\"
+                input ListIntMutations {
+                  pop: Int
+                  push: [Int!]
+                  set: [Int!]
                 }
 
                 type Movie {
@@ -8376,7 +8376,7 @@ describe("Relationship nested operations", () => {
                 input PersonOneUpdateInput {
                   name: StringScalarMutations
                   name_SET: String
-                  someExtraProp: IntScalarMutations
+                  someExtraProp: ListIntMutations
                   someExtraProp_POP: Int
                   someExtraProp_PUSH: [Int!]
                   someExtraProp_SET: [Int!]
@@ -8635,11 +8635,11 @@ describe("Relationship nested operations", () => {
                   includes: Int
                 }
 
-                \\"\\"\\"Int mutations\\"\\"\\"
-                input IntScalarMutations {
-                  decrement: Int
-                  increment: Int
-                  set: Int
+                \\"\\"\\"Mutations for a list for Int\\"\\"\\"
+                input ListIntMutations {
+                  pop: Int
+                  push: [Int!]
+                  set: [Int!]
                 }
 
                 type Movie {
@@ -8877,7 +8877,7 @@ describe("Relationship nested operations", () => {
                 input PersonOneUpdateInput {
                   name: StringScalarMutations
                   name_SET: String
-                  someExtraProp: IntScalarMutations
+                  someExtraProp: ListIntMutations
                   someExtraProp_POP: Int
                   someExtraProp_PUSH: [Int!]
                   someExtraProp_SET: [Int!]
@@ -9136,11 +9136,11 @@ describe("Relationship nested operations", () => {
                   includes: Int
                 }
 
-                \\"\\"\\"Int mutations\\"\\"\\"
-                input IntScalarMutations {
-                  decrement: Int
-                  increment: Int
-                  set: Int
+                \\"\\"\\"Mutations for a list for Int\\"\\"\\"
+                input ListIntMutations {
+                  pop: Int
+                  push: [Int!]
+                  set: [Int!]
                 }
 
                 type Movie {
@@ -9377,7 +9377,7 @@ describe("Relationship nested operations", () => {
                 input PersonOneUpdateInput {
                   name: StringScalarMutations
                   name_SET: String
-                  someExtraProp: IntScalarMutations
+                  someExtraProp: ListIntMutations
                   someExtraProp_POP: Int
                   someExtraProp_PUSH: [Int!]
                   someExtraProp_SET: [Int!]
@@ -9636,11 +9636,11 @@ describe("Relationship nested operations", () => {
                   includes: Int
                 }
 
-                \\"\\"\\"Int mutations\\"\\"\\"
-                input IntScalarMutations {
-                  decrement: Int
-                  increment: Int
-                  set: Int
+                \\"\\"\\"Mutations for a list for Int\\"\\"\\"
+                input ListIntMutations {
+                  pop: Int
+                  push: [Int!]
+                  set: [Int!]
                 }
 
                 type Movie {
@@ -9868,7 +9868,7 @@ describe("Relationship nested operations", () => {
                 input PersonOneUpdateInput {
                   name: StringScalarMutations
                   name_SET: String
-                  someExtraProp: IntScalarMutations
+                  someExtraProp: ListIntMutations
                   someExtraProp_POP: Int
                   someExtraProp_PUSH: [Int!]
                   someExtraProp_SET: [Int!]
@@ -10132,11 +10132,11 @@ describe("Relationship nested operations", () => {
                   includes: Int
                 }
 
-                \\"\\"\\"Int mutations\\"\\"\\"
-                input IntScalarMutations {
-                  decrement: Int
-                  increment: Int
-                  set: Int
+                \\"\\"\\"Mutations for a list for Int\\"\\"\\"
+                input ListIntMutations {
+                  pop: Int
+                  push: [Int!]
+                  set: [Int!]
                 }
 
                 type Movie {
@@ -10368,7 +10368,7 @@ describe("Relationship nested operations", () => {
                 input PersonOneUpdateInput {
                   name: StringScalarMutations
                   name_SET: String
-                  someExtraProp: IntScalarMutations
+                  someExtraProp: ListIntMutations
                   someExtraProp_POP: Int
                   someExtraProp_PUSH: [Int!]
                   someExtraProp_SET: [Int!]
@@ -10627,11 +10627,11 @@ describe("Relationship nested operations", () => {
                   includes: Int
                 }
 
-                \\"\\"\\"Int mutations\\"\\"\\"
-                input IntScalarMutations {
-                  decrement: Int
-                  increment: Int
-                  set: Int
+                \\"\\"\\"Mutations for a list for Int\\"\\"\\"
+                input ListIntMutations {
+                  pop: Int
+                  push: [Int!]
+                  set: [Int!]
                 }
 
                 type Movie {
@@ -10859,7 +10859,7 @@ describe("Relationship nested operations", () => {
                 input PersonOneUpdateInput {
                   name: StringScalarMutations
                   name_SET: String
-                  someExtraProp: IntScalarMutations
+                  someExtraProp: ListIntMutations
                   someExtraProp_POP: Int
                   someExtraProp_PUSH: [Int!]
                   someExtraProp_SET: [Int!]
@@ -11119,11 +11119,11 @@ describe("Relationship nested operations", () => {
                   includes: Int
                 }
 
-                \\"\\"\\"Int mutations\\"\\"\\"
-                input IntScalarMutations {
-                  decrement: Int
-                  increment: Int
-                  set: Int
+                \\"\\"\\"Mutations for a list for Int\\"\\"\\"
+                input ListIntMutations {
+                  pop: Int
+                  push: [Int!]
+                  set: [Int!]
                 }
 
                 type Movie {
@@ -11492,7 +11492,7 @@ describe("Relationship nested operations", () => {
                 input PersonOneUpdateInput {
                   name: StringScalarMutations
                   name_SET: String
-                  someExtraProp: IntScalarMutations
+                  someExtraProp: ListIntMutations
                   someExtraProp_POP: Int
                   someExtraProp_PUSH: [Int!]
                   someExtraProp_SET: [Int!]
@@ -11758,11 +11758,11 @@ describe("Relationship nested operations", () => {
                   includes: Int
                 }
 
-                \\"\\"\\"Int mutations\\"\\"\\"
-                input IntScalarMutations {
-                  decrement: Int
-                  increment: Int
-                  set: Int
+                \\"\\"\\"Mutations for a list for Int\\"\\"\\"
+                input ListIntMutations {
+                  pop: Int
+                  push: [Int!]
+                  set: [Int!]
                 }
 
                 type Movie {
@@ -12111,7 +12111,7 @@ describe("Relationship nested operations", () => {
                 input PersonOneUpdateInput {
                   name: StringScalarMutations
                   name_SET: String
-                  someExtraProp: IntScalarMutations
+                  someExtraProp: ListIntMutations
                   someExtraProp_POP: Int
                   someExtraProp_PUSH: [Int!]
                   someExtraProp_SET: [Int!]

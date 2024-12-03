@@ -410,6 +410,13 @@ describe("Point", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Mutations for a list for PointInput\\"\\"\\"
+            input ListPointInputMutations {
+              pop: Int
+              push: [PointInput!]
+              set: [PointInput!]
+            }
+
             type Movie {
               filmedAt: [Point!]!
             }
@@ -428,7 +435,7 @@ describe("Point", () => {
             }
 
             input MovieUpdateInput {
-              filmedAt: PointMutations
+              filmedAt: ListPointInputMutations
               filmedAt_POP: Int
               filmedAt_PUSH: [PointInput!]
               filmedAt_SET: [PointInput!]
@@ -485,11 +492,6 @@ describe("Point", () => {
             input PointListFilters {
               equals: [PointInput!]
               includes: PointInput
-            }
-
-            \\"\\"\\"Point mutations\\"\\"\\"
-            input PointMutations {
-              set: PointInput
             }
 
             type Query {
@@ -576,11 +578,6 @@ describe("Point", () => {
               includes: CartesianPointFilters
             }
 
-            \\"\\"\\"CartesianPoint mutations\\"\\"\\"
-            input CartesianPointMutations {
-              set: CartesianPointInput
-            }
-
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -602,6 +599,13 @@ describe("Point", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Mutations for a list for CartesianPointInput\\"\\"\\"
+            input ListCartesianPointInputMutations {
+              pop: Int
+              push: [CartesianPointInput!]
+              set: [CartesianPointInput!]
+            }
+
             type Machine {
               partLocations: [CartesianPoint!]!
             }
@@ -620,7 +624,7 @@ describe("Point", () => {
             }
 
             input MachineUpdateInput {
-              partLocations: CartesianPointMutations
+              partLocations: ListCartesianPointInputMutations
               partLocations_POP: Int
               partLocations_PUSH: [CartesianPointInput!]
               partLocations_SET: [CartesianPointInput!]

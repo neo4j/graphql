@@ -19,6 +19,7 @@
 
 import { GraphQLInputObjectType } from "graphql";
 import { PointInput } from "../PointInput";
+import { listMutation } from "./ListMutation";
 
 export const PointMutations = new GraphQLInputObjectType({
     name: "PointMutations",
@@ -27,3 +28,5 @@ export const PointMutations = new GraphQLInputObjectType({
         set: { type: PointInput },
     },
 });
+
+export const PointListMutations = listMutation(PointInput);

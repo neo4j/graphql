@@ -18,6 +18,7 @@
  */
 
 import { GraphQLID, GraphQLInputObjectType } from "graphql";
+import { listMutation } from "./ListMutation";
 
 export const IDScalarMutations = new GraphQLInputObjectType({
     name: "IDScalarMutations",
@@ -26,3 +27,5 @@ export const IDScalarMutations = new GraphQLInputObjectType({
         set: { type: GraphQLID },
     },
 });
+
+export const IDListMutations = listMutation(GraphQLID);
