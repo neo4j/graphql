@@ -62,6 +62,11 @@ describe("@default directive", () => {
               equals: Boolean
             }
 
+            \\"\\"\\"Boolean mutations\\"\\"\\"
+            input BooleanScalarMutations {
+              set: Boolean
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -93,6 +98,11 @@ describe("@default directive", () => {
               lessThanEquals: DateTime
             }
 
+            \\"\\"\\"DateTime mutations\\"\\"\\"
+            input DateTimeScalarMutations {
+              set: DateTime
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships deleted during a delete mutation
             \\"\\"\\"
@@ -118,6 +128,15 @@ describe("@default directive", () => {
               lessThanEquals: Float
             }
 
+            \\"\\"\\"Float mutations\\"\\"\\"
+            input FloatScalarMutations {
+              add: Float
+              divide: Float
+              multiply: Float
+              set: Float
+              substract: Float
+            }
+
             type IDAggregateSelection {
               longest: ID
               shortest: ID
@@ -137,6 +156,11 @@ describe("@default directive", () => {
               startsWith: ID
             }
 
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
@@ -154,6 +178,13 @@ describe("@default directive", () => {
               lessThanEquals: Int
             }
 
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              decrement: Int
+              increment: Int
+              set: Int
+            }
+
             enum Location {
               EVERYWHERE
               HERE
@@ -164,6 +195,11 @@ describe("@default directive", () => {
             input LocationEnumScalarFilters {
               equals: Location
               in: [Location!]
+            }
+
+            \\"\\"\\"Location mutations\\"\\"\\"
+            input LocationEnumScalarMutations {
+              set: Location
             }
 
             type Mutation {
@@ -214,6 +250,11 @@ describe("@default directive", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             \\"\\"\\"
@@ -340,19 +381,28 @@ describe("@default directive", () => {
             }
 
             input UserUpdateInput {
+              fromInterface: StringScalarMutations
               fromInterface_SET: String
+              id: IDScalarMutations
               id_SET: ID
+              location: LocationEnumScalarMutations
               location_SET: Location
+              name: StringScalarMutations
               name_SET: String
+              numberOfFriends: IntScalarMutations
               numberOfFriends_DECREMENT: Int
               numberOfFriends_INCREMENT: Int
               numberOfFriends_SET: Int
+              rating: FloatScalarMutations
               rating_ADD: Float
               rating_DIVIDE: Float
               rating_MULTIPLY: Float
               rating_SET: Float
               rating_SUBTRACT: Float
+              toBeOverridden: StringScalarMutations
               toBeOverridden_SET: String
+              verified: BooleanScalarMutations
+              verifiedDate: DateTimeScalarMutations
               verifiedDate_SET: DateTime
               verified_SET: Boolean
             }

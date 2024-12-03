@@ -122,13 +122,13 @@ export function getMutationInputFromAttributeType(attribute: AttributeAdapter): 
         return DateScalarMutations;
     }
 
-    // if (attribute.typeHelper.isEnum()) {
-    //     return `${attribute.getTypeName()}EnumScalarFilters`;
-    // }
+    if (attribute.typeHelper.isEnum()) {
+        return `${attribute.getTypeName()}EnumScalarMutations`;
+    }
 
-    // if (attribute.typeHelper.isUserScalar()) {
-    //     return `${attribute.getTypeName()}ScalarFilters`;
-    // }
+    if (attribute.typeHelper.isUserScalar()) {
+        return `${attribute.getTypeName()}ScalarMutations`;
+    }
 
     throw new Error(`No scalar mutation found for attribute ${attribute.type.name}`);
 }

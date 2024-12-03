@@ -72,6 +72,11 @@ describe("Comments", () => {
               equals: Boolean
             }
 
+            \\"\\"\\"Boolean mutations\\"\\"\\"
+            input BooleanScalarMutations {
+              set: Boolean
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -92,6 +97,11 @@ describe("Comments", () => {
             input CustomScalarScalarFilters {
               equals: CustomScalar
               in: [CustomScalar!]
+            }
+
+            \\"\\"\\"CustomScalar filters\\"\\"\\"
+            input CustomScalarScalarMutations {
+              set: CustomScalar
             }
 
             \\"\\"\\"
@@ -119,6 +129,15 @@ describe("Comments", () => {
               lessThanEquals: Float
             }
 
+            \\"\\"\\"Float mutations\\"\\"\\"
+            input FloatScalarMutations {
+              add: Float
+              divide: Float
+              multiply: Float
+              set: Float
+              substract: Float
+            }
+
             \\"\\"\\"An enumeration of movie genres.\\"\\"\\"
             enum Genre {
               ACTION
@@ -130,6 +149,11 @@ describe("Comments", () => {
             input GenreEnumScalarFilters {
               equals: Genre
               in: [Genre!]
+            }
+
+            \\"\\"\\"Genre mutations\\"\\"\\"
+            input GenreEnumScalarMutations {
+              set: Genre
             }
 
             type IDAggregateSelection {
@@ -151,6 +175,11 @@ describe("Comments", () => {
               startsWith: ID
             }
 
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
@@ -166,6 +195,13 @@ describe("Comments", () => {
               in: [Int!]
               lessThan: Int
               lessThanEquals: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              decrement: Int
+              increment: Int
+              set: Int
             }
 
             \\"\\"\\"A type describing a movie.\\"\\"\\"
@@ -219,17 +255,23 @@ describe("Comments", () => {
             }
 
             input MovieUpdateInput {
+              actorCount: IntScalarMutations
               actorCount_DECREMENT: Int
               actorCount_INCREMENT: Int
               actorCount_SET: Int
+              averageRating: FloatScalarMutations
               averageRating_ADD: Float
               averageRating_DIVIDE: Float
               averageRating_MULTIPLY: Float
               averageRating_SET: Float
               averageRating_SUBTRACT: Float
+              customScalar: CustomScalarScalarMutations
               customScalar_SET: CustomScalar
+              genre: GenreEnumScalarMutations
               genre_SET: Genre
+              id: IDScalarMutations
               id_SET: ID
+              isActive: BooleanScalarMutations
               isActive_SET: Boolean
             }
 

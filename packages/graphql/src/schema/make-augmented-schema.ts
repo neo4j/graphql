@@ -155,6 +155,18 @@ function makeAugmentedSchema({
             },
         });
     });
+
+    // Generates the mutations for enums, which are reused
+    Array.from(enumTypes.values()).forEach((enumType) => {
+        composer.createInputTC({
+            name: `${enumType.name.value}EnumScalarMutations`,
+            description: `${enumType.name.value} mutations`,
+            fields: {
+                set: { type: enumType.name.value },
+            },
+        });
+    });
+
     // Generates the filters for scalar, which are reused
     Array.from(scalarTypes.values()).forEach((enumType) => {
         composer.createInputTC({
@@ -165,6 +177,17 @@ function makeAugmentedSchema({
                     type: enumType.name.value,
                 },
                 in: { type: `[${enumType.name.value}!]` },
+            },
+        });
+    });
+
+    // Generates the mutations for scalar, which are reused
+    Array.from(scalarTypes.values()).forEach((enumType) => {
+        composer.createInputTC({
+            name: `${enumType.name.value}ScalarMutations`,
+            description: `${enumType.name.value} filters`,
+            fields: {
+                set: { type: enumType.name.value },
             },
         });
     });

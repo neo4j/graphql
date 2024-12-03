@@ -71,6 +71,7 @@ describe("Enums", () => {
             }
 
             input ActedInUpdateInput {
+              roleType: RoleTypeEnumScalarMutations
               roleType_SET: RoleType
             }
 
@@ -237,6 +238,7 @@ describe("Enums", () => {
 
             input ActorUpdateInput {
               movies: [ActorMoviesUpdateFieldInput!]
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -463,6 +465,7 @@ describe("Enums", () => {
 
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -546,6 +549,11 @@ describe("Enums", () => {
               in: [RoleType!]
             }
 
+            \\"\\"\\"RoleType mutations\\"\\"\\"
+            input RoleTypeEnumScalarMutations {
+              set: RoleType
+            }
+
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
@@ -571,6 +579,11 @@ describe("Enums", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateActorsMutationResponse {

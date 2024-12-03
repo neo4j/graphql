@@ -64,6 +64,11 @@ describe("Scalar", () => {
               in: [CustomScalar!]
             }
 
+            \\"\\"\\"CustomScalar filters\\"\\"\\"
+            input CustomScalarScalarMutations {
+              set: CustomScalar
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships deleted during a delete mutation
             \\"\\"\\"
@@ -89,6 +94,11 @@ describe("Scalar", () => {
               lessThanEquals: ID
               matches: ID
               startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
             }
 
             type Movie {
@@ -124,9 +134,13 @@ describe("Scalar", () => {
             }
 
             input MovieUpdateInput {
+              id: IDScalarMutations
               id_SET: ID
+              myCustomArrayScalar: CustomScalarScalarMutations
               myCustomArrayScalar_SET: [CustomScalar!]
+              myCustomScalar: CustomScalarScalarMutations
               myCustomScalar_SET: CustomScalar
+              myRequiredCustomArrayScalar: CustomScalarScalarMutations
               myRequiredCustomArrayScalar_SET: [CustomScalar!]
             }
 
