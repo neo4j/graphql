@@ -36,6 +36,7 @@ export function getMutationFieldStatements({
     varName,
     value,
     withVars,
+    isUpdateOperation = false,
 }: {
     nodeOrRel: Node | Relationship;
     param: string;
@@ -43,10 +44,11 @@ export function getMutationFieldStatements({
     varName: string;
     value: any;
     withVars: string[];
+    isUpdateOperation?: boolean;
 }): string {
     const strs: string[] = [];
     const { settableField, operator } = parseMutableField(nodeOrRel, key);
-    if (!operator) {
+    if (!operator && isUpdateOperation) {
         const result = getMutationFieldStatementsForGenericOperator({
             nodeOrRel,
             param,
@@ -64,7 +66,7 @@ export function getMutationFieldStatements({
             throw new Error(`Cannot set non-nullable field ${nodeOrRel.name}.${settableField.fieldName} to null`);
         }
 
-        switch (operator) {
+        switch (operator ?? "SET") {
             case "SET": {
                 const isSpatial = SPATIAL_TYPES.includes(settableField.typeMeta.name);
                 if (isSpatial) {

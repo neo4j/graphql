@@ -21,7 +21,7 @@ import { generate } from "randomstring";
 import type { UniqueType } from "../utils/graphql-types";
 import { TestHelper } from "../utils/tests-helper";
 
-describe("update (deprecate implicit _SET)", () => {
+describe("update", () => {
     const testHelper = new TestHelper();
     let Movie: UniqueType;
     let Actor: UniqueType;

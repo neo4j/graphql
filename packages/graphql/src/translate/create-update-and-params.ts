@@ -536,6 +536,7 @@ export default function createUpdateAndParams({
                 varName,
                 value,
                 withVars,
+                isUpdateOperation: true,
             });
             res.strs.push(mutationFieldStatements);
 
