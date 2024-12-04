@@ -323,9 +323,9 @@ describe("Connection with interfaces", () => {
 
             \\"\\"\\"Int mutations\\"\\"\\"
             input IntScalarMutations {
-              decrement: Int
-              increment: Int
+              add: Int
               set: Int
+              subtract: Int
             }
 
             type Movie implements Production {

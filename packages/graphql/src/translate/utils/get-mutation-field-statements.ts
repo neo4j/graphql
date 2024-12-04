@@ -46,6 +46,18 @@ export function getMutationFieldStatements({
 }): string {
     const strs: string[] = [];
     const { settableField, operator } = parseMutableField(nodeOrRel, key);
+    if (!operator) {
+        const result = getMutationFieldStatementsForGenericOperator({
+            nodeOrRel,
+            param,
+            key,
+            varName,
+            operations: value,
+            withVars,
+        });
+        return result;
+    }
+
     if (settableField) {
         const dbFieldName = mapToDbProperty(nodeOrRel, settableField.fieldName);
         if (settableField.typeMeta.required && value === null) {
@@ -99,4 +111,59 @@ export function getMutationFieldStatements({
         }
     }
     return strs.join("\n");
+}
+
+// Converts generic operator into cypher statements using the deprecated syntax as intermediate step
+function getMutationFieldStatementsForGenericOperator({
+    nodeOrRel,
+    param,
+    key,
+    varName,
+    operations,
+    withVars,
+}: {
+    nodeOrRel: Node | Relationship;
+    param: string;
+    key: string;
+    varName: string;
+    operations: any;
+    withVars: string[];
+}): string {
+    return Object.entries(operations)
+        .map(([operator, value]) => {
+            return getMutationFieldStatements({
+                nodeOrRel,
+                param: `${param}.${operator}`,
+                key: `${key}_${newOperatorToDeprecated(operator)}`,
+                varName,
+                withVars,
+                value,
+            });
+        })
+        .join("\n");
+}
+
+function newOperatorToDeprecated(op: string): string {
+    switch (op) {
+        case "set":
+            return "SET";
+        case "increment":
+            return "INCREMENT";
+        case "decrement":
+            return "DECREMENT";
+        case "add":
+            return "ADD";
+        case "subtract":
+            return "SUBTRACT";
+        case "divide":
+            return "DIVIDE";
+        case "multiply":
+            return "MULTIPLY";
+        case "push":
+            return "PUSH";
+        case "pop":
+            return "POP";
+        default:
+            throw new Error(`Unknown generic mutation operator ${op}`);
+    }
 }

@@ -26,7 +26,7 @@ export const FloatScalarMutations = new GraphQLInputObjectType({
     fields: {
         set: { type: GraphQLFloat },
         add: { type: GraphQLFloat },
-        substract: { type: GraphQLFloat },
+        subtract: { type: GraphQLFloat },
         multiply: { type: GraphQLFloat },
         divide: { type: GraphQLFloat },
     },

@@ -72,9 +72,9 @@ describe("Aggregations", () => {
 
             \\"\\"\\"BigInt mutations\\"\\"\\"
             input BigIntScalarMutations {
-              decrement: BigInt
-              increment: BigInt
+              add: BigInt
               set: BigInt
+              subtract: BigInt
             }
 
             \\"\\"\\"
@@ -167,7 +167,7 @@ describe("Aggregations", () => {
               divide: Float
               multiply: Float
               set: Float
-              substract: Float
+              subtract: Float
             }
 
             type IDAggregateSelection {
@@ -213,9 +213,9 @@ describe("Aggregations", () => {
 
             \\"\\"\\"Int mutations\\"\\"\\"
             input IntScalarMutations {
-              decrement: Int
-              increment: Int
+              add: Int
               set: Int
+              subtract: Int
             }
 
             \\"\\"\\"A local datetime, represented as 'YYYY-MM-DDTHH:MM:SS'\\"\\"\\"
@@ -608,9 +608,9 @@ describe("Aggregations", () => {
 
             \\"\\"\\"BigInt mutations\\"\\"\\"
             input BigIntScalarMutations {
-              decrement: BigInt
-              increment: BigInt
+              add: BigInt
               set: BigInt
+              subtract: BigInt
             }
 
             \\"\\"\\"
@@ -708,7 +708,7 @@ describe("Aggregations", () => {
               divide: Float
               multiply: Float
               set: Float
-              substract: Float
+              subtract: Float
             }
 
             type IDAggregateSelection {
@@ -754,9 +754,9 @@ describe("Aggregations", () => {
 
             \\"\\"\\"Int mutations\\"\\"\\"
             input IntScalarMutations {
-              decrement: Int
-              increment: Int
+              add: Int
               set: Int
+              subtract: Int
             }
 
             \\"\\"\\"

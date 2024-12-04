@@ -63,9 +63,9 @@ describe("Bigint", () => {
 
             \\"\\"\\"BigInt mutations\\"\\"\\"
             input BigIntScalarMutations {
-              decrement: BigInt
-              increment: BigInt
+              add: BigInt
               set: BigInt
+              subtract: BigInt
             }
 
             type CreateFilesMutationResponse {

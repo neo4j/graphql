@@ -97,7 +97,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               divide: Float
               multiply: Float
               set: Float
-              substract: Float
+              subtract: Float
             }
 
             type Genre {
@@ -356,9 +356,9 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
 
             \\"\\"\\"Int mutations\\"\\"\\"
             input IntScalarMutations {
-              decrement: Int
-              increment: Int
+              add: Int
               set: Int
+              subtract: Int
             }
 
             type Movie {

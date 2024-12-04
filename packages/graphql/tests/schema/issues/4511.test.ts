@@ -316,9 +316,9 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
 
             \\"\\"\\"Int mutations\\"\\"\\"
             input IntScalarMutations {
-              decrement: Int
-              increment: Int
+              add: Int
               set: Int
+              subtract: Int
             }
 
             type Movie implements Production {

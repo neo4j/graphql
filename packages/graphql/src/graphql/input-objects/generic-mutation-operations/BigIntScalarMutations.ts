@@ -26,8 +26,8 @@ export const BigIntScalarMutations = new GraphQLInputObjectType({
     description: "BigInt mutations",
     fields: {
         set: { type: GraphQLBigInt },
-        increment: { type: GraphQLBigInt },
-        decrement: { type: GraphQLBigInt },
+        add: { type: GraphQLBigInt },
+        subtract: { type: GraphQLBigInt },
     },
 });
 

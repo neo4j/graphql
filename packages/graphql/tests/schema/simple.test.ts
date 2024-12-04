@@ -95,7 +95,7 @@ describe("Simple", () => {
               divide: Float
               multiply: Float
               set: Float
-              substract: Float
+              subtract: Float
             }
 
             type IDAggregateSelection {
@@ -141,9 +141,9 @@ describe("Simple", () => {
 
             \\"\\"\\"Int mutations\\"\\"\\"
             input IntScalarMutations {
-              decrement: Int
-              increment: Int
+              add: Int
               set: Int
+              subtract: Int
             }
 
             type Movie {

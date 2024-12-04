@@ -20,7 +20,7 @@
 import { GraphQLError } from "graphql";
 import { int } from "neo4j-driver";
 import { generate } from "randomstring";
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("Mathematical operations tests", () => {
     const testHelper = new TestHelper();
@@ -32,16 +32,16 @@ describe("Mathematical operations tests", () => {
     });
 
     test.each([
-        { initialValue: int(0), value: 5, type: "Int", operation: "add", expected: 5 },
-        { initialValue: int(10), value: 5, type: "Int", operation: "subtract", expected: 5 },
-        { initialValue: int(0), value: "5", type: "BigInt", operation: "add", expected: "5" },
-        { initialValue: int(10), value: "5", type: "BigInt", operation: "subtract", expected: "5" },
-        { initialValue: int(10), value: "-5", type: "BigInt", operation: "subtract", expected: "15" },
-        { initialValue: 0.0, value: 5.0, type: "Float", operation: "add", expected: 5.0 },
-        { initialValue: 10.0, value: 5.0, type: "Float", operation: "subtract", expected: 5.0 },
-        { initialValue: 10.0, value: 5.0, type: "Float", operation: "multiply", expected: 50.0 },
-        { initialValue: 10.0, value: -5.0, type: "Float", operation: "multiply", expected: -50.0 },
-        { initialValue: 10.0, value: 5.0, type: "Float", operation: "divide", expected: 2.0 },
+        { initialValue: int(0), value: 5, type: "Int", operation: "INCREMENT", expected: 5 },
+        { initialValue: int(10), value: 5, type: "Int", operation: "DECREMENT", expected: 5 },
+        { initialValue: int(0), value: "5", type: "BigInt", operation: "INCREMENT", expected: "5" },
+        { initialValue: int(10), value: "5", type: "BigInt", operation: "DECREMENT", expected: "5" },
+        { initialValue: int(10), value: "-5", type: "BigInt", operation: "DECREMENT", expected: "15" },
+        { initialValue: 0.0, value: 5.0, type: "Float", operation: "ADD", expected: 5.0 },
+        { initialValue: 10.0, value: 5.0, type: "Float", operation: "SUBTRACT", expected: 5.0 },
+        { initialValue: 10.0, value: 5.0, type: "Float", operation: "MULTIPLY", expected: 50.0 },
+        { initialValue: 10.0, value: -5.0, type: "Float", operation: "MULTIPLY", expected: -50.0 },
+        { initialValue: 10.0, value: 5.0, type: "Float", operation: "DIVIDE", expected: 2.0 },
     ])(
         "Simple operations on numerical fields: on $type, $operation($initialValue, $value) should return $expected",
         async ({ initialValue, type, value, operation, expected }) => {
@@ -62,7 +62,7 @@ describe("Mathematical operations tests", () => {
 
             const query = /* GraphQL */ `
             mutation($id: ID, $value: ${type}) {
-                ${movie.operations.update}(where: { id_EQ: $id }, update: {viewers: { ${operation}: $value }}) {
+                ${movie.operations.update}(where: { id_EQ: $id }, update: {viewers_${operation}: $value}) {
                     ${movie.plural} {
                         id
                         viewers

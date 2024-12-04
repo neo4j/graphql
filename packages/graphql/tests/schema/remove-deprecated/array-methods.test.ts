@@ -357,7 +357,7 @@ describe("Arrays Methods", () => {
               divide: Float
               multiply: Float
               set: Float
-              substract: Float
+              subtract: Float
             }
 
             type IDAggregateSelection {

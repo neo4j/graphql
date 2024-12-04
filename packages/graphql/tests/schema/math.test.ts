@@ -102,9 +102,9 @@ describe("Algebraic", () => {
 
             \\"\\"\\"Int mutations\\"\\"\\"
             input IntScalarMutations {
-              decrement: Int
-              increment: Int
+              add: Int
               set: Int
+              subtract: Int
             }
 
             type Movie {
@@ -254,9 +254,9 @@ describe("Algebraic", () => {
 
             \\"\\"\\"BigInt mutations\\"\\"\\"
             input BigIntScalarMutations {
-              decrement: BigInt
-              increment: BigInt
+              add: BigInt
               set: BigInt
+              subtract: BigInt
             }
 
             \\"\\"\\"
@@ -472,7 +472,7 @@ describe("Algebraic", () => {
               divide: Float
               multiply: Float
               set: Float
-              substract: Float
+              subtract: Float
             }
 
             type IDAggregateSelection {
@@ -910,9 +910,9 @@ describe("Algebraic", () => {
 
             \\"\\"\\"Int mutations\\"\\"\\"
             input IntScalarMutations {
-              decrement: Int
-              increment: Int
+              add: Int
               set: Int
+              subtract: Int
             }
 
             type Movie {
@@ -1299,9 +1299,9 @@ describe("Algebraic", () => {
 
             \\"\\"\\"Int mutations\\"\\"\\"
             input IntScalarMutations {
-              decrement: Int
-              increment: Int
+              add: Int
               set: Int
+              subtract: Int
             }
 
             type Movie implements Production {
@@ -1992,7 +1992,7 @@ describe("Algebraic", () => {
               divide: Float
               multiply: Float
               set: Float
-              substract: Float
+              subtract: Float
             }
 
             \\"\\"\\"Mutations for a list for String\\"\\"\\"

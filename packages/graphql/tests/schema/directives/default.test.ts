@@ -134,7 +134,7 @@ describe("@default directive", () => {
               divide: Float
               multiply: Float
               set: Float
-              substract: Float
+              subtract: Float
             }
 
             type IDAggregateSelection {
@@ -180,9 +180,9 @@ describe("@default directive", () => {
 
             \\"\\"\\"Int mutations\\"\\"\\"
             input IntScalarMutations {
-              decrement: Int
-              increment: Int
+              add: Int
               set: Int
+              subtract: Int
             }
 
             enum Location {

@@ -65,7 +65,7 @@ describe("update (deprecate implicit _SET)", () => {
 
         const query = /* GraphQL */ `
         mutation($id: ID, $name: String) {
-            ${Movie.operations.update}(where: { id_EQ: $id }, update: { name_SET: $name }) {
+            ${Movie.operations.update}(where: { id: {equals: $id } }, update: { name: { set: $name }}) {
                 ${Movie.plural} {
                     id
                     name
@@ -107,7 +107,7 @@ describe("update (deprecate implicit _SET)", () => {
 
         const query = /* GraphQL */ `
         mutation($id: ID, $name: String) {
-            ${Movie.operations.update}(where: { id_EQ: $id }, update: {name_SET: $name}) {
+            ${Movie.operations.update}(where: { id: {equals: $id } }, update: {name: {set: $name}}) {
                 ${Movie.plural} {
                     id
                     name
@@ -171,16 +171,16 @@ describe("update (deprecate implicit _SET)", () => {
         const query = /* GraphQL */ `
         mutation {
             ${Movie.operations.update}(
-                where: { id_EQ: "1" }, 
+                where: { id: { equals: "1" } }, 
                 update: { director: { 
                     connect: {
-                    where: { node: { id_EQ: "2"} }, 
+                    where: { node: { id: { equals: "2" }} }, 
                     connect: { movies: {
-                        where: { node: { id_EQ: "3"} }, 
+                        where: { node: { id: { equals: "3" }} }, 
                         connect: { director: {
-                            where: { node: { id_EQ: "4"} }, 
+                            where: { node: { id: { equals: "4" }} }, 
                             connect: { movies: {
-                                where: { node: { id_EQ: "5" } }
+                                where: { node: { id: { equals: "5" } } }
                             } }
                         } }
                     }
@@ -256,7 +256,7 @@ describe("update (deprecate implicit _SET)", () => {
             ${Movie.operations.update}(
               where: { actorsConnection_SOME: { node: { name_EQ: $actorName } } },
               update: {
-                id_SET: $updatedMovieId
+                id: { set: $updatedMovieId }
               }
           ) {
               ${Movie.plural} {
@@ -312,7 +312,7 @@ describe("update (deprecate implicit _SET)", () => {
 
         const query = /* GraphQL */ `
         mutation($id1: ID, $id2: ID, $name: String) {
-            ${Movie.operations.update}(where: { OR: [{ id_EQ: $id1 }, { id_EQ: $id2 }] }, update: {name_SET: $name}) {
+            ${Movie.operations.update}(where: { OR: [{ id_EQ: $id1 }, { id_EQ: $id2 }] }, update: {name: { set: $name }}) {
                 ${Movie.plural} {
                     id
                     name
@@ -380,7 +380,7 @@ describe("update (deprecate implicit _SET)", () => {
               update: {
                 actors: [{
                   where: { node: { name_EQ: $initialName } },
-                  update: { node: { name_SET: $updatedName } }
+                  update: { node: { name: { set: $updatedName } } }
                 }]
               }
           ) {
@@ -744,10 +744,10 @@ describe("update (deprecate implicit _SET)", () => {
                   where: { node: { name_EQ: "old actor name" } }
                   update: {
                     node: {
-                        name_SET: "new actor name"
+                        name: { set: "new actor name" }
                         movies: [{
                             where: { node: { title_EQ: "old movie title" } }
-                            update: { node: { title_SET: "new movie title" } }
+                            update: { node: { title: { set: "new movie title" } } }
                         }]
                     }
                   }
@@ -1118,7 +1118,7 @@ describe("update (deprecate implicit _SET)", () => {
                         where: { node: { name_EQ: "Green Photo", id_EQ: "${photo0Id}" } }
                         update: {
                             node: {
-                                name_SET: "Light Green Photo"
+                                name: { set: "Light Green Photo" }
                                 color: {
                                     connect: { where: { node: { name_EQ: "Light Green", id_EQ: "${photo0Color1Id}" } } }
                                     disconnect: { where: { node: { name_EQ: "Green", id_EQ: "${photo0Color0Id}" } } }
@@ -1130,7 +1130,7 @@ describe("update (deprecate implicit _SET)", () => {
                         where: { node: { name_EQ: "Yellow Photo", id_EQ: "${photo1Id}" } }
                         update: {
                             node: {
-                                name_SET: "Light Yellow Photo"
+                                name: { set: "Light Yellow Photo" }
                                 color: {
                                     connect: { where: { node: { name_EQ: "Light Yellow", id_EQ: "${photo1Color1Id}" } } }
                                     disconnect: { where: { node: { name_EQ: "Yellow", id_EQ: "${photo1Color0Id}" } } }

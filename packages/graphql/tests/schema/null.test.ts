@@ -139,7 +139,7 @@ describe("Null", () => {
               divide: Float
               multiply: Float
               set: Float
-              substract: Float
+              subtract: Float
             }
 
             type IDAggregateSelection {
@@ -197,9 +197,9 @@ describe("Null", () => {
 
             \\"\\"\\"Int mutations\\"\\"\\"
             input IntScalarMutations {
-              decrement: Int
-              increment: Int
+              add: Int
               set: Int
+              subtract: Int
             }
 
             \\"\\"\\"Mutations for a list for Boolean\\"\\"\\"

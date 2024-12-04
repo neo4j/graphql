@@ -375,7 +375,7 @@ describe("nested aggregation on interface", () => {
               divide: Float
               multiply: Float
               set: Float
-              substract: Float
+              subtract: Float
             }
 
             type IntAggregateSelection {
@@ -397,9 +397,9 @@ describe("nested aggregation on interface", () => {
 
             \\"\\"\\"Int mutations\\"\\"\\"
             input IntScalarMutations {
-              decrement: Int
-              increment: Int
+              add: Int
               set: Int
+              subtract: Int
             }
 
             type Movie {

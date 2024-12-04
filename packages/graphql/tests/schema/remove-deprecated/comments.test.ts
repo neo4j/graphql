@@ -135,7 +135,7 @@ describe("Comments", () => {
               divide: Float
               multiply: Float
               set: Float
-              substract: Float
+              subtract: Float
             }
 
             \\"\\"\\"An enumeration of movie genres.\\"\\"\\"
@@ -199,9 +199,9 @@ describe("Comments", () => {
 
             \\"\\"\\"Int mutations\\"\\"\\"
             input IntScalarMutations {
-              decrement: Int
-              increment: Int
+              add: Int
               set: Int
+              subtract: Int
             }
 
             \\"\\"\\"A type describing a movie.\\"\\"\\"
@@ -1089,9 +1089,9 @@ describe("Comments", () => {
 
                 \\"\\"\\"Int mutations\\"\\"\\"
                 input IntScalarMutations {
-                  decrement: Int
-                  increment: Int
+                  add: Int
                   set: Int
+                  subtract: Int
                 }
 
                 type Movie implements Production {

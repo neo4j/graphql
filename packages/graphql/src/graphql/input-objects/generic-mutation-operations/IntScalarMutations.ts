@@ -25,8 +25,8 @@ export const IntScalarMutations = new GraphQLInputObjectType({
     description: "Int mutations",
     fields: {
         set: { type: GraphQLInt },
-        increment: { type: GraphQLInt },
-        decrement: { type: GraphQLInt },
+        add: { type: GraphQLInt },
+        subtract: { type: GraphQLInt },
     },
 });
 
