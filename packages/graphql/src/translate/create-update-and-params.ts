@@ -274,6 +274,7 @@ export default function createUpdateAndParams({
                                     relationField.union ? `.${refNode.name}` : ""
                                 }${relationField.typeMeta.array ? `[${index}]` : ``}.update.edge`,
                                 parameterNotation: ".",
+                                isUpdateOperation: true,
                             });
                             let setProperties;
                             if (res) {

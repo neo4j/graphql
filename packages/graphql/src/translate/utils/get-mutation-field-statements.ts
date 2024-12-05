@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { Node, Relationship } from "../../classes";
+import { Neo4jGraphQLError, type Node, type Relationship } from "../../classes";
 import { SPATIAL_TYPES } from "../../constants";
 import mapToDbProperty from "../../utils/map-to-db-property";
 import { buildMathStatements, matchMathField, mathDescriptorBuilder } from "./math";
@@ -131,6 +131,14 @@ function getMutationFieldStatementsForGenericOperator({
     operations: any;
     withVars: string[];
 }): string {
+    if (Object.entries(operations).length > 1) {
+        throw new Neo4jGraphQLError(
+            `Conflicting modification of field ${key}: ${Object.keys(operations)
+                .map((n) => `[[${n}]]`)
+                .join(", ")} on type ${nodeOrRel.name}`
+        );
+    }
+
     return Object.entries(operations)
         .map(([operator, value]) => {
             return getMutationFieldStatements({
