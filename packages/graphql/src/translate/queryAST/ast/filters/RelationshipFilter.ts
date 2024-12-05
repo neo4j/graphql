@@ -191,8 +191,8 @@ export class RelationshipFilter extends Filter {
 
                 // NOTE: NONE is SOME + isNot
                 // TODO: move to wrapInNullIfNeeded in getPredicate
-                //  const comparator = this.isNot ? Cypher.false : Cypher.true;
-                this.subqueryPredicate = Cypher.eq(returnVar, Cypher.true);
+                const comparator = this.operator === "NONE" ? Cypher.false : Cypher.true;
+                this.subqueryPredicate = Cypher.eq(returnVar, comparator);
 
                 const withAfterSubqueries = new Cypher.With("*");
 
@@ -268,11 +268,7 @@ export class RelationshipFilter extends Filter {
         switch (this.operator) {
             case "NONE":
             case "SOME":
-                if (this.relationship.isList) {
-                    return Cypher.gt(Cypher.count(target), new Cypher.Literal(0));
-                } else {
-                    return Cypher.eq(Cypher.count(target), new Cypher.Literal(1));
-                }
+                return Cypher.gt(Cypher.count(target), new Cypher.Literal(0));
             case "SINGLE":
                 return Cypher.eq(Cypher.count(target), new Cypher.Literal(1));
             case "ALL":
@@ -318,6 +314,9 @@ export class RelationshipFilter extends Filter {
             // if (this.isNot) {
             //     return Cypher.and(Cypher.eq(this.countVariable, new Cypher.Literal(0)), innerPredicate);
             // } else {
+            if (this.operator === "NONE") {
+                throw new Error("WHOOO");
+            }
             return Cypher.and(Cypher.neq(this.countVariable, new Cypher.Literal(0)), innerPredicate);
             // }
         }
