@@ -54,7 +54,7 @@ export class ConnectionFilter extends Filter {
     }) {
         super();
         this.relationship = relationship;
-        this.isNot = isNot;
+        this.isNot = operator === "NONE";
         this.operator = operator || "SOME";
         this.target = target;
     }

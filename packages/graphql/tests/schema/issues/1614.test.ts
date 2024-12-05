@@ -126,6 +126,25 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               totalCount: Int!
             }
 
+            input CrewMemberMoviesConnectionFilters {
+              \\"\\"\\"
+              Return CrewMembers where all of the related CrewMemberMoviesConnections match this filter
+              \\"\\"\\"
+              all: CrewMemberMoviesConnectionWhere
+              \\"\\"\\"
+              Return CrewMembers where none of the related CrewMemberMoviesConnections match this filter
+              \\"\\"\\"
+              none: CrewMemberMoviesConnectionWhere
+              \\"\\"\\"
+              Return CrewMembers where one of the related CrewMemberMoviesConnections match this filter
+              \\"\\"\\"
+              single: CrewMemberMoviesConnectionWhere
+              \\"\\"\\"
+              Return CrewMembers where some of the related CrewMemberMoviesConnections match this filter
+              \\"\\"\\"
+              some: CrewMemberMoviesConnectionWhere
+            }
+
             input CrewMemberMoviesConnectionSort {
               edge: CrewPositionSort
               node: MovieSort
@@ -184,6 +203,17 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               properties: CrewPosition!
             }
 
+            input CrewMemberMoviesRelationshipFilters {
+              \\"\\"\\"Return CrewMembers where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Return CrewMembers where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Return CrewMembers where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Return CrewMembers where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
+            }
+
             input CrewMemberMoviesUpdateConnectionInput {
               edge: CrewPositionUpdateInput
               node: MovieUpdateInput
@@ -206,7 +236,9 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               AND: [CrewMemberWhere!]
               NOT: CrewMemberWhere
               OR: [CrewMemberWhere!]
+              movies: CrewMemberMoviesRelationshipFilters
               moviesAggregate: CrewMemberMoviesAggregateInput
+              moviesConnection: CrewMemberMoviesConnectionFilters
               \\"\\"\\"
               Return CrewMembers where all of the related CrewMemberMoviesConnections match this filter
               \\"\\"\\"

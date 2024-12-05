@@ -106,6 +106,28 @@ describe("Cypher NULL", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 
+    test("Simple connection relationship IS NULL", async () => {
+        const query = /* GraphQL */ `
+            query {
+                movies(where: { actorsConnection_SOME: null }) {
+                    title
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Movie)
+            WHERE NOT (EXISTS {
+                MATCH (this)<-[:ACTED_IN]-(this0:Actor)
+            })
+            RETURN this { .title } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+    });
+
     test("Simple relationship IS NOT NULL", async () => {
         const query = /* GraphQL */ `
             query {

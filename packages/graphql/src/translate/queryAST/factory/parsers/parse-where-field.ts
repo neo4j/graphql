@@ -24,7 +24,7 @@ export type WhereRegexGroups = {
     isAggregate: boolean;
     operator: FilterOperator | undefined;
     prefix?: string;
-    isNot: boolean;
+    //  isNot: boolean;
     isConnection: boolean;
 };
 
@@ -43,29 +43,29 @@ export function parseWhereField(field: string): WhereRegexGroups {
         isConnection?: string;
     };
 
-    let isNot = false;
-    let operator = undefined as FilterOperator | undefined;
+    //let isNot = false;
+    const operator = match?.groups?.operator as FilterOperator | undefined;
 
-    if (matchGroups.operator) {
-        const notSplit = matchGroups.operator.split("NOT_");
-        if (notSplit.length === 2) {
-            isNot = true;
-            operator = notSplit[1] as FilterOperator;
-        } else if (matchGroups.operator === "NOT" || matchGroups.operator === "NONE") {
-            isNot = true;
-            if (matchGroups.operator === "NONE") {
-                operator = notSplit[0] as FilterOperator;
-            }
-        } else {
-            operator = notSplit[0] as FilterOperator;
-        }
-    }
+    // if (matchGroups.operator) {
+    //     const notSplit = matchGroups.operator.split("NOT_");
+    //     if (notSplit.length === 2) {
+    //         isNot = true;
+    //         operator = notSplit[1] as FilterOperator;
+    //     } else if (matchGroups.operator === "NOT" || matchGroups.operator === "NONE") {
+    //         isNot = true;
+    //         if (matchGroups.operator === "NONE") {
+    //             operator = notSplit[0] as FilterOperator;
+    //         }
+    //     } else {
+    //         operator = notSplit[0] as FilterOperator;
+    //     }
+    // }
 
     return {
         fieldName: matchGroups.fieldName,
         isAggregate: Boolean(matchGroups.isAggregate),
         operator,
-        isNot,
+        // isNot,
         prefix: matchGroups.prefix,
         isConnection: Boolean(matchGroups.isConnection),
     };

@@ -223,6 +223,25 @@ describe("Union Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input ActorMoviesConnectionFilters {
+              \\"\\"\\"
+              Return Actors where all of the related ActorMoviesConnections match this filter
+              \\"\\"\\"
+              all: ActorMoviesConnectionWhere
+              \\"\\"\\"
+              Return Actors where none of the related ActorMoviesConnections match this filter
+              \\"\\"\\"
+              none: ActorMoviesConnectionWhere
+              \\"\\"\\"
+              Return Actors where one of the related ActorMoviesConnections match this filter
+              \\"\\"\\"
+              single: ActorMoviesConnectionWhere
+              \\"\\"\\"
+              Return Actors where some of the related ActorMoviesConnections match this filter
+              \\"\\"\\"
+              some: ActorMoviesConnectionWhere
+            }
+
             input ActorMoviesConnectionSort {
               edge: ActedInSort
               node: MovieSort
@@ -303,6 +322,17 @@ describe("Union Interface Relationships", () => {
               properties: ActedIn!
             }
 
+            input ActorMoviesRelationshipFilters {
+              \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
+            }
+
             input ActorMoviesUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: MovieUpdateInput
@@ -344,7 +374,9 @@ describe("Union Interface Relationships", () => {
               id_IN: [Int]
               id_LT: Int
               id_LTE: Int
+              movies: ActorMoviesRelationshipFilters
               moviesAggregate: ActorMoviesAggregateInput
+              moviesConnection: ActorMoviesConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorMoviesConnections match this filter
               \\"\\"\\"
@@ -606,6 +638,25 @@ describe("Union Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input MovieActorsConnectionFilters {
+              \\"\\"\\"
+              Return Movies where all of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              all: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              none: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where one of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              single: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              some: MovieActorsConnectionWhere
+            }
+
             input MovieActorsConnectionSort {
               edge: ActedInSort
               node: ActorSort
@@ -684,6 +735,17 @@ describe("Union Interface Relationships", () => {
               cursor: String!
               node: Actor!
               properties: ActedIn!
+            }
+
+            input MovieActorsRelationshipFilters {
+              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
             }
 
             input MovieActorsUpdateConnectionInput {
@@ -789,6 +851,25 @@ describe("Union Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input MovieDirectorsConnectionFilters {
+              \\"\\"\\"
+              Return Movies where all of the related MovieDirectorsConnections match this filter
+              \\"\\"\\"
+              all: MovieDirectorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related MovieDirectorsConnections match this filter
+              \\"\\"\\"
+              none: MovieDirectorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where one of the related MovieDirectorsConnections match this filter
+              \\"\\"\\"
+              single: MovieDirectorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related MovieDirectorsConnections match this filter
+              \\"\\"\\"
+              some: MovieDirectorsConnectionWhere
+            }
+
             input MovieDirectorsConnectionSort {
               edge: DirectedSort
             }
@@ -867,6 +948,17 @@ describe("Union Interface Relationships", () => {
               properties: Directed!
             }
 
+            input MovieDirectorsRelationshipFilters {
+              \\"\\"\\"Return Movies where all of the related Directors match this filter\\"\\"\\"
+              all: DirectorWhere
+              \\"\\"\\"Return Movies where none of the related Directors match this filter\\"\\"\\"
+              none: DirectorWhere
+              \\"\\"\\"Return Movies where one of the related Directors match this filter\\"\\"\\"
+              single: DirectorWhere
+              \\"\\"\\"Return Movies where some of the related Directors match this filter\\"\\"\\"
+              some: DirectorWhere
+            }
+
             input MovieDirectorsUpdateInput {
               Actor: [MovieDirectorsActorUpdateFieldInput!]
               Person: [MovieDirectorsPersonUpdateFieldInput!]
@@ -920,6 +1012,25 @@ describe("Union Interface Relationships", () => {
               edges: [MovieReviewersRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input MovieReviewersConnectionFilters {
+              \\"\\"\\"
+              Return Movies where all of the related MovieReviewersConnections match this filter
+              \\"\\"\\"
+              all: MovieReviewersConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related MovieReviewersConnections match this filter
+              \\"\\"\\"
+              none: MovieReviewersConnectionWhere
+              \\"\\"\\"
+              Return Movies where one of the related MovieReviewersConnections match this filter
+              \\"\\"\\"
+              single: MovieReviewersConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related MovieReviewersConnections match this filter
+              \\"\\"\\"
+              some: MovieReviewersConnectionWhere
             }
 
             input MovieReviewersConnectionSort {
@@ -1005,6 +1116,17 @@ describe("Union Interface Relationships", () => {
               properties: Review!
             }
 
+            input MovieReviewersRelationshipFilters {
+              \\"\\"\\"Return Movies where all of the related Reviewers match this filter\\"\\"\\"
+              all: ReviewerWhere
+              \\"\\"\\"Return Movies where none of the related Reviewers match this filter\\"\\"\\"
+              none: ReviewerWhere
+              \\"\\"\\"Return Movies where one of the related Reviewers match this filter\\"\\"\\"
+              single: ReviewerWhere
+              \\"\\"\\"Return Movies where some of the related Reviewers match this filter\\"\\"\\"
+              some: ReviewerWhere
+            }
+
             input MovieReviewersUpdateConnectionInput {
               edge: ReviewUpdateInput
               node: ReviewerUpdateInput
@@ -1041,7 +1163,9 @@ describe("Union Interface Relationships", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              actors: MovieActorsRelationshipFilters
               actorsAggregate: MovieActorsAggregateInput
+              actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -1066,6 +1190,8 @@ describe("Union Interface Relationships", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
+              directors: MovieDirectorsRelationshipFilters
+              directorsConnection: MovieDirectorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieDirectorsConnections match this filter
               \\"\\"\\"
@@ -1097,7 +1223,9 @@ describe("Union Interface Relationships", () => {
               imdbId_IN: [Int]
               imdbId_LT: Int
               imdbId_LTE: Int
+              reviewers: MovieReviewersRelationshipFilters
               reviewersAggregate: MovieReviewersAggregateInput
+              reviewersConnection: MovieReviewersConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieReviewersConnections match this filter
               \\"\\"\\"
@@ -1252,6 +1380,25 @@ describe("Union Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input PersonMoviesConnectionFilters {
+              \\"\\"\\"
+              Return People where all of the related PersonMoviesConnections match this filter
+              \\"\\"\\"
+              all: PersonMoviesConnectionWhere
+              \\"\\"\\"
+              Return People where none of the related PersonMoviesConnections match this filter
+              \\"\\"\\"
+              none: PersonMoviesConnectionWhere
+              \\"\\"\\"
+              Return People where one of the related PersonMoviesConnections match this filter
+              \\"\\"\\"
+              single: PersonMoviesConnectionWhere
+              \\"\\"\\"
+              Return People where some of the related PersonMoviesConnections match this filter
+              \\"\\"\\"
+              some: PersonMoviesConnectionWhere
+            }
+
             input PersonMoviesConnectionSort {
               edge: ReviewSort
               node: MovieSort
@@ -1332,6 +1479,17 @@ describe("Union Interface Relationships", () => {
               properties: Review!
             }
 
+            input PersonMoviesRelationshipFilters {
+              \\"\\"\\"Return People where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Return People where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Return People where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Return People where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
+            }
+
             input PersonMoviesUpdateConnectionInput {
               edge: ReviewUpdateInput
               node: MovieUpdateInput
@@ -1381,7 +1539,9 @@ describe("Union Interface Relationships", () => {
               id_IN: [Int]
               id_LT: Int
               id_LTE: Int
+              movies: PersonMoviesRelationshipFilters
               moviesAggregate: PersonMoviesAggregateInput
+              moviesConnection: PersonMoviesConnectionFilters
               \\"\\"\\"
               Return People where all of the related PersonMoviesConnections match this filter
               \\"\\"\\"

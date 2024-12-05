@@ -542,7 +542,7 @@ describe("Cypher Advanced Filtering", () => {
         test("equality", async () => {
             const query = /* GraphQL */ `
                 {
-                    movies(where: { genres_SOME: { name: { equals: "some genre" } } }) {
+                    movies(where: { genres: { some: { name: { equals: "some genre" } } } }) {
                         actorCount
                     }
                 }
@@ -566,46 +566,19 @@ describe("Cypher Advanced Filtering", () => {
             `);
         });
 
-        test("NONE", async () => {
-            const query = /* GraphQL */ `
-                {
-                    movies(where: { genres_NONE: { name: { equals: "some genre" } } }) {
-                        actorCount
-                    }
-                }
-            `;
-
-            const result = await translateQuery(neoSchema, query);
-
-            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Movie)
-                WHERE NOT (EXISTS {
-                    MATCH (this)-[:IN_GENRE]->(this0:Genre)
-                    WHERE this0.name = $param0
-                })
-                RETURN this { .actorCount } AS this"
-            `);
-
-            expect(formatParams(result.params)).toMatchInlineSnapshot(`
-                "{
-                    \\"param0\\": \\"some genre\\"
-                }"
-            `);
-        });
-
         describe("List Predicates", () => {
-            const generateQuery = (operator: "ALL" | "NONE" | "SINGLE" | "SOME"): string => {
+            const generateQuery = (operator: "all" | "none" | "single" | "some"): string => {
                 const query = /* GraphQL */ `
                     {
-                        movies(where: { genres_${operator}: { name: { equals: "some genre" } } }) {
+                        movies(where: { genres: { ${operator}: { name: { equals: "some genre" } } } }) {
                             actorCount
                         }
                     }
                 `;
                 return query;
             };
-            test("ALL", async () => {
-                const query = generateQuery("ALL");
+            test("all", async () => {
+                const query = generateQuery("all");
 
                 const result = await translateQuery(neoSchema, query);
 
@@ -626,8 +599,9 @@ describe("Cypher Advanced Filtering", () => {
                     }"
                 `);
             });
-            test("NONE", async () => {
-                const query = generateQuery("NONE");
+
+            test("none", async () => {
+                const query = generateQuery("none");
 
                 const result = await translateQuery(neoSchema, query);
 
@@ -645,8 +619,9 @@ describe("Cypher Advanced Filtering", () => {
                     }"
                 `);
             });
-            test("SINGLE", async () => {
-                const query = generateQuery("SINGLE");
+
+            test("single", async () => {
+                const query = generateQuery("single");
 
                 const result = await translateQuery(neoSchema, query);
 
@@ -661,8 +636,8 @@ describe("Cypher Advanced Filtering", () => {
                     }"
                 `);
             });
-            test("SOME", async () => {
-                const query = generateQuery("SOME");
+            test("some", async () => {
+                const query = generateQuery("some");
 
                 const result = await translateQuery(neoSchema, query);
 
@@ -687,7 +662,7 @@ describe("Cypher Advanced Filtering", () => {
         test("Node and relationship properties equality", async () => {
             const query = /* GraphQL */ `
                 {
-                    movies(where: { genresConnection_SOME: { node: { name: { equals: "some genre" } } } }) {
+                    movies(where: { genresConnection: { some: { node: { name: { equals: "some genre" } } } } }) {
                         actorCount
                     }
                 }
@@ -714,7 +689,7 @@ describe("Cypher Advanced Filtering", () => {
         test("Node and relationship properties NONE", async () => {
             const query = /* GraphQL */ `
                 {
-                    movies(where: { genresConnection_NONE: { node: { name: { equals: "some genre" } } } }) {
+                    movies(where: { genresConnection: { none: { node: { name: { equals: "some genre" } } } } }) {
                         actorCount
                     }
                 }
@@ -739,18 +714,18 @@ describe("Cypher Advanced Filtering", () => {
         });
 
         describe("List Predicates", () => {
-            const generateQuery = (operator: "ALL" | "NONE" | "SINGLE" | "SOME"): string => {
+            const generateQuery = (operator: "all" | "none" | "single" | "some"): string => {
                 const query = /* GraphQL */ `
                     {
-                        movies(where: { genresConnection_${operator}: { node: { name: { equals: "some genre" }} } }) {
+                        movies(where: { genresConnection: { ${operator}: { node: { name: { equals: "some genre" }} } } }) {
                             actorCount
                         }
                     }
                 `;
                 return query;
             };
-            test("ALL", async () => {
-                const query = generateQuery("ALL");
+            test("all", async () => {
+                const query = generateQuery("all");
 
                 const result = await translateQuery(neoSchema, query);
 
@@ -771,8 +746,8 @@ describe("Cypher Advanced Filtering", () => {
                     }"
                 `);
             });
-            test("NONE", async () => {
-                const query = generateQuery("NONE");
+            test("none", async () => {
+                const query = generateQuery("none");
 
                 const result = await translateQuery(neoSchema, query);
 
@@ -790,8 +765,8 @@ describe("Cypher Advanced Filtering", () => {
                     }"
                 `);
             });
-            test("SINGLE", async () => {
-                const query = generateQuery("SINGLE");
+            test("single", async () => {
+                const query = generateQuery("single");
 
                 const result = await translateQuery(neoSchema, query);
 
@@ -806,8 +781,8 @@ describe("Cypher Advanced Filtering", () => {
                     }"
                 `);
             });
-            test("SOME", async () => {
-                const query = generateQuery("SOME");
+            test("some", async () => {
+                const query = generateQuery("some");
 
                 const result = await translateQuery(neoSchema, query);
 

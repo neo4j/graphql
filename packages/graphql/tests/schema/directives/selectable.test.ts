@@ -751,6 +751,25 @@ describe("@selectable", () => {
                   where: MovieConnectWhere
                 }
 
+                input ActorActedInConnectionFilters {
+                  \\"\\"\\"
+                  Return Actors where all of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  all: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where none of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  none: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where one of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  single: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where some of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  some: ActorActedInConnectionWhere
+                }
+
                 input ActorActedInConnectionWhere {
                   AND: [ActorActedInConnectionWhere!]
                   NOT: ActorActedInConnectionWhere
@@ -811,6 +830,17 @@ describe("@selectable", () => {
                   title_SHORTEST_LENGTH_LTE: Int
                 }
 
+                input ActorActedInRelationshipFilters {
+                  \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
+                  all: MovieWhere
+                  \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
+                  none: MovieWhere
+                  \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
+                  single: MovieWhere
+                  \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
+                  some: MovieWhere
+                }
+
                 input ActorActedInUpdateConnectionInput {
                   node: MovieUpdateInput
                 }
@@ -869,7 +899,9 @@ describe("@selectable", () => {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
+                  actedIn: ActorActedInRelationshipFilters
                   actedInAggregate: ActorActedInAggregateInput
+                  actedInConnection: ActorActedInConnectionFilters
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
                   \\"\\"\\"
@@ -1121,6 +1153,25 @@ describe("@selectable", () => {
                   totalCount: Int!
                 }
 
+                input ActorActedInConnectionFilters {
+                  \\"\\"\\"
+                  Return Actors where all of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  all: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where none of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  none: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where one of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  single: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where some of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  some: ActorActedInConnectionWhere
+                }
+
                 input ActorActedInConnectionSort {
                   node: MovieSort
                 }
@@ -1190,6 +1241,17 @@ describe("@selectable", () => {
                   node: Movie!
                 }
 
+                input ActorActedInRelationshipFilters {
+                  \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
+                  all: MovieWhere
+                  \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
+                  none: MovieWhere
+                  \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
+                  single: MovieWhere
+                  \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
+                  some: MovieWhere
+                }
+
                 input ActorActedInUpdateConnectionInput {
                   node: MovieUpdateInput
                 }
@@ -1248,7 +1310,9 @@ describe("@selectable", () => {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
+                  actedIn: ActorActedInRelationshipFilters
                   actedInAggregate: ActorActedInAggregateInput
+                  actedInConnection: ActorActedInConnectionFilters
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
                   \\"\\"\\"
@@ -1485,6 +1549,25 @@ describe("@selectable", () => {
                   name: String!
                 }
 
+                input ActorActedInConnectionFilters {
+                  \\"\\"\\"
+                  Return Actors where all of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  all: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where none of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  none: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where one of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  single: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where some of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  some: ActorActedInConnectionWhere
+                }
+
                 input ActorActedInConnectionWhere {
                   Movie: ActorActedInMovieConnectionWhere
                   Series: ActorActedInSeriesConnectionWhere
@@ -1539,6 +1622,17 @@ describe("@selectable", () => {
                   disconnect: [ActorActedInMovieDisconnectFieldInput!]
                   update: ActorActedInMovieUpdateConnectionInput
                   where: ActorActedInMovieConnectionWhere
+                }
+
+                input ActorActedInRelationshipFilters {
+                  \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+                  all: ProductionWhere
+                  \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+                  none: ProductionWhere
+                  \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+                  single: ProductionWhere
+                  \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+                  some: ProductionWhere
                 }
 
                 input ActorActedInSeriesConnectFieldInput {
@@ -1622,6 +1716,8 @@ describe("@selectable", () => {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
+                  actedIn: ActorActedInRelationshipFilters
+                  actedInConnection: ActorActedInConnectionFilters
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
                   \\"\\"\\"
@@ -1949,6 +2045,25 @@ describe("@selectable", () => {
                   totalCount: Int!
                 }
 
+                input ActorActedInConnectionFilters {
+                  \\"\\"\\"
+                  Return Actors where all of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  all: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where none of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  none: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where one of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  single: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where some of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  some: ActorActedInConnectionWhere
+                }
+
                 input ActorActedInConnectionWhere {
                   Movie: ActorActedInMovieConnectionWhere
                   Series: ActorActedInSeriesConnectionWhere
@@ -2008,6 +2123,17 @@ describe("@selectable", () => {
                 type ActorActedInRelationship {
                   cursor: String!
                   node: Production!
+                }
+
+                input ActorActedInRelationshipFilters {
+                  \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+                  all: ProductionWhere
+                  \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+                  none: ProductionWhere
+                  \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+                  single: ProductionWhere
+                  \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+                  some: ProductionWhere
                 }
 
                 input ActorActedInSeriesConnectFieldInput {
@@ -2091,6 +2217,8 @@ describe("@selectable", () => {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
+                  actedIn: ActorActedInRelationshipFilters
+                  actedInConnection: ActorActedInConnectionFilters
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
                   \\"\\"\\"
@@ -2433,6 +2561,25 @@ describe("@selectable", () => {
                   where: ProductionConnectWhere
                 }
 
+                input ActorActedInConnectionFilters {
+                  \\"\\"\\"
+                  Return Actors where all of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  all: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where none of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  none: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where one of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  single: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where some of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  some: ActorActedInConnectionWhere
+                }
+
                 input ActorActedInConnectionWhere {
                   AND: [ActorActedInConnectionWhere!]
                   NOT: ActorActedInConnectionWhere
@@ -2493,6 +2640,17 @@ describe("@selectable", () => {
                   title_SHORTEST_LENGTH_LTE: Int
                 }
 
+                input ActorActedInRelationshipFilters {
+                  \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+                  all: ProductionWhere
+                  \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+                  none: ProductionWhere
+                  \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+                  single: ProductionWhere
+                  \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+                  some: ProductionWhere
+                }
+
                 input ActorActedInUpdateConnectionInput {
                   node: ProductionUpdateInput
                 }
@@ -2551,7 +2709,9 @@ describe("@selectable", () => {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
+                  actedIn: ActorActedInRelationshipFilters
                   actedInAggregate: ActorActedInAggregateInput
+                  actedInConnection: ActorActedInConnectionFilters
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
                   \\"\\"\\"
@@ -2954,6 +3114,25 @@ describe("@selectable", () => {
                   totalCount: Int!
                 }
 
+                input ActorActedInConnectionFilters {
+                  \\"\\"\\"
+                  Return Actors where all of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  all: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where none of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  none: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where one of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  single: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where some of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  some: ActorActedInConnectionWhere
+                }
+
                 input ActorActedInConnectionSort {
                   node: ProductionSort
                 }
@@ -3023,6 +3202,17 @@ describe("@selectable", () => {
                   node: Production!
                 }
 
+                input ActorActedInRelationshipFilters {
+                  \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+                  all: ProductionWhere
+                  \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+                  none: ProductionWhere
+                  \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+                  single: ProductionWhere
+                  \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+                  some: ProductionWhere
+                }
+
                 input ActorActedInUpdateConnectionInput {
                   node: ProductionUpdateInput
                 }
@@ -3081,7 +3271,9 @@ describe("@selectable", () => {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
+                  actedIn: ActorActedInRelationshipFilters
                   actedInAggregate: ActorActedInAggregateInput
+                  actedInConnection: ActorActedInConnectionFilters
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
                   \\"\\"\\"

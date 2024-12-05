@@ -151,6 +151,25 @@ describe("Unions", () => {
               totalCount: Int!
             }
 
+            input AuthorPublicationsConnectionFilters {
+              \\"\\"\\"
+              Return Authors where all of the related AuthorPublicationsConnections match this filter
+              \\"\\"\\"
+              all: AuthorPublicationsConnectionWhere
+              \\"\\"\\"
+              Return Authors where none of the related AuthorPublicationsConnections match this filter
+              \\"\\"\\"
+              none: AuthorPublicationsConnectionWhere
+              \\"\\"\\"
+              Return Authors where one of the related AuthorPublicationsConnections match this filter
+              \\"\\"\\"
+              single: AuthorPublicationsConnectionWhere
+              \\"\\"\\"
+              Return Authors where some of the related AuthorPublicationsConnections match this filter
+              \\"\\"\\"
+              some: AuthorPublicationsConnectionWhere
+            }
+
             input AuthorPublicationsConnectionSort {
               edge: WroteSort
             }
@@ -229,6 +248,21 @@ describe("Unions", () => {
               properties: Wrote!
             }
 
+            input AuthorPublicationsRelationshipFilters {
+              \\"\\"\\"Return Authors where all of the related Publications match this filter\\"\\"\\"
+              all: PublicationWhere
+              \\"\\"\\"
+              Return Authors where none of the related Publications match this filter
+              \\"\\"\\"
+              none: PublicationWhere
+              \\"\\"\\"Return Authors where one of the related Publications match this filter\\"\\"\\"
+              single: PublicationWhere
+              \\"\\"\\"
+              Return Authors where some of the related Publications match this filter
+              \\"\\"\\"
+              some: PublicationWhere
+            }
+
             input AuthorPublicationsUpdateInput {
               Book: [AuthorPublicationsBookUpdateFieldInput!]
               Journal: [AuthorPublicationsJournalUpdateFieldInput!]
@@ -256,6 +290,8 @@ describe("Unions", () => {
               name_EQ: String
               name_IN: [String!]
               name_STARTS_WITH: String
+              publications: AuthorPublicationsRelationshipFilters
+              publicationsConnection: AuthorPublicationsConnectionFilters
               \\"\\"\\"
               Return Authors where all of the related AuthorPublicationsConnections match this filter
               \\"\\"\\"
@@ -343,6 +379,25 @@ describe("Unions", () => {
               totalCount: Int!
             }
 
+            input BookAuthorConnectionFilters {
+              \\"\\"\\"
+              Return Books where all of the related BookAuthorConnections match this filter
+              \\"\\"\\"
+              all: BookAuthorConnectionWhere
+              \\"\\"\\"
+              Return Books where none of the related BookAuthorConnections match this filter
+              \\"\\"\\"
+              none: BookAuthorConnectionWhere
+              \\"\\"\\"
+              Return Books where one of the related BookAuthorConnections match this filter
+              \\"\\"\\"
+              single: BookAuthorConnectionWhere
+              \\"\\"\\"
+              Return Books where some of the related BookAuthorConnections match this filter
+              \\"\\"\\"
+              some: BookAuthorConnectionWhere
+            }
+
             input BookAuthorConnectionSort {
               edge: WroteSort
               node: AuthorSort
@@ -403,6 +458,17 @@ describe("Unions", () => {
               properties: Wrote!
             }
 
+            input BookAuthorRelationshipFilters {
+              \\"\\"\\"Return Books where all of the related Authors match this filter\\"\\"\\"
+              all: AuthorWhere
+              \\"\\"\\"Return Books where none of the related Authors match this filter\\"\\"\\"
+              none: AuthorWhere
+              \\"\\"\\"Return Books where one of the related Authors match this filter\\"\\"\\"
+              single: AuthorWhere
+              \\"\\"\\"Return Books where some of the related Authors match this filter\\"\\"\\"
+              some: AuthorWhere
+            }
+
             input BookAuthorUpdateConnectionInput {
               edge: WroteUpdateInput
               node: AuthorUpdateInput
@@ -459,7 +525,9 @@ describe("Unions", () => {
               AND: [BookWhere!]
               NOT: BookWhere
               OR: [BookWhere!]
+              author: BookAuthorRelationshipFilters
               authorAggregate: BookAuthorAggregateInput
+              authorConnection: BookAuthorConnectionFilters
               \\"\\"\\"
               Return Books where all of the related BookAuthorConnections match this filter
               \\"\\"\\"
@@ -597,6 +665,25 @@ describe("Unions", () => {
               totalCount: Int!
             }
 
+            input JournalAuthorConnectionFilters {
+              \\"\\"\\"
+              Return Journals where all of the related JournalAuthorConnections match this filter
+              \\"\\"\\"
+              all: JournalAuthorConnectionWhere
+              \\"\\"\\"
+              Return Journals where none of the related JournalAuthorConnections match this filter
+              \\"\\"\\"
+              none: JournalAuthorConnectionWhere
+              \\"\\"\\"
+              Return Journals where one of the related JournalAuthorConnections match this filter
+              \\"\\"\\"
+              single: JournalAuthorConnectionWhere
+              \\"\\"\\"
+              Return Journals where some of the related JournalAuthorConnections match this filter
+              \\"\\"\\"
+              some: JournalAuthorConnectionWhere
+            }
+
             input JournalAuthorConnectionSort {
               edge: WroteSort
               node: AuthorSort
@@ -657,6 +744,17 @@ describe("Unions", () => {
               properties: Wrote!
             }
 
+            input JournalAuthorRelationshipFilters {
+              \\"\\"\\"Return Journals where all of the related Authors match this filter\\"\\"\\"
+              all: AuthorWhere
+              \\"\\"\\"Return Journals where none of the related Authors match this filter\\"\\"\\"
+              none: AuthorWhere
+              \\"\\"\\"Return Journals where one of the related Authors match this filter\\"\\"\\"
+              single: AuthorWhere
+              \\"\\"\\"Return Journals where some of the related Authors match this filter\\"\\"\\"
+              some: AuthorWhere
+            }
+
             input JournalAuthorUpdateConnectionInput {
               edge: WroteUpdateInput
               node: AuthorUpdateInput
@@ -713,7 +811,9 @@ describe("Unions", () => {
               AND: [JournalWhere!]
               NOT: JournalWhere
               OR: [JournalWhere!]
+              author: JournalAuthorRelationshipFilters
               authorAggregate: JournalAuthorAggregateInput
+              authorConnection: JournalAuthorConnectionFilters
               \\"\\"\\"
               Return Journals where all of the related JournalAuthorConnections match this filter
               \\"\\"\\"

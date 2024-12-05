@@ -664,6 +664,25 @@ describe("Algebraic", () => {
               totalCount: Int!
             }
 
+            input DirectorDirectsConnectionFilters {
+              \\"\\"\\"
+              Return Directors where all of the related DirectorDirectsConnections match this filter
+              \\"\\"\\"
+              all: DirectorDirectsConnectionWhere
+              \\"\\"\\"
+              Return Directors where none of the related DirectorDirectsConnections match this filter
+              \\"\\"\\"
+              none: DirectorDirectsConnectionWhere
+              \\"\\"\\"
+              Return Directors where one of the related DirectorDirectsConnections match this filter
+              \\"\\"\\"
+              single: DirectorDirectsConnectionWhere
+              \\"\\"\\"
+              Return Directors where some of the related DirectorDirectsConnections match this filter
+              \\"\\"\\"
+              some: DirectorDirectsConnectionWhere
+            }
+
             input DirectorDirectsConnectionSort {
               node: MovieSort
             }
@@ -735,6 +754,17 @@ describe("Algebraic", () => {
               node: Movie!
             }
 
+            input DirectorDirectsRelationshipFilters {
+              \\"\\"\\"Return Directors where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Return Directors where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Return Directors where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Return Directors where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
+            }
+
             input DirectorDirectsUpdateConnectionInput {
               node: MovieUpdateInput
             }
@@ -783,7 +813,9 @@ describe("Algebraic", () => {
               AND: [DirectorWhere!]
               NOT: DirectorWhere
               OR: [DirectorWhere!]
+              directs: DirectorDirectsRelationshipFilters
               directsAggregate: DirectorDirectsAggregateInput
+              directsConnection: DirectorDirectsConnectionFilters
               \\"\\"\\"
               Return Directors where all of the related DirectorDirectsConnections match this filter
               \\"\\"\\"
@@ -913,6 +945,25 @@ describe("Algebraic", () => {
               totalCount: Int!
             }
 
+            input MovieDirectedByConnectionFilters {
+              \\"\\"\\"
+              Return Movies where all of the related MovieDirectedByConnections match this filter
+              \\"\\"\\"
+              all: MovieDirectedByConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related MovieDirectedByConnections match this filter
+              \\"\\"\\"
+              none: MovieDirectedByConnectionWhere
+              \\"\\"\\"
+              Return Movies where one of the related MovieDirectedByConnections match this filter
+              \\"\\"\\"
+              single: MovieDirectedByConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related MovieDirectedByConnections match this filter
+              \\"\\"\\"
+              some: MovieDirectedByConnectionWhere
+            }
+
             input MovieDirectedByConnectionSort {
               node: DirectorSort
             }
@@ -969,6 +1020,17 @@ describe("Algebraic", () => {
               node: Director!
             }
 
+            input MovieDirectedByRelationshipFilters {
+              \\"\\"\\"Return Movies where all of the related Directors match this filter\\"\\"\\"
+              all: DirectorWhere
+              \\"\\"\\"Return Movies where none of the related Directors match this filter\\"\\"\\"
+              none: DirectorWhere
+              \\"\\"\\"Return Movies where one of the related Directors match this filter\\"\\"\\"
+              single: DirectorWhere
+              \\"\\"\\"Return Movies where some of the related Directors match this filter\\"\\"\\"
+              some: DirectorWhere
+            }
+
             input MovieDirectedByUpdateConnectionInput {
               node: DirectorUpdateInput
             }
@@ -1020,7 +1082,9 @@ describe("Algebraic", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              directedBy: MovieDirectedByRelationshipFilters
               directedByAggregate: MovieDirectedByAggregateInput
+              directedByConnection: MovieDirectedByConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieDirectedByConnections match this filter
               \\"\\"\\"
@@ -1299,7 +1363,9 @@ describe("Algebraic", () => {
               viewers_IN: [Int!]
               viewers_LT: Int
               viewers_LTE: Int
+              workers: MovieWorkersRelationshipFilters
               workersAggregate: MovieWorkersAggregateInput
+              workersConnection: MovieWorkersConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieWorkersConnections match this filter
               \\"\\"\\"
@@ -1347,6 +1413,25 @@ describe("Algebraic", () => {
               edges: [MovieWorkersRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input MovieWorkersConnectionFilters {
+              \\"\\"\\"
+              Return Movies where all of the related MovieWorkersConnections match this filter
+              \\"\\"\\"
+              all: MovieWorkersConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related MovieWorkersConnections match this filter
+              \\"\\"\\"
+              none: MovieWorkersConnectionWhere
+              \\"\\"\\"
+              Return Movies where one of the related MovieWorkersConnections match this filter
+              \\"\\"\\"
+              single: MovieWorkersConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related MovieWorkersConnections match this filter
+              \\"\\"\\"
+              some: MovieWorkersConnectionWhere
             }
 
             input MovieWorkersConnectionSort {
@@ -1403,6 +1488,17 @@ describe("Algebraic", () => {
             type MovieWorkersRelationship {
               cursor: String!
               node: Person!
+            }
+
+            input MovieWorkersRelationshipFilters {
+              \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+              all: PersonWhere
+              \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+              none: PersonWhere
+              \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+              single: PersonWhere
+              \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+              some: PersonWhere
             }
 
             input MovieWorkersUpdateConnectionInput {
@@ -1516,7 +1612,9 @@ describe("Algebraic", () => {
               name_EQ: String
               name_IN: [String!]
               name_STARTS_WITH: String
+              worksInProduction: PersonWorksInProductionRelationshipFilters
               worksInProductionAggregate: PersonWorksInProductionAggregateInput
+              worksInProductionConnection: PersonWorksInProductionConnectionFilters
               \\"\\"\\"
               Return People where all of the related PersonWorksInProductionConnections match this filter
               \\"\\"\\"
@@ -1563,6 +1661,25 @@ describe("Algebraic", () => {
               edges: [PersonWorksInProductionRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input PersonWorksInProductionConnectionFilters {
+              \\"\\"\\"
+              Return People where all of the related PersonWorksInProductionConnections match this filter
+              \\"\\"\\"
+              all: PersonWorksInProductionConnectionWhere
+              \\"\\"\\"
+              Return People where none of the related PersonWorksInProductionConnections match this filter
+              \\"\\"\\"
+              none: PersonWorksInProductionConnectionWhere
+              \\"\\"\\"
+              Return People where one of the related PersonWorksInProductionConnections match this filter
+              \\"\\"\\"
+              single: PersonWorksInProductionConnectionWhere
+              \\"\\"\\"
+              Return People where some of the related PersonWorksInProductionConnections match this filter
+              \\"\\"\\"
+              some: PersonWorksInProductionConnectionWhere
             }
 
             input PersonWorksInProductionConnectionSort {
@@ -1622,6 +1739,17 @@ describe("Algebraic", () => {
             type PersonWorksInProductionRelationship {
               cursor: String!
               node: Production!
+            }
+
+            input PersonWorksInProductionRelationshipFilters {
+              \\"\\"\\"Return People where all of the related Productions match this filter\\"\\"\\"
+              all: ProductionWhere
+              \\"\\"\\"Return People where none of the related Productions match this filter\\"\\"\\"
+              none: ProductionWhere
+              \\"\\"\\"Return People where one of the related Productions match this filter\\"\\"\\"
+              single: ProductionWhere
+              \\"\\"\\"Return People where some of the related Productions match this filter\\"\\"\\"
+              some: ProductionWhere
             }
 
             input PersonWorksInProductionUpdateConnectionInput {
@@ -1931,6 +2059,25 @@ describe("Algebraic", () => {
               totalCount: Int!
             }
 
+            input MovieActorsConnectionFilters {
+              \\"\\"\\"
+              Return Movies where all of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              all: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              none: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where one of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              single: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              some: MovieActorsConnectionWhere
+            }
+
             input MovieActorsConnectionSort {
               edge: ActedInSort
               node: PersonSort
@@ -1989,6 +2136,17 @@ describe("Algebraic", () => {
               cursor: String!
               node: Person!
               properties: ActedIn!
+            }
+
+            input MovieActorsRelationshipFilters {
+              \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+              all: PersonWhere
+              \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+              none: PersonWhere
+              \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+              single: PersonWhere
+              \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+              some: PersonWhere
             }
 
             input MovieActorsUpdateConnectionInput {
@@ -2066,7 +2224,9 @@ describe("Algebraic", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              actors: MovieActorsRelationshipFilters
               actorsAggregate: MovieActorsAggregateInput
+              actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -2160,6 +2320,25 @@ describe("Algebraic", () => {
               totalCount: Int!
             }
 
+            input PersonActedInMoviesConnectionFilters {
+              \\"\\"\\"
+              Return People where all of the related PersonActedInMoviesConnections match this filter
+              \\"\\"\\"
+              all: PersonActedInMoviesConnectionWhere
+              \\"\\"\\"
+              Return People where none of the related PersonActedInMoviesConnections match this filter
+              \\"\\"\\"
+              none: PersonActedInMoviesConnectionWhere
+              \\"\\"\\"
+              Return People where one of the related PersonActedInMoviesConnections match this filter
+              \\"\\"\\"
+              single: PersonActedInMoviesConnectionWhere
+              \\"\\"\\"
+              Return People where some of the related PersonActedInMoviesConnections match this filter
+              \\"\\"\\"
+              some: PersonActedInMoviesConnectionWhere
+            }
+
             input PersonActedInMoviesConnectionSort {
               edge: ActedInSort
               node: MovieSort
@@ -2218,6 +2397,17 @@ describe("Algebraic", () => {
               cursor: String!
               node: Movie!
               properties: ActedIn!
+            }
+
+            input PersonActedInMoviesRelationshipFilters {
+              \\"\\"\\"Return People where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Return People where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Return People where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Return People where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
             }
 
             input PersonActedInMoviesUpdateConnectionInput {
@@ -2295,7 +2485,9 @@ describe("Algebraic", () => {
               AND: [PersonWhere!]
               NOT: PersonWhere
               OR: [PersonWhere!]
+              actedInMovies: PersonActedInMoviesRelationshipFilters
               actedInMoviesAggregate: PersonActedInMoviesAggregateInput
+              actedInMoviesConnection: PersonActedInMoviesConnectionFilters
               \\"\\"\\"
               Return People where all of the related PersonActedInMoviesConnections match this filter
               \\"\\"\\"

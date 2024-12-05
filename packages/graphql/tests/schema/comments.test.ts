@@ -473,6 +473,25 @@ describe("Comments", () => {
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
+                }
+
                 input MovieActorsConnectionSort {
                   node: ActorSort
                 }
@@ -527,6 +546,17 @@ describe("Comments", () => {
                   node: Actor!
                 }
 
+                input MovieActorsRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+                  all: ActorWhere
+                  \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+                  none: ActorWhere
+                  \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+                  single: ActorWhere
+                  \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+                  some: ActorWhere
+                }
+
                 input MovieActorsUpdateConnectionInput {
                   node: ActorUpdateInput
                 }
@@ -575,7 +605,9 @@ describe("Comments", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: MovieActorsRelationshipFilters
                   actorsAggregate: MovieActorsAggregateInput
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -817,6 +849,25 @@ describe("Comments", () => {
                   totalCount: Int!
                 }
 
+                input ActorActedInConnectionFilters {
+                  \\"\\"\\"
+                  Return Actors where all of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  all: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where none of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  none: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where one of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  single: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where some of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  some: ActorActedInConnectionWhere
+                }
+
                 input ActorActedInConnectionSort {
                   edge: ActedInSort
                   node: ProductionSort
@@ -873,6 +924,17 @@ describe("Comments", () => {
                   cursor: String!
                   node: Production!
                   properties: ActedIn!
+                }
+
+                input ActorActedInRelationshipFilters {
+                  \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+                  all: ProductionWhere
+                  \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+                  none: ProductionWhere
+                  \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+                  single: ProductionWhere
+                  \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+                  some: ProductionWhere
                 }
 
                 input ActorActedInUpdateConnectionInput {
@@ -938,7 +1000,9 @@ describe("Comments", () => {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
+                  actedIn: ActorActedInRelationshipFilters
                   actedInAggregate: ActorActedInAggregateInput
+                  actedInConnection: ActorActedInConnectionFilters
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
                   \\"\\"\\"
@@ -1462,6 +1526,25 @@ describe("Comments", () => {
                   totalCount: Int!
                 }
 
+                input MovieSearchConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieSearchConnections match this filter
+                  \\"\\"\\"
+                  all: MovieSearchConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieSearchConnections match this filter
+                  \\"\\"\\"
+                  none: MovieSearchConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieSearchConnections match this filter
+                  \\"\\"\\"
+                  single: MovieSearchConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieSearchConnections match this filter
+                  \\"\\"\\"
+                  some: MovieSearchConnectionWhere
+                }
+
                 input MovieSearchConnectionWhere {
                   Genre: MovieSearchGenreConnectionWhere
                   Movie: MovieSearchMovieConnectionWhere
@@ -1572,6 +1655,17 @@ describe("Comments", () => {
                   node: Search!
                 }
 
+                input MovieSearchRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related Searches match this filter\\"\\"\\"
+                  all: SearchWhere
+                  \\"\\"\\"Return Movies where none of the related Searches match this filter\\"\\"\\"
+                  none: SearchWhere
+                  \\"\\"\\"Return Movies where one of the related Searches match this filter\\"\\"\\"
+                  single: SearchWhere
+                  \\"\\"\\"Return Movies where some of the related Searches match this filter\\"\\"\\"
+                  some: SearchWhere
+                }
+
                 input MovieSearchUpdateInput {
                   Genre: [MovieSearchGenreUpdateFieldInput!]
                   Movie: [MovieSearchMovieUpdateFieldInput!]
@@ -1599,6 +1693,8 @@ describe("Comments", () => {
                   id_EQ: ID
                   id_IN: [ID]
                   id_STARTS_WITH: ID
+                  search: MovieSearchRelationshipFilters
+                  searchConnection: MovieSearchConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieSearchConnections match this filter
                   \\"\\"\\"

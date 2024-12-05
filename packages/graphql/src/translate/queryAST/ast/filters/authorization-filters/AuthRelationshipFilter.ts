@@ -44,9 +44,7 @@ export class AuthRelationshipFilter extends RelationshipFilter {
 
         const predicate = this.createRelationshipOperation(pattern, nestedContext);
 
-        if (!predicate) return undefined;
-
-        return this.wrapInNotIfNeeded(predicate);
+        return predicate;
     }
 
     protected createRelationshipOperation(
@@ -55,7 +53,9 @@ export class AuthRelationshipFilter extends RelationshipFilter {
     ): Cypher.Predicate | undefined {
         const predicates = this.targetNodeFilters.map((c) => c.getPredicate(queryASTContext));
         const innerPredicate = Cypher.and(...predicates);
-        if (!innerPredicate) return undefined;
+        if (!innerPredicate) {
+            return;
+        }
         const useExist = queryASTContext.neo4jGraphQLContext.neo4jDatabaseInfo?.gte("5.0");
         switch (this.operator) {
             case "ALL": {

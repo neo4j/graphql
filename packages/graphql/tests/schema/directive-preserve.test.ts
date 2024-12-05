@@ -316,6 +316,25 @@ describe("Directive-preserve", () => {
               totalCount: Int!
             }
 
+            input GenreMoviesConnectionFilters {
+              \\"\\"\\"
+              Return Genres where all of the related GenreMoviesConnections match this filter
+              \\"\\"\\"
+              all: GenreMoviesConnectionWhere
+              \\"\\"\\"
+              Return Genres where none of the related GenreMoviesConnections match this filter
+              \\"\\"\\"
+              none: GenreMoviesConnectionWhere
+              \\"\\"\\"
+              Return Genres where one of the related GenreMoviesConnections match this filter
+              \\"\\"\\"
+              single: GenreMoviesConnectionWhere
+              \\"\\"\\"
+              Return Genres where some of the related GenreMoviesConnections match this filter
+              \\"\\"\\"
+              some: GenreMoviesConnectionWhere
+            }
+
             input GenreMoviesConnectionSort {
               node: MovieSort
             }
@@ -412,6 +431,17 @@ describe("Directive-preserve", () => {
               node: Movie!
             }
 
+            input GenreMoviesRelationshipFilters {
+              \\"\\"\\"Return Genres where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Return Genres where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Return Genres where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Return Genres where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
+            }
+
             input GenreMoviesUpdateConnectionInput {
               node: MovieUpdateInput
             }
@@ -441,7 +471,9 @@ describe("Directive-preserve", () => {
               AND: [GenreWhere!]
               NOT: GenreWhere
               OR: [GenreWhere!]
+              movies: GenreMoviesRelationshipFilters
               moviesAggregate: GenreMoviesAggregateInput
+              moviesConnection: GenreMoviesConnectionFilters
               \\"\\"\\"
               Return Genres where all of the related GenreMoviesConnections match this filter
               \\"\\"\\"
@@ -573,6 +605,25 @@ describe("Directive-preserve", () => {
               totalCount: Int!
             }
 
+            input MovieGenresConnectionFilters {
+              \\"\\"\\"
+              Return Movies where all of the related MovieGenresConnections match this filter
+              \\"\\"\\"
+              all: MovieGenresConnectionWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"
+              Return Movies where none of the related MovieGenresConnections match this filter
+              \\"\\"\\"
+              none: MovieGenresConnectionWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"
+              Return Movies where one of the related MovieGenresConnections match this filter
+              \\"\\"\\"
+              single: MovieGenresConnectionWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"
+              Return Movies where some of the related MovieGenresConnections match this filter
+              \\"\\"\\"
+              some: MovieGenresConnectionWhere @deprecated(reason: \\"Do not use\\")
+            }
+
             input MovieGenresConnectionSort {
               node: GenreSort
             }
@@ -629,6 +680,17 @@ describe("Directive-preserve", () => {
               node: Genre!
             }
 
+            input MovieGenresRelationshipFilters {
+              \\"\\"\\"Return Movies where all of the related Genres match this filter\\"\\"\\"
+              all: GenreWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"Return Movies where none of the related Genres match this filter\\"\\"\\"
+              none: GenreWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"Return Movies where one of the related Genres match this filter\\"\\"\\"
+              single: GenreWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"Return Movies where some of the related Genres match this filter\\"\\"\\"
+              some: GenreWhere @deprecated(reason: \\"Do not use\\")
+            }
+
             input MovieGenresUpdateConnectionInput {
               node: GenreUpdateInput
             }
@@ -668,7 +730,9 @@ describe("Directive-preserve", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              genres: MovieGenresRelationshipFilters
               genresAggregate: MovieGenresAggregateInput @deprecated(reason: \\"Do not use\\")
+              genresConnection: MovieGenresConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieGenresConnections match this filter
               \\"\\"\\"
@@ -931,6 +995,25 @@ describe("Directive-preserve", () => {
               totalCount: Int!
             }
 
+            input ActorActedInConnectionFilters {
+              \\"\\"\\"
+              Return Actors where all of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              all: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where none of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              none: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where one of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              single: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where some of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              some: ActorActedInConnectionWhere
+            }
+
             input ActorActedInConnectionSort {
               edge: ActedInSort
               node: ProductionSort
@@ -989,6 +1072,17 @@ describe("Directive-preserve", () => {
               cursor: String!
               node: Production!
               properties: ActedIn!
+            }
+
+            input ActorActedInRelationshipFilters {
+              \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+              all: ProductionWhere
+              \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+              none: ProductionWhere
+              \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+              single: ProductionWhere
+              \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+              some: ProductionWhere
             }
 
             input ActorActedInUpdateConnectionInput {
@@ -1066,7 +1160,9 @@ describe("Directive-preserve", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              actedIn: ActorActedInRelationshipFilters
               actedInAggregate: ActorActedInAggregateInput
+              actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
@@ -1194,6 +1290,25 @@ describe("Directive-preserve", () => {
               where: ActorConnectWhere
             }
 
+            input MovieActorsConnectionFilters {
+              \\"\\"\\"
+              Return Movies where all of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              all: ProductionActorsConnectionWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"
+              Return Movies where none of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              none: ProductionActorsConnectionWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"
+              Return Movies where one of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              single: ProductionActorsConnectionWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"
+              Return Movies where some of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              some: ProductionActorsConnectionWhere @deprecated(reason: \\"Do not use\\")
+            }
+
             input MovieActorsCreateFieldInput {
               edge: ActedInCreateInput!
               node: ActorCreateInput!
@@ -1223,6 +1338,17 @@ describe("Directive-preserve", () => {
               name_SHORTEST_LENGTH_GTE: Int
               name_SHORTEST_LENGTH_LT: Int
               name_SHORTEST_LENGTH_LTE: Int
+            }
+
+            input MovieActorsRelationshipFilters {
+              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere @deprecated(reason: \\"Do not use\\")
             }
 
             input MovieActorsUpdateConnectionInput {
@@ -1280,7 +1406,9 @@ describe("Directive-preserve", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              actors: MovieActorsRelationshipFilters
               actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Do not use\\")
+              actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
@@ -1375,6 +1503,25 @@ describe("Directive-preserve", () => {
               edges: [ProductionActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ProductionActorsConnectionFilters {
+              \\"\\"\\"
+              Return Productions where all of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              all: ProductionActorsConnectionWhere
+              \\"\\"\\"
+              Return Productions where none of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              none: ProductionActorsConnectionWhere
+              \\"\\"\\"
+              Return Productions where one of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              single: ProductionActorsConnectionWhere
+              \\"\\"\\"
+              Return Productions where some of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              some: ProductionActorsConnectionWhere
             }
 
             input ProductionActorsConnectionSort {
@@ -1477,6 +1624,17 @@ describe("Directive-preserve", () => {
               properties: ProductionActorsRelationshipProperties!
             }
 
+            input ProductionActorsRelationshipFilters {
+              \\"\\"\\"Return Productions where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Return Productions where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Return Productions where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Return Productions where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
+            }
+
             union ProductionActorsRelationshipProperties = ActedIn
 
             input ProductionActorsUpdateConnectionInput {
@@ -1545,7 +1703,9 @@ describe("Directive-preserve", () => {
               AND: [ProductionWhere!]
               NOT: ProductionWhere
               OR: [ProductionWhere!]
+              actors: ProductionActorsRelationshipFilters
               actorsAggregate: ProductionActorsAggregateInput
+              actorsConnection: ProductionActorsConnectionFilters
               \\"\\"\\"
               Return Productions where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
@@ -1641,6 +1801,25 @@ describe("Directive-preserve", () => {
               where: ActorConnectWhere
             }
 
+            input SeriesActorsConnectionFilters {
+              \\"\\"\\"
+              Return Series where all of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              all: ProductionActorsConnectionWhere
+              \\"\\"\\"
+              Return Series where none of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              none: ProductionActorsConnectionWhere
+              \\"\\"\\"
+              Return Series where one of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              single: ProductionActorsConnectionWhere
+              \\"\\"\\"
+              Return Series where some of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              some: ProductionActorsConnectionWhere
+            }
+
             input SeriesActorsCreateFieldInput {
               edge: ActedInCreateInput!
               node: ActorCreateInput!
@@ -1670,6 +1849,17 @@ describe("Directive-preserve", () => {
               name_SHORTEST_LENGTH_GTE: Int
               name_SHORTEST_LENGTH_LT: Int
               name_SHORTEST_LENGTH_LTE: Int
+            }
+
+            input SeriesActorsRelationshipFilters {
+              \\"\\"\\"Return Series where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Return Series where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Return Series where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
             }
 
             input SeriesActorsUpdateConnectionInput {
@@ -1733,7 +1923,9 @@ describe("Directive-preserve", () => {
               AND: [SeriesWhere!]
               NOT: SeriesWhere
               OR: [SeriesWhere!]
+              actors: SeriesActorsRelationshipFilters
               actorsAggregate: SeriesActorsAggregateInput
+              actorsConnection: SeriesActorsConnectionFilters
               \\"\\"\\"
               Return Series where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
@@ -1962,6 +2154,25 @@ describe("Directive-preserve", () => {
               totalCount: Int!
             }
 
+            input ActorActedInConnectionFilters {
+              \\"\\"\\"
+              Return Actors where all of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              all: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where none of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              none: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where one of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              single: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where some of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              some: ActorActedInConnectionWhere
+            }
+
             input ActorActedInConnectionSort {
               edge: ActedInSort
               node: ProductionSort
@@ -2018,6 +2229,17 @@ describe("Directive-preserve", () => {
               cursor: String!
               node: Production!
               properties: ActedIn!
+            }
+
+            input ActorActedInRelationshipFilters {
+              \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+              all: ProductionWhere
+              \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+              none: ProductionWhere
+              \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+              single: ProductionWhere
+              \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+              some: ProductionWhere
             }
 
             input ActorActedInUpdateConnectionInput {
@@ -2095,7 +2317,9 @@ describe("Directive-preserve", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              actedIn: ActorActedInRelationshipFilters
               actedInAggregate: ActorActedInAggregateInput
+              actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
@@ -2229,6 +2453,25 @@ describe("Directive-preserve", () => {
               totalCount: Int!
             }
 
+            input MovieActorsConnectionFilters {
+              \\"\\"\\"
+              Return Movies where all of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              all: MovieActorsConnectionWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"
+              Return Movies where none of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              none: MovieActorsConnectionWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"
+              Return Movies where one of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              single: MovieActorsConnectionWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"
+              Return Movies where some of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              some: MovieActorsConnectionWhere @deprecated(reason: \\"Do not use\\")
+            }
+
             input MovieActorsConnectionSort {
               edge: ActedInSort
               node: ActorSort
@@ -2289,6 +2532,17 @@ describe("Directive-preserve", () => {
               properties: ActedIn!
             }
 
+            input MovieActorsRelationshipFilters {
+              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere @deprecated(reason: \\"Do not use\\")
+            }
+
             input MovieActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
@@ -2344,7 +2598,9 @@ describe("Directive-preserve", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              actors: MovieActorsRelationshipFilters
               actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Do not use\\")
+              actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -2531,6 +2787,25 @@ describe("Directive-preserve", () => {
               totalCount: Int!
             }
 
+            input SeriesActorsConnectionFilters {
+              \\"\\"\\"
+              Return Series where all of the related SeriesActorsConnections match this filter
+              \\"\\"\\"
+              all: SeriesActorsConnectionWhere
+              \\"\\"\\"
+              Return Series where none of the related SeriesActorsConnections match this filter
+              \\"\\"\\"
+              none: SeriesActorsConnectionWhere
+              \\"\\"\\"
+              Return Series where one of the related SeriesActorsConnections match this filter
+              \\"\\"\\"
+              single: SeriesActorsConnectionWhere
+              \\"\\"\\"
+              Return Series where some of the related SeriesActorsConnections match this filter
+              \\"\\"\\"
+              some: SeriesActorsConnectionWhere
+            }
+
             input SeriesActorsConnectionSort {
               edge: ActedInSort
               node: ActorSort
@@ -2589,6 +2864,17 @@ describe("Directive-preserve", () => {
               cursor: String!
               node: Actor!
               properties: ActedIn!
+            }
+
+            input SeriesActorsRelationshipFilters {
+              \\"\\"\\"Return Series where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Return Series where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Return Series where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
             }
 
             input SeriesActorsUpdateConnectionInput {
@@ -2652,7 +2938,9 @@ describe("Directive-preserve", () => {
               AND: [SeriesWhere!]
               NOT: SeriesWhere
               OR: [SeriesWhere!]
+              actors: SeriesActorsRelationshipFilters
               actorsAggregate: SeriesActorsAggregateInput
+              actorsConnection: SeriesActorsConnectionFilters
               \\"\\"\\"
               Return Series where all of the related SeriesActorsConnections match this filter
               \\"\\"\\"
@@ -2869,6 +3157,25 @@ describe("Directive-preserve", () => {
               totalCount: Int!
             }
 
+            input ActorActedInConnectionFilters {
+              \\"\\"\\"
+              Return Actors where all of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              all: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where none of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              none: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where one of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              single: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where some of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              some: ActorActedInConnectionWhere
+            }
+
             input ActorActedInConnectionSort {
               edge: ActedInSort
               node: ProductionSort
@@ -2925,6 +3232,17 @@ describe("Directive-preserve", () => {
               cursor: String!
               node: Production!
               properties: ActedIn!
+            }
+
+            input ActorActedInRelationshipFilters {
+              \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+              all: ProductionWhere
+              \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+              none: ProductionWhere
+              \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+              single: ProductionWhere
+              \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+              some: ProductionWhere
             }
 
             input ActorActedInUpdateConnectionInput {
@@ -3002,7 +3320,9 @@ describe("Directive-preserve", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              actedIn: ActorActedInRelationshipFilters
               actedInAggregate: ActorActedInAggregateInput
+              actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
@@ -3136,6 +3456,25 @@ describe("Directive-preserve", () => {
               totalCount: Int!
             }
 
+            input MovieActorsConnectionFilters {
+              \\"\\"\\"
+              Return Movies where all of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              all: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              none: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where one of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              single: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              some: MovieActorsConnectionWhere
+            }
+
             input MovieActorsConnectionSort {
               edge: ActedInSort
               node: ActorSort
@@ -3196,6 +3535,17 @@ describe("Directive-preserve", () => {
               properties: ActedIn!
             }
 
+            input MovieActorsRelationshipFilters {
+              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
+            }
+
             input MovieActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
@@ -3251,7 +3601,9 @@ describe("Directive-preserve", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              actors: MovieActorsRelationshipFilters
               actorsAggregate: MovieActorsAggregateInput
+              actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -3438,6 +3790,25 @@ describe("Directive-preserve", () => {
               totalCount: Int!
             }
 
+            input SeriesActorsConnectionFilters {
+              \\"\\"\\"
+              Return Series where all of the related SeriesActorsConnections match this filter
+              \\"\\"\\"
+              all: SeriesActorsConnectionWhere
+              \\"\\"\\"
+              Return Series where none of the related SeriesActorsConnections match this filter
+              \\"\\"\\"
+              none: SeriesActorsConnectionWhere
+              \\"\\"\\"
+              Return Series where one of the related SeriesActorsConnections match this filter
+              \\"\\"\\"
+              single: SeriesActorsConnectionWhere
+              \\"\\"\\"
+              Return Series where some of the related SeriesActorsConnections match this filter
+              \\"\\"\\"
+              some: SeriesActorsConnectionWhere
+            }
+
             input SeriesActorsConnectionSort {
               edge: ActedInSort
               node: ActorSort
@@ -3496,6 +3867,17 @@ describe("Directive-preserve", () => {
               cursor: String!
               node: Actor!
               properties: ActedIn!
+            }
+
+            input SeriesActorsRelationshipFilters {
+              \\"\\"\\"Return Series where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Return Series where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Return Series where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
             }
 
             input SeriesActorsUpdateConnectionInput {
@@ -3559,7 +3941,9 @@ describe("Directive-preserve", () => {
               AND: [SeriesWhere!]
               NOT: SeriesWhere
               OR: [SeriesWhere!]
+              actors: SeriesActorsRelationshipFilters
               actorsAggregate: SeriesActorsAggregateInput
+              actorsConnection: SeriesActorsConnectionFilters
               \\"\\"\\"
               Return Series where all of the related SeriesActorsConnections match this filter
               \\"\\"\\"
@@ -3752,6 +4136,25 @@ describe("Directive-preserve", () => {
               totalCount: Int!
             }
 
+            input BlogPostsConnectionFilters {
+              \\"\\"\\"
+              Return Blogs where all of the related BlogPostsConnections match this filter
+              \\"\\"\\"
+              all: BlogPostsConnectionWhere
+              \\"\\"\\"
+              Return Blogs where none of the related BlogPostsConnections match this filter
+              \\"\\"\\"
+              none: BlogPostsConnectionWhere
+              \\"\\"\\"
+              Return Blogs where one of the related BlogPostsConnections match this filter
+              \\"\\"\\"
+              single: BlogPostsConnectionWhere
+              \\"\\"\\"
+              Return Blogs where some of the related BlogPostsConnections match this filter
+              \\"\\"\\"
+              some: BlogPostsConnectionWhere
+            }
+
             input BlogPostsConnectionSort {
               node: PostSort
             }
@@ -3806,6 +4209,17 @@ describe("Directive-preserve", () => {
               node: Post!
             }
 
+            input BlogPostsRelationshipFilters {
+              \\"\\"\\"Return Blogs where all of the related Posts match this filter\\"\\"\\"
+              all: PostWhere
+              \\"\\"\\"Return Blogs where none of the related Posts match this filter\\"\\"\\"
+              none: PostWhere
+              \\"\\"\\"Return Blogs where one of the related Posts match this filter\\"\\"\\"
+              single: PostWhere
+              \\"\\"\\"Return Blogs where some of the related Posts match this filter\\"\\"\\"
+              some: PostWhere
+            }
+
             input BlogPostsUpdateConnectionInput {
               node: PostUpdateInput
             }
@@ -3835,7 +4249,9 @@ describe("Directive-preserve", () => {
               AND: [BlogWhere!]
               NOT: BlogWhere
               OR: [BlogWhere!]
+              posts: BlogPostsRelationshipFilters
               postsAggregate: BlogPostsAggregateInput
+              postsConnection: BlogPostsConnectionFilters
               \\"\\"\\"
               Return Blogs where all of the related BlogPostsConnections match this filter
               \\"\\"\\"
@@ -4109,6 +4525,25 @@ describe("Directive-preserve", () => {
               totalCount: Int!
             }
 
+            input UserContentConnectionFilters {
+              \\"\\"\\"
+              Return Users where all of the related UserContentConnections match this filter
+              \\"\\"\\"
+              all: UserContentConnectionWhere @deprecated(reason: \\"Do not use user.content\\")
+              \\"\\"\\"
+              Return Users where none of the related UserContentConnections match this filter
+              \\"\\"\\"
+              none: UserContentConnectionWhere @deprecated(reason: \\"Do not use user.content\\")
+              \\"\\"\\"
+              Return Users where one of the related UserContentConnections match this filter
+              \\"\\"\\"
+              single: UserContentConnectionWhere @deprecated(reason: \\"Do not use user.content\\")
+              \\"\\"\\"
+              Return Users where some of the related UserContentConnections match this filter
+              \\"\\"\\"
+              some: UserContentConnectionWhere @deprecated(reason: \\"Do not use user.content\\")
+            }
+
             input UserContentConnectionWhere {
               Blog: UserContentBlogConnectionWhere
               Post: UserContentPostConnectionWhere
@@ -4170,6 +4605,17 @@ describe("Directive-preserve", () => {
               node: Content!
             }
 
+            input UserContentRelationshipFilters {
+              \\"\\"\\"Return Users where all of the related Contents match this filter\\"\\"\\"
+              all: ContentWhere @deprecated(reason: \\"Do not use user.content\\")
+              \\"\\"\\"Return Users where none of the related Contents match this filter\\"\\"\\"
+              none: ContentWhere @deprecated(reason: \\"Do not use user.content\\")
+              \\"\\"\\"Return Users where one of the related Contents match this filter\\"\\"\\"
+              single: ContentWhere @deprecated(reason: \\"Do not use user.content\\")
+              \\"\\"\\"Return Users where some of the related Contents match this filter\\"\\"\\"
+              some: ContentWhere @deprecated(reason: \\"Do not use user.content\\")
+            }
+
             input UserContentUpdateInput {
               Blog: [UserContentBlogUpdateFieldInput!] @deprecated(reason: \\"Do not use user.content\\")
               Post: [UserContentPostUpdateFieldInput!] @deprecated(reason: \\"Do not use user.content\\")
@@ -4205,6 +4651,8 @@ describe("Directive-preserve", () => {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
+              content: UserContentRelationshipFilters
+              contentConnection: UserContentConnectionFilters
               \\"\\"\\"
               Return Users where all of the related UserContentConnections match this filter
               \\"\\"\\"

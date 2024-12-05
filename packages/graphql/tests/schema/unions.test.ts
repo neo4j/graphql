@@ -191,6 +191,25 @@ describe("Unions", () => {
               totalCount: Int!
             }
 
+            input MovieSearchConnectionFilters {
+              \\"\\"\\"
+              Return Movies where all of the related MovieSearchConnections match this filter
+              \\"\\"\\"
+              all: MovieSearchConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related MovieSearchConnections match this filter
+              \\"\\"\\"
+              none: MovieSearchConnectionWhere
+              \\"\\"\\"
+              Return Movies where one of the related MovieSearchConnections match this filter
+              \\"\\"\\"
+              single: MovieSearchConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related MovieSearchConnections match this filter
+              \\"\\"\\"
+              some: MovieSearchConnectionWhere
+            }
+
             input MovieSearchConnectionWhere {
               Genre: MovieSearchGenreConnectionWhere
               Movie: MovieSearchMovieConnectionWhere
@@ -301,6 +320,17 @@ describe("Unions", () => {
               node: Search!
             }
 
+            input MovieSearchRelationshipFilters {
+              \\"\\"\\"Return Movies where all of the related Searches match this filter\\"\\"\\"
+              all: SearchWhere
+              \\"\\"\\"Return Movies where none of the related Searches match this filter\\"\\"\\"
+              none: SearchWhere
+              \\"\\"\\"Return Movies where one of the related Searches match this filter\\"\\"\\"
+              single: SearchWhere
+              \\"\\"\\"Return Movies where some of the related Searches match this filter\\"\\"\\"
+              some: SearchWhere
+            }
+
             input MovieSearchUpdateInput {
               Genre: [MovieSearchGenreUpdateFieldInput!]
               Movie: [MovieSearchMovieUpdateFieldInput!]
@@ -328,6 +358,8 @@ describe("Unions", () => {
               id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
+              search: MovieSearchRelationshipFilters
+              searchConnection: MovieSearchConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieSearchConnections match this filter
               \\"\\"\\"

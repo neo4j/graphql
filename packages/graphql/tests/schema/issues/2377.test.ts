@@ -240,6 +240,25 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               totalCount: Int!
             }
 
+            input ResourceContainedByConnectionFilters {
+              \\"\\"\\"
+              Return Resources where all of the related ResourceContainedByConnections match this filter
+              \\"\\"\\"
+              all: ResourceContainedByConnectionWhere
+              \\"\\"\\"
+              Return Resources where none of the related ResourceContainedByConnections match this filter
+              \\"\\"\\"
+              none: ResourceContainedByConnectionWhere
+              \\"\\"\\"
+              Return Resources where one of the related ResourceContainedByConnections match this filter
+              \\"\\"\\"
+              single: ResourceContainedByConnectionWhere
+              \\"\\"\\"
+              Return Resources where some of the related ResourceContainedByConnections match this filter
+              \\"\\"\\"
+              some: ResourceContainedByConnectionWhere
+            }
+
             input ResourceContainedByConnectionSort {
               node: ResourceSort
             }
@@ -324,6 +343,17 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             type ResourceContainedByRelationship {
               cursor: String!
               node: Resource!
+            }
+
+            input ResourceContainedByRelationshipFilters {
+              \\"\\"\\"Return Resources where all of the related Resources match this filter\\"\\"\\"
+              all: ResourceWhere
+              \\"\\"\\"Return Resources where none of the related Resources match this filter\\"\\"\\"
+              none: ResourceWhere
+              \\"\\"\\"Return Resources where one of the related Resources match this filter\\"\\"\\"
+              single: ResourceWhere
+              \\"\\"\\"Return Resources where some of the related Resources match this filter\\"\\"\\"
+              some: ResourceWhere
             }
 
             input ResourceContainedByUpdateConnectionInput {
@@ -483,7 +513,9 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               AND: [ResourceWhere!]
               NOT: ResourceWhere
               OR: [ResourceWhere!]
+              containedBy: ResourceContainedByRelationshipFilters
               containedByAggregate: ResourceContainedByAggregateInput
+              containedByConnection: ResourceContainedByConnectionFilters
               \\"\\"\\"
               Return Resources where all of the related ResourceContainedByConnections match this filter
               \\"\\"\\"

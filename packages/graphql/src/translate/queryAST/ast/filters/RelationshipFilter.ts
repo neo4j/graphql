@@ -73,7 +73,7 @@ export class RelationshipFilter extends Filter {
     }
 
     public print(): string {
-        return `${super.print()} [${this.relationship.name}] <${this.isNot ? "NOT " : ""}${this.operator}>`;
+        return `${super.print()} [${this.relationship.name}] <${this.operator}>`;
     }
 
     @Memoize()
@@ -97,7 +97,9 @@ export class RelationshipFilter extends Filter {
                     throw new Error("No parent node found!");
                 }
                 const selection = f.getSelection(context);
-                if (selection.length === 0) return undefined;
+                if (selection.length === 0) {
+                    return;
+                }
 
                 const pattern = new Cypher.Pattern(context.source)
                     .related({
@@ -189,8 +191,8 @@ export class RelationshipFilter extends Filter {
 
                 // NOTE: NONE is SOME + isNot
                 // TODO: move to wrapInNullIfNeeded in getPredicate
-                const comparator = this.isNot ? Cypher.false : Cypher.true;
-                this.subqueryPredicate = Cypher.eq(returnVar, comparator);
+                //  const comparator = this.isNot ? Cypher.false : Cypher.true;
+                this.subqueryPredicate = Cypher.eq(returnVar, Cypher.true);
 
                 const withAfterSubqueries = new Cypher.With("*");
 
@@ -313,11 +315,11 @@ export class RelationshipFilter extends Filter {
         if (this.shouldCreateOptionalMatch()) {
             const predicates = this.targetNodeFilters.map((c) => c.getPredicate(nestedContext));
             const innerPredicate = Cypher.and(...predicates);
-            if (this.isNot) {
-                return Cypher.and(Cypher.eq(this.countVariable, new Cypher.Literal(0)), innerPredicate);
-            } else {
-                return Cypher.and(Cypher.neq(this.countVariable, new Cypher.Literal(0)), innerPredicate);
-            }
+            // if (this.isNot) {
+            //     return Cypher.and(Cypher.eq(this.countVariable, new Cypher.Literal(0)), innerPredicate);
+            // } else {
+            return Cypher.and(Cypher.neq(this.countVariable, new Cypher.Literal(0)), innerPredicate);
+            // }
         }
 
         const pattern = new Cypher.Pattern(nestedContext.source as Cypher.Node)
@@ -330,9 +332,7 @@ export class RelationshipFilter extends Filter {
             });
 
         const predicate = this.createRelationshipOperation(pattern, nestedContext);
-        if (predicate) {
-            return this.wrapInNotIfNeeded(predicate);
-        }
+        return predicate;
     }
 
     protected getSingleRelationshipOperation({
@@ -392,18 +392,26 @@ export class RelationshipFilter extends Filter {
                             innerPredicate,
                         });
                     }
-                    return new Cypher.Exists(match.where(innerPredicate));
-                }
 
-                return new Cypher.Exists(match);
+                    const exists = new Cypher.Exists(match.where(innerPredicate));
+                    if (this.operator === "NONE") {
+                        return Cypher.not(exists);
+                    }
+                    return exists;
+                }
+                const exists = new Cypher.Exists(match);
+                if (this.operator === "NONE") {
+                    return Cypher.not(exists);
+                }
+                return exists;
             }
         }
     }
 
-    protected wrapInNotIfNeeded(predicate: Cypher.Predicate): Cypher.Predicate {
-        if (this.isNot) {
-            return Cypher.not(predicate);
-        }
-        return predicate;
-    }
+    // protected wrapInNotIfNeeded(predicate: Cypher.Predicate): Cypher.Predicate {
+    //     if (this.isNot) {
+    //         return Cypher.not(predicate);
+    //     }
+    //     return predicate;
+    // }
 }
