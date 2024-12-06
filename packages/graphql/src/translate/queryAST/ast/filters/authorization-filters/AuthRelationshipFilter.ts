@@ -24,14 +24,10 @@ import { RelationshipFilter } from "../RelationshipFilter";
 
 export class AuthRelationshipFilter extends RelationshipFilter {
     public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
-        if (this.subqueryPredicate) return this.subqueryPredicate;
-        const nestedContext = this.getNestedContext(queryASTContext);
-
-        if (this.shouldCreateOptionalMatch()) {
-            const predicates = this.targetNodeFilters.map((c) => c.getPredicate(nestedContext));
-            const innerPredicate = Cypher.and(...predicates);
-            return Cypher.and(Cypher.neq(this.countVariable, new Cypher.Literal(0)), innerPredicate);
+        if (this.subqueryPredicate) {
+            return this.subqueryPredicate;
         }
+        const nestedContext = this.getNestedContext(queryASTContext);
 
         const pattern = new Cypher.Pattern(nestedContext.source as Cypher.Node)
             .related({
@@ -78,13 +74,6 @@ export class AuthRelationshipFilter extends RelationshipFilter {
             }
             case "NONE":
             case "SOME": {
-                if (!this.relationship.isList && this.relationship.isNullable) {
-                    return this.getSingleRelationshipOperation({
-                        pattern,
-                        queryASTContext,
-                        innerPredicate,
-                    });
-                }
                 if (!useExist) {
                     const patternComprehension = new Cypher.PatternComprehension(pattern).map(new Cypher.Literal(1));
                     const sizeFunction = Cypher.size(patternComprehension.where(innerPredicate));

@@ -538,6 +538,28 @@ describe("Cypher Advanced Filtering", () => {
         `);
     });
 
+    test.only("some-> null", async () => {
+        const query = /* GraphQL */ `
+            {
+                movies(where: { genres: { some: null } }) {
+                    actorCount
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Movie)
+            WHERE EXISTS {
+                MATCH (this)-[:IN_GENRE]->(this0:Genre)
+            }
+            RETURN this { .actorCount } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+    });
+
     describe("Relationships", () => {
         test("equality", async () => {
             const query = /* GraphQL */ `

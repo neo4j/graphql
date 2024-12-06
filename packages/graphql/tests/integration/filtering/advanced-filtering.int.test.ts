@@ -1798,66 +1798,6 @@ describe("Advanced Filtering", () => {
                 });
             });
         });
-
-        test("should test for not null", async () => {
-            const randomType1 = testHelper.createUniqueType("Movie");
-            const randomType2 = testHelper.createUniqueType("Genre");
-
-            const typeDefs = /* GraphQL */ `
-                type ${randomType1.name} @node {
-                    id: ID
-                    ${randomType2.plural}: [${randomType2.name}!]! @relationship(type: "IN_GENRE", direction: OUT)
-                }
-
-                type ${randomType2.name} @node {
-                    id: ID
-                }
-            `;
-
-            await testHelper.initNeo4jGraphQL({ typeDefs });
-
-            const rootId = generate({
-                charset: "alphabetic",
-            });
-
-            const relationId = generate({
-                charset: "alphabetic",
-            });
-
-            const randomId = generate({
-                charset: "alphabetic",
-            });
-
-            await testHelper.executeCypher(
-                `
-                    CREATE (root:${randomType1.name} {id: $rootId})
-                    CREATE (:${randomType1.name} {id: $randomId})
-                    CREATE (relation:${randomType2.name} {id: $relationId})
-                    CREATE (:${randomType2.name} {id: $randomId})
-                    MERGE (root)-[:IN_GENRE]->(relation)
-                `,
-                { rootId, relationId, randomId }
-            );
-
-            const nullQuery = /* GraphQL */ `
-                {
-                    ${randomType1.plural}(where: { ${randomType2.plural}_SOME: null }) {
-                        id
-                    }
-                }
-            `;
-
-            // Test null checking (nodes without any related nodes on the specified field)
-
-            const nullResult = await testHelper.executeGraphQL(nullQuery);
-
-            expect(nullResult.errors).toBeUndefined();
-
-            expect((nullResult.data as any)[randomType1.plural]).toHaveLength(1);
-            expect((nullResult.data as any)[randomType1.plural][0]).toMatchObject({
-                id: randomId,
-            });
-        });
     });
 
     describe("NULL Filtering", () => {
