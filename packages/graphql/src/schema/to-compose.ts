@@ -30,7 +30,7 @@ import type { Argument } from "../schema-model/argument/Argument";
 import { ArgumentAdapter } from "../schema-model/argument/model-adapters/ArgumentAdapter";
 import type { AttributeAdapter } from "../schema-model/attribute/model-adapters/AttributeAdapter";
 import { parseValueNode } from "../schema-model/parser/parse-value-node";
-import type { InputField } from "../types";
+import type { InputField, Neo4jFeaturesSettings } from "../types";
 import { DEPRECATE_ARRAY_MUTATIONS, DEPRECATE_MATH_MUTATIONS, DEPRECATE_SET_MUTATION } from "./constants";
 import { getMutationInputFromAttributeType } from "./generation/get-mutation-input-from-attribute-type";
 import { idResolver } from "./resolvers/field/id";
@@ -131,10 +131,12 @@ export function concreteEntityToUpdateInputFields({
     objectFields,
     userDefinedFieldDirectives,
     additionalFieldsCallbacks = [],
+    features,
 }: {
     objectFields: AttributeAdapter[];
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     additionalFieldsCallbacks: AdditionalFieldsCallback[];
+    features: Neo4jFeaturesSettings | undefined;
 }) {
     let updateInputFields: InputTypeComposerFieldConfigMapDefinition = {};
     for (const field of objectFields) {
@@ -159,7 +161,9 @@ export function concreteEntityToUpdateInputFields({
             directives: userDefinedDirectives,
         };
 
-        updateInputFields[`${field.name}_SET`] = newInputField;
+        if (features?.excludeDeprecatedFields?.mutationOperations !== true) {
+            updateInputFields[`${field.name}_SET`] = newInputField;
+        }
 
         for (const cb of additionalFieldsCallbacks) {
             const additionalFields = cb(field, newInputField);
@@ -204,7 +208,7 @@ export function withArrayOperators(): AdditionalFieldsCallback {
     };
 }
 
-type AdditionalFieldsCallback = (
+export type AdditionalFieldsCallback = (
     attribute: AttributeAdapter,
     fieldDefinition: InputField
 ) => Record<string, InputField> | InputTypeComposerFieldConfigMapDefinition;
