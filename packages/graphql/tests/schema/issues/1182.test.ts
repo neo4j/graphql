@@ -88,11 +88,11 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
 
             input ActorUpdateInput {
               dob: DateTimeScalarMutations
-              dob_SET: DateTime
+              dob_SET: DateTime @deprecated(reason: \\"Please use the generic mutation 'dob: { set: ... } }' instead.\\")
               homeAddress: PointMutations
-              homeAddress_SET: PointInput
+              homeAddress_SET: PointInput @deprecated(reason: \\"Please use the generic mutation 'homeAddress: { set: ... } }' instead.\\")
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
@@ -361,7 +361,7 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {

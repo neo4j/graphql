@@ -381,7 +381,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
 
             input ActorUpdateInput {
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
@@ -566,9 +566,9 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {

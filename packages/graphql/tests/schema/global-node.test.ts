@@ -116,9 +116,9 @@ describe("Node Interface Types", () => {
 
             input MovieUpdateInput {
               imdb: IDScalarMutations
-              imdb_SET: ID
+              imdb_SET: ID @deprecated(reason: \\"Please use the generic mutation 'imdb: { set: ... } }' instead.\\")
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {

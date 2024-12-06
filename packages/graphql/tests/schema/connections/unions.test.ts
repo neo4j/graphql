@@ -243,7 +243,7 @@ describe("Unions", () => {
 
             input AuthorUpdateInput {
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
               publications: AuthorPublicationsUpdateInput
             }
 
@@ -454,7 +454,7 @@ describe("Unions", () => {
             input BookUpdateInput {
               author: [BookAuthorUpdateFieldInput!]
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input BookWhere {
@@ -716,7 +716,7 @@ describe("Unions", () => {
             input JournalUpdateInput {
               author: [JournalAuthorUpdateFieldInput!]
               subject: StringScalarMutations
-              subject_SET: String
+              subject_SET: String @deprecated(reason: \\"Please use the generic mutation 'subject: { set: ... } }' instead.\\")
             }
 
             input JournalWhere {
@@ -905,9 +905,9 @@ describe("Unions", () => {
 
             input WroteUpdateInput {
               words: IntScalarMutations
-              words_DECREMENT: Int
-              words_INCREMENT: Int
-              words_SET: Int
+              words_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'words: { decrement: ... } }' instead.\\")
+              words_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'words: { increment: ... } }' instead.\\")
+              words_SET: Int @deprecated(reason: \\"Please use the generic mutation 'words: { set: ... } }' instead.\\")
             }
 
             input WroteWhere {

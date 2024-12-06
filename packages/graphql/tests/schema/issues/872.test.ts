@@ -201,7 +201,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             input Actor2UpdateInput {
               movies: [Actor2MoviesUpdateFieldInput!]
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input Actor2Where {
@@ -385,7 +385,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             input ActorUpdateInput {
               movies: [ActorMoviesUpdateFieldInput!]
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
@@ -515,7 +515,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
 
             input MovieUpdateInput {
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {

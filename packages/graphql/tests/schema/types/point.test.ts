@@ -85,7 +85,7 @@ describe("Point", () => {
 
             input MovieUpdateInput {
               filmedAt: PointMutations
-              filmedAt_SET: PointInput
+              filmedAt_SET: PointInput @deprecated(reason: \\"Please use the generic mutation 'filmedAt: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -306,7 +306,7 @@ describe("Point", () => {
 
             input MachineUpdateInput {
               partLocation: CartesianPointMutations
-              partLocation_SET: CartesianPointInput
+              partLocation_SET: CartesianPointInput @deprecated(reason: \\"Please use the generic mutation 'partLocation: { set: ... } }' instead.\\")
             }
 
             input MachineWhere {
@@ -436,9 +436,9 @@ describe("Point", () => {
 
             input MovieUpdateInput {
               filmedAt: ListPointInputMutations
-              filmedAt_POP: Int
-              filmedAt_PUSH: [PointInput!]
-              filmedAt_SET: [PointInput!]
+              filmedAt_POP: Int @deprecated(reason: \\"Please use the generic mutation 'filmedAt: { pop: ... } }' instead.\\")
+              filmedAt_PUSH: [PointInput!] @deprecated(reason: \\"Please use the generic mutation 'filmedAt: { push: ... } }' instead.\\")
+              filmedAt_SET: [PointInput!] @deprecated(reason: \\"Please use the generic mutation 'filmedAt: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -625,9 +625,9 @@ describe("Point", () => {
 
             input MachineUpdateInput {
               partLocations: ListCartesianPointInputMutations
-              partLocations_POP: Int
-              partLocations_PUSH: [CartesianPointInput!]
-              partLocations_SET: [CartesianPointInput!]
+              partLocations_POP: Int @deprecated(reason: \\"Please use the generic mutation 'partLocations: { pop: ... } }' instead.\\")
+              partLocations_PUSH: [CartesianPointInput!] @deprecated(reason: \\"Please use the generic mutation 'partLocations: { push: ... } }' instead.\\")
+              partLocations_SET: [CartesianPointInput!] @deprecated(reason: \\"Please use the generic mutation 'partLocations: { set: ... } }' instead.\\")
             }
 
             input MachineWhere {

@@ -98,7 +98,7 @@ describe("String Comparators", () => {
 
             input MovieUpdateInput {
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -257,7 +257,7 @@ describe("String Comparators", () => {
 
             input MovieUpdateInput {
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -421,7 +421,7 @@ describe("String Comparators", () => {
 
             input MovieUpdateInput {
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -591,7 +591,7 @@ describe("String Comparators", () => {
 
             input ActedInUpdateInput {
               screenTime: StringScalarMutations
-              screenTime_SET: String
+              screenTime_SET: String @deprecated(reason: \\"Please use the generic mutation 'screenTime: { set: ... } }' instead.\\")
             }
 
             input ActedInWhere {
@@ -771,7 +771,7 @@ describe("String Comparators", () => {
             input ActorUpdateInput {
               actedIn: [ActorActedInUpdateFieldInput!]
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
@@ -1008,7 +1008,7 @@ describe("String Comparators", () => {
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {

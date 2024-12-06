@@ -132,9 +132,9 @@ describe("Date", () => {
 
             input MovieUpdateInput {
               date: DateScalarMutations
-              date_SET: Date
+              date_SET: Date @deprecated(reason: \\"Please use the generic mutation 'date: { set: ... } }' instead.\\")
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {

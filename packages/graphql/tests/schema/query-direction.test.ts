@@ -267,7 +267,7 @@ describe("Query Direction", () => {
             input UserUpdateInput {
               friends: [UserFriendsUpdateFieldInput!]
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             type UserUserFriendsAggregationSelection {
@@ -568,7 +568,7 @@ describe("Query Direction", () => {
             input UserUpdateInput {
               friends: [UserFriendsUpdateFieldInput!]
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             type UserUserFriendsAggregationSelection {

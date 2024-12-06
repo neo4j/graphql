@@ -138,11 +138,11 @@ describe("Algebraic", () => {
 
             input MovieUpdateInput {
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               viewers: IntScalarMutations
-              viewers_DECREMENT: Int
-              viewers_INCREMENT: Int
-              viewers_SET: Int
+              viewers_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'viewers: { decrement: ... } }' instead.\\")
+              viewers_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'viewers: { increment: ... } }' instead.\\")
+              viewers_SET: Int @deprecated(reason: \\"Please use the generic mutation 'viewers: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -335,11 +335,11 @@ describe("Algebraic", () => {
 
             input MovieUpdateInput {
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               viewers: BigIntScalarMutations
-              viewers_DECREMENT: BigInt
-              viewers_INCREMENT: BigInt
-              viewers_SET: BigInt
+              viewers_DECREMENT: BigInt @deprecated(reason: \\"Please use the relevant generic mutation 'viewers: { decrement: ... } }' instead.\\")
+              viewers_INCREMENT: BigInt @deprecated(reason: \\"Please use the relevant generic mutation 'viewers: { increment: ... } }' instead.\\")
+              viewers_SET: BigInt @deprecated(reason: \\"Please use the generic mutation 'viewers: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -530,13 +530,13 @@ describe("Algebraic", () => {
 
             input MovieUpdateInput {
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               viewers: FloatScalarMutations
-              viewers_ADD: Float
-              viewers_DIVIDE: Float
-              viewers_MULTIPLY: Float
-              viewers_SET: Float
-              viewers_SUBTRACT: Float
+              viewers_ADD: Float @deprecated(reason: \\"Please use the relevant generic mutation 'viewers: { add: ... } }' instead.\\")
+              viewers_DIVIDE: Float @deprecated(reason: \\"Please use the relevant generic mutation 'viewers: { divide: ... } }' instead.\\")
+              viewers_MULTIPLY: Float @deprecated(reason: \\"Please use the relevant generic mutation 'viewers: { multiply: ... } }' instead.\\")
+              viewers_SET: Float @deprecated(reason: \\"Please use the generic mutation 'viewers: { set: ... } }' instead.\\")
+              viewers_SUBTRACT: Float @deprecated(reason: \\"Please use the relevant generic mutation 'viewers: { subtract: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -821,7 +821,7 @@ describe("Algebraic", () => {
             input DirectorUpdateInput {
               directs: [DirectorDirectsUpdateFieldInput!]
               lastName: StringScalarMutations
-              lastName_SET: String
+              lastName_SET: String @deprecated(reason: \\"Please use the generic mutation 'lastName: { set: ... } }' instead.\\")
             }
 
             input DirectorWhere {
@@ -1068,11 +1068,11 @@ describe("Algebraic", () => {
             input MovieUpdateInput {
               directedBy: [MovieDirectedByUpdateFieldInput!]
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               viewers: IntScalarMutations
-              viewers_DECREMENT: Int
-              viewers_INCREMENT: Int
-              viewers_SET: Int
+              viewers_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'viewers: { decrement: ... } }' instead.\\")
+              viewers_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'viewers: { increment: ... } }' instead.\\")
+              viewers_SET: Int @deprecated(reason: \\"Please use the generic mutation 'viewers: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -1352,11 +1352,11 @@ describe("Algebraic", () => {
 
             input MovieUpdateInput {
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               viewers: IntScalarMutations
-              viewers_DECREMENT: Int
-              viewers_INCREMENT: Int
-              viewers_SET: Int
+              viewers_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'viewers: { decrement: ... } }' instead.\\")
+              viewers_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'viewers: { increment: ... } }' instead.\\")
+              viewers_SET: Int @deprecated(reason: \\"Please use the generic mutation 'viewers: { set: ... } }' instead.\\")
               workers: [MovieWorkersUpdateFieldInput!]
             }
 
@@ -1581,7 +1581,7 @@ describe("Algebraic", () => {
 
             input PersonUpdateInput {
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
               worksInProduction: [PersonWorksInProductionUpdateFieldInput!]
             }
 
@@ -1751,9 +1751,9 @@ describe("Algebraic", () => {
 
             input ProductionUpdateInput {
               viewers: IntScalarMutations
-              viewers_DECREMENT: Int
-              viewers_INCREMENT: Int
-              viewers_SET: Int
+              viewers_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'viewers: { decrement: ... } }' instead.\\")
+              viewers_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'viewers: { increment: ... } }' instead.\\")
+              viewers_SET: Int @deprecated(reason: \\"Please use the generic mutation 'viewers: { set: ... } }' instead.\\")
             }
 
             input ProductionWhere {
@@ -1916,15 +1916,15 @@ describe("Algebraic", () => {
 
             input ActedInUpdateInput {
               pay: FloatScalarMutations
-              pay_ADD: Float
-              pay_DIVIDE: Float
-              pay_MULTIPLY: Float
-              pay_SET: Float
-              pay_SUBTRACT: Float
+              pay_ADD: Float @deprecated(reason: \\"Please use the relevant generic mutation 'pay: { add: ... } }' instead.\\")
+              pay_DIVIDE: Float @deprecated(reason: \\"Please use the relevant generic mutation 'pay: { divide: ... } }' instead.\\")
+              pay_MULTIPLY: Float @deprecated(reason: \\"Please use the relevant generic mutation 'pay: { multiply: ... } }' instead.\\")
+              pay_SET: Float @deprecated(reason: \\"Please use the generic mutation 'pay: { set: ... } }' instead.\\")
+              pay_SUBTRACT: Float @deprecated(reason: \\"Please use the relevant generic mutation 'pay: { subtract: ... } }' instead.\\")
               roles: ListStringMutations
-              roles_POP: Int
-              roles_PUSH: [String!]
-              roles_SET: [String!]
+              roles_POP: Int @deprecated(reason: \\"Please use the generic mutation 'roles: { pop: ... } }' instead.\\")
+              roles_PUSH: [String!] @deprecated(reason: \\"Please use the generic mutation 'roles: { push: ... } }' instead.\\")
+              roles_SET: [String!] @deprecated(reason: \\"Please use the generic mutation 'roles: { set: ... } }' instead.\\")
             }
 
             input ActedInWhere {
@@ -2163,7 +2163,7 @@ describe("Algebraic", () => {
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -2393,7 +2393,7 @@ describe("Algebraic", () => {
             input PersonUpdateInput {
               actedInMovies: [PersonActedInMoviesUpdateFieldInput!]
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input PersonWhere {

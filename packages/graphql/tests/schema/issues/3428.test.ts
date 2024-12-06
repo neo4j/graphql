@@ -199,7 +199,7 @@ describe("Relationship nested operations", () => {
 
             input MovieUpdateInput {
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -298,7 +298,7 @@ describe("Relationship nested operations", () => {
 
             input PersonUpdateInput {
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input PersonWhere {
@@ -522,7 +522,7 @@ describe("Relationship nested operations", () => {
 
             input MovieUpdateInput {
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -616,7 +616,7 @@ describe("Relationship nested operations", () => {
 
             input PersonOneUpdateInput {
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input PersonOneWhere {
@@ -664,7 +664,7 @@ describe("Relationship nested operations", () => {
 
             input PersonTwoUpdateInput {
               nameTwo: StringScalarMutations
-              nameTwo_SET: String
+              nameTwo_SET: String @deprecated(reason: \\"Please use the generic mutation 'nameTwo: { set: ... } }' instead.\\")
             }
 
             input PersonTwoWhere {

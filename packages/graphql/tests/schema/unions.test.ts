@@ -103,7 +103,7 @@ describe("Unions", () => {
 
             input GenreUpdateInput {
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
             }
 
             input GenreWhere {
@@ -321,7 +321,7 @@ describe("Unions", () => {
 
             input MovieUpdateInput {
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               search: MovieSearchUpdateInput
             }
 

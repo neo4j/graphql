@@ -159,7 +159,7 @@ describe("Cypher", () => {
 
             input ActorUpdateInput {
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
@@ -513,7 +513,7 @@ describe("Cypher", () => {
 
             input MovieUpdateInput {
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -1139,7 +1139,7 @@ describe("Cypher", () => {
 
             input BlogUpdateInput {
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input BlogWhere {
@@ -1238,7 +1238,7 @@ describe("Cypher", () => {
 
             input PostUpdateInput {
               content: StringScalarMutations
-              content_SET: String
+              content_SET: String @deprecated(reason: \\"Please use the generic mutation 'content: { set: ... } }' instead.\\")
             }
 
             input PostWhere {
@@ -1409,7 +1409,7 @@ describe("Cypher", () => {
 
             input ActorUpdateInput {
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
@@ -1693,7 +1693,7 @@ describe("Cypher", () => {
 
             input ActorUpdateInput {
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
@@ -1927,7 +1927,7 @@ describe("Cypher", () => {
 
             input ActorUpdateInput {
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
@@ -2043,7 +2043,7 @@ describe("Cypher", () => {
 
             input MovieUpdateInput {
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -2248,7 +2248,7 @@ describe("Cypher", () => {
 
             input MovieUpdateInput {
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             type MovieUpdatedEvent {

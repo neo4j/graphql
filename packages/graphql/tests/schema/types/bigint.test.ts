@@ -120,11 +120,11 @@ describe("Bigint", () => {
 
             input FileUpdateInput {
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
               size: BigIntScalarMutations
-              size_DECREMENT: BigInt
-              size_INCREMENT: BigInt
-              size_SET: BigInt
+              size_DECREMENT: BigInt @deprecated(reason: \\"Please use the relevant generic mutation 'size: { decrement: ... } }' instead.\\")
+              size_INCREMENT: BigInt @deprecated(reason: \\"Please use the relevant generic mutation 'size: { increment: ... } }' instead.\\")
+              size_SET: BigInt @deprecated(reason: \\"Please use the generic mutation 'size: { set: ... } }' instead.\\")
             }
 
             input FileWhere {

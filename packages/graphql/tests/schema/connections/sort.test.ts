@@ -195,7 +195,7 @@ describe("Sort", () => {
 
             input Node1UpdateInput {
               property: StringScalarMutations
-              property_SET: String
+              property_SET: String @deprecated(reason: \\"Please use the generic mutation 'property: { set: ... } }' instead.\\")
               relatedTo: [Node1RelatedToUpdateFieldInput!]
             }
 

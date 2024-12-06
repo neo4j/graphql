@@ -252,7 +252,7 @@ describe("Apollo Federation", () => {
             input PostUpdateInput {
               author: [PostAuthorUpdateFieldInput!]
               content: StringScalarMutations
-              content_SET: String
+              content_SET: String @deprecated(reason: \\"Please use the generic mutation 'content: { set: ... } }' instead.\\")
             }
 
             type PostUserAuthorAggregationSelection {
@@ -517,7 +517,7 @@ describe("Apollo Federation", () => {
 
             input UserUpdateInput {
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
               posts: [UserPostsUpdateFieldInput!]
             }
 
@@ -800,7 +800,7 @@ describe("Apollo Federation", () => {
             input PostUpdateInput {
               author: [PostAuthorUpdateFieldInput!]
               content: StringScalarMutations
-              content_SET: String
+              content_SET: String @deprecated(reason: \\"Please use the generic mutation 'content: { set: ... } }' instead.\\")
             }
 
             type PostUserAuthorAggregationSelection {
@@ -949,7 +949,7 @@ describe("Apollo Federation", () => {
 
             input UserUpdateInput {
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input UserWhere {

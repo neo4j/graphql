@@ -262,9 +262,9 @@ describe("@relationship directive, aggregate argument", () => {
 
                 input ActorUpdateInput {
                   password: StringScalarMutations
-                  password_SET: String
+                  password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
                   username: StringScalarMutations
-                  username_SET: String
+                  username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
                 }
 
                 input ActorWhere {
@@ -456,7 +456,7 @@ describe("@relationship directive, aggregate argument", () => {
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
                   title: StringScalarMutations
-                  title_SET: String
+                  title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
@@ -639,9 +639,9 @@ describe("@relationship directive, aggregate argument", () => {
 
                 input ActorUpdateInput {
                   password: StringScalarMutations
-                  password_SET: String
+                  password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
                   username: StringScalarMutations
-                  username_SET: String
+                  username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
                 }
 
                 input ActorWhere {
@@ -844,7 +844,7 @@ describe("@relationship directive, aggregate argument", () => {
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
                   title: StringScalarMutations
-                  title_SET: String
+                  title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
@@ -1029,9 +1029,9 @@ describe("@relationship directive, aggregate argument", () => {
 
                     input ActorUpdateInput {
                       password: StringScalarMutations
-                      password_SET: String
+                      password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
                       username: StringScalarMutations
-                      username_SET: String
+                      username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
                     }
 
                     input ActorWhere {
@@ -1223,7 +1223,7 @@ describe("@relationship directive, aggregate argument", () => {
                     input MovieUpdateInput {
                       actors: [MovieActorsUpdateFieldInput!]
                       title: StringScalarMutations
-                      title_SET: String
+                      title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                     }
 
                     input MovieWhere {
@@ -1330,9 +1330,9 @@ describe("@relationship directive, aggregate argument", () => {
 
                     input PersonUpdateInput {
                       password: StringScalarMutations
-                      password_SET: String
+                      password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
                       username: StringScalarMutations
-                      username_SET: String
+                      username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
                     }
 
                     input PersonWhere {
@@ -1477,9 +1477,9 @@ describe("@relationship directive, aggregate argument", () => {
 
                     input ActorUpdateInput {
                       password: StringScalarMutations
-                      password_SET: String
+                      password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
                       username: StringScalarMutations
-                      username_SET: String
+                      username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
                     }
 
                     input ActorWhere {
@@ -1682,7 +1682,7 @@ describe("@relationship directive, aggregate argument", () => {
                     input MovieUpdateInput {
                       actors: [MovieActorsUpdateFieldInput!]
                       title: StringScalarMutations
-                      title_SET: String
+                      title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                     }
 
                     input MovieWhere {
@@ -1789,9 +1789,9 @@ describe("@relationship directive, aggregate argument", () => {
 
                     input PersonUpdateInput {
                       password: StringScalarMutations
-                      password_SET: String
+                      password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
                       username: StringScalarMutations
-                      username_SET: String
+                      username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
                     }
 
                     input PersonWhere {
@@ -1944,9 +1944,9 @@ describe("@relationship directive, aggregate argument", () => {
 
                     input ActorUpdateInput {
                       password: StringScalarMutations
-                      password_SET: String
+                      password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
                       username: StringScalarMutations
-                      username_SET: String
+                      username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
                     }
 
                     input ActorWhere {
@@ -2159,7 +2159,7 @@ describe("@relationship directive, aggregate argument", () => {
                     input MovieUpdateInput {
                       actors: MovieActorsUpdateInput
                       title: StringScalarMutations
-                      title_SET: String
+                      title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                     }
 
                     input MovieWhere {
@@ -2261,7 +2261,7 @@ describe("@relationship directive, aggregate argument", () => {
 
                     input PersonUpdateInput {
                       name: StringScalarMutations
-                      name_SET: String
+                      name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                     }
 
                     input PersonWhere {
@@ -2410,9 +2410,9 @@ describe("@relationship directive, aggregate argument", () => {
 
                     input ActorUpdateInput {
                       password: StringScalarMutations
-                      password_SET: String
+                      password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
                       username: StringScalarMutations
-                      username_SET: String
+                      username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
                     }
 
                     input ActorWhere {
@@ -2625,7 +2625,7 @@ describe("@relationship directive, aggregate argument", () => {
                     input MovieUpdateInput {
                       actors: MovieActorsUpdateInput
                       title: StringScalarMutations
-                      title_SET: String
+                      title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                     }
 
                     input MovieWhere {
@@ -2727,7 +2727,7 @@ describe("@relationship directive, aggregate argument", () => {
 
                     input PersonUpdateInput {
                       name: StringScalarMutations
-                      name_SET: String
+                      name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                     }
 
                     input PersonWhere {

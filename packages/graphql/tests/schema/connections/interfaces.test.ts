@@ -216,7 +216,7 @@ describe("Connection with interfaces", () => {
 
             input CreatureUpdateInput {
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               movies: [CreatureMoviesUpdateFieldInput!]
             }
 
@@ -442,9 +442,9 @@ describe("Connection with interfaces", () => {
             input MovieUpdateInput {
               director: [MovieDirectorUpdateFieldInput!]
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -631,7 +631,7 @@ describe("Connection with interfaces", () => {
 
             input PersonUpdateInput {
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               movies: [PersonMoviesUpdateFieldInput!]
             }
 
@@ -806,7 +806,7 @@ describe("Connection with interfaces", () => {
             input ProductionUpdateInput {
               director: [ProductionDirectorUpdateFieldInput!]
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
             }
 
             input ProductionWhere {
@@ -1003,13 +1003,13 @@ describe("Connection with interfaces", () => {
             input SeriesUpdateInput {
               director: [SeriesDirectorUpdateFieldInput!]
               episode: IntScalarMutations
-              episode_DECREMENT: Int
-              episode_INCREMENT: Int
-              episode_SET: Int
+              episode_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episode: { decrement: ... } }' instead.\\")
+              episode_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episode: { increment: ... } }' instead.\\")
+              episode_SET: Int @deprecated(reason: \\"Please use the generic mutation 'episode: { set: ... } }' instead.\\")
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input SeriesWhere {

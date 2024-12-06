@@ -117,7 +117,7 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
 
             input FriendOfUpdateInput {
               id: StringScalarMutations
-              id_SET: String
+              id_SET: String @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
             }
 
             input FriendOfWhere {
