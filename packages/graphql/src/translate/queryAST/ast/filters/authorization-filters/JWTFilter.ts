@@ -18,61 +18,46 @@
  */
 
 import type { Predicate } from "@neo4j/cypher-builder";
-import type { QueryASTContext } from "../../QueryASTContext";
-import type { FilterOperator } from "../Filter";
-import { Filter } from "../Filter";
 import Cypher from "@neo4j/cypher-builder";
 import { createComparisonOperation } from "../../../utils/create-comparison-operator";
+import type { QueryASTContext } from "../../QueryASTContext";
 import type { QueryASTNode } from "../../QueryASTNode";
+import type { FilterOperator } from "../Filter";
+import { Filter } from "../Filter";
 
 export class JWTFilter extends Filter {
     protected operator: FilterOperator;
     protected JWTClaim: Cypher.Property;
     protected comparisonValue: unknown;
-    protected isNot: boolean;
 
     constructor({
         operator,
         JWTClaim,
         comparisonValue,
-        isNot,
     }: {
         operator: FilterOperator;
         JWTClaim: Cypher.Property;
         comparisonValue: unknown;
-        isNot: boolean;
     }) {
         super();
         this.operator = operator;
         this.JWTClaim = JWTClaim;
         this.comparisonValue = comparisonValue;
-        this.isNot = isNot;
     }
 
     public getChildren(): QueryASTNode[] {
         return [];
     }
-
+    public print(): string {
+        return `${super.print()} <${this.operator} ${this.comparisonValue}>`;
+    }
     public getPredicate(_context: QueryASTContext): Predicate | undefined {
-        const operation = createComparisonOperation({
+        const predicate = createComparisonOperation({
             operator: this.operator,
             property: this.JWTClaim,
             param: new Cypher.Param(this.comparisonValue),
         });
 
-        const predicate = this.wrapInNotIfNeeded(operation);
         return Cypher.and(Cypher.isNotNull(this.JWTClaim), predicate);
-    }
-
-    public print(): string {
-        return `${super.print()} <${this.operator} ${this.comparisonValue}>`;
-    }
-
-    private wrapInNotIfNeeded(predicate: Cypher.Predicate): Cypher.Predicate {
-        if (this.isNot) {
-            return Cypher.not(predicate);
-        } else {
-            return predicate;
-        }
     }
 }

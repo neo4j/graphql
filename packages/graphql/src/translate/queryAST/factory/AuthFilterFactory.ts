@@ -123,7 +123,6 @@ export class AuthFilterFactory extends FilterFactory {
                 operator: operator || "EQ",
                 JWTClaim: target,
                 comparisonValue: value,
-                isNot: false,
             });
         });
     }
@@ -132,14 +131,12 @@ export class AuthFilterFactory extends FilterFactory {
         attribute,
         comparisonValue,
         operator,
-       // isNot,
         attachedTo,
         relationship,
     }: {
         attribute: AttributeAdapter;
         comparisonValue: unknown;
         operator: FilterOperator | undefined;
-       // isNot: boolean;
         attachedTo?: "node" | "relationship";
         relationship?: RelationshipAdapter;
     }): Filter {
@@ -170,10 +167,7 @@ export class AuthFilterFactory extends FilterFactory {
                         where: comparisonValue as GraphQLWhereArg,
                         selection,
                         target: entityAdapter,
-                        filterOps: {
-                            //isNot,
-                            operator,
-                        },
+                        operator,
                         attribute,
                     }),
                 });
@@ -205,7 +199,6 @@ export class AuthFilterFactory extends FilterFactory {
                 attribute,
                 relationship,
                 comparisonValue: new Cypher.Param(comparisonValue),
-                isNot: false,
                 operator: filterOperator,
                 attachedTo,
             });
@@ -216,7 +209,6 @@ export class AuthFilterFactory extends FilterFactory {
                 attribute,
                 relationship,
                 comparisonValue: comparisonValue,
-                isNot: false,
                 operator: filterOperator,
                 attachedTo,
             });
@@ -226,7 +218,6 @@ export class AuthFilterFactory extends FilterFactory {
                     attribute,
                     relationship,
                     comparisonValue: comparisonValue,
-                    isNot: false,
                     operator: filterOperator,
                     attachedTo,
                 });
@@ -235,7 +226,6 @@ export class AuthFilterFactory extends FilterFactory {
                 attribute,
                 relationship,
                 comparisonValue: new Cypher.Param(comparisonValue),
-                isNot: false,
                 operator: filterOperator,
                 attachedTo,
             });
@@ -245,7 +235,6 @@ export class AuthFilterFactory extends FilterFactory {
     protected createRelationshipFilterTreeNode(options: {
         relationship: RelationshipAdapter;
         target: ConcreteEntityAdapter | InterfaceEntityAdapter;
-        isNot: boolean;
         operator: RelationshipWhereOperator;
     }): RelationshipFilter {
         return new AuthRelationshipFilter(options);
@@ -254,8 +243,7 @@ export class AuthFilterFactory extends FilterFactory {
     protected createConnectionFilterTreeNode(options: {
         relationship: RelationshipAdapter;
         target: ConcreteEntityAdapter | InterfaceEntityAdapter;
-        isNot: boolean;
-        operator: RelationshipWhereOperator | undefined;
+        operator: RelationshipWhereOperator;
     }): ConnectionFilter {
         return new AuthConnectionFilter(options);
     }

@@ -17,14 +17,13 @@
  * limitations under the License.
  */
 
-import type { FilterOperator, LogicalOperators } from "../../ast/filters/Filter";
+import type { FilterOperator } from "../../ast/filters/Filter";
 
 export type WhereRegexGroups = {
     fieldName: string;
     isAggregate: boolean;
     operator: FilterOperator | undefined;
     prefix?: string;
-    //  isNot: boolean;
     isConnection: boolean;
 };
 
@@ -43,45 +42,14 @@ export function parseWhereField(field: string): WhereRegexGroups {
         isConnection?: string;
     };
 
-    //let isNot = false;
     const operator = match?.groups?.operator as FilterOperator | undefined;
-
-    // if (matchGroups.operator) {
-    //     const notSplit = matchGroups.operator.split("NOT_");
-    //     if (notSplit.length === 2) {
-    //         isNot = true;
-    //         operator = notSplit[1] as FilterOperator;
-    //     } else if (matchGroups.operator === "NOT" || matchGroups.operator === "NONE") {
-    //         isNot = true;
-    //         if (matchGroups.operator === "NONE") {
-    //             operator = notSplit[0] as FilterOperator;
-    //         }
-    //     } else {
-    //         operator = notSplit[0] as FilterOperator;
-    //     }
-    // }
 
     return {
         fieldName: matchGroups.fieldName,
         isAggregate: Boolean(matchGroups.isAggregate),
         operator,
-        // isNot,
         prefix: matchGroups.prefix,
         isConnection: Boolean(matchGroups.isConnection),
-    };
-}
-
-type ConnectionWhereArgField = {
-    isNot: boolean;
-    fieldName: "node" | "edge" | LogicalOperators;
-};
-
-export function parseConnectionWhereFields(key: string): ConnectionWhereArgField {
-    const splitKey = key.split("_NOT");
-    const isNot = splitKey.length > 1;
-    return {
-        fieldName: splitKey[0] as "node" | "edge" | LogicalOperators,
-        isNot,
     };
 }
 
