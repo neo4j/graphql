@@ -79,6 +79,11 @@ describe("Time", () => {
               startsWith: ID
             }
 
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
             type Movie {
               id: ID
               time: Time
@@ -109,7 +114,9 @@ describe("Time", () => {
             }
 
             input MovieUpdateInput {
+              id: IDScalarMutations
               id_SET: ID
+              time: TimeScalarMutations
               time_SET: Time
             }
 
@@ -182,6 +189,11 @@ describe("Time", () => {
               in: [Time!]
               lessThan: Time
               lessThanEquals: Time
+            }
+
+            \\"\\"\\"Time mutations\\"\\"\\"
+            input TimeScalarMutations {
+              set: Time
             }
 
             \\"\\"\\"

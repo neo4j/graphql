@@ -85,6 +85,7 @@ describe("609", () => {
             }
 
             input DeprecatedUpdateInput {
+              deprecatedField: StringScalarMutations @deprecated
               deprecatedField_SET: String @deprecated
             }
 
@@ -151,6 +152,11 @@ describe("609", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateDeprecatedsMutationResponse {

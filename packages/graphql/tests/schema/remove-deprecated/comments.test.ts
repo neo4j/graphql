@@ -72,6 +72,11 @@ describe("Comments", () => {
               equals: Boolean
             }
 
+            \\"\\"\\"Boolean mutations\\"\\"\\"
+            input BooleanScalarMutations {
+              set: Boolean
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -92,6 +97,11 @@ describe("Comments", () => {
             input CustomScalarScalarFilters {
               equals: CustomScalar
               in: [CustomScalar!]
+            }
+
+            \\"\\"\\"CustomScalar filters\\"\\"\\"
+            input CustomScalarScalarMutations {
+              set: CustomScalar
             }
 
             \\"\\"\\"
@@ -119,6 +129,15 @@ describe("Comments", () => {
               lessThanEquals: Float
             }
 
+            \\"\\"\\"Float mutations\\"\\"\\"
+            input FloatScalarMutations {
+              add: Float
+              divide: Float
+              multiply: Float
+              set: Float
+              subtract: Float
+            }
+
             \\"\\"\\"An enumeration of movie genres.\\"\\"\\"
             enum Genre {
               ACTION
@@ -130,6 +149,11 @@ describe("Comments", () => {
             input GenreEnumScalarFilters {
               equals: Genre
               in: [Genre!]
+            }
+
+            \\"\\"\\"Genre mutations\\"\\"\\"
+            input GenreEnumScalarMutations {
+              set: Genre
             }
 
             type IDAggregateSelection {
@@ -151,6 +175,11 @@ describe("Comments", () => {
               startsWith: ID
             }
 
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
@@ -166,6 +195,13 @@ describe("Comments", () => {
               in: [Int!]
               lessThan: Int
               lessThanEquals: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
             }
 
             \\"\\"\\"A type describing a movie.\\"\\"\\"
@@ -219,17 +255,23 @@ describe("Comments", () => {
             }
 
             input MovieUpdateInput {
+              actorCount: IntScalarMutations
               actorCount_DECREMENT: Int
               actorCount_INCREMENT: Int
               actorCount_SET: Int
+              averageRating: FloatScalarMutations
               averageRating_ADD: Float
               averageRating_DIVIDE: Float
               averageRating_MULTIPLY: Float
               averageRating_SET: Float
               averageRating_SUBTRACT: Float
+              customScalar: CustomScalarScalarMutations
               customScalar_SET: CustomScalar
+              genre: GenreEnumScalarMutations
               genre_SET: Genre
+              id: IDScalarMutations
               id_SET: ID
+              isActive: BooleanScalarMutations
               isActive_SET: Boolean
             }
 
@@ -372,6 +414,7 @@ describe("Comments", () => {
                 }
 
                 input ActorUpdateInput {
+                  name: StringScalarMutations
                   name_SET: String
                 }
 
@@ -436,6 +479,11 @@ describe("Comments", () => {
                   lessThanEquals: ID
                   matches: ID
                   startsWith: ID
+                }
+
+                \\"\\"\\"ID mutations\\"\\"\\"
+                input IDScalarMutations {
+                  set: ID
                 }
 
                 type Movie {
@@ -572,6 +620,7 @@ describe("Comments", () => {
 
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
+                  id: IDScalarMutations
                   id_SET: ID
                 }
 
@@ -669,6 +718,11 @@ describe("Comments", () => {
                   lessThanEquals: String
                   matches: String
                   startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 type UpdateActorsMutationResponse {
@@ -773,6 +827,7 @@ describe("Comments", () => {
                 }
 
                 input ActedInUpdateInput {
+                  screenTime: IntScalarMutations
                   screenTime_DECREMENT: Int
                   screenTime_INCREMENT: Int
                   screenTime_SET: Int
@@ -937,6 +992,7 @@ describe("Comments", () => {
 
                 input ActorUpdateInput {
                   actedIn: [ActorActedInUpdateFieldInput!]
+                  name: StringScalarMutations
                   name_SET: String
                 }
 
@@ -1031,6 +1087,13 @@ describe("Comments", () => {
                   lessThanEquals: Int
                 }
 
+                \\"\\"\\"Int mutations\\"\\"\\"
+                input IntScalarMutations {
+                  add: Int
+                  set: Int
+                  subtract: Int
+                }
+
                 type Movie implements Production {
                   runtime: Int!
                   title: String!
@@ -1061,9 +1124,11 @@ describe("Comments", () => {
                 }
 
                 input MovieUpdateInput {
+                  runtime: IntScalarMutations
                   runtime_DECREMENT: Int
                   runtime_INCREMENT: Int
                   runtime_SET: Int
+                  title: StringScalarMutations
                   title_SET: String
                 }
 
@@ -1148,6 +1213,7 @@ describe("Comments", () => {
                 }
 
                 input ProductionUpdateInput {
+                  title: StringScalarMutations
                   title_SET: String
                 }
 
@@ -1221,9 +1287,11 @@ describe("Comments", () => {
                 }
 
                 input SeriesUpdateInput {
+                  episodes: IntScalarMutations
                   episodes_DECREMENT: Int
                   episodes_INCREMENT: Int
                   episodes_SET: Int
+                  title: StringScalarMutations
                   title_SET: String
                 }
 
@@ -1271,6 +1339,11 @@ describe("Comments", () => {
                   lessThanEquals: String
                   matches: String
                   startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 type UpdateActorsMutationResponse {
@@ -1381,6 +1454,7 @@ describe("Comments", () => {
                 }
 
                 input GenreUpdateInput {
+                  id: IDScalarMutations
                   id_SET: ID
                 }
 
@@ -1419,6 +1493,11 @@ describe("Comments", () => {
                   lessThanEquals: ID
                   matches: ID
                   startsWith: ID
+                }
+
+                \\"\\"\\"ID mutations\\"\\"\\"
+                input IDScalarMutations {
+                  set: ID
                 }
 
                 type Movie {
@@ -1593,6 +1672,7 @@ describe("Comments", () => {
                 }
 
                 input MovieUpdateInput {
+                  id: IDScalarMutations
                   id_SET: ID
                   search: MovieSearchUpdateInput
                 }

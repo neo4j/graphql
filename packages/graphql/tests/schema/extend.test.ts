@@ -82,6 +82,11 @@ describe("Extend", () => {
               startsWith: ID
             }
 
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
             type Movie {
               id: ID
               name: String
@@ -112,7 +117,9 @@ describe("Extend", () => {
             }
 
             input MovieUpdateInput {
+              id: IDScalarMutations
               id_SET: ID
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -185,6 +192,11 @@ describe("Extend", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             \\"\\"\\"

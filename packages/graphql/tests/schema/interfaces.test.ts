@@ -94,6 +94,11 @@ describe("Interfaces", () => {
               startsWith: ID
             }
 
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
             type Movie implements MovieNode {
               customQuery: [Movie]
               id: ID
@@ -338,6 +343,7 @@ describe("Interfaces", () => {
             }
 
             input MovieUpdateInput {
+              id: IDScalarMutations
               id_SET: ID
               movies: [MovieMoviesUpdateFieldInput!]
             }
@@ -505,6 +511,11 @@ describe("Interfaces", () => {
               lessThanEquals: ID
               matches: ID
               startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
             }
 
             type Movie implements MovieNode {
@@ -751,6 +762,7 @@ describe("Interfaces", () => {
             }
 
             input MovieUpdateInput {
+              id: IDScalarMutations
               id_SET: ID
               movies: [MovieMoviesUpdateFieldInput!]
             }

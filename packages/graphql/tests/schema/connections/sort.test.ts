@@ -194,6 +194,7 @@ describe("Sort", () => {
             }
 
             input Node1UpdateInput {
+              property: StringScalarMutations
               property_SET: String
               relatedTo: [Node1RelatedToUpdateFieldInput!]
             }
@@ -460,6 +461,11 @@ describe("Sort", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             \\"\\"\\"

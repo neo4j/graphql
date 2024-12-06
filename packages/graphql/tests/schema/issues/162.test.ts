@@ -98,6 +98,11 @@ describe("162", () => {
               startsWith: ID
             }
 
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
@@ -113,6 +118,13 @@ describe("162", () => {
               in: [Int!]
               lessThan: Int
               lessThanEquals: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
             }
 
             type Mutation {
@@ -439,6 +451,7 @@ describe("162", () => {
             }
 
             input TigerJawLevel2Part1UpdateInput {
+              id: IDScalarMutations
               id_SET: ID
               tiger: [TigerJawLevel2Part1TigerUpdateFieldInput!]
             }
@@ -511,6 +524,7 @@ describe("162", () => {
             }
 
             input TigerJawLevel2UpdateInput {
+              id: IDScalarMutations
               id_SET: ID
               part1: [TigerJawLevel2Part1UpdateFieldInput!]
             }
@@ -574,6 +588,7 @@ describe("162", () => {
             }
 
             input TigerUpdateInput {
+              x: IntScalarMutations
               x_DECREMENT: Int
               x_INCREMENT: Int
               x_SET: Int

@@ -92,6 +92,11 @@ describe("lower case type names", () => {
               lessThanEquals: DateTime
             }
 
+            \\"\\"\\"DateTime mutations\\"\\"\\"
+            input DateTimeScalarMutations {
+              set: DateTime
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships deleted during a delete mutation
             \\"\\"\\"
@@ -115,6 +120,13 @@ describe("lower case type names", () => {
               in: [Int!]
               lessThan: Int
               lessThanEquals: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
             }
 
             type MoviesConnection {
@@ -174,6 +186,11 @@ describe("lower case type names", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateActorsMutationResponse {
@@ -387,9 +404,12 @@ describe("lower case type names", () => {
             }
 
             input actorUpdateInput {
+              createdAt: DateTimeScalarMutations
               createdAt_SET: DateTime
               movies: [actorMoviesUpdateFieldInput!]
+              name: StringScalarMutations
               name_SET: String
+              year: IntScalarMutations
               year_DECREMENT: Int
               year_INCREMENT: Int
               year_SET: Int
@@ -639,9 +659,13 @@ describe("lower case type names", () => {
 
             input movieUpdateInput {
               actors: [movieActorsUpdateFieldInput!]
+              createdAt: DateTimeScalarMutations
               createdAt_SET: DateTime
+              name: StringScalarMutations
               name_SET: String
+              testId: StringScalarMutations
               testId_SET: String
+              year: IntScalarMutations
               year_DECREMENT: Int
               year_INCREMENT: Int
               year_SET: Int

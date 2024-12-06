@@ -23,7 +23,7 @@ import { DEPRECATED } from "../constants";
 import type { AttributeAdapter } from "../schema-model/attribute/model-adapters/AttributeAdapter";
 import { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { Neo4jFeaturesSettings } from "../types";
-import { getInputTypeFromAttributeType } from "./generation/get-input-type-from-attribute-type";
+import { getInputFilterFromAttributeType } from "./generation/get-input-filter-from-attribute-type";
 import { graphqlDirectivesToCompose } from "./to-compose";
 
 // TODO: refactoring needed!
@@ -81,7 +81,7 @@ export function getWhereFieldsForAttributes({
             }
         }
         result[field.name] = {
-            type: getInputTypeFromAttributeType(field),
+            type: getInputFilterFromAttributeType(field),
             directives: deprecatedDirectives,
         };
 

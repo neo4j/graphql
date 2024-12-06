@@ -79,6 +79,11 @@ describe("Localtime", () => {
               startsWith: ID
             }
 
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
             \\"\\"\\"
             A local time, represented as a time string without timezone information
             \\"\\"\\"
@@ -97,6 +102,11 @@ describe("Localtime", () => {
               in: [LocalTime!]
               lessThan: LocalTime
               lessThanEquals: LocalTime
+            }
+
+            \\"\\"\\"LocalTime mutations\\"\\"\\"
+            input LocalTimeScalarMutations {
+              set: LocalTime
             }
 
             type Movie {
@@ -129,7 +139,9 @@ describe("Localtime", () => {
             }
 
             input MovieUpdateInput {
+              id: IDScalarMutations
               id_SET: ID
+              time: LocalTimeScalarMutations
               time_SET: LocalTime
             }
 

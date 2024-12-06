@@ -102,6 +102,7 @@ describe("Unions", () => {
             }
 
             input GenreUpdateInput {
+              id: IDScalarMutations
               id_SET: ID
             }
 
@@ -140,6 +141,11 @@ describe("Unions", () => {
               lessThanEquals: ID
               matches: ID
               startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
             }
 
             type Movie {
@@ -314,6 +320,7 @@ describe("Unions", () => {
             }
 
             input MovieUpdateInput {
+              id: IDScalarMutations
               id_SET: ID
               search: MovieSearchUpdateInput
             }

@@ -107,6 +107,11 @@ describe("Query Direction", () => {
               startsWith: String
             }
 
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created and deleted during an update mutation
             \\"\\"\\"
@@ -261,6 +266,7 @@ describe("Query Direction", () => {
 
             input UserUpdateInput {
               friends: [UserFriendsUpdateFieldInput!]
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -402,6 +408,11 @@ describe("Query Direction", () => {
               startsWith: String
             }
 
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created and deleted during an update mutation
             \\"\\"\\"
@@ -556,6 +567,7 @@ describe("Query Direction", () => {
 
             input UserUpdateInput {
               friends: [UserFriendsUpdateFieldInput!]
+              name: StringScalarMutations
               name_SET: String
             }
 

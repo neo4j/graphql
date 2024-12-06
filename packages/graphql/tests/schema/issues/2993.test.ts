@@ -81,6 +81,11 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               lessThanEquals: DateTime
             }
 
+            \\"\\"\\"DateTime mutations\\"\\"\\"
+            input DateTimeScalarMutations {
+              set: DateTime
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships deleted during a delete mutation
             \\"\\"\\"
@@ -118,6 +123,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             input FOLLOWSUpdateInput {
+              since: DateTimeScalarMutations
               since_SET: DateTime
             }
 
@@ -151,6 +157,11 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               lessThanEquals: ID
               matches: ID
               startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
             }
 
             type Mutation {
@@ -204,7 +215,9 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             input ProfileUpdateInput {
+              id: IDScalarMutations
               id_SET: ID
+              userName: StringScalarMutations
               userName_SET: String
             }
 
@@ -267,6 +280,11 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             \\"\\"\\"
@@ -441,6 +459,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
 
             input UserUpdateInput {
               following: [UserFollowingUpdateFieldInput!]
+              userName: StringScalarMutations
               userName_SET: String
             }
 

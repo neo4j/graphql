@@ -194,7 +194,7 @@ describe("Point", () => {
             mutation UpdatePhotographs($id: String!, $longitude: Float!, $latitude: Float!) {
                 ${Photograph.operations.update}(
                     where: { id_EQ: $id }
-                    update: { location_SET: { longitude: $longitude, latitude: $latitude } }
+                    update: { location: { set: { longitude: $longitude, latitude: $latitude } } }
                 ) {
                     ${Photograph.plural} {
                         id
@@ -263,7 +263,7 @@ describe("Point", () => {
             mutation UpdatePhotographs($id: String!, $longitude: Float!, $latitude: Float!, $height: Float!) {
                 ${Photograph.operations.update}(
                     where: { id_EQ: $id }
-                    update: { location_SET: { longitude: $longitude, latitude: $latitude, height: $height } }
+                    update: { location: { set: { longitude: $longitude, latitude: $latitude, height: $height } } }
                 ) {
                     ${Photograph.plural} {
                         id

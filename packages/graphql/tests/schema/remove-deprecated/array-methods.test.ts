@@ -70,6 +70,7 @@ describe("Arrays Methods", () => {
             }
 
             input ActedInUpdateInput {
+              pay: ListFloatMutations
               pay_POP: Int
               pay_PUSH: [Float]
               pay_SET: [Float]
@@ -254,6 +255,7 @@ describe("Arrays Methods", () => {
 
             input ActorUpdateInput {
               actedIn: [ActorActedInUpdateFieldInput!]
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -349,6 +351,15 @@ describe("Arrays Methods", () => {
               lessThanEquals: Float
             }
 
+            \\"\\"\\"Float mutations\\"\\"\\"
+            input FloatScalarMutations {
+              add: Float
+              divide: Float
+              multiply: Float
+              set: Float
+              subtract: Float
+            }
+
             type IDAggregateSelection {
               longest: ID
               shortest: ID
@@ -366,6 +377,18 @@ describe("Arrays Methods", () => {
               lessThanEquals: ID
               matches: ID
               startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
+            \\"\\"\\"Mutations for a list for Float\\"\\"\\"
+            input ListFloatMutations {
+              pop: Int
+              push: [Float!]
+              set: [Float!]
             }
 
             type Movie {
@@ -528,12 +551,15 @@ describe("Arrays Methods", () => {
 
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
+              averageRating: FloatScalarMutations
               averageRating_ADD: Float
               averageRating_DIVIDE: Float
               averageRating_MULTIPLY: Float
               averageRating_SET: Float
               averageRating_SUBTRACT: Float
+              id: IDScalarMutations
               id_SET: ID
+              ratings: ListFloatMutations
               ratings_POP: Int
               ratings_PUSH: [Float!]
               ratings_SET: [Float!]
@@ -643,6 +669,11 @@ describe("Arrays Methods", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateActorsMutationResponse {

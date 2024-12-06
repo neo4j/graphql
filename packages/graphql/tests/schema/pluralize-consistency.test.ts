@@ -122,6 +122,11 @@ describe("Pluralize consistency", () => {
               startsWith: String
             }
 
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
+            }
+
             type SuperFriendsConnection {
               edges: [super_friendEdge!]!
               pageInfo: PageInfo!
@@ -184,6 +189,7 @@ describe("Pluralize consistency", () => {
             }
 
             input super_friendUpdateInput {
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -323,6 +329,7 @@ describe("Pluralize consistency", () => {
 
             input super_userUpdateInput {
               my_friend: [super_userMy_friendUpdateFieldInput!]
+              name: StringScalarMutations
               name_SET: String
             }
 

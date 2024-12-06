@@ -74,7 +74,9 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
             }
 
             input AWSAccountUpdateInput {
+              accountName: StringScalarMutations
               accountName_SET: String
+              code: StringScalarMutations
               code_SET: String
             }
 
@@ -150,7 +152,9 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
             }
 
             input DNSZoneUpdateInput {
+              awsId: StringScalarMutations
               awsId_SET: String
+              zoneType: StringScalarMutations
               zoneType_SET: String
             }
 
@@ -237,6 +241,11 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateAwsAccountsMutationResponse {

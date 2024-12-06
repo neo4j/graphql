@@ -92,6 +92,11 @@ describe("Authorization", () => {
               startsWith: ID
             }
 
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
             type Mutation {
               createPosts(input: [PostCreateInput!]!): CreatePostsMutationResponse!
               createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
@@ -250,7 +255,9 @@ describe("Authorization", () => {
 
             input PostUpdateInput {
               author: [PostAuthorUpdateFieldInput!]
+              id: IDScalarMutations
               id_SET: ID
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -347,6 +354,11 @@ describe("Authorization", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             \\"\\"\\"
@@ -521,7 +533,9 @@ describe("Authorization", () => {
             }
 
             input UserUpdateInput {
+              id: IDScalarMutations
               id_SET: ID
+              name: StringScalarMutations
               name_SET: String
               posts: [UserPostsUpdateFieldInput!]
             }

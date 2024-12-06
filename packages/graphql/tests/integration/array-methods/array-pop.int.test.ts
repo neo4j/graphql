@@ -108,7 +108,7 @@ describe("array-pop", () => {
 
             const update = `
             mutation {
-                ${typeMovie.operations.update} (update: { tags_POP: 1 }) {
+                ${typeMovie.operations.update} (update: { tags: { pop: 1} }) {
                     ${typeMovie.plural} {
                         title
                         tags
@@ -208,7 +208,7 @@ describe("array-pop", () => {
 
             const update = `
             mutation {
-                ${typeMovie.operations.update} (update: { tags_POP: 1 }) {
+                ${typeMovie.operations.update} (update: { tags: {pop: 1 } }) {
                     ${typeMovie.plural} {
                         title
                         tags
@@ -308,7 +308,7 @@ describe("array-pop", () => {
 
             const update = `
             mutation {
-                ${typeMovie.operations.update} (update: { tags_POP: 2 }) {
+                ${typeMovie.operations.update} (update: { tags: {pop: 2 } }) {
                     ${typeMovie.plural} {
                         title
                         tags
@@ -421,7 +421,7 @@ describe("array-pop", () => {
 
         const update = `
             mutation UpdateMovie($elementsToPop: Int!) {
-                ${typeMovie.operations.update} (update: { tags_POP: $elementsToPop }) {
+                ${typeMovie.operations.update} (update: { tags: { pop: $elementsToPop } }) {
                     ${typeMovie.plural} {
                         title
                         tags {
@@ -530,7 +530,7 @@ describe("array-pop", () => {
 
         const update = `
             mutation UpdateMovie($elementsToPop: Int!) {
-                ${typeMovie.operations.update} (update: { tags_POP: $elementsToPop }) {
+                ${typeMovie.operations.update} (update: { tags: {pop: $elementsToPop } }) {
                     ${typeMovie.plural} {
                         title
                         tags {
@@ -576,7 +576,7 @@ describe("array-pop", () => {
 
         const update = `
             mutation {
-                ${typeMovie.operations.update} (update: { tags_POP: 1, moreTags_POP: 2 }) {
+                ${typeMovie.operations.update} (update: { tags: {pop: 1}, moreTags: {pop: 2} }) {
                     ${typeMovie.plural} {
                         title
                         tags
@@ -635,7 +635,7 @@ describe("array-pop", () => {
                             {
                                 update: {
                                     node: {
-                                        viewers_POP: $numberToPop
+                                        viewers: {pop: $numberToPop}
                                     }
                                 }
                             }
@@ -707,7 +707,7 @@ describe("array-pop", () => {
                         {
                             update: {
                                 edge: {
-                                    pay_POP: $numberToPop
+                                    pay: {pop: $numberToPop}
                                 }
                             }
                         }
@@ -790,7 +790,7 @@ describe("array-pop", () => {
                         {
                             update: {
                                 edge: {
-                                    locations_POP: $numberToPop
+                                    locations: {pop: $numberToPop}
                                 }
                             }
                         }

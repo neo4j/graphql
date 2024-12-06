@@ -98,8 +98,8 @@ describe("Date", () => {
             const create = /* GraphQL */ `
                 mutation {
                     ${Movie.operations.create}(input: [{ id: "${id}", dates: ["${
-                date.toISOString().split("T")[0]
-            }", "${date.toISOString()}", "${date.toISOString()}"] }]) {
+                        date.toISOString().split("T")[0]
+                    }", "${date.toISOString()}", "${date.toISOString()}"] }]) {
                         ${Movie.plural} {
                             dates
                         }
@@ -189,7 +189,7 @@ describe("Date", () => {
                 mutation {
                     ${
                         Movie.operations.update
-                    }(where: { id_EQ: "${id}"}, update: { date_SET: "${date.toISOString()}" }) {
+                    }(where: { id_EQ: "${id}"}, update: { date: {set: "${date.toISOString()}" } }) {
                         ${Movie.plural} {
                             id
                             date

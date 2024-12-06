@@ -187,6 +187,7 @@ describe("Relationship", () => {
 
             input ActorUpdateInput {
               movies: [ActorMoviesUpdateFieldInput!]
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -276,6 +277,11 @@ describe("Relationship", () => {
               lessThanEquals: ID
               matches: ID
               startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
             }
 
             type Movie {
@@ -426,6 +432,7 @@ describe("Relationship", () => {
 
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
+              id: IDScalarMutations
               id_SET: ID
             }
 
@@ -523,6 +530,11 @@ describe("Relationship", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateActorsMutationResponse {

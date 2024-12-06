@@ -86,6 +86,11 @@ describe("Directive-preserve", () => {
               startsWith: ID
             }
 
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
             type Movie @preservedTopLevel {
               id: ID @preservedFieldLevel(string: \\"str\\", int: 12, float: 1.2, boolean: true)
             }
@@ -112,6 +117,7 @@ describe("Directive-preserve", () => {
             }
 
             input MovieUpdateInput {
+              id: IDScalarMutations
               id_SET: ID
             }
 
@@ -242,6 +248,15 @@ describe("Directive-preserve", () => {
               in: [Float!]
               lessThan: Float
               lessThanEquals: Float
+            }
+
+            \\"\\"\\"Float mutations\\"\\"\\"
+            input FloatScalarMutations {
+              add: Float
+              divide: Float
+              multiply: Float
+              set: Float
+              subtract: Float
             }
 
             type Genre {
@@ -434,6 +449,7 @@ describe("Directive-preserve", () => {
 
             input GenreUpdateInput {
               movies: [GenreMoviesUpdateFieldInput!]
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -495,6 +511,13 @@ describe("Directive-preserve", () => {
               in: [Int!]
               lessThan: Int
               lessThanEquals: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
             }
 
             type Movie {
@@ -653,12 +676,15 @@ describe("Directive-preserve", () => {
 
             input MovieUpdateInput {
               genres: [MovieGenresUpdateFieldInput!] @deprecated(reason: \\"Do not use\\")
+              imdbRating: FloatScalarMutations
               imdbRating_ADD: Float
               imdbRating_DIVIDE: Float
               imdbRating_MULTIPLY: Float
               imdbRating_SET: Float
               imdbRating_SUBTRACT: Float
+              title: StringScalarMutations
               title_SET: String
+              year: IntScalarMutations
               year_DECREMENT: Int
               year_INCREMENT: Int
               year_SET: Int
@@ -774,6 +800,11 @@ describe("Directive-preserve", () => {
               startsWith: String
             }
 
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
+            }
+
             type UpdateGenresMutationResponse {
               genres: [Genre!]!
               info: UpdateInfo!
@@ -884,6 +915,7 @@ describe("Directive-preserve", () => {
             }
 
             input ActedInUpdateInput {
+              role: StringScalarMutations
               role_SET: String
             }
 
@@ -1059,6 +1091,7 @@ describe("Directive-preserve", () => {
 
             input ActorUpdateInput {
               actedIn: [ActorActedInUpdateFieldInput!]
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -1151,6 +1184,13 @@ describe("Directive-preserve", () => {
               in: [Int!]
               lessThan: Int
               lessThanEquals: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
             }
 
             type Movie implements Production {
@@ -1270,9 +1310,11 @@ describe("Directive-preserve", () => {
 
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!] @deprecated(reason: \\"Do not use\\")
+              runtime: IntScalarMutations
               runtime_DECREMENT: Int
               runtime_INCREMENT: Int
               runtime_SET: Int
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -1538,6 +1580,7 @@ describe("Directive-preserve", () => {
 
             input ProductionUpdateInput {
               actors: [ProductionActorsUpdateFieldInput!]
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -1723,9 +1766,11 @@ describe("Directive-preserve", () => {
 
             input SeriesUpdateInput {
               actors: [SeriesActorsUpdateFieldInput!]
+              episodes: IntScalarMutations
               episodes_DECREMENT: Int
               episodes_INCREMENT: Int
               episodes_SET: Int
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -1798,6 +1843,11 @@ describe("Directive-preserve", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateActorsMutationResponse {
@@ -1916,6 +1966,7 @@ describe("Directive-preserve", () => {
             }
 
             input ActedInUpdateInput {
+              role: StringScalarMutations
               role_SET: String
             }
 
@@ -2088,6 +2139,7 @@ describe("Directive-preserve", () => {
 
             input ActorUpdateInput {
               actedIn: [ActorActedInUpdateFieldInput!]
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -2180,6 +2232,13 @@ describe("Directive-preserve", () => {
               in: [Int!]
               lessThan: Int
               lessThanEquals: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
             }
 
             type Movie implements Production {
@@ -2334,9 +2393,11 @@ describe("Directive-preserve", () => {
 
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!] @deprecated(reason: \\"Do not use\\")
+              runtime: IntScalarMutations
               runtime_DECREMENT: Int
               runtime_INCREMENT: Int
               runtime_SET: Int
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -2447,6 +2508,7 @@ describe("Directive-preserve", () => {
             }
 
             input ProductionUpdateInput {
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -2642,9 +2704,11 @@ describe("Directive-preserve", () => {
 
             input SeriesUpdateInput {
               actors: [SeriesActorsUpdateFieldInput!]
+              episodes: IntScalarMutations
               episodes_DECREMENT: Int
               episodes_INCREMENT: Int
               episodes_SET: Int
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -2717,6 +2781,11 @@ describe("Directive-preserve", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateActorsMutationResponse {
@@ -2823,6 +2892,7 @@ describe("Directive-preserve", () => {
             }
 
             input ActedInUpdateInput {
+              role: StringScalarMutations
               role_SET: String
             }
 
@@ -2995,6 +3065,7 @@ describe("Directive-preserve", () => {
 
             input ActorUpdateInput {
               actedIn: [ActorActedInUpdateFieldInput!]
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -3087,6 +3158,13 @@ describe("Directive-preserve", () => {
               in: [Int!]
               lessThan: Int
               lessThanEquals: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
             }
 
             type Movie implements Production {
@@ -3241,9 +3319,11 @@ describe("Directive-preserve", () => {
 
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
+              runtime: IntScalarMutations
               runtime_DECREMENT: Int
               runtime_INCREMENT: Int
               runtime_SET: Int
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -3354,6 +3434,7 @@ describe("Directive-preserve", () => {
             }
 
             input ProductionUpdateInput {
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -3549,9 +3630,11 @@ describe("Directive-preserve", () => {
 
             input SeriesUpdateInput {
               actors: [SeriesActorsUpdateFieldInput!]
+              episodes: IntScalarMutations
               episodes_DECREMENT: Int
               episodes_INCREMENT: Int
               episodes_SET: Int
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -3624,6 +3707,11 @@ describe("Directive-preserve", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateActorsMutationResponse {
@@ -3828,6 +3916,7 @@ describe("Directive-preserve", () => {
 
             input BlogUpdateInput {
               posts: [BlogPostsUpdateFieldInput!]
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -3962,6 +4051,7 @@ describe("Directive-preserve", () => {
             }
 
             input PostUpdateInput {
+              content: StringScalarMutations @deprecated(reason: \\"Do not use post.content\\")
               content_SET: String @deprecated(reason: \\"Do not use post.content\\")
             }
 
@@ -4021,6 +4111,11 @@ describe("Directive-preserve", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateBlogsMutationResponse {
@@ -4198,6 +4293,7 @@ describe("Directive-preserve", () => {
 
             input UserUpdateInput {
               content: UserContentUpdateInput @deprecated(reason: \\"Do not use user.content\\")
+              name: StringScalarMutations
               name_SET: String
             }
 

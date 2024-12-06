@@ -90,6 +90,7 @@ describe("Enum", () => {
             }
 
             input MovieUpdateInput {
+              status: StatusEnumScalarMutations
               status_SET: Status
             }
 
@@ -146,6 +147,11 @@ describe("Enum", () => {
             input StatusEnumScalarFilters {
               equals: Status
               in: [Status!]
+            }
+
+            \\"\\"\\"Status mutations\\"\\"\\"
+            input StatusEnumScalarMutations {
+              set: Status
             }
 
             \\"\\"\\"

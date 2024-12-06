@@ -82,10 +82,13 @@ describe("200", () => {
             }
 
             input CategoryUpdateInput {
+              description: StringScalarMutations
               description_SET: String
+              exampleImageLocations: ListStringMutations
               exampleImageLocations_POP: Int
               exampleImageLocations_PUSH: [String!]
               exampleImageLocations_SET: [String!]
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -156,6 +159,13 @@ describe("200", () => {
               startsWith: ID
             }
 
+            \\"\\"\\"Mutations for a list for String\\"\\"\\"
+            input ListStringMutations {
+              pop: Int
+              push: [String!]
+              set: [String!]
+            }
+
             type Mutation {
               createCategories(input: [CategoryCreateInput!]!): CreateCategoriesMutationResponse!
               deleteCategories(where: CategoryWhere): DeleteInfo!
@@ -207,6 +217,11 @@ describe("200", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateCategoriesMutationResponse {
