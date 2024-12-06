@@ -94,6 +94,11 @@ describe("@customResolver directive", () => {
               startsWith: ID
             }
 
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
             type Mutation {
               createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
               deleteUsers(where: UserWhere): DeleteInfo!
@@ -142,6 +147,11 @@ describe("@customResolver directive", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             \\"\\"\\"
@@ -239,8 +249,11 @@ describe("@customResolver directive", () => {
             }
 
             input UserUpdateInput {
+              id: IDScalarMutations
               id_SET: ID
+              password: StringScalarMutations
               password_SET: String
+              username: StringScalarMutations
               username_SET: String
             }
 

@@ -33,8 +33,8 @@ type FieldConfig = {
     description: string;
 };
 
-// TODO: This was a specialized function used to generate relationship fields,
-// but now is a schema composer utility that could be reused in other places
+// NOTE: This used to be a specialized function used specifically to generate relationship fields,
+// but now after this refactor, it could be used as schema composer utility if needed.
 function fieldConfigsToFieldConfigMap({
     deprecatedDirectives,
     fields,

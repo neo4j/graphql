@@ -100,10 +100,13 @@ describe("Relationship-properties", () => {
             }
 
             input ActedInUpdateInput {
+              leadRole: BooleanScalarMutations
               leadRole_SET: Boolean
+              screenTime: IntScalarMutations
               screenTime_DECREMENT: Int
               screenTime_INCREMENT: Int
               screenTime_SET: Int
+              startDate: DateScalarMutations
               startDate_SET: Date
             }
 
@@ -319,6 +322,7 @@ describe("Relationship-properties", () => {
 
             input ActorUpdateInput {
               movies: [ActorMoviesUpdateFieldInput!]
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -372,6 +376,11 @@ describe("Relationship-properties", () => {
               equals: Boolean
             }
 
+            \\"\\"\\"Boolean mutations\\"\\"\\"
+            input BooleanScalarMutations {
+              set: Boolean
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -403,6 +412,11 @@ describe("Relationship-properties", () => {
               lessThanEquals: Date
             }
 
+            \\"\\"\\"Date mutations\\"\\"\\"
+            input DateScalarMutations {
+              set: Date
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships deleted during a delete mutation
             \\"\\"\\"
@@ -426,6 +440,13 @@ describe("Relationship-properties", () => {
               in: [Int!]
               lessThan: Int
               lessThanEquals: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
             }
 
             type Movie {
@@ -618,6 +639,7 @@ describe("Relationship-properties", () => {
 
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -717,6 +739,11 @@ describe("Relationship-properties", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateActorsMutationResponse {
@@ -836,6 +863,7 @@ describe("Relationship-properties", () => {
             }
 
             input ActedInUpdateInput {
+              screenTime: IntScalarMutations
               screenTime_DECREMENT: Int
               screenTime_INCREMENT: Int
               screenTime_SET: Int
@@ -1059,6 +1087,7 @@ describe("Relationship-properties", () => {
 
             input ActorUpdateInput {
               movies: [ActorMoviesUpdateFieldInput!]
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -1185,6 +1214,13 @@ describe("Relationship-properties", () => {
               in: [Int!]
               lessThan: Int
               lessThanEquals: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
             }
 
             type Movie {
@@ -1379,6 +1415,7 @@ describe("Relationship-properties", () => {
 
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -1478,6 +1515,11 @@ describe("Relationship-properties", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateActorsMutationResponse {
@@ -1776,6 +1818,7 @@ describe("Relationship-properties", () => {
 
             input ActorUpdateInput {
               movies: [ActorMoviesUpdateFieldInput!]
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -2075,6 +2118,7 @@ describe("Relationship-properties", () => {
 
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -2174,6 +2218,11 @@ describe("Relationship-properties", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateActorsMutationResponse {

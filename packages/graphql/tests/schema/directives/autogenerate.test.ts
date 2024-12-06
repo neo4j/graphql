@@ -108,6 +108,7 @@ describe("Autogenerate", () => {
             }
 
             input MovieUpdateInput {
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -180,6 +181,11 @@ describe("Autogenerate", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             \\"\\"\\"

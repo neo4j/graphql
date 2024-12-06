@@ -276,6 +276,7 @@ describe("Unions", () => {
             }
 
             input AuthorUpdateInput {
+              name: StringScalarMutations
               name_SET: String
               publications: AuthorPublicationsUpdateInput
             }
@@ -518,6 +519,7 @@ describe("Unions", () => {
 
             input BookUpdateInput {
               author: [BookAuthorUpdateFieldInput!]
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -612,6 +614,13 @@ describe("Unions", () => {
               in: [Int!]
               lessThan: Int
               lessThanEquals: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
             }
 
             type Journal {
@@ -804,6 +813,7 @@ describe("Unions", () => {
 
             input JournalUpdateInput {
               author: [JournalAuthorUpdateFieldInput!]
+              subject: StringScalarMutations
               subject_SET: String
             }
 
@@ -919,6 +929,11 @@ describe("Unions", () => {
               startsWith: String
             }
 
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
+            }
+
             type UpdateAuthorsMutationResponse {
               authors: [Author!]!
               info: UpdateInfo!
@@ -989,6 +1004,7 @@ describe("Unions", () => {
             }
 
             input WroteUpdateInput {
+              words: IntScalarMutations
               words_DECREMENT: Int
               words_INCREMENT: Int
               words_SET: Int

@@ -202,6 +202,11 @@ describe("@populatedBy tests", () => {
                   startsWith: ID
                 }
 
+                \\"\\"\\"ID mutations\\"\\"\\"
+                input IDScalarMutations {
+                  set: ID
+                }
+
                 type Movie {
                   callback1: String!
                   callback2: String!
@@ -238,7 +243,9 @@ describe("@populatedBy tests", () => {
                 }
 
                 input MovieUpdateInput {
+                  callback1: StringScalarMutations
                   callback1_SET: String
+                  id: IDScalarMutations
                   id_SET: ID
                 }
 
@@ -323,6 +330,11 @@ describe("@populatedBy tests", () => {
                   lessThanEquals: String
                   matches: String
                   startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 \\"\\"\\"
@@ -417,6 +429,11 @@ describe("@populatedBy tests", () => {
                   startsWith: ID
                 }
 
+                \\"\\"\\"ID mutations\\"\\"\\"
+                input IDScalarMutations {
+                  set: ID
+                }
+
                 type IntAggregateSelection {
                   average: Float
                   max: Int
@@ -432,6 +449,13 @@ describe("@populatedBy tests", () => {
                   in: [Int!]
                   lessThan: Int
                   lessThanEquals: Int
+                }
+
+                \\"\\"\\"Int mutations\\"\\"\\"
+                input IntScalarMutations {
+                  add: Int
+                  set: Int
+                  subtract: Int
                 }
 
                 type Movie {
@@ -470,9 +494,11 @@ describe("@populatedBy tests", () => {
                 }
 
                 input MovieUpdateInput {
+                  callback1: IntScalarMutations
                   callback1_DECREMENT: Int
                   callback1_INCREMENT: Int
                   callback1_SET: Int
+                  id: IDScalarMutations
                   id_SET: ID
                 }
 
@@ -795,6 +821,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 input GenreUpdateInput {
+                  id: IDScalarMutations
                   id_SET: ID
                 }
 
@@ -833,6 +860,11 @@ describe("@populatedBy tests", () => {
                   lessThanEquals: ID
                   matches: ID
                   startsWith: ID
+                }
+
+                \\"\\"\\"ID mutations\\"\\"\\"
+                input IDScalarMutations {
+                  set: ID
                 }
 
                 type Movie {
@@ -1008,6 +1040,7 @@ describe("@populatedBy tests", () => {
 
                 input MovieUpdateInput {
                   genres: [MovieGenresUpdateFieldInput!]
+                  id: IDScalarMutations
                   id_SET: ID
                 }
 
@@ -1167,7 +1200,9 @@ describe("@populatedBy tests", () => {
                 }
 
                 input RelPropertiesUpdateInput {
+                  callback1: StringScalarMutations
                   callback1_SET: String
+                  id: IDScalarMutations
                   id_SET: ID
                 }
 
@@ -1226,6 +1261,11 @@ describe("@populatedBy tests", () => {
                   lessThanEquals: String
                   matches: String
                   startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 type UpdateGenresMutationResponse {
@@ -1350,6 +1390,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 input GenreUpdateInput {
+                  id: IDScalarMutations
                   id_SET: ID
                 }
 
@@ -1390,6 +1431,11 @@ describe("@populatedBy tests", () => {
                   startsWith: ID
                 }
 
+                \\"\\"\\"ID mutations\\"\\"\\"
+                input IDScalarMutations {
+                  set: ID
+                }
+
                 type IntAggregateSelection {
                   average: Float
                   max: Int
@@ -1405,6 +1451,13 @@ describe("@populatedBy tests", () => {
                   in: [Int!]
                   lessThan: Int
                   lessThanEquals: Int
+                }
+
+                \\"\\"\\"Int mutations\\"\\"\\"
+                input IntScalarMutations {
+                  add: Int
+                  set: Int
+                  subtract: Int
                 }
 
                 type Movie {
@@ -1580,6 +1633,7 @@ describe("@populatedBy tests", () => {
 
                 input MovieUpdateInput {
                   genres: [MovieGenresUpdateFieldInput!]
+                  id: IDScalarMutations
                   id_SET: ID
                 }
 
@@ -1754,9 +1808,11 @@ describe("@populatedBy tests", () => {
                 }
 
                 input RelPropertiesUpdateInput {
+                  callback1: IntScalarMutations
                   callback1_DECREMENT: Int
                   callback1_INCREMENT: Int
                   callback1_SET: Int
+                  id: IDScalarMutations
                   id_SET: ID
                 }
 

@@ -451,7 +451,7 @@ describe("Arrays Methods", () => {
             }
 
             type ActedIn @relationshipProperties {
-                pay: [Float]
+                pay: [Float!]
             }
         `;
 
@@ -553,7 +553,7 @@ describe("Arrays Methods", () => {
             }
 
             type ActedIn @relationshipProperties {
-                pay: [Float]
+                pay: [Float!]
             }
         `;
 

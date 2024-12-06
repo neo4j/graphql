@@ -38,7 +38,7 @@ describe("array-push", () => {
         const typeDefs = /* GraphQL */ `
             type ${typeMovie} @node {
                 title: String
-                tags: [String]
+                tags: [String!]
             }
         `;
 
@@ -81,7 +81,7 @@ describe("array-push", () => {
         const typeDefs = `
             type ${typeMovie} @node {
                 title: String
-                tags: [String] @authentication(operations: [UPDATE])
+                tags: [String!] @authentication(operations: [UPDATE])
             }
         `;
 
@@ -132,7 +132,7 @@ describe("array-push", () => {
         const typeDefs = /* GraphQL */ `
             type ${typeMovie} @node {
                 title: String
-                tags: [String]
+                tags: [String!]
             }
         `;
 
@@ -176,7 +176,7 @@ describe("array-push", () => {
         const typeDefs = /* GraphQL */ `
             type ${typeMovie} @node {
                 title: String
-                tags: [String]
+                tags: [String!]
             }
         `;
 
@@ -229,7 +229,7 @@ describe("array-push", () => {
             }
 
             type ActedIn @relationshipProperties {
-                pay: [Float]
+                pay: [Float!]
             }
         `;
 
@@ -240,7 +240,7 @@ describe("array-push", () => {
         });
 
         const query = /* GraphQL */ `
-            mutation Mutation($id: ID, $payIncrement: [Float]) {
+            mutation Mutation($id: ID, $payIncrement: [Float!]) {
                 ${actor.operations.update}(where: { id_EQ: $id }, update: {
                     actedIn: [
                         {

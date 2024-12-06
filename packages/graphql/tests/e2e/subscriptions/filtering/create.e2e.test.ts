@@ -46,7 +46,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
             averageRating: Float
             fileSize: BigInt
             isFavorite: Boolean
-            similarTitles: [String]
+            similarTitles: [String!]
          }
          `;
 

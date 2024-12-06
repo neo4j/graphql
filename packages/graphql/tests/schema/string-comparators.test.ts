@@ -97,6 +97,7 @@ describe("String Comparators", () => {
             }
 
             input MovieUpdateInput {
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -167,6 +168,11 @@ describe("String Comparators", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             \\"\\"\\"
@@ -250,6 +256,7 @@ describe("String Comparators", () => {
             }
 
             input MovieUpdateInput {
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -316,6 +323,11 @@ describe("String Comparators", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             \\"\\"\\"
@@ -408,6 +420,7 @@ describe("String Comparators", () => {
             }
 
             input MovieUpdateInput {
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -476,6 +489,11 @@ describe("String Comparators", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             \\"\\"\\"
@@ -572,6 +590,7 @@ describe("String Comparators", () => {
             }
 
             input ActedInUpdateInput {
+              screenTime: StringScalarMutations
               screenTime_SET: String
             }
 
@@ -781,6 +800,7 @@ describe("String Comparators", () => {
 
             input ActorUpdateInput {
               actedIn: [ActorActedInUpdateFieldInput!]
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -1049,6 +1069,7 @@ describe("String Comparators", () => {
 
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -1152,6 +1173,11 @@ describe("String Comparators", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateActorsMutationResponse {

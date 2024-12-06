@@ -32,16 +32,16 @@ describe("Mathematical operations tests", () => {
     });
 
     test.each([
-        { initialValue: int(0), value: 5, type: "Int", operation: "INCREMENT", expected: 5 },
-        { initialValue: int(10), value: 5, type: "Int", operation: "DECREMENT", expected: 5 },
-        { initialValue: int(0), value: "5", type: "BigInt", operation: "INCREMENT", expected: "5" },
-        { initialValue: int(10), value: "5", type: "BigInt", operation: "DECREMENT", expected: "5" },
-        { initialValue: int(10), value: "-5", type: "BigInt", operation: "DECREMENT", expected: "15" },
-        { initialValue: 0.0, value: 5.0, type: "Float", operation: "ADD", expected: 5.0 },
-        { initialValue: 10.0, value: 5.0, type: "Float", operation: "SUBTRACT", expected: 5.0 },
-        { initialValue: 10.0, value: 5.0, type: "Float", operation: "MULTIPLY", expected: 50.0 },
-        { initialValue: 10.0, value: -5.0, type: "Float", operation: "MULTIPLY", expected: -50.0 },
-        { initialValue: 10.0, value: 5.0, type: "Float", operation: "DIVIDE", expected: 2.0 },
+        { initialValue: int(0), value: 5, type: "Int", operation: "add", expected: 5 },
+        { initialValue: int(10), value: 5, type: "Int", operation: "subtract", expected: 5 },
+        { initialValue: int(0), value: "5", type: "BigInt", operation: "add", expected: "5" },
+        { initialValue: int(10), value: "5", type: "BigInt", operation: "subtract", expected: "5" },
+        { initialValue: int(10), value: "-5", type: "BigInt", operation: "subtract", expected: "15" },
+        { initialValue: 0.0, value: 5.0, type: "Float", operation: "add", expected: 5.0 },
+        { initialValue: 10.0, value: 5.0, type: "Float", operation: "subtract", expected: 5.0 },
+        { initialValue: 10.0, value: 5.0, type: "Float", operation: "multiply", expected: 50.0 },
+        { initialValue: 10.0, value: -5.0, type: "Float", operation: "multiply", expected: -50.0 },
+        { initialValue: 10.0, value: 5.0, type: "Float", operation: "divide", expected: 2.0 },
     ])(
         "Simple operations on numerical fields: on $type, $operation($initialValue, $value) should return $expected",
         async ({ initialValue, type, value, operation, expected }) => {
@@ -62,7 +62,7 @@ describe("Mathematical operations tests", () => {
 
             const query = /* GraphQL */ `
             mutation($id: ID, $value: ${type}) {
-                ${movie.operations.update}(where: { id_EQ: $id }, update: {viewers_${operation}: $value}) {
+                ${movie.operations.update}(where: { id_EQ: $id }, update: {viewers: { ${operation}: $value }}) {
                     ${movie.plural} {
                         id
                         viewers
@@ -98,24 +98,24 @@ describe("Mathematical operations tests", () => {
             initialValue: int(largestSafeSigned32BitInteger),
             value: largestSafeSigned32BitInteger,
             type: "Int",
-            operation: "INCREMENT",
+            operation: "add",
             expectedError: "overflow",
         },
         {
             initialValue: int(largestSafeSigned64BitBigInt),
             value: largestSafeSigned64BitBigInt,
             type: "BigInt",
-            operation: "INCREMENT",
+            operation: "add",
             expectedError: "overflow",
         },
         {
             initialValue: Number.MAX_VALUE,
             value: Number.MAX_VALUE,
             type: "Float",
-            operation: "ADD",
+            operation: "add",
             expectedError: "overflow",
         },
-        { initialValue: 10.0, value: 0.0, type: "Float", operation: "DIVIDE", expectedError: "division by zero" },
+        { initialValue: 10.0, value: 0.0, type: "Float", operation: "divide", expectedError: "division by zero" },
     ])(
         "Should raise an error in case of $expectedError on $type, initialValue: $initialValue, value: $value",
         async ({ initialValue, type, value, operation, expectedError }) => {
@@ -135,7 +135,7 @@ describe("Mathematical operations tests", () => {
 
             const query = /* GraphQL */ `
             mutation($id: ID, $value: ${type}) {
-                ${movie.operations.update}(where: { id_EQ: $id }, update: {viewers_${operation}: $value}) {
+                ${movie.operations.update}(where: { id_EQ: $id }, update: {viewers: {${operation}: $value }}) {
                     ${movie.plural} {
                         id
                         viewers
@@ -321,7 +321,7 @@ describe("Mathematical operations tests", () => {
                     {
                       update: {
                         node: {
-                          viewers_INCREMENT: $value
+                          viewers: {add: $value}
                         }
                       }
                     }
@@ -403,7 +403,7 @@ describe("Mathematical operations tests", () => {
                     {
                       update: {
                         node: {
-                          viewers_INCREMENT: $value
+                          viewers: {add: $value }
                         }
                       }
                     }
@@ -542,7 +542,7 @@ describe("Mathematical operations tests", () => {
                     {
                       update: {
                         edge: {
-                          pay_ADD: $payIncrement
+                          pay: {add: $payIncrement}
                         }
                       }
                     }
@@ -628,8 +628,7 @@ describe("Mathematical operations tests", () => {
                     {
                       update: {
                         edge: {
-                          pay_ADD: $payIncrement
-                          pay_SET: $payIncrement
+                          pay: {add: $payIncrement, set: $payIncrement}
                         }
                       }
                     }
@@ -669,10 +668,10 @@ describe("Mathematical operations tests", () => {
         });
 
         expect(gqlResult.errors).toBeDefined();
-      
+
         const relationshipType = `${movie.name}ActorsRelationship`;
         expect(gqlResult.errors).toEqual([
-            new GraphQLError(`Conflicting modification of [[pay_SET]], [[pay_ADD]] on type ${relationshipType}`),
+            new GraphQLError(`Conflicting modification of field pay: [[set]], [[add]] on type ${relationshipType}`),
         ]);
         const storedValue = await testHelper.executeCypher(
             `

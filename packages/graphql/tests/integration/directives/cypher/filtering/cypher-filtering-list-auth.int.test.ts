@@ -34,7 +34,7 @@ describe("cypher directive filtering - List Auth", () => {
         const typeDefs = /* GraphQL */ `
             type ${Movie} @node @authorization(filter: [{ where: { node: { custom_field_INCLUDES: "$jwt.custom_value" } } }]) {
                 title: String
-                custom_field: [String]
+                custom_field: [String!]
                     @cypher(
                         statement: """
                         MATCH (this)

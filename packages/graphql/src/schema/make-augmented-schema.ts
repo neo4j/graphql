@@ -155,7 +155,27 @@ function makeAugmentedSchema({
             },
         });
     });
-    // Generates the filters for scalar, which are reused
+
+    // Generates the mutations for enums, which are reused
+    Array.from(enumTypes.values()).forEach((enumType) => {
+        composer.createInputTC({
+            name: `${enumType.name.value}EnumScalarMutations`,
+            description: `${enumType.name.value} mutations`,
+            fields: {
+                set: { type: enumType.name.value },
+            },
+        });
+        composer.createInputTC({
+            name: `${enumType.name.value}ListEnumScalarMutations`,
+            description: `Mutations for a list for ${enumType.name.value}`,
+            fields: {
+                set: { type: `[${enumType.name.value}!]!` },
+                push: { type: `[${enumType.name.value}!]!` },
+                pop: { type: enumType.name.value },
+            },
+        });
+    });
+
     Array.from(scalarTypes.values()).forEach((enumType) => {
         composer.createInputTC({
             name: `${enumType.name.value}ScalarFilters`,
@@ -165,6 +185,27 @@ function makeAugmentedSchema({
                     type: enumType.name.value,
                 },
                 in: { type: `[${enumType.name.value}!]` },
+            },
+        });
+
+        composer.createInputTC({
+            name: `${enumType.name.value}ListScalarMutations`,
+            description: `Mutations for a list for ${enumType.name.value}`,
+            fields: {
+                set: { type: `[${enumType.name.value}!]!` },
+                push: { type: `[${enumType.name.value}!]!` },
+                pop: { type: enumType.name.value },
+            },
+        });
+    });
+
+    // Generates the mutations for scalar, which are reused
+    Array.from(scalarTypes.values()).forEach((enumType) => {
+        composer.createInputTC({
+            name: `${enumType.name.value}ScalarMutations`,
+            description: `${enumType.name.value} filters`,
+            fields: {
+                set: { type: enumType.name.value },
             },
         });
     });

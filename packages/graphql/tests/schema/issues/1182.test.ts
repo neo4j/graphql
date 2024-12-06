@@ -87,8 +87,11 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
             }
 
             input ActorUpdateInput {
+              dob: DateTimeScalarMutations
               dob_SET: DateTime
+              homeAddress: PointMutations
               homeAddress_SET: PointInput
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -165,6 +168,11 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
               in: [DateTime!]
               lessThan: DateTime
               lessThanEquals: DateTime
+            }
+
+            \\"\\"\\"DateTime mutations\\"\\"\\"
+            input DateTimeScalarMutations {
+              set: DateTime
             }
 
             \\"\\"\\"
@@ -382,6 +390,7 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
 
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -494,6 +503,11 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
               longitude: Float!
             }
 
+            \\"\\"\\"Point mutations\\"\\"\\"
+            input PointMutations {
+              set: PointInput
+            }
+
             type Query {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
@@ -528,6 +542,11 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateActorsMutationResponse {

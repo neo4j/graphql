@@ -339,6 +339,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
 
             input GenreUpdateInput {
+              name: StringScalarMutations
               name_SET: String
               product: [GenreProductUpdateFieldInput!]
             }
@@ -436,8 +437,11 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
 
             input IProductUpdateInput {
+              id: StringScalarMutations
               id_SET: String
+              info: StringScalarMutations
               info_SET: String
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -678,7 +682,9 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
 
             input MovieUpdateInput {
               genre: [MovieGenreUpdateFieldInput!]
+              id: StringScalarMutations
               id_SET: String
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -794,6 +800,11 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type Subscription {

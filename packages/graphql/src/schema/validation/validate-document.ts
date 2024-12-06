@@ -61,10 +61,11 @@ import {
     SchemaOrTypeDirectives,
 } from "./custom-rules/valid-types/valid-directive-combination";
 import { ValidFieldTypes } from "./custom-rules/valid-types/valid-field-types";
+import { ValidListInNodeType } from "./custom-rules/valid-types/valid-list-in-node-type";
 import { ValidObjectType } from "./custom-rules/valid-types/valid-object-type";
 import { WarnIfAuthorizationFeatureDisabled } from "./custom-rules/warnings/authorization-feature-disabled";
+import { WarnPrivateDeprecation } from "./custom-rules/warnings/deprecated-private";
 import { WarnIfAMaxLimitCanBeBypassedThroughInterface } from "./custom-rules/warnings/limit-max-can-be-bypassed";
-import { WarnIfListOfListsFieldDefinition } from "./custom-rules/warnings/list-of-lists";
 import { WarnObjectFieldsWithoutResolver } from "./custom-rules/warnings/object-fields-without-resolver";
 import { WarnIfSubscriptionsAuthorizationMissing } from "./custom-rules/warnings/subscriptions-authorization-missing";
 import { validateSchemaCustomizations } from "./validate-schema-customizations";
@@ -224,13 +225,14 @@ function runValidationRulesOnFilteredDocument({
             ValidDirectiveInheritance,
             DirectiveArgumentOfCorrectType(false),
             WarnIfAuthorizationFeatureDisabled(features?.authorization),
-            WarnIfListOfListsFieldDefinition,
             ErrorIfSingleRelationships,
             WarnIfAMaxLimitCanBeBypassedThroughInterface(),
             WarnObjectFieldsWithoutResolver({
                 customResolvers: asArray(userCustomResolvers ?? []),
             }),
+            ValidListInNodeType,
             WarnIfSubscriptionsAuthorizationMissing(Boolean(features?.subscriptions)),
+            WarnPrivateDeprecation(),
         ],
         schema
     );

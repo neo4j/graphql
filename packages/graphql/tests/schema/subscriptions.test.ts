@@ -111,6 +111,7 @@ describe("Subscriptions", () => {
             }
 
             input ActorUpdateInput {
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -142,6 +143,11 @@ describe("Subscriptions", () => {
             \\"\\"\\"Boolean filters\\"\\"\\"
             input BooleanScalarFilters {
               equals: Boolean
+            }
+
+            \\"\\"\\"Boolean mutations\\"\\"\\"
+            input BooleanScalarMutations {
+              set: Boolean
             }
 
             type CreateActorsMutationResponse {
@@ -195,6 +201,15 @@ describe("Subscriptions", () => {
               lessThanEquals: Float
             }
 
+            \\"\\"\\"Float mutations\\"\\"\\"
+            input FloatScalarMutations {
+              add: Float
+              divide: Float
+              multiply: Float
+              set: Float
+              subtract: Float
+            }
+
             type IDAggregateSelection {
               longest: ID
               shortest: ID
@@ -214,6 +229,11 @@ describe("Subscriptions", () => {
               startsWith: ID
             }
 
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
@@ -229,6 +249,13 @@ describe("Subscriptions", () => {
               in: [Int!]
               lessThan: Int
               lessThanEquals: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
             }
 
             type Movie {
@@ -451,16 +478,20 @@ describe("Subscriptions", () => {
             }
 
             input MovieUpdateInput {
+              actorCount: IntScalarMutations
               actorCount_DECREMENT: Int
               actorCount_INCREMENT: Int
               actorCount_SET: Int
               actors: [MovieActorsUpdateFieldInput!]
+              averageRating: FloatScalarMutations
               averageRating_ADD: Float
               averageRating_DIVIDE: Float
               averageRating_MULTIPLY: Float
               averageRating_SET: Float
               averageRating_SUBTRACT: Float
+              id: IDScalarMutations
               id_SET: ID
+              isActive: BooleanScalarMutations
               isActive_SET: Boolean
             }
 
@@ -583,6 +614,11 @@ describe("Subscriptions", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type Subscription {
@@ -913,6 +949,11 @@ describe("Subscriptions", () => {
               equals: Boolean
             }
 
+            \\"\\"\\"Boolean mutations\\"\\"\\"
+            input BooleanScalarMutations {
+              set: Boolean
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -964,6 +1005,15 @@ describe("Subscriptions", () => {
               lessThanEquals: Float
             }
 
+            \\"\\"\\"Float mutations\\"\\"\\"
+            input FloatScalarMutations {
+              add: Float
+              divide: Float
+              multiply: Float
+              set: Float
+              subtract: Float
+            }
+
             type IDAggregateSelection {
               longest: ID
               shortest: ID
@@ -983,6 +1033,11 @@ describe("Subscriptions", () => {
               startsWith: ID
             }
 
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
@@ -998,6 +1053,13 @@ describe("Subscriptions", () => {
               in: [Int!]
               lessThan: Int
               lessThanEquals: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
             }
 
             type Movie {
@@ -1204,16 +1266,20 @@ describe("Subscriptions", () => {
             }
 
             input MovieUpdateInput {
+              actorCount: IntScalarMutations
               actorCount_DECREMENT: Int
               actorCount_INCREMENT: Int
               actorCount_SET: Int
               actors: [MovieActorsUpdateFieldInput!]
+              averageRating: FloatScalarMutations
               averageRating_ADD: Float
               averageRating_DIVIDE: Float
               averageRating_MULTIPLY: Float
               averageRating_SET: Float
               averageRating_SUBTRACT: Float
+              id: IDScalarMutations
               id_SET: ID
+              isActive: BooleanScalarMutations
               isActive_SET: Boolean
             }
 
@@ -1398,6 +1464,11 @@ describe("Subscriptions", () => {
               equals: Boolean
             }
 
+            \\"\\"\\"Boolean mutations\\"\\"\\"
+            input BooleanScalarMutations {
+              set: Boolean
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -1454,6 +1525,15 @@ describe("Subscriptions", () => {
               lessThanEquals: Float
             }
 
+            \\"\\"\\"Float mutations\\"\\"\\"
+            input FloatScalarMutations {
+              add: Float
+              divide: Float
+              multiply: Float
+              set: Float
+              subtract: Float
+            }
+
             type IDAggregateSelection {
               longest: ID
               shortest: ID
@@ -1473,6 +1553,11 @@ describe("Subscriptions", () => {
               startsWith: ID
             }
 
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
@@ -1488,6 +1573,13 @@ describe("Subscriptions", () => {
               in: [Int!]
               lessThan: Int
               lessThanEquals: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
             }
 
             type Movie {
@@ -1752,16 +1844,20 @@ describe("Subscriptions", () => {
             }
 
             input MovieUpdateInput {
+              actorCount: IntScalarMutations
               actorCount_DECREMENT: Int
               actorCount_INCREMENT: Int
               actorCount_SET: Int
               actors: MovieActorsUpdateInput
+              averageRating: FloatScalarMutations
               averageRating_ADD: Float
               averageRating_DIVIDE: Float
               averageRating_MULTIPLY: Float
               averageRating_SET: Float
               averageRating_SUBTRACT: Float
+              id: IDScalarMutations
               id_SET: ID
+              isActive: BooleanScalarMutations
               isActive_SET: Boolean
             }
 
@@ -2512,6 +2608,7 @@ describe("Subscriptions", () => {
             }
 
             input ActedInUpdateInput {
+              screenTime: IntScalarMutations
               screenTime_DECREMENT: Int
               screenTime_INCREMENT: Int
               screenTime_SET: Int
@@ -2796,6 +2893,11 @@ describe("Subscriptions", () => {
               equals: Boolean
             }
 
+            \\"\\"\\"Boolean mutations\\"\\"\\"
+            input BooleanScalarMutations {
+              set: Boolean
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -2847,6 +2949,15 @@ describe("Subscriptions", () => {
               lessThanEquals: Float
             }
 
+            \\"\\"\\"Float mutations\\"\\"\\"
+            input FloatScalarMutations {
+              add: Float
+              divide: Float
+              multiply: Float
+              set: Float
+              subtract: Float
+            }
+
             type IDAggregateSelection {
               longest: ID
               shortest: ID
@@ -2866,6 +2977,11 @@ describe("Subscriptions", () => {
               startsWith: ID
             }
 
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
@@ -2881,6 +2997,13 @@ describe("Subscriptions", () => {
               in: [Int!]
               lessThan: Int
               lessThanEquals: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
             }
 
             type Movie {
@@ -3102,16 +3225,20 @@ describe("Subscriptions", () => {
             }
 
             input MovieUpdateInput {
+              actorCount: IntScalarMutations
               actorCount_DECREMENT: Int
               actorCount_INCREMENT: Int
               actorCount_SET: Int
               actors: [MovieActorsUpdateFieldInput!]
+              averageRating: FloatScalarMutations
               averageRating_ADD: Float
               averageRating_DIVIDE: Float
               averageRating_MULTIPLY: Float
               averageRating_SET: Float
               averageRating_SUBTRACT: Float
+              id: IDScalarMutations
               id_SET: ID
+              isActive: BooleanScalarMutations
               isActive_SET: Boolean
             }
 
@@ -3335,6 +3462,7 @@ describe("Subscriptions", () => {
             }
 
             input ActorUpdateInput {
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -3366,6 +3494,11 @@ describe("Subscriptions", () => {
             \\"\\"\\"Boolean filters\\"\\"\\"
             input BooleanScalarFilters {
               equals: Boolean
+            }
+
+            \\"\\"\\"Boolean mutations\\"\\"\\"
+            input BooleanScalarMutations {
+              set: Boolean
             }
 
             type CreateActorsMutationResponse {
@@ -3419,6 +3552,15 @@ describe("Subscriptions", () => {
               lessThanEquals: Float
             }
 
+            \\"\\"\\"Float mutations\\"\\"\\"
+            input FloatScalarMutations {
+              add: Float
+              divide: Float
+              multiply: Float
+              set: Float
+              subtract: Float
+            }
+
             type IDAggregateSelection {
               longest: ID
               shortest: ID
@@ -3438,6 +3580,11 @@ describe("Subscriptions", () => {
               startsWith: ID
             }
 
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
@@ -3453,6 +3600,13 @@ describe("Subscriptions", () => {
               in: [Int!]
               lessThan: Int
               lessThanEquals: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
             }
 
             type Movie {
@@ -3628,16 +3782,20 @@ describe("Subscriptions", () => {
             }
 
             input MovieUpdateInput {
+              actorCount: IntScalarMutations
               actorCount_DECREMENT: Int
               actorCount_INCREMENT: Int
               actorCount_SET: Int
               actors: [MovieActorsUpdateFieldInput!]
+              averageRating: FloatScalarMutations
               averageRating_ADD: Float
               averageRating_DIVIDE: Float
               averageRating_MULTIPLY: Float
               averageRating_SET: Float
               averageRating_SUBTRACT: Float
+              id: IDScalarMutations
               id_SET: ID
+              isActive: BooleanScalarMutations
               isActive_SET: Boolean
             }
 
@@ -3755,6 +3913,11 @@ describe("Subscriptions", () => {
               startsWith: String
             }
 
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
+            }
+
             type Subscription {
               actorCreated(where: ActorSubscriptionWhere): ActorCreatedEvent!
               actorDeleted(where: ActorSubscriptionWhere): ActorDeletedEvent!
@@ -3831,6 +3994,11 @@ describe("Subscriptions", () => {
               equals: Boolean
             }
 
+            \\"\\"\\"Boolean mutations\\"\\"\\"
+            input BooleanScalarMutations {
+              set: Boolean
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -3887,6 +4055,15 @@ describe("Subscriptions", () => {
               lessThanEquals: Float
             }
 
+            \\"\\"\\"Float mutations\\"\\"\\"
+            input FloatScalarMutations {
+              add: Float
+              divide: Float
+              multiply: Float
+              set: Float
+              subtract: Float
+            }
+
             type IDAggregateSelection {
               longest: ID
               shortest: ID
@@ -3906,6 +4083,11 @@ describe("Subscriptions", () => {
               startsWith: ID
             }
 
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
@@ -3921,6 +4103,13 @@ describe("Subscriptions", () => {
               in: [Int!]
               lessThan: Int
               lessThanEquals: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
             }
 
             type Movie {
@@ -4185,16 +4374,20 @@ describe("Subscriptions", () => {
             }
 
             input MovieUpdateInput {
+              actorCount: IntScalarMutations
               actorCount_DECREMENT: Int
               actorCount_INCREMENT: Int
               actorCount_SET: Int
               actors: MovieActorsUpdateInput
+              averageRating: FloatScalarMutations
               averageRating_ADD: Float
               averageRating_DIVIDE: Float
               averageRating_MULTIPLY: Float
               averageRating_SET: Float
               averageRating_SUBTRACT: Float
+              id: IDScalarMutations
               id_SET: ID
+              isActive: BooleanScalarMutations
               isActive_SET: Boolean
             }
 

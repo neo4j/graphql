@@ -39,10 +39,10 @@ describe("$name Delete Subscription", () => {
     beforeEach(async () => {
         typeMovie = testHelper.createUniqueType("Movie");
         typeActor = testHelper.createUniqueType("Actor");
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
         type ${typeMovie} @node {
             title: String
-            actors: [${typeActor}]
+            actors: [${typeActor}!]! @relationship(type: "ACTED_IN", direction: IN)
         }
         type ${typeActor} @subscription(events: []) @node {
            name: String

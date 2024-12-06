@@ -30,6 +30,7 @@ import { asArray, filterTruthy } from "../../../utils/utils";
 import { isLogicalOperator } from "../../utils/logical-operators";
 import { ConnectionFilter } from "../ast/filters/ConnectionFilter";
 import { CypherOneToOneRelationshipFilter } from "../ast/filters/CypherOneToOneRelationshipFilter";
+import { CypherRelationshipFilter } from "../ast/filters/CypherRelationshipFilter";
 import type { Filter, FilterOperator, RelationshipWhereOperator } from "../ast/filters/Filter";
 import { isLegacyRelationshipOperator } from "../ast/filters/Filter";
 import { LogicalFilter } from "../ast/filters/LogicalFilter";
@@ -321,27 +322,32 @@ export class FilterFactory {
         }
 
         const filteredEntities = getConcreteEntities(target, where);
-        const cypherOneToOneRelationshipFilters: CypherOneToOneRelationshipFilter[] = [];
+        const filters: (CypherOneToOneRelationshipFilter | CypherRelationshipFilter)[] = [];
         for (const concreteEntity of filteredEntities) {
             const returnVariable = new Cypher.Node();
-            const cypherOneToOneRelationshipFilter = this.createCypherOneToOneRelationshipFilterTreeNode({
+
+            const options = {
                 selection,
                 isNull,
                 operator: operator || "SOME",
                 attribute,
                 returnVariable,
-            });
+            };
+
+            const filter = attribute.typeHelper.isList()
+                ? this.createCypherRelationshipFilterTreeNode(options)
+                : this.createCypherOneToOneRelationshipFilterTreeNode(options);
 
             if (!isNull) {
                 const entityWhere = where[concreteEntity.name] ?? where;
                 const targetNodeFilters = this.createNodeFilters(concreteEntity, entityWhere);
-                cypherOneToOneRelationshipFilter.addTargetNodeFilter(...targetNodeFilters);
+                filter.addTargetNodeFilter(...targetNodeFilters);
             }
 
-            cypherOneToOneRelationshipFilters.push(cypherOneToOneRelationshipFilter);
+            filters.push(filter);
         }
         const logicalOp = this.getLogicalOperatorForRelatedNodeFilters(target, operator);
-        return this.wrapMultipleFiltersInLogical(cypherOneToOneRelationshipFilters, logicalOp);
+        return this.wrapMultipleFiltersInLogical(filters, logicalOp);
     }
 
     // This allows to override this creation in AuthFilterFactory
@@ -353,6 +359,17 @@ export class FilterFactory {
         returnVariable: Cypher.Node;
     }): CypherOneToOneRelationshipFilter {
         return new CypherOneToOneRelationshipFilter(options);
+    }
+
+    // This allows to override this creation in AuthFilterFactory
+    protected createCypherRelationshipFilterTreeNode(options: {
+        selection: CustomCypherSelection;
+        attribute: AttributeAdapter;
+        isNull: boolean;
+        operator: RelationshipWhereOperator;
+        returnVariable: Cypher.Node;
+    }): CypherRelationshipFilter {
+        return new CypherRelationshipFilter(options);
     }
 
     // This allows to override this creation in AuthFilterFactory

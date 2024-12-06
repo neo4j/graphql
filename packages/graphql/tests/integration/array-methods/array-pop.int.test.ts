@@ -96,7 +96,7 @@ describe("array-pop", () => {
             const typeDefs = gql`
             type ${typeMovie} @node {
                 title: String
-                tags: [${inputType}]
+                tags: [${inputType}!]
             }
         `;
 
@@ -108,7 +108,7 @@ describe("array-pop", () => {
 
             const update = `
             mutation {
-                ${typeMovie.operations.update} (update: { tags_POP: 1 }) {
+                ${typeMovie.operations.update} (update: { tags: { pop: 1} }) {
                     ${typeMovie.plural} {
                         title
                         tags
@@ -196,7 +196,7 @@ describe("array-pop", () => {
             const typeDefs = gql`
             type ${typeMovie} @node {
                 title: String
-                tags: [${inputType}]
+                tags: [${inputType}!]
             }
         `;
 
@@ -208,7 +208,7 @@ describe("array-pop", () => {
 
             const update = `
             mutation {
-                ${typeMovie.operations.update} (update: { tags_POP: 1 }) {
+                ${typeMovie.operations.update} (update: { tags: {pop: 1 } }) {
                     ${typeMovie.plural} {
                         title
                         tags
@@ -296,7 +296,7 @@ describe("array-pop", () => {
             const typeDefs = gql`
             type ${typeMovie} @node {
                 title: String
-                tags: [${inputType}]
+                tags: [${inputType}!]
             }
         `;
 
@@ -308,7 +308,7 @@ describe("array-pop", () => {
 
             const update = `
             mutation {
-                ${typeMovie.operations.update} (update: { tags_POP: 2 }) {
+                ${typeMovie.operations.update} (update: { tags: {pop: 2 } }) {
                     ${typeMovie.plural} {
                         title
                         tags
@@ -376,7 +376,7 @@ describe("array-pop", () => {
         const typeDefs = gql`
             type ${typeMovie} @node {
                 title: String
-                tags: [Point]
+                tags: [Point!]
             }
         `;
 
@@ -421,7 +421,7 @@ describe("array-pop", () => {
 
         const update = `
             mutation UpdateMovie($elementsToPop: Int!) {
-                ${typeMovie.operations.update} (update: { tags_POP: $elementsToPop }) {
+                ${typeMovie.operations.update} (update: { tags: { pop: $elementsToPop } }) {
                     ${typeMovie.plural} {
                         title
                         tags {
@@ -487,7 +487,7 @@ describe("array-pop", () => {
         const typeDefs = gql`
             type ${typeMovie} @node {
                 title: String
-                tags: [CartesianPoint]
+                tags: [CartesianPoint!]
             }
         `;
 
@@ -530,7 +530,7 @@ describe("array-pop", () => {
 
         const update = `
             mutation UpdateMovie($elementsToPop: Int!) {
-                ${typeMovie.operations.update} (update: { tags_POP: $elementsToPop }) {
+                ${typeMovie.operations.update} (update: { tags: {pop: $elementsToPop } }) {
                     ${typeMovie.plural} {
                         title
                         tags {
@@ -563,8 +563,8 @@ describe("array-pop", () => {
         const typeDefs = gql`
             type ${typeMovie} @node {
                 title: String
-                tags: [String]
-                moreTags: [String]
+                tags: [String!]
+                moreTags: [String!]
             }
         `;
 
@@ -576,7 +576,7 @@ describe("array-pop", () => {
 
         const update = `
             mutation {
-                ${typeMovie.operations.update} (update: { tags_POP: 1, moreTags_POP: 2 }) {
+                ${typeMovie.operations.update} (update: { tags: {pop: 1}, moreTags: {pop: 2} }) {
                     ${typeMovie.plural} {
                         title
                         tags
@@ -611,7 +611,7 @@ describe("array-pop", () => {
         const actor = testHelper.createUniqueType("Actor");
         const typeDefs = `
             type ${movie.name} @node {
-                viewers: [Int]!
+                viewers: [Int!]!
                 workers: [${actor.name}!]! @relationship(type: "WORKED_IN", direction: IN)
             }
             type ${actor.name} @node {
@@ -635,7 +635,7 @@ describe("array-pop", () => {
                             {
                                 update: {
                                     node: {
-                                        viewers_POP: $numberToPop
+                                        viewers: {pop: $numberToPop}
                                     }
                                 }
                             }
@@ -690,7 +690,7 @@ describe("array-pop", () => {
             }
 
             type ActedIn @relationshipProperties {
-                pay: [Float]
+                pay: [Float!]
             }
         `;
 
@@ -707,7 +707,7 @@ describe("array-pop", () => {
                         {
                             update: {
                                 edge: {
-                                    pay_POP: $numberToPop
+                                    pay: {pop: $numberToPop}
                                 }
                             }
                         }
@@ -773,7 +773,7 @@ describe("array-pop", () => {
             }
 
             type ActedIn @relationshipProperties {
-                locations: [Point]
+                locations: [Point!]
             }
         `;
 
@@ -790,7 +790,7 @@ describe("array-pop", () => {
                         {
                             update: {
                                 edge: {
-                                    locations_POP: $numberToPop
+                                    locations: {pop: $numberToPop}
                                 }
                             }
                         }

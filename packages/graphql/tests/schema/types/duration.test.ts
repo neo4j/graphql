@@ -78,6 +78,11 @@ describe("Duration", () => {
               lessThanEquals: Duration
             }
 
+            \\"\\"\\"Duration mutations\\"\\"\\"
+            input DurationScalarMutations {
+              set: Duration
+            }
+
             type IDAggregateSelection {
               longest: ID
               shortest: ID
@@ -95,6 +100,11 @@ describe("Duration", () => {
               lessThanEquals: ID
               matches: ID
               startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
             }
 
             type Movie {
@@ -127,7 +137,9 @@ describe("Duration", () => {
             }
 
             input MovieUpdateInput {
+              duration: DurationScalarMutations
               duration_SET: Duration
+              id: IDScalarMutations
               id_SET: ID
             }
 

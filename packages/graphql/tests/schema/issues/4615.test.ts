@@ -108,6 +108,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
             }
 
             input ActedInUpdateInput {
+              screenTime: IntScalarMutations
               screenTime_DECREMENT: Int
               screenTime_INCREMENT: Int
               screenTime_SET: Int
@@ -316,6 +317,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
 
             input ActorUpdateInput {
               actedIn: [ActorActedInUpdateFieldInput!]
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -405,6 +407,11 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               lessThanEquals: DateTime
             }
 
+            \\"\\"\\"DateTime mutations\\"\\"\\"
+            input DateTimeScalarMutations {
+              set: DateTime
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships deleted during a delete mutation
             \\"\\"\\"
@@ -428,6 +435,13 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               in: [Int!]
               lessThan: Int
               lessThanEquals: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
             }
 
             type Movie implements Show {
@@ -581,10 +595,13 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
 
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
+              release: DateTimeScalarMutations
               release_SET: DateTime
+              runtime: IntScalarMutations
               runtime_DECREMENT: Int
               runtime_INCREMENT: Int
               runtime_SET: Int
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -835,9 +852,11 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
 
             input SeriesUpdateInput {
               actors: [SeriesActorsUpdateFieldInput!]
+              episodes: IntScalarMutations
               episodes_DECREMENT: Int
               episodes_INCREMENT: Int
               episodes_SET: Int
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -1109,6 +1128,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
 
             input ShowUpdateInput {
               actors: [ShowActorsUpdateFieldInput!]
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -1183,6 +1203,11 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateActorsMutationResponse {

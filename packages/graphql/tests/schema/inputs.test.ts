@@ -86,6 +86,11 @@ describe("Inputs", () => {
               startsWith: ID
             }
 
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
             type Movie {
               id: ID
             }
@@ -112,6 +117,7 @@ describe("Inputs", () => {
             }
 
             input MovieUpdateInput {
+              id: IDScalarMutations
               id_SET: ID
             }
 

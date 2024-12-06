@@ -33,7 +33,7 @@ describe("Interfaces", () => {
 
             type Movie implements MovieNode @node {
                 id: ID
-                nodes: [MovieNode]
+                nodes: [MovieNode!]
                 movies: [Movie!]! @relationship(type: "HAS_MOVIE", direction: OUT)
                 customQuery: [Movie]
                     @cypher(
@@ -94,13 +94,18 @@ describe("Interfaces", () => {
               startsWith: ID
             }
 
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
             type Movie implements MovieNode {
               customQuery: [Movie]
               id: ID
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieMovieMoviesAggregationSelection
               moviesConnection(after: String, first: Int, sort: [MovieNodeMoviesConnectionSort!], where: MovieNodeMoviesConnectionWhere): MovieNodeMoviesConnection!
-              nodes: [MovieNode]
+              nodes: [MovieNode!]
             }
 
             type MovieAggregateSelection {
@@ -400,6 +405,7 @@ describe("Interfaces", () => {
             }
 
             input MovieUpdateInput {
+              id: IDScalarMutations
               id_SET: ID
               movies: [MovieMoviesUpdateFieldInput!]
             }
@@ -408,6 +414,10 @@ describe("Interfaces", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              customQuery_ALL: MovieWhere
+              customQuery_NONE: MovieWhere
+              customQuery_SINGLE: MovieWhere
+              customQuery_SOME: MovieWhere
               id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
@@ -508,7 +518,7 @@ describe("Interfaces", () => {
 
             type Movie implements MovieNode @node {
                 id: ID
-                nodes: [MovieNode]
+                nodes: [MovieNode!]
                 movies: [Movie!]! @relationship(type: "HAS_MOVIE", direction: OUT)
                 customQuery: [Movie]
                     @cypher(
@@ -571,13 +581,18 @@ describe("Interfaces", () => {
               startsWith: ID
             }
 
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
             type Movie implements MovieNode {
               customQuery: [Movie]
               id: ID
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieMovieMoviesAggregationSelection
               moviesConnection(after: String, first: Int, sort: [MovieNodeMoviesConnectionSort!], where: MovieNodeMoviesConnectionWhere): MovieNodeMoviesConnection!
-              nodes: [MovieNode]
+              nodes: [MovieNode!]
             }
 
             type MovieAggregateSelection {
@@ -877,6 +892,7 @@ describe("Interfaces", () => {
             }
 
             input MovieUpdateInput {
+              id: IDScalarMutations
               id_SET: ID
               movies: [MovieMoviesUpdateFieldInput!]
             }
@@ -885,6 +901,10 @@ describe("Interfaces", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              customQuery_ALL: MovieWhere
+              customQuery_NONE: MovieWhere
+              customQuery_SINGLE: MovieWhere
+              customQuery_SOME: MovieWhere
               id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID

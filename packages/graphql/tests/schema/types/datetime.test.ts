@@ -70,6 +70,11 @@ describe("Datetime", () => {
               lessThanEquals: DateTime
             }
 
+            \\"\\"\\"DateTime mutations\\"\\"\\"
+            input DateTimeScalarMutations {
+              set: DateTime
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships deleted during a delete mutation
             \\"\\"\\"
@@ -95,6 +100,11 @@ describe("Datetime", () => {
               lessThanEquals: ID
               matches: ID
               startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
             }
 
             type Movie {
@@ -127,7 +137,9 @@ describe("Datetime", () => {
             }
 
             input MovieUpdateInput {
+              datetime: DateTimeScalarMutations
               datetime_SET: DateTime
+              id: IDScalarMutations
               id_SET: ID
             }
 

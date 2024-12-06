@@ -17,9 +17,12 @@
  * limitations under the License.
  */
 
+import Cypher from "@neo4j/cypher-builder";
 import { EventEmitter } from "events";
 import type { Driver, QueryConfig } from "neo4j-driver";
 import { Memoize } from "typescript-memoize";
+import { APP_ID } from "../../constants";
+import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
 import type { Neo4jGraphQLSubscriptionsEngine, SubscriptionEngineContext, SubscriptionsEvent } from "../../types";
 import { CDCApi } from "./cdc/cdc-api";
 import { CDCEventParser } from "./cdc/cdc-event-parser";
@@ -33,17 +36,23 @@ export class Neo4jGraphQLSubscriptionsCDCEngine implements Neo4jGraphQLSubscript
     private timer: ReturnType<typeof setTimeout> | undefined;
     private closed = false;
 
+    private subscribeToLabels: string[] | undefined;
+    private onlyGraphQLEvents: boolean;
+
     constructor({
         driver,
         pollTime = 1000,
         queryConfig,
+        onlyGraphQLEvents = false,
     }: {
         driver: Driver;
         pollTime?: number;
         queryConfig?: QueryConfig;
+        onlyGraphQLEvents?: boolean;
     }) {
         this.cdcApi = new CDCApi(driver, queryConfig);
         this.pollTime = pollTime;
+        this.onlyGraphQLEvents = onlyGraphQLEvents;
     }
 
     // This memoize is done to keep typings correct whilst avoiding the performance ir of the throw
@@ -63,6 +72,9 @@ export class Neo4jGraphQLSubscriptionsCDCEngine implements Neo4jGraphQLSubscript
     public async init({ schemaModel }: SubscriptionEngineContext): Promise<void> {
         await this.cdcApi.updateCursor();
         this._parser = new CDCEventParser(schemaModel);
+        this.subscribeToLabels = this.getLabelsToFilter(schemaModel);
+
+        schemaModel.concreteEntities.map((e) => Array.from(e.labels));
         this.triggerPoll();
     }
 
@@ -91,12 +103,25 @@ export class Neo4jGraphQLSubscriptionsCDCEngine implements Neo4jGraphQLSubscript
     }
 
     private async pollEvents(): Promise<void> {
-        const cdcEvents = await this.cdcApi.queryEvents();
+        let txFilter: Cypher.Map | undefined;
+        if (this.onlyGraphQLEvents) {
+            const appMetadata = new Cypher.Param(APP_ID);
+            txFilter = new Cypher.Map({
+                app: appMetadata,
+            });
+        }
+        const cdcEvents = await this.cdcApi.queryEvents(this.subscribeToLabels, txFilter);
         for (const cdcEvent of cdcEvents) {
             const parsedEvent = this.parser.parseCDCEvent(cdcEvent);
             if (parsedEvent) {
                 this.events.emit(parsedEvent.event, parsedEvent);
             }
         }
+    }
+
+    private getLabelsToFilter(schemaModel: Neo4jGraphQLSchemaModel): string[] {
+        const uniqueLabels = new Set(schemaModel.concreteEntities.flatMap((e) => Array.from(e.labels)));
+
+        return Array.from(uniqueLabels);
     }
 }

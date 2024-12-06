@@ -80,7 +80,7 @@ describe("@customResolver directive", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:User)
-                RETURN this { .firstName, .lastName, .fullName } AS this"
+                RETURN this { .firstName, .lastName } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -100,7 +100,7 @@ describe("@customResolver directive", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:User)
-                RETURN this { .firstName, .fullName, .lastName } AS this"
+                RETURN this { .firstName, .lastName } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -119,7 +119,7 @@ describe("@customResolver directive", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:User)
-                RETURN this { .fullName, .firstName, .lastName } AS this"
+                RETURN this { .firstName, .lastName } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -162,7 +162,7 @@ describe("@customResolver directive", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:User)
-                RETURN this { .firstName, .fullName } AS this"
+                RETURN this { .firstName } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -181,7 +181,7 @@ describe("@customResolver directive", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:User)
-                RETURN this { .fullName } AS this"
+                RETURN this {  } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -263,7 +263,7 @@ describe("@customResolver directive", () => {
                     WITH var2
                     RETURN collect(var2) AS var2
                 }
-                RETURN this { .name, .publicationsWithAuthor, publications: var2 } AS this"
+                RETURN this { .name, publications: var2 } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -322,7 +322,7 @@ describe("@customResolver directive", () => {
                     WITH var2
                     RETURN collect(var2) AS var2
                 }
-                RETURN this { .publicationsWithAuthor, .name, publications: var2 } AS this"
+                RETURN this { .name, publications: var2 } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -357,7 +357,7 @@ describe("@customResolver directive", () => {
                     WITH var2
                     RETURN collect(var2) AS var2
                 }
-                RETURN this { .publicationsWithAuthor, .name, publications: var2 } AS this"
+                RETURN this { .name, publications: var2 } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -444,7 +444,7 @@ describe("@customResolver directive", () => {
                     WITH var2
                     RETURN collect(var2) AS var2
                 }
-                RETURN this { .name, .publicationsWithAuthor, publications: var2 } AS this"
+                RETURN this { .name, publications: var2 } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -503,7 +503,7 @@ describe("@customResolver directive", () => {
                     WITH var2
                     RETURN collect(var2) AS var2
                 }
-                RETURN this { .publicationsWithAuthor, .name, publications: var2 } AS this"
+                RETURN this { .name, publications: var2 } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -538,7 +538,7 @@ describe("@customResolver directive", () => {
                     WITH var2
                     RETURN collect(var2) AS var2
                 }
-                RETURN this { .publicationsWithAuthor, .name, publications: var2 } AS this"
+                RETURN this { .name, publications: var2 } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

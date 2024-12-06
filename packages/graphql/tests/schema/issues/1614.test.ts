@@ -299,7 +299,13 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               in: [CrewPositionType!]
             }
 
+            \\"\\"\\"CrewPositionType mutations\\"\\"\\"
+            input CrewPositionTypeEnumScalarMutations {
+              set: CrewPositionType
+            }
+
             input CrewPositionUpdateInput {
+              position: CrewPositionTypeEnumScalarMutations
               position_SET: CrewPositionType
             }
 
@@ -350,6 +356,7 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
             }
 
             input MovieUpdateInput {
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -422,6 +429,11 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateCrewMembersMutationResponse {

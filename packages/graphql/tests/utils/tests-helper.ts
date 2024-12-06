@@ -44,8 +44,16 @@ export class TestHelper {
     private subscriptionEngine?: Neo4jGraphQLSubscriptionsCDCEngine;
 
     private cdc: boolean;
-    constructor({ cdc = false }: { cdc: boolean } = { cdc: false }) {
+    private onlyGraphQLEvents: boolean;
+
+    constructor(
+        { cdc = false, onlyGraphQLEvents = false }: { cdc: boolean; onlyGraphQLEvents?: boolean } = {
+            cdc: false,
+            onlyGraphQLEvents: false,
+        }
+    ) {
         this.cdc = cdc;
+        this.onlyGraphQLEvents = onlyGraphQLEvents;
     }
 
     public get database(): string {
@@ -72,6 +80,7 @@ export class TestHelper {
             queryConfig: {
                 database: this.database,
             },
+            onlyGraphQLEvents: this.onlyGraphQLEvents,
         });
 
         return this.subscriptionEngine;

@@ -213,7 +213,7 @@ describe("GraphQL - Infer Schema on graphs", () => {
         expect(typeDefs).toMatchInlineSnapshot(`
             "type ActedInProperties @relationshipProperties {
             	pay: Float
-            	roles: [String]!
+            	roles: [String!]!
             }
 
             type Actor @node {
@@ -269,7 +269,7 @@ describe("GraphQL - Infer Schema on graphs", () => {
         const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm));
         expect(typeDefs).toMatchInlineSnapshot(`
             "type ActedInProperties @relationshipProperties {
-            	roles: [String]!
+            	roles: [String!]!
             }
 
             type Actor_Label @node(labels: [\\"Actor-Label\\"]) {

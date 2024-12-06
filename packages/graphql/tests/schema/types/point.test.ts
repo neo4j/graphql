@@ -84,6 +84,7 @@ describe("Point", () => {
             }
 
             input MovieUpdateInput {
+              filmedAt: PointMutations
               filmedAt_SET: PointInput
             }
 
@@ -160,6 +161,11 @@ describe("Point", () => {
               height: Float
               latitude: Float!
               longitude: Float!
+            }
+
+            \\"\\"\\"Point mutations\\"\\"\\"
+            input PointMutations {
+              set: PointInput
             }
 
             type Query {
@@ -248,6 +254,11 @@ describe("Point", () => {
               z: Float
             }
 
+            \\"\\"\\"CartesianPoint mutations\\"\\"\\"
+            input CartesianPointMutations {
+              set: CartesianPointInput
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -294,6 +305,7 @@ describe("Point", () => {
             }
 
             input MachineUpdateInput {
+              partLocation: CartesianPointMutations
               partLocation_SET: CartesianPointInput
             }
 
@@ -398,6 +410,13 @@ describe("Point", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Mutations for a list for PointInput\\"\\"\\"
+            input ListPointInputMutations {
+              pop: Int
+              push: [PointInput!]
+              set: [PointInput!]
+            }
+
             type Movie {
               filmedAt: [Point!]!
             }
@@ -416,6 +435,7 @@ describe("Point", () => {
             }
 
             input MovieUpdateInput {
+              filmedAt: ListPointInputMutations
               filmedAt_POP: Int
               filmedAt_PUSH: [PointInput!]
               filmedAt_SET: [PointInput!]
@@ -579,6 +599,13 @@ describe("Point", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Mutations for a list for CartesianPointInput\\"\\"\\"
+            input ListCartesianPointInputMutations {
+              pop: Int
+              push: [CartesianPointInput!]
+              set: [CartesianPointInput!]
+            }
+
             type Machine {
               partLocations: [CartesianPoint!]!
             }
@@ -597,6 +624,7 @@ describe("Point", () => {
             }
 
             input MachineUpdateInput {
+              partLocations: ListCartesianPointInputMutations
               partLocations_POP: Int
               partLocations_PUSH: [CartesianPointInput!]
               partLocations_SET: [CartesianPointInput!]

@@ -85,6 +85,11 @@ describe("@private directive", () => {
               startsWith: ID
             }
 
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
             type Mutation {
               createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
               deleteUsers(where: UserWhere): DeleteInfo!
@@ -201,6 +206,7 @@ describe("@private directive", () => {
             }
 
             input UserUpdateInput {
+              id: IDScalarMutations
               id_SET: ID
             }
 
@@ -286,6 +292,11 @@ describe("@private directive", () => {
               startsWith: ID
             }
 
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
             type Mutation {
               createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
               deleteUsers(where: UserWhere): DeleteInfo!
@@ -334,6 +345,11 @@ describe("@private directive", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             \\"\\"\\"
@@ -425,7 +441,9 @@ describe("@private directive", () => {
             }
 
             input UserUpdateInput {
+              id: IDScalarMutations
               id_SET: ID
+              private: StringScalarMutations
               private_SET: String
             }
 

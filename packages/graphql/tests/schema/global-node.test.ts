@@ -79,6 +79,11 @@ describe("Node Interface Types", () => {
               startsWith: ID
             }
 
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
             type Movie implements Node {
               id: ID!
               imdb: ID!
@@ -110,7 +115,9 @@ describe("Node Interface Types", () => {
             }
 
             input MovieUpdateInput {
+              imdb: IDScalarMutations
               imdb_SET: ID
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -195,6 +202,11 @@ describe("Node Interface Types", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             \\"\\"\\"

@@ -126,7 +126,9 @@ describe("@vector schema", () => {
             }
 
             input MovieUpdateInput {
+              description: StringScalarMutations
               description_SET: String
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -207,6 +209,11 @@ describe("@vector schema", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             \\"\\"\\"

@@ -102,6 +102,11 @@ describe("Custom-mutations", () => {
               startsWith: ID
             }
 
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
             type Movie {
               id: ID
             }
@@ -128,6 +133,7 @@ describe("Custom-mutations", () => {
             }
 
             input MovieUpdateInput {
+              id: IDScalarMutations
               id_SET: ID
             }
 

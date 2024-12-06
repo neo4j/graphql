@@ -116,6 +116,7 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
             }
 
             input FriendOfUpdateInput {
+              id: StringScalarMutations
               id_SET: String
             }
 
@@ -424,6 +425,11 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             \\"\\"\\"

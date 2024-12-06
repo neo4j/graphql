@@ -79,6 +79,11 @@ describe("Localdatetime", () => {
               startsWith: ID
             }
 
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
             \\"\\"\\"A local datetime, represented as 'YYYY-MM-DDTHH:MM:SS'\\"\\"\\"
             scalar LocalDateTime
 
@@ -95,6 +100,11 @@ describe("Localdatetime", () => {
               in: [LocalDateTime!]
               lessThan: LocalDateTime
               lessThanEquals: LocalDateTime
+            }
+
+            \\"\\"\\"LocalDateTime mutations\\"\\"\\"
+            input LocalDateTimeScalarMutations {
+              set: LocalDateTime
             }
 
             type Movie {
@@ -127,7 +137,9 @@ describe("Localdatetime", () => {
             }
 
             input MovieUpdateInput {
+              id: IDScalarMutations
               id_SET: ID
+              localDT: LocalDateTimeScalarMutations
               localDT_SET: LocalDateTime
             }
 

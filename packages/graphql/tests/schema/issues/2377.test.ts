@@ -115,6 +115,11 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               lessThanEquals: DateTime
             }
 
+            \\"\\"\\"DateTime mutations\\"\\"\\"
+            input DateTimeScalarMutations {
+              set: DateTime
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships deleted during a delete mutation
             \\"\\"\\"
@@ -148,6 +153,18 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               startsWith: ID
             }
 
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
+            \\"\\"\\"Mutations for a list for ID\\"\\"\\"
+            input ListIDMutations {
+              pop: Int
+              push: [ID!]
+              set: [ID!]
+            }
+
             type Mutation {
               createResources(input: [ResourceCreateInput!]!): CreateResourcesMutationResponse!
               deleteResources(delete: ResourceDeleteInput, where: ResourceWhere): DeleteInfo!
@@ -172,6 +189,13 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             input PropertyEnumScalarFilters {
               equals: Property
               in: [Property!]
+            }
+
+            \\"\\"\\"Mutations for a list for Property\\"\\"\\"
+            input PropertyListEnumScalarMutations {
+              pop: Property
+              push: [Property!]!
+              set: [Property!]!
             }
 
             type Query {
@@ -496,16 +520,28 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               in: [ResourceType!]
             }
 
+            \\"\\"\\"ResourceType mutations\\"\\"\\"
+            input ResourceTypeEnumScalarMutations {
+              set: ResourceType
+            }
+
             input ResourceUpdateInput {
               containedBy: [ResourceContainedByUpdateFieldInput!]
+              createdAt: DateTimeScalarMutations
               createdAt_SET: DateTime
+              externalIds: ListIDMutations
               externalIds_POP: Int
               externalIds_PUSH: [ID!]
               externalIds_SET: [ID!]
+              id: IDScalarMutations
               id_SET: ID
+              name: StringScalarMutations
               name_SET: String
+              properties: PropertyListEnumScalarMutations
               properties_SET: [Property!]
+              tags: TagListEnumScalarMutations
               tags_SET: [Tag!]
+              type: ResourceTypeEnumScalarMutations
               type_SET: ResourceType
             }
 
@@ -613,6 +649,11 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               startsWith: String
             }
 
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
+            }
+
             enum Tag {
               TagA
               TagB
@@ -623,6 +664,13 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             input TagEnumScalarFilters {
               equals: Tag
               in: [Tag!]
+            }
+
+            \\"\\"\\"Mutations for a list for Tag\\"\\"\\"
+            input TagListEnumScalarMutations {
+              pop: Tag
+              push: [Tag!]!
+              set: [Tag!]!
             }
 
             \\"\\"\\"

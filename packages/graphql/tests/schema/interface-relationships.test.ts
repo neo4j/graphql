@@ -100,6 +100,7 @@ describe("Interface Relationships", () => {
             }
 
             input ActedInUpdateInput {
+              screenTime: IntScalarMutations
               screenTime_DECREMENT: Int
               screenTime_INCREMENT: Int
               screenTime_SET: Int
@@ -293,6 +294,7 @@ describe("Interface Relationships", () => {
 
             input ActorUpdateInput {
               actedIn: [ActorActedInUpdateFieldInput!]
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -389,6 +391,13 @@ describe("Interface Relationships", () => {
               lessThanEquals: Int
             }
 
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
+            }
+
             type Movie implements Production {
               runtime: Int!
               title: String!
@@ -419,9 +428,11 @@ describe("Interface Relationships", () => {
             }
 
             input MovieUpdateInput {
+              runtime: IntScalarMutations
               runtime_DECREMENT: Int
               runtime_INCREMENT: Int
               runtime_SET: Int
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -506,6 +517,7 @@ describe("Interface Relationships", () => {
             }
 
             input ProductionUpdateInput {
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -579,9 +591,11 @@ describe("Interface Relationships", () => {
             }
 
             input SeriesUpdateInput {
+              episodes: IntScalarMutations
               episodes_DECREMENT: Int
               episodes_INCREMENT: Int
               episodes_SET: Int
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -629,6 +643,11 @@ describe("Interface Relationships", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateActorsMutationResponse {
@@ -746,6 +765,7 @@ describe("Interface Relationships", () => {
             }
 
             input ActedInUpdateInput {
+              screenTime: IntScalarMutations
               screenTime_DECREMENT: Int
               screenTime_INCREMENT: Int
               screenTime_SET: Int
@@ -954,6 +974,7 @@ describe("Interface Relationships", () => {
 
             input ActorUpdateInput {
               actedIn: [ActorActedInUpdateFieldInput!]
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -1236,6 +1257,7 @@ describe("Interface Relationships", () => {
             }
 
             input EpisodeUpdateInput {
+              runtime: IntScalarMutations
               runtime_DECREMENT: Int
               runtime_INCREMENT: Int
               runtime_SET: Int
@@ -1303,6 +1325,13 @@ describe("Interface Relationships", () => {
               in: [Int!]
               lessThan: Int
               lessThanEquals: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
             }
 
             type Movie implements Production {
@@ -1452,9 +1481,11 @@ describe("Interface Relationships", () => {
 
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
+              runtime: IntScalarMutations
               runtime_DECREMENT: Int
               runtime_INCREMENT: Int
               runtime_SET: Int
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -1755,6 +1786,7 @@ describe("Interface Relationships", () => {
 
             input ProductionUpdateInput {
               actors: [ProductionActorsUpdateFieldInput!]
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -2130,10 +2162,12 @@ describe("Interface Relationships", () => {
 
             input SeriesUpdateInput {
               actors: [SeriesActorsUpdateFieldInput!]
+              episodeCount: IntScalarMutations
               episodeCount_DECREMENT: Int
               episodeCount_INCREMENT: Int
               episodeCount_SET: Int
               episodes: [SeriesEpisodesUpdateFieldInput!]
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -2235,6 +2269,11 @@ describe("Interface Relationships", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateActorsMutationResponse {
@@ -2360,6 +2399,7 @@ describe("Interface Relationships", () => {
             }
 
             input ActedInUpdateInput {
+              screenTime: IntScalarMutations
               screenTime_DECREMENT: Int
               screenTime_INCREMENT: Int
               screenTime_SET: Int
@@ -2568,6 +2608,7 @@ describe("Interface Relationships", () => {
 
             input ActorUpdateInput {
               actedIn: [ActorActedInUpdateFieldInput!]
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -2850,6 +2891,7 @@ describe("Interface Relationships", () => {
             }
 
             input EpisodeUpdateInput {
+              runtime: IntScalarMutations
               runtime_DECREMENT: Int
               runtime_INCREMENT: Int
               runtime_SET: Int
@@ -2917,6 +2959,13 @@ describe("Interface Relationships", () => {
               in: [Int!]
               lessThan: Int
               lessThanEquals: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
             }
 
             type Movie implements Production {
@@ -3066,9 +3115,11 @@ describe("Interface Relationships", () => {
 
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
+              runtime: IntScalarMutations
               runtime_DECREMENT: Int
               runtime_INCREMENT: Int
               runtime_SET: Int
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -3389,6 +3440,7 @@ describe("Interface Relationships", () => {
 
             input ProductionUpdateInput {
               actors: [ProductionActorsUpdateFieldInput!]
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -3764,10 +3816,12 @@ describe("Interface Relationships", () => {
 
             input SeriesUpdateInput {
               actors: [SeriesActorsUpdateFieldInput!]
+              episodeCount: IntScalarMutations
               episodeCount_DECREMENT: Int
               episodeCount_INCREMENT: Int
               episodeCount_SET: Int
               episodes: [SeriesEpisodesUpdateFieldInput!]
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -3895,6 +3949,7 @@ describe("Interface Relationships", () => {
             }
 
             input StarredInUpdateInput {
+              seasons: IntScalarMutations
               seasons_DECREMENT: Int
               seasons_INCREMENT: Int
               seasons_SET: Int
@@ -3930,6 +3985,11 @@ describe("Interface Relationships", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateActorsMutationResponse {
@@ -4221,6 +4281,7 @@ describe("Interface Relationships", () => {
             }
 
             input Interface1UpdateInput {
+              field1: StringScalarMutations
               field1_SET: String
               interface2: [Interface1Interface2UpdateFieldInput!]
             }
@@ -4315,6 +4376,7 @@ describe("Interface Relationships", () => {
             }
 
             input Interface2UpdateInput {
+              field2: StringScalarMutations
               field2_SET: String
             }
 
@@ -4412,6 +4474,11 @@ describe("Interface Relationships", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type Type1 {
@@ -4719,6 +4786,7 @@ describe("Interface Relationships", () => {
             }
 
             input Type1Interface1UpdateInput {
+              field1: StringScalarMutations
               field1_SET: String
               interface2: [Type1Interface1Interface2UpdateFieldInput!]
             }
@@ -4802,6 +4870,7 @@ describe("Interface Relationships", () => {
             }
 
             input Type1Interface2UpdateInput {
+              field2: StringScalarMutations
               field2_SET: String
             }
 
@@ -4831,6 +4900,7 @@ describe("Interface Relationships", () => {
             }
 
             input Type1UpdateInput {
+              field1: StringScalarMutations
               field1_SET: String
               interface1: [Type1Interface1UpdateFieldInput!]
             }
@@ -5028,6 +5098,7 @@ describe("Interface Relationships", () => {
             }
 
             input Type2Interface1UpdateInput {
+              field1: StringScalarMutations
               field1_SET: String
               interface2: [Type2Interface1Interface2UpdateFieldInput!]
             }
@@ -5111,6 +5182,7 @@ describe("Interface Relationships", () => {
             }
 
             input Type2Interface2UpdateInput {
+              field2: StringScalarMutations
               field2_SET: String
             }
 
@@ -5278,6 +5350,13 @@ describe("Interface Relationships", () => {
               in: [Int!]
               lessThan: Int
               lessThanEquals: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
             }
 
             interface Interface1 {
@@ -5506,6 +5585,7 @@ describe("Interface Relationships", () => {
             }
 
             input Interface1UpdateInput {
+              field1: StringScalarMutations
               field1_SET: String
               interface2: [Interface1Interface2UpdateFieldInput!]
             }
@@ -5600,6 +5680,7 @@ describe("Interface Relationships", () => {
             }
 
             input Interface2UpdateInput {
+              field2: StringScalarMutations
               field2_SET: String
             }
 
@@ -5692,6 +5773,7 @@ describe("Interface Relationships", () => {
             }
 
             input PropsUpdateInput {
+              propsField: IntScalarMutations
               propsField_DECREMENT: Int
               propsField_INCREMENT: Int
               propsField_SET: Int
@@ -5759,6 +5841,11 @@ describe("Interface Relationships", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type Type1 {
@@ -6075,6 +6162,7 @@ describe("Interface Relationships", () => {
             }
 
             input Type1Interface1UpdateInput {
+              field1: StringScalarMutations
               field1_SET: String
               interface2: [Type1Interface1Interface2UpdateFieldInput!]
             }
@@ -6158,6 +6246,7 @@ describe("Interface Relationships", () => {
             }
 
             input Type1Interface2UpdateInput {
+              field2: StringScalarMutations
               field2_SET: String
             }
 
@@ -6187,6 +6276,7 @@ describe("Interface Relationships", () => {
             }
 
             input Type1UpdateInput {
+              field1: StringScalarMutations
               field1_SET: String
               interface1: [Type1Interface1UpdateFieldInput!]
             }
@@ -6393,6 +6483,7 @@ describe("Interface Relationships", () => {
             }
 
             input Type2Interface1UpdateInput {
+              field1: StringScalarMutations
               field1_SET: String
               interface2: [Type2Interface1Interface2UpdateFieldInput!]
             }
@@ -6476,6 +6567,7 @@ describe("Interface Relationships", () => {
             }
 
             input Type2Interface2UpdateInput {
+              field2: StringScalarMutations
               field2_SET: String
             }
 
@@ -6649,6 +6741,13 @@ describe("Interface Relationships", () => {
               in: [Int!]
               lessThan: Int
               lessThanEquals: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
             }
 
             interface Interface1 {
@@ -6897,6 +6996,7 @@ describe("Interface Relationships", () => {
             }
 
             input Interface1UpdateInput {
+              field1: StringScalarMutations
               field1_SET: String
               interface2: [Interface1Interface2UpdateFieldInput!]
             }
@@ -6991,6 +7091,7 @@ describe("Interface Relationships", () => {
             }
 
             input Interface2UpdateInput {
+              field2: StringScalarMutations
               field2_SET: String
             }
 
@@ -7088,6 +7189,11 @@ describe("Interface Relationships", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type Type1 {
@@ -7404,6 +7510,7 @@ describe("Interface Relationships", () => {
             }
 
             input Type1Interface1UpdateInput {
+              field1: StringScalarMutations
               field1_SET: String
               interface2: [Type1Interface1Interface2UpdateFieldInput!]
             }
@@ -7487,6 +7594,7 @@ describe("Interface Relationships", () => {
             }
 
             input Type1Interface2UpdateInput {
+              field2: StringScalarMutations
               field2_SET: String
             }
 
@@ -7551,6 +7659,7 @@ describe("Interface Relationships", () => {
             }
 
             input Type1PropsUpdateInput {
+              type1Field: IntScalarMutations
               type1Field_DECREMENT: Int
               type1Field_INCREMENT: Int
               type1Field_SET: Int
@@ -7577,6 +7686,7 @@ describe("Interface Relationships", () => {
             }
 
             input Type1UpdateInput {
+              field1: StringScalarMutations
               field1_SET: String
               interface1: [Type1Interface1UpdateFieldInput!]
             }
@@ -7783,6 +7893,7 @@ describe("Interface Relationships", () => {
             }
 
             input Type2Interface1UpdateInput {
+              field1: StringScalarMutations
               field1_SET: String
               interface2: [Type2Interface1Interface2UpdateFieldInput!]
             }
@@ -7866,6 +7977,7 @@ describe("Interface Relationships", () => {
             }
 
             input Type2Interface2UpdateInput {
+              field2: StringScalarMutations
               field2_SET: String
             }
 
@@ -7930,6 +8042,7 @@ describe("Interface Relationships", () => {
             }
 
             input Type2PropsUpdateInput {
+              type2Field: IntScalarMutations
               type2Field_DECREMENT: Int
               type2Field_INCREMENT: Int
               type2Field_SET: Int
@@ -8327,8 +8440,10 @@ describe("Interface Relationships", () => {
             }
 
             input CommentUpdateInput {
+              content: StringScalarMutations
               content_SET: String
               creator: [CommentCreatorUpdateFieldInput!]
+              id: IDScalarMutations
               id_SET: ID
               post: [CommentPostUpdateFieldInput!]
             }
@@ -8601,8 +8716,10 @@ describe("Interface Relationships", () => {
             }
 
             input ContentUpdateInput {
+              content: StringScalarMutations
               content_SET: String
               creator: [ContentCreatorUpdateFieldInput!]
+              id: IDScalarMutations
               id_SET: ID
             }
 
@@ -8706,6 +8823,11 @@ describe("Interface Relationships", () => {
               lessThanEquals: ID
               matches: ID
               startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
             }
 
             type Mutation {
@@ -9028,8 +9150,10 @@ describe("Interface Relationships", () => {
 
             input PostUpdateInput {
               comments: [PostCommentsUpdateFieldInput!]
+              content: StringScalarMutations
               content_SET: String
               creator: [PostCreatorUpdateFieldInput!]
+              id: IDScalarMutations
               id_SET: ID
             }
 
@@ -9161,6 +9285,11 @@ describe("Interface Relationships", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateCommentsMutationResponse {
@@ -9381,7 +9510,9 @@ describe("Interface Relationships", () => {
 
             input UserUpdateInput {
               content: [UserContentUpdateFieldInput!]
+              id: IDScalarMutations
               id_SET: ID
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -9529,6 +9660,7 @@ describe("Interface Relationships", () => {
             }
 
             input ActedInUpdateInput {
+              screenTime: IntScalarMutations
               screenTime_DECREMENT: Int
               screenTime_INCREMENT: Int
               screenTime_SET: Int
@@ -9737,6 +9869,7 @@ describe("Interface Relationships", () => {
 
             input ActorUpdateInput {
               actedIn: [ActorActedInUpdateFieldInput!]
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -9831,6 +9964,13 @@ describe("Interface Relationships", () => {
               in: [Int!]
               lessThan: Int
               lessThanEquals: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
             }
 
             type Movie implements Production & Show {
@@ -9980,9 +10120,11 @@ describe("Interface Relationships", () => {
 
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
+              runtime: IntScalarMutations
               runtime_DECREMENT: Int
               runtime_INCREMENT: Int
               runtime_SET: Int
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -10275,9 +10417,11 @@ describe("Interface Relationships", () => {
 
             input SeriesUpdateInput {
               actors: [SeriesActorsUpdateFieldInput!]
+              episodeCount: IntScalarMutations
               episodeCount_DECREMENT: Int
               episodeCount_INCREMENT: Int
               episodeCount_SET: Int
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -10569,6 +10713,7 @@ describe("Interface Relationships", () => {
 
             input ShowUpdateInput {
               actors: [ShowActorsUpdateFieldInput!]
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -10669,6 +10814,7 @@ describe("Interface Relationships", () => {
             }
 
             input StarredInUpdateInput {
+              episodeNr: IntScalarMutations
               episodeNr_DECREMENT: Int
               episodeNr_INCREMENT: Int
               episodeNr_SET: Int
@@ -10704,6 +10850,11 @@ describe("Interface Relationships", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateActorsMutationResponse {

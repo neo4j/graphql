@@ -39,15 +39,14 @@ describe("Delete Subscription", () => {
     beforeEach(async () => {
         typeMovie = testHelper.createUniqueType("Movie");
         typeActor = testHelper.createUniqueType("Actor");
-        const typeDefs = `
-         type ${typeMovie} @node {
+        const typeDefs = /* GraphQL */ `
+        type ${typeMovie} @node {
             title: String
-            actors: [${typeActor}]
-         }
-         type ${typeActor} @subscription(events: []) @node {
-            name: String
-         }
-         `;
+            actors: [${typeActor}!]! @relationship(type: "ACTED_IN", direction: IN)
+        }
+        type ${typeActor} @subscription(events: []) @node {
+           name: String
+        }`;
 
         const neoSchema = await testHelper.initNeo4jGraphQL({
             typeDefs,

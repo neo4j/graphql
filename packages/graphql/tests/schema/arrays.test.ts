@@ -84,6 +84,15 @@ describe("Arrays", () => {
               lessThanEquals: Float
             }
 
+            \\"\\"\\"Float mutations\\"\\"\\"
+            input FloatScalarMutations {
+              add: Float
+              divide: Float
+              multiply: Float
+              set: Float
+              subtract: Float
+            }
+
             type IDAggregateSelection {
               longest: ID
               shortest: ID
@@ -101,6 +110,18 @@ describe("Arrays", () => {
               lessThanEquals: ID
               matches: ID
               startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
+            \\"\\"\\"Mutations for a list for Float\\"\\"\\"
+            input ListFloatMutations {
+              pop: Int
+              push: [Float!]
+              set: [Float!]
             }
 
             type Movie {
@@ -135,12 +156,15 @@ describe("Arrays", () => {
             }
 
             input MovieUpdateInput {
+              averageRating: FloatScalarMutations
               averageRating_ADD: Float
               averageRating_DIVIDE: Float
               averageRating_MULTIPLY: Float
               averageRating_SET: Float
               averageRating_SUBTRACT: Float
+              id: IDScalarMutations
               id_SET: ID
+              ratings: ListFloatMutations
               ratings_POP: Int
               ratings_PUSH: [Float!]
               ratings_SET: [Float!]

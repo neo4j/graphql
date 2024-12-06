@@ -45,7 +45,7 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
         typePerson = testHelper.createUniqueType("Person");
         typeInfluencer = testHelper.createUniqueType("Influencer");
 
-        typeDefs = `
+        typeDefs = /* GraphQL */ `
             type ${typeMovie} @node {
                 title: String!
                 actors: [${typeActor}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)

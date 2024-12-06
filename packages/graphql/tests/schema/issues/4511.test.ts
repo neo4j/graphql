@@ -332,6 +332,11 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               startsWith: ID
             }
 
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
@@ -347,6 +352,13 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               in: [Int!]
               lessThan: Int
               lessThanEquals: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
             }
 
             type Movie implements Production {
@@ -470,7 +482,9 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
 
             input MovieUpdateInput {
               director: [MovieDirectorUpdateFieldInput!]
+              id: IDScalarMutations
               id_SET: ID
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -880,6 +894,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
 
             input ProductionUpdateInput {
               director: [ProductionDirectorUpdateFieldInput!]
+              id: IDScalarMutations
               id_SET: ID
             }
 
@@ -1129,10 +1144,13 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
 
             input SeriesUpdateInput {
               director: [SeriesDirectorUpdateFieldInput!]
+              episode: IntScalarMutations
               episode_DECREMENT: Int
               episode_INCREMENT: Int
               episode_SET: Int
+              id: IDScalarMutations
               id_SET: ID
+              title: StringScalarMutations
               title_SET: String
             }
 
@@ -1220,6 +1238,11 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type Subscription {

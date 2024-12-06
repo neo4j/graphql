@@ -83,7 +83,7 @@ describe("DateTime", () => {
             const typeDefs = /* GraphQL */ `
                 type ${Movie} @node {
                   id: ID
-                  datetimes: [DateTime]
+                  datetimes: [DateTime!]
                 }
             `;
 

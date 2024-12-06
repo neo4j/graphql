@@ -41,7 +41,7 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
          type ${typeMovie} @node {
             id: ID
             title: String
-            similarTitles: [String]
+            similarTitles: [String!]
             releasedIn: Int
             averageRating: Float
             fileSize: BigInt

@@ -211,6 +211,7 @@ describe("inheritance", () => {
 
             input ActorUpdateInput {
               friends: [ActorFriendsUpdateFieldInput!]
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -323,6 +324,7 @@ describe("inheritance", () => {
             }
 
             input FriendsWithUpdateInput {
+              since: IntScalarMutations
               since_DECREMENT: Int
               since_INCREMENT: Int
               since_SET: Int
@@ -356,6 +358,13 @@ describe("inheritance", () => {
               in: [Int!]
               lessThan: Int
               lessThanEquals: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
             }
 
             type Mutation {
@@ -593,6 +602,7 @@ describe("inheritance", () => {
 
             input PersonUpdateInput {
               friends: [PersonFriendsUpdateFieldInput!]
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -670,6 +680,11 @@ describe("inheritance", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateActorsMutationResponse {

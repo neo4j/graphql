@@ -58,10 +58,22 @@ describe("Scalar", () => {
 
             scalar CustomScalar
 
+            \\"\\"\\"Mutations for a list for CustomScalar\\"\\"\\"
+            input CustomScalarListScalarMutations {
+              pop: CustomScalar
+              push: [CustomScalar!]!
+              set: [CustomScalar!]!
+            }
+
             \\"\\"\\"CustomScalar filters\\"\\"\\"
             input CustomScalarScalarFilters {
               equals: CustomScalar
               in: [CustomScalar!]
+            }
+
+            \\"\\"\\"CustomScalar filters\\"\\"\\"
+            input CustomScalarScalarMutations {
+              set: CustomScalar
             }
 
             \\"\\"\\"
@@ -89,6 +101,11 @@ describe("Scalar", () => {
               lessThanEquals: ID
               matches: ID
               startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
             }
 
             type Movie {
@@ -124,9 +141,13 @@ describe("Scalar", () => {
             }
 
             input MovieUpdateInput {
+              id: IDScalarMutations
               id_SET: ID
+              myCustomArrayScalar: CustomScalarListScalarMutations
               myCustomArrayScalar_SET: [CustomScalar!]
+              myCustomScalar: CustomScalarScalarMutations
               myCustomScalar_SET: CustomScalar
+              myRequiredCustomArrayScalar: CustomScalarListScalarMutations
               myRequiredCustomArrayScalar_SET: [CustomScalar!]
             }
 

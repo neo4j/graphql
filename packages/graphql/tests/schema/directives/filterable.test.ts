@@ -1088,7 +1088,9 @@ describe("@filterable directive", () => {
 
                     input ActorUpdateInput {
                       movies: [ActorMoviesUpdateFieldInput!]
+                      password: StringScalarMutations
                       password_SET: String
+                      username: StringScalarMutations
                       username_SET: String
                     }
 
@@ -1406,6 +1408,7 @@ describe("@filterable directive", () => {
 
                     input MovieUpdateInput {
                       actors: [MovieActorsUpdateFieldInput!]
+                      title: StringScalarMutations
                       title_SET: String
                     }
 
@@ -1512,6 +1515,11 @@ describe("@filterable directive", () => {
                       lessThanEquals: String
                       matches: String
                       startsWith: String
+                    }
+
+                    \\"\\"\\"String mutations\\"\\"\\"
+                    input StringScalarMutations {
+                      set: String
                     }
 
                     type Subscription {
@@ -1790,7 +1798,9 @@ describe("@filterable directive", () => {
 
                     input ActorUpdateInput {
                       movies: [ActorMoviesUpdateFieldInput!]
+                      password: StringScalarMutations
                       password_SET: String
+                      username: StringScalarMutations
                       username_SET: String
                     }
 
@@ -2108,6 +2118,7 @@ describe("@filterable directive", () => {
 
                     input MovieUpdateInput {
                       actors: [MovieActorsUpdateFieldInput!]
+                      title: StringScalarMutations
                       title_SET: String
                     }
 
@@ -2214,6 +2225,11 @@ describe("@filterable directive", () => {
                       lessThanEquals: String
                       matches: String
                       startsWith: String
+                    }
+
+                    \\"\\"\\"String mutations\\"\\"\\"
+                    input StringScalarMutations {
+                      set: String
                     }
 
                     type Subscription {
@@ -2492,7 +2508,9 @@ describe("@filterable directive", () => {
 
                     input ActorUpdateInput {
                       movies: [ActorMoviesUpdateFieldInput!]
+                      password: StringScalarMutations
                       password_SET: String
+                      username: StringScalarMutations
                       username_SET: String
                     }
 
@@ -2798,6 +2816,7 @@ describe("@filterable directive", () => {
 
                     input MovieUpdateInput {
                       actors: [MovieActorsUpdateFieldInput!]
+                      title: StringScalarMutations
                       title_SET: String
                     }
 
@@ -2898,6 +2917,11 @@ describe("@filterable directive", () => {
                       lessThanEquals: String
                       matches: String
                       startsWith: String
+                    }
+
+                    \\"\\"\\"String mutations\\"\\"\\"
+                    input StringScalarMutations {
+                      set: String
                     }
 
                     type Subscription {
@@ -3179,7 +3203,9 @@ describe("@filterable directive", () => {
 
                     input ActorUpdateInput {
                       movies: [ActorMoviesUpdateFieldInput!]
+                      password: StringScalarMutations
                       password_SET: String
+                      username: StringScalarMutations
                       username_SET: String
                     }
 
@@ -3449,6 +3475,7 @@ describe("@filterable directive", () => {
 
                     input MovieUpdateInput {
                       actors: [MovieActorsUpdateFieldInput!]
+                      title: StringScalarMutations
                       title_SET: String
                     }
 
@@ -3554,6 +3581,11 @@ describe("@filterable directive", () => {
                       lessThanEquals: String
                       matches: String
                       startsWith: String
+                    }
+
+                    \\"\\"\\"String mutations\\"\\"\\"
+                    input StringScalarMutations {
+                      set: String
                     }
 
                     type Subscription {
@@ -3834,7 +3866,9 @@ describe("@filterable directive", () => {
 
                     input ActorUpdateInput {
                       movies: [ActorMoviesUpdateFieldInput!]
+                      password: StringScalarMutations
                       password_SET: String
+                      username: StringScalarMutations
                       username_SET: String
                     }
 
@@ -4152,6 +4186,7 @@ describe("@filterable directive", () => {
 
                     input MovieUpdateInput {
                       actors: [MovieActorsUpdateFieldInput!]
+                      title: StringScalarMutations
                       title_SET: String
                     }
 
@@ -4258,6 +4293,11 @@ describe("@filterable directive", () => {
                       lessThanEquals: String
                       matches: String
                       startsWith: String
+                    }
+
+                    \\"\\"\\"String mutations\\"\\"\\"
+                    input StringScalarMutations {
+                      set: String
                     }
 
                     type Subscription {
@@ -4538,7 +4578,9 @@ describe("@filterable directive", () => {
 
                     input ActorUpdateInput {
                       movies: [ActorMoviesUpdateFieldInput!]
+                      password: StringScalarMutations
                       password_SET: String
+                      username: StringScalarMutations
                       username_SET: String
                     }
 
@@ -4826,6 +4868,7 @@ describe("@filterable directive", () => {
 
                     input MovieUpdateInput {
                       actors: [MovieActorsUpdateFieldInput!]
+                      title: StringScalarMutations
                       title_SET: String
                     }
 
@@ -4906,6 +4949,11 @@ describe("@filterable directive", () => {
                       lessThanEquals: String
                       matches: String
                       startsWith: String
+                    }
+
+                    \\"\\"\\"String mutations\\"\\"\\"
+                    input StringScalarMutations {
+                      set: String
                     }
 
                     type Subscription {
@@ -5186,7 +5234,9 @@ describe("@filterable directive", () => {
 
                     input ActorUpdateInput {
                       movies: [ActorMoviesUpdateFieldInput!]
+                      password: StringScalarMutations
                       password_SET: String
+                      username: StringScalarMutations
                       username_SET: String
                     }
 
@@ -5456,6 +5506,7 @@ describe("@filterable directive", () => {
 
                     input MovieUpdateInput {
                       actors: [MovieActorsUpdateFieldInput!]
+                      title: StringScalarMutations
                       title_SET: String
                     }
 
@@ -5561,6 +5612,11 @@ describe("@filterable directive", () => {
                       lessThanEquals: String
                       matches: String
                       startsWith: String
+                    }
+
+                    \\"\\"\\"String mutations\\"\\"\\"
+                    input StringScalarMutations {
+                      set: String
                     }
 
                     type Subscription {
@@ -5834,7 +5890,9 @@ describe("@filterable directive", () => {
 
                     input ActorUpdateInput {
                       movies: [ActorMoviesUpdateFieldInput!]
+                      password: StringScalarMutations
                       password_SET: String
+                      username: StringScalarMutations
                       username_SET: String
                     }
 
@@ -6100,6 +6158,7 @@ describe("@filterable directive", () => {
 
                     input MovieUpdateInput {
                       actors: [MovieActorsUpdateFieldInput!]
+                      title: StringScalarMutations
                       title_SET: String
                     }
 
@@ -6211,6 +6270,7 @@ describe("@filterable directive", () => {
                     }
 
                     input PersonUpdateInput {
+                      username: StringScalarMutations
                       username_SET: String
                     }
 
@@ -6264,6 +6324,11 @@ describe("@filterable directive", () => {
                       lessThanEquals: String
                       matches: String
                       startsWith: String
+                    }
+
+                    \\"\\"\\"String mutations\\"\\"\\"
+                    input StringScalarMutations {
+                      set: String
                     }
 
                     type Subscription {
@@ -6537,7 +6602,9 @@ describe("@filterable directive", () => {
 
                     input ActorUpdateInput {
                       movies: [ActorMoviesUpdateFieldInput!]
+                      password: StringScalarMutations
                       password_SET: String
+                      username: StringScalarMutations
                       username_SET: String
                     }
 
@@ -6836,6 +6903,7 @@ describe("@filterable directive", () => {
 
                     input MovieUpdateInput {
                       actors: [MovieActorsUpdateFieldInput!]
+                      title: StringScalarMutations
                       title_SET: String
                     }
 
@@ -6948,6 +7016,7 @@ describe("@filterable directive", () => {
                     }
 
                     input PersonUpdateInput {
+                      username: StringScalarMutations
                       username_SET: String
                     }
 
@@ -7001,6 +7070,11 @@ describe("@filterable directive", () => {
                       lessThanEquals: String
                       matches: String
                       startsWith: String
+                    }
+
+                    \\"\\"\\"String mutations\\"\\"\\"
+                    input StringScalarMutations {
+                      set: String
                     }
 
                     type Subscription {
@@ -7274,7 +7348,9 @@ describe("@filterable directive", () => {
 
                     input ActorUpdateInput {
                       movies: [ActorMoviesUpdateFieldInput!]
+                      password: StringScalarMutations
                       password_SET: String
+                      username: StringScalarMutations
                       username_SET: String
                     }
 
@@ -7540,6 +7616,7 @@ describe("@filterable directive", () => {
 
                     input MovieUpdateInput {
                       actors: [MovieActorsUpdateFieldInput!]
+                      title: StringScalarMutations
                       title_SET: String
                     }
 
@@ -7651,6 +7728,7 @@ describe("@filterable directive", () => {
                     }
 
                     input PersonUpdateInput {
+                      username: StringScalarMutations
                       username_SET: String
                     }
 
@@ -7704,6 +7782,11 @@ describe("@filterable directive", () => {
                       lessThanEquals: String
                       matches: String
                       startsWith: String
+                    }
+
+                    \\"\\"\\"String mutations\\"\\"\\"
+                    input StringScalarMutations {
+                      set: String
                     }
 
                     type Subscription {
@@ -7993,7 +8076,9 @@ describe("@filterable directive", () => {
 
                     input ActorUpdateInput {
                       movies: [ActorMoviesUpdateFieldInput!]
+                      password: StringScalarMutations
                       password_SET: String
+                      username: StringScalarMutations
                       username_SET: String
                     }
 
@@ -8272,7 +8357,9 @@ describe("@filterable directive", () => {
 
                     input AppearanceUpdateInput {
                       movies: [AppearanceMoviesUpdateFieldInput!]
+                      password: StringScalarMutations
                       password_SET: String
+                      username: StringScalarMutations
                       username_SET: String
                     }
 
@@ -8606,6 +8693,7 @@ describe("@filterable directive", () => {
 
                     input MovieUpdateInput {
                       actors: MovieActorsUpdateInput
+                      title: StringScalarMutations
                       title_SET: String
                     }
 
@@ -8725,6 +8813,11 @@ describe("@filterable directive", () => {
                       lessThanEquals: String
                       matches: String
                       startsWith: String
+                    }
+
+                    \\"\\"\\"String mutations\\"\\"\\"
+                    input StringScalarMutations {
+                      set: String
                     }
 
                     type Subscription {
@@ -9022,7 +9115,9 @@ describe("@filterable directive", () => {
 
                     input ActorUpdateInput {
                       movies: [ActorMoviesUpdateFieldInput!]
+                      password: StringScalarMutations
                       password_SET: String
+                      username: StringScalarMutations
                       username_SET: String
                     }
 
@@ -9301,7 +9396,9 @@ describe("@filterable directive", () => {
 
                     input AppearanceUpdateInput {
                       movies: [AppearanceMoviesUpdateFieldInput!]
+                      password: StringScalarMutations
                       password_SET: String
+                      username: StringScalarMutations
                       username_SET: String
                     }
 
@@ -9635,6 +9732,7 @@ describe("@filterable directive", () => {
 
                     input MovieUpdateInput {
                       actors: MovieActorsUpdateInput
+                      title: StringScalarMutations
                       title_SET: String
                     }
 
@@ -9754,6 +9852,11 @@ describe("@filterable directive", () => {
                       lessThanEquals: String
                       matches: String
                       startsWith: String
+                    }
+
+                    \\"\\"\\"String mutations\\"\\"\\"
+                    input StringScalarMutations {
+                      set: String
                     }
 
                     type Subscription {
@@ -10051,7 +10154,9 @@ describe("@filterable directive", () => {
 
                     input ActorUpdateInput {
                       movies: [ActorMoviesUpdateFieldInput!]
+                      password: StringScalarMutations
                       password_SET: String
+                      username: StringScalarMutations
                       username_SET: String
                     }
 
@@ -10330,7 +10435,9 @@ describe("@filterable directive", () => {
 
                     input AppearanceUpdateInput {
                       movies: [AppearanceMoviesUpdateFieldInput!]
+                      password: StringScalarMutations
                       password_SET: String
+                      username: StringScalarMutations
                       username_SET: String
                     }
 
@@ -10664,6 +10771,7 @@ describe("@filterable directive", () => {
 
                     input MovieUpdateInput {
                       actors: MovieActorsUpdateInput
+                      title: StringScalarMutations
                       title_SET: String
                     }
 
@@ -10783,6 +10891,11 @@ describe("@filterable directive", () => {
                       lessThanEquals: String
                       matches: String
                       startsWith: String
+                    }
+
+                    \\"\\"\\"String mutations\\"\\"\\"
+                    input StringScalarMutations {
+                      set: String
                     }
 
                     type Subscription {

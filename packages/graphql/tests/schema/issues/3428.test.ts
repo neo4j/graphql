@@ -89,6 +89,11 @@ describe("Relationship nested operations", () => {
               startsWith: ID
             }
 
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
             type Movie {
               actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
               actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection
@@ -223,6 +228,7 @@ describe("Relationship nested operations", () => {
             }
 
             input MovieUpdateInput {
+              id: IDScalarMutations
               id_SET: ID
             }
 
@@ -323,6 +329,7 @@ describe("Relationship nested operations", () => {
             }
 
             input PersonUpdateInput {
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -378,6 +385,11 @@ describe("Relationship nested operations", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             \\"\\"\\"
@@ -478,6 +490,11 @@ describe("Relationship nested operations", () => {
               startsWith: ID
             }
 
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
             type Movie {
               actors(limit: Int, offset: Int, where: PersonWhere): [Person!]!
               actorsConnection(after: String, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
@@ -566,6 +583,7 @@ describe("Relationship nested operations", () => {
             }
 
             input MovieUpdateInput {
+              id: IDScalarMutations
               id_SET: ID
             }
 
@@ -661,6 +679,7 @@ describe("Relationship nested operations", () => {
             }
 
             input PersonOneUpdateInput {
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -708,6 +727,7 @@ describe("Relationship nested operations", () => {
             }
 
             input PersonTwoUpdateInput {
+              nameTwo: StringScalarMutations
               nameTwo_SET: String
             }
 
@@ -772,6 +792,11 @@ describe("Relationship nested operations", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             \\"\\"\\"

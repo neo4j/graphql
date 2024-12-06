@@ -91,6 +91,15 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               lessThanEquals: Float
             }
 
+            \\"\\"\\"Float mutations\\"\\"\\"
+            input FloatScalarMutations {
+              add: Float
+              divide: Float
+              multiply: Float
+              set: Float
+              subtract: Float
+            }
+
             type Genre {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): GenreMovieMoviesAggregationSelection
@@ -311,6 +320,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
 
             input GenreUpdateInput {
               movies: [GenreMoviesUpdateFieldInput!]
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -374,6 +384,13 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               in: [Int!]
               lessThan: Int
               lessThanEquals: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
             }
 
             type Movie {
@@ -562,12 +579,15 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
 
             input MovieUpdateInput {
               genres: [MovieGenresUpdateFieldInput!] @deprecated(reason: \\"Do not use genre\\")
+              imdbRating: FloatScalarMutations
               imdbRating_ADD: Float
               imdbRating_DIVIDE: Float
               imdbRating_MULTIPLY: Float
               imdbRating_SET: Float
               imdbRating_SUBTRACT: Float
+              title: StringScalarMutations @deprecated(reason: \\"Do not use title\\")
               title_SET: String @deprecated(reason: \\"Do not use title\\")
+              year: IntScalarMutations
               year_DECREMENT: Int
               year_INCREMENT: Int
               year_SET: Int
@@ -683,6 +703,11 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               lessThanEquals: String
               matches: String
               startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateGenresMutationResponse {

@@ -29,14 +29,12 @@ describe("auth/roles", () => {
     let typeUser: UniqueType;
     let typeProduct: UniqueType;
     let typePost: UniqueType;
-    let typeComment: UniqueType;
     let typeHistory: UniqueType;
 
     beforeEach(async () => {
         typeUser = testHelper.createUniqueType("User");
         typeProduct = testHelper.createUniqueType("Product");
         typePost = testHelper.createUniqueType("Post");
-        typeComment = testHelper.createUniqueType("Comment");
         typeHistory = testHelper.createUniqueType("History");
 
         await testHelper.executeCypher(
