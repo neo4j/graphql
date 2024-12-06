@@ -176,7 +176,6 @@ function makeAugmentedSchema({
         });
     });
 
-    // Generates the filters for scalar, which are reused
     Array.from(scalarTypes.values()).forEach((enumType) => {
         composer.createInputTC({
             name: `${enumType.name.value}ScalarFilters`,

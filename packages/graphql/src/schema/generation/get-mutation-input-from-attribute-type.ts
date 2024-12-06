@@ -77,7 +77,6 @@ import {
 import type { AttributeAdapter } from "../../schema-model/attribute/model-adapters/AttributeAdapter";
 
 export function getMutationInputFromAttributeType(attribute: AttributeAdapter): GraphQLInputType | string {
-    // TODO: Keep working here
     // // NOTE: static types returned here must be added to schema-validation > validateUserDefinition
     if (attribute.typeHelper.isBoolean()) {
         if (attribute.typeHelper.isList()) {
