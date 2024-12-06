@@ -32,13 +32,13 @@ import type {
 } from "neo4j-driver";
 import { Neo4jError } from "neo4j-driver";
 import {
+    APP_ID,
     AUTH_FORBIDDEN_ERROR,
     AUTH_UNAUTHENTICATED_ERROR,
     DEBUG_EXECUTE,
     RELATIONSHIP_REQUIREMENT_PREFIX,
 } from "../constants";
 import { debugCypherAndParams } from "../debug/debug-cypher-and-params";
-import environment from "../environment";
 import type { CypherQueryOptions } from "../types";
 import {
     Neo4jGraphQLAuthenticationError,
@@ -186,12 +186,10 @@ export class Executor {
     }
 
     private getTransactionConfig(info?: GraphQLResolveInfo): TransactionConfig {
-        const app = `${environment.NPM_PACKAGE_NAME}@${environment.NPM_PACKAGE_VERSION}`;
-
         const transactionConfig: TransactionConfig = {
             metadata: {
                 ...this.transactionMetadata,
-                app,
+                app: APP_ID,
                 type: "user-transpiled",
             },
         };

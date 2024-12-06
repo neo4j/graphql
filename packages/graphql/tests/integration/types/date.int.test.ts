@@ -82,7 +82,7 @@ describe("Date", () => {
             const typeDefs = /* GraphQL */ `
                 type ${Movie} @node {
                   id: ID
-                  dates: [Date]
+                  dates: [Date!]
                 }
             `;
 

@@ -38,7 +38,7 @@ describe("Arrays Methods", () => {
             }
 
             type ActedIn @relationshipProperties {
-                pay: [Float]
+                pay: [Float!]
             }
         `;
         const neoSchema = new Neo4jGraphQL({
@@ -58,11 +58,11 @@ describe("Arrays Methods", () => {
             * Movie.actors
             \\"\\"\\"
             type ActedIn {
-              pay: [Float]
+              pay: [Float!]
             }
 
             input ActedInCreateInput {
-              pay: [Float]
+              pay: [Float!]
             }
 
             input ActedInSort {
@@ -72,8 +72,8 @@ describe("Arrays Methods", () => {
             input ActedInUpdateInput {
               pay: ListFloatMutations
               pay_POP: Int
-              pay_PUSH: [Float]
-              pay_SET: [Float]
+              pay_PUSH: [Float!]
+              pay_SET: [Float!]
             }
 
             input ActedInWhere {
@@ -81,7 +81,7 @@ describe("Arrays Methods", () => {
               NOT: ActedInWhere
               OR: [ActedInWhere!]
               pay: FloatListFilters
-              pay_EQ: [Float]
+              pay_EQ: [Float!]
               pay_INCLUDES: Float
             }
 

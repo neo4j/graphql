@@ -127,7 +127,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
             "type TestLabel @node {
             	intProp: BigInt!
             	numberProp: Float!
-            	strArrProp: [String]!
+            	strArrProp: [String!]!
             	strProp: String!
             }"
         `);

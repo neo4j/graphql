@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+import environment from "./environment";
+
 const DEBUG_PREFIX = "@neo4j/graphql";
 
 export const AUTH_FORBIDDEN_ERROR = "@neo4j/graphql/FORBIDDEN";
@@ -96,3 +98,5 @@ export const DEPRECATED = "deprecated";
 export const SHAREABLE = "shareable";
 export const PROPAGATED_DIRECTIVES = [SHAREABLE, DEPRECATED] as const;
 export const SCORE_FIELD = "score";
+
+export const APP_ID = `${environment.NPM_PACKAGE_NAME}@${environment.NPM_PACKAGE_VERSION}`;

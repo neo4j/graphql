@@ -16,13 +16,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { DirectiveNode, FieldDefinitionNode, EnumTypeDefinitionNode, StringValueNode } from "graphql";
+import type { DirectiveNode, EnumTypeDefinitionNode, FieldDefinitionNode, StringValueNode } from "graphql";
 import { Kind } from "graphql";
+import { GRAPHQL_BUILTIN_SCALAR_TYPES } from "../../../../constants";
+import { GraphQLDate, GraphQLDateTime, GraphQLLocalDateTime } from "../../../../graphql/scalars";
+import { GraphQLLocalTime, parseLocalTime } from "../../../../graphql/scalars/LocalTime";
+import { GraphQLTime, parseTime } from "../../../../graphql/scalars/Time";
+import { DocumentValidationError } from "../utils/document-validation-error";
+import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
 import { assertArgumentHasSameTypeAsField } from "../utils/same-type-argument-as-field";
 import { getInnerTypeName, isArrayType } from "../utils/utils";
-import { DocumentValidationError } from "../utils/document-validation-error";
-import { GRAPHQL_BUILTIN_SCALAR_TYPES, isSpatial, isTemporal } from "../../../../constants";
-import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
 
 // TODO: schema-generation: save enums as map
 
@@ -48,10 +51,26 @@ export function verifyDefault(enums: EnumTypeDefinitionNode[]) {
         }
 
         if (!isArrayType(traversedDef)) {
-            if (isSpatial(expectedType)) {
-                throw new DocumentValidationError(`@default is not supported by Spatial types.`, ["value"]);
-            } else if (isTemporal(expectedType)) {
+            if ([GraphQLDateTime.name, GraphQLLocalDateTime.name, GraphQLDate.name].includes(expectedType)) {
                 if (Number.isNaN(Date.parse((defaultArg?.value as StringValueNode).value))) {
+                    throw new DocumentValidationError(
+                        `@default.${defaultArg.name.value} is not a valid ${expectedType}`,
+                        ["value"]
+                    );
+                }
+            } else if (expectedType === GraphQLTime.name) {
+                try {
+                    parseTime((defaultArg?.value as StringValueNode).value);
+                } catch {
+                    throw new DocumentValidationError(
+                        `@default.${defaultArg.name.value} is not a valid ${expectedType}`,
+                        ["value"]
+                    );
+                }
+            } else if (expectedType === GraphQLLocalTime.name) {
+                try {
+                    parseLocalTime((defaultArg?.value as StringValueNode).value);
+                } catch {
                     throw new DocumentValidationError(
                         `@default.${defaultArg.name.value} is not a valid ${expectedType}`,
                         ["value"]
@@ -59,10 +78,11 @@ export function verifyDefault(enums: EnumTypeDefinitionNode[]) {
                 }
             } else if (
                 !GRAPHQL_BUILTIN_SCALAR_TYPES.includes(expectedType) &&
-                !enums.some((x) => x.name.value === expectedType)
+                !enums.some((x) => x.name.value === expectedType) &&
+                expectedType !== "BigInt"
             ) {
                 throw new DocumentValidationError(
-                    `@default directive can only be used on Temporal types and types: Int | Float | String | Boolean | ID | Enum`,
+                    `@default directive can only be used on fields of type Int, Float, String, Boolean, ID, BigInt, DateTime, Date, Time, LocalDateTime or LocalTime.`,
                     []
                 );
             }

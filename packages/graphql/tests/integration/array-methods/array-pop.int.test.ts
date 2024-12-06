@@ -96,7 +96,7 @@ describe("array-pop", () => {
             const typeDefs = gql`
             type ${typeMovie} @node {
                 title: String
-                tags: [${inputType}]
+                tags: [${inputType}!]
             }
         `;
 
@@ -196,7 +196,7 @@ describe("array-pop", () => {
             const typeDefs = gql`
             type ${typeMovie} @node {
                 title: String
-                tags: [${inputType}]
+                tags: [${inputType}!]
             }
         `;
 
@@ -296,7 +296,7 @@ describe("array-pop", () => {
             const typeDefs = gql`
             type ${typeMovie} @node {
                 title: String
-                tags: [${inputType}]
+                tags: [${inputType}!]
             }
         `;
 
@@ -376,7 +376,7 @@ describe("array-pop", () => {
         const typeDefs = gql`
             type ${typeMovie} @node {
                 title: String
-                tags: [Point]
+                tags: [Point!]
             }
         `;
 
@@ -487,7 +487,7 @@ describe("array-pop", () => {
         const typeDefs = gql`
             type ${typeMovie} @node {
                 title: String
-                tags: [CartesianPoint]
+                tags: [CartesianPoint!]
             }
         `;
 
@@ -563,8 +563,8 @@ describe("array-pop", () => {
         const typeDefs = gql`
             type ${typeMovie} @node {
                 title: String
-                tags: [String]
-                moreTags: [String]
+                tags: [String!]
+                moreTags: [String!]
             }
         `;
 
@@ -611,7 +611,7 @@ describe("array-pop", () => {
         const actor = testHelper.createUniqueType("Actor");
         const typeDefs = `
             type ${movie.name} @node {
-                viewers: [Int]!
+                viewers: [Int!]!
                 workers: [${actor.name}!]! @relationship(type: "WORKED_IN", direction: IN)
             }
             type ${actor.name} @node {
@@ -690,7 +690,7 @@ describe("array-pop", () => {
             }
 
             type ActedIn @relationshipProperties {
-                pay: [Float]
+                pay: [Float!]
             }
         `;
 
@@ -773,7 +773,7 @@ describe("array-pop", () => {
             }
 
             type ActedIn @relationshipProperties {
-                locations: [Point]
+                locations: [Point!]
             }
         `;
 

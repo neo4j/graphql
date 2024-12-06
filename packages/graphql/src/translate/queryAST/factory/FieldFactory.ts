@@ -77,6 +77,16 @@ export class FieldFactory {
                     context,
                     field: field.name,
                 });
+
+                const attribute = entity.findAttribute(fieldName);
+                if (attribute) {
+                    const customResolver = attribute.annotations.customResolver;
+                    if (customResolver) {
+                        // We don't want to project the custom resolver field itself
+                        return;
+                    }
+                }
+
                 const relationship = entity.findRelationship(fieldName);
                 if (relationship) {
                     if (isConnection) {

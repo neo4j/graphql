@@ -36,8 +36,8 @@ describe("array-pop-and-push", () => {
         const typeDefs = gql`
             type ${typeMovie} @node {
                 title: String
-                tags: [String]
-                moreTags: [String]
+                tags: [String!]
+                moreTags: [String!]
             }
         `;
 

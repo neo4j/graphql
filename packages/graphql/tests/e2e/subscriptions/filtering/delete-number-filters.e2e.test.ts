@@ -41,7 +41,7 @@ describe("Delete Subscription", () => {
         type ${typeMovie} @node {
             id: ID
             title: String
-            similarTitles: [String]
+            similarTitles: [String!]
             releasedIn: Int
             averageRating: Float
             fileSize: BigInt

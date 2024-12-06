@@ -28,7 +28,7 @@ describe("Cypher Points", () => {
         typeDefs = /* GraphQL */ `
             type PointContainer @node {
                 id: String
-                points: [Point]
+                points: [Point!]
             }
         `;
 

@@ -421,15 +421,21 @@ export function getObjFieldMeta({
                                 }
                                 primitiveField.defaultValue = parseInt(value.value, 10);
                                 break;
+                            case "BigInt":
+                                if (value?.kind !== Kind.INT && value?.kind !== Kind.STRING) {
+                                    throw new Error(typeError);
+                                }
+                                primitiveField.defaultValue = parseInt(value.value, 10);
+                                break;
                             case "Float":
-                                if (value?.kind !== Kind.FLOAT) {
+                                if (value?.kind !== Kind.FLOAT && value?.kind !== Kind.INT) {
                                     throw new Error(typeError);
                                 }
                                 primitiveField.defaultValue = parseFloat(value.value);
                                 break;
                             default:
                                 throw new Error(
-                                    "@default directive can only be used on types: Int | Float | String | Boolean | ID | DateTime | Enum"
+                                    "@default directive can only be used on fields of type Int, Float, String, Boolean, ID, BigInt, DateTime, Date, Time, LocalDateTime or LocalTime."
                                 );
                         }
                     }

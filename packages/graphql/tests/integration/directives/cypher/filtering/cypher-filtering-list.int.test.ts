@@ -153,7 +153,7 @@ describe("cypher directive filtering - List", () => {
         const typeDefs = /* GraphQL */ `
             type ${CustomType} @node {
                 title: String
-                custom_cypher_list: [Point] @cypher(statement: 
+                custom_cypher_list: [Point!] @cypher(statement: 
                     """
                     MATCH (this)
                     RETURN this.custom_data as list

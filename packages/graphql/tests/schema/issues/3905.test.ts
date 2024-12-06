@@ -21,8 +21,9 @@ import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
-
-describe("https://github.com/neo4j/graphql/issues/3905", () => {
+// This has to be reintroduced when user defined types are supported as target for cypher fields
+// eslint-disable-next-line jest/no-disabled-tests
+describe.skip("https://github.com/neo4j/graphql/issues/3905", () => {
     test("custom Cypher result type with list of lists generates without error", async () => {
         const typeDefs = gql`
             type Query {
@@ -36,11 +37,11 @@ describe("https://github.com/neo4j/graphql/issues/3905", () => {
                     )
             }
 
-            type pathList @query(read: false, aggregate: false) @mutation(operations: []) @subscription(events: []) @node {
+            type pathList @query(read: false, aggregate: false) @mutation(operations: []) @subscription(events: []) {
                 paths: [[pathLink]]
             }
 
-            type pathLink @query(read: false, aggregate: false) @mutation(operations: []) @subscription(events: []) @node {
+            type pathLink @query(read: false, aggregate: false) @mutation(operations: []) @subscription(events: []) {
                 entity_id: Int
                 other_entity_id: Int
             }

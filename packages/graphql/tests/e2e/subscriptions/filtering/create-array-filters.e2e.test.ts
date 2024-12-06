@@ -40,15 +40,15 @@ describe("Create Subscription with optional filters valid for all types", () => 
         const typeDefs = `
          type ${typeMovie} @node {
             id: ID
-            similarIds: [ID]
+            similarIds: [ID!]
             title: String
-            similarTitles: [String]
+            similarTitles: [String!]
             releasedIn: Int
-            allDates: [Int]
+            allDates: [Int!]
             averageRating: Float
-            allRatings: [Float]
+            allRatings: [Float!]
             fileSize: BigInt
-            allSizes: [BigInt]
+            allSizes: [BigInt!]
             isFavorite: Boolean
          }
          `;

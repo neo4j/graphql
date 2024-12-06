@@ -46,7 +46,7 @@ describe("Delete Subscription", () => {
             averageRating: Float
             fileSize: BigInt
             isFavorite: Boolean
-            similarTitles: [String]
+            similarTitles: [String!]
         }
         `;
 

@@ -34,19 +34,19 @@ const map = {
     Point: "Point",
 
     // Array types
-    LongArray: "[BigInt]",
-    DoubleArray: "[Float]",
-    FloatArray: "[Float]",
-    IntegerArray: "[BigInt]",
-    BooleanArray: "[Boolean]",
-    StringArray: "[String]",
-    DateArray: "[Date]",
-    DateTimeArray: "[DateTime]",
-    TimeArray: "[Time]",
-    LocalTimeArray: "[LocalTime]",
-    LocalDateTimeArray: "[LocalDateTime]",
-    DurationArray: "[Duration]",
-    PointArray: "[Point]",
+    LongArray: "[BigInt!]",
+    DoubleArray: "[Float!]",
+    FloatArray: "[Float!]",
+    IntegerArray: "[BigInt!]",
+    BooleanArray: "[Boolean!]",
+    StringArray: "[String!]",
+    DateArray: "[Date!]",
+    DateTimeArray: "[DateTime!]",
+    TimeArray: "[Time!]",
+    LocalTimeArray: "[LocalTime!]",
+    LocalDateTimeArray: "[LocalDateTime!]",
+    DurationArray: "[Duration!]",
+    PointArray: "[Point!]",
 };
 
 export default function mapNeo4jToGraphQLType(neo4jType: string[], mandatory?: boolean): string {

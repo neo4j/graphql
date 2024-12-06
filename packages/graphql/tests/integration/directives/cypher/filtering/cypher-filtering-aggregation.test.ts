@@ -236,12 +236,12 @@ describe("cypher directive filtering - Aggregation", () => {
         });
     });
 
-    test("String aggregation - min, filter on [Int]", async () => {
+    test("String aggregation - min, filter on [Int!]", async () => {
         const typeDefs = /* GraphQL */ `
             type ${Movie} @node {
                 title: String
                 released: Int
-                custom_field: [Int]
+                custom_field: [Int!]
                     @cypher(
                         statement: """
                         MATCH (this)
@@ -287,12 +287,12 @@ describe("cypher directive filtering - Aggregation", () => {
         });
     });
 
-    test("String aggregation - min, filter on [String]", async () => {
+    test("String aggregation - min, filter on [String!]", async () => {
         const typeDefs = /* GraphQL */ `
             type ${Movie} @node {
                 title: String
                 released: Int
-                custom_field: [String]
+                custom_field: [String!]
                     @cypher(
                         statement: """
                         MATCH (this)

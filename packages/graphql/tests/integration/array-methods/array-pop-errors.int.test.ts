@@ -39,7 +39,7 @@ describe("array-pop-errors", () => {
         const typeDefs = gql`
             type ${typeMovie} @node {
                 title: String
-                tags: [String]
+                tags: [String!]
             }
         `;
 
@@ -83,8 +83,8 @@ describe("array-pop-errors", () => {
         const typeDefs = gql`
             type ${typeMovie} @node {
                 title: String
-                tags: [String]
-                otherTags: [String]
+                tags: [String!]
+                otherTags: [String!]
             }
         `;
 
@@ -130,7 +130,7 @@ describe("array-pop-errors", () => {
         const typeDefs = `
             type ${typeMovie} @node {
                 title: String
-                tags: [String] @authentication(operations: [UPDATE])
+                tags: [String!] @authentication(operations: [UPDATE])
             }
         `;
 
@@ -179,7 +179,7 @@ describe("array-pop-errors", () => {
         const typeDefs = gql`
             type ${typeMovie} @node {
                 title: String
-                tags: [String]
+                tags: [String!]
             }
         `;
 
@@ -224,7 +224,7 @@ describe("array-pop-errors", () => {
         const typeDefs = gql`
             type ${typeMovie} @node {
                 title: String
-                tags: [String]
+                tags: [String!]
             }
         `;
 
@@ -277,7 +277,7 @@ describe("array-pop-errors", () => {
             }
 
             type ActedIn @relationshipProperties {
-                pay: [Float]
+                pay: [Float!]
             }
         `;
 

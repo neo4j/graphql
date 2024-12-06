@@ -48,7 +48,7 @@ describe("Update Subscriptions", () => {
             averageRating: Float
             fileSize: BigInt
             isFavorite: Boolean
-            similarTitles: [String]
+            similarTitles: [String!]
          }
 
          type ${typeActor} @node {
