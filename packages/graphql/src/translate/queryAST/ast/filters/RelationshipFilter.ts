@@ -34,7 +34,6 @@ export class RelationshipFilter extends Filter {
     protected targetNodeFilters: Filter[] = [];
     protected relationship: RelationshipAdapter;
     protected operator: RelationshipWhereOperator;
-    protected isNot: boolean;
     protected target: ConcreteEntityAdapter | InterfaceEntityAdapter;
 
     // TODO: remove this, this is not good
@@ -46,17 +45,14 @@ export class RelationshipFilter extends Filter {
     constructor({
         relationship,
         operator,
-        isNot,
         target,
     }: {
         relationship: RelationshipAdapter;
         operator: RelationshipWhereOperator;
-        isNot: boolean;
         target: ConcreteEntityAdapter | InterfaceEntityAdapter;
     }) {
         super();
         this.relationship = relationship;
-        this.isNot = isNot;
         this.operator = operator;
         this.target = target;
 

@@ -131,7 +131,13 @@ describe("https://github.com/neo4j/graphql/issues/5080", () => {
             }
             WITH s AS this0
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this0)-[:OWNED_BY]->(this2:Tenant) WHERE size([(this2)<-[:ADMIN_IN]-(this1:User) WHERE ($jwt.id IS NOT NULL AND this1.userId = $jwt.id) | 1]) > 0 | 1]) > 0), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                MATCH (this0)-[:OWNED_BY]->(this1:Tenant)
+                WHERE EXISTS {
+                    MATCH (this1)<-[:ADMIN_IN]-(this2:User)
+                    WHERE ($jwt.id IS NOT NULL AND this2.userId = $jwt.id)
+                }
+            }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this0 { .id } AS this0
             RETURN this0 AS this"
         `);
