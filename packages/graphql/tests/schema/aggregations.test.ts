@@ -62,12 +62,12 @@ describe("Aggregations", () => {
 
             \\"\\"\\"BigInt filters\\"\\"\\"
             input BigIntScalarFilters {
-              equals: BigInt
-              greaterThan: BigInt
-              greaterThanEquals: BigInt
+              eq: BigInt
+              gt: BigInt
+              gte: BigInt
               in: [BigInt!]
-              lessThan: BigInt
-              lessThanEquals: BigInt
+              lt: BigInt
+              lte: BigInt
             }
 
             \\"\\"\\"BigInt mutations\\"\\"\\"
@@ -100,12 +100,12 @@ describe("Aggregations", () => {
 
             \\"\\"\\"DateTime filters\\"\\"\\"
             input DateTimeScalarFilters {
-              equals: DateTime
-              greaterThan: DateTime
-              greaterThanEquals: DateTime
+              eq: DateTime
+              gt: DateTime
+              gte: DateTime
               in: [DateTime!]
-              lessThan: DateTime
-              lessThanEquals: DateTime
+              lt: DateTime
+              lte: DateTime
             }
 
             \\"\\"\\"DateTime mutations\\"\\"\\"
@@ -131,12 +131,12 @@ describe("Aggregations", () => {
 
             \\"\\"\\"Duration filters\\"\\"\\"
             input DurationScalarFilters {
-              equals: Duration
-              greaterThan: Duration
-              greaterThanEquals: Duration
+              eq: Duration
+              gt: Duration
+              gte: Duration
               in: [Duration!]
-              lessThan: Duration
-              lessThanEquals: Duration
+              lt: Duration
+              lte: Duration
             }
 
             \\"\\"\\"Duration mutations\\"\\"\\"
@@ -153,12 +153,12 @@ describe("Aggregations", () => {
 
             \\"\\"\\"Float filters\\"\\"\\"
             input FloatScalarFilters {
-              equals: Float
-              greaterThan: Float
-              greaterThanEquals: Float
+              eq: Float
+              gt: Float
+              gte: Float
               in: [Float!]
-              lessThan: Float
-              lessThanEquals: Float
+              lt: Float
+              lte: Float
             }
 
             \\"\\"\\"Float mutations\\"\\"\\"
@@ -179,12 +179,12 @@ describe("Aggregations", () => {
             input IDScalarFilters {
               contains: ID
               endsWith: ID
-              equals: ID
-              greaterThan: ID
-              greaterThanEquals: ID
+              eq: ID
+              gt: ID
+              gte: ID
               in: [ID!]
-              lessThan: ID
-              lessThanEquals: ID
+              lt: ID
+              lte: ID
               matches: ID
               startsWith: ID
             }
@@ -203,12 +203,12 @@ describe("Aggregations", () => {
 
             \\"\\"\\"Int filters\\"\\"\\"
             input IntScalarFilters {
-              equals: Int
-              greaterThan: Int
-              greaterThanEquals: Int
+              eq: Int
+              gt: Int
+              gte: Int
               in: [Int!]
-              lessThan: Int
-              lessThanEquals: Int
+              lt: Int
+              lte: Int
             }
 
             \\"\\"\\"Int mutations\\"\\"\\"
@@ -228,12 +228,12 @@ describe("Aggregations", () => {
 
             \\"\\"\\"LocalDateTime filters\\"\\"\\"
             input LocalDateTimeScalarFilters {
-              equals: LocalDateTime
-              greaterThan: LocalDateTime
-              greaterThanEquals: LocalDateTime
+              eq: LocalDateTime
+              gt: LocalDateTime
+              gte: LocalDateTime
               in: [LocalDateTime!]
-              lessThan: LocalDateTime
-              lessThanEquals: LocalDateTime
+              lt: LocalDateTime
+              lte: LocalDateTime
             }
 
             \\"\\"\\"LocalDateTime mutations\\"\\"\\"
@@ -253,12 +253,12 @@ describe("Aggregations", () => {
 
             \\"\\"\\"LocalTime filters\\"\\"\\"
             input LocalTimeScalarFilters {
-              equals: LocalTime
-              greaterThan: LocalTime
-              greaterThanEquals: LocalTime
+              eq: LocalTime
+              gt: LocalTime
+              gte: LocalTime
               in: [LocalTime!]
-              lessThan: LocalTime
-              lessThanEquals: LocalTime
+              lt: LocalTime
+              lte: LocalTime
             }
 
             \\"\\"\\"LocalTime mutations\\"\\"\\"
@@ -487,12 +487,12 @@ describe("Aggregations", () => {
             input StringScalarFilters {
               contains: String
               endsWith: String
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
+              eq: String
+              gt: String
+              gte: String
               in: [String!]
-              lessThan: String
-              lessThanEquals: String
+              lt: String
+              lte: String
               matches: String
               startsWith: String
             }
@@ -512,12 +512,12 @@ describe("Aggregations", () => {
 
             \\"\\"\\"Time filters\\"\\"\\"
             input TimeScalarFilters {
-              equals: Time
-              greaterThan: Time
-              greaterThanEquals: Time
+              eq: Time
+              gt: Time
+              gte: Time
               in: [Time!]
-              lessThan: Time
-              lessThanEquals: Time
+              lt: Time
+              lte: Time
             }
 
             \\"\\"\\"Time mutations\\"\\"\\"
@@ -598,12 +598,12 @@ describe("Aggregations", () => {
 
             \\"\\"\\"BigInt filters\\"\\"\\"
             input BigIntScalarFilters {
-              equals: BigInt
-              greaterThan: BigInt
-              greaterThanEquals: BigInt
+              eq: BigInt
+              gt: BigInt
+              gte: BigInt
               in: [BigInt!]
-              lessThan: BigInt
-              lessThanEquals: BigInt
+              lt: BigInt
+              lte: BigInt
             }
 
             \\"\\"\\"BigInt mutations\\"\\"\\"
@@ -641,12 +641,12 @@ describe("Aggregations", () => {
 
             \\"\\"\\"DateTime filters\\"\\"\\"
             input DateTimeScalarFilters {
-              equals: DateTime
-              greaterThan: DateTime
-              greaterThanEquals: DateTime
+              eq: DateTime
+              gt: DateTime
+              gte: DateTime
               in: [DateTime!]
-              lessThan: DateTime
-              lessThanEquals: DateTime
+              lt: DateTime
+              lte: DateTime
             }
 
             \\"\\"\\"DateTime mutations\\"\\"\\"
@@ -672,12 +672,12 @@ describe("Aggregations", () => {
 
             \\"\\"\\"Duration filters\\"\\"\\"
             input DurationScalarFilters {
-              equals: Duration
-              greaterThan: Duration
-              greaterThanEquals: Duration
+              eq: Duration
+              gt: Duration
+              gte: Duration
               in: [Duration!]
-              lessThan: Duration
-              lessThanEquals: Duration
+              lt: Duration
+              lte: Duration
             }
 
             \\"\\"\\"Duration mutations\\"\\"\\"
@@ -694,12 +694,12 @@ describe("Aggregations", () => {
 
             \\"\\"\\"Float filters\\"\\"\\"
             input FloatScalarFilters {
-              equals: Float
-              greaterThan: Float
-              greaterThanEquals: Float
+              eq: Float
+              gt: Float
+              gte: Float
               in: [Float!]
-              lessThan: Float
-              lessThanEquals: Float
+              lt: Float
+              lte: Float
             }
 
             \\"\\"\\"Float mutations\\"\\"\\"
@@ -720,12 +720,12 @@ describe("Aggregations", () => {
             input IDScalarFilters {
               contains: ID
               endsWith: ID
-              equals: ID
-              greaterThan: ID
-              greaterThanEquals: ID
+              eq: ID
+              gt: ID
+              gte: ID
               in: [ID!]
-              lessThan: ID
-              lessThanEquals: ID
+              lt: ID
+              lte: ID
               matches: ID
               startsWith: ID
             }
@@ -744,12 +744,12 @@ describe("Aggregations", () => {
 
             \\"\\"\\"Int filters\\"\\"\\"
             input IntScalarFilters {
-              equals: Int
-              greaterThan: Int
-              greaterThanEquals: Int
+              eq: Int
+              gt: Int
+              gte: Int
               in: [Int!]
-              lessThan: Int
-              lessThanEquals: Int
+              lt: Int
+              lte: Int
             }
 
             \\"\\"\\"Int mutations\\"\\"\\"
@@ -1063,12 +1063,12 @@ describe("Aggregations", () => {
 
             \\"\\"\\"LocalDateTime filters\\"\\"\\"
             input LocalDateTimeScalarFilters {
-              equals: LocalDateTime
-              greaterThan: LocalDateTime
-              greaterThanEquals: LocalDateTime
+              eq: LocalDateTime
+              gt: LocalDateTime
+              gte: LocalDateTime
               in: [LocalDateTime!]
-              lessThan: LocalDateTime
-              lessThanEquals: LocalDateTime
+              lt: LocalDateTime
+              lte: LocalDateTime
             }
 
             \\"\\"\\"LocalDateTime mutations\\"\\"\\"
@@ -1088,12 +1088,12 @@ describe("Aggregations", () => {
 
             \\"\\"\\"LocalTime filters\\"\\"\\"
             input LocalTimeScalarFilters {
-              equals: LocalTime
-              greaterThan: LocalTime
-              greaterThanEquals: LocalTime
+              eq: LocalTime
+              gt: LocalTime
+              gte: LocalTime
               in: [LocalTime!]
-              lessThan: LocalTime
-              lessThanEquals: LocalTime
+              lt: LocalTime
+              lte: LocalTime
             }
 
             \\"\\"\\"LocalTime mutations\\"\\"\\"
@@ -1479,12 +1479,12 @@ describe("Aggregations", () => {
             input StringScalarFilters {
               contains: String
               endsWith: String
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
+              eq: String
+              gt: String
+              gte: String
               in: [String!]
-              lessThan: String
-              lessThanEquals: String
+              lt: String
+              lte: String
               matches: String
               startsWith: String
             }
@@ -1504,12 +1504,12 @@ describe("Aggregations", () => {
 
             \\"\\"\\"Time filters\\"\\"\\"
             input TimeScalarFilters {
-              equals: Time
-              greaterThan: Time
-              greaterThanEquals: Time
+              eq: Time
+              gt: Time
+              gte: Time
               in: [Time!]
-              lessThan: Time
-              lessThanEquals: Time
+              lt: Time
+              lte: Time
             }
 
             \\"\\"\\"Time mutations\\"\\"\\"

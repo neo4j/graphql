@@ -367,12 +367,12 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
 
             \\"\\"\\"DateTime filters\\"\\"\\"
             input DateTimeScalarFilters {
-              equals: DateTime
-              greaterThan: DateTime
-              greaterThanEquals: DateTime
+              eq: DateTime
+              gt: DateTime
+              gte: DateTime
               in: [DateTime!]
-              lessThan: DateTime
-              lessThanEquals: DateTime
+              lt: DateTime
+              lte: DateTime
             }
 
             \\"\\"\\"DateTime mutations\\"\\"\\"
@@ -397,12 +397,12 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
 
             \\"\\"\\"Int filters\\"\\"\\"
             input IntScalarFilters {
-              equals: Int
-              greaterThan: Int
-              greaterThanEquals: Int
+              eq: Int
+              gt: Int
+              gte: Int
               in: [Int!]
-              lessThan: Int
-              lessThanEquals: Int
+              lt: Int
+              lte: Int
             }
 
             \\"\\"\\"Int mutations\\"\\"\\"
@@ -1067,12 +1067,12 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
             input StringScalarFilters {
               contains: String
               endsWith: String
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
+              eq: String
+              gt: String
+              gte: String
               in: [String!]
-              lessThan: String
-              lessThanEquals: String
+              lt: String
+              lte: String
               matches: String
               startsWith: String
             }

@@ -65,7 +65,7 @@ describe("update", () => {
 
         const query = /* GraphQL */ `
         mutation($id: ID, $name: String) {
-            ${Movie.operations.update}(where: { id: {equals: $id } }, update: { name: { set: $name }}) {
+            ${Movie.operations.update}(where: { id: {eq: $id } }, update: { name: { set: $name }}) {
                 ${Movie.plural} {
                     id
                     name
@@ -107,7 +107,7 @@ describe("update", () => {
 
         const query = /* GraphQL */ `
         mutation($id: ID, $name: String) {
-            ${Movie.operations.update}(where: { id: {equals: $id } }, update: {name: {set: $name}}) {
+            ${Movie.operations.update}(where: { id: {eq: $id } }, update: {name: {set: $name}}) {
                 ${Movie.plural} {
                     id
                     name
@@ -171,16 +171,16 @@ describe("update", () => {
         const query = /* GraphQL */ `
         mutation {
             ${Movie.operations.update}(
-                where: { id: { equals: "1" } }, 
+                where: { id: { eq: "1" } }, 
                 update: { director: { 
                     connect: {
-                    where: { node: { id: { equals: "2" }} }, 
+                    where: { node: { id: { eq: "2" }} }, 
                     connect: { movies: {
-                        where: { node: { id: { equals: "3" }} }, 
+                        where: { node: { id: { eq: "3" }} }, 
                         connect: { director: {
-                            where: { node: { id: { equals: "4" }} }, 
+                            where: { node: { id: { eq: "4" }} }, 
                             connect: { movies: {
-                                where: { node: { id: { equals: "5" } } }
+                                where: { node: { id: { eq: "5" } } }
                             } }
                         } }
                     }

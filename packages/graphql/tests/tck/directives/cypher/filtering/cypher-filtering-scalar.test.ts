@@ -38,7 +38,7 @@ describe("cypher directive filtering", () => {
 
         const query = /* GraphQL */ `
             query {
-                movies(where: { special_count: { greaterThanEquals: 1 }, title: { equals: "CustomType One" } }) {
+                movies(where: { special_count: { gte: 1 }, title: { eq: "CustomType One" } }) {
                     special_count
                 }
             }
@@ -107,7 +107,7 @@ describe("cypher directive filtering", () => {
 
         const query = /* GraphQL */ `
             query {
-                movies(where: { special_count: { greaterThanEquals: 1 }, title: { equals: "CustomType Unknown" } }) {
+                movies(where: { special_count: { gte: 1 }, title: { eq: "CustomType Unknown" } }) {
                     special_count
                 }
             }
@@ -176,7 +176,7 @@ describe("cypher directive filtering", () => {
 
         const query = /* GraphQL */ `
             query {
-                movies(where: { special_count: { greaterThanEquals: 1 } }) {
+                movies(where: { special_count: { gte: 1 } }) {
                     title
                 }
             }

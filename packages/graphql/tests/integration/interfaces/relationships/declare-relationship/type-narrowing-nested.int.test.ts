@@ -438,7 +438,7 @@ describe("type narrowing nested connections", () => {
         query UntrainedPeople {
             ${UntrainedPerson.plural} {
                 name
-                actedInConnection(where: { edge: { AppearsIn: { sceneNr: { equals: 0 } } } }) {
+                actedInConnection(where: { edge: { AppearsIn: { sceneNr: { eq: 0 } } } }) {
                     edges {
                         node {
                             title
@@ -528,7 +528,7 @@ describe("type narrowing nested connections", () => {
         query UntrainedPeople {
             ${UntrainedPerson.plural} {
                 name
-                actedInConnection(where: { edge: { AppearsIn: { sceneNr:{ equals:  ${sceneNr}} }, ActedIn: {screenTime: { equals: ${movieScreenTime} }} } }) {
+                actedInConnection(where: { edge: { AppearsIn: { sceneNr:{ eq:  ${sceneNr}} }, ActedIn: {screenTime: { eq: ${movieScreenTime} }} } }) {
                     edges {
                         node {
                             title

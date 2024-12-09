@@ -53,12 +53,12 @@ describe("Bigint", () => {
 
             \\"\\"\\"BigInt filters\\"\\"\\"
             input BigIntScalarFilters {
-              equals: BigInt
-              greaterThan: BigInt
-              greaterThanEquals: BigInt
+              eq: BigInt
+              gt: BigInt
+              gte: BigInt
               in: [BigInt!]
-              lessThan: BigInt
-              lessThanEquals: BigInt
+              lt: BigInt
+              lte: BigInt
             }
 
             \\"\\"\\"BigInt mutations\\"\\"\\"
@@ -189,12 +189,12 @@ describe("Bigint", () => {
             input StringScalarFilters {
               contains: String
               endsWith: String
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
+              eq: String
+              gt: String
+              gte: String
               in: [String!]
-              lessThan: String
-              lessThanEquals: String
+              lt: String
+              lte: String
               matches: String
               startsWith: String
             }

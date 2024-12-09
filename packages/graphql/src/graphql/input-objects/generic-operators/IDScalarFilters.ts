@@ -23,15 +23,15 @@ export const IDScalarFilters = new GraphQLInputObjectType({
     name: "IDScalarFilters",
     description: "ID filters",
     fields: {
-        equals: {
+        eq: {
             type: GraphQLID,
         },
         matches: { type: GraphQLID },
-        greaterThan: { type: GraphQLID }, // GT/LT/GTE etc should not be added all the time
-        greaterThanEquals: { type: GraphQLID },
+        gt: { type: GraphQLID }, // GT/LT/GTE etc should not be added all the time
+        gte: { type: GraphQLID },
         in: { type: new GraphQLList(new GraphQLNonNull(GraphQLID)) },
-        lessThan: { type: GraphQLID },
-        lessThanEquals: { type: GraphQLID },
+        lt: { type: GraphQLID },
+        lte: { type: GraphQLID },
         contains: { type: GraphQLID },
         endsWith: { type: GraphQLID },
         startsWith: { type: GraphQLID },
@@ -42,7 +42,7 @@ export const IDListFilters = new GraphQLInputObjectType({
     name: "IDListFilters",
     description: "ID list filters",
     fields: {
-        equals: { type: new GraphQLList(new GraphQLNonNull(IDScalarFilters)) },
+        eq: { type: new GraphQLList(new GraphQLNonNull(IDScalarFilters)) },
         includes: { type: IDScalarFilters },
     },
 });

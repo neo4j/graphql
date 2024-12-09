@@ -69,12 +69,12 @@ describe("Localtime", () => {
             input IDScalarFilters {
               contains: ID
               endsWith: ID
-              equals: ID
-              greaterThan: ID
-              greaterThanEquals: ID
+              eq: ID
+              gt: ID
+              gte: ID
               in: [ID!]
-              lessThan: ID
-              lessThanEquals: ID
+              lt: ID
+              lte: ID
               matches: ID
               startsWith: ID
             }
@@ -96,12 +96,12 @@ describe("Localtime", () => {
 
             \\"\\"\\"LocalTime filters\\"\\"\\"
             input LocalTimeScalarFilters {
-              equals: LocalTime
-              greaterThan: LocalTime
-              greaterThanEquals: LocalTime
+              eq: LocalTime
+              gt: LocalTime
+              gte: LocalTime
               in: [LocalTime!]
-              lessThan: LocalTime
-              lessThanEquals: LocalTime
+              lt: LocalTime
+              lte: LocalTime
             }
 
             \\"\\"\\"LocalTime mutations\\"\\"\\"
