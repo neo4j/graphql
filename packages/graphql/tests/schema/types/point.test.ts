@@ -153,7 +153,7 @@ describe("Point", () => {
             \\"\\"\\"Point filters\\"\\"\\"
             input PointFilters {
               distance: PointDistanceFilters
-              equals: PointInput
+              eq: PointInput
               in: [PointInput!]
             }
 
@@ -491,7 +491,7 @@ describe("Point", () => {
 
             \\"\\"\\"Point list filters\\"\\"\\"
             input PointListFilters {
-              equals: [PointInput!]
+              eq: [PointInput!]
               includes: PointInput
             }
 

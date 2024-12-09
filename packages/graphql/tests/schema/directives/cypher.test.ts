@@ -717,7 +717,7 @@ describe("Cypher", () => {
             \\"\\"\\"Point filters\\"\\"\\"
             input PointFilters {
               distance: PointDistanceFilters
-              equals: PointInput
+              eq: PointInput
               in: [PointInput!]
             }
 
@@ -730,7 +730,7 @@ describe("Cypher", () => {
 
             \\"\\"\\"Point list filters\\"\\"\\"
             input PointListFilters {
-              equals: [PointInput!]
+              eq: [PointInput!]
               includes: PointInput
             }
 

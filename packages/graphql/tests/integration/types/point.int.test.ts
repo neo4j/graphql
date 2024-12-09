@@ -331,7 +331,7 @@ describe("Point", () => {
         // Test equality
         const photographsEqualsQuery = /* GraphQL */ `
             query Photographs($longitude: Float!, $latitude: Float!) {
-                ${Photograph.plural}(where: { location: { equals: { longitude: $longitude, latitude: $latitude } } }) {
+                ${Photograph.plural}(where: { location: { eq: { longitude: $longitude, latitude: $latitude } } }) {
                     id
                     size
                     location {
@@ -494,7 +494,7 @@ describe("Point", () => {
 
         const photographsQuery = /* GraphQL */ `
             query Photographs($longitude: Float!, $latitude: Float!, $height: Float) {
-                ${Photograph.plural}(where: { location: { equals: { longitude: $longitude, latitude: $latitude, height: $height } } }) {
+                ${Photograph.plural}(where: { location: { eq: { longitude: $longitude, latitude: $latitude, height: $height } } }) {
                     id
                     size
                     location {

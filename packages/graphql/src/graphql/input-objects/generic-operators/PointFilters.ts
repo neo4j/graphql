@@ -39,7 +39,7 @@ export const PointFilters = new GraphQLInputObjectType({
     name: "PointFilters",
     description: "Point filters",
     fields: {
-        equals: {
+        eq: {
             type: PointInput,
         },
         in: { type: new GraphQLList(new GraphQLNonNull(PointInput)) },
@@ -51,7 +51,7 @@ export const PointListFilters = new GraphQLInputObjectType({
     name: "PointListFilters",
     description: "Point list filters",
     fields: {
-        equals: { type: new GraphQLList(new GraphQLNonNull(PointInput)) },
+        eq: { type: new GraphQLList(new GraphQLNonNull(PointInput)) },
         includes: { type: PointInput },
     },
 });
