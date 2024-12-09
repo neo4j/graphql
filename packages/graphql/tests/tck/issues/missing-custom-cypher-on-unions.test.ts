@@ -94,9 +94,9 @@ describe("Missing custom Cypher on unions", () => {
         type choNode @mutation(operations: []) @node {
             iri: ID! @id @alias(property: "uri")
             identifier: String
-            title: [title]
+            title: [title!]
             hasSortKey: String
-            labels: [String]
+            labels: [String!]
             partOf: ID
             partOfType: String
         }

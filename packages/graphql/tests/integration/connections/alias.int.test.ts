@@ -608,7 +608,7 @@ describe("Connections Alias", () => {
             }
 
             type ActedIn @relationshipProperties {
-                roles: [String]!
+                roles: [String!]!
             }
         `;
 
@@ -663,7 +663,7 @@ describe("Connections Alias", () => {
             }
 
             type ActedIn @relationshipProperties {
-                roles: [String]!
+                roles: [String!]!
             }
         `;
 

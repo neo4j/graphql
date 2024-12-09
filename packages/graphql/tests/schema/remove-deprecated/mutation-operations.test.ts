@@ -23,7 +23,7 @@ import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Deprecated mutation operations", () => {
-    test("Remove deprecated mutaiton operations", async () => {
+    test("Remove deprecated mutation operations", async () => {
         const typeDefs = gql`
             type Actor @node {
                 name: String
@@ -40,7 +40,7 @@ describe("Deprecated mutation operations", () => {
             }
 
             type ActedIn @relationshipProperties {
-                pay: [Float]
+                pay: [Float!]
                 value: Int
             }
         `;
@@ -66,7 +66,7 @@ describe("Deprecated mutation operations", () => {
             * Movie.actors
             \\"\\"\\"
             type ActedIn {
-              pay: [Float]
+              pay: [Float!]
               value: Int
             }
 
@@ -97,7 +97,7 @@ describe("Deprecated mutation operations", () => {
             }
 
             input ActedInCreateInput {
-              pay: [Float]
+              pay: [Float!]
               value: Int
             }
 
@@ -108,7 +108,13 @@ describe("Deprecated mutation operations", () => {
 
             input ActedInUpdateInput {
               pay: ListFloatMutations
+              pay_POP: Int @deprecated(reason: \\"Please use the generic mutation 'pay: { pop: ... } }' instead.\\")
+              pay_PUSH: [Float!] @deprecated(reason: \\"Please use the generic mutation 'pay: { push: ... } }' instead.\\")
+              pay_SET: [Float!] @deprecated(reason: \\"Please use the generic mutation 'pay: { set: ... } }' instead.\\")
               value: IntScalarMutations
+              value_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'value: { decrement: ... } }' instead.\\")
+              value_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'value: { increment: ... } }' instead.\\")
+              value_SET: Int @deprecated(reason: \\"Please use the generic mutation 'value: { set: ... } }' instead.\\")
             }
 
             input ActedInWhere {
@@ -116,7 +122,7 @@ describe("Deprecated mutation operations", () => {
               NOT: ActedInWhere
               OR: [ActedInWhere!]
               pay: FloatListFilters
-              pay_EQ: [Float]
+              pay_EQ: [Float!]
               pay_INCLUDES: Float
               value: IntScalarFilters
               value_EQ: Int
@@ -304,6 +310,7 @@ describe("Deprecated mutation operations", () => {
             input ActorUpdateInput {
               actedIn: [ActorActedInUpdateFieldInput!]
               name: StringScalarMutations
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
@@ -653,10 +660,21 @@ describe("Deprecated mutation operations", () => {
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
               averageRating: FloatScalarMutations
+              averageRating_ADD: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { add: ... } }' instead.\\")
+              averageRating_DIVIDE: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { divide: ... } }' instead.\\")
+              averageRating_MULTIPLY: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { multiply: ... } }' instead.\\")
+              averageRating_SET: Float @deprecated(reason: \\"Please use the generic mutation 'averageRating: { set: ... } }' instead.\\")
+              averageRating_SUBTRACT: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { subtract: ... } }' instead.\\")
               date: DateScalarMutations
+              date_SET: Date @deprecated(reason: \\"Please use the generic mutation 'date: { set: ... } }' instead.\\")
               id: IDScalarMutations
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               point: PointMutations
+              point_SET: PointInput @deprecated(reason: \\"Please use the generic mutation 'point: { set: ... } }' instead.\\")
               ratings: ListFloatMutations
+              ratings_POP: Int @deprecated(reason: \\"Please use the generic mutation 'ratings: { pop: ... } }' instead.\\")
+              ratings_PUSH: [Float!] @deprecated(reason: \\"Please use the generic mutation 'ratings: { push: ... } }' instead.\\")
+              ratings_SET: [Float!] @deprecated(reason: \\"Please use the generic mutation 'ratings: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {

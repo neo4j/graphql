@@ -38,7 +38,7 @@ describe("Arrays Methods", () => {
             }
 
             type ActedIn @relationshipProperties {
-                pay: [Float]
+                pay: [Float!]
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -56,11 +56,11 @@ describe("Arrays Methods", () => {
             * Movie.actors
             \\"\\"\\"
             type ActedIn {
-              pay: [Float]
+              pay: [Float!]
             }
 
             input ActedInCreateInput {
-              pay: [Float]
+              pay: [Float!]
             }
 
             input ActedInSort {
@@ -70,8 +70,8 @@ describe("Arrays Methods", () => {
             input ActedInUpdateInput {
               pay: ListFloatMutations
               pay_POP: Int @deprecated(reason: \\"Please use the generic mutation 'pay: { pop: ... } }' instead.\\")
-              pay_PUSH: [Float] @deprecated(reason: \\"Please use the generic mutation 'pay: { push: ... } }' instead.\\")
-              pay_SET: [Float] @deprecated(reason: \\"Please use the generic mutation 'pay: { set: ... } }' instead.\\")
+              pay_PUSH: [Float!] @deprecated(reason: \\"Please use the generic mutation 'pay: { push: ... } }' instead.\\")
+              pay_SET: [Float!] @deprecated(reason: \\"Please use the generic mutation 'pay: { set: ... } }' instead.\\")
             }
 
             input ActedInWhere {
@@ -79,7 +79,7 @@ describe("Arrays Methods", () => {
               NOT: ActedInWhere
               OR: [ActedInWhere!]
               pay: FloatListFilters
-              pay_EQ: [Float]
+              pay_EQ: [Float!]
               pay_INCLUDES: Float
             }
 

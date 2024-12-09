@@ -223,7 +223,7 @@ describe("array-push", () => {
             const typeDefs = gql`
             type ${typeMovie} @node {
                 title: String
-                tags: [${inputType}]
+                tags: [${inputType}!]
             }
         `;
 
@@ -297,7 +297,7 @@ describe("array-push", () => {
             const typeDefs = gql`
             type ${typeMovie} @node {
                 title: String
-                tags: [${inputType}]
+                tags: [${inputType}!]
             }
         `;
 
@@ -373,7 +373,7 @@ describe("array-push", () => {
             const typeDefs = gql`
             type ${typeMovie} @node {
                 title: String
-                tags: [${inputType}]
+                tags: [${inputType}!]
             }
         `;
 
@@ -425,8 +425,8 @@ describe("array-push", () => {
         const typeDefs = gql`
             type ${typeMovie} @node {
                 title: String
-                tags: [String]
-                moreTags: [String]
+                tags: [String!]
+                moreTags: [String!]
             }
         `;
 
@@ -473,7 +473,7 @@ describe("array-push", () => {
         const actor = testHelper.createUniqueType("Actor");
         const typeDefs = `
             type ${movie.name} @node {
-                viewers: [Int]!
+                viewers: [Int!]!
                 workers: [${actor.name}!]! @relationship(type: "WORKED_IN", direction: IN)
             }
             type ${actor.name} @node {
@@ -490,7 +490,7 @@ describe("array-push", () => {
         });
 
         const update = `
-            mutation($id: ID, $value: [Int]) {
+            mutation($id: ID, $value: [Int!]) {
                 ${actor.operations.update}(where: { id_EQ: $id },
                     update: {
                         worksInMovies: [
@@ -553,7 +553,7 @@ describe("array-push", () => {
             }
 
             type ActedIn @relationshipProperties {
-                pay: [Float]
+                pay: [Float!]
             }
         `;
 
@@ -564,7 +564,7 @@ describe("array-push", () => {
         });
 
         const query = `
-            mutation Mutation($id: ID, $payIncrement: [Float]) {
+            mutation Mutation($id: ID, $payIncrement: [Float!]) {
                 ${actor.operations.update}(where: { id_EQ: $id }, update: {
                     actedIn: [
                         {
@@ -636,7 +636,7 @@ describe("array-push", () => {
             }
 
             type ActedIn @relationshipProperties {
-                locations: [Point]
+                locations: [Point!]
             }
         `;
 
@@ -647,7 +647,7 @@ describe("array-push", () => {
         });
 
         const query = `
-            mutation Mutation($id: ID, $location: [PointInput]) {
+            mutation Mutation($id: ID, $location: [PointInput!]) {
                 ${actor.operations.update}(where: { id_EQ: $id }, update: {
                     actedIn: [
                         {
@@ -715,7 +715,7 @@ describe("array-push", () => {
         const typeDefs = gql`
         type ${typeMovie} @node {
             title: String
-            tags: [LocalTime]
+            tags: [LocalTime!]
         }
     `;
 

@@ -19,7 +19,6 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { Driver, QueryConfig } from "neo4j-driver";
-import { filterTruthy } from "../../../utils/utils";
 import type { CDCQueryResponse } from "./cdc-types";
 
 export class CDCApi {
@@ -33,13 +32,21 @@ export class CDCApi {
     }
 
     /** Queries events since last call to queryEvents */
-    public async queryEvents(): Promise<CDCQueryResponse[]> {
+    public async queryEvents(labels?: string[], txFilter?: Cypher.Map): Promise<CDCQueryResponse[]> {
         if (!this.cursor) {
             this.cursor = await this.fetchCurrentChangeId();
         }
 
         const cursorLiteral = new Cypher.Literal(this.cursor);
-        const queryProcedure = CDCProcedures.query(cursorLiteral);
+
+        const selectors = this.createQuerySelectors(labels);
+        if (txFilter) {
+            selectors.map((selector) => {
+                selector.set("txMetadata", txFilter);
+            });
+        }
+
+        const queryProcedure = Cypher.db.cdc.query(cursorLiteral, selectors);
 
         const events = await this.runProcedure<CDCQueryResponse>(queryProcedure);
         this.updateChangeIdWithLastEvent(events);
@@ -51,7 +58,7 @@ export class CDCApi {
     }
 
     private async fetchCurrentChangeId(): Promise<string> {
-        const currentProcedure = CDCProcedures.current();
+        const currentProcedure = Cypher.db.cdc.current();
 
         const result = await this.runProcedure<{ id: string }>(currentProcedure);
 
@@ -69,24 +76,30 @@ export class CDCApi {
         }
     }
 
+    private createQuerySelectors(labels: string[] | undefined): Cypher.Map[] {
+        if (labels) {
+            return labels.map(
+                (l) =>
+                    new Cypher.Map({
+                        select: new Cypher.Literal("n"),
+                        labels: new Cypher.Literal([l]),
+                    })
+            );
+        } else {
+            // Filters nodes
+            return [
+                new Cypher.Map({
+                    select: new Cypher.Literal("n"),
+                }),
+            ];
+        }
+    }
+
     private async runProcedure<T>(procedure: Cypher.Clause): Promise<T[]> {
         const { cypher, params } = procedure.build();
-
         const result = await this.driver.executeQuery(cypher, params, this.queryConfig);
         return result.records.map((record) => {
             return record.toObject() as Record<string, any>;
         }) as T[];
-    }
-}
-
-/** Wrapper of Cypher Builder for CDC */
-class CDCProcedures {
-    static current(): Cypher.Procedure {
-        return new Cypher.Procedure<"id">("cdc.current");
-    }
-
-    static query(from: Cypher.Expr, selectors?: Cypher.Expr): Cypher.Procedure {
-        const procedureParams = filterTruthy([from, selectors]);
-        return new Cypher.Procedure<"id" | "txId" | "seq" | "metadata" | "event">("cdc.query", procedureParams);
     }
 }

@@ -30,6 +30,7 @@ import { asArray, filterTruthy } from "../../../utils/utils";
 import { isLogicalOperator } from "../../utils/logical-operators";
 import { ConnectionFilter } from "../ast/filters/ConnectionFilter";
 import { CypherOneToOneRelationshipFilter } from "../ast/filters/CypherOneToOneRelationshipFilter";
+import { CypherRelationshipFilter } from "../ast/filters/CypherRelationshipFilter";
 import type { Filter, FilterOperator, RelationshipWhereOperator } from "../ast/filters/Filter";
 import { isRelationshipOperator } from "../ast/filters/Filter";
 import { LogicalFilter } from "../ast/filters/LogicalFilter";
@@ -334,28 +335,33 @@ export class FilterFactory {
         }
 
         const filteredEntities = getConcreteEntities(target, where);
-        const cypherOneToOneRelationshipFilters: CypherOneToOneRelationshipFilter[] = [];
+        const filters: (CypherOneToOneRelationshipFilter | CypherRelationshipFilter)[] = [];
         for (const concreteEntity of filteredEntities) {
             const returnVariable = new Cypher.Node();
-            const cypherOneToOneRelationshipFilter = this.createCypherOneToOneRelationshipFilterTreeNode({
+
+            const options = {
                 selection,
                 isNot: filterOps.isNot,
                 isNull,
                 operator: filterOps.operator || "SOME",
                 attribute,
                 returnVariable,
-            });
+            };
+
+            const filter = attribute.typeHelper.isList()
+                ? this.createCypherRelationshipFilterTreeNode(options)
+                : this.createCypherOneToOneRelationshipFilterTreeNode(options);
 
             if (!isNull) {
                 const entityWhere = where[concreteEntity.name] ?? where;
                 const targetNodeFilters = this.createNodeFilters(concreteEntity, entityWhere);
-                cypherOneToOneRelationshipFilter.addTargetNodeFilter(...targetNodeFilters);
+                filter.addTargetNodeFilter(...targetNodeFilters);
             }
 
-            cypherOneToOneRelationshipFilters.push(cypherOneToOneRelationshipFilter);
+            filters.push(filter);
         }
         const logicalOp = this.getLogicalOperatorForRelatedNodeFilters(target, filterOps.operator);
-        return this.wrapMultipleFiltersInLogical(cypherOneToOneRelationshipFilters, logicalOp);
+        return this.wrapMultipleFiltersInLogical(filters, logicalOp);
     }
 
     // This allows to override this creation in AuthFilterFactory
@@ -368,6 +374,18 @@ export class FilterFactory {
         returnVariable: Cypher.Node;
     }): CypherOneToOneRelationshipFilter {
         return new CypherOneToOneRelationshipFilter(options);
+    }
+
+    // This allows to override this creation in AuthFilterFactory
+    protected createCypherRelationshipFilterTreeNode(options: {
+        selection: CustomCypherSelection;
+        attribute: AttributeAdapter;
+        isNot: boolean;
+        isNull: boolean;
+        operator: RelationshipWhereOperator;
+        returnVariable: Cypher.Node;
+    }): CypherRelationshipFilter {
+        return new CypherRelationshipFilter(options);
     }
 
     // This allows to override this creation in AuthFilterFactory
@@ -403,65 +421,9 @@ export class FilterFactory {
     }): Filter[] {
         const filters = filterTruthy(
             Object.entries(whereFields).flatMap(([key, value]): Filter | Filter[] | undefined => {
-                const valueAsArray = asArray(value);
-                if (isLogicalOperator(key)) {
-                    const nestedFilters = valueAsArray.flatMap((nestedWhere) => {
-                        return this.createInterfaceNodeFilters({ entity, targetEntity, whereFields: nestedWhere });
-                    });
-                    return new LogicalFilter({
-                        operation: key,
-                        filters: nestedFilters,
-                    });
-                }
-                if (key === "typename_IN") {
-                    const acceptedEntities = entity.concreteEntities.filter((concreteEntity) => {
-                        return valueAsArray.some((typenameFilterValue) => typenameFilterValue === concreteEntity.name);
-                    });
-                    return new TypenameFilter(acceptedEntities);
-                }
-
-                const { fieldName, operator, isNot, isConnection, isAggregate } = parseWhereField(key);
-
-                const relationshipDeclaration = entity.findRelationshipDeclarations(fieldName);
-                if (targetEntity && relationshipDeclaration) {
-                    const relationship = relationshipDeclaration.relationshipImplementations.find(
-                        (r) => r.source.name === targetEntity.name
-                    );
-                    if (!relationship) {
-                        throw new Error(`Relationship ${fieldName} not found`);
-                    }
-                    return this.createRelatedNodeFilters({
-                        relationship,
-                        value,
-                        operator,
-                        isNot,
-                        isConnection,
-                        isAggregate,
-                    });
-                }
-
-                const attribute = entity.findAttribute(fieldName);
-
-                if (!attribute) {
-                    throw new Error(`Attribute ${fieldName} not found`);
-                }
-                if (!operator) {
-                    const genericFilters = Object.entries(value).flatMap((filterInput) => {
-                        return this.parseGenericFilter(entity, fieldName, filterInput);
-                    });
-                    return this.wrapMultipleFiltersInLogical(genericFilters);
-                }
-
-                return this.createPropertyFilter({
-                    attribute,
-                    relationship,
-                    comparisonValue: value,
-                    isNot,
-                    operator,
-                });
+                return this.parseEntryFilter(entity, key, value, targetEntity, relationship);
             })
         );
-
         return this.wrapMultipleFiltersInLogical(filters);
     }
 
@@ -472,63 +434,109 @@ export class FilterFactory {
         if (isUnionEntity(entity)) {
             return [];
         }
-
         const filters = filterTruthy(
             Object.entries(whereFields).flatMap(([key, value]): Filter | Filter[] | undefined => {
-                const valueAsArray = asArray(value);
-                if (isLogicalOperator(key)) {
-                    const nestedFilters = valueAsArray.flatMap((nestedWhere) => {
-                        return this.createNodeFilters(entity, nestedWhere);
-                    });
-                    return new LogicalFilter({
-                        operation: key,
-                        filters: nestedFilters,
-                    });
-                }
-
-                const { fieldName, operator, isNot, isConnection, isAggregate } = parseWhereField(key);
-
-                const relationship = entity.findRelationship(fieldName);
-
-                if (relationship) {
-                    return this.createRelatedNodeFilters({
-                        relationship,
-                        value,
-                        operator,
-                        isNot,
-                        isConnection,
-                        isAggregate,
-                    });
-                }
-
-                const attribute = entity.findAttribute(fieldName);
-
-                if (!attribute) {
-                    if (fieldName === "id" && entity.globalIdField) {
-                        return this.createRelayIdPropertyFilter(entity, isNot, operator, value);
-                    }
-
-                    throw new Error(`Attribute ${fieldName} not found`);
-                }
-
-                // This is a bit hacky, basically skipping cypher fields and federation strings being passed to filterFactory
-                if (!operator && !attribute.annotations.cypher?.targetEntity && typeof value === "object") {
-                    const genericFilters = Object.entries(value).flatMap((filterInput) => {
-                        return this.parseGenericFilter(entity, fieldName, filterInput);
-                    });
-                    return this.wrapMultipleFiltersInLogical(genericFilters);
-                }
-
-                return this.createPropertyFilter({
-                    attribute,
-                    comparisonValue: value,
-                    isNot,
-                    operator,
-                });
+                return this.parseEntryFilter(entity, key, value);
             })
         );
-
         return this.wrapMultipleFiltersInLogical(filters);
+    }
+
+    private parseEntryFilter(
+        entity: ConcreteEntityAdapter | InterfaceEntityAdapter,
+        key: string,
+        value: any,
+        targetEntity?: ConcreteEntityAdapter,
+        relationship?: RelationshipAdapter
+    ): Filter | Filter[] {
+        const valueAsArray = asArray(value);
+        if (isLogicalOperator(key)) {
+            const nestedFilters = valueAsArray.flatMap((nestedWhere) => {
+                const nestedOfNestedFilters = Object.entries(nestedWhere).flatMap(([nestedKey, nestedValue]) => {
+                    return asArray(this.parseEntryFilter(entity, nestedKey, nestedValue, targetEntity, relationship));
+                });
+
+                return this.wrapMultipleFiltersInLogical(nestedOfNestedFilters);
+            });
+            return new LogicalFilter({
+                operation: key,
+                filters: nestedFilters,
+            });
+        }
+        const { fieldName, operator, isNot, isConnection, isAggregate } = parseWhereField(key);
+        if (isConcreteEntity(entity)) {
+            const relationship = entity.findRelationship(fieldName);
+
+            if (relationship) {
+                return this.createRelatedNodeFilters({
+                    relationship,
+                    value,
+                    operator,
+                    isNot,
+                    isConnection,
+                    isAggregate,
+                });
+            }
+        } else {
+            const relationshipDeclaration = entity.findRelationshipDeclarations(fieldName);
+            if (targetEntity && relationshipDeclaration) {
+                const relationship = relationshipDeclaration.relationshipImplementations.find(
+                    (r) => r.source.name === targetEntity.name
+                );
+                if (!relationship) {
+                    throw new Error(`Relationship ${fieldName} not found`);
+                }
+                return this.createRelatedNodeFilters({
+                    relationship,
+                    value,
+                    operator,
+                    isNot,
+                    isConnection,
+                    isAggregate,
+                });
+            }
+            if (key === "typename_IN") {
+                const acceptedEntities = entity.concreteEntities.filter((concreteEntity) => {
+                    return valueAsArray.some((typenameFilterValue) => typenameFilterValue === concreteEntity.name);
+                });
+                return new TypenameFilter(acceptedEntities);
+            }
+        }
+
+        const attribute = entity.findAttribute(fieldName);
+
+        if (!isInterfaceEntity(entity) && !attribute) {
+            if (fieldName === "id" && entity.globalIdField) {
+                return this.createRelayIdPropertyFilter(entity, isNot, operator, value);
+            }
+        }
+        if (!attribute) {
+            throw new Error(`Attribute ${fieldName} not found`);
+        }
+
+        // This is a bit hacky, basically skipping cypher fields and federation strings being passed to filterFactory
+        if (!operator && !attribute.annotations.cypher?.targetEntity && typeof value === "object") {
+            return this.parseGenericFilters(entity, fieldName, value);
+        }
+
+        return this.createPropertyFilter({
+            attribute,
+            comparisonValue: value,
+            isNot,
+            operator,
+            relationship,
+        });
+    }
+
+    private parseGenericFilters(
+        entity: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter,
+        fieldName: string,
+        value: Record<string, any>
+    ): Filter | Filter[] {
+        const genericFilters = Object.entries(value).flatMap((filterInput) => {
+            return this.parseGenericFilter(entity, fieldName, filterInput);
+        });
+        return this.wrapMultipleFiltersInLogical(genericFilters);
     }
 
     private parseGenericFilter(
@@ -548,11 +556,7 @@ export class FilterFactory {
         }
 
         if (rawOperator === "distance") {
-            const distanceFilters = Object.entries(value).flatMap((distanceWhere) => {
-                return this.parseGenericFilter(entity, fieldName, distanceWhere);
-            });
-
-            return this.wrapMultipleFiltersInLogical(distanceFilters);
+            return this.parseGenericFilters(entity, fieldName, value);
         }
 
         const operator = this.parseGenericOperator(rawOperator);
@@ -711,10 +715,7 @@ export class FilterFactory {
                 return;
             }
             if (!operator) {
-                const genericFilters = Object.entries(value).flatMap((filterInput) => {
-                    return this.parseGenericFilter(relationship, fieldName, filterInput);
-                });
-                return this.wrapMultipleFiltersInLogical(genericFilters);
+                return this.parseGenericFilters(relationship, fieldName, value);
             }
 
             return this.createPropertyFilter({
@@ -792,7 +793,13 @@ export class FilterFactory {
     ): Array<AggregationPropertyFilter | LogicalFilter> {
         const filters = Object.entries(where).map(([key, value]) => {
             if (isLogicalOperator(key)) {
-                return this.createAggregateLogicalFilter(key, value, entity, relationship);
+                const filters = asArray(value).flatMap((nestedWhere) => {
+                    return this.createAggregationNodeFilters(nestedWhere, entity, relationship);
+                });
+                return new LogicalFilter({
+                    operation: key,
+                    filters,
+                });
             }
             // NOTE: if aggregationOperator is undefined, maybe we could return a normal PropertyFilter instead
             const { fieldName, logicalOperator, aggregationOperator } = parseAggregationWhereFields(key);
@@ -844,21 +851,6 @@ export class FilterFactory {
             return [singleFilter];
         }
         return [];
-    }
-
-    private createAggregateLogicalFilter(
-        operation: "OR" | "AND" | "NOT",
-        where: GraphQLWhereArg[] | GraphQLWhereArg,
-        entity: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter,
-        relationship?: RelationshipAdapter
-    ): LogicalFilter {
-        const filters = asArray(where).flatMap((nestedWhere) => {
-            return this.createAggregationNodeFilters(nestedWhere, entity, relationship);
-        });
-        return new LogicalFilter({
-            operation,
-            filters,
-        });
     }
 
     // This method identifies if it's possible to achieve MATCH (n)-[r]->(m) WHERE m:Movie Or m:Series rather than MATCH (n)-[r]->(m:Movie) Or MATCH (n)-[r]->(m:Series)

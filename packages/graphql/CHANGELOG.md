@@ -1,5 +1,42 @@
 # @neo4j/graphql
 
+## 6.2.1
+
+### Patch Changes
+
+-   [#5861](https://github.com/neo4j/graphql/pull/5861) [`f2e1575`](https://github.com/neo4j/graphql/commit/f2e15751657725abd9086b1fdce13b360bd72eab) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Fixed bug where fields decorated with `@customResolver` were included in the projection of the generated Cypher query
+
+-   [#5865](https://github.com/neo4j/graphql/pull/5865) [`258ff53`](https://github.com/neo4j/graphql/commit/258ff53204746ce04828f6ff5ad6422260a3c895) Thanks [@darrellwarde](https://github.com/darrellwarde)! - `@default` directive fixed to work as expected on fields of temporal type, and `BigInt` fields
+
+## 6.2.0
+
+### Minor Changes
+
+-   [#5856](https://github.com/neo4j/graphql/pull/5856) [`49549cd`](https://github.com/neo4j/graphql/commit/49549cd0d7805ae8500f05bdd509941d3e754880) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Add filtering on many to many relationship custom cypher fields
+
+## 6.1.1
+
+### Patch Changes
+
+-   [#5835](https://github.com/neo4j/graphql/pull/5835) [`cc1a8dd`](https://github.com/neo4j/graphql/commit/cc1a8ddde06059f1d2aa481e68a433535649f152) Thanks [@angrykoala](https://github.com/angrykoala)! - Add support for filtering GraphQL only events in CDC subscriptions with the option `onlyGraphQLEvents` passed to `Neo4jGraphQLSubscriptionsCDCEngine`
+
+    ```ts
+    const engine = new Neo4jGraphQLSubscriptionsCDCEngine({
+        driver,
+        onlyGraphQLEvents: true,
+    });
+
+    const neoSchema = new Neo4jGraphQL({
+        typeDefs,
+        driver,
+        features: {
+            subscriptions: engine,
+        },
+    });
+    ```
+
+-   [#5834](https://github.com/neo4j/graphql/pull/5834) [`67f915e`](https://github.com/neo4j/graphql/commit/67f915e05c029ce9a595c05cf2f42de232ff2d37) Thanks [@angrykoala](https://github.com/angrykoala)! - CDC subscription optimization. Only node events with labels present in the GraphQL schema will be queried. This will reduce the number of subscription events queried by skipping events to nodes that cannot be subscribed through GraphQL
+
 ## 6.1.0
 
 ### Minor Changes
