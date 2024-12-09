@@ -213,11 +213,11 @@ describe("Cypher", () => {
 
             \\"\\"\\"Distance filters for cartesian points\\"\\"\\"
             input CartesianDistancePointFilters {
-              equals: CartesianPointDistance
-              greaterThan: CartesianPointDistance
-              greaterThanEquals: CartesianPointDistance
-              lessThan: CartesianPointDistance
-              lessThanEquals: CartesianPointDistance
+              from: CartesianPointInput!
+              gt: Float
+              gte: Float
+              lt: Float
+              lte: Float
             }
 
             \\"\\"\\"
@@ -706,11 +706,12 @@ describe("Cypher", () => {
 
             \\"\\"\\"Distance filters\\"\\"\\"
             input PointDistanceFilters {
-              equals: PointDistance
-              greaterThan: PointDistance
-              greaterThanEquals: PointDistance
-              lessThan: PointDistance
-              lessThanEquals: PointDistance
+              eq: Float
+              from: PointInput!
+              gt: Float
+              gte: Float
+              lt: Float
+              lte: Float
             }
 
             \\"\\"\\"Point filters\\"\\"\\"

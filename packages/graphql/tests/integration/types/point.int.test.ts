@@ -404,7 +404,7 @@ describe("Point", () => {
         const photographsLessThanQuery = /* GraphQL */ `
             query Photographs($longitude: Float!, $latitude: Float!) {
                 ${Photograph.plural}(
-                    where: { location: { distance: { lessThan: { point: { longitude: $longitude, latitude: $latitude }, distance: 1000000 } } } }
+                    where: { location: { distance: { from: { longitude: $longitude, latitude: $latitude }, lt: 1000000 } } }
                 ) {
                     id
                     size
@@ -438,7 +438,7 @@ describe("Point", () => {
         const photographsGreaterThanQuery = /* GraphQL */ `
             query Photographs($longitude: Float!, $latitude: Float!) {
                 ${Photograph.plural}(
-                    where: { location: { distance: { greaterThan: { point: { longitude: $longitude, latitude: $latitude }, distance: 1 } } } }
+                    where: { location: { distance: { from: { longitude: $longitude, latitude: $latitude }, gt: 1 } } }
                 ) {
                     id
                     size

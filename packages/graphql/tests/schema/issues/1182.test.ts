@@ -450,11 +450,12 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
 
             \\"\\"\\"Distance filters\\"\\"\\"
             input PointDistanceFilters {
-              equals: PointDistance
-              greaterThan: PointDistance
-              greaterThanEquals: PointDistance
-              lessThan: PointDistance
-              lessThanEquals: PointDistance
+              eq: Float
+              from: PointInput!
+              gt: Float
+              gte: Float
+              lt: Float
+              lte: Float
             }
 
             \\"\\"\\"Point filters\\"\\"\\"
