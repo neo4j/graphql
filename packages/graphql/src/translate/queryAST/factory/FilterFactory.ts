@@ -616,6 +616,8 @@ export class FilterFactory {
                 return "MATCHES";
             case "includes":
                 return "INCLUDES";
+            case "distance_eq": // Used for distance -> eq
+                return "DISTANCE";
             default:
                 throw new Error(`Invalid operator ${key}`);
         }
@@ -890,8 +892,12 @@ export class FilterFactory {
         const point = distance.from;
         const targetPoint: Record<string, any> = {};
 
-        for (const [key, value] of Object.entries(distance)) {
+        // eslint-disable-next-line prefer-const
+        for (let [key, value] of Object.entries(distance)) {
             if (key !== "from") {
+                if (key === "eq") {
+                    key = "distance_eq";
+                }
                 targetPoint[key] = {
                     distance: value,
                     point,

@@ -290,7 +290,7 @@ describe("Cypher Points", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:PointContainer)
-                WHERE this.point = point($param0)
+                WHERE point.distance(this.point, point($param0.point)) = $param0.distance
                 RETURN this { .point } AS this"
             `);
 
