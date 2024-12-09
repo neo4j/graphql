@@ -17,21 +17,21 @@
  * limitations under the License.
  */
 
-import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull } from "graphql";
-import { PointDistance } from "../PointDistance";
+import { GraphQLFloat, GraphQLInputObjectType, GraphQLList, GraphQLNonNull } from "graphql";
 import { PointInput } from "../PointInput";
 
 const DistancePointFilters = new GraphQLInputObjectType({
     name: "PointDistanceFilters",
     description: "Distance filters",
     fields: {
-        equals: {
-            type: PointDistance,
+        from: {
+            type: new GraphQLNonNull(PointInput),
         },
-        greaterThan: { type: PointDistance },
-        greaterThanEquals: { type: PointDistance },
-        lessThan: { type: PointDistance },
-        lessThanEquals: { type: PointDistance },
+        gt: { type: GraphQLFloat },
+        gte: { type: GraphQLFloat },
+        lt: { type: GraphQLFloat },
+        lte: { type: GraphQLFloat },
+        eq: { type: GraphQLFloat },
     },
 });
 

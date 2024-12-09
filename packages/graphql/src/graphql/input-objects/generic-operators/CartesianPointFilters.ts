@@ -17,21 +17,20 @@
  * limitations under the License.
  */
 
-import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull } from "graphql";
-import { CartesianPointDistance } from "../CartesianPointDistance";
+import { GraphQLFloat, GraphQLInputObjectType, GraphQLList, GraphQLNonNull } from "graphql";
 import { CartesianPointInput } from "../CartesianPointInput";
 
 const CartesianDistancePointFilters = new GraphQLInputObjectType({
     name: "CartesianDistancePointFilters",
     description: "Distance filters for cartesian points",
     fields: {
-        equals: {
-            type: CartesianPointDistance,
+        from: {
+            type: new GraphQLNonNull(CartesianPointInput),
         },
-        greaterThan: { type: CartesianPointDistance },
-        greaterThanEquals: { type: CartesianPointDistance },
-        lessThan: { type: CartesianPointDistance },
-        lessThanEquals: { type: CartesianPointDistance },
+        gt: { type: GraphQLFloat },
+        gte: { type: GraphQLFloat },
+        lt: { type: GraphQLFloat },
+        lte: { type: GraphQLFloat },
     },
 });
 

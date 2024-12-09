@@ -556,10 +556,13 @@ export class FilterFactory {
         }
 
         if (rawOperator === "distance") {
-            return this.parseGenericFilters(entity, fieldName, value);
+            // Converts new distance filter into old one to be parsed the same as deprecated syntax
+            const desugaredInput = this.desugarGenericDistanceOperations(value);
+            return this.parseGenericFilters(entity, fieldName, desugaredInput);
         }
 
         const operator = this.parseGenericOperator(rawOperator);
+        // Point is different here
 
         const attribute = entity.findAttribute(fieldName);
 
@@ -587,16 +590,21 @@ export class FilterFactory {
         // we convert them to the previous format to keep the same translation logic
         switch (key) {
             case "equals":
+            case "eq":
                 return "EQ";
             case "in":
                 return "IN";
-            case "lessThan":
+            case "lessThan": // TODO: remove long syntax once tests have been updated
+            case "lt":
                 return "LT";
             case "lessThanEquals":
+            case "lte":
                 return "LTE";
             case "greaterThan":
+            case "gt":
                 return "GT";
             case "greaterThanEquals":
+            case "gte":
                 return "GTE";
             case "contains":
                 return "CONTAINS";
@@ -875,5 +883,21 @@ export class FilterFactory {
             return !containsUnoptimizableFields;
         }
         return true;
+    }
+
+    /** Converts new distance operator into traditional operator **/
+    private desugarGenericDistanceOperations(distance: Record<string, any> & { from: any }): Record<string, any> {
+        const point = distance.from;
+        const targetPoint: Record<string, any> = {};
+
+        for (const [key, value] of Object.entries(distance)) {
+            if (key !== "from") {
+                targetPoint[key] = {
+                    distance: value,
+                    point,
+                };
+            }
+        }
+        return targetPoint;
     }
 }

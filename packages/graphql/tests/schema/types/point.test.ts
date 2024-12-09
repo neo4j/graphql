@@ -142,11 +142,12 @@ describe("Point", () => {
 
             \\"\\"\\"Distance filters\\"\\"\\"
             input PointDistanceFilters {
-              equals: PointDistance
-              greaterThan: PointDistance
-              greaterThanEquals: PointDistance
-              lessThan: PointDistance
-              lessThanEquals: PointDistance
+              eq: Float
+              from: PointInput!
+              gt: Float
+              gte: Float
+              lt: Float
+              lte: Float
             }
 
             \\"\\"\\"Point filters\\"\\"\\"
@@ -216,11 +217,11 @@ describe("Point", () => {
 
             \\"\\"\\"Distance filters for cartesian points\\"\\"\\"
             input CartesianDistancePointFilters {
-              equals: CartesianPointDistance
-              greaterThan: CartesianPointDistance
-              greaterThanEquals: CartesianPointDistance
-              lessThan: CartesianPointDistance
-              lessThanEquals: CartesianPointDistance
+              from: CartesianPointInput!
+              gt: Float
+              gte: Float
+              lt: Float
+              lte: Float
             }
 
             \\"\\"\\"
@@ -534,11 +535,11 @@ describe("Point", () => {
 
             \\"\\"\\"Distance filters for cartesian points\\"\\"\\"
             input CartesianDistancePointFilters {
-              equals: CartesianPointDistance
-              greaterThan: CartesianPointDistance
-              greaterThanEquals: CartesianPointDistance
-              lessThan: CartesianPointDistance
-              lessThanEquals: CartesianPointDistance
+              from: CartesianPointInput!
+              gt: Float
+              gte: Float
+              lt: Float
+              lte: Float
             }
 
             \\"\\"\\"
@@ -550,12 +551,6 @@ describe("Point", () => {
               x: Float!
               y: Float!
               z: Float
-            }
-
-            \\"\\"\\"Input type for a cartesian point with a distance\\"\\"\\"
-            input CartesianPointDistance {
-              distance: Float!
-              point: CartesianPointInput!
             }
 
             \\"\\"\\"Cartesian Point filters\\"\\"\\"
