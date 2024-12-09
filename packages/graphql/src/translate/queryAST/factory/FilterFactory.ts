@@ -556,13 +556,12 @@ export class FilterFactory {
         }
 
         if (rawOperator === "distance") {
-            // Converts new distance filter into old one to be parsed the same as deprecated syntax
+            // Converts new distance filter into the old one to be parsed the same as deprecated syntax
             const desugaredInput = this.desugarGenericDistanceOperations(value);
             return this.parseGenericFilters(entity, fieldName, desugaredInput);
         }
 
         const operator = this.parseGenericOperator(rawOperator);
-        // Point is different here
 
         const attribute = entity.findAttribute(fieldName);
 
@@ -895,6 +894,8 @@ export class FilterFactory {
         // eslint-disable-next-line prefer-const
         for (let [key, value] of Object.entries(distance)) {
             if (key !== "from") {
+                // We need this fake operator to differentiate distance from point eq in the
+                // desugaring process. Not needed in other operators because they are always distance based
                 if (key === "eq") {
                     key = "distance_eq";
                 }
