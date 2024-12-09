@@ -91,7 +91,7 @@ describe("Enum", () => {
 
             input MovieUpdateInput {
               status: StatusEnumScalarMutations
-              status_SET: Status
+              status_SET: Status @deprecated(reason: \\"Please use the generic mutation 'status: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {

@@ -244,9 +244,9 @@ describe("@populatedBy tests", () => {
 
                 input MovieUpdateInput {
                   callback1: StringScalarMutations
-                  callback1_SET: String
+                  callback1_SET: String @deprecated(reason: \\"Please use the generic mutation 'callback1: { set: ... } }' instead.\\")
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
@@ -495,11 +495,11 @@ describe("@populatedBy tests", () => {
 
                 input MovieUpdateInput {
                   callback1: IntScalarMutations
-                  callback1_DECREMENT: Int
-                  callback1_INCREMENT: Int
-                  callback1_SET: Int
+                  callback1_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'callback1: { decrement: ... } }' instead.\\")
+                  callback1_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'callback1: { increment: ... } }' instead.\\")
+                  callback1_SET: Int @deprecated(reason: \\"Please use the generic mutation 'callback1: { set: ... } }' instead.\\")
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
@@ -822,7 +822,7 @@ describe("@populatedBy tests", () => {
 
                 input GenreUpdateInput {
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input GenreWhere {
@@ -1011,7 +1011,7 @@ describe("@populatedBy tests", () => {
                 input MovieUpdateInput {
                   genres: [MovieGenresUpdateFieldInput!]
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
@@ -1169,9 +1169,9 @@ describe("@populatedBy tests", () => {
 
                 input RelPropertiesUpdateInput {
                   callback1: StringScalarMutations
-                  callback1_SET: String
+                  callback1_SET: String @deprecated(reason: \\"Please use the generic mutation 'callback1: { set: ... } }' instead.\\")
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input RelPropertiesWhere {
@@ -1359,7 +1359,7 @@ describe("@populatedBy tests", () => {
 
                 input GenreUpdateInput {
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input GenreWhere {
@@ -1572,7 +1572,7 @@ describe("@populatedBy tests", () => {
                 input MovieUpdateInput {
                   genres: [MovieGenresUpdateFieldInput!]
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
@@ -1745,11 +1745,11 @@ describe("@populatedBy tests", () => {
 
                 input RelPropertiesUpdateInput {
                   callback1: IntScalarMutations
-                  callback1_DECREMENT: Int
-                  callback1_INCREMENT: Int
-                  callback1_SET: Int
+                  callback1_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'callback1: { decrement: ... } }' instead.\\")
+                  callback1_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'callback1: { increment: ... } }' instead.\\")
+                  callback1_SET: Int @deprecated(reason: \\"Please use the generic mutation 'callback1: { set: ... } }' instead.\\")
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input RelPropertiesWhere {

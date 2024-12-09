@@ -138,9 +138,9 @@ describe("Localdatetime", () => {
 
             input MovieUpdateInput {
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               localDT: LocalDateTimeScalarMutations
-              localDT_SET: LocalDateTime
+              localDT_SET: LocalDateTime @deprecated(reason: \\"Please use the generic mutation 'localDT: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {

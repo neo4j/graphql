@@ -22,8 +22,8 @@ import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
-describe("Arrays Methods", () => {
-    test("Array of Float and Array of Actor relationships", async () => {
+describe("Deprecated mutation operations", () => {
+    test("Remove deprecated mutation operations", async () => {
         const typeDefs = gql`
             type Actor @node {
                 name: String
@@ -35,14 +35,22 @@ describe("Arrays Methods", () => {
                 ratings: [Float!]!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
                 averageRating: Float!
+                date: Date
+                point: Point
             }
 
             type ActedIn @relationshipProperties {
                 pay: [Float!]
+                value: Int
             }
         `;
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
+            features: {
+                excludeDeprecatedFields: {
+                    mutationOperations: false,
+                },
+            },
         });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
@@ -59,14 +67,43 @@ describe("Arrays Methods", () => {
             \\"\\"\\"
             type ActedIn {
               pay: [Float!]
+              value: Int
+            }
+
+            input ActedInAggregationWhereInput {
+              AND: [ActedInAggregationWhereInput!]
+              NOT: ActedInAggregationWhereInput
+              OR: [ActedInAggregationWhereInput!]
+              value_AVERAGE_EQUAL: Float
+              value_AVERAGE_GT: Float
+              value_AVERAGE_GTE: Float
+              value_AVERAGE_LT: Float
+              value_AVERAGE_LTE: Float
+              value_MAX_EQUAL: Int
+              value_MAX_GT: Int
+              value_MAX_GTE: Int
+              value_MAX_LT: Int
+              value_MAX_LTE: Int
+              value_MIN_EQUAL: Int
+              value_MIN_GT: Int
+              value_MIN_GTE: Int
+              value_MIN_LT: Int
+              value_MIN_LTE: Int
+              value_SUM_EQUAL: Int
+              value_SUM_GT: Int
+              value_SUM_GTE: Int
+              value_SUM_LT: Int
+              value_SUM_LTE: Int
             }
 
             input ActedInCreateInput {
               pay: [Float!]
+              value: Int
             }
 
             input ActedInSort {
               pay: SortDirection
+              value: SortDirection
             }
 
             input ActedInUpdateInput {
@@ -74,6 +111,10 @@ describe("Arrays Methods", () => {
               pay_POP: Int @deprecated(reason: \\"Please use the generic mutation 'pay: { pop: ... } }' instead.\\")
               pay_PUSH: [Float!] @deprecated(reason: \\"Please use the generic mutation 'pay: { push: ... } }' instead.\\")
               pay_SET: [Float!] @deprecated(reason: \\"Please use the generic mutation 'pay: { set: ... } }' instead.\\")
+              value: IntScalarMutations
+              value_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'value: { decrement: ... } }' instead.\\")
+              value_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'value: { increment: ... } }' instead.\\")
+              value_SET: Int @deprecated(reason: \\"Please use the generic mutation 'value: { set: ... } }' instead.\\")
             }
 
             input ActedInWhere {
@@ -83,6 +124,13 @@ describe("Arrays Methods", () => {
               pay: FloatListFilters
               pay_EQ: [Float!]
               pay_INCLUDES: Float
+              value: IntScalarFilters
+              value_EQ: Int
+              value_GT: Int
+              value_GTE: Int
+              value_IN: [Int]
+              value_LT: Int
+              value_LTE: Int
             }
 
             type Actor {
@@ -101,6 +149,7 @@ describe("Arrays Methods", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
+              edge: ActedInAggregationWhereInput
               node: ActorActedInNodeAggregationWhereInput
             }
 
@@ -238,7 +287,12 @@ describe("Arrays Methods", () => {
 
             type ActorMovieActedInAggregationSelection {
               count: Int!
+              edge: ActorMovieActedInEdgeAggregateSelection
               node: ActorMovieActedInNodeAggregateSelection
+            }
+
+            type ActorMovieActedInEdgeAggregateSelection {
+              value: IntAggregateSelection!
             }
 
             type ActorMovieActedInNodeAggregateSelection {
@@ -320,6 +374,24 @@ describe("Arrays Methods", () => {
               movies: [Movie!]!
             }
 
+            \\"\\"\\"A date, represented as a 'yyyy-mm-dd' string\\"\\"\\"
+            scalar Date
+
+            \\"\\"\\"Date filters\\"\\"\\"
+            input DateScalarFilters {
+              equals: Date
+              greaterThan: Date
+              greaterThanEquals: Date
+              in: [Date!]
+              lessThan: Date
+              lessThanEquals: Date
+            }
+
+            \\"\\"\\"Date mutations\\"\\"\\"
+            input DateScalarMutations {
+              set: Date
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships deleted during a delete mutation
             \\"\\"\\"
@@ -384,6 +456,30 @@ describe("Arrays Methods", () => {
               set: ID
             }
 
+            type IntAggregateSelection {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              equals: Int
+              greaterThan: Int
+              greaterThanEquals: Int
+              in: [Int!]
+              lessThan: Int
+              lessThanEquals: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
+            }
+
             \\"\\"\\"Mutations for a list for Float\\"\\"\\"
             input ListFloatMutations {
               pop: Int
@@ -396,13 +492,20 @@ describe("Arrays Methods", () => {
               actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               averageRating: Float!
+              date: Date
               id: ID!
+              point: Point
               ratings: [Float!]!
             }
 
             type MovieActorActorsAggregationSelection {
               count: Int!
+              edge: MovieActorActorsEdgeAggregateSelection
               node: MovieActorActorsNodeAggregateSelection
+            }
+
+            type MovieActorActorsEdgeAggregateSelection {
+              value: IntAggregateSelection!
             }
 
             type MovieActorActorsNodeAggregateSelection {
@@ -418,6 +521,7 @@ describe("Arrays Methods", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
+              edge: ActedInAggregationWhereInput
               node: MovieActorsNodeAggregationWhereInput
             }
 
@@ -524,7 +628,9 @@ describe("Arrays Methods", () => {
             input MovieCreateInput {
               actors: MovieActorsFieldInput
               averageRating: Float!
+              date: Date
               id: ID!
+              point: PointInput
               ratings: [Float!]!
             }
 
@@ -546,7 +652,9 @@ describe("Arrays Methods", () => {
             \\"\\"\\"
             input MovieSort {
               averageRating: SortDirection
+              date: SortDirection
               id: SortDirection
+              point: SortDirection
             }
 
             input MovieUpdateInput {
@@ -557,8 +665,12 @@ describe("Arrays Methods", () => {
               averageRating_MULTIPLY: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { multiply: ... } }' instead.\\")
               averageRating_SET: Float @deprecated(reason: \\"Please use the generic mutation 'averageRating: { set: ... } }' instead.\\")
               averageRating_SUBTRACT: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { subtract: ... } }' instead.\\")
+              date: DateScalarMutations
+              date_SET: Date @deprecated(reason: \\"Please use the generic mutation 'date: { set: ... } }' instead.\\")
               id: IDScalarMutations
               id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
+              point: PointMutations
+              point_SET: PointInput @deprecated(reason: \\"Please use the generic mutation 'point: { set: ... } }' instead.\\")
               ratings: ListFloatMutations
               ratings_POP: Int @deprecated(reason: \\"Please use the generic mutation 'ratings: { pop: ... } }' instead.\\")
               ratings_PUSH: [Float!] @deprecated(reason: \\"Please use the generic mutation 'ratings: { push: ... } }' instead.\\")
@@ -601,12 +713,27 @@ describe("Arrays Methods", () => {
               averageRating_IN: [Float!]
               averageRating_LT: Float
               averageRating_LTE: Float
+              date: DateScalarFilters
+              date_EQ: Date
+              date_GT: Date
+              date_GTE: Date
+              date_IN: [Date]
+              date_LT: Date
+              date_LTE: Date
               id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
               id_EQ: ID
               id_IN: [ID!]
               id_STARTS_WITH: ID
+              point: PointFilters
+              point_DISTANCE: PointDistance
+              point_EQ: PointInput
+              point_GT: PointDistance
+              point_GTE: PointDistance
+              point_IN: [PointInput]
+              point_LT: PointDistance
+              point_LTE: PointDistance
               ratings: FloatListFilters
               ratings_EQ: [Float!]
               ratings_INCLUDES: Float
@@ -633,6 +760,52 @@ describe("Arrays Methods", () => {
               hasNextPage: Boolean!
               hasPreviousPage: Boolean!
               startCursor: String
+            }
+
+            \\"\\"\\"
+            A point in a coordinate system. For more information, see https://neo4j.com/docs/graphql/4/type-definitions/types/spatial/#point
+            \\"\\"\\"
+            type Point {
+              crs: String!
+              height: Float
+              latitude: Float!
+              longitude: Float!
+              srid: Int!
+            }
+
+            \\"\\"\\"Input type for a point with a distance\\"\\"\\"
+            input PointDistance {
+              \\"\\"\\"The distance in metres to be used when comparing two points\\"\\"\\"
+              distance: Float!
+              point: PointInput!
+            }
+
+            \\"\\"\\"Distance filters\\"\\"\\"
+            input PointDistanceFilters {
+              equals: PointDistance
+              greaterThan: PointDistance
+              greaterThanEquals: PointDistance
+              lessThan: PointDistance
+              lessThanEquals: PointDistance
+            }
+
+            \\"\\"\\"Point filters\\"\\"\\"
+            input PointFilters {
+              distance: PointDistanceFilters
+              equals: PointInput
+              in: [PointInput!]
+            }
+
+            \\"\\"\\"Input type for a point\\"\\"\\"
+            input PointInput {
+              height: Float
+              latitude: Float!
+              longitude: Float!
+            }
+
+            \\"\\"\\"Point mutations\\"\\"\\"
+            input PointMutations {
+              set: PointInput
             }
 
             type Query {

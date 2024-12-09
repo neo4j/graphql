@@ -125,9 +125,9 @@ describe("Union Interface Relationships", () => {
 
             input ActedInUpdateInput {
               screenTime: IntScalarMutations
-              screenTime_DECREMENT: Int
-              screenTime_INCREMENT: Int
-              screenTime_SET: Int
+              screenTime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'screenTime: { decrement: ... } }' instead.\\")
+              screenTime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'screenTime: { increment: ... } }' instead.\\")
+              screenTime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'screenTime: { set: ... } }' instead.\\")
             }
 
             input ActedInWhere {
@@ -328,12 +328,12 @@ describe("Union Interface Relationships", () => {
 
             input ActorUpdateInput {
               id: IntScalarMutations
-              id_DECREMENT: Int
-              id_INCREMENT: Int
-              id_SET: Int
+              id_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'id: { decrement: ... } }' instead.\\")
+              id_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'id: { increment: ... } }' instead.\\")
+              id_SET: Int @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               movies: [ActorMoviesUpdateFieldInput!]
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
@@ -440,9 +440,9 @@ describe("Union Interface Relationships", () => {
 
             input DirectedUpdateInput {
               year: IntScalarMutations
-              year_DECREMENT: Int
-              year_INCREMENT: Int
-              year_SET: Int
+              year_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'year: { decrement: ... } }' instead.\\")
+              year_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'year: { increment: ... } }' instead.\\")
+              year_SET: Int @deprecated(reason: \\"Please use the generic mutation 'year: { set: ... } }' instead.\\")
             }
 
             input DirectedWhere {
@@ -500,15 +500,15 @@ describe("Union Interface Relationships", () => {
 
             input InfluencerUpdateInput {
               reputation: IntScalarMutations
-              reputation_DECREMENT: Int
-              reputation_INCREMENT: Int
-              reputation_SET: Int
+              reputation_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'reputation: { decrement: ... } }' instead.\\")
+              reputation_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'reputation: { increment: ... } }' instead.\\")
+              reputation_SET: Int @deprecated(reason: \\"Please use the generic mutation 'reputation: { set: ... } }' instead.\\")
               reviewerId: IntScalarMutations
-              reviewerId_DECREMENT: Int
-              reviewerId_INCREMENT: Int
-              reviewerId_SET: Int
+              reviewerId_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'reviewerId: { decrement: ... } }' instead.\\")
+              reviewerId_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'reviewerId: { increment: ... } }' instead.\\")
+              reviewerId_SET: Int @deprecated(reason: \\"Please use the generic mutation 'reviewerId: { set: ... } }' instead.\\")
               url: StringScalarMutations
-              url_SET: String
+              url_SET: String @deprecated(reason: \\"Please use the generic mutation 'url: { set: ... } }' instead.\\")
             }
 
             input InfluencerWhere {
@@ -1045,12 +1045,12 @@ describe("Union Interface Relationships", () => {
               actors: [MovieActorsUpdateFieldInput!]
               directors: MovieDirectorsUpdateInput
               imdbId: IntScalarMutations
-              imdbId_DECREMENT: Int
-              imdbId_INCREMENT: Int
-              imdbId_SET: Int
+              imdbId_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'imdbId: { decrement: ... } }' instead.\\")
+              imdbId_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'imdbId: { increment: ... } }' instead.\\")
+              imdbId_SET: Int @deprecated(reason: \\"Please use the generic mutation 'imdbId: { set: ... } }' instead.\\")
               reviewers: [MovieReviewersUpdateFieldInput!]
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -1374,20 +1374,20 @@ describe("Union Interface Relationships", () => {
 
             input PersonUpdateInput {
               id: IntScalarMutations
-              id_DECREMENT: Int
-              id_INCREMENT: Int
-              id_SET: Int
+              id_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'id: { decrement: ... } }' instead.\\")
+              id_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'id: { increment: ... } }' instead.\\")
+              id_SET: Int @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               movies: [PersonMoviesUpdateFieldInput!]
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
               reputation: IntScalarMutations
-              reputation_DECREMENT: Int
-              reputation_INCREMENT: Int
-              reputation_SET: Int
+              reputation_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'reputation: { decrement: ... } }' instead.\\")
+              reputation_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'reputation: { increment: ... } }' instead.\\")
+              reputation_SET: Int @deprecated(reason: \\"Please use the generic mutation 'reputation: { set: ... } }' instead.\\")
               reviewerId: IntScalarMutations
-              reviewerId_DECREMENT: Int
-              reviewerId_INCREMENT: Int
-              reviewerId_SET: Int
+              reviewerId_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'reviewerId: { decrement: ... } }' instead.\\")
+              reviewerId_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'reviewerId: { increment: ... } }' instead.\\")
+              reviewerId_SET: Int @deprecated(reason: \\"Please use the generic mutation 'reviewerId: { set: ... } }' instead.\\")
             }
 
             input PersonWhere {
@@ -1512,9 +1512,9 @@ describe("Union Interface Relationships", () => {
 
             input ReviewUpdateInput {
               score: IntScalarMutations
-              score_DECREMENT: Int
-              score_INCREMENT: Int
-              score_SET: Int
+              score_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'score: { decrement: ... } }' instead.\\")
+              score_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'score: { increment: ... } }' instead.\\")
+              score_SET: Int @deprecated(reason: \\"Please use the generic mutation 'score: { set: ... } }' instead.\\")
             }
 
             input ReviewWhere {
@@ -1570,13 +1570,13 @@ describe("Union Interface Relationships", () => {
 
             input ReviewerUpdateInput {
               reputation: IntScalarMutations
-              reputation_DECREMENT: Int
-              reputation_INCREMENT: Int
-              reputation_SET: Int
+              reputation_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'reputation: { decrement: ... } }' instead.\\")
+              reputation_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'reputation: { increment: ... } }' instead.\\")
+              reputation_SET: Int @deprecated(reason: \\"Please use the generic mutation 'reputation: { set: ... } }' instead.\\")
               reviewerId: IntScalarMutations
-              reviewerId_DECREMENT: Int
-              reviewerId_INCREMENT: Int
-              reviewerId_SET: Int
+              reviewerId_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'reviewerId: { decrement: ... } }' instead.\\")
+              reviewerId_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'reviewerId: { increment: ... } }' instead.\\")
+              reviewerId_SET: Int @deprecated(reason: \\"Please use the generic mutation 'reviewerId: { set: ... } }' instead.\\")
             }
 
             input ReviewerWhere {

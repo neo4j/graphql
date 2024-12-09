@@ -382,29 +382,29 @@ describe("@default directive", () => {
 
             input UserUpdateInput {
               fromInterface: StringScalarMutations
-              fromInterface_SET: String
+              fromInterface_SET: String @deprecated(reason: \\"Please use the generic mutation 'fromInterface: { set: ... } }' instead.\\")
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               location: LocationEnumScalarMutations
-              location_SET: Location
+              location_SET: Location @deprecated(reason: \\"Please use the generic mutation 'location: { set: ... } }' instead.\\")
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
               numberOfFriends: IntScalarMutations
-              numberOfFriends_DECREMENT: Int
-              numberOfFriends_INCREMENT: Int
-              numberOfFriends_SET: Int
+              numberOfFriends_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'numberOfFriends: { decrement: ... } }' instead.\\")
+              numberOfFriends_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'numberOfFriends: { increment: ... } }' instead.\\")
+              numberOfFriends_SET: Int @deprecated(reason: \\"Please use the generic mutation 'numberOfFriends: { set: ... } }' instead.\\")
               rating: FloatScalarMutations
-              rating_ADD: Float
-              rating_DIVIDE: Float
-              rating_MULTIPLY: Float
-              rating_SET: Float
-              rating_SUBTRACT: Float
+              rating_ADD: Float @deprecated(reason: \\"Please use the relevant generic mutation 'rating: { add: ... } }' instead.\\")
+              rating_DIVIDE: Float @deprecated(reason: \\"Please use the relevant generic mutation 'rating: { divide: ... } }' instead.\\")
+              rating_MULTIPLY: Float @deprecated(reason: \\"Please use the relevant generic mutation 'rating: { multiply: ... } }' instead.\\")
+              rating_SET: Float @deprecated(reason: \\"Please use the generic mutation 'rating: { set: ... } }' instead.\\")
+              rating_SUBTRACT: Float @deprecated(reason: \\"Please use the relevant generic mutation 'rating: { subtract: ... } }' instead.\\")
               toBeOverridden: StringScalarMutations
-              toBeOverridden_SET: String
+              toBeOverridden_SET: String @deprecated(reason: \\"Please use the generic mutation 'toBeOverridden: { set: ... } }' instead.\\")
               verified: BooleanScalarMutations
               verifiedDate: DateTimeScalarMutations
-              verifiedDate_SET: DateTime
-              verified_SET: Boolean
+              verifiedDate_SET: DateTime @deprecated(reason: \\"Please use the generic mutation 'verifiedDate: { set: ... } }' instead.\\")
+              verified_SET: Boolean @deprecated(reason: \\"Please use the generic mutation 'verified: { set: ... } }' instead.\\")
             }
 
             input UserWhere {

@@ -188,7 +188,7 @@ describe("Relationship", () => {
             input ActorUpdateInput {
               movies: [ActorMoviesUpdateFieldInput!]
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
@@ -433,7 +433,7 @@ describe("Relationship", () => {
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {

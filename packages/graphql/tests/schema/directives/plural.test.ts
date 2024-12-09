@@ -146,9 +146,9 @@ describe("Plural option", () => {
 
             input TechUpdateInput {
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
               value: StringScalarMutations
-              value_SET: String
+              value_SET: String @deprecated(reason: \\"Please use the generic mutation 'value: { set: ... } }' instead.\\")
             }
 
             input TechWhere {
@@ -315,9 +315,9 @@ describe("Plural option", () => {
 
             input TechUpdateInput {
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
               value: StringScalarMutations
-              value_SET: String
+              value_SET: String @deprecated(reason: \\"Please use the generic mutation 'value: { set: ... } }' instead.\\")
             }
 
             input TechWhere {
@@ -484,9 +484,9 @@ describe("Plural option", () => {
 
             input TechUpdateInput {
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
               value: StringScalarMutations
-              value_SET: String
+              value_SET: String @deprecated(reason: \\"Please use the generic mutation 'value: { set: ... } }' instead.\\")
             }
 
             input TechWhere {
@@ -655,7 +655,7 @@ describe("Plural option", () => {
 
             input TechsUpdateInput {
               value: StringScalarMutations
-              value_SET: String
+              value_SET: String @deprecated(reason: \\"Please use the generic mutation 'value: { set: ... } }' instead.\\")
             }
 
             input TechsWhere {
@@ -827,7 +827,7 @@ describe("Plural option", () => {
 
             input UserUpdateInput {
               value: StringScalarMutations
-              value_SET: String
+              value_SET: String @deprecated(reason: \\"Please use the generic mutation 'value: { set: ... } }' instead.\\")
             }
 
             input UserWhere {
@@ -978,7 +978,7 @@ describe("Plural option", () => {
 
             input UserUpdateInput {
               value: StringScalarMutations
-              value_SET: String
+              value_SET: String @deprecated(reason: \\"Please use the generic mutation 'value: { set: ... } }' instead.\\")
             }
 
             input UserWhere {
@@ -1141,7 +1141,7 @@ describe("Plural option", () => {
 
             input UsersUpdateInput {
               value: StringScalarMutations
-              value_SET: String
+              value_SET: String @deprecated(reason: \\"Please use the generic mutation 'value: { set: ... } }' instead.\\")
             }
 
             input UsersWhere {

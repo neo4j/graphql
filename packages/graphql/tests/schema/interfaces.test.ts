@@ -344,7 +344,7 @@ describe("Interfaces", () => {
 
             input MovieUpdateInput {
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               movies: [MovieMoviesUpdateFieldInput!]
             }
 
@@ -767,7 +767,7 @@ describe("Interfaces", () => {
 
             input MovieUpdateInput {
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               movies: [MovieMoviesUpdateFieldInput!]
             }
 

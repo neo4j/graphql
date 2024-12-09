@@ -333,35 +333,35 @@ describe("Aggregations", () => {
 
             input MovieUpdateInput {
               createdAt: DateTimeScalarMutations
-              createdAt_SET: DateTime
+              createdAt_SET: DateTime @deprecated(reason: \\"Please use the generic mutation 'createdAt: { set: ... } }' instead.\\")
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               imdbRating: FloatScalarMutations
-              imdbRating_ADD: Float
-              imdbRating_DIVIDE: Float
-              imdbRating_MULTIPLY: Float
-              imdbRating_SET: Float
-              imdbRating_SUBTRACT: Float
+              imdbRating_ADD: Float @deprecated(reason: \\"Please use the relevant generic mutation 'imdbRating: { add: ... } }' instead.\\")
+              imdbRating_DIVIDE: Float @deprecated(reason: \\"Please use the relevant generic mutation 'imdbRating: { divide: ... } }' instead.\\")
+              imdbRating_MULTIPLY: Float @deprecated(reason: \\"Please use the relevant generic mutation 'imdbRating: { multiply: ... } }' instead.\\")
+              imdbRating_SET: Float @deprecated(reason: \\"Please use the generic mutation 'imdbRating: { set: ... } }' instead.\\")
+              imdbRating_SUBTRACT: Float @deprecated(reason: \\"Please use the relevant generic mutation 'imdbRating: { subtract: ... } }' instead.\\")
               isbn: StringScalarMutations
-              isbn_SET: String
+              isbn_SET: String @deprecated(reason: \\"Please use the generic mutation 'isbn: { set: ... } }' instead.\\")
               screenTime: DurationScalarMutations
-              screenTime_SET: Duration
+              screenTime_SET: Duration @deprecated(reason: \\"Please use the generic mutation 'screenTime: { set: ... } }' instead.\\")
               someBigInt: BigIntScalarMutations
-              someBigInt_DECREMENT: BigInt
-              someBigInt_INCREMENT: BigInt
-              someBigInt_SET: BigInt
+              someBigInt_DECREMENT: BigInt @deprecated(reason: \\"Please use the relevant generic mutation 'someBigInt: { decrement: ... } }' instead.\\")
+              someBigInt_INCREMENT: BigInt @deprecated(reason: \\"Please use the relevant generic mutation 'someBigInt: { increment: ... } }' instead.\\")
+              someBigInt_SET: BigInt @deprecated(reason: \\"Please use the generic mutation 'someBigInt: { set: ... } }' instead.\\")
               someInt: IntScalarMutations
-              someInt_DECREMENT: Int
-              someInt_INCREMENT: Int
-              someInt_SET: Int
+              someInt_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'someInt: { decrement: ... } }' instead.\\")
+              someInt_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'someInt: { increment: ... } }' instead.\\")
+              someInt_SET: Int @deprecated(reason: \\"Please use the generic mutation 'someInt: { set: ... } }' instead.\\")
               someLocalDateTime: LocalDateTimeScalarMutations
-              someLocalDateTime_SET: LocalDateTime
+              someLocalDateTime_SET: LocalDateTime @deprecated(reason: \\"Please use the generic mutation 'someLocalDateTime: { set: ... } }' instead.\\")
               someLocalTime: LocalTimeScalarMutations
-              someLocalTime_SET: LocalTime
+              someLocalTime_SET: LocalTime @deprecated(reason: \\"Please use the generic mutation 'someLocalTime: { set: ... } }' instead.\\")
               someTime: TimeScalarMutations
-              someTime_SET: Time
+              someTime_SET: Time @deprecated(reason: \\"Please use the generic mutation 'someTime: { set: ... } }' instead.\\")
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -950,33 +950,33 @@ describe("Aggregations", () => {
 
             input LikesUpdateInput {
               someBigInt: BigIntScalarMutations
-              someBigInt_DECREMENT: BigInt
-              someBigInt_INCREMENT: BigInt
-              someBigInt_SET: BigInt
+              someBigInt_DECREMENT: BigInt @deprecated(reason: \\"Please use the relevant generic mutation 'someBigInt: { decrement: ... } }' instead.\\")
+              someBigInt_INCREMENT: BigInt @deprecated(reason: \\"Please use the relevant generic mutation 'someBigInt: { increment: ... } }' instead.\\")
+              someBigInt_SET: BigInt @deprecated(reason: \\"Please use the generic mutation 'someBigInt: { set: ... } }' instead.\\")
               someDateTime: DateTimeScalarMutations
-              someDateTime_SET: DateTime
+              someDateTime_SET: DateTime @deprecated(reason: \\"Please use the generic mutation 'someDateTime: { set: ... } }' instead.\\")
               someDuration: DurationScalarMutations
-              someDuration_SET: Duration
+              someDuration_SET: Duration @deprecated(reason: \\"Please use the generic mutation 'someDuration: { set: ... } }' instead.\\")
               someFloat: FloatScalarMutations
-              someFloat_ADD: Float
-              someFloat_DIVIDE: Float
-              someFloat_MULTIPLY: Float
-              someFloat_SET: Float
-              someFloat_SUBTRACT: Float
+              someFloat_ADD: Float @deprecated(reason: \\"Please use the relevant generic mutation 'someFloat: { add: ... } }' instead.\\")
+              someFloat_DIVIDE: Float @deprecated(reason: \\"Please use the relevant generic mutation 'someFloat: { divide: ... } }' instead.\\")
+              someFloat_MULTIPLY: Float @deprecated(reason: \\"Please use the relevant generic mutation 'someFloat: { multiply: ... } }' instead.\\")
+              someFloat_SET: Float @deprecated(reason: \\"Please use the generic mutation 'someFloat: { set: ... } }' instead.\\")
+              someFloat_SUBTRACT: Float @deprecated(reason: \\"Please use the relevant generic mutation 'someFloat: { subtract: ... } }' instead.\\")
               someId: IDScalarMutations
-              someId_SET: ID
+              someId_SET: ID @deprecated(reason: \\"Please use the generic mutation 'someId: { set: ... } }' instead.\\")
               someInt: IntScalarMutations
-              someInt_DECREMENT: Int
-              someInt_INCREMENT: Int
-              someInt_SET: Int
+              someInt_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'someInt: { decrement: ... } }' instead.\\")
+              someInt_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'someInt: { increment: ... } }' instead.\\")
+              someInt_SET: Int @deprecated(reason: \\"Please use the generic mutation 'someInt: { set: ... } }' instead.\\")
               someLocalDateTime: LocalDateTimeScalarMutations
-              someLocalDateTime_SET: LocalDateTime
+              someLocalDateTime_SET: LocalDateTime @deprecated(reason: \\"Please use the generic mutation 'someLocalDateTime: { set: ... } }' instead.\\")
               someLocalTime: LocalTimeScalarMutations
-              someLocalTime_SET: LocalTime
+              someLocalTime_SET: LocalTime @deprecated(reason: \\"Please use the generic mutation 'someLocalTime: { set: ... } }' instead.\\")
               someString: StringScalarMutations
-              someString_SET: String
+              someString_SET: String @deprecated(reason: \\"Please use the generic mutation 'someString: { set: ... } }' instead.\\")
               someTime: TimeScalarMutations
-              someTime_SET: Time
+              someTime_SET: Time @deprecated(reason: \\"Please use the generic mutation 'someTime: { set: ... } }' instead.\\")
             }
 
             input LikesWhere {
@@ -1375,7 +1375,7 @@ describe("Aggregations", () => {
             input PostUpdateInput {
               likes: [PostLikesUpdateFieldInput!]
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             type PostUserLikesAggregationSelection {
@@ -1604,33 +1604,33 @@ describe("Aggregations", () => {
 
             input UserUpdateInput {
               someBigInt: BigIntScalarMutations
-              someBigInt_DECREMENT: BigInt
-              someBigInt_INCREMENT: BigInt
-              someBigInt_SET: BigInt
+              someBigInt_DECREMENT: BigInt @deprecated(reason: \\"Please use the relevant generic mutation 'someBigInt: { decrement: ... } }' instead.\\")
+              someBigInt_INCREMENT: BigInt @deprecated(reason: \\"Please use the relevant generic mutation 'someBigInt: { increment: ... } }' instead.\\")
+              someBigInt_SET: BigInt @deprecated(reason: \\"Please use the generic mutation 'someBigInt: { set: ... } }' instead.\\")
               someDateTime: DateTimeScalarMutations
-              someDateTime_SET: DateTime
+              someDateTime_SET: DateTime @deprecated(reason: \\"Please use the generic mutation 'someDateTime: { set: ... } }' instead.\\")
               someDuration: DurationScalarMutations
-              someDuration_SET: Duration
+              someDuration_SET: Duration @deprecated(reason: \\"Please use the generic mutation 'someDuration: { set: ... } }' instead.\\")
               someFloat: FloatScalarMutations
-              someFloat_ADD: Float
-              someFloat_DIVIDE: Float
-              someFloat_MULTIPLY: Float
-              someFloat_SET: Float
-              someFloat_SUBTRACT: Float
+              someFloat_ADD: Float @deprecated(reason: \\"Please use the relevant generic mutation 'someFloat: { add: ... } }' instead.\\")
+              someFloat_DIVIDE: Float @deprecated(reason: \\"Please use the relevant generic mutation 'someFloat: { divide: ... } }' instead.\\")
+              someFloat_MULTIPLY: Float @deprecated(reason: \\"Please use the relevant generic mutation 'someFloat: { multiply: ... } }' instead.\\")
+              someFloat_SET: Float @deprecated(reason: \\"Please use the generic mutation 'someFloat: { set: ... } }' instead.\\")
+              someFloat_SUBTRACT: Float @deprecated(reason: \\"Please use the relevant generic mutation 'someFloat: { subtract: ... } }' instead.\\")
               someId: IDScalarMutations
-              someId_SET: ID
+              someId_SET: ID @deprecated(reason: \\"Please use the generic mutation 'someId: { set: ... } }' instead.\\")
               someInt: IntScalarMutations
-              someInt_DECREMENT: Int
-              someInt_INCREMENT: Int
-              someInt_SET: Int
+              someInt_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'someInt: { decrement: ... } }' instead.\\")
+              someInt_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'someInt: { increment: ... } }' instead.\\")
+              someInt_SET: Int @deprecated(reason: \\"Please use the generic mutation 'someInt: { set: ... } }' instead.\\")
               someLocalDateTime: LocalDateTimeScalarMutations
-              someLocalDateTime_SET: LocalDateTime
+              someLocalDateTime_SET: LocalDateTime @deprecated(reason: \\"Please use the generic mutation 'someLocalDateTime: { set: ... } }' instead.\\")
               someLocalTime: LocalTimeScalarMutations
-              someLocalTime_SET: LocalTime
+              someLocalTime_SET: LocalTime @deprecated(reason: \\"Please use the generic mutation 'someLocalTime: { set: ... } }' instead.\\")
               someString: StringScalarMutations
-              someString_SET: String
+              someString_SET: String @deprecated(reason: \\"Please use the generic mutation 'someString: { set: ... } }' instead.\\")
               someTime: TimeScalarMutations
-              someTime_SET: Time
+              someTime_SET: Time @deprecated(reason: \\"Please use the generic mutation 'someTime: { set: ... } }' instead.\\")
             }
 
             input UserWhere {
