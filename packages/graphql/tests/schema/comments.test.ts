@@ -458,6 +458,16 @@ describe("Comments", () => {
                   relationshipsDeleted: Int!
                 }
 
+                \\"\\"\\"Float filters\\"\\"\\"
+                input FloatScalarFilters {
+                  eq: Float
+                  gt: Float
+                  gte: Float
+                  in: [Float!]
+                  lt: Float
+                  lte: Float
+                }
+
                 type IDAggregateSelection {
                   longest: ID
                   shortest: ID
@@ -480,6 +490,16 @@ describe("Comments", () => {
                 \\"\\"\\"ID mutations\\"\\"\\"
                 input IDScalarMutations {
                   set: ID
+                }
+
+                \\"\\"\\"Int filters\\"\\"\\"
+                input IntScalarFilters {
+                  eq: Int
+                  gt: Int
+                  gte: Int
+                  in: [Int!]
+                  lt: Int
+                  lte: Int
                 }
 
                 type Movie {
@@ -553,6 +573,7 @@ describe("Comments", () => {
                   AND: [MovieActorsNodeAggregationWhereInput!]
                   NOT: MovieActorsNodeAggregationWhereInput
                   OR: [MovieActorsNodeAggregationWhereInput!]
+                  name: StringScalarAggregationFilters
                   name_AVERAGE_LENGTH_EQUAL: Float
                   name_AVERAGE_LENGTH_GT: Float
                   name_AVERAGE_LENGTH_GTE: Float
@@ -702,6 +723,13 @@ describe("Comments", () => {
                   shortest: String
                 }
 
+                \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                input StringScalarAggregationFilters {
+                  averageLength: FloatScalarFilters
+                  longestLength: IntScalarFilters
+                  shortestLength: IntScalarFilters
+                }
+
                 \\"\\"\\"String filters\\"\\"\\"
                 input StringScalarFilters {
                   contains: String
@@ -790,6 +818,7 @@ describe("Comments", () => {
                   AND: [ActedInAggregationWhereInput!]
                   NOT: ActedInAggregationWhereInput
                   OR: [ActedInAggregationWhereInput!]
+                  screenTime: IntScalarAggregationFilters
                   screenTime_AVERAGE_EQUAL: Float
                   screenTime_AVERAGE_GT: Float
                   screenTime_AVERAGE_GTE: Float
@@ -907,6 +936,7 @@ describe("Comments", () => {
                   AND: [ActorActedInNodeAggregationWhereInput!]
                   NOT: ActorActedInNodeAggregationWhereInput
                   OR: [ActorActedInNodeAggregationWhereInput!]
+                  title: StringScalarAggregationFilters
                   title_AVERAGE_LENGTH_EQUAL: Float
                   title_AVERAGE_LENGTH_GT: Float
                   title_AVERAGE_LENGTH_GTE: Float
@@ -1064,11 +1094,29 @@ describe("Comments", () => {
                   relationshipsDeleted: Int!
                 }
 
+                \\"\\"\\"Float filters\\"\\"\\"
+                input FloatScalarFilters {
+                  eq: Float
+                  gt: Float
+                  gte: Float
+                  in: [Float!]
+                  lt: Float
+                  lte: Float
+                }
+
                 type IntAggregateSelection {
                   average: Float
                   max: Int
                   min: Int
                   sum: Int
+                }
+
+                \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+                input IntScalarAggregationFilters {
+                  average: FloatScalarFilters
+                  max: IntScalarFilters
+                  min: IntScalarFilters
+                  sum: IntScalarFilters
                 }
 
                 \\"\\"\\"Int filters\\"\\"\\"
@@ -1319,6 +1367,13 @@ describe("Comments", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                input StringScalarAggregationFilters {
+                  averageLength: FloatScalarFilters
+                  longestLength: IntScalarFilters
+                  shortestLength: IntScalarFilters
                 }
 
                 \\"\\"\\"String filters\\"\\"\\"

@@ -81,6 +81,14 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               sum: Float
             }
 
+            \\"\\"\\"Filters for an aggregation of a float field\\"\\"\\"
+            input FloatScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: FloatScalarFilters
+              min: FloatScalarFilters
+              sum: FloatScalarFilters
+            }
+
             \\"\\"\\"Float filters\\"\\"\\"
             input FloatScalarFilters {
               eq: Float
@@ -206,6 +214,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               AND: [GenreMoviesNodeAggregationWhereInput!]
               NOT: GenreMoviesNodeAggregationWhereInput
               OR: [GenreMoviesNodeAggregationWhereInput!]
+              imdbRating: FloatScalarAggregationFilters
               imdbRating_AVERAGE_EQUAL: Float
               imdbRating_AVERAGE_GT: Float
               imdbRating_AVERAGE_GTE: Float
@@ -226,6 +235,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               imdbRating_SUM_GTE: Float
               imdbRating_SUM_LT: Float
               imdbRating_SUM_LTE: Float
+              title: StringScalarAggregationFilters
               title_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Do not use title\\")
               title_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Do not use title\\")
               title_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Do not use title\\")
@@ -241,6 +251,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               title_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Do not use title\\")
               title_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Do not use title\\")
               title_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Do not use title\\")
+              year: IntScalarAggregationFilters
               year_AVERAGE_EQUAL: Float
               year_AVERAGE_GT: Float
               year_AVERAGE_GTE: Float
@@ -342,6 +353,14 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+            input IntScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: IntScalarFilters
+              min: IntScalarFilters
+              sum: IntScalarFilters
             }
 
             \\"\\"\\"Int filters\\"\\"\\"
@@ -471,6 +490,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               AND: [MovieGenresNodeAggregationWhereInput!]
               NOT: MovieGenresNodeAggregationWhereInput
               OR: [MovieGenresNodeAggregationWhereInput!]
+              name: StringScalarAggregationFilters
               name_AVERAGE_LENGTH_EQUAL: Float
               name_AVERAGE_LENGTH_GT: Float
               name_AVERAGE_LENGTH_GTE: Float
@@ -625,6 +645,13 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
             }
 
             \\"\\"\\"String filters\\"\\"\\"

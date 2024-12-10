@@ -127,6 +127,7 @@ describe("inheritance", () => {
               AND: [ActorFriendsNodeAggregationWhereInput!]
               NOT: ActorFriendsNodeAggregationWhereInput
               OR: [ActorFriendsNodeAggregationWhereInput!]
+              name: StringScalarAggregationFilters
               name_AVERAGE_LENGTH_EQUAL: Float
               name_AVERAGE_LENGTH_GT: Float
               name_AVERAGE_LENGTH_GTE: Float
@@ -249,6 +250,16 @@ describe("inheritance", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
             \\"\\"\\"
             The edge properties for the following fields:
             * Actor.friends
@@ -261,6 +272,7 @@ describe("inheritance", () => {
               AND: [FriendsWithAggregationWhereInput!]
               NOT: FriendsWithAggregationWhereInput
               OR: [FriendsWithAggregationWhereInput!]
+              since: IntScalarAggregationFilters
               since_AVERAGE_EQUAL: Float
               since_AVERAGE_GT: Float
               since_AVERAGE_GTE: Float
@@ -316,6 +328,14 @@ describe("inheritance", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+            input IntScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: IntScalarFilters
+              min: IntScalarFilters
+              sum: IntScalarFilters
             }
 
             \\"\\"\\"Int filters\\"\\"\\"
@@ -488,6 +508,7 @@ describe("inheritance", () => {
               AND: [PersonFriendsNodeAggregationWhereInput!]
               NOT: PersonFriendsNodeAggregationWhereInput
               OR: [PersonFriendsNodeAggregationWhereInput!]
+              name: StringScalarAggregationFilters
               name_AVERAGE_LENGTH_EQUAL: Float
               name_AVERAGE_LENGTH_GT: Float
               name_AVERAGE_LENGTH_GTE: Float
@@ -602,6 +623,13 @@ describe("inheritance", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
             }
 
             \\"\\"\\"String filters\\"\\"\\"

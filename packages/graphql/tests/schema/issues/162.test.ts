@@ -79,9 +79,25 @@ describe("162", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
             type IDAggregateSelection {
               longest: ID
               shortest: ID
+            }
+
+            \\"\\"\\"Filters for an aggregation of an ID input field\\"\\"\\"
+            input IDScalarAggregationFilters {
+              max: IDScalarFilters
+              min: IDScalarFilters
             }
 
             \\"\\"\\"ID filters\\"\\"\\"
@@ -108,6 +124,14 @@ describe("162", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+            input IntScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: IntScalarFilters
+              min: IntScalarFilters
+              sum: IntScalarFilters
             }
 
             \\"\\"\\"Int filters\\"\\"\\"
@@ -310,6 +334,7 @@ describe("162", () => {
               AND: [TigerJawLevel2Part1NodeAggregationWhereInput!]
               NOT: TigerJawLevel2Part1NodeAggregationWhereInput
               OR: [TigerJawLevel2Part1NodeAggregationWhereInput!]
+              id: IDScalarAggregationFilters
               id_MAX_EQUAL: ID
               id_MAX_GT: ID
               id_MAX_GTE: ID
@@ -388,6 +413,7 @@ describe("162", () => {
               AND: [TigerJawLevel2Part1TigerNodeAggregationWhereInput!]
               NOT: TigerJawLevel2Part1TigerNodeAggregationWhereInput
               OR: [TigerJawLevel2Part1TigerNodeAggregationWhereInput!]
+              x: IntScalarAggregationFilters
               x_AVERAGE_EQUAL: Float
               x_AVERAGE_GT: Float
               x_AVERAGE_GTE: Float

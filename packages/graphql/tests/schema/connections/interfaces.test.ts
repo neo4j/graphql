@@ -177,6 +177,7 @@ describe("Connection with interfaces", () => {
               AND: [CreatureMoviesNodeAggregationWhereInput!]
               NOT: CreatureMoviesNodeAggregationWhereInput
               OR: [CreatureMoviesNodeAggregationWhereInput!]
+              id: IDScalarAggregationFilters
               id_MAX_EQUAL: ID
               id_MAX_GT: ID
               id_MAX_GTE: ID
@@ -283,6 +284,12 @@ describe("Connection with interfaces", () => {
             type IDAggregateSelection {
               longest: ID
               shortest: ID
+            }
+
+            \\"\\"\\"Filters for an aggregation of an ID input field\\"\\"\\"
+            input IDScalarAggregationFilters {
+              max: IDScalarFilters
+              min: IDScalarFilters
             }
 
             \\"\\"\\"ID filters\\"\\"\\"
@@ -401,6 +408,7 @@ describe("Connection with interfaces", () => {
               AND: [MovieDirectorNodeAggregationWhereInput!]
               NOT: MovieDirectorNodeAggregationWhereInput
               OR: [MovieDirectorNodeAggregationWhereInput!]
+              id: IDScalarAggregationFilters
               id_MAX_EQUAL: ID
               id_MAX_GT: ID
               id_MAX_GTE: ID
@@ -588,6 +596,7 @@ describe("Connection with interfaces", () => {
               AND: [PersonMoviesNodeAggregationWhereInput!]
               NOT: PersonMoviesNodeAggregationWhereInput
               OR: [PersonMoviesNodeAggregationWhereInput!]
+              id: IDScalarAggregationFilters
               id_MAX_EQUAL: ID
               id_MAX_GT: ID
               id_MAX_GTE: ID
@@ -752,6 +761,7 @@ describe("Connection with interfaces", () => {
               AND: [ProductionDirectorNodeAggregationWhereInput!]
               NOT: ProductionDirectorNodeAggregationWhereInput
               OR: [ProductionDirectorNodeAggregationWhereInput!]
+              id: IDScalarAggregationFilters
               id_MAX_EQUAL: ID
               id_MAX_GT: ID
               id_MAX_GTE: ID
@@ -961,6 +971,7 @@ describe("Connection with interfaces", () => {
               AND: [SeriesDirectorNodeAggregationWhereInput!]
               NOT: SeriesDirectorNodeAggregationWhereInput
               OR: [SeriesDirectorNodeAggregationWhereInput!]
+              id: IDScalarAggregationFilters
               id_MAX_EQUAL: ID
               id_MAX_GT: ID
               id_MAX_GTE: ID

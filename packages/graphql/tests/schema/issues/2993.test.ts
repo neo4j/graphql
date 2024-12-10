@@ -71,6 +71,12 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               min: DateTime
             }
 
+            \\"\\"\\"Filters for an aggregation of an DateTime input field\\"\\"\\"
+            input DateTimeScalarAggregationFilters {
+              max: DateTimeScalarFilters
+              min: DateTimeScalarFilters
+            }
+
             \\"\\"\\"DateTime filters\\"\\"\\"
             input DateTimeScalarFilters {
               eq: DateTime
@@ -106,6 +112,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               AND: [FOLLOWSAggregationWhereInput!]
               NOT: FOLLOWSAggregationWhereInput
               OR: [FOLLOWSAggregationWhereInput!]
+              since: DateTimeScalarAggregationFilters
               since_MAX_EQUAL: DateTime
               since_MAX_GT: DateTime
               since_MAX_GTE: DateTime
@@ -140,9 +147,25 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               since_LTE: DateTime
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
             type IDAggregateSelection {
               longest: ID
               shortest: ID
+            }
+
+            \\"\\"\\"Filters for an aggregation of an ID input field\\"\\"\\"
+            input IDScalarAggregationFilters {
+              max: IDScalarFilters
+              min: IDScalarFilters
             }
 
             \\"\\"\\"ID filters\\"\\"\\"
@@ -162,6 +185,16 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             \\"\\"\\"ID mutations\\"\\"\\"
             input IDScalarMutations {
               set: ID
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
             }
 
             type Mutation {
@@ -266,6 +299,13 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
             }
 
             \\"\\"\\"String filters\\"\\"\\"
@@ -387,6 +427,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               AND: [UserFollowingNodeAggregationWhereInput!]
               NOT: UserFollowingNodeAggregationWhereInput
               OR: [UserFollowingNodeAggregationWhereInput!]
+              id: IDScalarAggregationFilters
               id_MAX_EQUAL: ID
               id_MAX_GT: ID
               id_MAX_GTE: ID
@@ -397,6 +438,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               id_MIN_GTE: ID
               id_MIN_LT: ID
               id_MIN_LTE: ID
+              userName: StringScalarAggregationFilters
               userName_AVERAGE_LENGTH_EQUAL: Float
               userName_AVERAGE_LENGTH_GT: Float
               userName_AVERAGE_LENGTH_GTE: Float

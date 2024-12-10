@@ -596,6 +596,14 @@ describe("Aggregations", () => {
               sum: BigInt
             }
 
+            \\"\\"\\"Filters for an aggregation of an BigInt field\\"\\"\\"
+            input BigIntScalarAggregationFilters {
+              average: BigIntScalarFilters
+              max: BigIntScalarFilters
+              min: BigIntScalarFilters
+              sum: BigIntScalarFilters
+            }
+
             \\"\\"\\"BigInt filters\\"\\"\\"
             input BigIntScalarFilters {
               eq: BigInt
@@ -639,6 +647,12 @@ describe("Aggregations", () => {
               min: DateTime
             }
 
+            \\"\\"\\"Filters for an aggregation of an DateTime input field\\"\\"\\"
+            input DateTimeScalarAggregationFilters {
+              max: DateTimeScalarFilters
+              min: DateTimeScalarFilters
+            }
+
             \\"\\"\\"DateTime filters\\"\\"\\"
             input DateTimeScalarFilters {
               eq: DateTime
@@ -670,6 +684,13 @@ describe("Aggregations", () => {
               min: Duration
             }
 
+            \\"\\"\\"Filters for an aggregation of a Dutation input field\\"\\"\\"
+            input DurationScalarAggregationFilters {
+              average: DurationScalarFilters
+              max: DurationScalarFilters
+              min: DurationScalarFilters
+            }
+
             \\"\\"\\"Duration filters\\"\\"\\"
             input DurationScalarFilters {
               eq: Duration
@@ -690,6 +711,14 @@ describe("Aggregations", () => {
               max: Float
               min: Float
               sum: Float
+            }
+
+            \\"\\"\\"Filters for an aggregation of a float field\\"\\"\\"
+            input FloatScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: FloatScalarFilters
+              min: FloatScalarFilters
+              sum: FloatScalarFilters
             }
 
             \\"\\"\\"Float filters\\"\\"\\"
@@ -716,6 +745,12 @@ describe("Aggregations", () => {
               shortest: ID
             }
 
+            \\"\\"\\"Filters for an aggregation of an ID input field\\"\\"\\"
+            input IDScalarAggregationFilters {
+              max: IDScalarFilters
+              min: IDScalarFilters
+            }
+
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -740,6 +775,14 @@ describe("Aggregations", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+            input IntScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: IntScalarFilters
+              min: IntScalarFilters
+              sum: IntScalarFilters
             }
 
             \\"\\"\\"Int filters\\"\\"\\"
@@ -780,6 +823,7 @@ describe("Aggregations", () => {
               AND: [LikesAggregationWhereInput!]
               NOT: LikesAggregationWhereInput
               OR: [LikesAggregationWhereInput!]
+              someBigInt: BigIntScalarAggregationFilters
               someBigInt_AVERAGE_EQUAL: BigInt
               someBigInt_AVERAGE_GT: BigInt
               someBigInt_AVERAGE_GTE: BigInt
@@ -800,6 +844,7 @@ describe("Aggregations", () => {
               someBigInt_SUM_GTE: BigInt
               someBigInt_SUM_LT: BigInt
               someBigInt_SUM_LTE: BigInt
+              someDateTime: DateTimeScalarAggregationFilters
               someDateTime_MAX_EQUAL: DateTime
               someDateTime_MAX_GT: DateTime
               someDateTime_MAX_GTE: DateTime
@@ -810,6 +855,7 @@ describe("Aggregations", () => {
               someDateTime_MIN_GTE: DateTime
               someDateTime_MIN_LT: DateTime
               someDateTime_MIN_LTE: DateTime
+              someDuration: DurationScalarAggregationFilters
               someDuration_AVERAGE_EQUAL: Duration
               someDuration_AVERAGE_GT: Duration
               someDuration_AVERAGE_GTE: Duration
@@ -825,6 +871,7 @@ describe("Aggregations", () => {
               someDuration_MIN_GTE: Duration
               someDuration_MIN_LT: Duration
               someDuration_MIN_LTE: Duration
+              someFloat: FloatScalarAggregationFilters
               someFloat_AVERAGE_EQUAL: Float
               someFloat_AVERAGE_GT: Float
               someFloat_AVERAGE_GTE: Float
@@ -845,6 +892,7 @@ describe("Aggregations", () => {
               someFloat_SUM_GTE: Float
               someFloat_SUM_LT: Float
               someFloat_SUM_LTE: Float
+              someId: IDScalarAggregationFilters
               someId_MAX_EQUAL: ID
               someId_MAX_GT: ID
               someId_MAX_GTE: ID
@@ -855,6 +903,7 @@ describe("Aggregations", () => {
               someId_MIN_GTE: ID
               someId_MIN_LT: ID
               someId_MIN_LTE: ID
+              someInt: IntScalarAggregationFilters
               someInt_AVERAGE_EQUAL: Float
               someInt_AVERAGE_GT: Float
               someInt_AVERAGE_GTE: Float
@@ -875,6 +924,7 @@ describe("Aggregations", () => {
               someInt_SUM_GTE: Int
               someInt_SUM_LT: Int
               someInt_SUM_LTE: Int
+              someLocalDateTime: LocalDateTimeScalarAggregationFilters
               someLocalDateTime_MAX_EQUAL: LocalDateTime
               someLocalDateTime_MAX_GT: LocalDateTime
               someLocalDateTime_MAX_GTE: LocalDateTime
@@ -885,6 +935,7 @@ describe("Aggregations", () => {
               someLocalDateTime_MIN_GTE: LocalDateTime
               someLocalDateTime_MIN_LT: LocalDateTime
               someLocalDateTime_MIN_LTE: LocalDateTime
+              someLocalTime: LocalTimeScalarAggregationFilters
               someLocalTime_MAX_EQUAL: LocalTime
               someLocalTime_MAX_GT: LocalTime
               someLocalTime_MAX_GTE: LocalTime
@@ -895,6 +946,7 @@ describe("Aggregations", () => {
               someLocalTime_MIN_GTE: LocalTime
               someLocalTime_MIN_LT: LocalTime
               someLocalTime_MIN_LTE: LocalTime
+              someString: StringScalarAggregationFilters
               someString_AVERAGE_LENGTH_EQUAL: Float
               someString_AVERAGE_LENGTH_GT: Float
               someString_AVERAGE_LENGTH_GTE: Float
@@ -910,6 +962,7 @@ describe("Aggregations", () => {
               someString_SHORTEST_LENGTH_GTE: Int
               someString_SHORTEST_LENGTH_LT: Int
               someString_SHORTEST_LENGTH_LTE: Int
+              someTime: TimeScalarAggregationFilters
               someTime_MAX_EQUAL: Time
               someTime_MAX_GT: Time
               someTime_MAX_GTE: Time
@@ -1061,6 +1114,12 @@ describe("Aggregations", () => {
               min: LocalDateTime
             }
 
+            \\"\\"\\"Filters for an aggregation of an LocalDateTime input field\\"\\"\\"
+            input LocalDateTimeScalarAggregationFilters {
+              max: LocalDateTimeScalarFilters
+              min: LocalDateTimeScalarFilters
+            }
+
             \\"\\"\\"LocalDateTime filters\\"\\"\\"
             input LocalDateTimeScalarFilters {
               eq: LocalDateTime
@@ -1084,6 +1143,12 @@ describe("Aggregations", () => {
             type LocalTimeAggregateSelection {
               max: LocalTime
               min: LocalTime
+            }
+
+            \\"\\"\\"Filters for an aggregation of an LocalTime input field\\"\\"\\"
+            input LocalTimeScalarAggregationFilters {
+              max: LocalTimeScalarFilters
+              min: LocalTimeScalarFilters
             }
 
             \\"\\"\\"LocalTime filters\\"\\"\\"
@@ -1203,6 +1268,7 @@ describe("Aggregations", () => {
               AND: [PostLikesNodeAggregationWhereInput!]
               NOT: PostLikesNodeAggregationWhereInput
               OR: [PostLikesNodeAggregationWhereInput!]
+              someBigInt: BigIntScalarAggregationFilters
               someBigInt_AVERAGE_EQUAL: BigInt
               someBigInt_AVERAGE_GT: BigInt
               someBigInt_AVERAGE_GTE: BigInt
@@ -1223,6 +1289,7 @@ describe("Aggregations", () => {
               someBigInt_SUM_GTE: BigInt
               someBigInt_SUM_LT: BigInt
               someBigInt_SUM_LTE: BigInt
+              someDateTime: DateTimeScalarAggregationFilters
               someDateTime_MAX_EQUAL: DateTime
               someDateTime_MAX_GT: DateTime
               someDateTime_MAX_GTE: DateTime
@@ -1233,6 +1300,7 @@ describe("Aggregations", () => {
               someDateTime_MIN_GTE: DateTime
               someDateTime_MIN_LT: DateTime
               someDateTime_MIN_LTE: DateTime
+              someDuration: DurationScalarAggregationFilters
               someDuration_AVERAGE_EQUAL: Duration
               someDuration_AVERAGE_GT: Duration
               someDuration_AVERAGE_GTE: Duration
@@ -1248,6 +1316,7 @@ describe("Aggregations", () => {
               someDuration_MIN_GTE: Duration
               someDuration_MIN_LT: Duration
               someDuration_MIN_LTE: Duration
+              someFloat: FloatScalarAggregationFilters
               someFloat_AVERAGE_EQUAL: Float
               someFloat_AVERAGE_GT: Float
               someFloat_AVERAGE_GTE: Float
@@ -1268,6 +1337,7 @@ describe("Aggregations", () => {
               someFloat_SUM_GTE: Float
               someFloat_SUM_LT: Float
               someFloat_SUM_LTE: Float
+              someId: IDScalarAggregationFilters
               someId_MAX_EQUAL: ID
               someId_MAX_GT: ID
               someId_MAX_GTE: ID
@@ -1278,6 +1348,7 @@ describe("Aggregations", () => {
               someId_MIN_GTE: ID
               someId_MIN_LT: ID
               someId_MIN_LTE: ID
+              someInt: IntScalarAggregationFilters
               someInt_AVERAGE_EQUAL: Float
               someInt_AVERAGE_GT: Float
               someInt_AVERAGE_GTE: Float
@@ -1298,6 +1369,7 @@ describe("Aggregations", () => {
               someInt_SUM_GTE: Int
               someInt_SUM_LT: Int
               someInt_SUM_LTE: Int
+              someLocalDateTime: LocalDateTimeScalarAggregationFilters
               someLocalDateTime_MAX_EQUAL: LocalDateTime
               someLocalDateTime_MAX_GT: LocalDateTime
               someLocalDateTime_MAX_GTE: LocalDateTime
@@ -1308,6 +1380,7 @@ describe("Aggregations", () => {
               someLocalDateTime_MIN_GTE: LocalDateTime
               someLocalDateTime_MIN_LT: LocalDateTime
               someLocalDateTime_MIN_LTE: LocalDateTime
+              someLocalTime: LocalTimeScalarAggregationFilters
               someLocalTime_MAX_EQUAL: LocalTime
               someLocalTime_MAX_GT: LocalTime
               someLocalTime_MAX_GTE: LocalTime
@@ -1318,6 +1391,7 @@ describe("Aggregations", () => {
               someLocalTime_MIN_GTE: LocalTime
               someLocalTime_MIN_LT: LocalTime
               someLocalTime_MIN_LTE: LocalTime
+              someString: StringScalarAggregationFilters
               someString_AVERAGE_LENGTH_EQUAL: Float
               someString_AVERAGE_LENGTH_GT: Float
               someString_AVERAGE_LENGTH_GTE: Float
@@ -1333,6 +1407,7 @@ describe("Aggregations", () => {
               someString_SHORTEST_LENGTH_GTE: Int
               someString_SHORTEST_LENGTH_LT: Int
               someString_SHORTEST_LENGTH_LTE: Int
+              someTime: TimeScalarAggregationFilters
               someTime_MAX_EQUAL: Time
               someTime_MAX_GT: Time
               someTime_MAX_GTE: Time
@@ -1475,6 +1550,13 @@ describe("Aggregations", () => {
               shortest: String
             }
 
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
+            }
+
             \\"\\"\\"String filters\\"\\"\\"
             input StringScalarFilters {
               contains: String
@@ -1500,6 +1582,12 @@ describe("Aggregations", () => {
             type TimeAggregateSelection {
               max: Time
               min: Time
+            }
+
+            \\"\\"\\"Filters for an aggregation of an Time input field\\"\\"\\"
+            input TimeScalarAggregationFilters {
+              max: TimeScalarFilters
+              min: TimeScalarFilters
             }
 
             \\"\\"\\"Time filters\\"\\"\\"

@@ -146,6 +146,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               AND: [Actor2MoviesNodeAggregationWhereInput!]
               NOT: Actor2MoviesNodeAggregationWhereInput
               OR: [Actor2MoviesNodeAggregationWhereInput!]
+              id: IDScalarAggregationFilters
               id_MAX_EQUAL: ID
               id_MAX_GT: ID
               id_MAX_GTE: ID
@@ -156,6 +157,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               id_MIN_GTE: ID
               id_MIN_LT: ID
               id_MIN_LTE: ID
+              title: StringScalarAggregationFilters
               title_AVERAGE_LENGTH_EQUAL: Float
               title_AVERAGE_LENGTH_GT: Float
               title_AVERAGE_LENGTH_GTE: Float
@@ -330,6 +332,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               AND: [ActorMoviesNodeAggregationWhereInput!]
               NOT: ActorMoviesNodeAggregationWhereInput
               OR: [ActorMoviesNodeAggregationWhereInput!]
+              id: IDScalarAggregationFilters
               id_MAX_EQUAL: ID
               id_MAX_GT: ID
               id_MAX_GTE: ID
@@ -340,6 +343,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               id_MIN_GTE: ID
               id_MIN_LT: ID
               id_MIN_LTE: ID
+              title: StringScalarAggregationFilters
               title_AVERAGE_LENGTH_EQUAL: Float
               title_AVERAGE_LENGTH_GT: Float
               title_AVERAGE_LENGTH_GTE: Float
@@ -462,9 +466,25 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
             type IDAggregateSelection {
               longest: ID
               shortest: ID
+            }
+
+            \\"\\"\\"Filters for an aggregation of an ID input field\\"\\"\\"
+            input IDScalarAggregationFilters {
+              max: IDScalarFilters
+              min: IDScalarFilters
             }
 
             \\"\\"\\"ID filters\\"\\"\\"
@@ -479,6 +499,16 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               lte: ID
               matches: ID
               startsWith: ID
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
             }
 
             type Movie {
@@ -585,6 +615,13 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
             }
 
             \\"\\"\\"String filters\\"\\"\\"

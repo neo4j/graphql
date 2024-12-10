@@ -42,6 +42,7 @@ describe("nested aggregation on interface", () => {
               AND: [ActedInAggregationWhereInput!]
               NOT: ActedInAggregationWhereInput
               OR: [ActedInAggregationWhereInput!]
+              screenTime: IntScalarAggregationFilters
               screenTime_AVERAGE_EQUAL: Float
               screenTime_AVERAGE_GT: Float
               screenTime_AVERAGE_GTE: Float
@@ -158,6 +159,7 @@ describe("nested aggregation on interface", () => {
               AND: [ActorActedInNodeAggregationWhereInput!]
               NOT: ActorActedInNodeAggregationWhereInput
               OR: [ActorActedInNodeAggregationWhereInput!]
+              cost: FloatScalarAggregationFilters
               cost_AVERAGE_EQUAL: Float
               cost_AVERAGE_GT: Float
               cost_AVERAGE_GTE: Float
@@ -178,6 +180,7 @@ describe("nested aggregation on interface", () => {
               cost_SUM_GTE: Float
               cost_SUM_LT: Float
               cost_SUM_LTE: Float
+              runtime: IntScalarAggregationFilters
               runtime_AVERAGE_EQUAL: Float
               runtime_AVERAGE_GT: Float
               runtime_AVERAGE_GTE: Float
@@ -198,6 +201,7 @@ describe("nested aggregation on interface", () => {
               runtime_SUM_GTE: Int
               runtime_SUM_LT: Int
               runtime_SUM_LTE: Int
+              title: StringScalarAggregationFilters
               title_AVERAGE_LENGTH_EQUAL: Float
               title_AVERAGE_LENGTH_GT: Float
               title_AVERAGE_LENGTH_GTE: Float
@@ -359,6 +363,14 @@ describe("nested aggregation on interface", () => {
               sum: Float
             }
 
+            \\"\\"\\"Filters for an aggregation of a float field\\"\\"\\"
+            input FloatScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: FloatScalarFilters
+              min: FloatScalarFilters
+              sum: FloatScalarFilters
+            }
+
             \\"\\"\\"Float filters\\"\\"\\"
             input FloatScalarFilters {
               eq: Float
@@ -383,6 +395,14 @@ describe("nested aggregation on interface", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+            input IntScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: IntScalarFilters
+              min: IntScalarFilters
+              sum: IntScalarFilters
             }
 
             \\"\\"\\"Int filters\\"\\"\\"
@@ -523,6 +543,13 @@ describe("nested aggregation on interface", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
             }
 
             \\"\\"\\"String filters\\"\\"\\"

@@ -807,6 +807,7 @@ describe("@selectable", () => {
                   AND: [ActorActedInNodeAggregationWhereInput!]
                   NOT: ActorActedInNodeAggregationWhereInput
                   OR: [ActorActedInNodeAggregationWhereInput!]
+                  description: StringScalarAggregationFilters
                   description_AVERAGE_LENGTH_EQUAL: Float
                   description_AVERAGE_LENGTH_GT: Float
                   description_AVERAGE_LENGTH_GTE: Float
@@ -822,6 +823,7 @@ describe("@selectable", () => {
                   description_SHORTEST_LENGTH_GTE: Int
                   description_SHORTEST_LENGTH_LT: Int
                   description_SHORTEST_LENGTH_LTE: Int
+                  title: StringScalarAggregationFilters
                   title_AVERAGE_LENGTH_EQUAL: Float
                   title_AVERAGE_LENGTH_GT: Float
                   title_AVERAGE_LENGTH_GTE: Float
@@ -963,6 +965,26 @@ describe("@selectable", () => {
                   relationshipsDeleted: Int!
                 }
 
+                \\"\\"\\"Float filters\\"\\"\\"
+                input FloatScalarFilters {
+                  eq: Float
+                  gt: Float
+                  gte: Float
+                  in: [Float!]
+                  lt: Float
+                  lte: Float
+                }
+
+                \\"\\"\\"Int filters\\"\\"\\"
+                input IntScalarFilters {
+                  eq: Int
+                  gt: Int
+                  gte: Int
+                  in: [Int!]
+                  lt: Int
+                  lte: Int
+                }
+
                 type Movie {
                   description: String
                   title: String!
@@ -1064,6 +1086,13 @@ describe("@selectable", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                input StringScalarAggregationFilters {
+                  averageLength: FloatScalarFilters
+                  longestLength: IntScalarFilters
+                  shortestLength: IntScalarFilters
                 }
 
                 \\"\\"\\"String filters\\"\\"\\"
@@ -1189,6 +1218,7 @@ describe("@selectable", () => {
                   AND: [ActorActedInNodeAggregationWhereInput!]
                   NOT: ActorActedInNodeAggregationWhereInput
                   OR: [ActorActedInNodeAggregationWhereInput!]
+                  description: StringScalarAggregationFilters
                   description_AVERAGE_LENGTH_EQUAL: Float
                   description_AVERAGE_LENGTH_GT: Float
                   description_AVERAGE_LENGTH_GTE: Float
@@ -1204,6 +1234,7 @@ describe("@selectable", () => {
                   description_SHORTEST_LENGTH_GTE: Int
                   description_SHORTEST_LENGTH_LT: Int
                   description_SHORTEST_LENGTH_LTE: Int
+                  title: StringScalarAggregationFilters
                   title_AVERAGE_LENGTH_EQUAL: Float
                   title_AVERAGE_LENGTH_GT: Float
                   title_AVERAGE_LENGTH_GTE: Float
@@ -1350,6 +1381,26 @@ describe("@selectable", () => {
                   relationshipsDeleted: Int!
                 }
 
+                \\"\\"\\"Float filters\\"\\"\\"
+                input FloatScalarFilters {
+                  eq: Float
+                  gt: Float
+                  gte: Float
+                  in: [Float!]
+                  lt: Float
+                  lte: Float
+                }
+
+                \\"\\"\\"Int filters\\"\\"\\"
+                input IntScalarFilters {
+                  eq: Int
+                  gt: Int
+                  gte: Int
+                  in: [Int!]
+                  lt: Int
+                  lte: Int
+                }
+
                 type Movie {
                   description: String
                   title: String!
@@ -1451,6 +1502,13 @@ describe("@selectable", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                input StringScalarAggregationFilters {
+                  averageLength: FloatScalarFilters
+                  longestLength: IntScalarFilters
+                  shortestLength: IntScalarFilters
                 }
 
                 \\"\\"\\"String filters\\"\\"\\"
@@ -2525,6 +2583,7 @@ describe("@selectable", () => {
                   AND: [ActorActedInNodeAggregationWhereInput!]
                   NOT: ActorActedInNodeAggregationWhereInput
                   OR: [ActorActedInNodeAggregationWhereInput!]
+                  description: StringScalarAggregationFilters
                   description_AVERAGE_LENGTH_EQUAL: Float
                   description_AVERAGE_LENGTH_GT: Float
                   description_AVERAGE_LENGTH_GTE: Float
@@ -2540,6 +2599,7 @@ describe("@selectable", () => {
                   description_SHORTEST_LENGTH_GTE: Int
                   description_SHORTEST_LENGTH_LT: Int
                   description_SHORTEST_LENGTH_LTE: Int
+                  title: StringScalarAggregationFilters
                   title_AVERAGE_LENGTH_EQUAL: Float
                   title_AVERAGE_LENGTH_GT: Float
                   title_AVERAGE_LENGTH_GTE: Float
@@ -2684,6 +2744,26 @@ describe("@selectable", () => {
                 type DeleteInfo {
                   nodesDeleted: Int!
                   relationshipsDeleted: Int!
+                }
+
+                \\"\\"\\"Float filters\\"\\"\\"
+                input FloatScalarFilters {
+                  eq: Float
+                  gt: Float
+                  gte: Float
+                  in: [Float!]
+                  lt: Float
+                  lte: Float
+                }
+
+                \\"\\"\\"Int filters\\"\\"\\"
+                input IntScalarFilters {
+                  eq: Int
+                  gt: Int
+                  gte: Int
+                  in: [Int!]
+                  lt: Int
+                  lte: Int
                 }
 
                 type Movie implements Production {
@@ -2924,6 +3004,13 @@ describe("@selectable", () => {
                   shortest: String
                 }
 
+                \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                input StringScalarAggregationFilters {
+                  averageLength: FloatScalarFilters
+                  longestLength: IntScalarFilters
+                  shortestLength: IntScalarFilters
+                }
+
                 \\"\\"\\"String filters\\"\\"\\"
                 input StringScalarFilters {
                   contains: String
@@ -3062,6 +3149,7 @@ describe("@selectable", () => {
                   AND: [ActorActedInNodeAggregationWhereInput!]
                   NOT: ActorActedInNodeAggregationWhereInput
                   OR: [ActorActedInNodeAggregationWhereInput!]
+                  description: StringScalarAggregationFilters
                   description_AVERAGE_LENGTH_EQUAL: Float
                   description_AVERAGE_LENGTH_GT: Float
                   description_AVERAGE_LENGTH_GTE: Float
@@ -3077,6 +3165,7 @@ describe("@selectable", () => {
                   description_SHORTEST_LENGTH_GTE: Int
                   description_SHORTEST_LENGTH_LT: Int
                   description_SHORTEST_LENGTH_LTE: Int
+                  title: StringScalarAggregationFilters
                   title_AVERAGE_LENGTH_EQUAL: Float
                   title_AVERAGE_LENGTH_GT: Float
                   title_AVERAGE_LENGTH_GTE: Float
@@ -3228,6 +3317,26 @@ describe("@selectable", () => {
                   relationshipsDeleted: Int!
                 }
 
+                \\"\\"\\"Float filters\\"\\"\\"
+                input FloatScalarFilters {
+                  eq: Float
+                  gt: Float
+                  gte: Float
+                  in: [Float!]
+                  lt: Float
+                  lte: Float
+                }
+
+                \\"\\"\\"Int filters\\"\\"\\"
+                input IntScalarFilters {
+                  eq: Int
+                  gt: Int
+                  gte: Int
+                  in: [Int!]
+                  lt: Int
+                  lte: Int
+                }
+
                 type Movie implements Production {
                   description: String
                   title: String!
@@ -3464,6 +3573,13 @@ describe("@selectable", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                input StringScalarAggregationFilters {
+                  averageLength: FloatScalarFilters
+                  longestLength: IntScalarFilters
+                  shortestLength: IntScalarFilters
                 }
 
                 \\"\\"\\"String filters\\"\\"\\"

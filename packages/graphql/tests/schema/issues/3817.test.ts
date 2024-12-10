@@ -82,6 +82,16 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
             \\"\\"\\"
             The edge properties for the following fields:
             * Person.friends
@@ -94,6 +104,7 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
               AND: [FriendOfAggregationWhereInput!]
               NOT: FriendOfAggregationWhereInput
               OR: [FriendOfAggregationWhereInput!]
+              id: StringScalarAggregationFilters
               id_AVERAGE_LENGTH_EQUAL: Float
               id_AVERAGE_LENGTH_GT: Float
               id_AVERAGE_LENGTH_GTE: Float
@@ -137,6 +148,12 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
               shortest: ID
             }
 
+            \\"\\"\\"Filters for an aggregation of an ID input field\\"\\"\\"
+            input IDScalarAggregationFilters {
+              max: IDScalarFilters
+              min: IDScalarFilters
+            }
+
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -149,6 +166,16 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
               lte: ID
               matches: ID
               startsWith: ID
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
             }
 
             type Mutation {
@@ -268,6 +295,7 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
               AND: [PersonFriendsNodeAggregationWhereInput!]
               NOT: PersonFriendsNodeAggregationWhereInput
               OR: [PersonFriendsNodeAggregationWhereInput!]
+              id: IDScalarAggregationFilters
               id_MAX_EQUAL: ID
               id_MAX_GT: ID
               id_MAX_GTE: ID
@@ -379,6 +407,13 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
             }
 
             \\"\\"\\"String filters\\"\\"\\"

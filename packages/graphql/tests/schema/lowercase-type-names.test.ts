@@ -82,6 +82,12 @@ describe("lower case type names", () => {
               min: DateTime
             }
 
+            \\"\\"\\"Filters for an aggregation of an DateTime input field\\"\\"\\"
+            input DateTimeScalarAggregationFilters {
+              max: DateTimeScalarFilters
+              min: DateTimeScalarFilters
+            }
+
             \\"\\"\\"DateTime filters\\"\\"\\"
             input DateTimeScalarFilters {
               eq: DateTime
@@ -105,11 +111,29 @@ describe("lower case type names", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+            input IntScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: IntScalarFilters
+              min: IntScalarFilters
+              sum: IntScalarFilters
             }
 
             \\"\\"\\"Int filters\\"\\"\\"
@@ -172,6 +196,13 @@ describe("lower case type names", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
             }
 
             \\"\\"\\"String filters\\"\\"\\"
@@ -314,6 +345,7 @@ describe("lower case type names", () => {
               AND: [actorMoviesNodeAggregationWhereInput!]
               NOT: actorMoviesNodeAggregationWhereInput
               OR: [actorMoviesNodeAggregationWhereInput!]
+              createdAt: DateTimeScalarAggregationFilters
               createdAt_MAX_EQUAL: DateTime
               createdAt_MAX_GT: DateTime
               createdAt_MAX_GTE: DateTime
@@ -324,6 +356,7 @@ describe("lower case type names", () => {
               createdAt_MIN_GTE: DateTime
               createdAt_MIN_LT: DateTime
               createdAt_MIN_LTE: DateTime
+              name: StringScalarAggregationFilters
               name_AVERAGE_LENGTH_EQUAL: Float
               name_AVERAGE_LENGTH_GT: Float
               name_AVERAGE_LENGTH_GTE: Float
@@ -339,6 +372,7 @@ describe("lower case type names", () => {
               name_SHORTEST_LENGTH_GTE: Int
               name_SHORTEST_LENGTH_LT: Int
               name_SHORTEST_LENGTH_LTE: Int
+              testId: StringScalarAggregationFilters
               testId_AVERAGE_LENGTH_EQUAL: Float
               testId_AVERAGE_LENGTH_GT: Float
               testId_AVERAGE_LENGTH_GTE: Float
@@ -354,6 +388,7 @@ describe("lower case type names", () => {
               testId_SHORTEST_LENGTH_GTE: Int
               testId_SHORTEST_LENGTH_LT: Int
               testId_SHORTEST_LENGTH_LTE: Int
+              year: IntScalarAggregationFilters
               year_AVERAGE_EQUAL: Float
               year_AVERAGE_GT: Float
               year_AVERAGE_GTE: Float
@@ -545,6 +580,7 @@ describe("lower case type names", () => {
               AND: [movieActorsNodeAggregationWhereInput!]
               NOT: movieActorsNodeAggregationWhereInput
               OR: [movieActorsNodeAggregationWhereInput!]
+              createdAt: DateTimeScalarAggregationFilters
               createdAt_MAX_EQUAL: DateTime
               createdAt_MAX_GT: DateTime
               createdAt_MAX_GTE: DateTime
@@ -555,6 +591,7 @@ describe("lower case type names", () => {
               createdAt_MIN_GTE: DateTime
               createdAt_MIN_LT: DateTime
               createdAt_MIN_LTE: DateTime
+              name: StringScalarAggregationFilters
               name_AVERAGE_LENGTH_EQUAL: Float
               name_AVERAGE_LENGTH_GT: Float
               name_AVERAGE_LENGTH_GTE: Float
@@ -570,6 +607,7 @@ describe("lower case type names", () => {
               name_SHORTEST_LENGTH_GTE: Int
               name_SHORTEST_LENGTH_LT: Int
               name_SHORTEST_LENGTH_LTE: Int
+              year: IntScalarAggregationFilters
               year_AVERAGE_EQUAL: Float
               year_AVERAGE_GT: Float
               year_AVERAGE_GTE: Float

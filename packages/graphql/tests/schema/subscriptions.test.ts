@@ -331,6 +331,7 @@ describe("Subscriptions", () => {
               AND: [MovieActorsNodeAggregationWhereInput!]
               NOT: MovieActorsNodeAggregationWhereInput
               OR: [MovieActorsNodeAggregationWhereInput!]
+              name: StringScalarAggregationFilters
               name_AVERAGE_LENGTH_EQUAL: Float
               name_AVERAGE_LENGTH_GT: Float
               name_AVERAGE_LENGTH_GTE: Float
@@ -570,6 +571,13 @@ describe("Subscriptions", () => {
               shortest: String
             }
 
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
+            }
+
             \\"\\"\\"String filters\\"\\"\\"
             input StringScalarFilters {
               contains: String
@@ -764,6 +772,7 @@ describe("Subscriptions", () => {
               AND: [ActorMoviesNodeAggregationWhereInput!]
               NOT: ActorMoviesNodeAggregationWhereInput
               OR: [ActorMoviesNodeAggregationWhereInput!]
+              actorCount: IntScalarAggregationFilters
               actorCount_AVERAGE_EQUAL: Float
               actorCount_AVERAGE_GT: Float
               actorCount_AVERAGE_GTE: Float
@@ -784,6 +793,7 @@ describe("Subscriptions", () => {
               actorCount_SUM_GTE: Int
               actorCount_SUM_LT: Int
               actorCount_SUM_LTE: Int
+              averageRating: FloatScalarAggregationFilters
               averageRating_AVERAGE_EQUAL: Float
               averageRating_AVERAGE_GT: Float
               averageRating_AVERAGE_GTE: Float
@@ -804,6 +814,7 @@ describe("Subscriptions", () => {
               averageRating_SUM_GTE: Float
               averageRating_SUM_LT: Float
               averageRating_SUM_LTE: Float
+              id: IDScalarAggregationFilters
               id_MAX_EQUAL: ID
               id_MAX_GT: ID
               id_MAX_GTE: ID
@@ -931,6 +942,14 @@ describe("Subscriptions", () => {
               sum: Float
             }
 
+            \\"\\"\\"Filters for an aggregation of a float field\\"\\"\\"
+            input FloatScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: FloatScalarFilters
+              min: FloatScalarFilters
+              sum: FloatScalarFilters
+            }
+
             \\"\\"\\"Float filters\\"\\"\\"
             input FloatScalarFilters {
               eq: Float
@@ -953,6 +972,12 @@ describe("Subscriptions", () => {
             type IDAggregateSelection {
               longest: ID
               shortest: ID
+            }
+
+            \\"\\"\\"Filters for an aggregation of an ID input field\\"\\"\\"
+            input IDScalarAggregationFilters {
+              max: IDScalarFilters
+              min: IDScalarFilters
             }
 
             \\"\\"\\"ID filters\\"\\"\\"
@@ -979,6 +1004,14 @@ describe("Subscriptions", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+            input IntScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: IntScalarFilters
+              min: IntScalarFilters
+              sum: IntScalarFilters
             }
 
             \\"\\"\\"Int filters\\"\\"\\"
@@ -1419,6 +1452,14 @@ describe("Subscriptions", () => {
               sum: Float
             }
 
+            \\"\\"\\"Filters for an aggregation of a float field\\"\\"\\"
+            input FloatScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: FloatScalarFilters
+              min: FloatScalarFilters
+              sum: FloatScalarFilters
+            }
+
             \\"\\"\\"Float filters\\"\\"\\"
             input FloatScalarFilters {
               eq: Float
@@ -1441,6 +1482,12 @@ describe("Subscriptions", () => {
             type IDAggregateSelection {
               longest: ID
               shortest: ID
+            }
+
+            \\"\\"\\"Filters for an aggregation of an ID input field\\"\\"\\"
+            input IDScalarAggregationFilters {
+              max: IDScalarFilters
+              min: IDScalarFilters
             }
 
             \\"\\"\\"ID filters\\"\\"\\"
@@ -1467,6 +1514,14 @@ describe("Subscriptions", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+            input IntScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: IntScalarFilters
+              min: IntScalarFilters
+              sum: IntScalarFilters
             }
 
             \\"\\"\\"Int filters\\"\\"\\"
@@ -1939,6 +1994,7 @@ describe("Subscriptions", () => {
               AND: [PersonMoviesNodeAggregationWhereInput!]
               NOT: PersonMoviesNodeAggregationWhereInput
               OR: [PersonMoviesNodeAggregationWhereInput!]
+              actorCount: IntScalarAggregationFilters
               actorCount_AVERAGE_EQUAL: Float
               actorCount_AVERAGE_GT: Float
               actorCount_AVERAGE_GTE: Float
@@ -1959,6 +2015,7 @@ describe("Subscriptions", () => {
               actorCount_SUM_GTE: Int
               actorCount_SUM_LT: Int
               actorCount_SUM_LTE: Int
+              averageRating: FloatScalarAggregationFilters
               averageRating_AVERAGE_EQUAL: Float
               averageRating_AVERAGE_GT: Float
               averageRating_AVERAGE_GTE: Float
@@ -1979,6 +2036,7 @@ describe("Subscriptions", () => {
               averageRating_SUM_GTE: Float
               averageRating_SUM_LT: Float
               averageRating_SUM_LTE: Float
+              id: IDScalarAggregationFilters
               id_MAX_EQUAL: ID
               id_MAX_GT: ID
               id_MAX_GTE: ID
@@ -2183,6 +2241,7 @@ describe("Subscriptions", () => {
               AND: [StarMoviesNodeAggregationWhereInput!]
               NOT: StarMoviesNodeAggregationWhereInput
               OR: [StarMoviesNodeAggregationWhereInput!]
+              actorCount: IntScalarAggregationFilters
               actorCount_AVERAGE_EQUAL: Float
               actorCount_AVERAGE_GT: Float
               actorCount_AVERAGE_GTE: Float
@@ -2203,6 +2262,7 @@ describe("Subscriptions", () => {
               actorCount_SUM_GTE: Int
               actorCount_SUM_LT: Int
               actorCount_SUM_LTE: Int
+              averageRating: FloatScalarAggregationFilters
               averageRating_AVERAGE_EQUAL: Float
               averageRating_AVERAGE_GT: Float
               averageRating_AVERAGE_GTE: Float
@@ -2223,6 +2283,7 @@ describe("Subscriptions", () => {
               averageRating_SUM_GTE: Float
               averageRating_SUM_LT: Float
               averageRating_SUM_LTE: Float
+              id: IDScalarAggregationFilters
               id_MAX_EQUAL: ID
               id_MAX_GT: ID
               id_MAX_GTE: ID
@@ -2385,6 +2446,7 @@ describe("Subscriptions", () => {
               AND: [ActedInAggregationWhereInput!]
               NOT: ActedInAggregationWhereInput
               OR: [ActedInAggregationWhereInput!]
+              screenTime: IntScalarAggregationFilters
               screenTime_AVERAGE_EQUAL: Float
               screenTime_AVERAGE_GT: Float
               screenTime_AVERAGE_GTE: Float
@@ -2548,6 +2610,7 @@ describe("Subscriptions", () => {
               AND: [ActorMoviesNodeAggregationWhereInput!]
               NOT: ActorMoviesNodeAggregationWhereInput
               OR: [ActorMoviesNodeAggregationWhereInput!]
+              actorCount: IntScalarAggregationFilters
               actorCount_AVERAGE_EQUAL: Float
               actorCount_AVERAGE_GT: Float
               actorCount_AVERAGE_GTE: Float
@@ -2568,6 +2631,7 @@ describe("Subscriptions", () => {
               actorCount_SUM_GTE: Int
               actorCount_SUM_LT: Int
               actorCount_SUM_LTE: Int
+              averageRating: FloatScalarAggregationFilters
               averageRating_AVERAGE_EQUAL: Float
               averageRating_AVERAGE_GT: Float
               averageRating_AVERAGE_GTE: Float
@@ -2588,6 +2652,7 @@ describe("Subscriptions", () => {
               averageRating_SUM_GTE: Float
               averageRating_SUM_LT: Float
               averageRating_SUM_LTE: Float
+              id: IDScalarAggregationFilters
               id_MAX_EQUAL: ID
               id_MAX_GT: ID
               id_MAX_GTE: ID
@@ -2715,6 +2780,14 @@ describe("Subscriptions", () => {
               sum: Float
             }
 
+            \\"\\"\\"Filters for an aggregation of a float field\\"\\"\\"
+            input FloatScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: FloatScalarFilters
+              min: FloatScalarFilters
+              sum: FloatScalarFilters
+            }
+
             \\"\\"\\"Float filters\\"\\"\\"
             input FloatScalarFilters {
               eq: Float
@@ -2737,6 +2810,12 @@ describe("Subscriptions", () => {
             type IDAggregateSelection {
               longest: ID
               shortest: ID
+            }
+
+            \\"\\"\\"Filters for an aggregation of an ID input field\\"\\"\\"
+            input IDScalarAggregationFilters {
+              max: IDScalarFilters
+              min: IDScalarFilters
             }
 
             \\"\\"\\"ID filters\\"\\"\\"
@@ -2763,6 +2842,14 @@ describe("Subscriptions", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+            input IntScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: IntScalarFilters
+              min: IntScalarFilters
+              sum: IntScalarFilters
             }
 
             \\"\\"\\"Int filters\\"\\"\\"
@@ -3426,6 +3513,7 @@ describe("Subscriptions", () => {
               AND: [MovieActorsNodeAggregationWhereInput!]
               NOT: MovieActorsNodeAggregationWhereInput
               OR: [MovieActorsNodeAggregationWhereInput!]
+              name: StringScalarAggregationFilters
               name_AVERAGE_LENGTH_EQUAL: Float
               name_AVERAGE_LENGTH_GT: Float
               name_AVERAGE_LENGTH_GTE: Float
@@ -3611,6 +3699,13 @@ describe("Subscriptions", () => {
               shortest: String
             }
 
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
+            }
+
             \\"\\"\\"String filters\\"\\"\\"
             input StringScalarFilters {
               contains: String
@@ -3757,6 +3852,14 @@ describe("Subscriptions", () => {
               sum: Float
             }
 
+            \\"\\"\\"Filters for an aggregation of a float field\\"\\"\\"
+            input FloatScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: FloatScalarFilters
+              min: FloatScalarFilters
+              sum: FloatScalarFilters
+            }
+
             \\"\\"\\"Float filters\\"\\"\\"
             input FloatScalarFilters {
               eq: Float
@@ -3779,6 +3882,12 @@ describe("Subscriptions", () => {
             type IDAggregateSelection {
               longest: ID
               shortest: ID
+            }
+
+            \\"\\"\\"Filters for an aggregation of an ID input field\\"\\"\\"
+            input IDScalarAggregationFilters {
+              max: IDScalarFilters
+              min: IDScalarFilters
             }
 
             \\"\\"\\"ID filters\\"\\"\\"
@@ -3805,6 +3914,14 @@ describe("Subscriptions", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+            input IntScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: IntScalarFilters
+              min: IntScalarFilters
+              sum: IntScalarFilters
             }
 
             \\"\\"\\"Int filters\\"\\"\\"
@@ -4277,6 +4394,7 @@ describe("Subscriptions", () => {
               AND: [PersonMoviesNodeAggregationWhereInput!]
               NOT: PersonMoviesNodeAggregationWhereInput
               OR: [PersonMoviesNodeAggregationWhereInput!]
+              actorCount: IntScalarAggregationFilters
               actorCount_AVERAGE_EQUAL: Float
               actorCount_AVERAGE_GT: Float
               actorCount_AVERAGE_GTE: Float
@@ -4297,6 +4415,7 @@ describe("Subscriptions", () => {
               actorCount_SUM_GTE: Int
               actorCount_SUM_LT: Int
               actorCount_SUM_LTE: Int
+              averageRating: FloatScalarAggregationFilters
               averageRating_AVERAGE_EQUAL: Float
               averageRating_AVERAGE_GT: Float
               averageRating_AVERAGE_GTE: Float
@@ -4317,6 +4436,7 @@ describe("Subscriptions", () => {
               averageRating_SUM_GTE: Float
               averageRating_SUM_LT: Float
               averageRating_SUM_LTE: Float
+              id: IDScalarAggregationFilters
               id_MAX_EQUAL: ID
               id_MAX_GT: ID
               id_MAX_GTE: ID
@@ -4511,6 +4631,7 @@ describe("Subscriptions", () => {
               AND: [StarMoviesNodeAggregationWhereInput!]
               NOT: StarMoviesNodeAggregationWhereInput
               OR: [StarMoviesNodeAggregationWhereInput!]
+              actorCount: IntScalarAggregationFilters
               actorCount_AVERAGE_EQUAL: Float
               actorCount_AVERAGE_GT: Float
               actorCount_AVERAGE_GTE: Float
@@ -4531,6 +4652,7 @@ describe("Subscriptions", () => {
               actorCount_SUM_GTE: Int
               actorCount_SUM_LT: Int
               actorCount_SUM_LTE: Int
+              averageRating: FloatScalarAggregationFilters
               averageRating_AVERAGE_EQUAL: Float
               averageRating_AVERAGE_GT: Float
               averageRating_AVERAGE_GTE: Float
@@ -4551,6 +4673,7 @@ describe("Subscriptions", () => {
               averageRating_SUM_GTE: Float
               averageRating_SUM_LT: Float
               averageRating_SUM_LTE: Float
+              id: IDScalarAggregationFilters
               id_MAX_EQUAL: ID
               id_MAX_GT: ID
               id_MAX_GTE: ID

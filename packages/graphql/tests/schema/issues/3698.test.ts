@@ -105,6 +105,16 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               UPDATE
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
             type Genre {
               name: String!
               product(limit: Int, offset: Int, sort: [IProductSort!], where: IProductWhere): [IProduct!]!
@@ -224,6 +234,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               AND: [GenreProductNodeAggregationWhereInput!]
               NOT: GenreProductNodeAggregationWhereInput
               OR: [GenreProductNodeAggregationWhereInput!]
+              id: StringScalarAggregationFilters
               id_AVERAGE_LENGTH_EQUAL: Float
               id_AVERAGE_LENGTH_GT: Float
               id_AVERAGE_LENGTH_GTE: Float
@@ -239,6 +250,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               id_SHORTEST_LENGTH_GTE: Int
               id_SHORTEST_LENGTH_LT: Int
               id_SHORTEST_LENGTH_LTE: Int
+              info: StringScalarAggregationFilters
               info_AVERAGE_LENGTH_EQUAL: Float
               info_AVERAGE_LENGTH_GT: Float
               info_AVERAGE_LENGTH_GTE: Float
@@ -254,6 +266,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               info_SHORTEST_LENGTH_GTE: Int
               info_SHORTEST_LENGTH_LT: Int
               info_SHORTEST_LENGTH_LTE: Int
+              name: StringScalarAggregationFilters
               name_AVERAGE_LENGTH_EQUAL: Float
               name_AVERAGE_LENGTH_GT: Float
               name_AVERAGE_LENGTH_GTE: Float
@@ -444,6 +457,16 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               totalCount: Int!
             }
 
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
+            }
+
             type Movie implements IProduct {
               genre(limit: Int, offset: Int, sort: [GenreSort!], where: GenreWhere): [Genre!]!
               genreAggregate(where: GenreWhere): MovieGenreGenreAggregationSelection
@@ -557,6 +580,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               AND: [MovieGenreNodeAggregationWhereInput!]
               NOT: MovieGenreNodeAggregationWhereInput
               OR: [MovieGenreNodeAggregationWhereInput!]
+              name: StringScalarAggregationFilters
               name_AVERAGE_LENGTH_EQUAL: Float
               name_AVERAGE_LENGTH_GT: Float
               name_AVERAGE_LENGTH_GTE: Float
@@ -722,6 +746,13 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
             }
 
             \\"\\"\\"String filters\\"\\"\\"

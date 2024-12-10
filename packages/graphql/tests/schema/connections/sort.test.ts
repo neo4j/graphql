@@ -69,6 +69,26 @@ describe("Sort", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
+            }
+
             type Mutation {
               createNode1s(input: [Node1CreateInput!]!): CreateNode1sMutationResponse!
               createNode2s(input: [Node2CreateInput!]!): CreateNode2sMutationResponse!
@@ -343,6 +363,7 @@ describe("Sort", () => {
               AND: [Node2RelatedToNodeAggregationWhereInput!]
               NOT: Node2RelatedToNodeAggregationWhereInput
               OR: [Node2RelatedToNodeAggregationWhereInput!]
+              property: StringScalarAggregationFilters
               property_AVERAGE_LENGTH_EQUAL: Float
               property_AVERAGE_LENGTH_GT: Float
               property_AVERAGE_LENGTH_GTE: Float
@@ -447,6 +468,13 @@ describe("Sort", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
             }
 
             \\"\\"\\"String filters\\"\\"\\"

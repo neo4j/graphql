@@ -69,6 +69,7 @@ describe("Interface Relationships", () => {
               AND: [ActedInAggregationWhereInput!]
               NOT: ActedInAggregationWhereInput
               OR: [ActedInAggregationWhereInput!]
+              screenTime: IntScalarAggregationFilters
               screenTime_AVERAGE_EQUAL: Float
               screenTime_AVERAGE_GT: Float
               screenTime_AVERAGE_GTE: Float
@@ -185,6 +186,7 @@ describe("Interface Relationships", () => {
               AND: [ActorActedInNodeAggregationWhereInput!]
               NOT: ActorActedInNodeAggregationWhereInput
               OR: [ActorActedInNodeAggregationWhereInput!]
+              title: StringScalarAggregationFilters
               title_AVERAGE_LENGTH_EQUAL: Float
               title_AVERAGE_LENGTH_GT: Float
               title_AVERAGE_LENGTH_GTE: Float
@@ -342,11 +344,29 @@ describe("Interface Relationships", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+            input IntScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: IntScalarFilters
+              min: IntScalarFilters
+              sum: IntScalarFilters
             }
 
             \\"\\"\\"Int filters\\"\\"\\"
@@ -599,6 +619,13 @@ describe("Interface Relationships", () => {
               shortest: String
             }
 
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
+            }
+
             \\"\\"\\"String filters\\"\\"\\"
             input StringScalarFilters {
               contains: String
@@ -702,6 +729,7 @@ describe("Interface Relationships", () => {
               AND: [ActedInAggregationWhereInput!]
               NOT: ActedInAggregationWhereInput
               OR: [ActedInAggregationWhereInput!]
+              screenTime: IntScalarAggregationFilters
               screenTime_AVERAGE_EQUAL: Float
               screenTime_AVERAGE_GT: Float
               screenTime_AVERAGE_GTE: Float
@@ -821,6 +849,7 @@ describe("Interface Relationships", () => {
               AND: [ActorActedInNodeAggregationWhereInput!]
               NOT: ActorActedInNodeAggregationWhereInput
               OR: [ActorActedInNodeAggregationWhereInput!]
+              title: StringScalarAggregationFilters
               title_AVERAGE_LENGTH_EQUAL: Float
               title_AVERAGE_LENGTH_GT: Float
               title_AVERAGE_LENGTH_GTE: Float
@@ -1090,6 +1119,7 @@ describe("Interface Relationships", () => {
               AND: [EpisodeSeriesNodeAggregationWhereInput!]
               NOT: EpisodeSeriesNodeAggregationWhereInput
               OR: [EpisodeSeriesNodeAggregationWhereInput!]
+              episodeCount: IntScalarAggregationFilters
               episodeCount_AVERAGE_EQUAL: Float
               episodeCount_AVERAGE_GT: Float
               episodeCount_AVERAGE_GTE: Float
@@ -1110,6 +1140,7 @@ describe("Interface Relationships", () => {
               episodeCount_SUM_GTE: Int
               episodeCount_SUM_LT: Int
               episodeCount_SUM_LTE: Int
+              title: StringScalarAggregationFilters
               title_AVERAGE_LENGTH_EQUAL: Float
               title_AVERAGE_LENGTH_GT: Float
               title_AVERAGE_LENGTH_GTE: Float
@@ -1214,11 +1245,29 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+            input IntScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: IntScalarFilters
+              min: IntScalarFilters
+              sum: IntScalarFilters
             }
 
             \\"\\"\\"Int filters\\"\\"\\"
@@ -1293,6 +1342,7 @@ describe("Interface Relationships", () => {
               AND: [MovieActorsNodeAggregationWhereInput!]
               NOT: MovieActorsNodeAggregationWhereInput
               OR: [MovieActorsNodeAggregationWhereInput!]
+              name: StringScalarAggregationFilters
               name_AVERAGE_LENGTH_EQUAL: Float
               name_AVERAGE_LENGTH_GT: Float
               name_AVERAGE_LENGTH_GTE: Float
@@ -1544,6 +1594,7 @@ describe("Interface Relationships", () => {
               AND: [ProductionActorsNodeAggregationWhereInput!]
               NOT: ProductionActorsNodeAggregationWhereInput
               OR: [ProductionActorsNodeAggregationWhereInput!]
+              name: StringScalarAggregationFilters
               name_AVERAGE_LENGTH_EQUAL: Float
               name_AVERAGE_LENGTH_GT: Float
               name_AVERAGE_LENGTH_GTE: Float
@@ -1752,6 +1803,7 @@ describe("Interface Relationships", () => {
               AND: [SeriesActorsNodeAggregationWhereInput!]
               NOT: SeriesActorsNodeAggregationWhereInput
               OR: [SeriesActorsNodeAggregationWhereInput!]
+              name: StringScalarAggregationFilters
               name_AVERAGE_LENGTH_EQUAL: Float
               name_AVERAGE_LENGTH_GT: Float
               name_AVERAGE_LENGTH_GTE: Float
@@ -1892,6 +1944,7 @@ describe("Interface Relationships", () => {
               AND: [SeriesEpisodesNodeAggregationWhereInput!]
               NOT: SeriesEpisodesNodeAggregationWhereInput
               OR: [SeriesEpisodesNodeAggregationWhereInput!]
+              runtime: IntScalarAggregationFilters
               runtime_AVERAGE_EQUAL: Float
               runtime_AVERAGE_GT: Float
               runtime_AVERAGE_GTE: Float
@@ -2033,6 +2086,13 @@ describe("Interface Relationships", () => {
               shortest: String
             }
 
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
+            }
+
             \\"\\"\\"String filters\\"\\"\\"
             input StringScalarFilters {
               contains: String
@@ -2144,6 +2204,7 @@ describe("Interface Relationships", () => {
               AND: [ActedInAggregationWhereInput!]
               NOT: ActedInAggregationWhereInput
               OR: [ActedInAggregationWhereInput!]
+              screenTime: IntScalarAggregationFilters
               screenTime_AVERAGE_EQUAL: Float
               screenTime_AVERAGE_GT: Float
               screenTime_AVERAGE_GTE: Float
@@ -2263,6 +2324,7 @@ describe("Interface Relationships", () => {
               AND: [ActorActedInNodeAggregationWhereInput!]
               NOT: ActorActedInNodeAggregationWhereInput
               OR: [ActorActedInNodeAggregationWhereInput!]
+              title: StringScalarAggregationFilters
               title_AVERAGE_LENGTH_EQUAL: Float
               title_AVERAGE_LENGTH_GT: Float
               title_AVERAGE_LENGTH_GTE: Float
@@ -2532,6 +2594,7 @@ describe("Interface Relationships", () => {
               AND: [EpisodeSeriesNodeAggregationWhereInput!]
               NOT: EpisodeSeriesNodeAggregationWhereInput
               OR: [EpisodeSeriesNodeAggregationWhereInput!]
+              episodeCount: IntScalarAggregationFilters
               episodeCount_AVERAGE_EQUAL: Float
               episodeCount_AVERAGE_GT: Float
               episodeCount_AVERAGE_GTE: Float
@@ -2552,6 +2615,7 @@ describe("Interface Relationships", () => {
               episodeCount_SUM_GTE: Int
               episodeCount_SUM_LT: Int
               episodeCount_SUM_LTE: Int
+              title: StringScalarAggregationFilters
               title_AVERAGE_LENGTH_EQUAL: Float
               title_AVERAGE_LENGTH_GT: Float
               title_AVERAGE_LENGTH_GTE: Float
@@ -2656,11 +2720,29 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+            input IntScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: IntScalarFilters
+              min: IntScalarFilters
+              sum: IntScalarFilters
             }
 
             \\"\\"\\"Int filters\\"\\"\\"
@@ -2735,6 +2817,7 @@ describe("Interface Relationships", () => {
               AND: [MovieActorsNodeAggregationWhereInput!]
               NOT: MovieActorsNodeAggregationWhereInput
               OR: [MovieActorsNodeAggregationWhereInput!]
+              name: StringScalarAggregationFilters
               name_AVERAGE_LENGTH_EQUAL: Float
               name_AVERAGE_LENGTH_GT: Float
               name_AVERAGE_LENGTH_GTE: Float
@@ -3006,6 +3089,7 @@ describe("Interface Relationships", () => {
               AND: [ProductionActorsNodeAggregationWhereInput!]
               NOT: ProductionActorsNodeAggregationWhereInput
               OR: [ProductionActorsNodeAggregationWhereInput!]
+              name: StringScalarAggregationFilters
               name_AVERAGE_LENGTH_EQUAL: Float
               name_AVERAGE_LENGTH_GT: Float
               name_AVERAGE_LENGTH_GTE: Float
@@ -3214,6 +3298,7 @@ describe("Interface Relationships", () => {
               AND: [SeriesActorsNodeAggregationWhereInput!]
               NOT: SeriesActorsNodeAggregationWhereInput
               OR: [SeriesActorsNodeAggregationWhereInput!]
+              name: StringScalarAggregationFilters
               name_AVERAGE_LENGTH_EQUAL: Float
               name_AVERAGE_LENGTH_GT: Float
               name_AVERAGE_LENGTH_GTE: Float
@@ -3354,6 +3439,7 @@ describe("Interface Relationships", () => {
               AND: [SeriesEpisodesNodeAggregationWhereInput!]
               NOT: SeriesEpisodesNodeAggregationWhereInput
               OR: [SeriesEpisodesNodeAggregationWhereInput!]
+              runtime: IntScalarAggregationFilters
               runtime_AVERAGE_EQUAL: Float
               runtime_AVERAGE_GT: Float
               runtime_AVERAGE_GTE: Float
@@ -3502,6 +3588,7 @@ describe("Interface Relationships", () => {
               AND: [StarredInAggregationWhereInput!]
               NOT: StarredInAggregationWhereInput
               OR: [StarredInAggregationWhereInput!]
+              seasons: IntScalarAggregationFilters
               seasons_AVERAGE_EQUAL: Float
               seasons_AVERAGE_GT: Float
               seasons_AVERAGE_GTE: Float
@@ -3555,6 +3642,13 @@ describe("Interface Relationships", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
             }
 
             \\"\\"\\"String filters\\"\\"\\"
@@ -3693,6 +3787,26 @@ describe("Interface Relationships", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
+            }
+
             interface Interface1 {
               field1: String!
               interface2(limit: Int, offset: Int, sort: [Interface2Sort!], where: Interface2Where): [Interface2!]!
@@ -3784,6 +3898,7 @@ describe("Interface Relationships", () => {
               AND: [Interface1Interface2NodeAggregationWhereInput!]
               NOT: Interface1Interface2NodeAggregationWhereInput
               OR: [Interface1Interface2NodeAggregationWhereInput!]
+              field2: StringScalarAggregationFilters
               field2_AVERAGE_LENGTH_EQUAL: Float
               field2_AVERAGE_LENGTH_GT: Float
               field2_AVERAGE_LENGTH_GTE: Float
@@ -4006,6 +4121,13 @@ describe("Interface Relationships", () => {
               shortest: String
             }
 
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
+            }
+
             \\"\\"\\"String filters\\"\\"\\"
             input StringScalarFilters {
               contains: String
@@ -4185,6 +4307,7 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface1Interface2NodeAggregationWhereInput!]
               NOT: Type1Interface1Interface2NodeAggregationWhereInput
               OR: [Type1Interface1Interface2NodeAggregationWhereInput!]
+              field2: StringScalarAggregationFilters
               field2_AVERAGE_LENGTH_EQUAL: Float
               field2_AVERAGE_LENGTH_GT: Float
               field2_AVERAGE_LENGTH_GTE: Float
@@ -4219,6 +4342,7 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface1NodeAggregationWhereInput!]
               NOT: Type1Interface1NodeAggregationWhereInput
               OR: [Type1Interface1NodeAggregationWhereInput!]
+              field1: StringScalarAggregationFilters
               field1_AVERAGE_LENGTH_EQUAL: Float
               field1_AVERAGE_LENGTH_GT: Float
               field1_AVERAGE_LENGTH_GTE: Float
@@ -4494,6 +4618,7 @@ describe("Interface Relationships", () => {
               AND: [Type2Interface1Interface2NodeAggregationWhereInput!]
               NOT: Type2Interface1Interface2NodeAggregationWhereInput
               OR: [Type2Interface1Interface2NodeAggregationWhereInput!]
+              field2: StringScalarAggregationFilters
               field2_AVERAGE_LENGTH_EQUAL: Float
               field2_AVERAGE_LENGTH_GT: Float
               field2_AVERAGE_LENGTH_GTE: Float
@@ -4767,11 +4892,29 @@ describe("Interface Relationships", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+            input IntScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: IntScalarFilters
+              min: IntScalarFilters
+              sum: IntScalarFilters
             }
 
             \\"\\"\\"Int filters\\"\\"\\"
@@ -4932,6 +5075,7 @@ describe("Interface Relationships", () => {
               AND: [Interface1Interface2NodeAggregationWhereInput!]
               NOT: Interface1Interface2NodeAggregationWhereInput
               OR: [Interface1Interface2NodeAggregationWhereInput!]
+              field2: StringScalarAggregationFilters
               field2_AVERAGE_LENGTH_EQUAL: Float
               field2_AVERAGE_LENGTH_GT: Float
               field2_AVERAGE_LENGTH_GTE: Float
@@ -5134,6 +5278,7 @@ describe("Interface Relationships", () => {
               AND: [PropsAggregationWhereInput!]
               NOT: PropsAggregationWhereInput
               OR: [PropsAggregationWhereInput!]
+              propsField: IntScalarAggregationFilters
               propsField_AVERAGE_EQUAL: Float
               propsField_AVERAGE_GT: Float
               propsField_AVERAGE_GTE: Float
@@ -5219,6 +5364,13 @@ describe("Interface Relationships", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
             }
 
             \\"\\"\\"String filters\\"\\"\\"
@@ -5408,6 +5560,7 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface1Interface2NodeAggregationWhereInput!]
               NOT: Type1Interface1Interface2NodeAggregationWhereInput
               OR: [Type1Interface1Interface2NodeAggregationWhereInput!]
+              field2: StringScalarAggregationFilters
               field2_AVERAGE_LENGTH_EQUAL: Float
               field2_AVERAGE_LENGTH_GT: Float
               field2_AVERAGE_LENGTH_GTE: Float
@@ -5443,6 +5596,7 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface1NodeAggregationWhereInput!]
               NOT: Type1Interface1NodeAggregationWhereInput
               OR: [Type1Interface1NodeAggregationWhereInput!]
+              field1: StringScalarAggregationFilters
               field1_AVERAGE_LENGTH_EQUAL: Float
               field1_AVERAGE_LENGTH_GT: Float
               field1_AVERAGE_LENGTH_GTE: Float
@@ -5726,6 +5880,7 @@ describe("Interface Relationships", () => {
               AND: [Type2Interface1Interface2NodeAggregationWhereInput!]
               NOT: Type2Interface1Interface2NodeAggregationWhereInput
               OR: [Type2Interface1Interface2NodeAggregationWhereInput!]
+              field2: StringScalarAggregationFilters
               field2_AVERAGE_LENGTH_EQUAL: Float
               field2_AVERAGE_LENGTH_GT: Float
               field2_AVERAGE_LENGTH_GTE: Float
@@ -6006,11 +6161,29 @@ describe("Interface Relationships", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+            input IntScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: IntScalarFilters
+              min: IntScalarFilters
+              sum: IntScalarFilters
             }
 
             \\"\\"\\"Int filters\\"\\"\\"
@@ -6191,6 +6364,7 @@ describe("Interface Relationships", () => {
               AND: [Interface1Interface2NodeAggregationWhereInput!]
               NOT: Interface1Interface2NodeAggregationWhereInput
               OR: [Interface1Interface2NodeAggregationWhereInput!]
+              field2: StringScalarAggregationFilters
               field2_AVERAGE_LENGTH_EQUAL: Float
               field2_AVERAGE_LENGTH_GT: Float
               field2_AVERAGE_LENGTH_GTE: Float
@@ -6417,6 +6591,13 @@ describe("Interface Relationships", () => {
               shortest: String
             }
 
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
+            }
+
             \\"\\"\\"String filters\\"\\"\\"
             input StringScalarFilters {
               contains: String
@@ -6604,6 +6785,7 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface1Interface2NodeAggregationWhereInput!]
               NOT: Type1Interface1Interface2NodeAggregationWhereInput
               OR: [Type1Interface1Interface2NodeAggregationWhereInput!]
+              field2: StringScalarAggregationFilters
               field2_AVERAGE_LENGTH_EQUAL: Float
               field2_AVERAGE_LENGTH_GT: Float
               field2_AVERAGE_LENGTH_GTE: Float
@@ -6639,6 +6821,7 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface1NodeAggregationWhereInput!]
               NOT: Type1Interface1NodeAggregationWhereInput
               OR: [Type1Interface1NodeAggregationWhereInput!]
+              field1: StringScalarAggregationFilters
               field1_AVERAGE_LENGTH_EQUAL: Float
               field1_AVERAGE_LENGTH_GT: Float
               field1_AVERAGE_LENGTH_GTE: Float
@@ -6798,6 +6981,7 @@ describe("Interface Relationships", () => {
               AND: [Type1PropsAggregationWhereInput!]
               NOT: Type1PropsAggregationWhereInput
               OR: [Type1PropsAggregationWhereInput!]
+              type1Field: IntScalarAggregationFilters
               type1Field_AVERAGE_EQUAL: Float
               type1Field_AVERAGE_GT: Float
               type1Field_AVERAGE_GTE: Float
@@ -6984,6 +7168,7 @@ describe("Interface Relationships", () => {
               AND: [Type2Interface1Interface2NodeAggregationWhereInput!]
               NOT: Type2Interface1Interface2NodeAggregationWhereInput
               OR: [Type2Interface1Interface2NodeAggregationWhereInput!]
+              field2: StringScalarAggregationFilters
               field2_AVERAGE_LENGTH_EQUAL: Float
               field2_AVERAGE_LENGTH_GT: Float
               field2_AVERAGE_LENGTH_GTE: Float
@@ -7139,6 +7324,7 @@ describe("Interface Relationships", () => {
               AND: [Type2PropsAggregationWhereInput!]
               NOT: Type2PropsAggregationWhereInput
               OR: [Type2PropsAggregationWhereInput!]
+              type2Field: IntScalarAggregationFilters
               type2Field_AVERAGE_EQUAL: Float
               type2Field_AVERAGE_GT: Float
               type2Field_AVERAGE_GTE: Float
@@ -7332,6 +7518,7 @@ describe("Interface Relationships", () => {
               AND: [CommentCreatorNodeAggregationWhereInput!]
               NOT: CommentCreatorNodeAggregationWhereInput
               OR: [CommentCreatorNodeAggregationWhereInput!]
+              id: IDScalarAggregationFilters
               id_MAX_EQUAL: ID
               id_MAX_GT: ID
               id_MAX_GTE: ID
@@ -7342,6 +7529,7 @@ describe("Interface Relationships", () => {
               id_MIN_GTE: ID
               id_MIN_LT: ID
               id_MIN_LTE: ID
+              name: StringScalarAggregationFilters
               name_AVERAGE_LENGTH_EQUAL: Float
               name_AVERAGE_LENGTH_GT: Float
               name_AVERAGE_LENGTH_GTE: Float
@@ -7444,6 +7632,7 @@ describe("Interface Relationships", () => {
               AND: [CommentPostNodeAggregationWhereInput!]
               NOT: CommentPostNodeAggregationWhereInput
               OR: [CommentPostNodeAggregationWhereInput!]
+              content: StringScalarAggregationFilters
               content_AVERAGE_LENGTH_EQUAL: Float
               content_AVERAGE_LENGTH_GT: Float
               content_AVERAGE_LENGTH_GTE: Float
@@ -7459,6 +7648,7 @@ describe("Interface Relationships", () => {
               content_SHORTEST_LENGTH_GTE: Int
               content_SHORTEST_LENGTH_LT: Int
               content_SHORTEST_LENGTH_LTE: Int
+              id: IDScalarAggregationFilters
               id_MAX_EQUAL: ID
               id_MAX_GT: ID
               id_MAX_GTE: ID
@@ -7678,6 +7868,7 @@ describe("Interface Relationships", () => {
               AND: [ContentCreatorNodeAggregationWhereInput!]
               NOT: ContentCreatorNodeAggregationWhereInput
               OR: [ContentCreatorNodeAggregationWhereInput!]
+              id: IDScalarAggregationFilters
               id_MAX_EQUAL: ID
               id_MAX_GT: ID
               id_MAX_GTE: ID
@@ -7688,6 +7879,7 @@ describe("Interface Relationships", () => {
               id_MIN_GTE: ID
               id_MIN_LT: ID
               id_MIN_LTE: ID
+              name: StringScalarAggregationFilters
               name_AVERAGE_LENGTH_EQUAL: Float
               name_AVERAGE_LENGTH_GT: Float
               name_AVERAGE_LENGTH_GTE: Float
@@ -7838,9 +8030,25 @@ describe("Interface Relationships", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
             type IDAggregateSelection {
               longest: ID
               shortest: ID
+            }
+
+            \\"\\"\\"Filters for an aggregation of an ID input field\\"\\"\\"
+            input IDScalarAggregationFilters {
+              max: IDScalarFilters
+              min: IDScalarFilters
             }
 
             \\"\\"\\"ID filters\\"\\"\\"
@@ -7860,6 +8068,16 @@ describe("Interface Relationships", () => {
             \\"\\"\\"ID mutations\\"\\"\\"
             input IDScalarMutations {
               set: ID
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
             }
 
             type Mutation {
@@ -7966,6 +8184,7 @@ describe("Interface Relationships", () => {
               AND: [PostCommentsNodeAggregationWhereInput!]
               NOT: PostCommentsNodeAggregationWhereInput
               OR: [PostCommentsNodeAggregationWhereInput!]
+              content: StringScalarAggregationFilters
               content_AVERAGE_LENGTH_EQUAL: Float
               content_AVERAGE_LENGTH_GT: Float
               content_AVERAGE_LENGTH_GTE: Float
@@ -7981,6 +8200,7 @@ describe("Interface Relationships", () => {
               content_SHORTEST_LENGTH_GTE: Int
               content_SHORTEST_LENGTH_LT: Int
               content_SHORTEST_LENGTH_LTE: Int
+              id: IDScalarAggregationFilters
               id_MAX_EQUAL: ID
               id_MAX_GT: ID
               id_MAX_GTE: ID
@@ -8057,6 +8277,7 @@ describe("Interface Relationships", () => {
               AND: [PostCreatorNodeAggregationWhereInput!]
               NOT: PostCreatorNodeAggregationWhereInput
               OR: [PostCreatorNodeAggregationWhereInput!]
+              id: IDScalarAggregationFilters
               id_MAX_EQUAL: ID
               id_MAX_GT: ID
               id_MAX_GTE: ID
@@ -8067,6 +8288,7 @@ describe("Interface Relationships", () => {
               id_MIN_GTE: ID
               id_MIN_LT: ID
               id_MIN_LTE: ID
+              name: StringScalarAggregationFilters
               name_AVERAGE_LENGTH_EQUAL: Float
               name_AVERAGE_LENGTH_GT: Float
               name_AVERAGE_LENGTH_GTE: Float
@@ -8241,6 +8463,13 @@ describe("Interface Relationships", () => {
               shortest: String
             }
 
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
+            }
+
             \\"\\"\\"String filters\\"\\"\\"
             input StringScalarFilters {
               contains: String
@@ -8374,6 +8603,7 @@ describe("Interface Relationships", () => {
               AND: [UserContentNodeAggregationWhereInput!]
               NOT: UserContentNodeAggregationWhereInput
               OR: [UserContentNodeAggregationWhereInput!]
+              content: StringScalarAggregationFilters
               content_AVERAGE_LENGTH_EQUAL: Float
               content_AVERAGE_LENGTH_GT: Float
               content_AVERAGE_LENGTH_GTE: Float
@@ -8389,6 +8619,7 @@ describe("Interface Relationships", () => {
               content_SHORTEST_LENGTH_GTE: Int
               content_SHORTEST_LENGTH_LT: Int
               content_SHORTEST_LENGTH_LTE: Int
+              id: IDScalarAggregationFilters
               id_MAX_EQUAL: ID
               id_MAX_GT: ID
               id_MAX_GTE: ID
@@ -8565,6 +8796,7 @@ describe("Interface Relationships", () => {
               AND: [ActedInAggregationWhereInput!]
               NOT: ActedInAggregationWhereInput
               OR: [ActedInAggregationWhereInput!]
+              screenTime: IntScalarAggregationFilters
               screenTime_AVERAGE_EQUAL: Float
               screenTime_AVERAGE_GT: Float
               screenTime_AVERAGE_GTE: Float
@@ -8684,6 +8916,7 @@ describe("Interface Relationships", () => {
               AND: [ActorActedInNodeAggregationWhereInput!]
               NOT: ActorActedInNodeAggregationWhereInput
               OR: [ActorActedInNodeAggregationWhereInput!]
+              title: StringScalarAggregationFilters
               title_AVERAGE_LENGTH_EQUAL: Float
               title_AVERAGE_LENGTH_GT: Float
               title_AVERAGE_LENGTH_GTE: Float
@@ -8853,11 +9086,29 @@ describe("Interface Relationships", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+            input IntScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: IntScalarFilters
+              min: IntScalarFilters
+              sum: IntScalarFilters
             }
 
             \\"\\"\\"Int filters\\"\\"\\"
@@ -8932,6 +9183,7 @@ describe("Interface Relationships", () => {
               AND: [MovieActorsNodeAggregationWhereInput!]
               NOT: MovieActorsNodeAggregationWhereInput
               OR: [MovieActorsNodeAggregationWhereInput!]
+              name: StringScalarAggregationFilters
               name_AVERAGE_LENGTH_EQUAL: Float
               name_AVERAGE_LENGTH_GT: Float
               name_AVERAGE_LENGTH_GTE: Float
@@ -9191,6 +9443,7 @@ describe("Interface Relationships", () => {
               AND: [SeriesActorsNodeAggregationWhereInput!]
               NOT: SeriesActorsNodeAggregationWhereInput
               OR: [SeriesActorsNodeAggregationWhereInput!]
+              name: StringScalarAggregationFilters
               name_AVERAGE_LENGTH_EQUAL: Float
               name_AVERAGE_LENGTH_GT: Float
               name_AVERAGE_LENGTH_GTE: Float
@@ -9439,6 +9692,7 @@ describe("Interface Relationships", () => {
               AND: [ShowActorsNodeAggregationWhereInput!]
               NOT: ShowActorsNodeAggregationWhereInput
               OR: [ShowActorsNodeAggregationWhereInput!]
+              name: StringScalarAggregationFilters
               name_AVERAGE_LENGTH_EQUAL: Float
               name_AVERAGE_LENGTH_GT: Float
               name_AVERAGE_LENGTH_GTE: Float
@@ -9591,6 +9845,7 @@ describe("Interface Relationships", () => {
               AND: [StarredInAggregationWhereInput!]
               NOT: StarredInAggregationWhereInput
               OR: [StarredInAggregationWhereInput!]
+              episodeNr: IntScalarAggregationFilters
               episodeNr_AVERAGE_EQUAL: Float
               episodeNr_AVERAGE_GT: Float
               episodeNr_AVERAGE_GTE: Float
@@ -9644,6 +9899,13 @@ describe("Interface Relationships", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
             }
 
             \\"\\"\\"String filters\\"\\"\\"
