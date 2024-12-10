@@ -24,14 +24,14 @@ export const LocalTimeScalarFilters = new GraphQLInputObjectType({
     name: "LocalTimeScalarFilters",
     description: "LocalTime filters",
     fields: {
-        equals: {
+        eq: {
             type: GraphQLLocalTime,
         },
-        greaterThan: { type: GraphQLLocalTime },
-        greaterThanEquals: { type: GraphQLLocalTime },
+        gt: { type: GraphQLLocalTime },
+        gte: { type: GraphQLLocalTime },
         in: { type: new GraphQLList(new GraphQLNonNull(GraphQLLocalTime)) },
-        lessThan: { type: GraphQLLocalTime },
-        lessThanEquals: { type: GraphQLLocalTime },
+        lt: { type: GraphQLLocalTime },
+        lte: { type: GraphQLLocalTime },
     },
 });
 
@@ -39,7 +39,7 @@ export const LocalTimeListFilters = new GraphQLInputObjectType({
     name: "LocalTimeListFilters",
     description: "LocalTime list filters",
     fields: {
-        equals: { type: new GraphQLList(new GraphQLNonNull(LocalTimeScalarFilters)) },
+        eq: { type: new GraphQLList(new GraphQLNonNull(LocalTimeScalarFilters)) },
         includes: { type: LocalTimeScalarFilters },
     },
 });

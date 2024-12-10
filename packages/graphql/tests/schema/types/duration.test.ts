@@ -70,12 +70,12 @@ describe("Duration", () => {
 
             \\"\\"\\"Duration filters\\"\\"\\"
             input DurationScalarFilters {
-              equals: Duration
-              greaterThan: Duration
-              greaterThanEquals: Duration
+              eq: Duration
+              gt: Duration
+              gte: Duration
               in: [Duration!]
-              lessThan: Duration
-              lessThanEquals: Duration
+              lt: Duration
+              lte: Duration
             }
 
             \\"\\"\\"Duration mutations\\"\\"\\"
@@ -92,12 +92,12 @@ describe("Duration", () => {
             input IDScalarFilters {
               contains: ID
               endsWith: ID
-              equals: ID
-              greaterThan: ID
-              greaterThanEquals: ID
+              eq: ID
+              gt: ID
+              gte: ID
               in: [ID!]
-              lessThan: ID
-              lessThanEquals: ID
+              lt: ID
+              lte: ID
               matches: ID
               startsWith: ID
             }

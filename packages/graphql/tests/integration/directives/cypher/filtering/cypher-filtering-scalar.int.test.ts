@@ -36,23 +36,23 @@ describe("cypher directive filtering - Scalar", () => {
     test.each([
         {
             title: "Int cypher field: exact match",
-            filter: `special_count: {equals: 1}`,
+            filter: `special_count: {eq: 1}`,
         },
         {
             title: "Int cypher field: GT",
-            filter: `special_count: { greaterThan: 0}`,
+            filter: `special_count: { gt: 0}`,
         },
         {
             title: "Int cypher field: GTE",
-            filter: `special_count: { greaterThanEquals: 1 }`,
+            filter: `special_count: { gte: 1 }`,
         },
         {
             title: "Int cypher field: LT",
-            filter: `special_count: { lessThan: 2 }`,
+            filter: `special_count: { lt: 2 }`,
         },
         {
             title: "Int cypher field: LTE",
-            filter: `special_count: { lessThanEquals: 2 }`,
+            filter: `special_count: { lte: 2 }`,
         },
         {
             title: "Int cypher field: IN",
@@ -98,7 +98,7 @@ describe("cypher directive filtering - Scalar", () => {
     test.each([
         {
             title: "String cypher field: exact match",
-            filter: `special_word: { equals: "test"}`,
+            filter: `special_word: { eq: "test"}`,
         },
         {
             title: "String cypher field: CONTAINS",
@@ -233,7 +233,7 @@ describe("cypher directive filtering - Scalar", () => {
 
         const query = /* GraphQL */ `
             query {
-                ${CustomType.plural}(where: { special_count: { greaterThan: 1 }, title: { equals: "CustomType Unknown"} }) {
+                ${CustomType.plural}(where: { special_count: { gt: 1 }, title: { eq: "CustomType Unknown"} }) {
                     special_count
                 }
             }
@@ -267,7 +267,7 @@ describe("cypher directive filtering - Scalar", () => {
 
         const query = /* GraphQL */ `
             query {
-                ${CustomType.plural}(where: { special_count: { greaterThanEquals: 1 }}) {
+                ${CustomType.plural}(where: { special_count: { gte: 1 }}) {
                     title
                 }
             }

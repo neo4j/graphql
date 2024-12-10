@@ -155,7 +155,7 @@ describe("Advanced Filtering", () => {
 
             const query = /* GraphQL */ `
                 {
-                    ${randomType.plural}(where: { NOT: { property: { equals: "${randomValue1}" } } }) {
+                    ${randomType.plural}(where: { NOT: { property: { eq: "${randomValue1}" } } }) {
                         property
                     }
                 }
@@ -339,7 +339,7 @@ describe("Advanced Filtering", () => {
 
             const query = /* GraphQL */ `
                 {
-                    ${movieType.plural}(where: { title: { equals: "${matrix}" }}) {
+                    ${movieType.plural}(where: { title: { eq: "${matrix}" }}) {
                         title
                     }
                 }
@@ -387,7 +387,7 @@ describe("Advanced Filtering", () => {
 
             const query = /* GraphQL */ `
                 {
-                    ${movieType.plural}(where: { title: { equals: "${matrix}" } }) {
+                    ${movieType.plural}(where: { title: { eq: "${matrix}" } }) {
                         title
                     }
                 }
@@ -445,7 +445,7 @@ describe("Advanced Filtering", () => {
 
             const query = /* GraphQL */ `
                 {
-                    ${movieType.plural}(where: { title: { greaterThan: "${matrix}" } }) {
+                    ${movieType.plural}(where: { title: { gt: "${matrix}" } }) {
                         title
                     }
                 }
@@ -505,7 +505,7 @@ describe("Advanced Filtering", () => {
 
             const query = /* GraphQL */ `
                 {
-                    ${movieType.plural}(where: { title: { lessThan: "${matrixRevolutions}" } }) {
+                    ${movieType.plural}(where: { title: { lt: "${matrixRevolutions}" } }) {
                         title
                     }
                 }
@@ -565,7 +565,7 @@ describe("Advanced Filtering", () => {
 
             const query = /* GraphQL */ `
                 {
-                    ${movieType.plural}(where: { title: { greaterThanEquals: "${matrix}" } }) {
+                    ${movieType.plural}(where: { title: { gte: "${matrix}" } }) {
                         title
                     }
                 }
@@ -625,7 +625,7 @@ describe("Advanced Filtering", () => {
 
             const query = /* GraphQL */ `
                 {
-                    ${movieType.plural}(where: { title: { lessThanEquals: "${matrixRevolutions}" } }) {
+                    ${movieType.plural}(where: { title: { lte: "${matrixRevolutions}" } }) {
                         title
                     }
                 }
@@ -689,7 +689,7 @@ describe("Advanced Filtering", () => {
 
             const query = /* GraphQL */ `
                 {
-                    ${randomType.plural}(where: { NOT: { property: { equals:  ${notProperty} }} }) {
+                    ${randomType.plural}(where: { NOT: { property: { eq:  ${notProperty} }} }) {
                         property
                     }
                 }
@@ -792,7 +792,7 @@ describe("Advanced Filtering", () => {
 
             const query = /* GraphQL */ `
                 {
-                    ${randomType.plural}(where: { property: {lessThan: ${lessThanValue + 1}} }) {
+                    ${randomType.plural}(where: { property: {lt: ${lessThanValue + 1}} }) {
                         property
                     }
                 }
@@ -837,7 +837,7 @@ describe("Advanced Filtering", () => {
 
             const query = /* GraphQL */ `
                 {
-                    ${randomType.plural}(where: { property: { lessThanEquals: ${value} } }) {
+                    ${randomType.plural}(where: { property: { lte: ${value} } }) {
                         property
                     }
                 }
@@ -881,7 +881,7 @@ describe("Advanced Filtering", () => {
 
             const query = /* GraphQL */ `
                 {
-                    ${randomType.plural}(where: { property: { greaterThan: ${graterThanValue - 1} } }) {
+                    ${randomType.plural}(where: { property: { gt: ${graterThanValue - 1} } }) {
                         property
                     }
                 }
@@ -926,7 +926,7 @@ describe("Advanced Filtering", () => {
 
             const query = /* GraphQL */ `
                 {
-                    ${randomType.plural}(where: { property: { greaterThanEquals: ${value} } }) {
+                    ${randomType.plural}(where: { property: { gte: ${value} } }) {
                         property
                     }
                 }
@@ -963,7 +963,7 @@ describe("Advanced Filtering", () => {
 
             const query = /* GraphQL */ `
                 {
-                    ${randomType.plural}(where: { property: { equals: false } }) {
+                    ${randomType.plural}(where: { property: { eq: false } }) {
                         property
                     }
                 }
@@ -998,7 +998,7 @@ describe("Advanced Filtering", () => {
 
             const query = /* GraphQL */ `
                 {
-                    ${randomType.plural}(where: { NOT: { property: { equals: false } } }) {
+                    ${randomType.plural}(where: { NOT: { property: { eq: false } } }) {
                         property
                     }
                 }
@@ -1056,7 +1056,7 @@ describe("Advanced Filtering", () => {
 
                 const query = /* GraphQL */ `
                     {
-                        ${randomType1.plural}(where: { ${randomType2.plural}_SOME: { id: { equals: "${relationId}" } } }) {
+                        ${randomType1.plural}(where: { ${randomType2.plural}_SOME: { id: { eq: "${relationId}" } } }) {
                             id
                             ${randomType2.plural} {
                                 id
@@ -1110,7 +1110,7 @@ describe("Advanced Filtering", () => {
 
                 const query = /* GraphQL */ `
                     {
-                        ${Movie.plural}(where: { genresConnection_SOME: { node: { id: { equals: "${genreId}" } } } }) {
+                        ${Movie.plural}(where: { genresConnection_SOME: { node: { id: { eq: "${genreId}" } } } }) {
                             id
                             genres {
                                 id
@@ -1175,7 +1175,7 @@ describe("Advanced Filtering", () => {
 
                 const query = /* GraphQL */ `
                     {
-                        ${Movie.plural}(where: { genresConnection_SOME: { edge: { id: { equals: "${actedInId}" } } } }) {
+                        ${Movie.plural}(where: { genresConnection_SOME: { edge: { id: { eq: "${actedInId}" } } } }) {
                             id
                             genres {
                                 id
@@ -1239,7 +1239,7 @@ describe("Advanced Filtering", () => {
 
                 const query = /* GraphQL */ `
                         {
-                            ${Movie.plural}(where: { genresConnection_SOME: { node: { id: { equals: "${genreId}" }} edge: { id: { equals: "${actedInId}" } } } }) {
+                            ${Movie.plural}(where: { genresConnection_SOME: { node: { id: { eq: "${genreId}" }} edge: { id: { eq: "${actedInId}" } } } }) {
                                 id
                                 genres {
                                     id
@@ -1309,7 +1309,7 @@ describe("Advanced Filtering", () => {
 
                 const query = /* GraphQL */ `
                         {
-                            ${randomType1.plural}(where: { NOT: { ${randomType2.plural}_SOME: { id: { equals: "${relationId2}" }} } }) {
+                            ${randomType1.plural}(where: { NOT: { ${randomType2.plural}_SOME: { id: { eq: "${relationId2}" }} } }) {
                                 id
                                 ${randomType2.plural} {
                                     id
@@ -1377,7 +1377,7 @@ describe("Advanced Filtering", () => {
 
                 const query = /* GraphQL */ `
                         {
-                            ${randomType1.plural}(where: { ${randomType2.plural}Connection_NONE: { edge: { id: { equals: "${actedInId}"} } } }) {
+                            ${randomType1.plural}(where: { ${randomType2.plural}Connection_NONE: { edge: { id: { eq: "${actedInId}"} } } }) {
                                 id
                                 ${randomType2.plural} {
                                     id
@@ -1456,9 +1456,9 @@ describe("Advanced Filtering", () => {
                 function generateQuery(predicate: "ALL" | "NONE" | "SINGLE" | "SOME") {
                     return /* GraphQL */ `
                     query($movieIds: [ID!]!) {
-                        ${Movie.plural}(where: { AND: [{ id: { in: $movieIds }}, { actors_${predicate}: { NOT: { flag: { equals: false }} } }] }) {
+                        ${Movie.plural}(where: { AND: [{ id: { in: $movieIds }}, { actors_${predicate}: { NOT: { flag: { eq: false }} } }] }) {
                             id
-                            actors(where: { NOT: { flag: {equals: false} } }) {
+                            actors(where: { NOT: { flag: {eq: false} } }) {
                                 id
                                 flag
                             }
@@ -1543,9 +1543,9 @@ describe("Advanced Filtering", () => {
             describe("on relationship using NOT operator", () => {
                 const generateQuery = (predicate: "ALL" | "NONE" | "SINGLE" | "SOME") => /* GraphQL */ `
                     query($movieIds: [ID!]!) {
-                        ${Movie.plural}(where: { AND: [{ id: { in: $movieIds }}, { actors_${predicate}: { NOT: { flag: {equals: false }} } }] }) {
+                        ${Movie.plural}(where: { AND: [{ id: { in: $movieIds }}, { actors_${predicate}: { NOT: { flag: {eq: false }} } }] }) {
                             id
-                            actors(where: { NOT: { flag: { equals: false }} }) {
+                            actors(where: { NOT: { flag: { eq: false }} }) {
                                 id
                                 flag
                             }
@@ -1629,9 +1629,9 @@ describe("Advanced Filtering", () => {
             describe("on connection", () => {
                 const generateQuery = (predicate: "ALL" | "NONE" | "SINGLE" | "SOME") => /* GraphQL */ `
                     query($movieIds: [ID!]!) {
-                        ${Movie.plural}(where: { AND: [{ id: {in: $movieIds} }, { actorsConnection_${predicate}: { node: { NOT: { flag: { equals: false} } } }}] }) {
+                        ${Movie.plural}(where: { AND: [{ id: {in: $movieIds} }, { actorsConnection_${predicate}: { node: { NOT: { flag: { eq: false} } } }}] }) {
                             id
-                            actors(where: { NOT: { flag:{ equals: false }} }) {
+                            actors(where: { NOT: { flag:{ eq: false }} }) {
                                 id
                                 flag
                             }
@@ -1715,9 +1715,9 @@ describe("Advanced Filtering", () => {
             describe("on connection using NOT operator", () => {
                 const generateQuery = (predicate: "ALL" | "NONE" | "SINGLE" | "SOME") => /* GraphQL */ `
                     query($movieIds: [ID!]!) {
-                        ${Movie.plural}(where: { AND: [{ id:{ in: $movieIds }}, { actorsConnection_${predicate}: { node: { NOT: { flag: {equals: false} } } } }] }) {
+                        ${Movie.plural}(where: { AND: [{ id:{ in: $movieIds }}, { actorsConnection_${predicate}: { node: { NOT: { flag: {eq: false} } } } }] }) {
                             id
-                            actors(where: { NOT: { flag: { equals: false } }}) {
+                            actors(where: { NOT: { flag: { eq: false } }}) {
                                 id
                                 flag
                             }
@@ -1901,7 +1901,7 @@ describe("Advanced Filtering", () => {
 
             const nullQuery = /* GraphQL */ `
                 {
-                    ${randomType.plural}(where: { optional: { equals:  null} }) {
+                    ${randomType.plural}(where: { optional: { eq:  null} }) {
                         id
                     }
                 }
@@ -1919,7 +1919,7 @@ describe("Advanced Filtering", () => {
 
             const notNullQuery = /* GraphQL */ `
                 {
-                    ${randomType.plural}(where: { NOT: { optional: { equals: null } } }) {
+                    ${randomType.plural}(where: { NOT: { optional: { eq: null } } }) {
                         id
                     }
                 }

@@ -166,7 +166,7 @@ describe("https://github.com/neo4j/graphql/issues/1575", () => {
             \\"\\"\\"Point filters\\"\\"\\"
             input PointFilters {
               distance: PointDistanceFilters
-              equals: PointInput
+              eq: PointInput
               in: [PointInput!]
             }
 

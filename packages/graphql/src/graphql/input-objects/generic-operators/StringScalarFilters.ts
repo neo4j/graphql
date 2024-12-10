@@ -23,15 +23,15 @@ export const StringScalarFilters = new GraphQLInputObjectType({
     name: "StringScalarFilters",
     description: "String filters",
     fields: {
-        equals: {
+        eq: {
             type: GraphQLString,
         },
         matches: { type: GraphQLString },
-        greaterThan: { type: GraphQLString }, // GT/LT/GTE etc should not be added all the time
-        greaterThanEquals: { type: GraphQLString },
+        gt: { type: GraphQLString }, // GT/LT/GTE etc should not be added all the time
+        gte: { type: GraphQLString },
         in: { type: new GraphQLList(new GraphQLNonNull(GraphQLString)) },
-        lessThan: { type: GraphQLString },
-        lessThanEquals: { type: GraphQLString },
+        lt: { type: GraphQLString },
+        lte: { type: GraphQLString },
         contains: { type: GraphQLString },
         endsWith: { type: GraphQLString },
         startsWith: { type: GraphQLString },
@@ -42,7 +42,7 @@ export const StringListFilters = new GraphQLInputObjectType({
     name: "StringListFilters",
     description: "String list filters",
     fields: {
-        equals: { type: new GraphQLList(new GraphQLNonNull(GraphQLString)) },
+        eq: { type: new GraphQLList(new GraphQLNonNull(GraphQLString)) },
         includes: { type: GraphQLString },
     },
 });

@@ -24,14 +24,14 @@ export const DurationScalarFilters = new GraphQLInputObjectType({
     name: "DurationScalarFilters",
     description: "Duration filters",
     fields: {
-        equals: {
+        eq: {
             type: GraphQLDuration,
         },
-        greaterThan: { type: GraphQLDuration },
-        greaterThanEquals: { type: GraphQLDuration },
+        gt: { type: GraphQLDuration },
+        gte: { type: GraphQLDuration },
         in: { type: new GraphQLList(new GraphQLNonNull(GraphQLDuration)) },
-        lessThan: { type: GraphQLDuration },
-        lessThanEquals: { type: GraphQLDuration },
+        lt: { type: GraphQLDuration },
+        lte: { type: GraphQLDuration },
     },
 });
 
@@ -39,7 +39,7 @@ export const DurationListFilters = new GraphQLInputObjectType({
     name: "DurationListFilters",
     description: "Duration list filters",
     fields: {
-        equals: { type: new GraphQLList(new GraphQLNonNull(DurationScalarFilters)) },
+        eq: { type: new GraphQLList(new GraphQLNonNull(DurationScalarFilters)) },
         includes: { type: DurationScalarFilters },
     },
 });

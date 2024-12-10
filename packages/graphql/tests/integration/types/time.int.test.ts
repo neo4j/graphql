@@ -242,7 +242,7 @@ describe("Time", () => {
 
             const query = /* GraphQL */ `
                     query ($time: Time!) {
-                        ${Movie.plural}(where: { time: { equals: $time } }) {
+                        ${Movie.plural}(where: { time: { eq: $time } }) {
                             id
                             time
                         }
@@ -259,7 +259,7 @@ describe("Time", () => {
             expect(parseTime(graphqlMovie.time)).toStrictEqual(parsedTime);
         });
 
-        test.each(["lessThan", "lessThanEquals", "greaterThan", "greaterThanEquals"])(
+        test.each(["lt", "lte", "gt", "gte"])(
             "should filter based on time comparison for filter: %s",
             async (filter) => {
                 const typeDefs = /* GraphQL */ `
@@ -344,13 +344,13 @@ describe("Time", () => {
                 expect(graphqlMovies).toBeDefined();
 
                 /* eslint-disable jest/no-conditional-expect */
-                if (filter === "LT") {
+                if (filter === "lt") {
                     expect(graphqlMovies).toHaveLength(1);
                     expect(graphqlMovies[0]?.id).toBe(pastId);
                     expect(parseTime(graphqlMovies[0]?.time)).toStrictEqual(parsedPast);
                 }
 
-                if (filter === "LTE") {
+                if (filter === "lte") {
                     expect(graphqlMovies).toHaveLength(2);
                     expect(graphqlMovies[0]?.id).toBe(pastId);
                     expect(parseTime(graphqlMovies[0]?.time)).toStrictEqual(parsedPast);
@@ -359,13 +359,13 @@ describe("Time", () => {
                     expect(parseTime(graphqlMovies[1]?.time)).toStrictEqual(parsedPresent);
                 }
 
-                if (filter === "GT") {
+                if (filter === "gt") {
                     expect(graphqlMovies).toHaveLength(1);
                     expect(graphqlMovies[0]?.id).toBe(futureId);
                     expect(parseTime(graphqlMovies[0]?.time)).toStrictEqual(parsedFuture);
                 }
 
-                if (filter === "GTE") {
+                if (filter === "gte") {
                     expect(graphqlMovies).toHaveLength(2);
                     expect(graphqlMovies[0]?.id).toBe(presentId);
                     expect(parseTime(graphqlMovies[0]?.time)).toStrictEqual(parsedPresent);

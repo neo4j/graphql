@@ -153,7 +153,7 @@ describe("Point", () => {
             \\"\\"\\"Point filters\\"\\"\\"
             input PointFilters {
               distance: PointDistanceFilters
-              equals: PointInput
+              eq: PointInput
               in: [PointInput!]
             }
 
@@ -244,7 +244,7 @@ describe("Point", () => {
             \\"\\"\\"Cartesian Point filters\\"\\"\\"
             input CartesianPointFilters {
               distance: CartesianDistancePointFilters
-              equals: CartesianPointInput
+              eq: CartesianPointInput
               in: [CartesianPointInput!]
             }
 
@@ -491,7 +491,7 @@ describe("Point", () => {
 
             \\"\\"\\"Point list filters\\"\\"\\"
             input PointListFilters {
-              equals: [PointInput!]
+              eq: [PointInput!]
               includes: PointInput
             }
 
@@ -556,7 +556,7 @@ describe("Point", () => {
             \\"\\"\\"Cartesian Point filters\\"\\"\\"
             input CartesianPointFilters {
               distance: CartesianDistancePointFilters
-              equals: CartesianPointInput
+              eq: CartesianPointInput
               in: [CartesianPointInput!]
             }
 
@@ -569,7 +569,7 @@ describe("Point", () => {
 
             \\"\\"\\"CartesianPoint list filters\\"\\"\\"
             input CartesianPointListFilters {
-              equals: [CartesianPointFilters!]
+              eq: [CartesianPointFilters!]
               includes: CartesianPointFilters
             }
 
