@@ -146,6 +146,7 @@ export class FilterFactory {
                 if (rel && key === "edge") {
                     return this.createEdgeFilters(rel, value);
                 }
+
                 if (key === "node") {
                     if (partialOf && isInterfaceEntity(partialOf) && isConcreteEntity(entity)) {
                         return this.createInterfaceNodeFilters({
@@ -215,18 +216,14 @@ export class FilterFactory {
         relationship,
         comparisonValue,
         operator,
-
         attachedTo,
     }: {
         attribute: AttributeAdapter;
         relationship?: RelationshipAdapter;
         comparisonValue: GraphQLWhereArg;
         operator: FilterOperator | undefined;
-
         attachedTo?: "node" | "relationship";
     }): Filter | Filter[] {
-        const filterOperator = operator || "EQ";
-
         if (attribute.annotations.cypher) {
             return this.createCypherFilter({
                 attribute,
@@ -234,13 +231,18 @@ export class FilterFactory {
                 operator,
             });
         }
-
+        // Operator should be always present in this case and never implicit, the only two cases when this is not true are:
+        // Cypher Relationship fields, because they are not stored as Relationships but as Attributes they are parsed here, 
+        // however in case of Cypher 1:1 they are passed as: { directed: { name: { eq: "Jon" } } } and "directed" is the attribute
+        // Or when we are dealing with Subgraph filters
+        // In that case the {"__typename": "Product", "id": "1"} is passed to the filterFactory and therefore the operator is not present for id: "1",
+        // while for other cases the syntax is explicit like id: { eq: "1" } or in the legacy syntax id_EQ: "1"
+        operator = operator ?? "EQ";
         if (attribute.typeHelper.isDuration()) {
             return new DurationFilter({
                 attribute,
                 comparisonValue,
-
-                operator: filterOperator,
+                operator,
                 attachedTo,
             });
         }
@@ -248,7 +250,7 @@ export class FilterFactory {
             return new PointFilter({
                 attribute,
                 comparisonValue,
-                operator: filterOperator,
+                operator,
                 attachedTo,
             });
         }
@@ -257,7 +259,7 @@ export class FilterFactory {
             attribute,
             relationship,
             comparisonValue,
-            operator: filterOperator,
+            operator,
             attachedTo,
         });
     }
@@ -454,7 +456,6 @@ export class FilterFactory {
                     relationship,
                     value,
                     operator,
-
                     isConnection,
                     isAggregate,
                 });
@@ -472,7 +473,6 @@ export class FilterFactory {
                     relationship,
                     value,
                     operator,
-
                     isConnection,
                     isAggregate,
                 });
@@ -489,12 +489,7 @@ export class FilterFactory {
 
         if (!isInterfaceEntity(entity) && !attribute) {
             if (fieldName === "id" && entity.globalIdField) {
-                return this.createRelayIdPropertyFilter(
-                    entity,
-
-                    operator,
-                    value
-                );
+                return this.createRelayIdPropertyFilter(entity, operator, value);
             }
         }
         if (!attribute) {
@@ -509,8 +504,7 @@ export class FilterFactory {
         return this.createPropertyFilter({
             attribute,
             comparisonValue: value,
-
-            operator,
+            operator: operator,
             relationship,
         });
     }
@@ -572,7 +566,7 @@ export class FilterFactory {
         return this.wrapMultipleFiltersInLogical(asArray(filters));
     }
 
-    private parseGenericOperator(key: string): FilterOperator {
+    protected parseGenericOperator(key: string): FilterOperator {
         // we convert them to the previous format to keep the same translation logic
         switch (key) {
             case "equals":
@@ -679,7 +673,7 @@ export class FilterFactory {
     private createRelayIdPropertyFilter(
         entity: ConcreteEntityAdapter,
 
-        operator: FilterOperator | undefined,
+        operator: FilterOperator | undefined = "EQ",
         value: string
     ): Filter | Filter[] {
         const relayIdData = fromGlobalId(value);
@@ -724,6 +718,7 @@ export class FilterFactory {
 
             const attribute = relationship.findAttribute(fieldName);
             if (!attribute) {
+                // @declareRelationship path.
                 if (fieldName === relationship.propertiesTypeName) {
                     return this.createEdgeFilters(relationship, value);
                 }
@@ -736,7 +731,6 @@ export class FilterFactory {
             return this.createPropertyFilter({
                 attribute,
                 comparisonValue: value,
-
                 operator,
                 attachedTo: "relationship",
             });
@@ -847,7 +841,7 @@ export class FilterFactory {
     }
 
     /** Returns an array of 0 or 1 elements with the filters wrapped using a logical operator if needed */
-    private wrapMultipleFiltersInLogical<F extends Filter>(
+    protected wrapMultipleFiltersInLogical<F extends Filter>(
         filters: F[],
         logicalOp: "AND" | "OR" | "XOR" = "AND"
     ): [F | LogicalFilter] | [] {
@@ -875,7 +869,7 @@ export class FilterFactory {
         entity: InterfaceEntityAdapter
     ): boolean {
         if (where.node) {
-            const containsUnoptimizableFields = Object.keys(where.node).some((field) => {
+            const containsUnOptimizableFields = Object.keys(where.node).some((field) => {
                 const { fieldName, isAggregate, isConnection } = parseWhereField(field);
                 if (isAggregate || isConnection) {
                     return true;
@@ -886,7 +880,7 @@ export class FilterFactory {
                 }
                 return false;
             });
-            return !containsUnoptimizableFields;
+            return !containsUnOptimizableFields;
         }
         return true;
     }

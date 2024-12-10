@@ -29,6 +29,7 @@ import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphq
 import { asArray } from "../../../utils/utils";
 import { isLogicalOperator } from "../../utils/logical-operators";
 import type { ConnectionFilter } from "../ast/filters/ConnectionFilter";
+
 import type { Filter, FilterOperator, RelationshipWhereOperator } from "../ast/filters/Filter";
 import { isLegacyRelationshipOperator } from "../ast/filters/Filter";
 import { LogicalFilter } from "../ast/filters/LogicalFilter";
@@ -90,7 +91,7 @@ export class AuthFilterFactory extends FilterFactory {
         where: GraphQLWhereArg,
         context: Neo4jGraphQLTranslationContext
     ): Filter[] {
-        return Object.entries(where).map(([key, value]) => {
+        return Object.entries(where).flatMap(([key, value]) => {
             if (isLogicalOperator(key)) {
                 const nestedFilters = asArray(value).flatMap((v) => {
                     return this.createJWTFilters(jwtPayload, v, context);
@@ -118,9 +119,22 @@ export class AuthFilterFactory extends FilterFactory {
 
                 target = jwtPayload.property(...paths);
             }
-
+            if (!operator) {
+                return this.wrapMultipleFiltersInLogical(this.getGenericJWTFilters(value, target));
+            }
             return new JWTFilter({
-                operator: operator || "EQ",
+                operator: operator,
+                JWTClaim: target,
+                comparisonValue: value,
+            });
+        });
+    }
+
+    private getGenericJWTFilters(genericOperator: Record<string, any>, target: Cypher.Property): JWTFilter[] {
+        return Object.entries(genericOperator).map(([key, value]): JWTFilter => {
+            const operator = this.parseGenericOperator(key);
+            return new JWTFilter({
+                operator,
                 JWTClaim: target,
                 comparisonValue: value,
             });
@@ -140,8 +154,6 @@ export class AuthFilterFactory extends FilterFactory {
         attachedTo?: "node" | "relationship";
         relationship?: RelationshipAdapter;
     }): Filter {
-        const filterOperator = operator || "EQ";
-
         const isCypherVariable =
             comparisonValue instanceof Cypher.Variable ||
             comparisonValue instanceof Cypher.Property ||
@@ -178,7 +190,7 @@ export class AuthFilterFactory extends FilterFactory {
                     selection,
                     attribute,
                     comparisonValue: comparisonValue,
-                    operator: filterOperator,
+                    operator: operator ?? "EQ",
                     checkIsNotNull: true,
                 });
             }
@@ -189,17 +201,19 @@ export class AuthFilterFactory extends FilterFactory {
                 selection,
                 attribute,
                 comparisonValue: comparisonValueParam,
-                operator: filterOperator,
+                operator: operator ?? "EQ",
             });
         }
-
+        if (!operator) {
+            throw new Error(`Operator is required for property filter`);
+        }
         // This is probably not needed, but avoid changing the cypher
         if (typeof comparisonValue === "boolean") {
             return new ParamPropertyFilter({
                 attribute,
                 relationship,
                 comparisonValue: new Cypher.Param(comparisonValue),
-                operator: filterOperator,
+                operator,
                 attachedTo,
             });
         }
@@ -209,7 +223,7 @@ export class AuthFilterFactory extends FilterFactory {
                 attribute,
                 relationship,
                 comparisonValue: comparisonValue,
-                operator: filterOperator,
+                operator,
                 attachedTo,
             });
         } else {
@@ -218,7 +232,7 @@ export class AuthFilterFactory extends FilterFactory {
                     attribute,
                     relationship,
                     comparisonValue: comparisonValue,
-                    operator: filterOperator,
+                    operator,
                     attachedTo,
                 });
             }
@@ -226,7 +240,7 @@ export class AuthFilterFactory extends FilterFactory {
                 attribute,
                 relationship,
                 comparisonValue: new Cypher.Param(comparisonValue),
-                operator: filterOperator,
+                operator,
                 attachedTo,
             });
         }

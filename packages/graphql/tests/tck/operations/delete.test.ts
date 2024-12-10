@@ -70,7 +70,10 @@ describe("Cypher Delete", () => {
     test("Single Nested Delete", async () => {
         const query = /* GraphQL */ `
             mutation {
-                deleteMovies(where: { id_EQ: 123 }, delete: { actors: { where: { node: { name_EQ: "Actor to delete" } } } }) {
+                deleteMovies(
+                    where: { id_EQ: 123 }
+                    delete: { actors: { where: { node: { name_EQ: "Actor to delete" } } } }
+                ) {
                     nodesDeleted
                 }
             }

@@ -21,7 +21,7 @@ import { Neo4jGraphQL } from "../../../../src";
 import { createBearerToken } from "../../../utils/create-bearer-token";
 import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
-describe("Cypher Auth Projection", () => {
+describe("Cypher Auth Projection - deprecated", () => {
     const secret = "secret";
     let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
@@ -34,7 +34,7 @@ describe("Cypher Auth Projection", () => {
             }
 
             extend type User {
-                id: ID @authorization(validate: [{ when: BEFORE, where: { node: { id: { equals: "$jwt.sub" } } } }])
+                id: ID @authorization(validate: [{ when: BEFORE, where: { node: { id_EQ: "$jwt.sub" } } }])
             }
         `;
 

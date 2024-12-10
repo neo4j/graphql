@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQL } from "../../../../../../src";
-import { createBearerToken } from "../../../../../utils/create-bearer-token";
-import { formatCypher, formatParams, translateQuery } from "../../../../utils/tck-test-utils";
+import { Neo4jGraphQL } from "../../../../src";
+import { createBearerToken } from "../../../utils/create-bearer-token";
+import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
-describe("Cypher Auth Roles", () => {
+describe("Cypher Auth Roles - deprecated", () => {
     const secret = "secret";
     let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
@@ -35,7 +35,7 @@ describe("Cypher Auth Roles", () => {
             type History @node {
                 url: String
                     @authorization(
-                        validate: [{ operations: [READ], where: { jwt: { roles: { includes: "super-admin" } } } }]
+                        validate: [{ operations: [READ], where: { jwt: { roles_INCLUDES: "super-admin" } } }]
                     )
             }
 
@@ -59,14 +59,14 @@ describe("Cypher Auth Roles", () => {
                 posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
             }
 
-            extend type User @authorization(validate: [{ where: { jwt: { roles: { includes: "admin" } } } }])
+            extend type User @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "admin" } } }])
 
             extend type Post
                 @authorization(
                     validate: [
                         {
                             operations: [CREATE_RELATIONSHIP, DELETE_RELATIONSHIP, DELETE]
-                            where: { jwt: { roles: { includes: "super-admin" } } }
+                            where: { jwt: { roles_INCLUDES: "super-admin" } }
                         }
                     ]
                 )
@@ -75,10 +75,7 @@ describe("Cypher Auth Roles", () => {
                 password: String
                     @authorization(
                         validate: [
-                            {
-                                operations: [READ, CREATE, UPDATE]
-                                where: { jwt: { roles: { includes: "super-admin" } } }
-                            }
+                            { operations: [READ, CREATE, UPDATE], where: { jwt: { roles_INCLUDES: "super-admin" } } }
                         ]
                     )
             }
@@ -87,7 +84,7 @@ describe("Cypher Auth Roles", () => {
                 history: [History]
                     @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h", columnName: "h")
                     @authorization(
-                        validate: [{ operations: [READ], where: { jwt: { roles: { includes: "super-admin" } } } }]
+                        validate: [{ operations: [READ], where: { jwt: { roles_INCLUDES: "super-admin" } } }]
                     )
             }
         `;
@@ -329,7 +326,7 @@ describe("Cypher Auth Roles", () => {
     test("Update Node", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateUsers(where: { id: { equals: "1" } }, update: { id_SET: "id-1" }) {
+                updateUsers(where: { id_EQ: "1" }, update: { id_SET: "id-1" }) {
                     users {
                         id
                     }
@@ -376,7 +373,7 @@ describe("Cypher Auth Roles", () => {
     test("Update Node & Field", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateUsers(where: { id: { equals: "1" } }, update: { password_SET: "password" }) {
+                updateUsers(where: { id_EQ: "1" }, update: { password_SET: "password" }) {
                     users {
                         id
                     }
@@ -495,11 +492,7 @@ describe("Cypher Auth Roles", () => {
             mutation {
                 updateComments(
                     update: {
-                        post: {
-                            update: {
-                                node: { creator: { connect: { where: { node: { id: { equals: "user-id" } } } } } }
-                            }
-                        }
+                        post: { update: { node: { creator: { connect: { where: { node: { id_EQ: "user-id" } } } } } } }
                     }
                 ) {
                     comments {
@@ -632,9 +625,7 @@ describe("Cypher Auth Roles", () => {
                 updateComments(
                     update: {
                         post: {
-                            update: {
-                                node: { creator: { disconnect: { where: { node: { id: { equals: "user-id" } } } } } }
-                            }
+                            update: { node: { creator: { disconnect: { where: { node: { id_EQ: "user-id" } } } } } }
                         }
                     }
                 ) {
@@ -703,9 +694,7 @@ describe("Cypher Auth Roles", () => {
                                                         {
                                                             \\"where\\": {
                                                                 \\"node\\": {
-                                                                    \\"id\\": {
-                                                                        \\"equals\\": \\"user-id\\"
-                                                                    }
+                                                                    \\"id_EQ\\": \\"user-id\\"
                                                                 }
                                                             }
                                                         }
