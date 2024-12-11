@@ -232,6 +232,25 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
               totalCount: Int!
             }
 
+            input PersonFriendsConnectionFilters {
+              \\"\\"\\"
+              Return People where all of the related PersonFriendsConnections match this filter
+              \\"\\"\\"
+              all: PersonFriendsConnectionWhere
+              \\"\\"\\"
+              Return People where none of the related PersonFriendsConnections match this filter
+              \\"\\"\\"
+              none: PersonFriendsConnectionWhere
+              \\"\\"\\"
+              Return People where one of the related PersonFriendsConnections match this filter
+              \\"\\"\\"
+              single: PersonFriendsConnectionWhere
+              \\"\\"\\"
+              Return People where some of the related PersonFriendsConnections match this filter
+              \\"\\"\\"
+              some: PersonFriendsConnectionWhere
+            }
+
             input PersonFriendsConnectionSort {
               edge: FriendOfSort
               node: PersonSort
@@ -286,6 +305,17 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
               properties: FriendOf!
             }
 
+            input PersonFriendsRelationshipFilters {
+              \\"\\"\\"Return People where all of the related People match this filter\\"\\"\\"
+              all: PersonWhere
+              \\"\\"\\"Return People where none of the related People match this filter\\"\\"\\"
+              none: PersonWhere
+              \\"\\"\\"Return People where one of the related People match this filter\\"\\"\\"
+              single: PersonWhere
+              \\"\\"\\"Return People where some of the related People match this filter\\"\\"\\"
+              some: PersonWhere
+            }
+
             input PersonFriendsUpdateConnectionInput {
               edge: FriendOfUpdateInput
               node: PersonUpdateInput
@@ -329,7 +359,9 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
               AND: [PersonWhere!]
               NOT: PersonWhere
               OR: [PersonWhere!]
+              friends: PersonFriendsRelationshipFilters
               friendsAggregate: PersonFriendsAggregateInput
+              friendsConnection: PersonFriendsConnectionFilters
               \\"\\"\\"
               Return People where all of the related PersonFriendsConnections match this filter
               \\"\\"\\"

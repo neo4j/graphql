@@ -345,6 +345,25 @@ describe("@relationship directive, aggregate argument", () => {
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
+                }
+
                 input MovieActorsConnectionSort {
                   node: ActorSort
                 }
@@ -414,6 +433,17 @@ describe("@relationship directive, aggregate argument", () => {
                   node: Actor!
                 }
 
+                input MovieActorsRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+                  all: ActorWhere
+                  \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+                  none: ActorWhere
+                  \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+                  single: ActorWhere
+                  \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+                  some: ActorWhere
+                }
+
                 input MovieActorsUpdateConnectionInput {
                   node: ActorUpdateInput
                 }
@@ -463,7 +493,9 @@ describe("@relationship directive, aggregate argument", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: MovieActorsRelationshipFilters
                   actorsAggregate: MovieActorsAggregateInput
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -733,6 +765,25 @@ describe("@relationship directive, aggregate argument", () => {
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
+                }
+
                 input MovieActorsConnectionSort {
                   node: ActorSort
                 }
@@ -802,6 +853,17 @@ describe("@relationship directive, aggregate argument", () => {
                   node: Actor!
                 }
 
+                input MovieActorsRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+                  all: ActorWhere
+                  \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+                  none: ActorWhere
+                  \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+                  single: ActorWhere
+                  \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+                  some: ActorWhere
+                }
+
                 input MovieActorsUpdateConnectionInput {
                   node: ActorUpdateInput
                 }
@@ -851,7 +913,9 @@ describe("@relationship directive, aggregate argument", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: MovieActorsRelationshipFilters
                   actorsAggregate: MovieActorsAggregateInput
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -1112,6 +1176,25 @@ describe("@relationship directive, aggregate argument", () => {
                       totalCount: Int!
                     }
 
+                    input MovieActorsConnectionFilters {
+                      \\"\\"\\"
+                      Return Movies where all of the related MovieActorsConnections match this filter
+                      \\"\\"\\"
+                      all: MovieActorsConnectionWhere
+                      \\"\\"\\"
+                      Return Movies where none of the related MovieActorsConnections match this filter
+                      \\"\\"\\"
+                      none: MovieActorsConnectionWhere
+                      \\"\\"\\"
+                      Return Movies where one of the related MovieActorsConnections match this filter
+                      \\"\\"\\"
+                      single: MovieActorsConnectionWhere
+                      \\"\\"\\"
+                      Return Movies where some of the related MovieActorsConnections match this filter
+                      \\"\\"\\"
+                      some: MovieActorsConnectionWhere
+                    }
+
                     input MovieActorsConnectionSort {
                       node: PersonSort
                     }
@@ -1181,6 +1264,17 @@ describe("@relationship directive, aggregate argument", () => {
                       node: Person!
                     }
 
+                    input MovieActorsRelationshipFilters {
+                      \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                      all: PersonWhere
+                      \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                      none: PersonWhere
+                      \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                      single: PersonWhere
+                      \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                      some: PersonWhere
+                    }
+
                     input MovieActorsUpdateConnectionInput {
                       node: PersonUpdateInput
                     }
@@ -1230,7 +1324,9 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
+                      actors: MovieActorsRelationshipFilters
                       actorsAggregate: MovieActorsAggregateInput
+                      actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -1561,6 +1657,25 @@ describe("@relationship directive, aggregate argument", () => {
                       totalCount: Int!
                     }
 
+                    input MovieActorsConnectionFilters {
+                      \\"\\"\\"
+                      Return Movies where all of the related MovieActorsConnections match this filter
+                      \\"\\"\\"
+                      all: MovieActorsConnectionWhere
+                      \\"\\"\\"
+                      Return Movies where none of the related MovieActorsConnections match this filter
+                      \\"\\"\\"
+                      none: MovieActorsConnectionWhere
+                      \\"\\"\\"
+                      Return Movies where one of the related MovieActorsConnections match this filter
+                      \\"\\"\\"
+                      single: MovieActorsConnectionWhere
+                      \\"\\"\\"
+                      Return Movies where some of the related MovieActorsConnections match this filter
+                      \\"\\"\\"
+                      some: MovieActorsConnectionWhere
+                    }
+
                     input MovieActorsConnectionSort {
                       node: PersonSort
                     }
@@ -1630,6 +1745,17 @@ describe("@relationship directive, aggregate argument", () => {
                       node: Person!
                     }
 
+                    input MovieActorsRelationshipFilters {
+                      \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                      all: PersonWhere
+                      \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                      none: PersonWhere
+                      \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                      single: PersonWhere
+                      \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                      some: PersonWhere
+                    }
+
                     input MovieActorsUpdateConnectionInput {
                       node: PersonUpdateInput
                     }
@@ -1689,7 +1815,9 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
+                      actors: MovieActorsRelationshipFilters
                       actorsAggregate: MovieActorsAggregateInput
+                      actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -2064,6 +2192,25 @@ describe("@relationship directive, aggregate argument", () => {
                       totalCount: Int!
                     }
 
+                    input MovieActorsConnectionFilters {
+                      \\"\\"\\"
+                      Return Movies where all of the related MovieActorsConnections match this filter
+                      \\"\\"\\"
+                      all: MovieActorsConnectionWhere
+                      \\"\\"\\"
+                      Return Movies where none of the related MovieActorsConnections match this filter
+                      \\"\\"\\"
+                      none: MovieActorsConnectionWhere
+                      \\"\\"\\"
+                      Return Movies where one of the related MovieActorsConnections match this filter
+                      \\"\\"\\"
+                      single: MovieActorsConnectionWhere
+                      \\"\\"\\"
+                      Return Movies where some of the related MovieActorsConnections match this filter
+                      \\"\\"\\"
+                      some: MovieActorsConnectionWhere
+                    }
+
                     input MovieActorsConnectionWhere {
                       Actor: MovieActorsActorConnectionWhere
                       Person: MovieActorsPersonConnectionWhere
@@ -2125,6 +2272,17 @@ describe("@relationship directive, aggregate argument", () => {
                       node: CastMember!
                     }
 
+                    input MovieActorsRelationshipFilters {
+                      \\"\\"\\"Return Movies where all of the related CastMembers match this filter\\"\\"\\"
+                      all: CastMemberWhere
+                      \\"\\"\\"Return Movies where none of the related CastMembers match this filter\\"\\"\\"
+                      none: CastMemberWhere
+                      \\"\\"\\"Return Movies where one of the related CastMembers match this filter\\"\\"\\"
+                      single: CastMemberWhere
+                      \\"\\"\\"Return Movies where some of the related CastMembers match this filter\\"\\"\\"
+                      some: CastMemberWhere
+                    }
+
                     input MovieActorsUpdateInput {
                       Actor: [MovieActorsActorUpdateFieldInput!]
                       Person: [MovieActorsPersonUpdateFieldInput!]
@@ -2166,6 +2324,8 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
+                      actors: MovieActorsRelationshipFilters
+                      actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -2530,6 +2690,25 @@ describe("@relationship directive, aggregate argument", () => {
                       totalCount: Int!
                     }
 
+                    input MovieActorsConnectionFilters {
+                      \\"\\"\\"
+                      Return Movies where all of the related MovieActorsConnections match this filter
+                      \\"\\"\\"
+                      all: MovieActorsConnectionWhere
+                      \\"\\"\\"
+                      Return Movies where none of the related MovieActorsConnections match this filter
+                      \\"\\"\\"
+                      none: MovieActorsConnectionWhere
+                      \\"\\"\\"
+                      Return Movies where one of the related MovieActorsConnections match this filter
+                      \\"\\"\\"
+                      single: MovieActorsConnectionWhere
+                      \\"\\"\\"
+                      Return Movies where some of the related MovieActorsConnections match this filter
+                      \\"\\"\\"
+                      some: MovieActorsConnectionWhere
+                    }
+
                     input MovieActorsConnectionWhere {
                       Actor: MovieActorsActorConnectionWhere
                       Person: MovieActorsPersonConnectionWhere
@@ -2591,6 +2770,17 @@ describe("@relationship directive, aggregate argument", () => {
                       node: CastMember!
                     }
 
+                    input MovieActorsRelationshipFilters {
+                      \\"\\"\\"Return Movies where all of the related CastMembers match this filter\\"\\"\\"
+                      all: CastMemberWhere
+                      \\"\\"\\"Return Movies where none of the related CastMembers match this filter\\"\\"\\"
+                      none: CastMemberWhere
+                      \\"\\"\\"Return Movies where one of the related CastMembers match this filter\\"\\"\\"
+                      single: CastMemberWhere
+                      \\"\\"\\"Return Movies where some of the related CastMembers match this filter\\"\\"\\"
+                      some: CastMemberWhere
+                    }
+
                     input MovieActorsUpdateInput {
                       Actor: [MovieActorsActorUpdateFieldInput!]
                       Person: [MovieActorsPersonUpdateFieldInput!]
@@ -2632,6 +2822,8 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
+                      actors: MovieActorsRelationshipFilters
+                      actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"

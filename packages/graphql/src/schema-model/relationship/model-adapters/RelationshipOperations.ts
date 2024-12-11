@@ -54,4 +54,12 @@ export class RelationshipOperations extends RelationshipBaseOperations<Relations
     public get edgeSubscriptionWhereInputTypeName(): string {
         return `${this.edgePrefix}SubscriptionWhere`;
     }
+
+    public get relationshipFiltersTypeName(): string {
+        return `${this.prefixForTypename}RelationshipFilters`;
+    }
+
+    public get connectionFiltersTypeName(): string {
+        return `${this.prefixForTypename}ConnectionFilters`;
+    }
 }

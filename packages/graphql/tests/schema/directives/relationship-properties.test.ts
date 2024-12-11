@@ -209,6 +209,25 @@ describe("Relationship-properties", () => {
               totalCount: Int!
             }
 
+            input ActorMoviesConnectionFilters {
+              \\"\\"\\"
+              Return Actors where all of the related ActorMoviesConnections match this filter
+              \\"\\"\\"
+              all: ActorMoviesConnectionWhere
+              \\"\\"\\"
+              Return Actors where none of the related ActorMoviesConnections match this filter
+              \\"\\"\\"
+              none: ActorMoviesConnectionWhere
+              \\"\\"\\"
+              Return Actors where one of the related ActorMoviesConnections match this filter
+              \\"\\"\\"
+              single: ActorMoviesConnectionWhere
+              \\"\\"\\"
+              Return Actors where some of the related ActorMoviesConnections match this filter
+              \\"\\"\\"
+              some: ActorMoviesConnectionWhere
+            }
+
             input ActorMoviesConnectionSort {
               edge: ActedInSort
               node: MovieSort
@@ -269,6 +288,17 @@ describe("Relationship-properties", () => {
               properties: ActedIn!
             }
 
+            input ActorMoviesRelationshipFilters {
+              \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
+            }
+
             input ActorMoviesUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: MovieUpdateInput
@@ -300,7 +330,9 @@ describe("Relationship-properties", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              movies: ActorMoviesRelationshipFilters
               moviesAggregate: ActorMoviesAggregateInput
+              moviesConnection: ActorMoviesConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorMoviesConnections match this filter
               \\"\\"\\"
@@ -463,6 +495,25 @@ describe("Relationship-properties", () => {
               totalCount: Int!
             }
 
+            input MovieActorsConnectionFilters {
+              \\"\\"\\"
+              Return Movies where all of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              all: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              none: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where one of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              single: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              some: MovieActorsConnectionWhere
+            }
+
             input MovieActorsConnectionSort {
               edge: ActedInSort
               node: ActorSort
@@ -521,6 +572,17 @@ describe("Relationship-properties", () => {
               cursor: String!
               node: Actor!
               properties: ActedIn!
+            }
+
+            input MovieActorsRelationshipFilters {
+              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
             }
 
             input MovieActorsUpdateConnectionInput {
@@ -585,7 +647,9 @@ describe("Relationship-properties", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              actors: MovieActorsRelationshipFilters
               actorsAggregate: MovieActorsAggregateInput
+              actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -910,6 +974,25 @@ describe("Relationship-properties", () => {
               totalCount: Int!
             }
 
+            input ActorMoviesConnectionFilters {
+              \\"\\"\\"
+              Return Actors where all of the related ActorMoviesConnections match this filter
+              \\"\\"\\"
+              all: ActorMoviesConnectionWhere
+              \\"\\"\\"
+              Return Actors where none of the related ActorMoviesConnections match this filter
+              \\"\\"\\"
+              none: ActorMoviesConnectionWhere
+              \\"\\"\\"
+              Return Actors where one of the related ActorMoviesConnections match this filter
+              \\"\\"\\"
+              single: ActorMoviesConnectionWhere
+              \\"\\"\\"
+              Return Actors where some of the related ActorMoviesConnections match this filter
+              \\"\\"\\"
+              some: ActorMoviesConnectionWhere
+            }
+
             input ActorMoviesConnectionSort {
               edge: ActedInSort
               node: MovieSort
@@ -970,6 +1053,17 @@ describe("Relationship-properties", () => {
               properties: ActedIn!
             }
 
+            input ActorMoviesRelationshipFilters {
+              \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
+            }
+
             input ActorMoviesUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: MovieUpdateInput
@@ -1001,7 +1095,9 @@ describe("Relationship-properties", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              movies: ActorMoviesRelationshipFilters
               moviesAggregate: ActorMoviesAggregateInput
+              moviesConnection: ActorMoviesConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorMoviesConnections match this filter
               \\"\\"\\"
@@ -1175,6 +1271,25 @@ describe("Relationship-properties", () => {
               totalCount: Int!
             }
 
+            input MovieActorsConnectionFilters {
+              \\"\\"\\"
+              Return Movies where all of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              all: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              none: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where one of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              single: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              some: MovieActorsConnectionWhere
+            }
+
             input MovieActorsConnectionSort {
               edge: ActedInSort
               node: ActorSort
@@ -1233,6 +1348,17 @@ describe("Relationship-properties", () => {
               cursor: String!
               node: Actor!
               properties: ActedIn!
+            }
+
+            input MovieActorsRelationshipFilters {
+              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
             }
 
             input MovieActorsUpdateConnectionInput {
@@ -1297,7 +1423,9 @@ describe("Relationship-properties", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              actors: MovieActorsRelationshipFilters
               actorsAggregate: MovieActorsAggregateInput
+              actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -1579,6 +1707,25 @@ describe("Relationship-properties", () => {
               totalCount: Int!
             }
 
+            input ActorMoviesConnectionFilters {
+              \\"\\"\\"
+              Return Actors where all of the related ActorMoviesConnections match this filter
+              \\"\\"\\"
+              all: ActorMoviesConnectionWhere
+              \\"\\"\\"
+              Return Actors where none of the related ActorMoviesConnections match this filter
+              \\"\\"\\"
+              none: ActorMoviesConnectionWhere
+              \\"\\"\\"
+              Return Actors where one of the related ActorMoviesConnections match this filter
+              \\"\\"\\"
+              single: ActorMoviesConnectionWhere
+              \\"\\"\\"
+              Return Actors where some of the related ActorMoviesConnections match this filter
+              \\"\\"\\"
+              some: ActorMoviesConnectionWhere
+            }
+
             input ActorMoviesConnectionSort {
               edge: ActedInSort
               node: MovieSort
@@ -1638,6 +1785,17 @@ describe("Relationship-properties", () => {
               properties: ActedIn!
             }
 
+            input ActorMoviesRelationshipFilters {
+              \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
+            }
+
             input ActorMoviesUpdateConnectionInput {
               node: MovieUpdateInput
             }
@@ -1668,7 +1826,9 @@ describe("Relationship-properties", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              movies: ActorMoviesRelationshipFilters
               moviesAggregate: ActorMoviesAggregateInput
+              moviesConnection: ActorMoviesConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorMoviesConnections match this filter
               \\"\\"\\"
@@ -1816,6 +1976,25 @@ describe("Relationship-properties", () => {
               totalCount: Int!
             }
 
+            input MovieActorsConnectionFilters {
+              \\"\\"\\"
+              Return Movies where all of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              all: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              none: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where one of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              single: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              some: MovieActorsConnectionWhere
+            }
+
             input MovieActorsConnectionSort {
               edge: ActedInSort
               node: ActorSort
@@ -1873,6 +2052,17 @@ describe("Relationship-properties", () => {
               cursor: String!
               node: Actor!
               properties: ActedIn!
+            }
+
+            input MovieActorsRelationshipFilters {
+              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
             }
 
             input MovieActorsUpdateConnectionInput {
@@ -1936,7 +2126,9 @@ describe("Relationship-properties", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              actors: MovieActorsRelationshipFilters
               actorsAggregate: MovieActorsAggregateInput
+              actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"

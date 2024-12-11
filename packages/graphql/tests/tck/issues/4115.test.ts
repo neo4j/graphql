@@ -94,7 +94,16 @@ describe("https://github.com/neo4j/graphql/issues/4115", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:MEMBER_OF]-(this1:Person)
-                WHERE ($isAuthenticated = true AND (size([(this1)<-[:CREATOR_OF]-(this2:User) WHERE ($jwt.uid IS NOT NULL AND this2.id = $jwt.uid) | 1]) > 0 AND size([(this1)-[:MEMBER_OF]->(this4:Family) WHERE size([(this4)<-[:CREATOR_OF]-(this3:User) WHERE ($param2 IS NOT NULL AND $param2 IN this3.roles) | 1]) > 0 | 1]) > 0))
+                WHERE ($isAuthenticated = true AND (EXISTS {
+                    MATCH (this1)<-[:CREATOR_OF]-(this2:User)
+                    WHERE ($jwt.uid IS NOT NULL AND this2.id = $jwt.uid)
+                } AND EXISTS {
+                    MATCH (this1)-[:MEMBER_OF]->(this3:Family)
+                    WHERE EXISTS {
+                        MATCH (this3)<-[:CREATOR_OF]-(this4:User)
+                        WHERE ($param2 IS NOT NULL AND $param2 IN this4.roles)
+                    }
+                }))
                 RETURN count(this1) AS var5
             }
             RETURN this { .id, membersAggregate: { count: var5 } } AS this"

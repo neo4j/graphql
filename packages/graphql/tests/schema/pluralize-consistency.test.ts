@@ -253,6 +253,25 @@ describe("Pluralize consistency", () => {
               totalCount: Int!
             }
 
+            input super_userMy_friendConnectionFilters {
+              \\"\\"\\"
+              Return super_users where all of the related super_userMy_friendConnections match this filter
+              \\"\\"\\"
+              all: super_userMy_friendConnectionWhere
+              \\"\\"\\"
+              Return super_users where none of the related super_userMy_friendConnections match this filter
+              \\"\\"\\"
+              none: super_userMy_friendConnectionWhere
+              \\"\\"\\"
+              Return super_users where one of the related super_userMy_friendConnections match this filter
+              \\"\\"\\"
+              single: super_userMy_friendConnectionWhere
+              \\"\\"\\"
+              Return super_users where some of the related super_userMy_friendConnections match this filter
+              \\"\\"\\"
+              some: super_userMy_friendConnectionWhere
+            }
+
             input super_userMy_friendConnectionSort {
               node: super_friendSort
             }
@@ -307,6 +326,25 @@ describe("Pluralize consistency", () => {
               node: super_friend!
             }
 
+            input super_userMy_friendRelationshipFilters {
+              \\"\\"\\"
+              Return super_users where all of the related super_friends match this filter
+              \\"\\"\\"
+              all: super_friendWhere
+              \\"\\"\\"
+              Return super_users where none of the related super_friends match this filter
+              \\"\\"\\"
+              none: super_friendWhere
+              \\"\\"\\"
+              Return super_users where one of the related super_friends match this filter
+              \\"\\"\\"
+              single: super_friendWhere
+              \\"\\"\\"
+              Return super_users where some of the related super_friends match this filter
+              \\"\\"\\"
+              some: super_friendWhere
+            }
+
             input super_userMy_friendUpdateConnectionInput {
               node: super_friendUpdateInput
             }
@@ -337,7 +375,9 @@ describe("Pluralize consistency", () => {
               AND: [super_userWhere!]
               NOT: super_userWhere
               OR: [super_userWhere!]
+              my_friend: super_userMy_friendRelationshipFilters
               my_friendAggregate: super_userMy_friendAggregateInput
+              my_friendConnection: super_userMy_friendConnectionFilters
               \\"\\"\\"
               Return super_users where all of the related super_userMy_friendConnections match this filter
               \\"\\"\\"

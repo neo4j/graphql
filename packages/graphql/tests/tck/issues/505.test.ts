@@ -124,7 +124,28 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
                 WITH this
                 MATCH (this)-[this0:CREATED_PAGE]->(this1:Page)
                 WITH *
-                WHERE ($isAuthenticated = true AND (size([(this1)<-[:CREATED_PAGE]-(this2:User) WHERE ($jwt.sub IS NOT NULL AND this2.authId = $jwt.sub) | 1]) > 0 OR (($param3 IS NOT NULL AND this1.shared = $param3) AND size([(this1)<-[:HAS_PAGE]-(this4:Workspace) WHERE NOT (size([(this4)<-[:MEMBER_OF]-(this3:User) WHERE ($jwt.sub IS NOT NULL AND this3.authId = $jwt.sub) | 1]) > 0 OR size([(this4)-[:HAS_ADMIN]->(this5:User) WHERE ($jwt.sub IS NOT NULL AND this5.authId = $jwt.sub) | 1]) > 0) | 1]) = 0)))
+                WHERE ($isAuthenticated = true AND (EXISTS {
+                    MATCH (this1)<-[:CREATED_PAGE]-(this2:User)
+                    WHERE ($jwt.sub IS NOT NULL AND this2.authId = $jwt.sub)
+                } OR (($param3 IS NOT NULL AND this1.shared = $param3) AND (EXISTS {
+                    MATCH (this1)<-[:HAS_PAGE]-(this3:Workspace)
+                    WHERE (EXISTS {
+                        MATCH (this3)<-[:MEMBER_OF]-(this4:User)
+                        WHERE ($jwt.sub IS NOT NULL AND this4.authId = $jwt.sub)
+                    } OR EXISTS {
+                        MATCH (this3)-[:HAS_ADMIN]->(this5:User)
+                        WHERE ($jwt.sub IS NOT NULL AND this5.authId = $jwt.sub)
+                    })
+                } AND NOT (EXISTS {
+                    MATCH (this1)<-[:HAS_PAGE]-(this3:Workspace)
+                    WHERE NOT (EXISTS {
+                        MATCH (this3)<-[:MEMBER_OF]-(this4:User)
+                        WHERE ($jwt.sub IS NOT NULL AND this4.authId = $jwt.sub)
+                    } OR EXISTS {
+                        MATCH (this3)-[:HAS_ADMIN]->(this5:User)
+                        WHERE ($jwt.sub IS NOT NULL AND this5.authId = $jwt.sub)
+                    })
+                })))))
                 WITH this1 { .id } AS this1
                 RETURN collect(this1) AS var6
             }
@@ -158,12 +179,39 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Workspace)
             WITH *
-            WHERE (this.id = $param0 AND ($isAuthenticated = true AND (size([(this)<-[:MEMBER_OF]-(this0:User) WHERE ($jwt.sub IS NOT NULL AND this0.authId = $jwt.sub) | 1]) > 0 OR size([(this)-[:HAS_ADMIN]->(this1:User) WHERE ($jwt.sub IS NOT NULL AND this1.authId = $jwt.sub) | 1]) > 0)))
+            WHERE (this.id = $param0 AND ($isAuthenticated = true AND (EXISTS {
+                MATCH (this)<-[:MEMBER_OF]-(this0:User)
+                WHERE ($jwt.sub IS NOT NULL AND this0.authId = $jwt.sub)
+            } OR EXISTS {
+                MATCH (this)-[:HAS_ADMIN]->(this1:User)
+                WHERE ($jwt.sub IS NOT NULL AND this1.authId = $jwt.sub)
+            })))
             CALL {
                 WITH this
                 MATCH (this)-[this2:HAS_PAGE]->(this3:Page)
                 WITH *
-                WHERE ($isAuthenticated = true AND (size([(this3)<-[:CREATED_PAGE]-(this4:User) WHERE ($jwt.sub IS NOT NULL AND this4.authId = $jwt.sub) | 1]) > 0 OR (($param3 IS NOT NULL AND this3.shared = $param3) AND size([(this3)<-[:HAS_PAGE]-(this6:Workspace) WHERE NOT (size([(this6)<-[:MEMBER_OF]-(this5:User) WHERE ($jwt.sub IS NOT NULL AND this5.authId = $jwt.sub) | 1]) > 0 OR size([(this6)-[:HAS_ADMIN]->(this7:User) WHERE ($jwt.sub IS NOT NULL AND this7.authId = $jwt.sub) | 1]) > 0) | 1]) = 0)))
+                WHERE ($isAuthenticated = true AND (EXISTS {
+                    MATCH (this3)<-[:CREATED_PAGE]-(this4:User)
+                    WHERE ($jwt.sub IS NOT NULL AND this4.authId = $jwt.sub)
+                } OR (($param3 IS NOT NULL AND this3.shared = $param3) AND (EXISTS {
+                    MATCH (this3)<-[:HAS_PAGE]-(this5:Workspace)
+                    WHERE (EXISTS {
+                        MATCH (this5)<-[:MEMBER_OF]-(this6:User)
+                        WHERE ($jwt.sub IS NOT NULL AND this6.authId = $jwt.sub)
+                    } OR EXISTS {
+                        MATCH (this5)-[:HAS_ADMIN]->(this7:User)
+                        WHERE ($jwt.sub IS NOT NULL AND this7.authId = $jwt.sub)
+                    })
+                } AND NOT (EXISTS {
+                    MATCH (this3)<-[:HAS_PAGE]-(this5:Workspace)
+                    WHERE NOT (EXISTS {
+                        MATCH (this5)<-[:MEMBER_OF]-(this6:User)
+                        WHERE ($jwt.sub IS NOT NULL AND this6.authId = $jwt.sub)
+                    } OR EXISTS {
+                        MATCH (this5)-[:HAS_ADMIN]->(this7:User)
+                        WHERE ($jwt.sub IS NOT NULL AND this7.authId = $jwt.sub)
+                    })
+                })))))
                 WITH this3 { .id } AS this3
                 RETURN collect(this3) AS var8
             }
@@ -200,7 +248,28 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
             } AND NOT (EXISTS {
                 MATCH (this)<-[:HAS_PAGE]-(this0:Workspace)
                 WHERE NOT (this0.id = $param0)
-            })) AND ($isAuthenticated = true AND (size([(this)<-[:CREATED_PAGE]-(this1:User) WHERE ($jwt.sub IS NOT NULL AND this1.authId = $jwt.sub) | 1]) > 0 OR (($param3 IS NOT NULL AND this.shared = $param3) AND size([(this)<-[:HAS_PAGE]-(this3:Workspace) WHERE NOT (size([(this3)<-[:MEMBER_OF]-(this2:User) WHERE ($jwt.sub IS NOT NULL AND this2.authId = $jwt.sub) | 1]) > 0 OR size([(this3)-[:HAS_ADMIN]->(this4:User) WHERE ($jwt.sub IS NOT NULL AND this4.authId = $jwt.sub) | 1]) > 0) | 1]) = 0))))
+            })) AND ($isAuthenticated = true AND (EXISTS {
+                MATCH (this)<-[:CREATED_PAGE]-(this1:User)
+                WHERE ($jwt.sub IS NOT NULL AND this1.authId = $jwt.sub)
+            } OR (($param3 IS NOT NULL AND this.shared = $param3) AND (EXISTS {
+                MATCH (this)<-[:HAS_PAGE]-(this2:Workspace)
+                WHERE (EXISTS {
+                    MATCH (this2)<-[:MEMBER_OF]-(this3:User)
+                    WHERE ($jwt.sub IS NOT NULL AND this3.authId = $jwt.sub)
+                } OR EXISTS {
+                    MATCH (this2)-[:HAS_ADMIN]->(this4:User)
+                    WHERE ($jwt.sub IS NOT NULL AND this4.authId = $jwt.sub)
+                })
+            } AND NOT (EXISTS {
+                MATCH (this)<-[:HAS_PAGE]-(this2:Workspace)
+                WHERE NOT (EXISTS {
+                    MATCH (this2)<-[:MEMBER_OF]-(this3:User)
+                    WHERE ($jwt.sub IS NOT NULL AND this3.authId = $jwt.sub)
+                } OR EXISTS {
+                    MATCH (this2)-[:HAS_ADMIN]->(this4:User)
+                    WHERE ($jwt.sub IS NOT NULL AND this4.authId = $jwt.sub)
+                })
+            }))))))
             RETURN this { .id } AS this"
         `);
 
@@ -228,7 +297,28 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Page)
             WITH *
-            WHERE ($isAuthenticated = true AND (size([(this)<-[:CREATED_PAGE]-(this0:User) WHERE ($jwt.sub IS NOT NULL AND this0.authId = $jwt.sub) | 1]) > 0 OR (($param2 IS NOT NULL AND this.shared = $param2) AND size([(this)<-[:HAS_PAGE]-(this2:Workspace) WHERE NOT (size([(this2)<-[:MEMBER_OF]-(this1:User) WHERE ($jwt.sub IS NOT NULL AND this1.authId = $jwt.sub) | 1]) > 0 OR size([(this2)-[:HAS_ADMIN]->(this3:User) WHERE ($jwt.sub IS NOT NULL AND this3.authId = $jwt.sub) | 1]) > 0) | 1]) = 0)))
+            WHERE ($isAuthenticated = true AND (EXISTS {
+                MATCH (this)<-[:CREATED_PAGE]-(this0:User)
+                WHERE ($jwt.sub IS NOT NULL AND this0.authId = $jwt.sub)
+            } OR (($param2 IS NOT NULL AND this.shared = $param2) AND (EXISTS {
+                MATCH (this)<-[:HAS_PAGE]-(this1:Workspace)
+                WHERE (EXISTS {
+                    MATCH (this1)<-[:MEMBER_OF]-(this2:User)
+                    WHERE ($jwt.sub IS NOT NULL AND this2.authId = $jwt.sub)
+                } OR EXISTS {
+                    MATCH (this1)-[:HAS_ADMIN]->(this3:User)
+                    WHERE ($jwt.sub IS NOT NULL AND this3.authId = $jwt.sub)
+                })
+            } AND NOT (EXISTS {
+                MATCH (this)<-[:HAS_PAGE]-(this1:Workspace)
+                WHERE NOT (EXISTS {
+                    MATCH (this1)<-[:MEMBER_OF]-(this2:User)
+                    WHERE ($jwt.sub IS NOT NULL AND this2.authId = $jwt.sub)
+                } OR EXISTS {
+                    MATCH (this1)-[:HAS_ADMIN]->(this3:User)
+                    WHERE ($jwt.sub IS NOT NULL AND this3.authId = $jwt.sub)
+                })
+            })))))
             RETURN this { .id } AS this"
         `);
 

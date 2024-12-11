@@ -60,30 +60,6 @@ describe("Cypher Advanced Filtering - deprecated", () => {
         });
     });
 
-    test("implicit EQ", async () => {
-        const query = /* GraphQL */ `
-            {
-                movies(where: { title_EQ: "The Matrix" }) {
-                    title
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $param0
-            RETURN this { .title } AS this"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": \\"The Matrix\\"
-            }"
-        `);
-    });
-
     test("EQ", async () => {
         const query = /* GraphQL */ `
             {

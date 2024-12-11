@@ -934,6 +934,25 @@ describe("@populatedBy tests", () => {
                   totalCount: Int!
                 }
 
+                input MovieGenresConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieGenresConnections match this filter
+                  \\"\\"\\"
+                  all: MovieGenresConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieGenresConnections match this filter
+                  \\"\\"\\"
+                  none: MovieGenresConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieGenresConnections match this filter
+                  \\"\\"\\"
+                  single: MovieGenresConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieGenresConnections match this filter
+                  \\"\\"\\"
+                  some: MovieGenresConnectionWhere
+                }
+
                 input MovieGenresConnectionSort {
                   edge: RelPropertiesSort
                   node: GenreSort
@@ -987,6 +1006,17 @@ describe("@populatedBy tests", () => {
                   properties: RelProperties!
                 }
 
+                input MovieGenresRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related Genres match this filter\\"\\"\\"
+                  all: GenreWhere
+                  \\"\\"\\"Return Movies where none of the related Genres match this filter\\"\\"\\"
+                  none: GenreWhere
+                  \\"\\"\\"Return Movies where one of the related Genres match this filter\\"\\"\\"
+                  single: GenreWhere
+                  \\"\\"\\"Return Movies where some of the related Genres match this filter\\"\\"\\"
+                  some: GenreWhere
+                }
+
                 input MovieGenresUpdateConnectionInput {
                   edge: RelPropertiesUpdateInput
                   node: GenreUpdateInput
@@ -1018,7 +1048,9 @@ describe("@populatedBy tests", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  genres: MovieGenresRelationshipFilters
                   genresAggregate: MovieGenresAggregateInput
+                  genresConnection: MovieGenresConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieGenresConnections match this filter
                   \\"\\"\\"
@@ -1495,6 +1527,25 @@ describe("@populatedBy tests", () => {
                   totalCount: Int!
                 }
 
+                input MovieGenresConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieGenresConnections match this filter
+                  \\"\\"\\"
+                  all: MovieGenresConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieGenresConnections match this filter
+                  \\"\\"\\"
+                  none: MovieGenresConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieGenresConnections match this filter
+                  \\"\\"\\"
+                  single: MovieGenresConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieGenresConnections match this filter
+                  \\"\\"\\"
+                  some: MovieGenresConnectionWhere
+                }
+
                 input MovieGenresConnectionSort {
                   edge: RelPropertiesSort
                   node: GenreSort
@@ -1548,6 +1599,17 @@ describe("@populatedBy tests", () => {
                   properties: RelProperties!
                 }
 
+                input MovieGenresRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related Genres match this filter\\"\\"\\"
+                  all: GenreWhere
+                  \\"\\"\\"Return Movies where none of the related Genres match this filter\\"\\"\\"
+                  none: GenreWhere
+                  \\"\\"\\"Return Movies where one of the related Genres match this filter\\"\\"\\"
+                  single: GenreWhere
+                  \\"\\"\\"Return Movies where some of the related Genres match this filter\\"\\"\\"
+                  some: GenreWhere
+                }
+
                 input MovieGenresUpdateConnectionInput {
                   edge: RelPropertiesUpdateInput
                   node: GenreUpdateInput
@@ -1579,7 +1641,9 @@ describe("@populatedBy tests", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  genres: MovieGenresRelationshipFilters
                   genresAggregate: MovieGenresAggregateInput
+                  genresConnection: MovieGenresConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieGenresConnections match this filter
                   \\"\\"\\"

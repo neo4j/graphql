@@ -1168,6 +1168,25 @@ describe("Aggregations", () => {
               totalCount: Int!
             }
 
+            input PostLikesConnectionFilters {
+              \\"\\"\\"
+              Return Posts where all of the related PostLikesConnections match this filter
+              \\"\\"\\"
+              all: PostLikesConnectionWhere
+              \\"\\"\\"
+              Return Posts where none of the related PostLikesConnections match this filter
+              \\"\\"\\"
+              none: PostLikesConnectionWhere
+              \\"\\"\\"
+              Return Posts where one of the related PostLikesConnections match this filter
+              \\"\\"\\"
+              single: PostLikesConnectionWhere
+              \\"\\"\\"
+              Return Posts where some of the related PostLikesConnections match this filter
+              \\"\\"\\"
+              some: PostLikesConnectionWhere
+            }
+
             input PostLikesConnectionSort {
               edge: LikesSort
               node: UserSort
@@ -1351,6 +1370,17 @@ describe("Aggregations", () => {
               properties: Likes!
             }
 
+            input PostLikesRelationshipFilters {
+              \\"\\"\\"Return Posts where all of the related Users match this filter\\"\\"\\"
+              all: UserWhere
+              \\"\\"\\"Return Posts where none of the related Users match this filter\\"\\"\\"
+              none: UserWhere
+              \\"\\"\\"Return Posts where one of the related Users match this filter\\"\\"\\"
+              single: UserWhere
+              \\"\\"\\"Return Posts where some of the related Users match this filter\\"\\"\\"
+              some: UserWhere
+            }
+
             input PostLikesUpdateConnectionInput {
               edge: LikesUpdateInput
               node: UserUpdateInput
@@ -1414,7 +1444,9 @@ describe("Aggregations", () => {
               AND: [PostWhere!]
               NOT: PostWhere
               OR: [PostWhere!]
+              likes: PostLikesRelationshipFilters
               likesAggregate: PostLikesAggregateInput
+              likesConnection: PostLikesConnectionFilters
               \\"\\"\\"
               Return Posts where all of the related PostLikesConnections match this filter
               \\"\\"\\"

@@ -192,11 +192,65 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                 WITH this
                 MATCH (this)<-[this0:MEMBER_OF]-(this1:Person)
                 WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (size([(this1)<-[:CREATOR_OF]-(this2:User) WHERE ($jwt.uid IS NOT NULL AND this2.id = $jwt.uid) | 1]) > 0 OR size([(this1)-[:MEMBER_OF]->(this5:Group) WHERE size([(this5)<-[:ADMIN_OF]-(this4:Admin) WHERE size([(this4)-[:IS_USER]->(this3:User) WHERE ($jwt.uid IS NOT NULL AND this3.id = $jwt.uid) | 1]) > 0 | 1]) > 0 | 1]) > 0 OR size([(this1)-[:MEMBER_OF]->(this8:Group) WHERE size([(this8)<-[:CONTRIBUTOR_TO]-(this7:Contributor) WHERE size([(this7)-[:IS_USER]->(this6:User) WHERE ($jwt.uid IS NOT NULL AND this6.id = $jwt.uid) | 1]) > 0 | 1]) > 0 | 1]) > 0 OR size([(this1)-[:MEMBER_OF]->(this10:Group) WHERE size([(this10)<-[:CREATOR_OF]-(this9:User) WHERE ($jwt.uid IS NOT NULL AND this9.id = $jwt.uid) | 1]) > 0 | 1]) > 0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (EXISTS {
+                    MATCH (this1)<-[:CREATOR_OF]-(this2:User)
+                    WHERE ($jwt.uid IS NOT NULL AND this2.id = $jwt.uid)
+                } OR EXISTS {
+                    MATCH (this1)-[:MEMBER_OF]->(this3:Group)
+                    WHERE EXISTS {
+                        MATCH (this3)<-[:ADMIN_OF]-(this4:Admin)
+                        WHERE EXISTS {
+                            MATCH (this4)-[:IS_USER]->(this5:User)
+                            WHERE ($jwt.uid IS NOT NULL AND this5.id = $jwt.uid)
+                        }
+                    }
+                } OR EXISTS {
+                    MATCH (this1)-[:MEMBER_OF]->(this6:Group)
+                    WHERE EXISTS {
+                        MATCH (this6)<-[:CONTRIBUTOR_TO]-(this7:Contributor)
+                        WHERE EXISTS {
+                            MATCH (this7)-[:IS_USER]->(this8:User)
+                            WHERE ($jwt.uid IS NOT NULL AND this8.id = $jwt.uid)
+                        }
+                    }
+                } OR EXISTS {
+                    MATCH (this1)-[:MEMBER_OF]->(this9:Group)
+                    WHERE EXISTS {
+                        MATCH (this9)<-[:CREATOR_OF]-(this10:User)
+                        WHERE ($jwt.uid IS NOT NULL AND this10.id = $jwt.uid)
+                    }
+                })), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 CALL {
                     WITH this1
                     MATCH (this1)-[this11:PARTNER_OF]-(this12:Person)
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (size([(this12)<-[:CREATOR_OF]-(this13:User) WHERE ($jwt.uid IS NOT NULL AND this13.id = $jwt.uid) | 1]) > 0 OR size([(this12)-[:MEMBER_OF]->(this16:Group) WHERE size([(this16)<-[:ADMIN_OF]-(this15:Admin) WHERE size([(this15)-[:IS_USER]->(this14:User) WHERE ($jwt.uid IS NOT NULL AND this14.id = $jwt.uid) | 1]) > 0 | 1]) > 0 | 1]) > 0 OR size([(this12)-[:MEMBER_OF]->(this19:Group) WHERE size([(this19)<-[:CONTRIBUTOR_TO]-(this18:Contributor) WHERE size([(this18)-[:IS_USER]->(this17:User) WHERE ($jwt.uid IS NOT NULL AND this17.id = $jwt.uid) | 1]) > 0 | 1]) > 0 | 1]) > 0 OR size([(this12)-[:MEMBER_OF]->(this21:Group) WHERE size([(this21)<-[:CREATOR_OF]-(this20:User) WHERE ($jwt.uid IS NOT NULL AND this20.id = $jwt.uid) | 1]) > 0 | 1]) > 0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (EXISTS {
+                        MATCH (this12)<-[:CREATOR_OF]-(this13:User)
+                        WHERE ($jwt.uid IS NOT NULL AND this13.id = $jwt.uid)
+                    } OR EXISTS {
+                        MATCH (this12)-[:MEMBER_OF]->(this14:Group)
+                        WHERE EXISTS {
+                            MATCH (this14)<-[:ADMIN_OF]-(this15:Admin)
+                            WHERE EXISTS {
+                                MATCH (this15)-[:IS_USER]->(this16:User)
+                                WHERE ($jwt.uid IS NOT NULL AND this16.id = $jwt.uid)
+                            }
+                        }
+                    } OR EXISTS {
+                        MATCH (this12)-[:MEMBER_OF]->(this17:Group)
+                        WHERE EXISTS {
+                            MATCH (this17)<-[:CONTRIBUTOR_TO]-(this18:Contributor)
+                            WHERE EXISTS {
+                                MATCH (this18)-[:IS_USER]->(this19:User)
+                                WHERE ($jwt.uid IS NOT NULL AND this19.id = $jwt.uid)
+                            }
+                        }
+                    } OR EXISTS {
+                        MATCH (this12)-[:MEMBER_OF]->(this20:Group)
+                        WHERE EXISTS {
+                            MATCH (this20)<-[:CREATOR_OF]-(this21:User)
+                            WHERE ($jwt.uid IS NOT NULL AND this21.id = $jwt.uid)
+                        }
+                    })), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     WITH collect({ node: this12, relationship: this11 }) AS edges
                     WITH edges, size(edges) AS totalCount
                     CALL {

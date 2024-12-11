@@ -280,6 +280,25 @@ describe("lower case type names", () => {
               totalCount: Int!
             }
 
+            input actorMoviesConnectionFilters {
+              \\"\\"\\"
+              Return actors where all of the related actorMoviesConnections match this filter
+              \\"\\"\\"
+              all: actorMoviesConnectionWhere
+              \\"\\"\\"
+              Return actors where none of the related actorMoviesConnections match this filter
+              \\"\\"\\"
+              none: actorMoviesConnectionWhere
+              \\"\\"\\"
+              Return actors where one of the related actorMoviesConnections match this filter
+              \\"\\"\\"
+              single: actorMoviesConnectionWhere
+              \\"\\"\\"
+              Return actors where some of the related actorMoviesConnections match this filter
+              \\"\\"\\"
+              some: actorMoviesConnectionWhere
+            }
+
             input actorMoviesConnectionSort {
               node: movieSort
             }
@@ -381,6 +400,17 @@ describe("lower case type names", () => {
               node: movie!
             }
 
+            input actorMoviesRelationshipFilters {
+              \\"\\"\\"Return actors where all of the related movies match this filter\\"\\"\\"
+              all: movieWhere
+              \\"\\"\\"Return actors where none of the related movies match this filter\\"\\"\\"
+              none: movieWhere
+              \\"\\"\\"Return actors where one of the related movies match this filter\\"\\"\\"
+              single: movieWhere
+              \\"\\"\\"Return actors where some of the related movies match this filter\\"\\"\\"
+              some: movieWhere
+            }
+
             input actorMoviesUpdateConnectionInput {
               node: movieUpdateInput
             }
@@ -426,7 +456,9 @@ describe("lower case type names", () => {
               createdAt_IN: [DateTime]
               createdAt_LT: DateTime
               createdAt_LTE: DateTime
+              movies: actorMoviesRelationshipFilters
               moviesAggregate: actorMoviesAggregateInput
+              moviesConnection: actorMoviesConnectionFilters
               \\"\\"\\"
               Return actors where all of the related actorMoviesConnections match this filter
               \\"\\"\\"
@@ -509,6 +541,25 @@ describe("lower case type names", () => {
               edges: [movieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input movieActorsConnectionFilters {
+              \\"\\"\\"
+              Return movies where all of the related movieActorsConnections match this filter
+              \\"\\"\\"
+              all: movieActorsConnectionWhere
+              \\"\\"\\"
+              Return movies where none of the related movieActorsConnections match this filter
+              \\"\\"\\"
+              none: movieActorsConnectionWhere
+              \\"\\"\\"
+              Return movies where one of the related movieActorsConnections match this filter
+              \\"\\"\\"
+              single: movieActorsConnectionWhere
+              \\"\\"\\"
+              Return movies where some of the related movieActorsConnections match this filter
+              \\"\\"\\"
+              some: movieActorsConnectionWhere
             }
 
             input movieActorsConnectionSort {
@@ -597,6 +648,17 @@ describe("lower case type names", () => {
               node: actor!
             }
 
+            input movieActorsRelationshipFilters {
+              \\"\\"\\"Return movies where all of the related actors match this filter\\"\\"\\"
+              all: actorWhere
+              \\"\\"\\"Return movies where none of the related actors match this filter\\"\\"\\"
+              none: actorWhere
+              \\"\\"\\"Return movies where one of the related actors match this filter\\"\\"\\"
+              single: actorWhere
+              \\"\\"\\"Return movies where some of the related actors match this filter\\"\\"\\"
+              some: actorWhere
+            }
+
             input movieActorsUpdateConnectionInput {
               node: actorUpdateInput
             }
@@ -675,7 +737,9 @@ describe("lower case type names", () => {
               AND: [movieWhere!]
               NOT: movieWhere
               OR: [movieWhere!]
+              actors: movieActorsRelationshipFilters
               actorsAggregate: movieActorsAggregateInput
+              actorsConnection: movieActorsConnectionFilters
               \\"\\"\\"
               Return movies where all of the related movieActorsConnections match this filter
               \\"\\"\\"
