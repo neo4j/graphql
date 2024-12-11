@@ -76,10 +76,6 @@ describe("auth/is-authenticated", () => {
 
             const token = "not valid token";
 
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
-
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
             expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -215,10 +211,6 @@ describe("auth/is-authenticated", () => {
 
             const token = "not valid token";
 
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
-
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
             expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -327,10 +319,6 @@ describe("auth/is-authenticated", () => {
 
             const token = "not valid token";
 
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
-
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
             expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -406,10 +394,6 @@ describe("auth/is-authenticated", () => {
             `;
 
             const token = "not valid token";
-
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
 
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
@@ -590,10 +574,6 @@ describe("auth/is-authenticated", () => {
 
             const token = "not valid token";
 
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
-
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
             expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -700,10 +680,6 @@ describe("auth/is-authenticated", () => {
             `;
 
             const token = "not valid token";
-
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
 
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
@@ -899,10 +875,6 @@ describe("auth/is-authenticated", () => {
 
             const token = "not valid token";
 
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
-
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
             expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -1045,10 +1017,6 @@ describe("auth/is-authenticated", () => {
             `;
 
             const token = "not valid token";
-
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
 
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
@@ -1339,10 +1307,6 @@ describe("auth/is-authenticated", () => {
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
-
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
             expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -1401,10 +1365,6 @@ describe("auth/is-authenticated", () => {
                     CREATE (:${User} {id: "${userId}"})
                     CREATE (:${Post} {id: "${postId}"})
                 `);
-
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
 
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
@@ -1785,10 +1745,6 @@ describe("auth/is-authenticated", () => {
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
-
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
             expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -1847,10 +1803,6 @@ describe("auth/is-authenticated", () => {
                     CREATE (:${User} {id: "${userId}"})
                     CREATE (:${Post} {id: "${postId}"})
                 `);
-
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
 
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
@@ -2081,10 +2033,6 @@ describe("auth/is-authenticated", () => {
 
             const token = "not valid token";
 
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
-
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
             expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -2134,10 +2082,6 @@ describe("auth/is-authenticated", () => {
             await testHelper.executeCypher(`
                     CREATE (:${User} {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
                 `);
-
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
 
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
@@ -2279,10 +2223,6 @@ describe("auth/is-authenticated", () => {
                     CREATE (:${User} {id: "${userId}"})-[:HAS_POST]->(:${Post} {id: "${postId}"})
                 `);
 
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
-
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
             expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -2396,10 +2336,6 @@ describe("auth/is-authenticated", () => {
             `;
 
             const token = "not valid token";
-
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
 
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
@@ -2552,10 +2488,6 @@ describe("auth/is-authenticated", () => {
             `;
 
             const token = "not valid token";
-
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
 
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
@@ -2726,10 +2658,6 @@ describe("auth/is-authenticated", () => {
             `;
 
             const token = "not valid token";
-
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
 
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
