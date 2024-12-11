@@ -306,7 +306,7 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
 
             input CrewPositionUpdateInput {
               position: CrewPositionTypeEnumScalarMutations
-              position_SET: CrewPositionType
+              position_SET: CrewPositionType @deprecated(reason: \\"Please use the generic mutation 'position: { set: ... } }' instead.\\")
             }
 
             input CrewPositionWhere {
@@ -357,7 +357,7 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
 
             input MovieUpdateInput {
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -421,12 +421,12 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
             input StringScalarFilters {
               contains: String
               endsWith: String
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
+              eq: String
+              gt: String
+              gte: String
               in: [String!]
-              lessThan: String
-              lessThanEquals: String
+              lt: String
+              lte: String
               matches: String
               startsWith: String
             }

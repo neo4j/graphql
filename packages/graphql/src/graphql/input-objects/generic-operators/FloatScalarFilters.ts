@@ -23,14 +23,14 @@ export const FloatScalarFilters = new GraphQLInputObjectType({
     name: "FloatScalarFilters",
     description: "Float filters",
     fields: {
-        equals: {
+        eq: {
             type: GraphQLFloat,
         },
-        greaterThan: { type: GraphQLFloat },
-        greaterThanEquals: { type: GraphQLFloat },
+        gt: { type: GraphQLFloat },
+        gte: { type: GraphQLFloat },
         in: { type: new GraphQLList(new GraphQLNonNull(GraphQLFloat)) },
-        lessThan: { type: GraphQLFloat },
-        lessThanEquals: { type: GraphQLFloat },
+        lt: { type: GraphQLFloat },
+        lte: { type: GraphQLFloat },
     },
 });
 
@@ -38,7 +38,7 @@ export const FloatListFilters = new GraphQLInputObjectType({
     name: "FloatListFilters",
     description: "Float list filters",
     fields: {
-        equals: { type: new GraphQLList(new GraphQLNonNull(FloatScalarFilters)) },
+        eq: { type: new GraphQLList(new GraphQLNonNull(FloatScalarFilters)) },
         includes: { type: FloatScalarFilters },
     },
 });

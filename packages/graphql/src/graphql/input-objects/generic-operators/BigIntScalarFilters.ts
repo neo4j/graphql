@@ -24,14 +24,14 @@ export const BigIntScalarFilters = new GraphQLInputObjectType({
     name: "BigIntScalarFilters",
     description: "BigInt filters",
     fields: {
-        equals: {
+        eq: {
             type: GraphQLBigInt,
         },
-        greaterThan: { type: GraphQLBigInt },
-        greaterThanEquals: { type: GraphQLBigInt },
+        gt: { type: GraphQLBigInt },
+        gte: { type: GraphQLBigInt },
         in: { type: new GraphQLList(new GraphQLNonNull(GraphQLBigInt)) },
-        lessThan: { type: GraphQLBigInt },
-        lessThanEquals: { type: GraphQLBigInt },
+        lt: { type: GraphQLBigInt },
+        lte: { type: GraphQLBigInt },
     },
 });
 
@@ -39,7 +39,7 @@ export const BigIntListFilters = new GraphQLInputObjectType({
     name: "BigIntListFilters",
     description: "BigInt list filters",
     fields: {
-        equals: { type: new GraphQLList(new GraphQLNonNull(BigIntScalarFilters)) },
+        eq: { type: new GraphQLList(new GraphQLNonNull(BigIntScalarFilters)) },
         includes: { type: BigIntScalarFilters },
     },
 });

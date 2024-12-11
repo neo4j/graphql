@@ -57,12 +57,12 @@ describe("Date", () => {
 
             \\"\\"\\"Date filters\\"\\"\\"
             input DateScalarFilters {
-              equals: Date
-              greaterThan: Date
-              greaterThanEquals: Date
+              eq: Date
+              gt: Date
+              gte: Date
               in: [Date!]
-              lessThan: Date
-              lessThanEquals: Date
+              lt: Date
+              lte: Date
             }
 
             \\"\\"\\"Date mutations\\"\\"\\"
@@ -87,12 +87,12 @@ describe("Date", () => {
             input IDScalarFilters {
               contains: ID
               endsWith: ID
-              equals: ID
-              greaterThan: ID
-              greaterThanEquals: ID
+              eq: ID
+              gt: ID
+              gte: ID
               in: [ID!]
-              lessThan: ID
-              lessThanEquals: ID
+              lt: ID
+              lte: ID
               matches: ID
               startsWith: ID
             }
@@ -132,9 +132,9 @@ describe("Date", () => {
 
             input MovieUpdateInput {
               date: DateScalarMutations
-              date_SET: Date
+              date_SET: Date @deprecated(reason: \\"Please use the generic mutation 'date: { set: ... } }' instead.\\")
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {

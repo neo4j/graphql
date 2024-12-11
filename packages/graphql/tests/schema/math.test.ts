@@ -68,12 +68,12 @@ describe("Algebraic", () => {
             input IDScalarFilters {
               contains: ID
               endsWith: ID
-              equals: ID
-              greaterThan: ID
-              greaterThanEquals: ID
+              eq: ID
+              gt: ID
+              gte: ID
               in: [ID!]
-              lessThan: ID
-              lessThanEquals: ID
+              lt: ID
+              lte: ID
               matches: ID
               startsWith: ID
             }
@@ -92,12 +92,12 @@ describe("Algebraic", () => {
 
             \\"\\"\\"Int filters\\"\\"\\"
             input IntScalarFilters {
-              equals: Int
-              greaterThan: Int
-              greaterThanEquals: Int
+              eq: Int
+              gt: Int
+              gte: Int
               in: [Int!]
-              lessThan: Int
-              lessThanEquals: Int
+              lt: Int
+              lte: Int
             }
 
             \\"\\"\\"Int mutations\\"\\"\\"
@@ -138,11 +138,11 @@ describe("Algebraic", () => {
 
             input MovieUpdateInput {
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               viewers: IntScalarMutations
-              viewers_DECREMENT: Int
-              viewers_INCREMENT: Int
-              viewers_SET: Int
+              viewers_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'viewers: { decrement: ... } }' instead.\\")
+              viewers_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'viewers: { increment: ... } }' instead.\\")
+              viewers_SET: Int @deprecated(reason: \\"Please use the generic mutation 'viewers: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -244,12 +244,12 @@ describe("Algebraic", () => {
 
             \\"\\"\\"BigInt filters\\"\\"\\"
             input BigIntScalarFilters {
-              equals: BigInt
-              greaterThan: BigInt
-              greaterThanEquals: BigInt
+              eq: BigInt
+              gt: BigInt
+              gte: BigInt
               in: [BigInt!]
-              lessThan: BigInt
-              lessThanEquals: BigInt
+              lt: BigInt
+              lte: BigInt
             }
 
             \\"\\"\\"BigInt mutations\\"\\"\\"
@@ -289,12 +289,12 @@ describe("Algebraic", () => {
             input IDScalarFilters {
               contains: ID
               endsWith: ID
-              equals: ID
-              greaterThan: ID
-              greaterThanEquals: ID
+              eq: ID
+              gt: ID
+              gte: ID
               in: [ID!]
-              lessThan: ID
-              lessThanEquals: ID
+              lt: ID
+              lte: ID
               matches: ID
               startsWith: ID
             }
@@ -335,11 +335,11 @@ describe("Algebraic", () => {
 
             input MovieUpdateInput {
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               viewers: BigIntScalarMutations
-              viewers_DECREMENT: BigInt
-              viewers_INCREMENT: BigInt
-              viewers_SET: BigInt
+              viewers_DECREMENT: BigInt @deprecated(reason: \\"Please use the relevant generic mutation 'viewers: { decrement: ... } }' instead.\\")
+              viewers_INCREMENT: BigInt @deprecated(reason: \\"Please use the relevant generic mutation 'viewers: { increment: ... } }' instead.\\")
+              viewers_SET: BigInt @deprecated(reason: \\"Please use the generic mutation 'viewers: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -458,12 +458,12 @@ describe("Algebraic", () => {
 
             \\"\\"\\"Float filters\\"\\"\\"
             input FloatScalarFilters {
-              equals: Float
-              greaterThan: Float
-              greaterThanEquals: Float
+              eq: Float
+              gt: Float
+              gte: Float
               in: [Float!]
-              lessThan: Float
-              lessThanEquals: Float
+              lt: Float
+              lte: Float
             }
 
             \\"\\"\\"Float mutations\\"\\"\\"
@@ -484,12 +484,12 @@ describe("Algebraic", () => {
             input IDScalarFilters {
               contains: ID
               endsWith: ID
-              equals: ID
-              greaterThan: ID
-              greaterThanEquals: ID
+              eq: ID
+              gt: ID
+              gte: ID
               in: [ID!]
-              lessThan: ID
-              lessThanEquals: ID
+              lt: ID
+              lte: ID
               matches: ID
               startsWith: ID
             }
@@ -530,13 +530,13 @@ describe("Algebraic", () => {
 
             input MovieUpdateInput {
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               viewers: FloatScalarMutations
-              viewers_ADD: Float
-              viewers_DIVIDE: Float
-              viewers_MULTIPLY: Float
-              viewers_SET: Float
-              viewers_SUBTRACT: Float
+              viewers_ADD: Float @deprecated(reason: \\"Please use the relevant generic mutation 'viewers: { add: ... } }' instead.\\")
+              viewers_DIVIDE: Float @deprecated(reason: \\"Please use the relevant generic mutation 'viewers: { divide: ... } }' instead.\\")
+              viewers_MULTIPLY: Float @deprecated(reason: \\"Please use the relevant generic mutation 'viewers: { multiply: ... } }' instead.\\")
+              viewers_SET: Float @deprecated(reason: \\"Please use the generic mutation 'viewers: { set: ... } }' instead.\\")
+              viewers_SUBTRACT: Float @deprecated(reason: \\"Please use the relevant generic mutation 'viewers: { subtract: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -851,7 +851,7 @@ describe("Algebraic", () => {
             input DirectorUpdateInput {
               directs: [DirectorDirectsUpdateFieldInput!]
               lastName: StringScalarMutations
-              lastName_SET: String
+              lastName_SET: String @deprecated(reason: \\"Please use the generic mutation 'lastName: { set: ... } }' instead.\\")
             }
 
             input DirectorWhere {
@@ -908,12 +908,12 @@ describe("Algebraic", () => {
             input IDScalarFilters {
               contains: ID
               endsWith: ID
-              equals: ID
-              greaterThan: ID
-              greaterThanEquals: ID
+              eq: ID
+              gt: ID
+              gte: ID
               in: [ID!]
-              lessThan: ID
-              lessThanEquals: ID
+              lt: ID
+              lte: ID
               matches: ID
               startsWith: ID
             }
@@ -932,12 +932,12 @@ describe("Algebraic", () => {
 
             \\"\\"\\"Int filters\\"\\"\\"
             input IntScalarFilters {
-              equals: Int
-              greaterThan: Int
-              greaterThanEquals: Int
+              eq: Int
+              gt: Int
+              gte: Int
               in: [Int!]
-              lessThan: Int
-              lessThanEquals: Int
+              lt: Int
+              lte: Int
             }
 
             \\"\\"\\"Int mutations\\"\\"\\"
@@ -1130,11 +1130,11 @@ describe("Algebraic", () => {
             input MovieUpdateInput {
               directedBy: [MovieDirectedByUpdateFieldInput!]
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               viewers: IntScalarMutations
-              viewers_DECREMENT: Int
-              viewers_INCREMENT: Int
-              viewers_SET: Int
+              viewers_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'viewers: { decrement: ... } }' instead.\\")
+              viewers_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'viewers: { increment: ... } }' instead.\\")
+              viewers_SET: Int @deprecated(reason: \\"Please use the generic mutation 'viewers: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -1232,12 +1232,12 @@ describe("Algebraic", () => {
             input StringScalarFilters {
               contains: String
               endsWith: String
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
+              eq: String
+              gt: String
+              gte: String
               in: [String!]
-              lessThan: String
-              lessThanEquals: String
+              lt: String
+              lte: String
               matches: String
               startsWith: String
             }
@@ -1329,12 +1329,12 @@ describe("Algebraic", () => {
             input IDScalarFilters {
               contains: ID
               endsWith: ID
-              equals: ID
-              greaterThan: ID
-              greaterThanEquals: ID
+              eq: ID
+              gt: ID
+              gte: ID
               in: [ID!]
-              lessThan: ID
-              lessThanEquals: ID
+              lt: ID
+              lte: ID
               matches: ID
               startsWith: ID
             }
@@ -1353,12 +1353,12 @@ describe("Algebraic", () => {
 
             \\"\\"\\"Int filters\\"\\"\\"
             input IntScalarFilters {
-              equals: Int
-              greaterThan: Int
-              greaterThanEquals: Int
+              eq: Int
+              gt: Int
+              gte: Int
               in: [Int!]
-              lessThan: Int
-              lessThanEquals: Int
+              lt: Int
+              lte: Int
             }
 
             \\"\\"\\"Int mutations\\"\\"\\"
@@ -1416,11 +1416,11 @@ describe("Algebraic", () => {
 
             input MovieUpdateInput {
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               viewers: IntScalarMutations
-              viewers_DECREMENT: Int
-              viewers_INCREMENT: Int
-              viewers_SET: Int
+              viewers_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'viewers: { decrement: ... } }' instead.\\")
+              viewers_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'viewers: { increment: ... } }' instead.\\")
+              viewers_SET: Int @deprecated(reason: \\"Please use the generic mutation 'viewers: { set: ... } }' instead.\\")
               workers: [MovieWorkersUpdateFieldInput!]
             }
 
@@ -1677,7 +1677,7 @@ describe("Algebraic", () => {
 
             input PersonUpdateInput {
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
               worksInProduction: [PersonWorksInProductionUpdateFieldInput!]
             }
 
@@ -1879,9 +1879,9 @@ describe("Algebraic", () => {
 
             input ProductionUpdateInput {
               viewers: IntScalarMutations
-              viewers_DECREMENT: Int
-              viewers_INCREMENT: Int
-              viewers_SET: Int
+              viewers_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'viewers: { decrement: ... } }' instead.\\")
+              viewers_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'viewers: { increment: ... } }' instead.\\")
+              viewers_SET: Int @deprecated(reason: \\"Please use the generic mutation 'viewers: { set: ... } }' instead.\\")
             }
 
             input ProductionWhere {
@@ -1933,12 +1933,12 @@ describe("Algebraic", () => {
             input StringScalarFilters {
               contains: String
               endsWith: String
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
+              eq: String
+              gt: String
+              gte: String
               in: [String!]
-              lessThan: String
-              lessThanEquals: String
+              lt: String
+              lte: String
               matches: String
               startsWith: String
             }
@@ -2044,15 +2044,15 @@ describe("Algebraic", () => {
 
             input ActedInUpdateInput {
               pay: FloatScalarMutations
-              pay_ADD: Float
-              pay_DIVIDE: Float
-              pay_MULTIPLY: Float
-              pay_SET: Float
-              pay_SUBTRACT: Float
+              pay_ADD: Float @deprecated(reason: \\"Please use the relevant generic mutation 'pay: { add: ... } }' instead.\\")
+              pay_DIVIDE: Float @deprecated(reason: \\"Please use the relevant generic mutation 'pay: { divide: ... } }' instead.\\")
+              pay_MULTIPLY: Float @deprecated(reason: \\"Please use the relevant generic mutation 'pay: { multiply: ... } }' instead.\\")
+              pay_SET: Float @deprecated(reason: \\"Please use the generic mutation 'pay: { set: ... } }' instead.\\")
+              pay_SUBTRACT: Float @deprecated(reason: \\"Please use the relevant generic mutation 'pay: { subtract: ... } }' instead.\\")
               roles: ListStringMutations
-              roles_POP: Int
-              roles_PUSH: [String!]
-              roles_SET: [String!]
+              roles_POP: Int @deprecated(reason: \\"Please use the generic mutation 'roles: { pop: ... } }' instead.\\")
+              roles_PUSH: [String!] @deprecated(reason: \\"Please use the generic mutation 'roles: { push: ... } }' instead.\\")
+              roles_SET: [String!] @deprecated(reason: \\"Please use the generic mutation 'roles: { set: ... } }' instead.\\")
             }
 
             input ActedInWhere {
@@ -2106,12 +2106,12 @@ describe("Algebraic", () => {
 
             \\"\\"\\"Float filters\\"\\"\\"
             input FloatScalarFilters {
-              equals: Float
-              greaterThan: Float
-              greaterThanEquals: Float
+              eq: Float
+              gt: Float
+              gte: Float
               in: [Float!]
-              lessThan: Float
-              lessThanEquals: Float
+              lt: Float
+              lte: Float
             }
 
             \\"\\"\\"Float mutations\\"\\"\\"
@@ -2321,7 +2321,7 @@ describe("Algebraic", () => {
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -2583,7 +2583,7 @@ describe("Algebraic", () => {
             input PersonUpdateInput {
               actedInMovies: [PersonActedInMoviesUpdateFieldInput!]
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input PersonWhere {
@@ -2649,7 +2649,7 @@ describe("Algebraic", () => {
 
             \\"\\"\\"String list filters\\"\\"\\"
             input StringListFilters {
-              equals: [String!]
+              eq: [String!]
               includes: String
             }
 
@@ -2657,12 +2657,12 @@ describe("Algebraic", () => {
             input StringScalarFilters {
               contains: String
               endsWith: String
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
+              eq: String
+              gt: String
+              gte: String
               in: [String!]
-              lessThan: String
-              lessThanEquals: String
+              lt: String
+              lte: String
               matches: String
               startsWith: String
             }

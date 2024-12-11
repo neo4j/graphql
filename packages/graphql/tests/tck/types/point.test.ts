@@ -40,7 +40,7 @@ describe("Cypher Points", () => {
     test("Simple Point query", async () => {
         const query = /* GraphQL */ `
             {
-                pointContainers(where: { point_EQ: { longitude: 1.0, latitude: 2.0 } }) {
+                pointContainers(where: { point: { eq: { longitude: 1.0, latitude: 2.0 } } }) {
                     point {
                         longitude
                         latitude
@@ -135,7 +135,9 @@ describe("Cypher Points", () => {
         test("Simple Point LT query", async () => {
             const query = /* GraphQL */ `
                 {
-                    pointContainers(where: { point_LT: { point: { longitude: 1.1, latitude: 2.2 }, distance: 3.3 } }) {
+                    pointContainers(
+                        where: { point: { distance: { from: { longitude: 1.1, latitude: 2.2 }, lt: 3.3 } } }
+                    ) {
                         point {
                             longitude
                             latitude
@@ -155,11 +157,11 @@ describe("Cypher Points", () => {
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"param0\\": {
+                        \\"distance\\": 3.3,
                         \\"point\\": {
                             \\"longitude\\": 1.1,
                             \\"latitude\\": 2.2
-                        },
-                        \\"distance\\": 3.3
+                        }
                     }
                 }"
             `);
@@ -168,7 +170,9 @@ describe("Cypher Points", () => {
         test("Simple Point LTE query", async () => {
             const query = /* GraphQL */ `
                 {
-                    pointContainers(where: { point_LTE: { point: { longitude: 1.1, latitude: 2.2 }, distance: 3.3 } }) {
+                    pointContainers(
+                        where: { point: { distance: { from: { longitude: 1.1, latitude: 2.2 }, lte: 3.3 } } }
+                    ) {
                         point {
                             longitude
                             latitude
@@ -188,11 +192,11 @@ describe("Cypher Points", () => {
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"param0\\": {
+                        \\"distance\\": 3.3,
                         \\"point\\": {
                             \\"longitude\\": 1.1,
                             \\"latitude\\": 2.2
-                        },
-                        \\"distance\\": 3.3
+                        }
                     }
                 }"
             `);
@@ -201,7 +205,9 @@ describe("Cypher Points", () => {
         test("Simple Point GT query", async () => {
             const query = /* GraphQL */ `
                 {
-                    pointContainers(where: { point_GT: { point: { longitude: 1.1, latitude: 2.2 }, distance: 3.3 } }) {
+                    pointContainers(
+                        where: { point: { distance: { from: { longitude: 1.1, latitude: 2.2 }, gt: 3.3 } } }
+                    ) {
                         point {
                             longitude
                             latitude
@@ -221,11 +227,11 @@ describe("Cypher Points", () => {
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"param0\\": {
+                        \\"distance\\": 3.3,
                         \\"point\\": {
                             \\"longitude\\": 1.1,
                             \\"latitude\\": 2.2
-                        },
-                        \\"distance\\": 3.3
+                        }
                     }
                 }"
             `);
@@ -234,7 +240,9 @@ describe("Cypher Points", () => {
         test("Simple Point GTE query", async () => {
             const query = /* GraphQL */ `
                 {
-                    pointContainers(where: { point_GTE: { point: { longitude: 1.1, latitude: 2.2 }, distance: 3.3 } }) {
+                    pointContainers(
+                        where: { point: { distance: { from: { longitude: 1.1, latitude: 2.2 }, gte: 3.3 } } }
+                    ) {
                         point {
                             longitude
                             latitude
@@ -254,11 +262,11 @@ describe("Cypher Points", () => {
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"param0\\": {
+                        \\"distance\\": 3.3,
                         \\"point\\": {
                             \\"longitude\\": 1.1,
                             \\"latitude\\": 2.2
-                        },
-                        \\"distance\\": 3.3
+                        }
                     }
                 }"
             `);
@@ -268,7 +276,7 @@ describe("Cypher Points", () => {
             const query = /* GraphQL */ `
                 {
                     pointContainers(
-                        where: { point_DISTANCE: { point: { longitude: 1.1, latitude: 2.2 }, distance: 3.3 } }
+                        where: { point: { distance: { from: { longitude: 1.1, latitude: 2.2 }, eq: 3.3 } } }
                     ) {
                         point {
                             longitude
@@ -289,11 +297,11 @@ describe("Cypher Points", () => {
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"param0\\": {
+                        \\"distance\\": 3.3,
                         \\"point\\": {
                             \\"longitude\\": 1.1,
                             \\"latitude\\": 2.2
-                        },
-                        \\"distance\\": 3.3
+                        }
                     }
                 }"
             `);

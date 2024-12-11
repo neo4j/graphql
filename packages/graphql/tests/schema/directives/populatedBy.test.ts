@@ -192,12 +192,12 @@ describe("@populatedBy tests", () => {
                 input IDScalarFilters {
                   contains: ID
                   endsWith: ID
-                  equals: ID
-                  greaterThan: ID
-                  greaterThanEquals: ID
+                  eq: ID
+                  gt: ID
+                  gte: ID
                   in: [ID!]
-                  lessThan: ID
-                  lessThanEquals: ID
+                  lt: ID
+                  lte: ID
                   matches: ID
                   startsWith: ID
                 }
@@ -244,9 +244,9 @@ describe("@populatedBy tests", () => {
 
                 input MovieUpdateInput {
                   callback1: StringScalarMutations
-                  callback1_SET: String
+                  callback1_SET: String @deprecated(reason: \\"Please use the generic mutation 'callback1: { set: ... } }' instead.\\")
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
@@ -322,12 +322,12 @@ describe("@populatedBy tests", () => {
                 input StringScalarFilters {
                   contains: String
                   endsWith: String
-                  equals: String
-                  greaterThan: String
-                  greaterThanEquals: String
+                  eq: String
+                  gt: String
+                  gte: String
                   in: [String!]
-                  lessThan: String
-                  lessThanEquals: String
+                  lt: String
+                  lte: String
                   matches: String
                   startsWith: String
                 }
@@ -419,12 +419,12 @@ describe("@populatedBy tests", () => {
                 input IDScalarFilters {
                   contains: ID
                   endsWith: ID
-                  equals: ID
-                  greaterThan: ID
-                  greaterThanEquals: ID
+                  eq: ID
+                  gt: ID
+                  gte: ID
                   in: [ID!]
-                  lessThan: ID
-                  lessThanEquals: ID
+                  lt: ID
+                  lte: ID
                   matches: ID
                   startsWith: ID
                 }
@@ -443,12 +443,12 @@ describe("@populatedBy tests", () => {
 
                 \\"\\"\\"Int filters\\"\\"\\"
                 input IntScalarFilters {
-                  equals: Int
-                  greaterThan: Int
-                  greaterThanEquals: Int
+                  eq: Int
+                  gt: Int
+                  gte: Int
                   in: [Int!]
-                  lessThan: Int
-                  lessThanEquals: Int
+                  lt: Int
+                  lte: Int
                 }
 
                 \\"\\"\\"Int mutations\\"\\"\\"
@@ -495,11 +495,11 @@ describe("@populatedBy tests", () => {
 
                 input MovieUpdateInput {
                   callback1: IntScalarMutations
-                  callback1_DECREMENT: Int
-                  callback1_INCREMENT: Int
-                  callback1_SET: Int
+                  callback1_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'callback1: { decrement: ... } }' instead.\\")
+                  callback1_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'callback1: { increment: ... } }' instead.\\")
+                  callback1_SET: Int @deprecated(reason: \\"Please use the generic mutation 'callback1: { set: ... } }' instead.\\")
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
@@ -822,7 +822,7 @@ describe("@populatedBy tests", () => {
 
                 input GenreUpdateInput {
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input GenreWhere {
@@ -852,12 +852,12 @@ describe("@populatedBy tests", () => {
                 input IDScalarFilters {
                   contains: ID
                   endsWith: ID
-                  equals: ID
-                  greaterThan: ID
-                  greaterThanEquals: ID
+                  eq: ID
+                  gt: ID
+                  gte: ID
                   in: [ID!]
-                  lessThan: ID
-                  lessThanEquals: ID
+                  lt: ID
+                  lte: ID
                   matches: ID
                   startsWith: ID
                 }
@@ -1041,7 +1041,7 @@ describe("@populatedBy tests", () => {
                 input MovieUpdateInput {
                   genres: [MovieGenresUpdateFieldInput!]
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
@@ -1201,9 +1201,9 @@ describe("@populatedBy tests", () => {
 
                 input RelPropertiesUpdateInput {
                   callback1: StringScalarMutations
-                  callback1_SET: String
+                  callback1_SET: String @deprecated(reason: \\"Please use the generic mutation 'callback1: { set: ... } }' instead.\\")
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input RelPropertiesWhere {
@@ -1253,12 +1253,12 @@ describe("@populatedBy tests", () => {
                 input StringScalarFilters {
                   contains: String
                   endsWith: String
-                  equals: String
-                  greaterThan: String
-                  greaterThanEquals: String
+                  eq: String
+                  gt: String
+                  gte: String
                   in: [String!]
-                  lessThan: String
-                  lessThanEquals: String
+                  lt: String
+                  lte: String
                   matches: String
                   startsWith: String
                 }
@@ -1391,7 +1391,7 @@ describe("@populatedBy tests", () => {
 
                 input GenreUpdateInput {
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input GenreWhere {
@@ -1421,12 +1421,12 @@ describe("@populatedBy tests", () => {
                 input IDScalarFilters {
                   contains: ID
                   endsWith: ID
-                  equals: ID
-                  greaterThan: ID
-                  greaterThanEquals: ID
+                  eq: ID
+                  gt: ID
+                  gte: ID
                   in: [ID!]
-                  lessThan: ID
-                  lessThanEquals: ID
+                  lt: ID
+                  lte: ID
                   matches: ID
                   startsWith: ID
                 }
@@ -1445,12 +1445,12 @@ describe("@populatedBy tests", () => {
 
                 \\"\\"\\"Int filters\\"\\"\\"
                 input IntScalarFilters {
-                  equals: Int
-                  greaterThan: Int
-                  greaterThanEquals: Int
+                  eq: Int
+                  gt: Int
+                  gte: Int
                   in: [Int!]
-                  lessThan: Int
-                  lessThanEquals: Int
+                  lt: Int
+                  lte: Int
                 }
 
                 \\"\\"\\"Int mutations\\"\\"\\"
@@ -1634,7 +1634,7 @@ describe("@populatedBy tests", () => {
                 input MovieUpdateInput {
                   genres: [MovieGenresUpdateFieldInput!]
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
@@ -1809,11 +1809,11 @@ describe("@populatedBy tests", () => {
 
                 input RelPropertiesUpdateInput {
                   callback1: IntScalarMutations
-                  callback1_DECREMENT: Int
-                  callback1_INCREMENT: Int
-                  callback1_SET: Int
+                  callback1_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'callback1: { decrement: ... } }' instead.\\")
+                  callback1_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'callback1: { increment: ... } }' instead.\\")
+                  callback1_SET: Int @deprecated(reason: \\"Please use the generic mutation 'callback1: { set: ... } }' instead.\\")
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input RelPropertiesWhere {

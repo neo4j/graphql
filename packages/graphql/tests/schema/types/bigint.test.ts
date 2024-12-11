@@ -53,12 +53,12 @@ describe("Bigint", () => {
 
             \\"\\"\\"BigInt filters\\"\\"\\"
             input BigIntScalarFilters {
-              equals: BigInt
-              greaterThan: BigInt
-              greaterThanEquals: BigInt
+              eq: BigInt
+              gt: BigInt
+              gte: BigInt
               in: [BigInt!]
-              lessThan: BigInt
-              lessThanEquals: BigInt
+              lt: BigInt
+              lte: BigInt
             }
 
             \\"\\"\\"BigInt mutations\\"\\"\\"
@@ -120,11 +120,11 @@ describe("Bigint", () => {
 
             input FileUpdateInput {
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
               size: BigIntScalarMutations
-              size_DECREMENT: BigInt
-              size_INCREMENT: BigInt
-              size_SET: BigInt
+              size_DECREMENT: BigInt @deprecated(reason: \\"Please use the relevant generic mutation 'size: { decrement: ... } }' instead.\\")
+              size_INCREMENT: BigInt @deprecated(reason: \\"Please use the relevant generic mutation 'size: { increment: ... } }' instead.\\")
+              size_SET: BigInt @deprecated(reason: \\"Please use the generic mutation 'size: { set: ... } }' instead.\\")
             }
 
             input FileWhere {
@@ -189,12 +189,12 @@ describe("Bigint", () => {
             input StringScalarFilters {
               contains: String
               endsWith: String
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
+              eq: String
+              gt: String
+              gte: String
               in: [String!]
-              lessThan: String
-              lessThanEquals: String
+              lt: String
+              lte: String
               matches: String
               startsWith: String
             }

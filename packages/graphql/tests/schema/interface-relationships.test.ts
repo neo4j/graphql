@@ -101,9 +101,9 @@ describe("Interface Relationships", () => {
 
             input ActedInUpdateInput {
               screenTime: IntScalarMutations
-              screenTime_DECREMENT: Int
-              screenTime_INCREMENT: Int
-              screenTime_SET: Int
+              screenTime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'screenTime: { decrement: ... } }' instead.\\")
+              screenTime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'screenTime: { increment: ... } }' instead.\\")
+              screenTime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'screenTime: { set: ... } }' instead.\\")
             }
 
             input ActedInWhere {
@@ -295,7 +295,7 @@ describe("Interface Relationships", () => {
             input ActorUpdateInput {
               actedIn: [ActorActedInUpdateFieldInput!]
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
@@ -383,12 +383,12 @@ describe("Interface Relationships", () => {
 
             \\"\\"\\"Int filters\\"\\"\\"
             input IntScalarFilters {
-              equals: Int
-              greaterThan: Int
-              greaterThanEquals: Int
+              eq: Int
+              gt: Int
+              gte: Int
               in: [Int!]
-              lessThan: Int
-              lessThanEquals: Int
+              lt: Int
+              lte: Int
             }
 
             \\"\\"\\"Int mutations\\"\\"\\"
@@ -429,11 +429,11 @@ describe("Interface Relationships", () => {
 
             input MovieUpdateInput {
               runtime: IntScalarMutations
-              runtime_DECREMENT: Int
-              runtime_INCREMENT: Int
-              runtime_SET: Int
+              runtime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { decrement: ... } }' instead.\\")
+              runtime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { increment: ... } }' instead.\\")
+              runtime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'runtime: { set: ... } }' instead.\\")
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -518,7 +518,7 @@ describe("Interface Relationships", () => {
 
             input ProductionUpdateInput {
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input ProductionWhere {
@@ -592,11 +592,11 @@ describe("Interface Relationships", () => {
 
             input SeriesUpdateInput {
               episodes: IntScalarMutations
-              episodes_DECREMENT: Int
-              episodes_INCREMENT: Int
-              episodes_SET: Int
+              episodes_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episodes: { decrement: ... } }' instead.\\")
+              episodes_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episodes: { increment: ... } }' instead.\\")
+              episodes_SET: Int @deprecated(reason: \\"Please use the generic mutation 'episodes: { set: ... } }' instead.\\")
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input SeriesWhere {
@@ -635,12 +635,12 @@ describe("Interface Relationships", () => {
             input StringScalarFilters {
               contains: String
               endsWith: String
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
+              eq: String
+              gt: String
+              gte: String
               in: [String!]
-              lessThan: String
-              lessThanEquals: String
+              lt: String
+              lte: String
               matches: String
               startsWith: String
             }
@@ -766,9 +766,9 @@ describe("Interface Relationships", () => {
 
             input ActedInUpdateInput {
               screenTime: IntScalarMutations
-              screenTime_DECREMENT: Int
-              screenTime_INCREMENT: Int
-              screenTime_SET: Int
+              screenTime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'screenTime: { decrement: ... } }' instead.\\")
+              screenTime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'screenTime: { increment: ... } }' instead.\\")
+              screenTime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'screenTime: { set: ... } }' instead.\\")
             }
 
             input ActedInWhere {
@@ -975,7 +975,7 @@ describe("Interface Relationships", () => {
             input ActorUpdateInput {
               actedIn: [ActorActedInUpdateFieldInput!]
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
@@ -1258,9 +1258,9 @@ describe("Interface Relationships", () => {
 
             input EpisodeUpdateInput {
               runtime: IntScalarMutations
-              runtime_DECREMENT: Int
-              runtime_INCREMENT: Int
-              runtime_SET: Int
+              runtime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { decrement: ... } }' instead.\\")
+              runtime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { increment: ... } }' instead.\\")
+              runtime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'runtime: { set: ... } }' instead.\\")
               series: [EpisodeSeriesUpdateFieldInput!]
             }
 
@@ -1319,12 +1319,12 @@ describe("Interface Relationships", () => {
 
             \\"\\"\\"Int filters\\"\\"\\"
             input IntScalarFilters {
-              equals: Int
-              greaterThan: Int
-              greaterThanEquals: Int
+              eq: Int
+              gt: Int
+              gte: Int
               in: [Int!]
-              lessThan: Int
-              lessThanEquals: Int
+              lt: Int
+              lte: Int
             }
 
             \\"\\"\\"Int mutations\\"\\"\\"
@@ -1482,11 +1482,11 @@ describe("Interface Relationships", () => {
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
               runtime: IntScalarMutations
-              runtime_DECREMENT: Int
-              runtime_INCREMENT: Int
-              runtime_SET: Int
+              runtime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { decrement: ... } }' instead.\\")
+              runtime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { increment: ... } }' instead.\\")
+              runtime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'runtime: { set: ... } }' instead.\\")
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -1787,7 +1787,7 @@ describe("Interface Relationships", () => {
             input ProductionUpdateInput {
               actors: [ProductionActorsUpdateFieldInput!]
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input ProductionWhere {
@@ -2163,12 +2163,12 @@ describe("Interface Relationships", () => {
             input SeriesUpdateInput {
               actors: [SeriesActorsUpdateFieldInput!]
               episodeCount: IntScalarMutations
-              episodeCount_DECREMENT: Int
-              episodeCount_INCREMENT: Int
-              episodeCount_SET: Int
+              episodeCount_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episodeCount: { decrement: ... } }' instead.\\")
+              episodeCount_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episodeCount: { increment: ... } }' instead.\\")
+              episodeCount_SET: Int @deprecated(reason: \\"Please use the generic mutation 'episodeCount: { set: ... } }' instead.\\")
               episodes: [SeriesEpisodesUpdateFieldInput!]
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input SeriesWhere {
@@ -2261,12 +2261,12 @@ describe("Interface Relationships", () => {
             input StringScalarFilters {
               contains: String
               endsWith: String
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
+              eq: String
+              gt: String
+              gte: String
               in: [String!]
-              lessThan: String
-              lessThanEquals: String
+              lt: String
+              lte: String
               matches: String
               startsWith: String
             }
@@ -2400,9 +2400,9 @@ describe("Interface Relationships", () => {
 
             input ActedInUpdateInput {
               screenTime: IntScalarMutations
-              screenTime_DECREMENT: Int
-              screenTime_INCREMENT: Int
-              screenTime_SET: Int
+              screenTime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'screenTime: { decrement: ... } }' instead.\\")
+              screenTime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'screenTime: { increment: ... } }' instead.\\")
+              screenTime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'screenTime: { set: ... } }' instead.\\")
             }
 
             input ActedInWhere {
@@ -2609,7 +2609,7 @@ describe("Interface Relationships", () => {
             input ActorUpdateInput {
               actedIn: [ActorActedInUpdateFieldInput!]
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
@@ -2892,9 +2892,9 @@ describe("Interface Relationships", () => {
 
             input EpisodeUpdateInput {
               runtime: IntScalarMutations
-              runtime_DECREMENT: Int
-              runtime_INCREMENT: Int
-              runtime_SET: Int
+              runtime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { decrement: ... } }' instead.\\")
+              runtime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { increment: ... } }' instead.\\")
+              runtime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'runtime: { set: ... } }' instead.\\")
               series: [EpisodeSeriesUpdateFieldInput!]
             }
 
@@ -2953,12 +2953,12 @@ describe("Interface Relationships", () => {
 
             \\"\\"\\"Int filters\\"\\"\\"
             input IntScalarFilters {
-              equals: Int
-              greaterThan: Int
-              greaterThanEquals: Int
+              eq: Int
+              gt: Int
+              gte: Int
               in: [Int!]
-              lessThan: Int
-              lessThanEquals: Int
+              lt: Int
+              lte: Int
             }
 
             \\"\\"\\"Int mutations\\"\\"\\"
@@ -3116,11 +3116,11 @@ describe("Interface Relationships", () => {
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
               runtime: IntScalarMutations
-              runtime_DECREMENT: Int
-              runtime_INCREMENT: Int
-              runtime_SET: Int
+              runtime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { decrement: ... } }' instead.\\")
+              runtime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { increment: ... } }' instead.\\")
+              runtime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'runtime: { set: ... } }' instead.\\")
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -3441,7 +3441,7 @@ describe("Interface Relationships", () => {
             input ProductionUpdateInput {
               actors: [ProductionActorsUpdateFieldInput!]
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input ProductionWhere {
@@ -3817,12 +3817,12 @@ describe("Interface Relationships", () => {
             input SeriesUpdateInput {
               actors: [SeriesActorsUpdateFieldInput!]
               episodeCount: IntScalarMutations
-              episodeCount_DECREMENT: Int
-              episodeCount_INCREMENT: Int
-              episodeCount_SET: Int
+              episodeCount_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episodeCount: { decrement: ... } }' instead.\\")
+              episodeCount_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episodeCount: { increment: ... } }' instead.\\")
+              episodeCount_SET: Int @deprecated(reason: \\"Please use the generic mutation 'episodeCount: { set: ... } }' instead.\\")
               episodes: [SeriesEpisodesUpdateFieldInput!]
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input SeriesWhere {
@@ -3950,9 +3950,9 @@ describe("Interface Relationships", () => {
 
             input StarredInUpdateInput {
               seasons: IntScalarMutations
-              seasons_DECREMENT: Int
-              seasons_INCREMENT: Int
-              seasons_SET: Int
+              seasons_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'seasons: { decrement: ... } }' instead.\\")
+              seasons_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'seasons: { increment: ... } }' instead.\\")
+              seasons_SET: Int @deprecated(reason: \\"Please use the generic mutation 'seasons: { set: ... } }' instead.\\")
             }
 
             input StarredInWhere {
@@ -3977,12 +3977,12 @@ describe("Interface Relationships", () => {
             input StringScalarFilters {
               contains: String
               endsWith: String
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
+              eq: String
+              gt: String
+              gte: String
               in: [String!]
-              lessThan: String
-              lessThanEquals: String
+              lt: String
+              lte: String
               matches: String
               startsWith: String
             }
@@ -4282,7 +4282,7 @@ describe("Interface Relationships", () => {
 
             input Interface1UpdateInput {
               field1: StringScalarMutations
-              field1_SET: String
+              field1_SET: String @deprecated(reason: \\"Please use the generic mutation 'field1: { set: ... } }' instead.\\")
               interface2: [Interface1Interface2UpdateFieldInput!]
             }
 
@@ -4377,7 +4377,7 @@ describe("Interface Relationships", () => {
 
             input Interface2UpdateInput {
               field2: StringScalarMutations
-              field2_SET: String
+              field2_SET: String @deprecated(reason: \\"Please use the generic mutation 'field2: { set: ... } }' instead.\\")
             }
 
             input Interface2Where {
@@ -4466,12 +4466,12 @@ describe("Interface Relationships", () => {
             input StringScalarFilters {
               contains: String
               endsWith: String
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
+              eq: String
+              gt: String
+              gte: String
               in: [String!]
-              lessThan: String
-              lessThanEquals: String
+              lt: String
+              lte: String
               matches: String
               startsWith: String
             }
@@ -4787,7 +4787,7 @@ describe("Interface Relationships", () => {
 
             input Type1Interface1UpdateInput {
               field1: StringScalarMutations
-              field1_SET: String
+              field1_SET: String @deprecated(reason: \\"Please use the generic mutation 'field1: { set: ... } }' instead.\\")
               interface2: [Type1Interface1Interface2UpdateFieldInput!]
             }
 
@@ -4871,7 +4871,7 @@ describe("Interface Relationships", () => {
 
             input Type1Interface2UpdateInput {
               field2: StringScalarMutations
-              field2_SET: String
+              field2_SET: String @deprecated(reason: \\"Please use the generic mutation 'field2: { set: ... } }' instead.\\")
             }
 
             input Type1Interface2Where {
@@ -4901,7 +4901,7 @@ describe("Interface Relationships", () => {
 
             input Type1UpdateInput {
               field1: StringScalarMutations
-              field1_SET: String
+              field1_SET: String @deprecated(reason: \\"Please use the generic mutation 'field1: { set: ... } }' instead.\\")
               interface1: [Type1Interface1UpdateFieldInput!]
             }
 
@@ -5099,7 +5099,7 @@ describe("Interface Relationships", () => {
 
             input Type2Interface1UpdateInput {
               field1: StringScalarMutations
-              field1_SET: String
+              field1_SET: String @deprecated(reason: \\"Please use the generic mutation 'field1: { set: ... } }' instead.\\")
               interface2: [Type2Interface1Interface2UpdateFieldInput!]
             }
 
@@ -5183,7 +5183,7 @@ describe("Interface Relationships", () => {
 
             input Type2Interface2UpdateInput {
               field2: StringScalarMutations
-              field2_SET: String
+              field2_SET: String @deprecated(reason: \\"Please use the generic mutation 'field2: { set: ... } }' instead.\\")
             }
 
             input Type2Interface2Where {
@@ -5344,12 +5344,12 @@ describe("Interface Relationships", () => {
 
             \\"\\"\\"Int filters\\"\\"\\"
             input IntScalarFilters {
-              equals: Int
-              greaterThan: Int
-              greaterThanEquals: Int
+              eq: Int
+              gt: Int
+              gte: Int
               in: [Int!]
-              lessThan: Int
-              lessThanEquals: Int
+              lt: Int
+              lte: Int
             }
 
             \\"\\"\\"Int mutations\\"\\"\\"
@@ -5586,7 +5586,7 @@ describe("Interface Relationships", () => {
 
             input Interface1UpdateInput {
               field1: StringScalarMutations
-              field1_SET: String
+              field1_SET: String @deprecated(reason: \\"Please use the generic mutation 'field1: { set: ... } }' instead.\\")
               interface2: [Interface1Interface2UpdateFieldInput!]
             }
 
@@ -5681,7 +5681,7 @@ describe("Interface Relationships", () => {
 
             input Interface2UpdateInput {
               field2: StringScalarMutations
-              field2_SET: String
+              field2_SET: String @deprecated(reason: \\"Please use the generic mutation 'field2: { set: ... } }' instead.\\")
             }
 
             input Interface2Where {
@@ -5774,9 +5774,9 @@ describe("Interface Relationships", () => {
 
             input PropsUpdateInput {
               propsField: IntScalarMutations
-              propsField_DECREMENT: Int
-              propsField_INCREMENT: Int
-              propsField_SET: Int
+              propsField_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'propsField: { decrement: ... } }' instead.\\")
+              propsField_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'propsField: { increment: ... } }' instead.\\")
+              propsField_SET: Int @deprecated(reason: \\"Please use the generic mutation 'propsField: { set: ... } }' instead.\\")
             }
 
             input PropsWhere {
@@ -5833,12 +5833,12 @@ describe("Interface Relationships", () => {
             input StringScalarFilters {
               contains: String
               endsWith: String
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
+              eq: String
+              gt: String
+              gte: String
               in: [String!]
-              lessThan: String
-              lessThanEquals: String
+              lt: String
+              lte: String
               matches: String
               startsWith: String
             }
@@ -6163,7 +6163,7 @@ describe("Interface Relationships", () => {
 
             input Type1Interface1UpdateInput {
               field1: StringScalarMutations
-              field1_SET: String
+              field1_SET: String @deprecated(reason: \\"Please use the generic mutation 'field1: { set: ... } }' instead.\\")
               interface2: [Type1Interface1Interface2UpdateFieldInput!]
             }
 
@@ -6247,7 +6247,7 @@ describe("Interface Relationships", () => {
 
             input Type1Interface2UpdateInput {
               field2: StringScalarMutations
-              field2_SET: String
+              field2_SET: String @deprecated(reason: \\"Please use the generic mutation 'field2: { set: ... } }' instead.\\")
             }
 
             input Type1Interface2Where {
@@ -6277,7 +6277,7 @@ describe("Interface Relationships", () => {
 
             input Type1UpdateInput {
               field1: StringScalarMutations
-              field1_SET: String
+              field1_SET: String @deprecated(reason: \\"Please use the generic mutation 'field1: { set: ... } }' instead.\\")
               interface1: [Type1Interface1UpdateFieldInput!]
             }
 
@@ -6484,7 +6484,7 @@ describe("Interface Relationships", () => {
 
             input Type2Interface1UpdateInput {
               field1: StringScalarMutations
-              field1_SET: String
+              field1_SET: String @deprecated(reason: \\"Please use the generic mutation 'field1: { set: ... } }' instead.\\")
               interface2: [Type2Interface1Interface2UpdateFieldInput!]
             }
 
@@ -6568,7 +6568,7 @@ describe("Interface Relationships", () => {
 
             input Type2Interface2UpdateInput {
               field2: StringScalarMutations
-              field2_SET: String
+              field2_SET: String @deprecated(reason: \\"Please use the generic mutation 'field2: { set: ... } }' instead.\\")
             }
 
             input Type2Interface2Where {
@@ -6735,12 +6735,12 @@ describe("Interface Relationships", () => {
 
             \\"\\"\\"Int filters\\"\\"\\"
             input IntScalarFilters {
-              equals: Int
-              greaterThan: Int
-              greaterThanEquals: Int
+              eq: Int
+              gt: Int
+              gte: Int
               in: [Int!]
-              lessThan: Int
-              lessThanEquals: Int
+              lt: Int
+              lte: Int
             }
 
             \\"\\"\\"Int mutations\\"\\"\\"
@@ -6997,7 +6997,7 @@ describe("Interface Relationships", () => {
 
             input Interface1UpdateInput {
               field1: StringScalarMutations
-              field1_SET: String
+              field1_SET: String @deprecated(reason: \\"Please use the generic mutation 'field1: { set: ... } }' instead.\\")
               interface2: [Interface1Interface2UpdateFieldInput!]
             }
 
@@ -7092,7 +7092,7 @@ describe("Interface Relationships", () => {
 
             input Interface2UpdateInput {
               field2: StringScalarMutations
-              field2_SET: String
+              field2_SET: String @deprecated(reason: \\"Please use the generic mutation 'field2: { set: ... } }' instead.\\")
             }
 
             input Interface2Where {
@@ -7181,12 +7181,12 @@ describe("Interface Relationships", () => {
             input StringScalarFilters {
               contains: String
               endsWith: String
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
+              eq: String
+              gt: String
+              gte: String
               in: [String!]
-              lessThan: String
-              lessThanEquals: String
+              lt: String
+              lte: String
               matches: String
               startsWith: String
             }
@@ -7511,7 +7511,7 @@ describe("Interface Relationships", () => {
 
             input Type1Interface1UpdateInput {
               field1: StringScalarMutations
-              field1_SET: String
+              field1_SET: String @deprecated(reason: \\"Please use the generic mutation 'field1: { set: ... } }' instead.\\")
               interface2: [Type1Interface1Interface2UpdateFieldInput!]
             }
 
@@ -7595,7 +7595,7 @@ describe("Interface Relationships", () => {
 
             input Type1Interface2UpdateInput {
               field2: StringScalarMutations
-              field2_SET: String
+              field2_SET: String @deprecated(reason: \\"Please use the generic mutation 'field2: { set: ... } }' instead.\\")
             }
 
             input Type1Interface2Where {
@@ -7660,9 +7660,9 @@ describe("Interface Relationships", () => {
 
             input Type1PropsUpdateInput {
               type1Field: IntScalarMutations
-              type1Field_DECREMENT: Int
-              type1Field_INCREMENT: Int
-              type1Field_SET: Int
+              type1Field_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'type1Field: { decrement: ... } }' instead.\\")
+              type1Field_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'type1Field: { increment: ... } }' instead.\\")
+              type1Field_SET: Int @deprecated(reason: \\"Please use the generic mutation 'type1Field: { set: ... } }' instead.\\")
             }
 
             input Type1PropsWhere {
@@ -7687,7 +7687,7 @@ describe("Interface Relationships", () => {
 
             input Type1UpdateInput {
               field1: StringScalarMutations
-              field1_SET: String
+              field1_SET: String @deprecated(reason: \\"Please use the generic mutation 'field1: { set: ... } }' instead.\\")
               interface1: [Type1Interface1UpdateFieldInput!]
             }
 
@@ -7894,7 +7894,7 @@ describe("Interface Relationships", () => {
 
             input Type2Interface1UpdateInput {
               field1: StringScalarMutations
-              field1_SET: String
+              field1_SET: String @deprecated(reason: \\"Please use the generic mutation 'field1: { set: ... } }' instead.\\")
               interface2: [Type2Interface1Interface2UpdateFieldInput!]
             }
 
@@ -7978,7 +7978,7 @@ describe("Interface Relationships", () => {
 
             input Type2Interface2UpdateInput {
               field2: StringScalarMutations
-              field2_SET: String
+              field2_SET: String @deprecated(reason: \\"Please use the generic mutation 'field2: { set: ... } }' instead.\\")
             }
 
             input Type2Interface2Where {
@@ -8043,9 +8043,9 @@ describe("Interface Relationships", () => {
 
             input Type2PropsUpdateInput {
               type2Field: IntScalarMutations
-              type2Field_DECREMENT: Int
-              type2Field_INCREMENT: Int
-              type2Field_SET: Int
+              type2Field_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'type2Field: { decrement: ... } }' instead.\\")
+              type2Field_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'type2Field: { increment: ... } }' instead.\\")
+              type2Field_SET: Int @deprecated(reason: \\"Please use the generic mutation 'type2Field: { set: ... } }' instead.\\")
             }
 
             input Type2PropsWhere {
@@ -8441,10 +8441,10 @@ describe("Interface Relationships", () => {
 
             input CommentUpdateInput {
               content: StringScalarMutations
-              content_SET: String
+              content_SET: String @deprecated(reason: \\"Please use the generic mutation 'content: { set: ... } }' instead.\\")
               creator: [CommentCreatorUpdateFieldInput!]
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               post: [CommentPostUpdateFieldInput!]
             }
 
@@ -8717,10 +8717,10 @@ describe("Interface Relationships", () => {
 
             input ContentUpdateInput {
               content: StringScalarMutations
-              content_SET: String
+              content_SET: String @deprecated(reason: \\"Please use the generic mutation 'content: { set: ... } }' instead.\\")
               creator: [ContentCreatorUpdateFieldInput!]
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
             }
 
             input ContentWhere {
@@ -8815,12 +8815,12 @@ describe("Interface Relationships", () => {
             input IDScalarFilters {
               contains: ID
               endsWith: ID
-              equals: ID
-              greaterThan: ID
-              greaterThanEquals: ID
+              eq: ID
+              gt: ID
+              gte: ID
               in: [ID!]
-              lessThan: ID
-              lessThanEquals: ID
+              lt: ID
+              lte: ID
               matches: ID
               startsWith: ID
             }
@@ -9151,10 +9151,10 @@ describe("Interface Relationships", () => {
             input PostUpdateInput {
               comments: [PostCommentsUpdateFieldInput!]
               content: StringScalarMutations
-              content_SET: String
+              content_SET: String @deprecated(reason: \\"Please use the generic mutation 'content: { set: ... } }' instead.\\")
               creator: [PostCreatorUpdateFieldInput!]
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
             }
 
             type PostUserCreatorAggregationSelection {
@@ -9277,12 +9277,12 @@ describe("Interface Relationships", () => {
             input StringScalarFilters {
               contains: String
               endsWith: String
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
+              eq: String
+              gt: String
+              gte: String
               in: [String!]
-              lessThan: String
-              lessThanEquals: String
+              lt: String
+              lte: String
               matches: String
               startsWith: String
             }
@@ -9511,9 +9511,9 @@ describe("Interface Relationships", () => {
             input UserUpdateInput {
               content: [UserContentUpdateFieldInput!]
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input UserWhere {
@@ -9661,9 +9661,9 @@ describe("Interface Relationships", () => {
 
             input ActedInUpdateInput {
               screenTime: IntScalarMutations
-              screenTime_DECREMENT: Int
-              screenTime_INCREMENT: Int
-              screenTime_SET: Int
+              screenTime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'screenTime: { decrement: ... } }' instead.\\")
+              screenTime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'screenTime: { increment: ... } }' instead.\\")
+              screenTime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'screenTime: { set: ... } }' instead.\\")
             }
 
             input ActedInWhere {
@@ -9870,7 +9870,7 @@ describe("Interface Relationships", () => {
             input ActorUpdateInput {
               actedIn: [ActorActedInUpdateFieldInput!]
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
@@ -9958,12 +9958,12 @@ describe("Interface Relationships", () => {
 
             \\"\\"\\"Int filters\\"\\"\\"
             input IntScalarFilters {
-              equals: Int
-              greaterThan: Int
-              greaterThanEquals: Int
+              eq: Int
+              gt: Int
+              gte: Int
               in: [Int!]
-              lessThan: Int
-              lessThanEquals: Int
+              lt: Int
+              lte: Int
             }
 
             \\"\\"\\"Int mutations\\"\\"\\"
@@ -10121,11 +10121,11 @@ describe("Interface Relationships", () => {
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
               runtime: IntScalarMutations
-              runtime_DECREMENT: Int
-              runtime_INCREMENT: Int
-              runtime_SET: Int
+              runtime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { decrement: ... } }' instead.\\")
+              runtime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { increment: ... } }' instead.\\")
+              runtime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'runtime: { set: ... } }' instead.\\")
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -10418,11 +10418,11 @@ describe("Interface Relationships", () => {
             input SeriesUpdateInput {
               actors: [SeriesActorsUpdateFieldInput!]
               episodeCount: IntScalarMutations
-              episodeCount_DECREMENT: Int
-              episodeCount_INCREMENT: Int
-              episodeCount_SET: Int
+              episodeCount_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episodeCount: { decrement: ... } }' instead.\\")
+              episodeCount_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episodeCount: { increment: ... } }' instead.\\")
+              episodeCount_SET: Int @deprecated(reason: \\"Please use the generic mutation 'episodeCount: { set: ... } }' instead.\\")
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input SeriesWhere {
@@ -10714,7 +10714,7 @@ describe("Interface Relationships", () => {
             input ShowUpdateInput {
               actors: [ShowActorsUpdateFieldInput!]
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input ShowWhere {
@@ -10815,9 +10815,9 @@ describe("Interface Relationships", () => {
 
             input StarredInUpdateInput {
               episodeNr: IntScalarMutations
-              episodeNr_DECREMENT: Int
-              episodeNr_INCREMENT: Int
-              episodeNr_SET: Int
+              episodeNr_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episodeNr: { decrement: ... } }' instead.\\")
+              episodeNr_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episodeNr: { increment: ... } }' instead.\\")
+              episodeNr_SET: Int @deprecated(reason: \\"Please use the generic mutation 'episodeNr: { set: ... } }' instead.\\")
             }
 
             input StarredInWhere {
@@ -10842,12 +10842,12 @@ describe("Interface Relationships", () => {
             input StringScalarFilters {
               contains: String
               endsWith: String
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
+              eq: String
+              gt: String
+              gte: String
               in: [String!]
-              lessThan: String
-              lessThanEquals: String
+              lt: String
+              lte: String
               matches: String
               startsWith: String
             }

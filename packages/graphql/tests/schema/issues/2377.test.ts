@@ -107,12 +107,12 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
 
             \\"\\"\\"DateTime filters\\"\\"\\"
             input DateTimeScalarFilters {
-              equals: DateTime
-              greaterThan: DateTime
-              greaterThanEquals: DateTime
+              eq: DateTime
+              gt: DateTime
+              gte: DateTime
               in: [DateTime!]
-              lessThan: DateTime
-              lessThanEquals: DateTime
+              lt: DateTime
+              lte: DateTime
             }
 
             \\"\\"\\"DateTime mutations\\"\\"\\"
@@ -135,7 +135,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
 
             \\"\\"\\"ID list filters\\"\\"\\"
             input IDListFilters {
-              equals: [IDScalarFilters!]
+              eq: [IDScalarFilters!]
               includes: IDScalarFilters
             }
 
@@ -143,12 +143,12 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             input IDScalarFilters {
               contains: ID
               endsWith: ID
-              equals: ID
-              greaterThan: ID
-              greaterThanEquals: ID
+              eq: ID
+              gt: ID
+              gte: ID
               in: [ID!]
-              lessThan: ID
-              lessThanEquals: ID
+              lt: ID
+              lte: ID
               matches: ID
               startsWith: ID
             }
@@ -528,21 +528,21 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             input ResourceUpdateInput {
               containedBy: [ResourceContainedByUpdateFieldInput!]
               createdAt: DateTimeScalarMutations
-              createdAt_SET: DateTime
+              createdAt_SET: DateTime @deprecated(reason: \\"Please use the generic mutation 'createdAt: { set: ... } }' instead.\\")
               externalIds: ListIDMutations
-              externalIds_POP: Int
-              externalIds_PUSH: [ID!]
-              externalIds_SET: [ID!]
+              externalIds_POP: Int @deprecated(reason: \\"Please use the generic mutation 'externalIds: { pop: ... } }' instead.\\")
+              externalIds_PUSH: [ID!] @deprecated(reason: \\"Please use the generic mutation 'externalIds: { push: ... } }' instead.\\")
+              externalIds_SET: [ID!] @deprecated(reason: \\"Please use the generic mutation 'externalIds: { set: ... } }' instead.\\")
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
               properties: PropertyListEnumScalarMutations
-              properties_SET: [Property!]
+              properties_SET: [Property!] @deprecated(reason: \\"Please use the generic mutation 'properties: { set: ... } }' instead.\\")
               tags: TagListEnumScalarMutations
-              tags_SET: [Tag!]
+              tags_SET: [Tag!] @deprecated(reason: \\"Please use the generic mutation 'tags: { set: ... } }' instead.\\")
               type: ResourceTypeEnumScalarMutations
-              type_SET: ResourceType
+              type_SET: ResourceType @deprecated(reason: \\"Please use the generic mutation 'type: { set: ... } }' instead.\\")
             }
 
             input ResourceWhere {
@@ -639,12 +639,12 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             input StringScalarFilters {
               contains: String
               endsWith: String
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
+              eq: String
+              gt: String
+              gte: String
               in: [String!]
-              lessThan: String
-              lessThanEquals: String
+              lt: String
+              lte: String
               matches: String
               startsWith: String
             }

@@ -90,9 +90,9 @@ describe("@selectable", () => {
 
             input MovieUpdateInput {
               description: StringScalarMutations
-              description_SET: String
+              description_SET: String @deprecated(reason: \\"Please use the generic mutation 'description: { set: ... } }' instead.\\")
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -156,12 +156,12 @@ describe("@selectable", () => {
             input StringScalarFilters {
               contains: String
               endsWith: String
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
+              eq: String
+              gt: String
+              gte: String
               in: [String!]
-              lessThan: String
-              lessThanEquals: String
+              lt: String
+              lte: String
               matches: String
               startsWith: String
             }
@@ -254,9 +254,9 @@ describe("@selectable", () => {
 
             input MovieUpdateInput {
               description: StringScalarMutations
-              description_SET: String
+              description_SET: String @deprecated(reason: \\"Please use the generic mutation 'description: { set: ... } }' instead.\\")
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -320,12 +320,12 @@ describe("@selectable", () => {
             input StringScalarFilters {
               contains: String
               endsWith: String
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
+              eq: String
+              gt: String
+              gte: String
               in: [String!]
-              lessThan: String
-              lessThanEquals: String
+              lt: String
+              lte: String
               matches: String
               startsWith: String
             }
@@ -417,9 +417,9 @@ describe("@selectable", () => {
 
             input MovieUpdateInput {
               description: StringScalarMutations
-              description_SET: String
+              description_SET: String @deprecated(reason: \\"Please use the generic mutation 'description: { set: ... } }' instead.\\")
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -483,12 +483,12 @@ describe("@selectable", () => {
             input StringScalarFilters {
               contains: String
               endsWith: String
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
+              eq: String
+              gt: String
+              gte: String
               in: [String!]
-              lessThan: String
-              lessThanEquals: String
+              lt: String
+              lte: String
               matches: String
               startsWith: String
             }
@@ -624,9 +624,9 @@ describe("@selectable", () => {
 
             input MovieUpdateInput {
               description: StringScalarMutations
-              description_SET: String
+              description_SET: String @deprecated(reason: \\"Please use the generic mutation 'description: { set: ... } }' instead.\\")
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             type MovieUpdatedEvent {
@@ -697,12 +697,12 @@ describe("@selectable", () => {
             input StringScalarFilters {
               contains: String
               endsWith: String
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
+              eq: String
+              gt: String
+              gte: String
               in: [String!]
-              lessThan: String
-              lessThanEquals: String
+              lt: String
+              lte: String
               matches: String
               startsWith: String
             }
@@ -921,7 +921,7 @@ describe("@selectable", () => {
                 input ActorUpdateInput {
                   actedIn: [ActorActedInUpdateFieldInput!]
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input ActorWhere {
@@ -1030,9 +1030,9 @@ describe("@selectable", () => {
 
                 input MovieUpdateInput {
                   description: StringScalarMutations
-                  description_SET: String
+                  description_SET: String @deprecated(reason: \\"Please use the generic mutation 'description: { set: ... } }' instead.\\")
                   title: StringScalarMutations
-                  title_SET: String
+                  title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
@@ -1102,12 +1102,12 @@ describe("@selectable", () => {
                 input StringScalarFilters {
                   contains: String
                   endsWith: String
-                  equals: String
-                  greaterThan: String
-                  greaterThanEquals: String
+                  eq: String
+                  gt: String
+                  gte: String
                   in: [String!]
-                  lessThan: String
-                  lessThanEquals: String
+                  lt: String
+                  lte: String
                   matches: String
                   startsWith: String
                 }
@@ -1340,7 +1340,7 @@ describe("@selectable", () => {
                 input ActorUpdateInput {
                   actedIn: [ActorActedInUpdateFieldInput!]
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input ActorWhere {
@@ -1449,9 +1449,9 @@ describe("@selectable", () => {
 
                 input MovieUpdateInput {
                   description: StringScalarMutations
-                  description_SET: String
+                  description_SET: String @deprecated(reason: \\"Please use the generic mutation 'description: { set: ... } }' instead.\\")
                   title: StringScalarMutations
-                  title_SET: String
+                  title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
@@ -1521,12 +1521,12 @@ describe("@selectable", () => {
                 input StringScalarFilters {
                   contains: String
                   endsWith: String
-                  equals: String
-                  greaterThan: String
-                  greaterThanEquals: String
+                  eq: String
+                  gt: String
+                  gte: String
                   in: [String!]
-                  lessThan: String
-                  lessThanEquals: String
+                  lt: String
+                  lte: String
                   matches: String
                   startsWith: String
                 }
@@ -1754,7 +1754,7 @@ describe("@selectable", () => {
                 input ActorUpdateInput {
                   actedIn: ActorActedInUpdateInput
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input ActorWhere {
@@ -1867,9 +1867,9 @@ describe("@selectable", () => {
 
                 input MovieUpdateInput {
                   description: StringScalarMutations
-                  description_SET: String
+                  description_SET: String @deprecated(reason: \\"Please use the generic mutation 'description: { set: ... } }' instead.\\")
                   title: StringScalarMutations
-                  title_SET: String
+                  title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
@@ -1977,9 +1977,9 @@ describe("@selectable", () => {
 
                 input SeriesUpdateInput {
                   description: StringScalarMutations
-                  description_SET: String
+                  description_SET: String @deprecated(reason: \\"Please use the generic mutation 'description: { set: ... } }' instead.\\")
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input SeriesWhere {
@@ -2017,12 +2017,12 @@ describe("@selectable", () => {
                 input StringScalarFilters {
                   contains: String
                   endsWith: String
-                  equals: String
-                  greaterThan: String
-                  greaterThanEquals: String
+                  eq: String
+                  gt: String
+                  gte: String
                   in: [String!]
-                  lessThan: String
-                  lessThanEquals: String
+                  lt: String
+                  lte: String
                   matches: String
                   startsWith: String
                 }
@@ -2265,7 +2265,7 @@ describe("@selectable", () => {
                 input ActorUpdateInput {
                   actedIn: ActorActedInUpdateInput
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input ActorWhere {
@@ -2378,9 +2378,9 @@ describe("@selectable", () => {
 
                 input MovieUpdateInput {
                   description: StringScalarMutations
-                  description_SET: String
+                  description_SET: String @deprecated(reason: \\"Please use the generic mutation 'description: { set: ... } }' instead.\\")
                   title: StringScalarMutations
-                  title_SET: String
+                  title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
@@ -2488,9 +2488,9 @@ describe("@selectable", () => {
 
                 input SeriesUpdateInput {
                   description: StringScalarMutations
-                  description_SET: String
+                  description_SET: String @deprecated(reason: \\"Please use the generic mutation 'description: { set: ... } }' instead.\\")
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input SeriesWhere {
@@ -2528,12 +2528,12 @@ describe("@selectable", () => {
                 input StringScalarFilters {
                   contains: String
                   endsWith: String
-                  equals: String
-                  greaterThan: String
-                  greaterThanEquals: String
+                  eq: String
+                  gt: String
+                  gte: String
                   in: [String!]
-                  lessThan: String
-                  lessThanEquals: String
+                  lt: String
+                  lte: String
                   matches: String
                   startsWith: String
                 }
@@ -2767,7 +2767,7 @@ describe("@selectable", () => {
                 input ActorUpdateInput {
                   actedIn: [ActorActedInUpdateFieldInput!]
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input ActorWhere {
@@ -2877,9 +2877,9 @@ describe("@selectable", () => {
 
                 input MovieUpdateInput {
                   description: StringScalarMutations
-                  description_SET: String
+                  description_SET: String @deprecated(reason: \\"Please use the generic mutation 'description: { set: ... } }' instead.\\")
                   title: StringScalarMutations
-                  title_SET: String
+                  title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
@@ -2966,9 +2966,9 @@ describe("@selectable", () => {
 
                 input ProductionUpdateInput {
                   description: StringScalarMutations
-                  description_SET: String
+                  description_SET: String @deprecated(reason: \\"Please use the generic mutation 'description: { set: ... } }' instead.\\")
                   title: StringScalarMutations
-                  title_SET: String
+                  title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                 }
 
                 input ProductionWhere {
@@ -3048,9 +3048,9 @@ describe("@selectable", () => {
 
                 input SeriesUpdateInput {
                   description: StringScalarMutations
-                  description_SET: String
+                  description_SET: String @deprecated(reason: \\"Please use the generic mutation 'description: { set: ... } }' instead.\\")
                   title: StringScalarMutations
-                  title_SET: String
+                  title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                 }
 
                 input SeriesWhere {
@@ -3088,12 +3088,12 @@ describe("@selectable", () => {
                 input StringScalarFilters {
                   contains: String
                   endsWith: String
-                  equals: String
-                  greaterThan: String
-                  greaterThanEquals: String
+                  eq: String
+                  gt: String
+                  gte: String
                   in: [String!]
-                  lessThan: String
-                  lessThanEquals: String
+                  lt: String
+                  lte: String
                   matches: String
                   startsWith: String
                 }
@@ -3341,7 +3341,7 @@ describe("@selectable", () => {
                 input ActorUpdateInput {
                   actedIn: [ActorActedInUpdateFieldInput!]
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input ActorWhere {
@@ -3451,9 +3451,9 @@ describe("@selectable", () => {
 
                 input MovieUpdateInput {
                   description: StringScalarMutations
-                  description_SET: String
+                  description_SET: String @deprecated(reason: \\"Please use the generic mutation 'description: { set: ... } }' instead.\\")
                   title: StringScalarMutations
-                  title_SET: String
+                  title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
@@ -3540,9 +3540,9 @@ describe("@selectable", () => {
 
                 input ProductionUpdateInput {
                   description: StringScalarMutations
-                  description_SET: String
+                  description_SET: String @deprecated(reason: \\"Please use the generic mutation 'description: { set: ... } }' instead.\\")
                   title: StringScalarMutations
-                  title_SET: String
+                  title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                 }
 
                 input ProductionWhere {
@@ -3622,9 +3622,9 @@ describe("@selectable", () => {
 
                 input SeriesUpdateInput {
                   description: StringScalarMutations
-                  description_SET: String
+                  description_SET: String @deprecated(reason: \\"Please use the generic mutation 'description: { set: ... } }' instead.\\")
                   title: StringScalarMutations
-                  title_SET: String
+                  title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                 }
 
                 input SeriesWhere {
@@ -3662,12 +3662,12 @@ describe("@selectable", () => {
                 input StringScalarFilters {
                   contains: String
                   endsWith: String
-                  equals: String
-                  greaterThan: String
-                  greaterThanEquals: String
+                  eq: String
+                  gt: String
+                  gte: String
                   in: [String!]
-                  lessThan: String
-                  lessThanEquals: String
+                  lt: String
+                  lte: String
                   matches: String
                   startsWith: String
                 }

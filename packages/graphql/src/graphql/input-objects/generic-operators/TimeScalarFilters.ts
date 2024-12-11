@@ -24,14 +24,14 @@ export const TimeScalarFilters = new GraphQLInputObjectType({
     name: "TimeScalarFilters",
     description: "Time filters",
     fields: {
-        equals: {
+        eq: {
             type: GraphQLTime,
         },
-        greaterThan: { type: GraphQLTime },
-        greaterThanEquals: { type: GraphQLTime },
+        gt: { type: GraphQLTime },
+        gte: { type: GraphQLTime },
         in: { type: new GraphQLList(new GraphQLNonNull(GraphQLTime)) },
-        lessThan: { type: GraphQLTime },
-        lessThanEquals: { type: GraphQLTime },
+        lt: { type: GraphQLTime },
+        lte: { type: GraphQLTime },
     },
 });
 
@@ -39,7 +39,7 @@ export const TimeListFilters = new GraphQLInputObjectType({
     name: "TimeListFilters",
     description: "Time list filters",
     fields: {
-        equals: { type: new GraphQLList(new GraphQLNonNull(GraphQLTime)) },
+        eq: { type: new GraphQLList(new GraphQLNonNull(GraphQLTime)) },
         includes: { type: GraphQLTime },
     },
 });

@@ -88,12 +88,12 @@ describe("162", () => {
             input IDScalarFilters {
               contains: ID
               endsWith: ID
-              equals: ID
-              greaterThan: ID
-              greaterThanEquals: ID
+              eq: ID
+              gt: ID
+              gte: ID
               in: [ID!]
-              lessThan: ID
-              lessThanEquals: ID
+              lt: ID
+              lte: ID
               matches: ID
               startsWith: ID
             }
@@ -112,12 +112,12 @@ describe("162", () => {
 
             \\"\\"\\"Int filters\\"\\"\\"
             input IntScalarFilters {
-              equals: Int
-              greaterThan: Int
-              greaterThanEquals: Int
+              eq: Int
+              gt: Int
+              gte: Int
               in: [Int!]
-              lessThan: Int
-              lessThanEquals: Int
+              lt: Int
+              lte: Int
             }
 
             \\"\\"\\"Int mutations\\"\\"\\"
@@ -528,7 +528,7 @@ describe("162", () => {
 
             input TigerJawLevel2Part1UpdateInput {
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               tiger: [TigerJawLevel2Part1TigerUpdateFieldInput!]
             }
 
@@ -603,7 +603,7 @@ describe("162", () => {
 
             input TigerJawLevel2UpdateInput {
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               part1: [TigerJawLevel2Part1UpdateFieldInput!]
             }
 
@@ -669,9 +669,9 @@ describe("162", () => {
 
             input TigerUpdateInput {
               x: IntScalarMutations
-              x_DECREMENT: Int
-              x_INCREMENT: Int
-              x_SET: Int
+              x_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'x: { decrement: ... } }' instead.\\")
+              x_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'x: { increment: ... } }' instead.\\")
+              x_SET: Int @deprecated(reason: \\"Please use the generic mutation 'x: { set: ... } }' instead.\\")
             }
 
             input TigerWhere {

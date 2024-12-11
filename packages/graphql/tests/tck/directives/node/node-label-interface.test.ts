@@ -49,8 +49,8 @@ describe("Node directive with interface", () => {
     test("Read Interface", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { title: { equals: "some title" } }) {
-                    search(where: { name: { equals: "Horror" } }, offset: 1, limit: 10) {
+                movies(where: { title: { eq: "some title" } }) {
+                    search(where: { name: { eq: "Horror" } }, offset: 1, limit: 10) {
                         ... on Movie {
                             title
                         }

@@ -255,7 +255,7 @@ describe("Duration", () => {
 
             const query = /* GraphQL */ `
                     query ($id: ID!, $duration: Duration!) {
-                        ${Movie.plural}(where: { id: {equals: $id }, duration: { equals: $duration } }) {
+                        ${Movie.plural}(where: { id: {eq: $id }, duration: { eq: $duration } }) {
                             id
                             duration
                         }
@@ -274,7 +274,7 @@ describe("Duration", () => {
             expect(parseDuration(graphqlMovie.duration)).toStrictEqual(parsedDuration);
         });
 
-        test.each(["lessThan", "lessThanEquals", "greaterThan", "greaterThanEquals"])(
+        test.each(["lt", "lte", "gt", "gte"])(
             "should filter based on duration comparison, for filter: %s",
             async (filter) => {
                 const typeDefs = `
