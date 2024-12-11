@@ -83,12 +83,12 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
 
             \\"\\"\\"Float filters\\"\\"\\"
             input FloatScalarFilters {
-              equals: Float
-              greaterThan: Float
-              greaterThanEquals: Float
+              eq: Float
+              gt: Float
+              gte: Float
               in: [Float!]
-              lessThan: Float
-              lessThanEquals: Float
+              lt: Float
+              lte: Float
             }
 
             \\"\\"\\"Float mutations\\"\\"\\"
@@ -321,7 +321,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
             input GenreUpdateInput {
               movies: [GenreMoviesUpdateFieldInput!]
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input GenreWhere {
@@ -378,12 +378,12 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
 
             \\"\\"\\"Int filters\\"\\"\\"
             input IntScalarFilters {
-              equals: Int
-              greaterThan: Int
-              greaterThanEquals: Int
+              eq: Int
+              gt: Int
+              gte: Int
               in: [Int!]
-              lessThan: Int
-              lessThanEquals: Int
+              lt: Int
+              lte: Int
             }
 
             \\"\\"\\"Int mutations\\"\\"\\"
@@ -580,17 +580,17 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
             input MovieUpdateInput {
               genres: [MovieGenresUpdateFieldInput!] @deprecated(reason: \\"Do not use genre\\")
               imdbRating: FloatScalarMutations
-              imdbRating_ADD: Float
-              imdbRating_DIVIDE: Float
-              imdbRating_MULTIPLY: Float
-              imdbRating_SET: Float
-              imdbRating_SUBTRACT: Float
+              imdbRating_ADD: Float @deprecated(reason: \\"Please use the relevant generic mutation 'imdbRating: { add: ... } }' instead.\\")
+              imdbRating_DIVIDE: Float @deprecated(reason: \\"Please use the relevant generic mutation 'imdbRating: { divide: ... } }' instead.\\")
+              imdbRating_MULTIPLY: Float @deprecated(reason: \\"Please use the relevant generic mutation 'imdbRating: { multiply: ... } }' instead.\\")
+              imdbRating_SET: Float @deprecated(reason: \\"Please use the generic mutation 'imdbRating: { set: ... } }' instead.\\")
+              imdbRating_SUBTRACT: Float @deprecated(reason: \\"Please use the relevant generic mutation 'imdbRating: { subtract: ... } }' instead.\\")
               title: StringScalarMutations @deprecated(reason: \\"Do not use title\\")
               title_SET: String @deprecated(reason: \\"Do not use title\\")
               year: IntScalarMutations
-              year_DECREMENT: Int
-              year_INCREMENT: Int
-              year_SET: Int
+              year_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'year: { decrement: ... } }' instead.\\")
+              year_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'year: { increment: ... } }' instead.\\")
+              year_SET: Int @deprecated(reason: \\"Please use the generic mutation 'year: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -695,12 +695,12 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
             input StringScalarFilters {
               contains: String
               endsWith: String
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
+              eq: String
+              gt: String
+              gte: String
               in: [String!]
-              lessThan: String
-              lessThanEquals: String
+              lt: String
+              lte: String
               matches: String
               startsWith: String
             }

@@ -212,7 +212,7 @@ describe("inheritance", () => {
             input ActorUpdateInput {
               friends: [ActorFriendsUpdateFieldInput!]
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
@@ -325,9 +325,9 @@ describe("inheritance", () => {
 
             input FriendsWithUpdateInput {
               since: IntScalarMutations
-              since_DECREMENT: Int
-              since_INCREMENT: Int
-              since_SET: Int
+              since_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'since: { decrement: ... } }' instead.\\")
+              since_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'since: { increment: ... } }' instead.\\")
+              since_SET: Int @deprecated(reason: \\"Please use the generic mutation 'since: { set: ... } }' instead.\\")
             }
 
             input FriendsWithWhere {
@@ -352,12 +352,12 @@ describe("inheritance", () => {
 
             \\"\\"\\"Int filters\\"\\"\\"
             input IntScalarFilters {
-              equals: Int
-              greaterThan: Int
-              greaterThanEquals: Int
+              eq: Int
+              gt: Int
+              gte: Int
               in: [Int!]
-              lessThan: Int
-              lessThanEquals: Int
+              lt: Int
+              lte: Int
             }
 
             \\"\\"\\"Int mutations\\"\\"\\"
@@ -672,12 +672,12 @@ describe("inheritance", () => {
             input StringScalarFilters {
               contains: String
               endsWith: String
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
+              eq: String
+              gt: String
+              gte: String
               in: [String!]
-              lessThan: String
-              lessThanEquals: String
+              lt: String
+              lte: String
               matches: String
               startsWith: String
             }

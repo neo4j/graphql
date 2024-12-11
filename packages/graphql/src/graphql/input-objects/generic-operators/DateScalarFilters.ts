@@ -24,14 +24,14 @@ export const DateScalarFilters = new GraphQLInputObjectType({
     name: "DateScalarFilters",
     description: "Date filters",
     fields: {
-        equals: {
+        eq: {
             type: GraphQLDate,
         },
-        greaterThan: { type: GraphQLDate },
-        greaterThanEquals: { type: GraphQLDate },
+        gt: { type: GraphQLDate },
+        gte: { type: GraphQLDate },
         in: { type: new GraphQLList(new GraphQLNonNull(GraphQLDate)) },
-        lessThan: { type: GraphQLDate },
-        lessThanEquals: { type: GraphQLDate },
+        lt: { type: GraphQLDate },
+        lte: { type: GraphQLDate },
     },
 });
 
@@ -39,7 +39,7 @@ export const DateListFilters = new GraphQLInputObjectType({
     name: "DateListFilters",
     description: "Date list filters",
     fields: {
-        equals: { type: new GraphQLList(new GraphQLNonNull(DateScalarFilters)) },
+        eq: { type: new GraphQLList(new GraphQLNonNull(DateScalarFilters)) },
         includes: { type: DateScalarFilters },
     },
 });

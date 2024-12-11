@@ -76,12 +76,12 @@ describe("Directive-preserve", () => {
             input IDScalarFilters {
               contains: ID
               endsWith: ID
-              equals: ID
-              greaterThan: ID
-              greaterThanEquals: ID
+              eq: ID
+              gt: ID
+              gte: ID
               in: [ID!]
-              lessThan: ID
-              lessThanEquals: ID
+              lt: ID
+              lte: ID
               matches: ID
               startsWith: ID
             }
@@ -242,12 +242,12 @@ describe("Directive-preserve", () => {
 
             \\"\\"\\"Float filters\\"\\"\\"
             input FloatScalarFilters {
-              equals: Float
-              greaterThan: Float
-              greaterThanEquals: Float
+              eq: Float
+              gt: Float
+              gte: Float
               in: [Float!]
-              lessThan: Float
-              lessThanEquals: Float
+              lt: Float
+              lte: Float
             }
 
             \\"\\"\\"Float mutations\\"\\"\\"
@@ -480,7 +480,7 @@ describe("Directive-preserve", () => {
             input GenreUpdateInput {
               movies: [GenreMoviesUpdateFieldInput!]
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input GenreWhere {
@@ -537,12 +537,12 @@ describe("Directive-preserve", () => {
 
             \\"\\"\\"Int filters\\"\\"\\"
             input IntScalarFilters {
-              equals: Int
-              greaterThan: Int
-              greaterThanEquals: Int
+              eq: Int
+              gt: Int
+              gte: Int
               in: [Int!]
-              lessThan: Int
-              lessThanEquals: Int
+              lt: Int
+              lte: Int
             }
 
             \\"\\"\\"Int mutations\\"\\"\\"
@@ -739,17 +739,17 @@ describe("Directive-preserve", () => {
             input MovieUpdateInput {
               genres: [MovieGenresUpdateFieldInput!] @deprecated(reason: \\"Do not use\\")
               imdbRating: FloatScalarMutations
-              imdbRating_ADD: Float
-              imdbRating_DIVIDE: Float
-              imdbRating_MULTIPLY: Float
-              imdbRating_SET: Float
-              imdbRating_SUBTRACT: Float
+              imdbRating_ADD: Float @deprecated(reason: \\"Please use the relevant generic mutation 'imdbRating: { add: ... } }' instead.\\")
+              imdbRating_DIVIDE: Float @deprecated(reason: \\"Please use the relevant generic mutation 'imdbRating: { divide: ... } }' instead.\\")
+              imdbRating_MULTIPLY: Float @deprecated(reason: \\"Please use the relevant generic mutation 'imdbRating: { multiply: ... } }' instead.\\")
+              imdbRating_SET: Float @deprecated(reason: \\"Please use the generic mutation 'imdbRating: { set: ... } }' instead.\\")
+              imdbRating_SUBTRACT: Float @deprecated(reason: \\"Please use the relevant generic mutation 'imdbRating: { subtract: ... } }' instead.\\")
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
               year: IntScalarMutations
-              year_DECREMENT: Int
-              year_INCREMENT: Int
-              year_SET: Int
+              year_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'year: { decrement: ... } }' instead.\\")
+              year_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'year: { increment: ... } }' instead.\\")
+              year_SET: Int @deprecated(reason: \\"Please use the generic mutation 'year: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -854,12 +854,12 @@ describe("Directive-preserve", () => {
             input StringScalarFilters {
               contains: String
               endsWith: String
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
+              eq: String
+              gt: String
+              gte: String
               in: [String!]
-              lessThan: String
-              lessThanEquals: String
+              lt: String
+              lte: String
               matches: String
               startsWith: String
             }
@@ -980,7 +980,7 @@ describe("Directive-preserve", () => {
 
             input ActedInUpdateInput {
               role: StringScalarMutations
-              role_SET: String
+              role_SET: String @deprecated(reason: \\"Please use the generic mutation 'role: { set: ... } }' instead.\\")
             }
 
             input ActedInWhere {
@@ -1186,7 +1186,7 @@ describe("Directive-preserve", () => {
             input ActorUpdateInput {
               actedIn: [ActorActedInUpdateFieldInput!]
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
@@ -1274,12 +1274,12 @@ describe("Directive-preserve", () => {
 
             \\"\\"\\"Int filters\\"\\"\\"
             input IntScalarFilters {
-              equals: Int
-              greaterThan: Int
-              greaterThanEquals: Int
+              eq: Int
+              gt: Int
+              gte: Int
               in: [Int!]
-              lessThan: Int
-              lessThanEquals: Int
+              lt: Int
+              lte: Int
             }
 
             \\"\\"\\"Int mutations\\"\\"\\"
@@ -1437,11 +1437,11 @@ describe("Directive-preserve", () => {
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!] @deprecated(reason: \\"Do not use\\")
               runtime: IntScalarMutations
-              runtime_DECREMENT: Int
-              runtime_INCREMENT: Int
-              runtime_SET: Int
+              runtime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { decrement: ... } }' instead.\\")
+              runtime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { increment: ... } }' instead.\\")
+              runtime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'runtime: { set: ... } }' instead.\\")
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -1739,7 +1739,7 @@ describe("Directive-preserve", () => {
             input ProductionUpdateInput {
               actors: [ProductionActorsUpdateFieldInput!]
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input ProductionWhere {
@@ -1957,11 +1957,11 @@ describe("Directive-preserve", () => {
             input SeriesUpdateInput {
               actors: [SeriesActorsUpdateFieldInput!]
               episodes: IntScalarMutations
-              episodes_DECREMENT: Int
-              episodes_INCREMENT: Int
-              episodes_SET: Int
+              episodes_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episodes: { decrement: ... } }' instead.\\")
+              episodes_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episodes: { increment: ... } }' instead.\\")
+              episodes_SET: Int @deprecated(reason: \\"Please use the generic mutation 'episodes: { set: ... } }' instead.\\")
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input SeriesWhere {
@@ -2027,12 +2027,12 @@ describe("Directive-preserve", () => {
             input StringScalarFilters {
               contains: String
               endsWith: String
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
+              eq: String
+              gt: String
+              gte: String
               in: [String!]
-              lessThan: String
-              lessThanEquals: String
+              lt: String
+              lte: String
               matches: String
               startsWith: String
             }
@@ -2159,7 +2159,7 @@ describe("Directive-preserve", () => {
 
             input ActedInUpdateInput {
               role: StringScalarMutations
-              role_SET: String
+              role_SET: String @deprecated(reason: \\"Please use the generic mutation 'role: { set: ... } }' instead.\\")
             }
 
             input ActedInWhere {
@@ -2362,7 +2362,7 @@ describe("Directive-preserve", () => {
             input ActorUpdateInput {
               actedIn: [ActorActedInUpdateFieldInput!]
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
@@ -2450,12 +2450,12 @@ describe("Directive-preserve", () => {
 
             \\"\\"\\"Int filters\\"\\"\\"
             input IntScalarFilters {
-              equals: Int
-              greaterThan: Int
-              greaterThanEquals: Int
+              eq: Int
+              gt: Int
+              gte: Int
               in: [Int!]
-              lessThan: Int
-              lessThanEquals: Int
+              lt: Int
+              lte: Int
             }
 
             \\"\\"\\"Int mutations\\"\\"\\"
@@ -2648,11 +2648,11 @@ describe("Directive-preserve", () => {
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!] @deprecated(reason: \\"Do not use\\")
               runtime: IntScalarMutations
-              runtime_DECREMENT: Int
-              runtime_INCREMENT: Int
-              runtime_SET: Int
+              runtime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { decrement: ... } }' instead.\\")
+              runtime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { increment: ... } }' instead.\\")
+              runtime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'runtime: { set: ... } }' instead.\\")
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -2765,7 +2765,7 @@ describe("Directive-preserve", () => {
 
             input ProductionUpdateInput {
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input ProductionWhere {
@@ -2991,11 +2991,11 @@ describe("Directive-preserve", () => {
             input SeriesUpdateInput {
               actors: [SeriesActorsUpdateFieldInput!]
               episodes: IntScalarMutations
-              episodes_DECREMENT: Int
-              episodes_INCREMENT: Int
-              episodes_SET: Int
+              episodes_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episodes: { decrement: ... } }' instead.\\")
+              episodes_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episodes: { increment: ... } }' instead.\\")
+              episodes_SET: Int @deprecated(reason: \\"Please use the generic mutation 'episodes: { set: ... } }' instead.\\")
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input SeriesWhere {
@@ -3061,12 +3061,12 @@ describe("Directive-preserve", () => {
             input StringScalarFilters {
               contains: String
               endsWith: String
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
+              eq: String
+              gt: String
+              gte: String
               in: [String!]
-              lessThan: String
-              lessThanEquals: String
+              lt: String
+              lte: String
               matches: String
               startsWith: String
             }
@@ -3181,7 +3181,7 @@ describe("Directive-preserve", () => {
 
             input ActedInUpdateInput {
               role: StringScalarMutations
-              role_SET: String
+              role_SET: String @deprecated(reason: \\"Please use the generic mutation 'role: { set: ... } }' instead.\\")
             }
 
             input ActedInWhere {
@@ -3384,7 +3384,7 @@ describe("Directive-preserve", () => {
             input ActorUpdateInput {
               actedIn: [ActorActedInUpdateFieldInput!]
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
@@ -3472,12 +3472,12 @@ describe("Directive-preserve", () => {
 
             \\"\\"\\"Int filters\\"\\"\\"
             input IntScalarFilters {
-              equals: Int
-              greaterThan: Int
-              greaterThanEquals: Int
+              eq: Int
+              gt: Int
+              gte: Int
               in: [Int!]
-              lessThan: Int
-              lessThanEquals: Int
+              lt: Int
+              lte: Int
             }
 
             \\"\\"\\"Int mutations\\"\\"\\"
@@ -3670,11 +3670,11 @@ describe("Directive-preserve", () => {
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
               runtime: IntScalarMutations
-              runtime_DECREMENT: Int
-              runtime_INCREMENT: Int
-              runtime_SET: Int
+              runtime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { decrement: ... } }' instead.\\")
+              runtime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { increment: ... } }' instead.\\")
+              runtime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'runtime: { set: ... } }' instead.\\")
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -3787,7 +3787,7 @@ describe("Directive-preserve", () => {
 
             input ProductionUpdateInput {
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input ProductionWhere {
@@ -4013,11 +4013,11 @@ describe("Directive-preserve", () => {
             input SeriesUpdateInput {
               actors: [SeriesActorsUpdateFieldInput!]
               episodes: IntScalarMutations
-              episodes_DECREMENT: Int
-              episodes_INCREMENT: Int
-              episodes_SET: Int
+              episodes_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episodes: { decrement: ... } }' instead.\\")
+              episodes_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episodes: { increment: ... } }' instead.\\")
+              episodes_SET: Int @deprecated(reason: \\"Please use the generic mutation 'episodes: { set: ... } }' instead.\\")
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input SeriesWhere {
@@ -4083,12 +4083,12 @@ describe("Directive-preserve", () => {
             input StringScalarFilters {
               contains: String
               endsWith: String
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
+              eq: String
+              gt: String
+              gte: String
               in: [String!]
-              lessThan: String
-              lessThanEquals: String
+              lt: String
+              lte: String
               matches: String
               startsWith: String
             }
@@ -4331,7 +4331,7 @@ describe("Directive-preserve", () => {
             input BlogUpdateInput {
               posts: [BlogPostsUpdateFieldInput!]
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input BlogWhere {
@@ -4519,12 +4519,12 @@ describe("Directive-preserve", () => {
             input StringScalarFilters {
               contains: String
               endsWith: String
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
+              eq: String
+              gt: String
+              gte: String
               in: [String!]
-              lessThan: String
-              lessThanEquals: String
+              lt: String
+              lte: String
               matches: String
               startsWith: String
             }
@@ -4740,7 +4740,7 @@ describe("Directive-preserve", () => {
             input UserUpdateInput {
               content: UserContentUpdateInput @deprecated(reason: \\"Do not use user.content\\")
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input UserWhere {

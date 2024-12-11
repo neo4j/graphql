@@ -88,11 +88,11 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
 
             input ActorUpdateInput {
               dob: DateTimeScalarMutations
-              dob_SET: DateTime
+              dob_SET: DateTime @deprecated(reason: \\"Please use the generic mutation 'dob: { set: ... } }' instead.\\")
               homeAddress: PointMutations
-              homeAddress_SET: PointInput
+              homeAddress_SET: PointInput @deprecated(reason: \\"Please use the generic mutation 'homeAddress: { set: ... } }' instead.\\")
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
@@ -162,12 +162,12 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
 
             \\"\\"\\"DateTime filters\\"\\"\\"
             input DateTimeScalarFilters {
-              equals: DateTime
-              greaterThan: DateTime
-              greaterThanEquals: DateTime
+              eq: DateTime
+              gt: DateTime
+              gte: DateTime
               in: [DateTime!]
-              lessThan: DateTime
-              lessThanEquals: DateTime
+              lt: DateTime
+              lte: DateTime
             }
 
             \\"\\"\\"DateTime mutations\\"\\"\\"
@@ -192,12 +192,12 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
             input IDScalarFilters {
               contains: ID
               endsWith: ID
-              equals: ID
-              greaterThan: ID
-              greaterThanEquals: ID
+              eq: ID
+              gt: ID
+              gte: ID
               in: [ID!]
-              lessThan: ID
-              lessThanEquals: ID
+              lt: ID
+              lte: ID
               matches: ID
               startsWith: ID
             }
@@ -391,7 +391,7 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -482,17 +482,18 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
 
             \\"\\"\\"Distance filters\\"\\"\\"
             input PointDistanceFilters {
-              equals: PointDistance
-              greaterThan: PointDistance
-              greaterThanEquals: PointDistance
-              lessThan: PointDistance
-              lessThanEquals: PointDistance
+              eq: Float
+              from: PointInput!
+              gt: Float
+              gte: Float
+              lt: Float
+              lte: Float
             }
 
             \\"\\"\\"Point filters\\"\\"\\"
             input PointFilters {
               distance: PointDistanceFilters
-              equals: PointInput
+              eq: PointInput
               in: [PointInput!]
             }
 
@@ -534,12 +535,12 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
             input StringScalarFilters {
               contains: String
               endsWith: String
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
+              eq: String
+              gt: String
+              gte: String
               in: [String!]
-              lessThan: String
-              lessThanEquals: String
+              lt: String
+              lte: String
               matches: String
               startsWith: String
             }

@@ -101,13 +101,13 @@ describe("Relationship-properties", () => {
 
             input ActedInUpdateInput {
               leadRole: BooleanScalarMutations
-              leadRole_SET: Boolean
+              leadRole_SET: Boolean @deprecated(reason: \\"Please use the generic mutation 'leadRole: { set: ... } }' instead.\\")
               screenTime: IntScalarMutations
-              screenTime_DECREMENT: Int
-              screenTime_INCREMENT: Int
-              screenTime_SET: Int
+              screenTime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'screenTime: { decrement: ... } }' instead.\\")
+              screenTime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'screenTime: { increment: ... } }' instead.\\")
+              screenTime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'screenTime: { set: ... } }' instead.\\")
               startDate: DateScalarMutations
-              startDate_SET: Date
+              startDate_SET: Date @deprecated(reason: \\"Please use the generic mutation 'startDate: { set: ... } }' instead.\\")
             }
 
             input ActedInWhere {
@@ -323,7 +323,7 @@ describe("Relationship-properties", () => {
             input ActorUpdateInput {
               movies: [ActorMoviesUpdateFieldInput!]
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
@@ -373,7 +373,7 @@ describe("Relationship-properties", () => {
 
             \\"\\"\\"Boolean filters\\"\\"\\"
             input BooleanScalarFilters {
-              equals: Boolean
+              eq: Boolean
             }
 
             \\"\\"\\"Boolean mutations\\"\\"\\"
@@ -404,12 +404,12 @@ describe("Relationship-properties", () => {
 
             \\"\\"\\"Date filters\\"\\"\\"
             input DateScalarFilters {
-              equals: Date
-              greaterThan: Date
-              greaterThanEquals: Date
+              eq: Date
+              gt: Date
+              gte: Date
               in: [Date!]
-              lessThan: Date
-              lessThanEquals: Date
+              lt: Date
+              lte: Date
             }
 
             \\"\\"\\"Date mutations\\"\\"\\"
@@ -434,12 +434,12 @@ describe("Relationship-properties", () => {
 
             \\"\\"\\"Int filters\\"\\"\\"
             input IntScalarFilters {
-              equals: Int
-              greaterThan: Int
-              greaterThanEquals: Int
+              eq: Int
+              gt: Int
+              gte: Int
               in: [Int!]
-              lessThan: Int
-              lessThanEquals: Int
+              lt: Int
+              lte: Int
             }
 
             \\"\\"\\"Int mutations\\"\\"\\"
@@ -640,7 +640,7 @@ describe("Relationship-properties", () => {
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -731,12 +731,12 @@ describe("Relationship-properties", () => {
             input StringScalarFilters {
               contains: String
               endsWith: String
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
+              eq: String
+              gt: String
+              gte: String
               in: [String!]
-              lessThan: String
-              lessThanEquals: String
+              lt: String
+              lte: String
               matches: String
               startsWith: String
             }
@@ -864,9 +864,9 @@ describe("Relationship-properties", () => {
 
             input ActedInUpdateInput {
               screenTime: IntScalarMutations
-              screenTime_DECREMENT: Int
-              screenTime_INCREMENT: Int
-              screenTime_SET: Int
+              screenTime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'screenTime: { decrement: ... } }' instead.\\")
+              screenTime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'screenTime: { increment: ... } }' instead.\\")
+              screenTime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'screenTime: { set: ... } }' instead.\\")
             }
 
             input ActedInWhere {
@@ -1088,7 +1088,7 @@ describe("Relationship-properties", () => {
             input ActorUpdateInput {
               movies: [ActorMoviesUpdateFieldInput!]
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
@@ -1164,12 +1164,12 @@ describe("Relationship-properties", () => {
 
             \\"\\"\\"DateTime filters\\"\\"\\"
             input DateTimeScalarFilters {
-              equals: DateTime
-              greaterThan: DateTime
-              greaterThanEquals: DateTime
+              eq: DateTime
+              gt: DateTime
+              gte: DateTime
               in: [DateTime!]
-              lessThan: DateTime
-              lessThanEquals: DateTime
+              lt: DateTime
+              lte: DateTime
             }
 
             \\"\\"\\"
@@ -1189,12 +1189,12 @@ describe("Relationship-properties", () => {
             input IDScalarFilters {
               contains: ID
               endsWith: ID
-              equals: ID
-              greaterThan: ID
-              greaterThanEquals: ID
+              eq: ID
+              gt: ID
+              gte: ID
               in: [ID!]
-              lessThan: ID
-              lessThanEquals: ID
+              lt: ID
+              lte: ID
               matches: ID
               startsWith: ID
             }
@@ -1208,12 +1208,12 @@ describe("Relationship-properties", () => {
 
             \\"\\"\\"Int filters\\"\\"\\"
             input IntScalarFilters {
-              equals: Int
-              greaterThan: Int
-              greaterThanEquals: Int
+              eq: Int
+              gt: Int
+              gte: Int
               in: [Int!]
-              lessThan: Int
-              lessThanEquals: Int
+              lt: Int
+              lte: Int
             }
 
             \\"\\"\\"Int mutations\\"\\"\\"
@@ -1416,7 +1416,7 @@ describe("Relationship-properties", () => {
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -1507,12 +1507,12 @@ describe("Relationship-properties", () => {
             input StringScalarFilters {
               contains: String
               endsWith: String
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
+              eq: String
+              gt: String
+              gte: String
               in: [String!]
-              lessThan: String
-              lessThanEquals: String
+              lt: String
+              lte: String
               matches: String
               startsWith: String
             }
@@ -1819,7 +1819,7 @@ describe("Relationship-properties", () => {
             input ActorUpdateInput {
               movies: [ActorMoviesUpdateFieldInput!]
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
@@ -1895,12 +1895,12 @@ describe("Relationship-properties", () => {
 
             \\"\\"\\"DateTime filters\\"\\"\\"
             input DateTimeScalarFilters {
-              equals: DateTime
-              greaterThan: DateTime
-              greaterThanEquals: DateTime
+              eq: DateTime
+              gt: DateTime
+              gte: DateTime
               in: [DateTime!]
-              lessThan: DateTime
-              lessThanEquals: DateTime
+              lt: DateTime
+              lte: DateTime
             }
 
             \\"\\"\\"
@@ -1920,12 +1920,12 @@ describe("Relationship-properties", () => {
             input IDScalarFilters {
               contains: ID
               endsWith: ID
-              equals: ID
-              greaterThan: ID
-              greaterThanEquals: ID
+              eq: ID
+              gt: ID
+              gte: ID
               in: [ID!]
-              lessThan: ID
-              lessThanEquals: ID
+              lt: ID
+              lte: ID
               matches: ID
               startsWith: ID
             }
@@ -2119,7 +2119,7 @@ describe("Relationship-properties", () => {
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -2210,12 +2210,12 @@ describe("Relationship-properties", () => {
             input StringScalarFilters {
               contains: String
               endsWith: String
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
+              eq: String
+              gt: String
+              gte: String
               in: [String!]
-              lessThan: String
-              lessThanEquals: String
+              lt: String
+              lte: String
               matches: String
               startsWith: String
             }

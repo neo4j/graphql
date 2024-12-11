@@ -33,28 +33,6 @@ type FieldConfig = {
     description: string;
 };
 
-// NOTE: This used to be a specialized function used specifically to generate relationship fields,
-// but now after this refactor, it could be used as schema composer utility if needed.
-function fieldConfigsToFieldConfigMap({
-    deprecatedDirectives,
-    fields,
-}: {
-    deprecatedDirectives: Directive[];
-    fields: FieldConfig[];
-}): InputTypeComposerFieldConfigMapDefinition {
-    const fieldsConfigMap: InputTypeComposerFieldConfigMapDefinition = {};
-
-    for (const field of fields) {
-        fieldsConfigMap[field.name] = {
-            type: field.typeName,
-            directives: deprecatedDirectives,
-            description: field.description,
-        };
-    }
-
-    return fieldsConfigMap;
-}
-
 export function augmentWhereInputWithRelationshipFilters({
     whereInput,
     composer,
@@ -258,4 +236,26 @@ function getRelationshipConnectionFiltersLegacy(
             )} match this filter`,
         },
     ];
+}
+
+// NOTE: This used to be a specialized function used specifically to generate relationship fields,
+// but now after this refactor, it could be used as schema composer utility if needed.
+function fieldConfigsToFieldConfigMap({
+    deprecatedDirectives,
+    fields,
+}: {
+    deprecatedDirectives: Directive[];
+    fields: FieldConfig[];
+}): InputTypeComposerFieldConfigMapDefinition {
+    const fieldsConfigMap: InputTypeComposerFieldConfigMapDefinition = {};
+
+    for (const field of fields) {
+        fieldsConfigMap[field.name] = {
+            type: field.typeName,
+            directives: deprecatedDirectives,
+            description: field.description,
+        };
+    }
+
+    return fieldsConfigMap;
 }

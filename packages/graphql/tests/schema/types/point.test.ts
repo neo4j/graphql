@@ -85,7 +85,7 @@ describe("Point", () => {
 
             input MovieUpdateInput {
               filmedAt: PointMutations
-              filmedAt_SET: PointInput
+              filmedAt_SET: PointInput @deprecated(reason: \\"Please use the generic mutation 'filmedAt: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -142,17 +142,18 @@ describe("Point", () => {
 
             \\"\\"\\"Distance filters\\"\\"\\"
             input PointDistanceFilters {
-              equals: PointDistance
-              greaterThan: PointDistance
-              greaterThanEquals: PointDistance
-              lessThan: PointDistance
-              lessThanEquals: PointDistance
+              eq: Float
+              from: PointInput!
+              gt: Float
+              gte: Float
+              lt: Float
+              lte: Float
             }
 
             \\"\\"\\"Point filters\\"\\"\\"
             input PointFilters {
               distance: PointDistanceFilters
-              equals: PointInput
+              eq: PointInput
               in: [PointInput!]
             }
 
@@ -216,11 +217,11 @@ describe("Point", () => {
 
             \\"\\"\\"Distance filters for cartesian points\\"\\"\\"
             input CartesianDistancePointFilters {
-              equals: CartesianPointDistance
-              greaterThan: CartesianPointDistance
-              greaterThanEquals: CartesianPointDistance
-              lessThan: CartesianPointDistance
-              lessThanEquals: CartesianPointDistance
+              from: CartesianPointInput!
+              gt: Float
+              gte: Float
+              lt: Float
+              lte: Float
             }
 
             \\"\\"\\"
@@ -243,7 +244,7 @@ describe("Point", () => {
             \\"\\"\\"Cartesian Point filters\\"\\"\\"
             input CartesianPointFilters {
               distance: CartesianDistancePointFilters
-              equals: CartesianPointInput
+              eq: CartesianPointInput
               in: [CartesianPointInput!]
             }
 
@@ -306,7 +307,7 @@ describe("Point", () => {
 
             input MachineUpdateInput {
               partLocation: CartesianPointMutations
-              partLocation_SET: CartesianPointInput
+              partLocation_SET: CartesianPointInput @deprecated(reason: \\"Please use the generic mutation 'partLocation: { set: ... } }' instead.\\")
             }
 
             input MachineWhere {
@@ -436,9 +437,9 @@ describe("Point", () => {
 
             input MovieUpdateInput {
               filmedAt: ListPointInputMutations
-              filmedAt_POP: Int
-              filmedAt_PUSH: [PointInput!]
-              filmedAt_SET: [PointInput!]
+              filmedAt_POP: Int @deprecated(reason: \\"Please use the generic mutation 'filmedAt: { pop: ... } }' instead.\\")
+              filmedAt_PUSH: [PointInput!] @deprecated(reason: \\"Please use the generic mutation 'filmedAt: { push: ... } }' instead.\\")
+              filmedAt_SET: [PointInput!] @deprecated(reason: \\"Please use the generic mutation 'filmedAt: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -490,7 +491,7 @@ describe("Point", () => {
 
             \\"\\"\\"Point list filters\\"\\"\\"
             input PointListFilters {
-              equals: [PointInput!]
+              eq: [PointInput!]
               includes: PointInput
             }
 
@@ -534,11 +535,11 @@ describe("Point", () => {
 
             \\"\\"\\"Distance filters for cartesian points\\"\\"\\"
             input CartesianDistancePointFilters {
-              equals: CartesianPointDistance
-              greaterThan: CartesianPointDistance
-              greaterThanEquals: CartesianPointDistance
-              lessThan: CartesianPointDistance
-              lessThanEquals: CartesianPointDistance
+              from: CartesianPointInput!
+              gt: Float
+              gte: Float
+              lt: Float
+              lte: Float
             }
 
             \\"\\"\\"
@@ -552,16 +553,10 @@ describe("Point", () => {
               z: Float
             }
 
-            \\"\\"\\"Input type for a cartesian point with a distance\\"\\"\\"
-            input CartesianPointDistance {
-              distance: Float!
-              point: CartesianPointInput!
-            }
-
             \\"\\"\\"Cartesian Point filters\\"\\"\\"
             input CartesianPointFilters {
               distance: CartesianDistancePointFilters
-              equals: CartesianPointInput
+              eq: CartesianPointInput
               in: [CartesianPointInput!]
             }
 
@@ -574,7 +569,7 @@ describe("Point", () => {
 
             \\"\\"\\"CartesianPoint list filters\\"\\"\\"
             input CartesianPointListFilters {
-              equals: [CartesianPointFilters!]
+              eq: [CartesianPointFilters!]
               includes: CartesianPointFilters
             }
 
@@ -625,9 +620,9 @@ describe("Point", () => {
 
             input MachineUpdateInput {
               partLocations: ListCartesianPointInputMutations
-              partLocations_POP: Int
-              partLocations_PUSH: [CartesianPointInput!]
-              partLocations_SET: [CartesianPointInput!]
+              partLocations_POP: Int @deprecated(reason: \\"Please use the generic mutation 'partLocations: { pop: ... } }' instead.\\")
+              partLocations_PUSH: [CartesianPointInput!] @deprecated(reason: \\"Please use the generic mutation 'partLocations: { push: ... } }' instead.\\")
+              partLocations_SET: [CartesianPointInput!] @deprecated(reason: \\"Please use the generic mutation 'partLocations: { set: ... } }' instead.\\")
             }
 
             input MachineWhere {

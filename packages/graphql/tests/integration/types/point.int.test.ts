@@ -331,7 +331,7 @@ describe("Point", () => {
         // Test equality
         const photographsEqualsQuery = /* GraphQL */ `
             query Photographs($longitude: Float!, $latitude: Float!) {
-                ${Photograph.plural}(where: { location: { equals: { longitude: $longitude, latitude: $latitude } } }) {
+                ${Photograph.plural}(where: { location: { eq: { longitude: $longitude, latitude: $latitude } } }) {
                     id
                     size
                     location {
@@ -404,7 +404,7 @@ describe("Point", () => {
         const photographsLessThanQuery = /* GraphQL */ `
             query Photographs($longitude: Float!, $latitude: Float!) {
                 ${Photograph.plural}(
-                    where: { location: { distance: { lessThan: { point: { longitude: $longitude, latitude: $latitude }, distance: 1000000 } } } }
+                    where: { location: { distance: { from: { longitude: $longitude, latitude: $latitude }, lt: 1000000 } } }
                 ) {
                     id
                     size
@@ -438,7 +438,7 @@ describe("Point", () => {
         const photographsGreaterThanQuery = /* GraphQL */ `
             query Photographs($longitude: Float!, $latitude: Float!) {
                 ${Photograph.plural}(
-                    where: { location: { distance: { greaterThan: { point: { longitude: $longitude, latitude: $latitude }, distance: 1 } } } }
+                    where: { location: { distance: { from: { longitude: $longitude, latitude: $latitude }, gt: 1 } } }
                 ) {
                     id
                     size
@@ -494,7 +494,7 @@ describe("Point", () => {
 
         const photographsQuery = /* GraphQL */ `
             query Photographs($longitude: Float!, $latitude: Float!, $height: Float) {
-                ${Photograph.plural}(where: { location: { equals: { longitude: $longitude, latitude: $latitude, height: $height } } }) {
+                ${Photograph.plural}(where: { location: { eq: { longitude: $longitude, latitude: $latitude, height: $height } } }) {
                     id
                     size
                     location {

@@ -264,7 +264,7 @@ describe("[CartesianPoint]", () => {
 
         const update = /* GraphQL */ `
             mutation UpdateParts($id: String!, $locations: [CartesianPointInput!]) {
-                ${Part.operations.update}(where: { id: { equals: $id } }, update: { locations_SET: $locations }) {
+                ${Part.operations.update}(where: { id: { eq: $id } }, update: { locations_SET: $locations }) {
                     ${Part.plural} {
                         id
                         locations {
@@ -328,7 +328,7 @@ describe("[CartesianPoint]", () => {
 
         const partsQuery = /* GraphQL */ `
             query Parts($id: String!) {
-                ${Part.plural}(where: { id: { equals: $id } }) {
+                ${Part.plural}(where: { id: { eq: $id } }) {
                     id
                     locations {
                         y
@@ -373,7 +373,7 @@ describe("[CartesianPoint]", () => {
 
         const partsQuery = /* GraphQL */ `
             query Parts($id: String!) {
-                ${Part.plural}(where: { id: { equals: $id } }) {
+                ${Part.plural}(where: { id: { eq: $id } }) {
                     id
                     locations {
                         y

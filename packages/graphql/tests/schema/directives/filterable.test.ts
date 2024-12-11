@@ -1089,9 +1089,9 @@ describe("@filterable directive", () => {
                     input ActorUpdateInput {
                       movies: [ActorMoviesUpdateFieldInput!]
                       password: StringScalarMutations
-                      password_SET: String
+                      password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
                       username: StringScalarMutations
-                      username_SET: String
+                      username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
                     }
 
                     type ActorUpdatedEvent {
@@ -1409,7 +1409,7 @@ describe("@filterable directive", () => {
                     input MovieUpdateInput {
                       actors: [MovieActorsUpdateFieldInput!]
                       title: StringScalarMutations
-                      title_SET: String
+                      title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                     }
 
                     type MovieUpdatedEvent {
@@ -1507,12 +1507,12 @@ describe("@filterable directive", () => {
                     input StringScalarFilters {
                       contains: String
                       endsWith: String
-                      equals: String
-                      greaterThan: String
-                      greaterThanEquals: String
+                      eq: String
+                      gt: String
+                      gte: String
                       in: [String!]
-                      lessThan: String
-                      lessThanEquals: String
+                      lt: String
+                      lte: String
                       matches: String
                       startsWith: String
                     }
@@ -1799,9 +1799,9 @@ describe("@filterable directive", () => {
                     input ActorUpdateInput {
                       movies: [ActorMoviesUpdateFieldInput!]
                       password: StringScalarMutations
-                      password_SET: String
+                      password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
                       username: StringScalarMutations
-                      username_SET: String
+                      username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
                     }
 
                     type ActorUpdatedEvent {
@@ -2119,7 +2119,7 @@ describe("@filterable directive", () => {
                     input MovieUpdateInput {
                       actors: [MovieActorsUpdateFieldInput!]
                       title: StringScalarMutations
-                      title_SET: String
+                      title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                     }
 
                     type MovieUpdatedEvent {
@@ -2217,12 +2217,12 @@ describe("@filterable directive", () => {
                     input StringScalarFilters {
                       contains: String
                       endsWith: String
-                      equals: String
-                      greaterThan: String
-                      greaterThanEquals: String
+                      eq: String
+                      gt: String
+                      gte: String
                       in: [String!]
-                      lessThan: String
-                      lessThanEquals: String
+                      lt: String
+                      lte: String
                       matches: String
                       startsWith: String
                     }
@@ -2509,9 +2509,9 @@ describe("@filterable directive", () => {
                     input ActorUpdateInput {
                       movies: [ActorMoviesUpdateFieldInput!]
                       password: StringScalarMutations
-                      password_SET: String
+                      password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
                       username: StringScalarMutations
-                      username_SET: String
+                      username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
                     }
 
                     type ActorUpdatedEvent {
@@ -2817,7 +2817,7 @@ describe("@filterable directive", () => {
                     input MovieUpdateInput {
                       actors: [MovieActorsUpdateFieldInput!]
                       title: StringScalarMutations
-                      title_SET: String
+                      title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                     }
 
                     type MovieUpdatedEvent {
@@ -2909,12 +2909,12 @@ describe("@filterable directive", () => {
                     input StringScalarFilters {
                       contains: String
                       endsWith: String
-                      equals: String
-                      greaterThan: String
-                      greaterThanEquals: String
+                      eq: String
+                      gt: String
+                      gte: String
                       in: [String!]
-                      lessThan: String
-                      lessThanEquals: String
+                      lt: String
+                      lte: String
                       matches: String
                       startsWith: String
                     }
@@ -3204,9 +3204,9 @@ describe("@filterable directive", () => {
                     input ActorUpdateInput {
                       movies: [ActorMoviesUpdateFieldInput!]
                       password: StringScalarMutations
-                      password_SET: String
+                      password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
                       username: StringScalarMutations
-                      username_SET: String
+                      username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
                     }
 
                     type ActorUpdatedEvent {
@@ -3476,7 +3476,7 @@ describe("@filterable directive", () => {
                     input MovieUpdateInput {
                       actors: [MovieActorsUpdateFieldInput!]
                       title: StringScalarMutations
-                      title_SET: String
+                      title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                     }
 
                     type MovieUpdatedEvent {
@@ -3573,12 +3573,12 @@ describe("@filterable directive", () => {
                     input StringScalarFilters {
                       contains: String
                       endsWith: String
-                      equals: String
-                      greaterThan: String
-                      greaterThanEquals: String
+                      eq: String
+                      gt: String
+                      gte: String
                       in: [String!]
-                      lessThan: String
-                      lessThanEquals: String
+                      lt: String
+                      lte: String
                       matches: String
                       startsWith: String
                     }
@@ -3867,9 +3867,9 @@ describe("@filterable directive", () => {
                     input ActorUpdateInput {
                       movies: [ActorMoviesUpdateFieldInput!]
                       password: StringScalarMutations
-                      password_SET: String
+                      password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
                       username: StringScalarMutations
-                      username_SET: String
+                      username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
                     }
 
                     type ActorUpdatedEvent {
@@ -4187,7 +4187,7 @@ describe("@filterable directive", () => {
                     input MovieUpdateInput {
                       actors: [MovieActorsUpdateFieldInput!]
                       title: StringScalarMutations
-                      title_SET: String
+                      title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                     }
 
                     type MovieUpdatedEvent {
@@ -4285,12 +4285,12 @@ describe("@filterable directive", () => {
                     input StringScalarFilters {
                       contains: String
                       endsWith: String
-                      equals: String
-                      greaterThan: String
-                      greaterThanEquals: String
+                      eq: String
+                      gt: String
+                      gte: String
                       in: [String!]
-                      lessThan: String
-                      lessThanEquals: String
+                      lt: String
+                      lte: String
                       matches: String
                       startsWith: String
                     }
@@ -4579,9 +4579,9 @@ describe("@filterable directive", () => {
                     input ActorUpdateInput {
                       movies: [ActorMoviesUpdateFieldInput!]
                       password: StringScalarMutations
-                      password_SET: String
+                      password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
                       username: StringScalarMutations
-                      username_SET: String
+                      username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
                     }
 
                     type ActorUpdatedEvent {
@@ -4869,7 +4869,7 @@ describe("@filterable directive", () => {
                     input MovieUpdateInput {
                       actors: [MovieActorsUpdateFieldInput!]
                       title: StringScalarMutations
-                      title_SET: String
+                      title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                     }
 
                     type MovieUpdatedEvent {
@@ -4941,12 +4941,12 @@ describe("@filterable directive", () => {
                     input StringScalarFilters {
                       contains: String
                       endsWith: String
-                      equals: String
-                      greaterThan: String
-                      greaterThanEquals: String
+                      eq: String
+                      gt: String
+                      gte: String
                       in: [String!]
-                      lessThan: String
-                      lessThanEquals: String
+                      lt: String
+                      lte: String
                       matches: String
                       startsWith: String
                     }
@@ -5235,9 +5235,9 @@ describe("@filterable directive", () => {
                     input ActorUpdateInput {
                       movies: [ActorMoviesUpdateFieldInput!]
                       password: StringScalarMutations
-                      password_SET: String
+                      password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
                       username: StringScalarMutations
-                      username_SET: String
+                      username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
                     }
 
                     type ActorUpdatedEvent {
@@ -5507,7 +5507,7 @@ describe("@filterable directive", () => {
                     input MovieUpdateInput {
                       actors: [MovieActorsUpdateFieldInput!]
                       title: StringScalarMutations
-                      title_SET: String
+                      title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                     }
 
                     type MovieUpdatedEvent {
@@ -5604,12 +5604,12 @@ describe("@filterable directive", () => {
                     input StringScalarFilters {
                       contains: String
                       endsWith: String
-                      equals: String
-                      greaterThan: String
-                      greaterThanEquals: String
+                      eq: String
+                      gt: String
+                      gte: String
                       in: [String!]
-                      lessThan: String
-                      lessThanEquals: String
+                      lt: String
+                      lte: String
                       matches: String
                       startsWith: String
                     }
@@ -5891,9 +5891,9 @@ describe("@filterable directive", () => {
                     input ActorUpdateInput {
                       movies: [ActorMoviesUpdateFieldInput!]
                       password: StringScalarMutations
-                      password_SET: String
+                      password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
                       username: StringScalarMutations
-                      username_SET: String
+                      username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
                     }
 
                     type ActorUpdatedEvent {
@@ -6159,7 +6159,7 @@ describe("@filterable directive", () => {
                     input MovieUpdateInput {
                       actors: [MovieActorsUpdateFieldInput!]
                       title: StringScalarMutations
-                      title_SET: String
+                      title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                     }
 
                     type MovieUpdatedEvent {
@@ -6271,7 +6271,7 @@ describe("@filterable directive", () => {
 
                     input PersonUpdateInput {
                       username: StringScalarMutations
-                      username_SET: String
+                      username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
                     }
 
                     input PersonWhere {
@@ -6316,12 +6316,12 @@ describe("@filterable directive", () => {
                     input StringScalarFilters {
                       contains: String
                       endsWith: String
-                      equals: String
-                      greaterThan: String
-                      greaterThanEquals: String
+                      eq: String
+                      gt: String
+                      gte: String
                       in: [String!]
-                      lessThan: String
-                      lessThanEquals: String
+                      lt: String
+                      lte: String
                       matches: String
                       startsWith: String
                     }
@@ -6603,9 +6603,9 @@ describe("@filterable directive", () => {
                     input ActorUpdateInput {
                       movies: [ActorMoviesUpdateFieldInput!]
                       password: StringScalarMutations
-                      password_SET: String
+                      password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
                       username: StringScalarMutations
-                      username_SET: String
+                      username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
                     }
 
                     type ActorUpdatedEvent {
@@ -6904,7 +6904,7 @@ describe("@filterable directive", () => {
                     input MovieUpdateInput {
                       actors: [MovieActorsUpdateFieldInput!]
                       title: StringScalarMutations
-                      title_SET: String
+                      title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                     }
 
                     type MovieUpdatedEvent {
@@ -7017,7 +7017,7 @@ describe("@filterable directive", () => {
 
                     input PersonUpdateInput {
                       username: StringScalarMutations
-                      username_SET: String
+                      username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
                     }
 
                     input PersonWhere {
@@ -7062,12 +7062,12 @@ describe("@filterable directive", () => {
                     input StringScalarFilters {
                       contains: String
                       endsWith: String
-                      equals: String
-                      greaterThan: String
-                      greaterThanEquals: String
+                      eq: String
+                      gt: String
+                      gte: String
                       in: [String!]
-                      lessThan: String
-                      lessThanEquals: String
+                      lt: String
+                      lte: String
                       matches: String
                       startsWith: String
                     }
@@ -7349,9 +7349,9 @@ describe("@filterable directive", () => {
                     input ActorUpdateInput {
                       movies: [ActorMoviesUpdateFieldInput!]
                       password: StringScalarMutations
-                      password_SET: String
+                      password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
                       username: StringScalarMutations
-                      username_SET: String
+                      username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
                     }
 
                     type ActorUpdatedEvent {
@@ -7617,7 +7617,7 @@ describe("@filterable directive", () => {
                     input MovieUpdateInput {
                       actors: [MovieActorsUpdateFieldInput!]
                       title: StringScalarMutations
-                      title_SET: String
+                      title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                     }
 
                     type MovieUpdatedEvent {
@@ -7729,7 +7729,7 @@ describe("@filterable directive", () => {
 
                     input PersonUpdateInput {
                       username: StringScalarMutations
-                      username_SET: String
+                      username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
                     }
 
                     input PersonWhere {
@@ -7774,12 +7774,12 @@ describe("@filterable directive", () => {
                     input StringScalarFilters {
                       contains: String
                       endsWith: String
-                      equals: String
-                      greaterThan: String
-                      greaterThanEquals: String
+                      eq: String
+                      gt: String
+                      gte: String
                       in: [String!]
-                      lessThan: String
-                      lessThanEquals: String
+                      lt: String
+                      lte: String
                       matches: String
                       startsWith: String
                     }
@@ -8077,9 +8077,9 @@ describe("@filterable directive", () => {
                     input ActorUpdateInput {
                       movies: [ActorMoviesUpdateFieldInput!]
                       password: StringScalarMutations
-                      password_SET: String
+                      password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
                       username: StringScalarMutations
-                      username_SET: String
+                      username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
                     }
 
                     type ActorUpdatedEvent {
@@ -8358,9 +8358,9 @@ describe("@filterable directive", () => {
                     input AppearanceUpdateInput {
                       movies: [AppearanceMoviesUpdateFieldInput!]
                       password: StringScalarMutations
-                      password_SET: String
+                      password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
                       username: StringScalarMutations
-                      username_SET: String
+                      username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
                     }
 
                     type AppearanceUpdatedEvent {
@@ -8694,7 +8694,7 @@ describe("@filterable directive", () => {
                     input MovieUpdateInput {
                       actors: MovieActorsUpdateInput
                       title: StringScalarMutations
-                      title_SET: String
+                      title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                     }
 
                     type MovieUpdatedEvent {
@@ -8805,12 +8805,12 @@ describe("@filterable directive", () => {
                     input StringScalarFilters {
                       contains: String
                       endsWith: String
-                      equals: String
-                      greaterThan: String
-                      greaterThanEquals: String
+                      eq: String
+                      gt: String
+                      gte: String
                       in: [String!]
-                      lessThan: String
-                      lessThanEquals: String
+                      lt: String
+                      lte: String
                       matches: String
                       startsWith: String
                     }
@@ -9116,9 +9116,9 @@ describe("@filterable directive", () => {
                     input ActorUpdateInput {
                       movies: [ActorMoviesUpdateFieldInput!]
                       password: StringScalarMutations
-                      password_SET: String
+                      password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
                       username: StringScalarMutations
-                      username_SET: String
+                      username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
                     }
 
                     type ActorUpdatedEvent {
@@ -9397,9 +9397,9 @@ describe("@filterable directive", () => {
                     input AppearanceUpdateInput {
                       movies: [AppearanceMoviesUpdateFieldInput!]
                       password: StringScalarMutations
-                      password_SET: String
+                      password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
                       username: StringScalarMutations
-                      username_SET: String
+                      username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
                     }
 
                     type AppearanceUpdatedEvent {
@@ -9733,7 +9733,7 @@ describe("@filterable directive", () => {
                     input MovieUpdateInput {
                       actors: MovieActorsUpdateInput
                       title: StringScalarMutations
-                      title_SET: String
+                      title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                     }
 
                     type MovieUpdatedEvent {
@@ -9844,12 +9844,12 @@ describe("@filterable directive", () => {
                     input StringScalarFilters {
                       contains: String
                       endsWith: String
-                      equals: String
-                      greaterThan: String
-                      greaterThanEquals: String
+                      eq: String
+                      gt: String
+                      gte: String
                       in: [String!]
-                      lessThan: String
-                      lessThanEquals: String
+                      lt: String
+                      lte: String
                       matches: String
                       startsWith: String
                     }
@@ -10155,9 +10155,9 @@ describe("@filterable directive", () => {
                     input ActorUpdateInput {
                       movies: [ActorMoviesUpdateFieldInput!]
                       password: StringScalarMutations
-                      password_SET: String
+                      password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
                       username: StringScalarMutations
-                      username_SET: String
+                      username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
                     }
 
                     type ActorUpdatedEvent {
@@ -10436,9 +10436,9 @@ describe("@filterable directive", () => {
                     input AppearanceUpdateInput {
                       movies: [AppearanceMoviesUpdateFieldInput!]
                       password: StringScalarMutations
-                      password_SET: String
+                      password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
                       username: StringScalarMutations
-                      username_SET: String
+                      username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
                     }
 
                     type AppearanceUpdatedEvent {
@@ -10772,7 +10772,7 @@ describe("@filterable directive", () => {
                     input MovieUpdateInput {
                       actors: MovieActorsUpdateInput
                       title: StringScalarMutations
-                      title_SET: String
+                      title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                     }
 
                     type MovieUpdatedEvent {
@@ -10883,12 +10883,12 @@ describe("@filterable directive", () => {
                     input StringScalarFilters {
                       contains: String
                       endsWith: String
-                      equals: String
-                      greaterThan: String
-                      greaterThanEquals: String
+                      eq: String
+                      gt: String
+                      gte: String
                       in: [String!]
-                      lessThan: String
-                      lessThanEquals: String
+                      lt: String
+                      lte: String
                       matches: String
                       startsWith: String
                     }

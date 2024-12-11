@@ -254,7 +254,7 @@ describe("Connection with interfaces", () => {
 
             input CreatureUpdateInput {
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               movies: [CreatureMoviesUpdateFieldInput!]
             }
 
@@ -329,12 +329,12 @@ describe("Connection with interfaces", () => {
             input IDScalarFilters {
               contains: ID
               endsWith: ID
-              equals: ID
-              greaterThan: ID
-              greaterThanEquals: ID
+              eq: ID
+              gt: ID
+              gte: ID
               in: [ID!]
-              lessThan: ID
-              lessThanEquals: ID
+              lt: ID
+              lte: ID
               matches: ID
               startsWith: ID
             }
@@ -353,12 +353,12 @@ describe("Connection with interfaces", () => {
 
             \\"\\"\\"Int filters\\"\\"\\"
             input IntScalarFilters {
-              equals: Int
-              greaterThan: Int
-              greaterThanEquals: Int
+              eq: Int
+              gt: Int
+              gte: Int
               in: [Int!]
-              lessThan: Int
-              lessThanEquals: Int
+              lt: Int
+              lte: Int
             }
 
             \\"\\"\\"Int mutations\\"\\"\\"
@@ -512,9 +512,9 @@ describe("Connection with interfaces", () => {
             input MovieUpdateInput {
               director: [MovieDirectorUpdateFieldInput!]
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -733,7 +733,7 @@ describe("Connection with interfaces", () => {
 
             input PersonUpdateInput {
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               movies: [PersonMoviesUpdateFieldInput!]
             }
 
@@ -948,7 +948,7 @@ describe("Connection with interfaces", () => {
             input ProductionUpdateInput {
               director: [ProductionDirectorUpdateFieldInput!]
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
             }
 
             input ProductionWhere {
@@ -1177,13 +1177,13 @@ describe("Connection with interfaces", () => {
             input SeriesUpdateInput {
               director: [SeriesDirectorUpdateFieldInput!]
               episode: IntScalarMutations
-              episode_DECREMENT: Int
-              episode_INCREMENT: Int
-              episode_SET: Int
+              episode_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episode: { decrement: ... } }' instead.\\")
+              episode_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episode: { increment: ... } }' instead.\\")
+              episode_SET: Int @deprecated(reason: \\"Please use the generic mutation 'episode: { set: ... } }' instead.\\")
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input SeriesWhere {
@@ -1255,12 +1255,12 @@ describe("Connection with interfaces", () => {
             input StringScalarFilters {
               contains: String
               endsWith: String
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
+              eq: String
+              gt: String
+              gte: String
               in: [String!]
-              lessThan: String
-              lessThanEquals: String
+              lt: String
+              lte: String
               matches: String
               startsWith: String
             }

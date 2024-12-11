@@ -33,6 +33,7 @@ import { RelationshipAdapter } from "../../schema-model/relationship/model-adapt
 import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { Neo4jFeaturesSettings } from "../../types";
 import { ensureNonEmptyInput } from "../ensure-non-empty-input";
+import type { AdditionalFieldsCallback } from "../to-compose";
 import { concreteEntityToUpdateInputFields, withArrayOperators, withMathOperators } from "../to-compose";
 import { withConnectFieldInputType } from "./connect-input";
 import { withConnectionWhereInputType } from "./connection-where-input";
@@ -44,10 +45,12 @@ export function withUpdateInputType({
     entityAdapter,
     userDefinedFieldDirectives,
     composer,
+    features,
 }: {
     entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter | RelationshipAdapter;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     composer: SchemaComposer;
+    features: Neo4jFeaturesSettings | undefined;
 }): InputTypeComposer {
     const inputTypeName =
         entityAdapter instanceof RelationshipAdapter
@@ -63,11 +66,17 @@ export function withUpdateInputType({
     });
 
     if (entityAdapter instanceof ConcreteEntityAdapter || entityAdapter instanceof RelationshipAdapter) {
+        const additionalFields: AdditionalFieldsCallback[] = [];
+        if (features?.excludeDeprecatedFields?.mutationOperations !== true) {
+            additionalFields.push(withMathOperators(), withArrayOperators());
+        }
+
         updateInputType.addFields(
             concreteEntityToUpdateInputFields({
                 objectFields: entityAdapter.updateInputFields,
                 userDefinedFieldDirectives,
-                additionalFieldsCallbacks: [withMathOperators(), withArrayOperators()],
+                additionalFieldsCallbacks: additionalFields,
+                features,
             })
         );
     } else {
@@ -77,11 +86,17 @@ export function withUpdateInputType({
             ensureNonEmptyInput(composer, updateInputType);
         }
 
+        const additionalFields: AdditionalFieldsCallback[] = [];
+        if (features?.excludeDeprecatedFields?.mutationOperations !== true) {
+            additionalFields.push(withMathOperators());
+        }
+
         updateInputType.addFields(
             concreteEntityToUpdateInputFields({
                 objectFields: entityAdapter.updateInputFields,
                 userDefinedFieldDirectives,
-                additionalFieldsCallbacks: [withMathOperators()],
+                additionalFieldsCallbacks: additionalFields,
+                features,
             })
         );
     }
@@ -118,6 +133,7 @@ export function augmentUpdateInputTypeWithUpdateFieldInput({
         entityAdapter: relationshipAdapter.source,
         userDefinedFieldDirectives,
         composer,
+        features,
     });
     const relationshipField = makeUpdateInputTypeRelationshipField({
         relationshipAdapter,
@@ -286,6 +302,7 @@ function makeUpdateFieldInputTypeFields({
         ifUnionMemberEntity,
         composer,
         userDefinedFieldDirectives,
+        features,
     });
     if (updateFieldInputType) {
         fields["update"] = {
@@ -380,11 +397,13 @@ function withUpdateConnectionFieldInputType({
     composer,
     userDefinedFieldDirectives,
     ifUnionMemberEntity,
+    features,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     ifUnionMemberEntity?: ConcreteEntityAdapter;
+    features: Neo4jFeaturesSettings | undefined;
 }): InputTypeComposer | undefined {
     const typeName = relationshipAdapter.operations.getUpdateConnectionInputTypename(ifUnionMemberEntity);
     if (!relationshipAdapter.nestedOperations.has(RelationshipNestedOperationsOption.UPDATE)) {
@@ -398,6 +417,7 @@ function withUpdateConnectionFieldInputType({
         composer,
         userDefinedFieldDirectives,
         ifUnionMemberEntity,
+        features,
     });
 
     const updateFieldInput = composer.createInputTC({ name: typeName, fields });
@@ -408,11 +428,13 @@ function makeUpdateConnectionFieldInputTypeFields({
     composer,
     userDefinedFieldDirectives,
     ifUnionMemberEntity,
+    features,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     ifUnionMemberEntity?: ConcreteEntityAdapter;
+    features: Neo4jFeaturesSettings | undefined;
 }): InputTypeComposerFieldConfigMapDefinition {
     const fields: InputTypeComposerFieldConfigMapDefinition = {};
     if (relationshipAdapter.target instanceof UnionEntityAdapter) {
@@ -423,6 +445,7 @@ function makeUpdateConnectionFieldInputTypeFields({
             entityAdapter: ifUnionMemberEntity,
             userDefinedFieldDirectives,
             composer,
+            features,
         });
         fields["node"] = updateInputType;
     } else {

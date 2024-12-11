@@ -69,9 +69,9 @@ describe("Arrays Methods", () => {
 
             input ActedInUpdateInput {
               pay: ListFloatMutations
-              pay_POP: Int
-              pay_PUSH: [Float!]
-              pay_SET: [Float!]
+              pay_POP: Int @deprecated(reason: \\"Please use the generic mutation 'pay: { pop: ... } }' instead.\\")
+              pay_PUSH: [Float!] @deprecated(reason: \\"Please use the generic mutation 'pay: { push: ... } }' instead.\\")
+              pay_SET: [Float!] @deprecated(reason: \\"Please use the generic mutation 'pay: { set: ... } }' instead.\\")
             }
 
             input ActedInWhere {
@@ -284,7 +284,7 @@ describe("Arrays Methods", () => {
             input ActorUpdateInput {
               actedIn: [ActorActedInUpdateFieldInput!]
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
@@ -367,18 +367,18 @@ describe("Arrays Methods", () => {
 
             \\"\\"\\"Float list filters\\"\\"\\"
             input FloatListFilters {
-              equals: [FloatScalarFilters!]
+              eq: [FloatScalarFilters!]
               includes: FloatScalarFilters
             }
 
             \\"\\"\\"Float filters\\"\\"\\"
             input FloatScalarFilters {
-              equals: Float
-              greaterThan: Float
-              greaterThanEquals: Float
+              eq: Float
+              gt: Float
+              gte: Float
               in: [Float!]
-              lessThan: Float
-              lessThanEquals: Float
+              lt: Float
+              lte: Float
             }
 
             \\"\\"\\"Float mutations\\"\\"\\"
@@ -399,12 +399,12 @@ describe("Arrays Methods", () => {
             input IDScalarFilters {
               contains: ID
               endsWith: ID
-              equals: ID
-              greaterThan: ID
-              greaterThanEquals: ID
+              eq: ID
+              gt: ID
+              gte: ID
               in: [ID!]
-              lessThan: ID
-              lessThanEquals: ID
+              lt: ID
+              lte: ID
               matches: ID
               startsWith: ID
             }
@@ -612,17 +612,17 @@ describe("Arrays Methods", () => {
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
               averageRating: FloatScalarMutations
-              averageRating_ADD: Float
-              averageRating_DIVIDE: Float
-              averageRating_MULTIPLY: Float
-              averageRating_SET: Float
-              averageRating_SUBTRACT: Float
+              averageRating_ADD: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { add: ... } }' instead.\\")
+              averageRating_DIVIDE: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { divide: ... } }' instead.\\")
+              averageRating_MULTIPLY: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { multiply: ... } }' instead.\\")
+              averageRating_SET: Float @deprecated(reason: \\"Please use the generic mutation 'averageRating: { set: ... } }' instead.\\")
+              averageRating_SUBTRACT: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { subtract: ... } }' instead.\\")
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               ratings: ListFloatMutations
-              ratings_POP: Int
-              ratings_PUSH: [Float!]
-              ratings_SET: [Float!]
+              ratings_POP: Int @deprecated(reason: \\"Please use the generic mutation 'ratings: { pop: ... } }' instead.\\")
+              ratings_PUSH: [Float!] @deprecated(reason: \\"Please use the generic mutation 'ratings: { push: ... } }' instead.\\")
+              ratings_SET: [Float!] @deprecated(reason: \\"Please use the generic mutation 'ratings: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -723,12 +723,12 @@ describe("Arrays Methods", () => {
             input StringScalarFilters {
               contains: String
               endsWith: String
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
+              eq: String
+              gt: String
+              gte: String
               in: [String!]
-              lessThan: String
-              lessThanEquals: String
+              lt: String
+              lte: String
               matches: String
               startsWith: String
             }

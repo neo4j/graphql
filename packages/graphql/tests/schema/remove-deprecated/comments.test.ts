@@ -69,7 +69,7 @@ describe("Comments", () => {
 
             \\"\\"\\"Boolean filters\\"\\"\\"
             input BooleanScalarFilters {
-              equals: Boolean
+              eq: Boolean
             }
 
             \\"\\"\\"Boolean mutations\\"\\"\\"
@@ -121,12 +121,12 @@ describe("Comments", () => {
 
             \\"\\"\\"Float filters\\"\\"\\"
             input FloatScalarFilters {
-              equals: Float
-              greaterThan: Float
-              greaterThanEquals: Float
+              eq: Float
+              gt: Float
+              gte: Float
               in: [Float!]
-              lessThan: Float
-              lessThanEquals: Float
+              lt: Float
+              lte: Float
             }
 
             \\"\\"\\"Float mutations\\"\\"\\"
@@ -165,12 +165,12 @@ describe("Comments", () => {
             input IDScalarFilters {
               contains: ID
               endsWith: ID
-              equals: ID
-              greaterThan: ID
-              greaterThanEquals: ID
+              eq: ID
+              gt: ID
+              gte: ID
               in: [ID!]
-              lessThan: ID
-              lessThanEquals: ID
+              lt: ID
+              lte: ID
               matches: ID
               startsWith: ID
             }
@@ -189,12 +189,12 @@ describe("Comments", () => {
 
             \\"\\"\\"Int filters\\"\\"\\"
             input IntScalarFilters {
-              equals: Int
-              greaterThan: Int
-              greaterThanEquals: Int
+              eq: Int
+              gt: Int
+              gte: Int
               in: [Int!]
-              lessThan: Int
-              lessThanEquals: Int
+              lt: Int
+              lte: Int
             }
 
             \\"\\"\\"Int mutations\\"\\"\\"
@@ -256,23 +256,23 @@ describe("Comments", () => {
 
             input MovieUpdateInput {
               actorCount: IntScalarMutations
-              actorCount_DECREMENT: Int
-              actorCount_INCREMENT: Int
-              actorCount_SET: Int
+              actorCount_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'actorCount: { decrement: ... } }' instead.\\")
+              actorCount_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'actorCount: { increment: ... } }' instead.\\")
+              actorCount_SET: Int @deprecated(reason: \\"Please use the generic mutation 'actorCount: { set: ... } }' instead.\\")
               averageRating: FloatScalarMutations
-              averageRating_ADD: Float
-              averageRating_DIVIDE: Float
-              averageRating_MULTIPLY: Float
-              averageRating_SET: Float
-              averageRating_SUBTRACT: Float
+              averageRating_ADD: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { add: ... } }' instead.\\")
+              averageRating_DIVIDE: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { divide: ... } }' instead.\\")
+              averageRating_MULTIPLY: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { multiply: ... } }' instead.\\")
+              averageRating_SET: Float @deprecated(reason: \\"Please use the generic mutation 'averageRating: { set: ... } }' instead.\\")
+              averageRating_SUBTRACT: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { subtract: ... } }' instead.\\")
               customScalar: CustomScalarScalarMutations
-              customScalar_SET: CustomScalar
+              customScalar_SET: CustomScalar @deprecated(reason: \\"Please use the generic mutation 'customScalar: { set: ... } }' instead.\\")
               genre: GenreEnumScalarMutations
-              genre_SET: Genre
+              genre_SET: Genre @deprecated(reason: \\"Please use the generic mutation 'genre: { set: ... } }' instead.\\")
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               isActive: BooleanScalarMutations
-              isActive_SET: Boolean
+              isActive_SET: Boolean @deprecated(reason: \\"Please use the generic mutation 'isActive: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -415,7 +415,7 @@ describe("Comments", () => {
 
                 input ActorUpdateInput {
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input ActorWhere {
@@ -471,12 +471,12 @@ describe("Comments", () => {
                 input IDScalarFilters {
                   contains: ID
                   endsWith: ID
-                  equals: ID
-                  greaterThan: ID
-                  greaterThanEquals: ID
+                  eq: ID
+                  gt: ID
+                  gte: ID
                   in: [ID!]
-                  lessThan: ID
-                  lessThanEquals: ID
+                  lt: ID
+                  lte: ID
                   matches: ID
                   startsWith: ID
                 }
@@ -651,7 +651,7 @@ describe("Comments", () => {
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
@@ -742,12 +742,12 @@ describe("Comments", () => {
                 input StringScalarFilters {
                   contains: String
                   endsWith: String
-                  equals: String
-                  greaterThan: String
-                  greaterThanEquals: String
+                  eq: String
+                  gt: String
+                  gte: String
                   in: [String!]
-                  lessThan: String
-                  lessThanEquals: String
+                  lt: String
+                  lte: String
                   matches: String
                   startsWith: String
                 }
@@ -860,9 +860,9 @@ describe("Comments", () => {
 
                 input ActedInUpdateInput {
                   screenTime: IntScalarMutations
-                  screenTime_DECREMENT: Int
-                  screenTime_INCREMENT: Int
-                  screenTime_SET: Int
+                  screenTime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'screenTime: { decrement: ... } }' instead.\\")
+                  screenTime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'screenTime: { increment: ... } }' instead.\\")
+                  screenTime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'screenTime: { set: ... } }' instead.\\")
                 }
 
                 input ActedInWhere {
@@ -1055,7 +1055,7 @@ describe("Comments", () => {
                 input ActorUpdateInput {
                   actedIn: [ActorActedInUpdateFieldInput!]
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input ActorWhere {
@@ -1143,12 +1143,12 @@ describe("Comments", () => {
 
                 \\"\\"\\"Int filters\\"\\"\\"
                 input IntScalarFilters {
-                  equals: Int
-                  greaterThan: Int
-                  greaterThanEquals: Int
+                  eq: Int
+                  gt: Int
+                  gte: Int
                   in: [Int!]
-                  lessThan: Int
-                  lessThanEquals: Int
+                  lt: Int
+                  lte: Int
                 }
 
                 \\"\\"\\"Int mutations\\"\\"\\"
@@ -1189,11 +1189,11 @@ describe("Comments", () => {
 
                 input MovieUpdateInput {
                   runtime: IntScalarMutations
-                  runtime_DECREMENT: Int
-                  runtime_INCREMENT: Int
-                  runtime_SET: Int
+                  runtime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { decrement: ... } }' instead.\\")
+                  runtime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { increment: ... } }' instead.\\")
+                  runtime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'runtime: { set: ... } }' instead.\\")
                   title: StringScalarMutations
-                  title_SET: String
+                  title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
@@ -1278,7 +1278,7 @@ describe("Comments", () => {
 
                 input ProductionUpdateInput {
                   title: StringScalarMutations
-                  title_SET: String
+                  title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                 }
 
                 input ProductionWhere {
@@ -1352,11 +1352,11 @@ describe("Comments", () => {
 
                 input SeriesUpdateInput {
                   episodes: IntScalarMutations
-                  episodes_DECREMENT: Int
-                  episodes_INCREMENT: Int
-                  episodes_SET: Int
+                  episodes_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episodes: { decrement: ... } }' instead.\\")
+                  episodes_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episodes: { increment: ... } }' instead.\\")
+                  episodes_SET: Int @deprecated(reason: \\"Please use the generic mutation 'episodes: { set: ... } }' instead.\\")
                   title: StringScalarMutations
-                  title_SET: String
+                  title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                 }
 
                 input SeriesWhere {
@@ -1395,12 +1395,12 @@ describe("Comments", () => {
                 input StringScalarFilters {
                   contains: String
                   endsWith: String
-                  equals: String
-                  greaterThan: String
-                  greaterThanEquals: String
+                  eq: String
+                  gt: String
+                  gte: String
                   in: [String!]
-                  lessThan: String
-                  lessThanEquals: String
+                  lt: String
+                  lte: String
                   matches: String
                   startsWith: String
                 }
@@ -1519,7 +1519,7 @@ describe("Comments", () => {
 
                 input GenreUpdateInput {
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input GenreWhere {
@@ -1549,12 +1549,12 @@ describe("Comments", () => {
                 input IDScalarFilters {
                   contains: ID
                   endsWith: ID
-                  equals: ID
-                  greaterThan: ID
-                  greaterThanEquals: ID
+                  eq: ID
+                  gt: ID
+                  gte: ID
                   in: [ID!]
-                  lessThan: ID
-                  lessThanEquals: ID
+                  lt: ID
+                  lte: ID
                   matches: ID
                   startsWith: ID
                 }
@@ -1767,7 +1767,7 @@ describe("Comments", () => {
 
                 input MovieUpdateInput {
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                   search: MovieSearchUpdateInput
                 }
 

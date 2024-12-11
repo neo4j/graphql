@@ -59,7 +59,7 @@ describe("@default directive", () => {
 
             \\"\\"\\"Boolean filters\\"\\"\\"
             input BooleanScalarFilters {
-              equals: Boolean
+              eq: Boolean
             }
 
             \\"\\"\\"Boolean mutations\\"\\"\\"
@@ -90,12 +90,12 @@ describe("@default directive", () => {
 
             \\"\\"\\"DateTime filters\\"\\"\\"
             input DateTimeScalarFilters {
-              equals: DateTime
-              greaterThan: DateTime
-              greaterThanEquals: DateTime
+              eq: DateTime
+              gt: DateTime
+              gte: DateTime
               in: [DateTime!]
-              lessThan: DateTime
-              lessThanEquals: DateTime
+              lt: DateTime
+              lte: DateTime
             }
 
             \\"\\"\\"DateTime mutations\\"\\"\\"
@@ -120,12 +120,12 @@ describe("@default directive", () => {
 
             \\"\\"\\"Float filters\\"\\"\\"
             input FloatScalarFilters {
-              equals: Float
-              greaterThan: Float
-              greaterThanEquals: Float
+              eq: Float
+              gt: Float
+              gte: Float
               in: [Float!]
-              lessThan: Float
-              lessThanEquals: Float
+              lt: Float
+              lte: Float
             }
 
             \\"\\"\\"Float mutations\\"\\"\\"
@@ -146,12 +146,12 @@ describe("@default directive", () => {
             input IDScalarFilters {
               contains: ID
               endsWith: ID
-              equals: ID
-              greaterThan: ID
-              greaterThanEquals: ID
+              eq: ID
+              gt: ID
+              gte: ID
               in: [ID!]
-              lessThan: ID
-              lessThanEquals: ID
+              lt: ID
+              lte: ID
               matches: ID
               startsWith: ID
             }
@@ -170,12 +170,12 @@ describe("@default directive", () => {
 
             \\"\\"\\"Int filters\\"\\"\\"
             input IntScalarFilters {
-              equals: Int
-              greaterThan: Int
-              greaterThanEquals: Int
+              eq: Int
+              gt: Int
+              gte: Int
               in: [Int!]
-              lessThan: Int
-              lessThanEquals: Int
+              lt: Int
+              lte: Int
             }
 
             \\"\\"\\"Int mutations\\"\\"\\"
@@ -242,12 +242,12 @@ describe("@default directive", () => {
             input StringScalarFilters {
               contains: String
               endsWith: String
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
+              eq: String
+              gt: String
+              gte: String
               in: [String!]
-              lessThan: String
-              lessThanEquals: String
+              lt: String
+              lte: String
               matches: String
               startsWith: String
             }
@@ -382,29 +382,29 @@ describe("@default directive", () => {
 
             input UserUpdateInput {
               fromInterface: StringScalarMutations
-              fromInterface_SET: String
+              fromInterface_SET: String @deprecated(reason: \\"Please use the generic mutation 'fromInterface: { set: ... } }' instead.\\")
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               location: LocationEnumScalarMutations
-              location_SET: Location
+              location_SET: Location @deprecated(reason: \\"Please use the generic mutation 'location: { set: ... } }' instead.\\")
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
               numberOfFriends: IntScalarMutations
-              numberOfFriends_DECREMENT: Int
-              numberOfFriends_INCREMENT: Int
-              numberOfFriends_SET: Int
+              numberOfFriends_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'numberOfFriends: { decrement: ... } }' instead.\\")
+              numberOfFriends_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'numberOfFriends: { increment: ... } }' instead.\\")
+              numberOfFriends_SET: Int @deprecated(reason: \\"Please use the generic mutation 'numberOfFriends: { set: ... } }' instead.\\")
               rating: FloatScalarMutations
-              rating_ADD: Float
-              rating_DIVIDE: Float
-              rating_MULTIPLY: Float
-              rating_SET: Float
-              rating_SUBTRACT: Float
+              rating_ADD: Float @deprecated(reason: \\"Please use the relevant generic mutation 'rating: { add: ... } }' instead.\\")
+              rating_DIVIDE: Float @deprecated(reason: \\"Please use the relevant generic mutation 'rating: { divide: ... } }' instead.\\")
+              rating_MULTIPLY: Float @deprecated(reason: \\"Please use the relevant generic mutation 'rating: { multiply: ... } }' instead.\\")
+              rating_SET: Float @deprecated(reason: \\"Please use the generic mutation 'rating: { set: ... } }' instead.\\")
+              rating_SUBTRACT: Float @deprecated(reason: \\"Please use the relevant generic mutation 'rating: { subtract: ... } }' instead.\\")
               toBeOverridden: StringScalarMutations
-              toBeOverridden_SET: String
+              toBeOverridden_SET: String @deprecated(reason: \\"Please use the generic mutation 'toBeOverridden: { set: ... } }' instead.\\")
               verified: BooleanScalarMutations
               verifiedDate: DateTimeScalarMutations
-              verifiedDate_SET: DateTime
-              verified_SET: Boolean
+              verifiedDate_SET: DateTime @deprecated(reason: \\"Please use the generic mutation 'verifiedDate: { set: ... } }' instead.\\")
+              verified_SET: Boolean @deprecated(reason: \\"Please use the generic mutation 'verified: { set: ... } }' instead.\\")
             }
 
             input UserWhere {

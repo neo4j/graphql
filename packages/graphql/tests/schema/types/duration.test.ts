@@ -70,12 +70,12 @@ describe("Duration", () => {
 
             \\"\\"\\"Duration filters\\"\\"\\"
             input DurationScalarFilters {
-              equals: Duration
-              greaterThan: Duration
-              greaterThanEquals: Duration
+              eq: Duration
+              gt: Duration
+              gte: Duration
               in: [Duration!]
-              lessThan: Duration
-              lessThanEquals: Duration
+              lt: Duration
+              lte: Duration
             }
 
             \\"\\"\\"Duration mutations\\"\\"\\"
@@ -92,12 +92,12 @@ describe("Duration", () => {
             input IDScalarFilters {
               contains: ID
               endsWith: ID
-              equals: ID
-              greaterThan: ID
-              greaterThanEquals: ID
+              eq: ID
+              gt: ID
+              gte: ID
               in: [ID!]
-              lessThan: ID
-              lessThanEquals: ID
+              lt: ID
+              lte: ID
               matches: ID
               startsWith: ID
             }
@@ -138,9 +138,9 @@ describe("Duration", () => {
 
             input MovieUpdateInput {
               duration: DurationScalarMutations
-              duration_SET: Duration
+              duration_SET: Duration @deprecated(reason: \\"Please use the generic mutation 'duration: { set: ... } }' instead.\\")
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {

@@ -508,8 +508,7 @@ export class FilterFactory {
             relationship,
         });
     }
-    // TODO: we keep call this Generic filters but maybe we should rename it to something more meaningful
-    // Proposal: TypeSpecificFilters
+
     private parseGenericFilters(
         entity: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter,
         fieldName: string,
@@ -520,8 +519,7 @@ export class FilterFactory {
         });
         return this.wrapMultipleFiltersInLogical(genericFilters);
     }
-    // TODO: we keep call this Generic filters but maybe we should rename it to something more meaningful
-    // Proposal: TypeSpecificFilters
+
     private parseGenericFilter(
         entity: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter,
         fieldName: string,
@@ -539,7 +537,9 @@ export class FilterFactory {
         }
 
         if (rawOperator === "distance") {
-            return this.parseGenericFilters(entity, fieldName, value);
+            // Converts new distance filter into the old one to be parsed the same as deprecated syntax
+            const desugaredInput = this.desugarGenericDistanceOperations(value);
+            return this.parseGenericFilters(entity, fieldName, desugaredInput);
         }
 
         const operator = this.parseGenericOperator(rawOperator);
@@ -570,16 +570,21 @@ export class FilterFactory {
         // we convert them to the previous format to keep the same translation logic
         switch (key) {
             case "equals":
+            case "eq":
                 return "EQ";
             case "in":
                 return "IN";
-            case "lessThan":
+            case "lessThan": // TODO: remove long syntax once tests have been updated
+            case "lt":
                 return "LT";
             case "lessThanEquals":
+            case "lte":
                 return "LTE";
             case "greaterThan":
+            case "gt":
                 return "GT";
             case "greaterThanEquals":
+            case "gte":
                 return "GTE";
             case "contains":
                 return "CONTAINS";
@@ -591,6 +596,8 @@ export class FilterFactory {
                 return "MATCHES";
             case "includes":
                 return "INCLUDES";
+            case "distance_eq": // Used for distance -> eq
+                return "DISTANCE";
             default:
                 throw new Error(`Invalid operator ${key}`);
         }
@@ -883,5 +890,27 @@ export class FilterFactory {
             return !containsUnOptimizableFields;
         }
         return true;
+    }
+
+    /** Converts new distance operator into traditional operator **/
+    private desugarGenericDistanceOperations(distance: Record<string, any> & { from: any }): Record<string, any> {
+        const point = distance.from;
+        const targetPoint: Record<string, any> = {};
+
+        // eslint-disable-next-line prefer-const
+        for (let [key, value] of Object.entries(distance)) {
+            if (key !== "from") {
+                // We need this fake operator to differentiate distance from point eq in the
+                // desugaring process. Not needed in other operators because they are always distance based
+                if (key === "eq") {
+                    key = "distance_eq";
+                }
+                targetPoint[key] = {
+                    distance: value,
+                    point,
+                };
+            }
+        }
+        return targetPoint;
     }
 }

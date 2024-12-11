@@ -225,7 +225,7 @@ describe("Sort", () => {
 
             input Node1UpdateInput {
               property: StringScalarMutations
-              property_SET: String
+              property_SET: String @deprecated(reason: \\"Please use the generic mutation 'property: { set: ... } }' instead.\\")
               relatedTo: [Node1RelatedToUpdateFieldInput!]
             }
 
@@ -517,12 +517,12 @@ describe("Sort", () => {
             input StringScalarFilters {
               contains: String
               endsWith: String
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
+              eq: String
+              gt: String
+              gte: String
               in: [String!]
-              lessThan: String
-              lessThanEquals: String
+              lt: String
+              lte: String
               matches: String
               startsWith: String
             }

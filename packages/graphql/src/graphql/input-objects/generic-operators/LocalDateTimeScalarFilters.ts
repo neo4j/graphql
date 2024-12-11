@@ -24,14 +24,14 @@ export const LocalDateTimeScalarFilters = new GraphQLInputObjectType({
     name: "LocalDateTimeScalarFilters",
     description: "LocalDateTime filters",
     fields: {
-        equals: {
+        eq: {
             type: GraphQLLocalDateTime,
         },
-        greaterThan: { type: GraphQLLocalDateTime },
-        greaterThanEquals: { type: GraphQLLocalDateTime },
+        gt: { type: GraphQLLocalDateTime },
+        gte: { type: GraphQLLocalDateTime },
         in: { type: new GraphQLList(new GraphQLNonNull(GraphQLLocalDateTime)) },
-        lessThan: { type: GraphQLLocalDateTime },
-        lessThanEquals: { type: GraphQLLocalDateTime },
+        lt: { type: GraphQLLocalDateTime },
+        lte: { type: GraphQLLocalDateTime },
     },
 });
 
@@ -39,7 +39,7 @@ export const LocalDateTimeListFilters = new GraphQLInputObjectType({
     name: "LocalDateTimeListFilters",
     description: "LocalDateTime list filters",
     fields: {
-        equals: { type: new GraphQLList(new GraphQLNonNull(LocalDateTimeScalarFilters)) },
+        eq: { type: new GraphQLList(new GraphQLNonNull(LocalDateTimeScalarFilters)) },
         includes: { type: LocalDateTimeScalarFilters },
     },
 });

@@ -69,12 +69,12 @@ describe("Time", () => {
             input IDScalarFilters {
               contains: ID
               endsWith: ID
-              equals: ID
-              greaterThan: ID
-              greaterThanEquals: ID
+              eq: ID
+              gt: ID
+              gte: ID
               in: [ID!]
-              lessThan: ID
-              lessThanEquals: ID
+              lt: ID
+              lte: ID
               matches: ID
               startsWith: ID
             }
@@ -115,9 +115,9 @@ describe("Time", () => {
 
             input MovieUpdateInput {
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               time: TimeScalarMutations
-              time_SET: Time
+              time_SET: Time @deprecated(reason: \\"Please use the generic mutation 'time: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -183,12 +183,12 @@ describe("Time", () => {
 
             \\"\\"\\"Time filters\\"\\"\\"
             input TimeScalarFilters {
-              equals: Time
-              greaterThan: Time
-              greaterThanEquals: Time
+              eq: Time
+              gt: Time
+              gte: Time
               in: [Time!]
-              lessThan: Time
-              lessThanEquals: Time
+              lt: Time
+              lte: Time
             }
 
             \\"\\"\\"Time mutations\\"\\"\\"

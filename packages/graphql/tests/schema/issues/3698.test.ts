@@ -340,7 +340,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
 
             input GenreUpdateInput {
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
               product: [GenreProductUpdateFieldInput!]
             }
 
@@ -438,11 +438,11 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
 
             input IProductUpdateInput {
               id: StringScalarMutations
-              id_SET: String
+              id_SET: String @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               info: StringScalarMutations
-              info_SET: String
+              info_SET: String @deprecated(reason: \\"Please use the generic mutation 'info: { set: ... } }' instead.\\")
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input IProductWhere {
@@ -683,9 +683,9 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             input MovieUpdateInput {
               genre: [MovieGenreUpdateFieldInput!]
               id: StringScalarMutations
-              id_SET: String
+              id_SET: String @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             type MovieUpdatedEvent {
@@ -792,12 +792,12 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             input StringScalarFilters {
               contains: String
               endsWith: String
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
+              eq: String
+              gt: String
+              gte: String
               in: [String!]
-              lessThan: String
-              lessThanEquals: String
+              lt: String
+              lte: String
               matches: String
               startsWith: String
             }

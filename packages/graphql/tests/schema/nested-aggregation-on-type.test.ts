@@ -74,9 +74,9 @@ describe("nested aggregation on interface", () => {
 
             input ActedInUpdateInput {
               screenTime: IntScalarMutations
-              screenTime_DECREMENT: Int
-              screenTime_INCREMENT: Int
-              screenTime_SET: Int
+              screenTime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'screenTime: { decrement: ... } }' instead.\\")
+              screenTime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'screenTime: { increment: ... } }' instead.\\")
+              screenTime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'screenTime: { set: ... } }' instead.\\")
             }
 
             input ActedInWhere {
@@ -310,7 +310,7 @@ describe("nested aggregation on interface", () => {
             input ActorUpdateInput {
               actedIn: [ActorActedInUpdateFieldInput!]
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
@@ -393,12 +393,12 @@ describe("nested aggregation on interface", () => {
 
             \\"\\"\\"Float filters\\"\\"\\"
             input FloatScalarFilters {
-              equals: Float
-              greaterThan: Float
-              greaterThanEquals: Float
+              eq: Float
+              gt: Float
+              gte: Float
               in: [Float!]
-              lessThan: Float
-              lessThanEquals: Float
+              lt: Float
+              lte: Float
             }
 
             \\"\\"\\"Float mutations\\"\\"\\"
@@ -419,12 +419,12 @@ describe("nested aggregation on interface", () => {
 
             \\"\\"\\"Int filters\\"\\"\\"
             input IntScalarFilters {
-              equals: Int
-              greaterThan: Int
-              greaterThanEquals: Int
+              eq: Int
+              gt: Int
+              gte: Int
               in: [Int!]
-              lessThan: Int
-              lessThanEquals: Int
+              lt: Int
+              lte: Int
             }
 
             \\"\\"\\"Int mutations\\"\\"\\"
@@ -473,17 +473,17 @@ describe("nested aggregation on interface", () => {
 
             input MovieUpdateInput {
               cost: FloatScalarMutations
-              cost_ADD: Float
-              cost_DIVIDE: Float
-              cost_MULTIPLY: Float
-              cost_SET: Float
-              cost_SUBTRACT: Float
+              cost_ADD: Float @deprecated(reason: \\"Please use the relevant generic mutation 'cost: { add: ... } }' instead.\\")
+              cost_DIVIDE: Float @deprecated(reason: \\"Please use the relevant generic mutation 'cost: { divide: ... } }' instead.\\")
+              cost_MULTIPLY: Float @deprecated(reason: \\"Please use the relevant generic mutation 'cost: { multiply: ... } }' instead.\\")
+              cost_SET: Float @deprecated(reason: \\"Please use the generic mutation 'cost: { set: ... } }' instead.\\")
+              cost_SUBTRACT: Float @deprecated(reason: \\"Please use the relevant generic mutation 'cost: { subtract: ... } }' instead.\\")
               runtime: IntScalarMutations
-              runtime_DECREMENT: Int
-              runtime_INCREMENT: Int
-              runtime_SET: Int
+              runtime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { decrement: ... } }' instead.\\")
+              runtime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { increment: ... } }' instead.\\")
+              runtime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'runtime: { set: ... } }' instead.\\")
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -561,12 +561,12 @@ describe("nested aggregation on interface", () => {
             input StringScalarFilters {
               contains: String
               endsWith: String
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
+              eq: String
+              gt: String
+              gte: String
               in: [String!]
-              lessThan: String
-              lessThanEquals: String
+              lt: String
+              lte: String
               matches: String
               startsWith: String
             }

@@ -83,13 +83,13 @@ describe("200", () => {
 
             input CategoryUpdateInput {
               description: StringScalarMutations
-              description_SET: String
+              description_SET: String @deprecated(reason: \\"Please use the generic mutation 'description: { set: ... } }' instead.\\")
               exampleImageLocations: ListStringMutations
-              exampleImageLocations_POP: Int
-              exampleImageLocations_PUSH: [String!]
-              exampleImageLocations_SET: [String!]
+              exampleImageLocations_POP: Int @deprecated(reason: \\"Please use the generic mutation 'exampleImageLocations: { pop: ... } }' instead.\\")
+              exampleImageLocations_PUSH: [String!] @deprecated(reason: \\"Please use the generic mutation 'exampleImageLocations: { push: ... } }' instead.\\")
+              exampleImageLocations_SET: [String!] @deprecated(reason: \\"Please use the generic mutation 'exampleImageLocations: { set: ... } }' instead.\\")
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input CategoryWhere {
@@ -149,12 +149,12 @@ describe("200", () => {
             input IDScalarFilters {
               contains: ID
               endsWith: ID
-              equals: ID
-              greaterThan: ID
-              greaterThanEquals: ID
+              eq: ID
+              gt: ID
+              gte: ID
               in: [ID!]
-              lessThan: ID
-              lessThanEquals: ID
+              lt: ID
+              lte: ID
               matches: ID
               startsWith: ID
             }
@@ -201,7 +201,7 @@ describe("200", () => {
 
             \\"\\"\\"String list filters\\"\\"\\"
             input StringListFilters {
-              equals: [String!]
+              eq: [String!]
               includes: String
             }
 
@@ -209,12 +209,12 @@ describe("200", () => {
             input StringScalarFilters {
               contains: String
               endsWith: String
-              equals: String
-              greaterThan: String
-              greaterThanEquals: String
+              eq: String
+              gt: String
+              gte: String
               in: [String!]
-              lessThan: String
-              lessThanEquals: String
+              lt: String
+              lte: String
               matches: String
               startsWith: String
             }
