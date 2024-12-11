@@ -30,3 +30,5 @@ export function parseFilterProperty(key: string): { fieldName: string; operator:
 
     return { fieldName, operator };
 }
+
+
