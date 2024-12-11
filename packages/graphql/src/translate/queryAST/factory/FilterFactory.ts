@@ -514,8 +514,7 @@ export class FilterFactory {
             relationship,
         });
     }
-    // TODO: we keep call this Generic filters but maybe we should rename it to something more meaningful
-    // Proposal: TypeSpecificFilters
+
     private parseGenericFilters(
         entity: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter,
         fieldName: string,
@@ -526,8 +525,7 @@ export class FilterFactory {
         });
         return this.wrapMultipleFiltersInLogical(genericFilters);
     }
-    // TODO: we keep call this Generic filters but maybe we should rename it to something more meaningful
-    // Proposal: TypeSpecificFilters
+
     private parseGenericFilter(
         entity: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter,
         fieldName: string,
