@@ -129,6 +129,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               AND: [CreatureMoviesAggregateInput!]
               NOT: CreatureMoviesAggregateInput
               OR: [CreatureMoviesAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -360,6 +361,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               AND: [MovieDirectorAggregateInput!]
               NOT: MovieDirectorAggregateInput
               OR: [MovieDirectorAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -537,6 +539,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               AND: [PersonMoviesAggregateInput!]
               NOT: PersonMoviesAggregateInput
               OR: [PersonMoviesAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -680,6 +683,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               AND: [ProductionDirectorAggregateInput!]
               NOT: ProductionDirectorAggregateInput
               OR: [ProductionDirectorAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -887,6 +891,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               AND: [SeriesDirectorAggregateInput!]
               NOT: SeriesDirectorAggregateInput
               OR: [SeriesDirectorAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int

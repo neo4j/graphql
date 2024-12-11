@@ -940,6 +940,7 @@ describe("@populatedBy tests", () => {
                   AND: [MovieGenresAggregateInput!]
                   NOT: MovieGenresAggregateInput
                   OR: [MovieGenresAggregateInput!]
+                  count: IntScalarFilters
                   count_EQ: Int
                   count_GT: Int
                   count_GTE: Int
@@ -1537,6 +1538,7 @@ describe("@populatedBy tests", () => {
                   AND: [MovieGenresAggregateInput!]
                   NOT: MovieGenresAggregateInput
                   OR: [MovieGenresAggregateInput!]
+                  count: IntScalarFilters
                   count_EQ: Int
                   count_GT: Int
                   count_GTE: Int

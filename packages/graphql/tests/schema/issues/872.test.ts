@@ -96,6 +96,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               AND: [Actor2MoviesAggregateInput!]
               NOT: Actor2MoviesAggregateInput
               OR: [Actor2MoviesAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -282,6 +283,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               AND: [ActorMoviesAggregateInput!]
               NOT: ActorMoviesAggregateInput
               OR: [ActorMoviesAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int

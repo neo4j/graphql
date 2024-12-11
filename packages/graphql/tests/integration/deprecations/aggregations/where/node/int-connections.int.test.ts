@@ -18,39 +18,27 @@
  */
 
 import { generate } from "randomstring";
-import type { UniqueType } from "../../../../utils/graphql-types";
-import { TestHelper } from "../../../../utils/tests-helper";
+import type { UniqueType } from "../../../../../utils/graphql-types";
+import { TestHelper } from "../../../../../utils/tests-helper";
 
-describe("aggregations-where-node-int", () => {
+describe("aggregations-where-node-int - connections", () => {
     let testHelper: TestHelper;
     let User: UniqueType;
     let Post: UniqueType;
-    let Person: UniqueType;
 
     beforeEach(async () => {
         testHelper = new TestHelper();
         User = testHelper.createUniqueType("User");
         Post = testHelper.createUniqueType("Post");
-        Person = testHelper.createUniqueType("Person");
-
         const typeDefs = `
-        interface Human {
-            testString: String!
-            someInt: Int!
-        }
-
-        type ${Person} implements Human @node {
-            testString: String!
-            someInt: Int!
-        }
-            type ${User} implements Human @node {
+            type ${User} @node {
                 testString: String!
                 someInt: Int!
             }
     
             type ${Post} @node {
               testString: String!
-              likes: [Human!]! @relationship(type: "LIKES", direction: IN)
+              likes: [${User}!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
         await testHelper.initNeo4jGraphQL({ typeDefs });
@@ -85,22 +73,27 @@ describe("aggregations-where-node-int", () => {
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString:  {eq: "${testString}" }, likesAggregate: { node: { someInt: { average: {eq: ${avg} } } } } }) {
-                            testString
-                            likes {
-                                testString
-                                someInt
+                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_AVERAGE_EQUAL: ${avg} } } }) {
+                           edges {
+                            node {
+                                 testString
+                                    likes {
+                                        testString
+                                        someInt
+                                    }
+                                }
                             }
                         }
                     }
                 `;
 
             const gqlResult = await testHelper.executeGraphQL(query);
+
             expect(gqlResult.errors).toBeUndefined();
 
-            const [post] = (gqlResult.data as any)[Post.plural] as any[];
-            expect(post.testString).toEqual(testString);
-            expect(post.likes).toHaveLength(3);
+            const [post] = ((gqlResult.data as any)[Post.operations.connection] as any[])["edges"];
+            expect(post.node.testString).toEqual(testString);
+            expect(post.node.likes).toHaveLength(3);
         });
 
         test("should return posts where the average of like Int's is GT than", async () => {
@@ -124,11 +117,15 @@ describe("aggregations-where-node-int", () => {
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString:  { eq: "${testString}" }, likesAggregate: { node: { someInt: {average: { gt: ${avgGT} } } } } }) {
-                            testString
-                            likes {
-                                testString
-                                someInt
+                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_AVERAGE_GT: ${avgGT} } } }) {
+                            edges {
+                                node {
+                                    testString
+                                    likes {
+                                        testString
+                                        someInt
+                                    }
+                                }
                             }
                         }
                     }
@@ -138,9 +135,9 @@ describe("aggregations-where-node-int", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            const [post] = (gqlResult.data as any)[Post.plural] as any[];
-            expect(post.testString).toEqual(testString);
-            expect(post.likes).toHaveLength(3);
+            const [post] = ((gqlResult.data as any)[Post.operations.connection] as any[])["edges"];
+            expect(post.node.testString).toEqual(testString);
+            expect(post.node.likes).toHaveLength(3);
         });
 
         test("should return posts where the average of like Int's is GTE than", async () => {
@@ -163,11 +160,15 @@ describe("aggregations-where-node-int", () => {
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString: {eq: "${testString}"}, likesAggregate: { node: { someInt: { average: {gte: ${avg} } } } } }) {
-                            testString
-                            likes {
-                                testString
-                                someInt
+                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_AVERAGE_GTE: ${avg} } } }) {
+                            edges {
+                                node {
+                                    testString
+                                    likes {
+                                        testString
+                                        someInt
+                                    }
+                                }
                             }
                         }
                     }
@@ -177,9 +178,9 @@ describe("aggregations-where-node-int", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            const [post] = (gqlResult.data as any)[Post.plural] as any[];
-            expect(post.testString).toEqual(testString);
-            expect(post.likes).toHaveLength(3);
+            const [post] = ((gqlResult.data as any)[Post.operations.connection] as any[])["edges"];
+            expect(post.node.testString).toEqual(testString);
+            expect(post.node.likes).toHaveLength(3);
         });
 
         test("should return posts where the average of like Int's is LT than", async () => {
@@ -203,11 +204,15 @@ describe("aggregations-where-node-int", () => {
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString: {eq: "${testString}"}, likesAggregate: { node: { someInt: {average: { lt: ${avgLT} } } } } }) {
-                            testString
-                            likes {
-                                testString
-                                someInt
+                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_AVERAGE_LT: ${avgLT} } } }) {
+                            edges {
+                                node {
+                                    testString
+                                    likes {
+                                        testString
+                                        someInt
+                                    }
+                                }
                             }
                         }
                     }
@@ -217,9 +222,9 @@ describe("aggregations-where-node-int", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            const [post] = (gqlResult.data as any)[Post.plural] as any[];
-            expect(post.testString).toEqual(testString);
-            expect(post.likes).toHaveLength(3);
+            const [post] = ((gqlResult.data as any)[Post.operations.connection] as any[])["edges"];
+            expect(post.node.testString).toEqual(testString);
+            expect(post.node.likes).toHaveLength(3);
         });
 
         test("should return posts where the average of like Int's is LTE than", async () => {
@@ -242,22 +247,27 @@ describe("aggregations-where-node-int", () => {
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString: {eq: "${testString}"}, likesAggregate: { node: { someInt: {average: { lte: ${avg} } } } } }) {
-                            testString
-                            likes {
-                                testString
-                                someInt
+                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_AVERAGE_LTE: ${avg} } } }) {
+                            edges {
+                                node {
+                                    testString
+                                    likes {
+                                        testString
+                                        someInt
+                                    }
+                                }
                             }
                         }
                     }
                 `;
 
             const gqlResult = await testHelper.executeGraphQL(query);
+
             expect(gqlResult.errors).toBeUndefined();
 
-            const [post] = (gqlResult.data as any)[Post.plural] as any[];
-            expect(post.testString).toEqual(testString);
-            expect(post.likes).toHaveLength(3);
+            const [post] = ((gqlResult.data as any)[Post.operations.connection] as any[])["edges"];
+            expect(post.node.testString).toEqual(testString);
+            expect(post.node.likes).toHaveLength(3);
         });
     });
 
@@ -286,11 +296,15 @@ describe("aggregations-where-node-int", () => {
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString: {eq:"${testString}"}, likesAggregate: { node: { someInt: {sum: {eq: ${sum} } } } } }) {
-                            testString
-                            likes {
-                                testString
-                                someInt
+                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_SUM_EQUAL: ${sum} } } }) {
+                            edges {
+                                node {
+                                    testString
+                                    likes {
+                                        testString
+                                        someInt
+                                    }
+                                }
                             }
                         }
                     }
@@ -300,14 +314,14 @@ describe("aggregations-where-node-int", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            const [post] = (gqlResult.data as any)[Post.plural] as any[];
-            expect(post.testString).toEqual(testString);
-            expect(post.likes).toHaveLength(3);
+            const [post] = ((gqlResult.data as any)[Post.operations.connection] as any[])["edges"];
+            expect(post.node.testString).toEqual(testString);
+            expect(post.node.likes).toHaveLength(3);
         });
     });
 });
 
-describe("aggregations-where-node-int interface relationships of concrete types", () => {
+describe("aggregations-where-node-int - connections - interface relationships of concrete types", () => {
     let testHelper: TestHelper;
     let User: UniqueType;
     let Post: UniqueType;
@@ -318,6 +332,7 @@ describe("aggregations-where-node-int interface relationships of concrete types"
         User = testHelper.createUniqueType("User");
         Post = testHelper.createUniqueType("Post");
         Person = testHelper.createUniqueType("Person");
+
         const typeDefs = `
         interface Human {
             testString: String!
@@ -370,11 +385,15 @@ describe("aggregations-where-node-int interface relationships of concrete types"
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString: {eq: "${testString}"}, likesAggregate: { node: { someInt: { average: {eq: ${avg} } } } } }) {
-                            testString
-                            likes {
-                                testString
-                                someInt
+                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_AVERAGE_EQUAL: ${avg} } } }) {
+                           edges {
+                            node {
+                                 testString
+                                    likes {
+                                        testString
+                                        someInt
+                                    }
+                                }
                             }
                         }
                     }
@@ -384,9 +403,9 @@ describe("aggregations-where-node-int interface relationships of concrete types"
 
             expect(gqlResult.errors).toBeUndefined();
 
-            const [post] = (gqlResult.data as any)[Post.plural] as any[];
-            expect(post.testString).toEqual(testString);
-            expect(post.likes).toHaveLength(3);
+            const [post] = ((gqlResult.data as any)[Post.operations.connection] as any[])["edges"];
+            expect(post.node.testString).toEqual(testString);
+            expect(post.node.likes).toHaveLength(3);
         });
 
         test("should return posts where the average of like Int's is GT than", async () => {
@@ -410,11 +429,15 @@ describe("aggregations-where-node-int interface relationships of concrete types"
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString: {eq: "${testString}" }, likesAggregate: { node: { someInt: {average: {gt: ${avgGT} } } } } }) {
-                            testString
-                            likes {
-                                testString
-                                someInt
+                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_AVERAGE_GT: ${avgGT} } } }) {
+                            edges {
+                                node {
+                                    testString
+                                    likes {
+                                        testString
+                                        someInt
+                                    }
+                                }
                             }
                         }
                     }
@@ -424,9 +447,9 @@ describe("aggregations-where-node-int interface relationships of concrete types"
 
             expect(gqlResult.errors).toBeUndefined();
 
-            const [post] = (gqlResult.data as any)[Post.plural] as any[];
-            expect(post.testString).toEqual(testString);
-            expect(post.likes).toHaveLength(3);
+            const [post] = ((gqlResult.data as any)[Post.operations.connection] as any[])["edges"];
+            expect(post.node.testString).toEqual(testString);
+            expect(post.node.likes).toHaveLength(3);
         });
 
         test("should return posts where the average of like Int's is GTE than", async () => {
@@ -449,11 +472,15 @@ describe("aggregations-where-node-int interface relationships of concrete types"
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString: {eq: "${testString}" }, likesAggregate: { node: { someInt: {average: {gte: ${avg} } } } } }) {
-                            testString
-                            likes {
-                                testString
-                                someInt
+                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_AVERAGE_GTE: ${avg} } } }) {
+                            edges {
+                                node {
+                                    testString
+                                    likes {
+                                        testString
+                                        someInt
+                                    }
+                                }
                             }
                         }
                     }
@@ -463,9 +490,9 @@ describe("aggregations-where-node-int interface relationships of concrete types"
 
             expect(gqlResult.errors).toBeUndefined();
 
-            const [post] = (gqlResult.data as any)[Post.plural] as any[];
-            expect(post.testString).toEqual(testString);
-            expect(post.likes).toHaveLength(3);
+            const [post] = ((gqlResult.data as any)[Post.operations.connection] as any[])["edges"];
+            expect(post.node.testString).toEqual(testString);
+            expect(post.node.likes).toHaveLength(3);
         });
 
         test("should return posts where the average of like Int's is LT than", async () => {
@@ -489,11 +516,15 @@ describe("aggregations-where-node-int interface relationships of concrete types"
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString: {eq: "${testString}"}, likesAggregate: { node: { someInt: { average: { lt: ${avgLT} } } } } }) {
-                            testString
-                            likes {
-                                testString
-                                someInt
+                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_AVERAGE_LT: ${avgLT} } } }) {
+                            edges {
+                                node {
+                                    testString
+                                    likes {
+                                        testString
+                                        someInt
+                                    }
+                                }
                             }
                         }
                     }
@@ -503,9 +534,9 @@ describe("aggregations-where-node-int interface relationships of concrete types"
 
             expect(gqlResult.errors).toBeUndefined();
 
-            const [post] = (gqlResult.data as any)[Post.plural] as any[];
-            expect(post.testString).toEqual(testString);
-            expect(post.likes).toHaveLength(3);
+            const [post] = ((gqlResult.data as any)[Post.operations.connection] as any[])["edges"];
+            expect(post.node.testString).toEqual(testString);
+            expect(post.node.likes).toHaveLength(3);
         });
 
         test("should return posts where the average of like Int's is LTE than", async () => {
@@ -528,11 +559,15 @@ describe("aggregations-where-node-int interface relationships of concrete types"
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString: {eq: "${testString}"}, likesAggregate: { node: { someInt: {average: {lte: ${avg} } } } } }) {
-                            testString
-                            likes {
-                                testString
-                                someInt
+                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_AVERAGE_LTE: ${avg} } } }) {
+                            edges {
+                                node {
+                                    testString
+                                    likes {
+                                        testString
+                                        someInt
+                                    }
+                                }
                             }
                         }
                     }
@@ -542,9 +577,9 @@ describe("aggregations-where-node-int interface relationships of concrete types"
 
             expect(gqlResult.errors).toBeUndefined();
 
-            const [post] = (gqlResult.data as any)[Post.plural] as any[];
-            expect(post.testString).toEqual(testString);
-            expect(post.likes).toHaveLength(3);
+            const [post] = ((gqlResult.data as any)[Post.operations.connection] as any[])["edges"];
+            expect(post.node.testString).toEqual(testString);
+            expect(post.node.likes).toHaveLength(3);
         });
     });
 
@@ -573,22 +608,27 @@ describe("aggregations-where-node-int interface relationships of concrete types"
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString: {eq: "${testString}"}, likesAggregate: { node: { someInt: {sum: { eq: ${sum} } } } } }) {
-                            testString
-                            likes {
-                                testString
-                                someInt
+                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_SUM_EQUAL: ${sum} } } }) {
+                            edges {
+                                node {
+                                    testString
+                                    likes {
+                                        testString
+                                        someInt
+                                    }
+                                }
                             }
                         }
                     }
                 `;
 
             const gqlResult = await testHelper.executeGraphQL(query);
+
             expect(gqlResult.errors).toBeUndefined();
 
-            const [post] = (gqlResult.data as any)[Post.plural] as any[];
-            expect(post.testString).toEqual(testString);
-            expect(post.likes).toHaveLength(3);
+            const [post] = ((gqlResult.data as any)[Post.operations.connection] as any[])["edges"];
+            expect(post.node.testString).toEqual(testString);
+            expect(post.node.likes).toHaveLength(3);
         });
     });
 });

@@ -18,8 +18,8 @@
  */
 
 import { generate } from "randomstring";
-import type { UniqueType } from "../../../../utils/graphql-types";
-import { TestHelper } from "../../../../utils/tests-helper";
+import type { UniqueType } from "../../../../../utils/graphql-types";
+import { TestHelper } from "../../../../../utils/tests-helper";
 
 describe("aggregations-where-node-int", () => {
     let testHelper: TestHelper;
@@ -85,7 +85,7 @@ describe("aggregations-where-node-int", () => {
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString:  {eq: "${testString}" }, likesAggregate: { node: { someInt: { average: {eq: ${avg} } } } } }) {
+                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_AVERAGE_EQUAL: ${avg} } } }) {
                             testString
                             likes {
                                 testString
@@ -124,7 +124,7 @@ describe("aggregations-where-node-int", () => {
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString:  { eq: "${testString}" }, likesAggregate: { node: { someInt: {average: { gt: ${avgGT} } } } } }) {
+                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_AVERAGE_GT: ${avgGT} } } }) {
                             testString
                             likes {
                                 testString
@@ -163,7 +163,7 @@ describe("aggregations-where-node-int", () => {
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString: {eq: "${testString}"}, likesAggregate: { node: { someInt: { average: {gte: ${avg} } } } } }) {
+                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_AVERAGE_GTE: ${avg} } } }) {
                             testString
                             likes {
                                 testString
@@ -203,7 +203,7 @@ describe("aggregations-where-node-int", () => {
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString: {eq: "${testString}"}, likesAggregate: { node: { someInt: {average: { lt: ${avgLT} } } } } }) {
+                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_AVERAGE_LT: ${avgLT} } } }) {
                             testString
                             likes {
                                 testString
@@ -242,7 +242,7 @@ describe("aggregations-where-node-int", () => {
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString: {eq: "${testString}"}, likesAggregate: { node: { someInt: {average: { lte: ${avg} } } } } }) {
+                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_AVERAGE_LTE: ${avg} } } }) {
                             testString
                             likes {
                                 testString
@@ -286,7 +286,7 @@ describe("aggregations-where-node-int", () => {
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString: {eq:"${testString}"}, likesAggregate: { node: { someInt: {sum: {eq: ${sum} } } } } }) {
+                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_SUM_EQUAL: ${sum} } } }) {
                             testString
                             likes {
                                 testString
@@ -370,7 +370,7 @@ describe("aggregations-where-node-int interface relationships of concrete types"
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString: {eq: "${testString}"}, likesAggregate: { node: { someInt: { average: {eq: ${avg} } } } } }) {
+                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_AVERAGE_EQUAL: ${avg} } } }) {
                             testString
                             likes {
                                 testString
@@ -410,7 +410,7 @@ describe("aggregations-where-node-int interface relationships of concrete types"
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString: {eq: "${testString}" }, likesAggregate: { node: { someInt: {average: {gt: ${avgGT} } } } } }) {
+                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_AVERAGE_GT: ${avgGT} } } }) {
                             testString
                             likes {
                                 testString
@@ -449,7 +449,7 @@ describe("aggregations-where-node-int interface relationships of concrete types"
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString: {eq: "${testString}" }, likesAggregate: { node: { someInt: {average: {gte: ${avg} } } } } }) {
+                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_AVERAGE_GTE: ${avg} } } }) {
                             testString
                             likes {
                                 testString
@@ -489,7 +489,7 @@ describe("aggregations-where-node-int interface relationships of concrete types"
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString: {eq: "${testString}"}, likesAggregate: { node: { someInt: { average: { lt: ${avgLT} } } } } }) {
+                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_AVERAGE_LT: ${avgLT} } } }) {
                             testString
                             likes {
                                 testString
@@ -528,7 +528,7 @@ describe("aggregations-where-node-int interface relationships of concrete types"
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString: {eq: "${testString}"}, likesAggregate: { node: { someInt: {average: {lte: ${avg} } } } } }) {
+                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_AVERAGE_LTE: ${avg} } } }) {
                             testString
                             likes {
                                 testString
@@ -573,7 +573,7 @@ describe("aggregations-where-node-int interface relationships of concrete types"
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString: {eq: "${testString}"}, likesAggregate: { node: { someInt: {sum: { eq: ${sum} } } } } }) {
+                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_SUM_EQUAL: ${sum} } } }) {
                             testString
                             likes {
                                 testString

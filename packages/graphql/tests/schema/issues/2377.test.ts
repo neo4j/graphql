@@ -277,6 +277,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               AND: [ResourceContainedByAggregateInput!]
               NOT: ResourceContainedByAggregateInput
               OR: [ResourceContainedByAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int

@@ -131,6 +131,7 @@ describe("Interface Relationships", () => {
               AND: [ActorActedInAggregateInput!]
               NOT: ActorActedInAggregateInput
               OR: [ActorActedInAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -791,6 +792,7 @@ describe("Interface Relationships", () => {
               AND: [ActorActedInAggregateInput!]
               NOT: ActorActedInAggregateInput
               OR: [ActorActedInAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -1066,6 +1068,7 @@ describe("Interface Relationships", () => {
               AND: [EpisodeSeriesAggregateInput!]
               NOT: EpisodeSeriesAggregateInput
               OR: [EpisodeSeriesAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -1313,6 +1316,7 @@ describe("Interface Relationships", () => {
               AND: [MovieActorsAggregateInput!]
               NOT: MovieActorsAggregateInput
               OR: [MovieActorsAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -1496,6 +1500,7 @@ describe("Interface Relationships", () => {
               AND: [ProductionActorsAggregateInput!]
               NOT: ProductionActorsAggregateInput
               OR: [ProductionActorsAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -1774,6 +1779,7 @@ describe("Interface Relationships", () => {
               AND: [SeriesActorsAggregateInput!]
               NOT: SeriesActorsAggregateInput
               OR: [SeriesActorsAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -1891,6 +1897,7 @@ describe("Interface Relationships", () => {
               AND: [SeriesEpisodesAggregateInput!]
               NOT: SeriesEpisodesAggregateInput
               OR: [SeriesEpisodesAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -2266,6 +2273,7 @@ describe("Interface Relationships", () => {
               AND: [ActorActedInAggregateInput!]
               NOT: ActorActedInAggregateInput
               OR: [ActorActedInAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -2541,6 +2549,7 @@ describe("Interface Relationships", () => {
               AND: [EpisodeSeriesAggregateInput!]
               NOT: EpisodeSeriesAggregateInput
               OR: [EpisodeSeriesAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -2788,6 +2797,7 @@ describe("Interface Relationships", () => {
               AND: [MovieActorsAggregateInput!]
               NOT: MovieActorsAggregateInput
               OR: [MovieActorsAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -2971,6 +2981,7 @@ describe("Interface Relationships", () => {
               AND: [ProductionActorsAggregateInput!]
               NOT: ProductionActorsAggregateInput
               OR: [ProductionActorsAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -3269,6 +3280,7 @@ describe("Interface Relationships", () => {
               AND: [SeriesActorsAggregateInput!]
               NOT: SeriesActorsAggregateInput
               OR: [SeriesActorsAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -3386,6 +3398,7 @@ describe("Interface Relationships", () => {
               AND: [SeriesEpisodesAggregateInput!]
               NOT: SeriesEpisodesAggregateInput
               OR: [SeriesEpisodesAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -3853,6 +3866,7 @@ describe("Interface Relationships", () => {
               AND: [Interface1Interface2AggregateInput!]
               NOT: Interface1Interface2AggregateInput
               OR: [Interface1Interface2AggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -4184,6 +4198,7 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface1AggregateInput!]
               NOT: Type1Interface1AggregateInput
               OR: [Type1Interface1AggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -4265,6 +4280,7 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface1Interface2AggregateInput!]
               NOT: Type1Interface1Interface2AggregateInput
               OR: [Type1Interface1Interface2AggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -4576,6 +4592,7 @@ describe("Interface Relationships", () => {
               AND: [Type2Interface1Interface2AggregateInput!]
               NOT: Type2Interface1Interface2AggregateInput
               OR: [Type2Interface1Interface2AggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -4980,6 +4997,7 @@ describe("Interface Relationships", () => {
               AND: [Interface1Interface2AggregateInput!]
               NOT: Interface1Interface2AggregateInput
               OR: [Interface1Interface2AggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -5429,6 +5447,7 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface1AggregateInput!]
               NOT: Type1Interface1AggregateInput
               OR: [Type1Interface1AggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -5510,6 +5529,7 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface1Interface2AggregateInput!]
               NOT: Type1Interface1Interface2AggregateInput
               OR: [Type1Interface1Interface2AggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -5830,6 +5850,7 @@ describe("Interface Relationships", () => {
               AND: [Type2Interface1Interface2AggregateInput!]
               NOT: Type2Interface1Interface2AggregateInput
               OR: [Type2Interface1Interface2AggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -6249,6 +6270,7 @@ describe("Interface Relationships", () => {
               AND: [Interface1Interface2AggregateInput!]
               NOT: Interface1Interface2AggregateInput
               OR: [Interface1Interface2AggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -6654,6 +6676,7 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface1AggregateInput!]
               NOT: Type1Interface1AggregateInput
               OR: [Type1Interface1AggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -6735,6 +6758,7 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface1Interface2AggregateInput!]
               NOT: Type1Interface1Interface2AggregateInput
               OR: [Type1Interface1Interface2AggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -7118,6 +7142,7 @@ describe("Interface Relationships", () => {
               AND: [Type2Interface1Interface2AggregateInput!]
               NOT: Type2Interface1Interface2AggregateInput
               OR: [Type2Interface1Interface2AggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -7492,6 +7517,7 @@ describe("Interface Relationships", () => {
               AND: [CommentCreatorAggregateInput!]
               NOT: CommentCreatorAggregateInput
               OR: [CommentCreatorAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -7579,6 +7605,7 @@ describe("Interface Relationships", () => {
               AND: [CommentPostAggregateInput!]
               NOT: CommentPostAggregateInput
               OR: [CommentPostAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -7820,6 +7847,7 @@ describe("Interface Relationships", () => {
               AND: [ContentCreatorAggregateInput!]
               NOT: ContentCreatorAggregateInput
               OR: [ContentCreatorAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -8131,6 +8159,7 @@ describe("Interface Relationships", () => {
               AND: [PostCommentsAggregateInput!]
               NOT: PostCommentsAggregateInput
               OR: [PostCommentsAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -8251,6 +8280,7 @@ describe("Interface Relationships", () => {
               AND: [PostCreatorAggregateInput!]
               NOT: PostCreatorAggregateInput
               OR: [PostCreatorAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -8540,6 +8570,7 @@ describe("Interface Relationships", () => {
               AND: [UserContentAggregateInput!]
               NOT: UserContentAggregateInput
               OR: [UserContentAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -8858,6 +8889,7 @@ describe("Interface Relationships", () => {
               AND: [ActorActedInAggregateInput!]
               NOT: ActorActedInAggregateInput
               OR: [ActorActedInAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -9154,6 +9186,7 @@ describe("Interface Relationships", () => {
               AND: [MovieActorsAggregateInput!]
               NOT: MovieActorsAggregateInput
               OR: [MovieActorsAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -9414,6 +9447,7 @@ describe("Interface Relationships", () => {
               AND: [SeriesActorsAggregateInput!]
               NOT: SeriesActorsAggregateInput
               OR: [SeriesActorsAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -9574,6 +9608,7 @@ describe("Interface Relationships", () => {
               AND: [ShowActorsAggregateInput!]
               NOT: ShowActorsAggregateInput
               OR: [ShowActorsAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int

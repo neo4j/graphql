@@ -196,6 +196,7 @@ describe("Query Direction", () => {
               AND: [UserFriendsAggregateInput!]
               NOT: UserFriendsAggregateInput
               OR: [UserFriendsAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -525,6 +526,7 @@ describe("Query Direction", () => {
               AND: [UserFriendsAggregateInput!]
               NOT: UserFriendsAggregateInput
               OR: [UserFriendsAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int

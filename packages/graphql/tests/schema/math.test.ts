@@ -689,6 +689,7 @@ describe("Algebraic", () => {
               AND: [DirectorDirectsAggregateInput!]
               NOT: DirectorDirectsAggregateInput
               OR: [DirectorDirectsAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -977,6 +978,7 @@ describe("Algebraic", () => {
               AND: [MovieDirectedByAggregateInput!]
               NOT: MovieDirectedByAggregateInput
               OR: [MovieDirectedByAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -1460,6 +1462,7 @@ describe("Algebraic", () => {
               AND: [MovieWorkersAggregateInput!]
               NOT: MovieWorkersAggregateInput
               OR: [MovieWorkersAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -1679,6 +1682,7 @@ describe("Algebraic", () => {
               AND: [PersonWorksInProductionAggregateInput!]
               NOT: PersonWorksInProductionAggregateInput
               OR: [PersonWorksInProductionAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -2093,6 +2097,7 @@ describe("Algebraic", () => {
               AND: [MovieActorsAggregateInput!]
               NOT: MovieActorsAggregateInput
               OR: [MovieActorsAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -2324,6 +2329,7 @@ describe("Algebraic", () => {
               AND: [PersonActedInMoviesAggregateInput!]
               NOT: PersonActedInMoviesAggregateInput
               OR: [PersonActedInMoviesAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int

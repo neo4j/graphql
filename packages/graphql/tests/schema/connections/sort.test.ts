@@ -144,6 +144,7 @@ describe("Sort", () => {
               AND: [Node1RelatedToAggregateInput!]
               NOT: Node1RelatedToAggregateInput
               OR: [Node1RelatedToAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -310,6 +311,7 @@ describe("Sort", () => {
               AND: [Node2RelatedToAggregateInput!]
               NOT: Node2RelatedToAggregateInput
               OR: [Node2RelatedToAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int

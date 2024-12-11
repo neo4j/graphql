@@ -374,6 +374,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               AND: [UserFollowingAggregateInput!]
               NOT: UserFollowingAggregateInput
               OR: [UserFollowingAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int

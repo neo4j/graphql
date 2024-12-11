@@ -107,6 +107,7 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               AND: [CrewMemberMoviesAggregateInput!]
               NOT: CrewMemberMoviesAggregateInput
               OR: [CrewMemberMoviesAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int

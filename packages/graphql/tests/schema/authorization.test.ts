@@ -158,6 +158,7 @@ describe("Authorization", () => {
               AND: [PostAuthorAggregateInput!]
               NOT: PostAuthorAggregateInput
               OR: [PostAuthorAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -461,6 +462,7 @@ describe("Authorization", () => {
               AND: [UserPostsAggregateInput!]
               NOT: UserPostsAggregateInput
               OR: [UserPostsAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int

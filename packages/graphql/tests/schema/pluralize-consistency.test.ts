@@ -262,6 +262,7 @@ describe("Pluralize consistency", () => {
               AND: [super_userMy_friendAggregateInput!]
               NOT: super_userMy_friendAggregateInput
               OR: [super_userMy_friendAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int

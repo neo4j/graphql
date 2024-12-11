@@ -309,6 +309,7 @@ describe("Unions", () => {
               AND: [BookAuthorAggregateInput!]
               NOT: BookAuthorAggregateInput
               OR: [BookAuthorAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -590,6 +591,7 @@ describe("Unions", () => {
               AND: [JournalAuthorAggregateInput!]
               NOT: JournalAuthorAggregateInput
               OR: [JournalAuthorAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int

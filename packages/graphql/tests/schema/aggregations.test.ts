@@ -1213,6 +1213,7 @@ describe("Aggregations", () => {
               AND: [PostLikesAggregateInput!]
               NOT: PostLikesAggregateInput
               OR: [PostLikesAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int

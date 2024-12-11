@@ -250,6 +250,7 @@ describe("162", () => {
               AND: [TigerJawLevel2Part1AggregateInput!]
               NOT: TigerJawLevel2Part1AggregateInput
               OR: [TigerJawLevel2Part1AggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -363,6 +364,7 @@ describe("162", () => {
               AND: [TigerJawLevel2Part1TigerAggregateInput!]
               NOT: TigerJawLevel2Part1TigerAggregateInput
               OR: [TigerJawLevel2Part1TigerAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int

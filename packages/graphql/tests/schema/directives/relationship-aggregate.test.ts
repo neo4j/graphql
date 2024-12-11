@@ -347,6 +347,7 @@ describe("@relationship directive, aggregate argument", () => {
                   AND: [MovieActorsAggregateInput!]
                   NOT: MovieActorsAggregateInput
                   OR: [MovieActorsAggregateInput!]
+                  count: IntScalarFilters
                   count_EQ: Int
                   count_GT: Int
                   count_GTE: Int
@@ -764,6 +765,7 @@ describe("@relationship directive, aggregate argument", () => {
                   AND: [MovieActorsAggregateInput!]
                   NOT: MovieActorsAggregateInput
                   OR: [MovieActorsAggregateInput!]
+                  count: IntScalarFilters
                   count_EQ: Int
                   count_GT: Int
                   count_GTE: Int
@@ -1172,6 +1174,7 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [MovieActorsAggregateInput!]
                       NOT: MovieActorsAggregateInput
                       OR: [MovieActorsAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -1650,6 +1653,7 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [MovieActorsAggregateInput!]
                       NOT: MovieActorsAggregateInput
                       OR: [MovieActorsAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int

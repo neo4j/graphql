@@ -964,6 +964,7 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesAggregateInput!]
                       NOT: ActorMoviesAggregateInput
                       OR: [ActorMoviesAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -1195,6 +1196,7 @@ describe("@filterable directive", () => {
                       AND: [MovieActorsAggregateInput!]
                       NOT: MovieActorsAggregateInput
                       OR: [MovieActorsAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -1617,6 +1619,7 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesAggregateInput!]
                       NOT: ActorMoviesAggregateInput
                       OR: [ActorMoviesAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -1871,6 +1874,7 @@ describe("@filterable directive", () => {
                       AND: [MovieActorsAggregateInput!]
                       NOT: MovieActorsAggregateInput
                       OR: [MovieActorsAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -2293,6 +2297,7 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesAggregateInput!]
                       NOT: ActorMoviesAggregateInput
                       OR: [ActorMoviesAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -2547,6 +2552,7 @@ describe("@filterable directive", () => {
                       AND: [MovieActorsAggregateInput!]
                       NOT: MovieActorsAggregateInput
                       OR: [MovieActorsAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -2954,6 +2960,7 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesAggregateInput!]
                       NOT: ActorMoviesAggregateInput
                       OR: [ActorMoviesAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -3581,6 +3588,7 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesAggregateInput!]
                       NOT: ActorMoviesAggregateInput
                       OR: [ActorMoviesAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -3835,6 +3843,7 @@ describe("@filterable directive", () => {
                       AND: [MovieActorsAggregateInput!]
                       NOT: MovieActorsAggregateInput
                       OR: [MovieActorsAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -4259,6 +4268,7 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesAggregateInput!]
                       NOT: ActorMoviesAggregateInput
                       OR: [ActorMoviesAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -4513,6 +4523,7 @@ describe("@filterable directive", () => {
                       AND: [MovieActorsAggregateInput!]
                       NOT: MovieActorsAggregateInput
                       OR: [MovieActorsAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -4913,6 +4924,7 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesAggregateInput!]
                       NOT: ActorMoviesAggregateInput
                       OR: [ActorMoviesAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -5533,6 +5545,7 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesAggregateInput!]
                       NOT: ActorMoviesAggregateInput
                       OR: [ActorMoviesAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -6209,6 +6222,7 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesAggregateInput!]
                       NOT: ActorMoviesAggregateInput
                       OR: [ActorMoviesAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -6453,6 +6467,7 @@ describe("@filterable directive", () => {
                       AND: [MovieActorsAggregateInput!]
                       NOT: MovieActorsAggregateInput
                       OR: [MovieActorsAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -6920,6 +6935,7 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesAggregateInput!]
                       NOT: ActorMoviesAggregateInput
                       OR: [ActorMoviesAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -7612,6 +7628,7 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesAggregateInput!]
                       NOT: ActorMoviesAggregateInput
                       OR: [ActorMoviesAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -7862,6 +7879,7 @@ describe("@filterable directive", () => {
                       AND: [AppearanceMoviesAggregateInput!]
                       NOT: AppearanceMoviesAggregateInput
                       OR: [AppearanceMoviesAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -8584,6 +8602,7 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesAggregateInput!]
                       NOT: ActorMoviesAggregateInput
                       OR: [ActorMoviesAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -8834,6 +8853,7 @@ describe("@filterable directive", () => {
                       AND: [AppearanceMoviesAggregateInput!]
                       NOT: AppearanceMoviesAggregateInput
                       OR: [AppearanceMoviesAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -9556,6 +9576,7 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesAggregateInput!]
                       NOT: ActorMoviesAggregateInput
                       OR: [ActorMoviesAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -9806,6 +9827,7 @@ describe("@filterable directive", () => {
                       AND: [AppearanceMoviesAggregateInput!]
                       NOT: AppearanceMoviesAggregateInput
                       OR: [AppearanceMoviesAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int

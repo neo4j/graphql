@@ -105,6 +105,16 @@ describe("Interfaces", () => {
               set: ID
             }
 
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
+            }
+
             type Movie implements MovieNode {
               customQuery: [Movie]
               id: ID
@@ -158,6 +168,7 @@ describe("Interfaces", () => {
               AND: [MovieMoviesAggregateInput!]
               NOT: MovieMoviesAggregateInput
               OR: [MovieMoviesAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -235,6 +246,7 @@ describe("Interfaces", () => {
               AND: [MovieNodeMoviesAggregateInput!]
               NOT: MovieNodeMoviesAggregateInput
               OR: [MovieNodeMoviesAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -536,6 +548,16 @@ describe("Interfaces", () => {
               set: ID
             }
 
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
+            }
+
             type Movie implements MovieNode {
               customQuery: [Movie]
               id: ID
@@ -589,6 +611,7 @@ describe("Interfaces", () => {
               AND: [MovieMoviesAggregateInput!]
               NOT: MovieMoviesAggregateInput
               OR: [MovieMoviesAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -666,6 +689,7 @@ describe("Interfaces", () => {
               AND: [MovieNodeMoviesAggregateInput!]
               NOT: MovieNodeMoviesAggregateInput
               OR: [MovieNodeMoviesAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int

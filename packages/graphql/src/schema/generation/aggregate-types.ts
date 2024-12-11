@@ -26,6 +26,7 @@ import type {
     SchemaComposer,
 } from "graphql-compose";
 import { AGGREGATION_COMPARISON_OPERATORS, DEPRECATED } from "../../constants";
+import { IntScalarFilters } from "../../graphql/input-objects/generic-operators/IntScalarFilters";
 import type { AttributeAdapter } from "../../schema-model/attribute/model-adapters/AttributeAdapter";
 import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
@@ -107,7 +108,7 @@ export function withAggregateInputType({
             count_LTE: GraphQLInt,
             count_GT: GraphQLInt,
             count_GTE: GraphQLInt,
-            // count: IntScalarFilters,
+            count: IntScalarFilters,
         },
     });
 

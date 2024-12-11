@@ -88,6 +88,7 @@ describe("inheritance", () => {
               AND: [ActorFriendsAggregateInput!]
               NOT: ActorFriendsAggregateInput
               OR: [ActorFriendsAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -415,6 +416,7 @@ describe("inheritance", () => {
               AND: [PersonFriendsAggregateInput!]
               NOT: PersonFriendsAggregateInput
               OR: [PersonFriendsAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
