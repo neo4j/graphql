@@ -46,7 +46,7 @@ import { Point } from "../../graphql/objects/Point";
 import * as scalars from "../../graphql/scalars";
 import type { Neo4jFeaturesSettings } from "../../types";
 import { isRootType } from "../../utils/is-root-type";
-import { DirectiveArgumentOfCorrectType } from "./custom-rules/directive-argument-of-correct-type";
+import { ValidateNeo4jDirectivesArguments } from "./custom-rules/directive-argument-of-correct-type";
 import { directiveIsValid } from "./custom-rules/directives/valid-directive";
 import { ValidDirectiveAtFieldLocation } from "./custom-rules/directives/valid-directive-field-location";
 import { ErrorIfSingleRelationships } from "./custom-rules/error-single-relationships";
@@ -223,7 +223,7 @@ function runValidationRulesOnFilteredDocument({
             ReservedTypeNames,
             ValidObjectType,
             ValidDirectiveInheritance,
-            DirectiveArgumentOfCorrectType(false),
+            ValidateNeo4jDirectivesArguments,
             WarnIfAuthorizationFeatureDisabled(features?.authorization),
             ErrorIfSingleRelationships,
             WarnIfAMaxLimitCanBeBypassedThroughInterface(),

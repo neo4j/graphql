@@ -17,95 +17,116 @@
  * limitations under the License.
  */
 
-import type {
-    ArgumentNode,
-    ASTVisitor,
-    DirectiveNode,
-    GraphQLArgument,
-    GraphQLDirective,
-    GraphQLSchema,
-} from "graphql";
+import type { ArgumentNode, ASTVisitor, DirectiveNode, GraphQLArgument, GraphQLSchema } from "graphql";
 import { coerceInputValue, valueFromASTUntyped } from "graphql";
-import type { Maybe } from "graphql/jsutils/Maybe";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 import { VALIDATION_ERROR_CODES } from "../utils/validation-error-codes";
 import type { AssertionResponse } from "./utils/document-validation-error";
 import { createGraphQLError } from "./utils/document-validation-error";
 import { getPathToNode } from "./utils/path-parser";
 
-export function DirectiveArgumentOfCorrectType(includeAuthorizationDirectives: boolean = true) {
-    return function (context: SDLValidationContext): ASTVisitor {
-        const schema: GraphQLSchema | undefined | null = context.getSchema();
-        if (!schema) {
-            throw new Error("Validation schema not available");
-        }
+export function ValidateNeo4jDirectivesArguments(context: SDLValidationContext): ASTVisitor {
+    const schema = context.getSchema();
+    if (!schema) {
+        throw new Error("Validation schema not available");
+    }
 
-        return {
-            Directive(directiveNode: DirectiveNode, _key, _parent, path, ancenstors) {
-                const oneOfAuthorizationDirectives =
-                    includeAuthorizationDirectives &&
-                    ["subscriptionsAuthorization", "authorization", "authentication"].reduce<string | undefined>(
-                        (genericDirective, oneOfAuthorizationDirectives) => {
-                            if (
-                                !genericDirective &&
-                                directiveNode.name.value
-                                    .toLowerCase()
-                                    .includes(oneOfAuthorizationDirectives.toLowerCase())
-                            ) {
-                                genericDirective = oneOfAuthorizationDirectives;
-                            }
-                            return genericDirective;
-                        },
-                        undefined
-                    );
-                const otherDirectives = ["fulltext", "relationship", "node", "customResolver", "cypher"].find(
-                    (applicableDirectiveName) =>
-                        directiveNode.name.value.toLowerCase() === applicableDirectiveName.toLowerCase()
+    return {
+        Directive(directiveNode: DirectiveNode, _key, _parent, path, ancestors) {
+            const neo4jDirectiveToValidate = ["fulltext", "relationship", "node", "customResolver", "cypher"].find(
+                (applicableDirectiveName) =>
+                    directiveNode.name.value.toLowerCase() === applicableDirectiveName.toLowerCase()
+            );
+
+            if (!neo4jDirectiveToValidate) {
+                return;
+            }
+
+            const directiveDefinition = schema.getDirective(directiveNode.name.value);
+            const directiveName = directiveNode.name.value;
+
+            if (!directiveDefinition) {
+                // Do not report, delegate this report to KnownDirectivesRule
+                return;
+            }
+            const pathToHere = [...getPathToNode(path, ancestors)[0], `@${directiveName}`];
+            for (const argument of directiveNode.arguments || []) {
+                const argumentDefinition = findArgumentDefinitionNodeByName(
+                    directiveDefinition.args,
+                    argument.name.value
                 );
-
-                if (!oneOfAuthorizationDirectives && !otherDirectives) {
+                if (!argumentDefinition) {
                     return;
                 }
-
-                let directiveName: string;
-                let directiveDefinition: Maybe<GraphQLDirective>;
-                if (oneOfAuthorizationDirectives) {
-                    directiveDefinition = schema.getDirective(directiveNode.name.value);
-                    directiveName = oneOfAuthorizationDirectives;
-                } else {
-                    directiveDefinition = schema.getDirective(directiveNode.name.value);
-                    directiveName = directiveNode.name.value;
-                }
-
-                if (!directiveDefinition) {
-                    // Do not report, delegate this report to KnownDirectivesRule
-                    return;
-                }
-                const pathToHere = [...getPathToNode(path, ancenstors)[0], `@${directiveName}`];
-                for (const argument of directiveNode.arguments || []) {
-                    const argumentDefinition = findArgumentDefinitionNodeByName(
-                        directiveDefinition.args,
-                        argument.name.value
+                const { isValid, errorMsg, errorPath } = assertArgumentType(argument, argumentDefinition);
+                if (!isValid) {
+                    context.reportError(
+                        createGraphQLError({
+                            nodes: [argument, directiveNode],
+                            path: [...pathToHere, argument.name.value, ...errorPath],
+                            errorMsg: `Invalid argument: ${argument.name.value}, error: ${errorMsg}`,
+                            extensions: {
+                                exception: { code: VALIDATION_ERROR_CODES[directiveName.toUpperCase()] },
+                            },
+                        })
                     );
-                    if (!argumentDefinition) {
-                        return;
-                    }
-                    const { isValid, errorMsg, errorPath } = assertArgumentType(argument, argumentDefinition);
-                    if (!isValid) {
-                        context.reportError(
-                            createGraphQLError({
-                                nodes: [argument, directiveNode],
-                                path: [...pathToHere, argument.name.value, ...errorPath],
-                                errorMsg: `Invalid argument: ${argument.name.value}, error: ${errorMsg}`,
-                                extensions: {
-                                    exception: { code: VALIDATION_ERROR_CODES[directiveName.toUpperCase()] },
-                                },
-                            })
-                        );
-                    }
                 }
-            },
-        };
+            }
+        },
+    };
+}
+
+// ValidateAuthorizationLikeDirectives validates the directives subscriptionsAuthorization, authorization, authentication
+export function ValidateAuthorizationLikeDirectives(context: SDLValidationContext): ASTVisitor {
+    const schema: GraphQLSchema | undefined | null = context.getSchema();
+    if (!schema) {
+        throw new Error("Validation schema not available");
+    }
+
+    return {
+        Directive(directiveNode: DirectiveNode, _key, _parent, path, ancestors) {
+            const authorizationLikeDirective = ["subscriptionsAuthorization", "authorization", "authentication"].find(
+                (authLikeDirective) => {
+                    // find authorizationLike directive generated for validation purposes such a MovieAuthorization
+                    // see packages/graphql/src/graphql/directives/type-dependant-directives/authorization.ts as example
+                    return directiveNode.name.value.toLowerCase().includes(authLikeDirective.toLowerCase());
+                }
+            );
+            if (!authorizationLikeDirective) {
+                return;
+            }
+
+            const directiveDefinition = schema.getDirective(directiveNode.name.value);
+            const directiveName = directiveNode.name.value;
+
+            if (!directiveDefinition) {
+                // Do not report, delegate this report to KnownDirectivesRule
+                return;
+            }
+            const pathToHere = [...getPathToNode(path, ancestors)[0], `@${directiveName}`];
+            for (const argument of directiveNode.arguments || []) {
+                const argumentDefinition = findArgumentDefinitionNodeByName(
+                    directiveDefinition.args,
+                    argument.name.value
+                );
+                if (!argumentDefinition) {
+                    return;
+                }
+                const { isValid, errorMsg, errorPath } = assertArgumentType(argument, argumentDefinition);
+                if (!isValid) {
+                    context.reportError(
+                        createGraphQLError({
+                            nodes: [argument, directiveNode],
+                            path: [...pathToHere, argument.name.value, ...errorPath],
+                            errorMsg: `Invalid argument: ${argument.name.value}, error: ${errorMsg}`,
+                            extensions: {
+                                exception: { code: VALIDATION_ERROR_CODES[directiveName.toUpperCase()] },
+                            },
+                        })
+                    );
+                }
+            }
+        },
     };
 }
 

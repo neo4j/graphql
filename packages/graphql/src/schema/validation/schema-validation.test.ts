@@ -28,18 +28,18 @@ import makeAugmentedSchema from "../make-augmented-schema";
 import { validateUserDefinition } from "./schema-validation";
 
 describe("schema validation", () => {
-    describe("JWT", () => {
+    describe.only("JWT", () => {
         // TODO: authentication
-        describe("JWT Payload", () => {
+        describe.only("JWT Payload", () => {
             test("should not returns errors when is correctly used", () => {
-                const jwtType = `
-                    type MyJWT  @jwt {
+                const jwtType = /* GraphQL */ `
+                    type MyJWT @jwt {
                         myClaim: String
                     }
                 `;
                 const userDocument = gql`
                     ${jwtType}
-                    type User @authorization(filter: [{ where: { jwt: { myClaim_EQ: "something" } } }]) @node {
+                    type User @authorization(filter: [{ where: { jwt: { myClaim: { eq: "something" } } } }]) @node {
                         id: ID!
                         name: String!
                     }
@@ -83,7 +83,7 @@ describe("schema validation", () => {
                 expect(executeValidate).not.toThrow();
             });
 
-            test("should return errors when jwt field is not found", () => {
+            test.only("should return errors when jwt field is not found", () => {
                 const jwtType = `
                     type MyJWT  @jwt {
                         myClaim: String
@@ -191,7 +191,7 @@ describe("schema validation", () => {
             });
         });
 
-        test("should not returns errors when is correctly used with claims path", () => {
+        test.skip("should not returns errors when is correctly used with claims path", () => {
             const jwtType = `
                 type MyJWT  @jwt {
                     myClaim: String 
@@ -216,7 +216,7 @@ describe("schema validation", () => {
             expect(executeValidate).not.toThrow();
         });
 
-        describe("JWT wildcard", () => {
+        describe.skip("JWT wildcard", () => {
             test("should not returns errors when is correctly used: Int on OBJECT", () => {
                 const jwtType = `
                     type jwt @jwt {

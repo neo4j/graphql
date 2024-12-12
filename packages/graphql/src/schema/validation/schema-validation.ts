@@ -56,7 +56,10 @@ import {
 } from "../../graphql/input-objects/generic-operators/StringScalarFilters";
 import { TimeScalarFilters } from "../../graphql/input-objects/generic-operators/TimeScalarFilters";
 import { EnricherContext } from "./EnricherContext";
-import { DirectiveArgumentOfCorrectType } from "./custom-rules/directive-argument-of-correct-type";
+import {
+    ValidateAuthorizationLikeDirectives,
+    ValidateNeo4jDirectivesArguments,
+} from "./custom-rules/directive-argument-of-correct-type";
 import { makeReplaceWildcardVisitor } from "./custom-rules/replace-wildcard-value";
 import { authenticationDirectiveEnricher } from "./enrichers/authentication";
 import { authorizationDefinitionsEnricher, authorizationDirectiveEnricher } from "./enrichers/authorization";
@@ -118,7 +121,9 @@ export function validateUserDefinition({
     rules?: readonly SDLValidationRule[];
     jwt?: ObjectTypeDefinitionNode;
 }): void {
-    rules = rules ? rules : [...specifiedSDLRules, DirectiveArgumentOfCorrectType()];
+    rules = rules
+        ? rules
+        : [...specifiedSDLRules, ValidateNeo4jDirectivesArguments, ValidateAuthorizationLikeDirectives];
     let validationDocument = makeValidationDocument(userDocument, augmentedDocument, jwt);
     const genericFiltersName: GraphQLInputObjectType[] = [
         BooleanScalarFilters,
