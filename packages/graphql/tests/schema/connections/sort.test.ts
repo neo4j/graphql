@@ -417,21 +417,21 @@ describe("Sort", () => {
               NOT: Node2RelatedToNodeAggregationWhereInput
               OR: [Node2RelatedToNodeAggregationWhereInput!]
               property: StringScalarAggregationFilters
-              property_AVERAGE_LENGTH_EQUAL: Float
-              property_AVERAGE_LENGTH_GT: Float
-              property_AVERAGE_LENGTH_GTE: Float
-              property_AVERAGE_LENGTH_LT: Float
-              property_AVERAGE_LENGTH_LTE: Float
-              property_LONGEST_LENGTH_EQUAL: Int
-              property_LONGEST_LENGTH_GT: Int
-              property_LONGEST_LENGTH_GTE: Int
-              property_LONGEST_LENGTH_LT: Int
-              property_LONGEST_LENGTH_LTE: Int
-              property_SHORTEST_LENGTH_EQUAL: Int
-              property_SHORTEST_LENGTH_GT: Int
-              property_SHORTEST_LENGTH_GTE: Int
-              property_SHORTEST_LENGTH_LT: Int
-              property_SHORTEST_LENGTH_LTE: Int
+              property_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'property: { averageLength: { eq: ... } } }' instead.\\")
+              property_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'property: { averageLength: { gt: ... } } }' instead.\\")
+              property_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'property: { averageLength: { gte: ... } } }' instead.\\")
+              property_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'property: { averageLength: { lt: ... } } }' instead.\\")
+              property_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'property: { averageLength: { lte: ... } } }' instead.\\")
+              property_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'property: { longestLength: { eq: ... } } }' instead.\\")
+              property_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'property: { longestLength: { gt: ... } } }' instead.\\")
+              property_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'property: { longestLength: { gte: ... } } }' instead.\\")
+              property_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'property: { longestLength: { lt: ... } } }' instead.\\")
+              property_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'property: { longestLength: { lte: ... } } }' instead.\\")
+              property_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'property: { shortestLength: { eq: ... } } }' instead.\\")
+              property_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'property: { shortestLength: { gt: ... } } }' instead.\\")
+              property_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'property: { shortestLength: { gte: ... } } }' instead.\\")
+              property_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'property: { shortestLength: { lt: ... } } }' instead.\\")
+              property_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'property: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             type Node2RelatedToRelationship {

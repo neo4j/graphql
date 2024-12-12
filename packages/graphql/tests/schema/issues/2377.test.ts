@@ -351,54 +351,54 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               NOT: ResourceContainedByNodeAggregationWhereInput
               OR: [ResourceContainedByNodeAggregationWhereInput!]
               createdAt: DateTimeScalarAggregationFilters
-              createdAt_MAX_EQUAL: DateTime
-              createdAt_MAX_GT: DateTime
-              createdAt_MAX_GTE: DateTime
-              createdAt_MAX_LT: DateTime
-              createdAt_MAX_LTE: DateTime
-              createdAt_MIN_EQUAL: DateTime
-              createdAt_MIN_GT: DateTime
-              createdAt_MIN_GTE: DateTime
-              createdAt_MIN_LT: DateTime
-              createdAt_MIN_LTE: DateTime
+              createdAt_MAX_EQUAL: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'createdAt: { max: { eq: ... } } }' instead.\\")
+              createdAt_MAX_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'createdAt: { max: { gt: ... } } }' instead.\\")
+              createdAt_MAX_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'createdAt: { max: { gte: ... } } }' instead.\\")
+              createdAt_MAX_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'createdAt: { max: { lt: ... } } }' instead.\\")
+              createdAt_MAX_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'createdAt: { max: { lte: ... } } }' instead.\\")
+              createdAt_MIN_EQUAL: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'createdAt: { min: { eq: ... } } }' instead.\\")
+              createdAt_MIN_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'createdAt: { min: { gt: ... } } }' instead.\\")
+              createdAt_MIN_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'createdAt: { min: { gte: ... } } }' instead.\\")
+              createdAt_MIN_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'createdAt: { min: { lt: ... } } }' instead.\\")
+              createdAt_MIN_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'createdAt: { min: { lte: ... } } }' instead.\\")
               id: IDScalarAggregationFilters
-              id_MAX_EQUAL: ID
-              id_MAX_GT: ID
-              id_MAX_GTE: ID
-              id_MAX_LT: ID
-              id_MAX_LTE: ID
-              id_MIN_EQUAL: ID
-              id_MIN_GT: ID
-              id_MIN_GTE: ID
-              id_MIN_LT: ID
-              id_MIN_LTE: ID
+              id_MAX_EQUAL: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { eq: ... } } }' instead.\\")
+              id_MAX_GT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { gt: ... } } }' instead.\\")
+              id_MAX_GTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { gte: ... } } }' instead.\\")
+              id_MAX_LT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { lt: ... } } }' instead.\\")
+              id_MAX_LTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { lte: ... } } }' instead.\\")
+              id_MIN_EQUAL: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { eq: ... } } }' instead.\\")
+              id_MIN_GT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { gt: ... } } }' instead.\\")
+              id_MIN_GTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { gte: ... } } }' instead.\\")
+              id_MIN_LT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { lt: ... } } }' instead.\\")
+              id_MIN_LTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { lte: ... } } }' instead.\\")
               name: StringScalarAggregationFilters
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
+              name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
               updatedAt: DateTimeScalarAggregationFilters
-              updatedAt_MAX_EQUAL: DateTime
-              updatedAt_MAX_GT: DateTime
-              updatedAt_MAX_GTE: DateTime
-              updatedAt_MAX_LT: DateTime
-              updatedAt_MAX_LTE: DateTime
-              updatedAt_MIN_EQUAL: DateTime
-              updatedAt_MIN_GT: DateTime
-              updatedAt_MIN_GTE: DateTime
-              updatedAt_MIN_LT: DateTime
-              updatedAt_MIN_LTE: DateTime
+              updatedAt_MAX_EQUAL: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'updatedAt: { max: { eq: ... } } }' instead.\\")
+              updatedAt_MAX_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'updatedAt: { max: { gt: ... } } }' instead.\\")
+              updatedAt_MAX_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'updatedAt: { max: { gte: ... } } }' instead.\\")
+              updatedAt_MAX_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'updatedAt: { max: { lt: ... } } }' instead.\\")
+              updatedAt_MAX_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'updatedAt: { max: { lte: ... } } }' instead.\\")
+              updatedAt_MIN_EQUAL: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'updatedAt: { min: { eq: ... } } }' instead.\\")
+              updatedAt_MIN_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'updatedAt: { min: { gt: ... } } }' instead.\\")
+              updatedAt_MIN_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'updatedAt: { min: { gte: ... } } }' instead.\\")
+              updatedAt_MIN_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'updatedAt: { min: { lt: ... } } }' instead.\\")
+              updatedAt_MIN_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'updatedAt: { min: { lte: ... } } }' instead.\\")
             }
 
             type ResourceContainedByRelationship {

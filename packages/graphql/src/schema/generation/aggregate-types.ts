@@ -25,7 +25,7 @@ import type {
     ObjectTypeComposerFieldConfigMapDefinition,
     SchemaComposer,
 } from "graphql-compose";
-import { AGGREGATION_COMPARISON_OPERATORS, DEPRECATED } from "../../constants";
+import { AGGREGATION_COMPARISON_OPERATORS } from "../../constants";
 import { IntScalarFilters } from "../../graphql/input-objects/generic-operators/IntScalarFilters";
 import type { AttributeAdapter } from "../../schema-model/attribute/model-adapters/AttributeAdapter";
 import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
@@ -34,6 +34,7 @@ import type { RelationshipAdapter } from "../../schema-model/relationship/model-
 import { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { Neo4jFeaturesSettings } from "../../types";
 import type { AggregationTypesMapper } from "../aggregations/aggregation-types-mapper";
+import { DEPRECATE_AGGREGATION_FILTERS } from "../constants";
 import { numericalResolver } from "../resolvers/field/numerical";
 import { graphqlDirectivesToCompose } from "../to-compose";
 import { getAggregationFilterFromAttributeType } from "./get-aggregation-filter-from-attribute-type";
@@ -146,6 +147,7 @@ function withAggregationWhereInputType({
     entityAdapter,
     composer,
     userDefinedDirectivesOnTargetFields,
+    features,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     entityAdapter:
@@ -181,18 +183,25 @@ function withAggregationWhereInputType({
         NOT: aggregationInput,
     });
 
-    const aggrFields = makeAggregationFields(aggregationFields, userDefinedDirectivesOnTargetFields);
+    const aggrFields = makeAggregationFields(aggregationFields, userDefinedDirectivesOnTargetFields, features);
     aggregationInput.addFields(aggrFields);
     return aggregationInput;
 }
 
 function makeAggregationFields(
     attributes: AttributeAdapter[],
-    userDefinedDirectivesOnTargetFields: Map<string, DirectiveNode[]> | undefined
+    userDefinedDirectivesOnTargetFields: Map<string, DirectiveNode[]> | undefined,
+    features: Neo4jFeaturesSettings | undefined
 ): InputTypeComposerFieldConfigMapDefinition {
     const fields: InputTypeComposerFieldConfigMapDefinition = {};
     for (const attribute of attributes) {
-        addAggregationFieldsByType(attribute, userDefinedDirectivesOnTargetFields?.get(attribute.name), fields);
+        if (features?.excludeDeprecatedFields?.aggregationFilters !== true) {
+            addDeprecatedAggregationFieldsByType(
+                attribute,
+                userDefinedDirectivesOnTargetFields?.get(attribute.name),
+                fields
+            );
+        }
         if (attribute.isAggregationWhereField()) {
             fields[attribute.name] = getAggregationFilterFromAttributeType(attribute);
         }
@@ -201,27 +210,24 @@ function makeAggregationFields(
 }
 
 // TODO: refactor this by introducing specialized Adapters
-function addAggregationFieldsByType(
+function addDeprecatedAggregationFieldsByType(
     attribute: AttributeAdapter,
     directivesOnField: DirectiveNode[] | undefined,
     fields: InputTypeComposerFieldConfigMapDefinition
 ): InputTypeComposerFieldConfigMapDefinition {
-    const deprecatedDirectives = graphqlDirectivesToCompose(
-        (directivesOnField || []).filter((d) => d.name.value === DEPRECATED)
-    );
     if (attribute.typeHelper.isString()) {
         for (const operator of AGGREGATION_COMPARISON_OPERATORS) {
             fields[`${attribute.name}_AVERAGE_LENGTH_${operator}`] = {
                 type: GraphQLFloat,
-                directives: deprecatedDirectives,
+                directives: [DEPRECATE_AGGREGATION_FILTERS(attribute.name, "averageLength", operator)],
             };
             fields[`${attribute.name}_LONGEST_LENGTH_${operator}`] = {
                 type: GraphQLInt,
-                directives: deprecatedDirectives,
+                directives: [DEPRECATE_AGGREGATION_FILTERS(attribute.name, "longestLength", operator)],
             };
             fields[`${attribute.name}_SHORTEST_LENGTH_${operator}`] = {
                 type: GraphQLInt,
-                directives: deprecatedDirectives,
+                directives: [DEPRECATE_AGGREGATION_FILTERS(attribute.name, "shortestLength", operator)],
             };
         }
 
@@ -235,16 +241,16 @@ function addAggregationFieldsByType(
         for (const operator of AGGREGATION_COMPARISON_OPERATORS) {
             fields[`${attribute.name}_MIN_${operator}`] = {
                 type: attribute.getTypeName(),
-                directives: deprecatedDirectives,
+                directives: [DEPRECATE_AGGREGATION_FILTERS(attribute.name, "min", operator)],
             };
             fields[`${attribute.name}_MAX_${operator}`] = {
                 type: attribute.getTypeName(),
-                directives: deprecatedDirectives,
+                directives: [DEPRECATE_AGGREGATION_FILTERS(attribute.name, "max", operator)],
             };
             if (attribute.getTypeName() !== "Duration") {
                 fields[`${attribute.name}_SUM_${operator}`] = {
                     type: attribute.getTypeName(),
-                    directives: deprecatedDirectives,
+                    directives: [DEPRECATE_AGGREGATION_FILTERS(attribute.name, "sum", operator)],
                 };
             }
             const averageType = attribute.typeHelper.isBigInt()
@@ -252,7 +258,10 @@ function addAggregationFieldsByType(
                 : attribute.typeHelper.isDuration()
                   ? "Duration"
                   : GraphQLFloat;
-            fields[`${attribute.name}_AVERAGE_${operator}`] = { type: averageType, directives: deprecatedDirectives };
+            fields[`${attribute.name}_AVERAGE_${operator}`] = {
+                type: averageType,
+                directives: [DEPRECATE_AGGREGATION_FILTERS(attribute.name, "average", operator)],
+            };
         }
 
         return fields;
@@ -260,11 +269,11 @@ function addAggregationFieldsByType(
     for (const operator of AGGREGATION_COMPARISON_OPERATORS) {
         fields[`${attribute.name}_MIN_${operator}`] = {
             type: attribute.getTypeName(),
-            directives: deprecatedDirectives,
+            directives: [DEPRECATE_AGGREGATION_FILTERS(attribute.name, "min", operator)],
         };
         fields[`${attribute.name}_MAX_${operator}`] = {
             type: attribute.getTypeName(),
-            directives: deprecatedDirectives,
+            directives: [DEPRECATE_AGGREGATION_FILTERS(attribute.name, "max", operator)],
         };
     }
     return fields;
