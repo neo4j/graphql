@@ -193,8 +193,9 @@ function makeAggregationFields(
     const fields: InputTypeComposerFieldConfigMapDefinition = {};
     for (const attribute of attributes) {
         addAggregationFieldsByType(attribute, userDefinedDirectivesOnTargetFields?.get(attribute.name), fields);
-
-        fields[attribute.name] = getAggregationFilterFromAttributeType(attribute);
+        if (attribute.isAggregationWhereField()) {
+            fields[attribute.name] = getAggregationFilterFromAttributeType(attribute);
+        }
     }
     return fields;
 }

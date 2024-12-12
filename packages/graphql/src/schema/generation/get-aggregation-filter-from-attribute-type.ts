@@ -31,99 +31,41 @@ import { TimeScalarAggregationFilters } from "../../graphql/input-objects/generi
 import type { AttributeAdapter } from "../../schema-model/attribute/model-adapters/AttributeAdapter";
 
 export function getAggregationFilterFromAttributeType(attribute: AttributeAdapter): GraphQLInputObjectType | string {
-    // // NOTE: static types returned here must be added to schema-validation > validateUserDefinition
-    // if (attribute.typeHelper.isBoolean()) {
-    //     if (attribute.typeHelper.isList()) {
-    //         return BooleanListFilters;
-    //     }
-    //     return BooleanScalarFilters;
-    // }
+    if (attribute.typeHelper.isList()) {
+        throw new Error("List types not available for aggregations");
+    }
+
     if (attribute.typeHelper.isID()) {
-        //     if (attribute.typeHelper.isList()) {
-        //         return IDListFilters;
-        //     }
         return IDScalarAggregationFilters;
     }
     if (attribute.typeHelper.isString()) {
-        //     if (attribute.typeHelper.isList()) {
-        //         return StringListFilters;
-        //     }
         return StringScalarAggregationFilters;
     }
     if (attribute.typeHelper.isInt()) {
-        // if (attribute.typeHelper.isList()) {
-        //     return IntListFilters;
-        // }
         return IntScalarAggregationFilters;
     }
     if (attribute.typeHelper.isFloat()) {
-        //     if (attribute.typeHelper.isList()) {
-        //         return FloatListFilters;
-        //     }
         return FloatScalarAggregationFilters;
     }
     if (attribute.typeHelper.isBigInt()) {
-        //     if (attribute.typeHelper.isList()) {
-        //         return BigIntListFilters;
-        //     }
         return BigIntScalarAggregationFilters;
     }
     if (attribute.typeHelper.isTime()) {
-        //     if (attribute.typeHelper.isList()) {
-        //         return TimeListFilters;
-        //     }
         return TimeScalarAggregationFilters;
     }
-    // if (attribute.typeHelper.isPoint()) {
-    //     if (attribute.typeHelper.isList()) {
-    //         return PointListFilters;
-    //     }
-    //     return PointFilters;
-    // }
-    // if (attribute.typeHelper.isCartesianPoint()) {
-    //     if (attribute.typeHelper.isList()) {
-    //         return CartesianPointListFilters;
-    //     }
-    //     return CartesianPointFilters;
-    // }
+
     if (attribute.typeHelper.isDateTime()) {
-        //     if (attribute.typeHelper.isList()) {
-        //         return DateTimeListFilters;
-        //     }
         return DateTimeScalarAggregationFilters;
     }
     if (attribute.typeHelper.isLocalTime()) {
-        //     if (attribute.typeHelper.isList()) {
-        //         return LocalTimeListFilters;
-        //     }
         return LocalTimeScalarAggregationFilters;
     }
     if (attribute.typeHelper.isLocalDateTime()) {
-        //     if (attribute.typeHelper.isList()) {
-        //         return LocalDateTimeListFilters;
-        //     }
         return LocalDateTimeScalarAggregationFilters;
     }
     if (attribute.typeHelper.isDuration()) {
-        //     if (attribute.typeHelper.isList()) {
-        //         return DurationListFilters;
-        //     }
         return DurationScalarAggregationFilters;
     }
-    // if (attribute.typeHelper.isDate()) {
-    //     if (attribute.typeHelper.isList()) {
-    //         return DateListFilters;
-    //     }
-    //     return DateScalarFilters;
-    // }
-
-    // if (attribute.typeHelper.isEnum()) {
-    //     return `${attribute.getTypeName()}EnumScalarFilters`;
-    // }
-
-    // if (attribute.typeHelper.isUserScalar()) {
-    //     return `${attribute.getTypeName()}ScalarFilters`;
-    // }
 
     throw new Error(`No scalar filter found for attribute ${attribute.type.name}`);
 }
