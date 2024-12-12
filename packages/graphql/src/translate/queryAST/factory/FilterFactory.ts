@@ -231,12 +231,9 @@ export class FilterFactory {
                 operator,
             });
         }
-        // Operator should be always present in this case and never implicit, the only two cases when this is not true are:
-        // Cypher Relationship fields, because they are not stored as Relationships but as Attributes they are parsed here, 
-        // however in case of Cypher 1:1 they are passed as: { directed: { name: { eq: "Jon" } } } and "directed" is the attribute
-        // Or when we are dealing with Subgraph filters
-        // In that case the {"__typename": "Product", "id": "1"} is passed to the filterFactory and therefore the operator is not present for id: "1",
-        // while for other cases the syntax is explicit like id: { eq: "1" } or in the legacy syntax id_EQ: "1"
+        // Implicit _EQ filters are removed but the argument "operator" can still be undefined in some cases, for instance:
+        // Cypher 1:1 relationship filters as they are stored as Attribute.
+        // Federation Subgraph resolver, _entities field implementation is using the FilterFactory {  "__typename": "Product",  "upc": "abc123"}.
         operator = operator ?? "EQ";
         if (attribute.typeHelper.isDuration()) {
             return new DurationFilter({
