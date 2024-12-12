@@ -53,7 +53,7 @@ describe("Custom Scalar Filtering", () => {
 
             const query = `
                     {
-                        ${randomType.plural}(where: { NOT: { property: {eq: ${unwantedValue} } } }) { 
+                        ${randomType.plural}(where: { NOT: { property_EQ: ${unwantedValue} } }) { 
                             property
                         }
                     }
@@ -93,7 +93,7 @@ describe("Custom Scalar Filtering", () => {
 
             const query = `
                     {
-                        ${randomType.plural}(where: { NOT: { property: {eq: ${unwantedValue} } } }) {
+                        ${randomType.plural}(where: { NOT: { property_EQ: ${unwantedValue} } }) {
                             property
                         }
                     }
@@ -136,7 +136,7 @@ describe("Custom Scalar Filtering", () => {
 
             const query = `
                     {
-                        ${randomType.plural}(where: { NOT: { property: { eq: ${value} } }}) {
+                        ${randomType.plural}(where: { NOT: { property_EQ: ${value} }}) {
                             property
                         }
                     }
@@ -174,7 +174,7 @@ describe("Custom Scalar Filtering", () => {
             const query = `
                     {
                         ${randomType.plural}(where: {
-                                property: {in: ["${value}", "${unknownValue1}", "${unknownValue2}"] }
+                                property_IN: ["${value}", "${unknownValue1}", "${unknownValue2}"]
                         }) {
                             property
                         }
@@ -216,7 +216,7 @@ describe("Custom Scalar Filtering", () => {
             const query = `
                     {
                         ${randomType.plural}(where: {
-                                property: {in: ["${value1}", "${value2}"] }
+                                property_IN: ["${value1}", "${value2}"]
                         }) {
                             property
                         }
@@ -261,7 +261,7 @@ describe("Custom Scalar Filtering", () => {
 
             const query = `
                     {
-                        ${randomType.plural}(where: { property: { in: ["${unknownValue}"] } }) {
+                        ${randomType.plural}(where: { property_IN: ["${unknownValue}"] }) {
                             property
                         }
                     }
@@ -300,7 +300,7 @@ describe("Custom Scalar Filtering", () => {
 
             const query = `
                     query($unwantedValue: [CustomListScalar!]!){
-                        ${randomType.plural}(where: { NOT: { property: { eq: $unwantedValue } } }) {
+                        ${randomType.plural}(where: { NOT: { property_EQ: $unwantedValue } }) {
                             property
                         }
                     }
@@ -342,7 +342,7 @@ describe("Custom Scalar Filtering", () => {
 
             const query = `
                     query($unwantedValue: [CustomListScalar!]!){
-                        ${randomType.plural}(where: { NOT: { property: {eq: $unwantedValue } }}) {
+                        ${randomType.plural}(where: { NOT: { property_EQ: $unwantedValue }}) {
                             property
                         }
                     }
@@ -387,7 +387,7 @@ describe("Custom Scalar Filtering", () => {
 
             const query = `
                     query($value: [CustomListScalar!]!){
-                        ${randomType.plural}(where: { NOT: { property: {eq: $value } } }) {
+                        ${randomType.plural}(where: { NOT: { property_EQ: $value } }) {
                             property
                         }
                     }
@@ -426,7 +426,7 @@ describe("Custom Scalar Filtering", () => {
 
             const query = `
                     {
-                        ${randomType.plural}(where: { property: { includes: ${value[0]} } }) {
+                        ${randomType.plural}(where: { property_INCLUDES: ${value[0]} }) {
                             property
                         }
                     }
@@ -466,7 +466,7 @@ describe("Custom Scalar Filtering", () => {
 
             const query = `
                     {
-                        ${randomType.plural}(where: { property: {includes: ${value1[0]} } }) {
+                        ${randomType.plural}(where: { property_INCLUDES: ${value1[0]} }) {
                             property
                         }
                     }
@@ -510,7 +510,7 @@ describe("Custom Scalar Filtering", () => {
 
             const query = `
                     {
-                        ${randomType.plural}(where: { property: {includes: ${unknownValue[0]} } }) {
+                        ${randomType.plural}(where: { property_INCLUDES: ${unknownValue[0]} }) {
                             property
                         }
                     }

@@ -609,7 +609,7 @@ describe("Enums", () => {
 
             \\"\\"\\"RoleType filters\\"\\"\\"
             input RoleTypeEnumScalarFilters {
-              equals: RoleType
+              eq: RoleType
               in: [RoleType!]
             }
 

@@ -193,7 +193,7 @@ describe("@default directive", () => {
 
             \\"\\"\\"Location filters\\"\\"\\"
             input LocationEnumScalarFilters {
-              equals: Location
+              eq: Location
               in: [Location!]
             }
 

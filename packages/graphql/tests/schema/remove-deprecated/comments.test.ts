@@ -95,7 +95,7 @@ describe("Comments", () => {
 
             \\"\\"\\"CustomScalar filters\\"\\"\\"
             input CustomScalarScalarFilters {
-              equals: CustomScalar
+              eq: CustomScalar
               in: [CustomScalar!]
             }
 
@@ -147,7 +147,7 @@ describe("Comments", () => {
 
             \\"\\"\\"Genre filters\\"\\"\\"
             input GenreEnumScalarFilters {
-              equals: Genre
+              eq: Genre
               in: [Genre!]
             }
 

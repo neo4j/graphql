@@ -148,10 +148,22 @@ function makeAugmentedSchema({
             name: `${enumType.name.value}EnumScalarFilters`,
             description: `${enumType.name.value} filters`,
             fields: {
-                equals: {
+                eq: {
                     type: enumType.name.value,
                 },
                 in: { type: `[${enumType.name.value}!]` },
+            },
+        });
+        composer.createInputTC({
+            name: `${enumType.name.value}ListEnumScalarFilters`,
+            description: `${enumType.name.value} filters`,
+            fields: {
+                eq: {
+                    type: `[${enumType.name.value}!]`,
+                },
+                includes: {
+                    type: enumType.name.value,
+                },
             },
         });
     });
@@ -176,15 +188,40 @@ function makeAugmentedSchema({
         });
     });
 
+    // Generates the filters for custom scalars
     Array.from(scalarTypes.values()).forEach((enumType) => {
         composer.createInputTC({
             name: `${enumType.name.value}ScalarFilters`,
             description: `${enumType.name.value} filters`,
             fields: {
-                equals: {
+                eq: {
                     type: enumType.name.value,
                 },
                 in: { type: `[${enumType.name.value}!]` },
+            },
+        });
+
+        composer.createInputTC({
+            name: `${enumType.name.value}ListScalarFilters`,
+            description: `${enumType.name.value} filters`,
+            fields: {
+                eq: {
+                    type: `[${enumType.name.value}!]`,
+                },
+                includes: {
+                    type: enumType.name.value,
+                },
+            },
+        });
+    });
+
+    // Generates the mutations for custom scalars
+    Array.from(scalarTypes.values()).forEach((enumType) => {
+        composer.createInputTC({
+            name: `${enumType.name.value}ScalarMutations`,
+            description: `${enumType.name.value} filters`,
+            fields: {
+                set: { type: enumType.name.value },
             },
         });
 
@@ -195,17 +232,6 @@ function makeAugmentedSchema({
                 set: { type: `[${enumType.name.value}!]!` },
                 push: { type: `[${enumType.name.value}!]!` },
                 pop: { type: enumType.name.value },
-            },
-        });
-    });
-
-    // Generates the mutations for scalar, which are reused
-    Array.from(scalarTypes.values()).forEach((enumType) => {
-        composer.createInputTC({
-            name: `${enumType.name.value}ScalarMutations`,
-            description: `${enumType.name.value} filters`,
-            fields: {
-                set: { type: enumType.name.value },
             },
         });
     });

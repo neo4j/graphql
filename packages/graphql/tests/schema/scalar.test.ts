@@ -58,6 +58,12 @@ describe("Scalar", () => {
 
             scalar CustomScalar
 
+            \\"\\"\\"CustomScalar filters\\"\\"\\"
+            input CustomScalarListScalarFilters {
+              eq: [CustomScalar!]
+              includes: CustomScalar
+            }
+
             \\"\\"\\"Mutations for a list for CustomScalar\\"\\"\\"
             input CustomScalarListScalarMutations {
               pop: CustomScalar
@@ -67,7 +73,7 @@ describe("Scalar", () => {
 
             \\"\\"\\"CustomScalar filters\\"\\"\\"
             input CustomScalarScalarFilters {
-              equals: CustomScalar
+              eq: CustomScalar
               in: [CustomScalar!]
             }
 
@@ -161,13 +167,13 @@ describe("Scalar", () => {
               id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
-              myCustomArrayScalar: CustomScalarScalarFilters
+              myCustomArrayScalar: CustomScalarListScalarFilters
               myCustomArrayScalar_EQ: [CustomScalar!]
               myCustomArrayScalar_INCLUDES: CustomScalar
               myCustomScalar: CustomScalarScalarFilters
               myCustomScalar_EQ: CustomScalar
               myCustomScalar_IN: [CustomScalar]
-              myRequiredCustomArrayScalar: CustomScalarScalarFilters
+              myRequiredCustomArrayScalar: CustomScalarListScalarFilters
               myRequiredCustomArrayScalar_EQ: [CustomScalar!]
               myRequiredCustomArrayScalar_INCLUDES: CustomScalar
             }

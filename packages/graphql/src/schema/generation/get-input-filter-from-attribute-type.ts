@@ -146,11 +146,13 @@ export function getInputFilterFromAttributeType(attribute: AttributeAdapter): Gr
     }
 
     if (attribute.typeHelper.isEnum()) {
-        return `${attribute.getTypeName()}EnumScalarFilters`;
+        const filtersName = attribute.typeHelper.isList() ? "ListEnumScalarFilters" : "EnumScalarFilters";
+        return `${attribute.getTypeName()}${filtersName}`;
     }
 
     if (attribute.typeHelper.isUserScalar()) {
-        return `${attribute.getTypeName()}ScalarFilters`;
+        const filtersName = attribute.typeHelper.isList() ? "ListScalarFilters" : "ScalarFilters";
+        return `${attribute.getTypeName()}${filtersName}`;
     }
 
     throw new Error(`No scalar filter found for attribute ${attribute.type.name}`);
