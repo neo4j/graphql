@@ -30,14 +30,11 @@ export type RelationshipWhereOperator = "ALL" | "NONE" | "SINGLE" | "SOME";
 
 export type FilterOperator =
     | "EQ"
-    | "NOT"
     | NumericalWhereOperator
     | SpatialWhereOperator
     | StringWhereOperator
-    | `NOT_${StringWhereOperator}`
     | RegexWhereOperator
     | ArrayWhereOperator
-    | `NOT_${ArrayWhereOperator}`
     | RelationshipWhereOperator;
 
 export type LogicalOperators = "NOT" | "AND" | "OR" | "XOR";

@@ -31,7 +31,7 @@ describe("Subscription global authentication", () => {
 
     const secret = "secret";
     const typeMovie = testHelper.createUniqueType("Movie");
-    const typeDefs = `
+    const typeDefs = /* GraphQL */ `
         type ${typeMovie} @node {
             title: String!
         }
@@ -80,7 +80,7 @@ describe("Subscription global authentication", () => {
 
         test("global authentication for wsClient", async () => {
             wsClient = new WebSocketTestClient(server.wsPath);
-            await wsClient.subscribe(`
+            await wsClient.subscribe(/* GraphQL */ `
                 subscription {
                     ${typeMovie.operations.subscribe.created} {
                         ${typeMovie.operations.subscribe.payload.created} {
@@ -100,7 +100,7 @@ describe("Subscription global authentication", () => {
 
         test("global authentication for supertest client", async () => {
             wsClient = new WebSocketTestClient(server.wsPath, jwtToken);
-            await wsClient.subscribe(`
+            await wsClient.subscribe(/* GraphQL */ `
                 subscription {
                     ${typeMovie.operations.subscribe.created} {
                         ${typeMovie.operations.subscribe.payload.created} {
@@ -155,7 +155,7 @@ describe("Subscription global authentication", () => {
 
         test("global authentication for wsClient", async () => {
             wsClient = new WebSocketTestClient(server.wsPath, "Bearer xxx.invalidtoken.xxx");
-            await wsClient.subscribe(`
+            await wsClient.subscribe(/* GraphQL */ `
                 subscription {
                     ${typeMovie.operations.subscribe.created} {
                         ${typeMovie.operations.subscribe.payload.created} {
@@ -175,7 +175,7 @@ describe("Subscription global authentication", () => {
 
         test("global authentication for supertest client", async () => {
             wsClient = new WebSocketTestClient(server.wsPath, jwtToken);
-            await wsClient.subscribe(`
+            await wsClient.subscribe(/* GraphQL */ `
                 subscription {
                     ${typeMovie.operations.subscribe.created} {
                         ${typeMovie.operations.subscribe.payload.created} {
@@ -230,7 +230,7 @@ describe("Subscription global authentication", () => {
 
         test("global authentication wsClient and supertest client", async () => {
             wsClient = new WebSocketTestClient(server.wsPath, jwtToken);
-            await wsClient.subscribe(`
+            await wsClient.subscribe(/* GraphQL */ `
                 subscription {
                     ${typeMovie.operations.subscribe.created} {
                         ${typeMovie.operations.subscribe.payload.created} {
@@ -266,7 +266,7 @@ describe("Subscription global authentication", () => {
             .post("")
             .set("authorization", clientJwtToken)
             .send({
-                query: `
+                query: /* GraphQL */ `
                     mutation {
                         ${typeMovie.operations.create}(input: [{ title: "${title}" }]) {
                             ${typeMovie.plural} {
