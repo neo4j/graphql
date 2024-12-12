@@ -28,12 +28,3 @@ export const TimeScalarAggregationFilters = new GraphQLInputObjectType({
         min: { type: TimeScalarFilters },
     },
 });
-
-// export const IntListFilters = new GraphQLInputObjectType({
-//     name: "IntListFilters",
-//     description: "Int list filters",
-//     fields: {
-//         equals: { type: new GraphQLList(new GraphQLNonNull(GraphQLInt)) },
-//         includes: { type: GraphQLInt },
-//     },
-// });

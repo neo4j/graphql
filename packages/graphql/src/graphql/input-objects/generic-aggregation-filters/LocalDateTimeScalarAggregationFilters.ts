@@ -28,12 +28,3 @@ export const LocalDateTimeScalarAggregationFilters = new GraphQLInputObjectType(
         min: { type: LocalDateTimeScalarFilters },
     },
 });
-
-// export const IntListFilters = new GraphQLInputObjectType({
-//     name: "IntListFilters",
-//     description: "Int list filters",
-//     fields: {
-//         equals: { type: new GraphQLList(new GraphQLNonNull(GraphQLInt)) },
-//         includes: { type: GraphQLInt },
-//     },
-// });

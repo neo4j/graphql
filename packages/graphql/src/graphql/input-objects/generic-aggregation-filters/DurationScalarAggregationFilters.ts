@@ -29,12 +29,3 @@ export const DurationScalarAggregationFilters = new GraphQLInputObjectType({
         average: { type: DurationScalarFilters },
     },
 });
-
-// export const IntListFilters = new GraphQLInputObjectType({
-//     name: "IntListFilters",
-//     description: "Int list filters",
-//     fields: {
-//         equals: { type: new GraphQLList(new GraphQLNonNull(GraphQLInt)) },
-//         includes: { type: GraphQLInt },
-//     },
-// });

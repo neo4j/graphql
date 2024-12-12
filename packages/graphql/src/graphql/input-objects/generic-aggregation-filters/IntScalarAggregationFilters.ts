@@ -31,12 +31,3 @@ export const IntScalarAggregationFilters = new GraphQLInputObjectType({
         sum: { type: IntScalarFilters },
     },
 });
-
-// export const IntListFilters = new GraphQLInputObjectType({
-//     name: "IntListFilters",
-//     description: "Int list filters",
-//     fields: {
-//         equals: { type: new GraphQLList(new GraphQLNonNull(GraphQLInt)) },
-//         includes: { type: GraphQLInt },
-//     },
-// });
