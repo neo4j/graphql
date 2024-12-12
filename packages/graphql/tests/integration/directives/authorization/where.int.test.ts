@@ -44,7 +44,7 @@ describe("auth/where", () => {
                     id: ID
                 }
 
-                extend type ${User} @authorization(filter: [{ operations: [READ], where: { node: { id: { equals: "$jwt.sub" } } } }])
+                extend type ${User} @authorization(filter: [{ operations: [READ], where: { node: { id: { eq: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -188,7 +188,7 @@ describe("auth/where", () => {
                     creator: [${User}!]! @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                extend type ${Post} @authorization(filter: [{ operations: [READ], where: { node: { creator: { single: { id: { equals: "$jwt.sub" } } } } } }])
+                extend type ${Post} @authorization(filter: [{ operations: [READ], where: { node: { creator: { single: { id: { eq: "$jwt.sub" } } } } } }])
             `;
 
             const userId = generate({
@@ -253,7 +253,7 @@ describe("auth/where", () => {
                     creator: [${User}!]! @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                extend type ${Post} @authorization(filter: [{ operations: [READ], where: { node: { creator: { single: { id: { equals: "$jwt.sub" } } } } } }])
+                extend type ${Post} @authorization(filter: [{ operations: [READ], where: { node: { creator: { single: { id: { eq: "$jwt.sub" } } } } } }])
             `;
 
             const userId = generate({
@@ -272,7 +272,7 @@ describe("auth/where", () => {
 
             const query = /* GraphQL */ `
                 {
-                    ${User.plural}(where: { id: { equals:  "${userId}"} }) {
+                    ${User.plural}(where: { id: { eq:  "${userId}"} }) {
                         postsConnection {
                             edges {
                                 node {
@@ -333,8 +333,8 @@ describe("auth/where", () => {
                         creator: [${User}!]! @relationship(type: "HAS_CONTENT", direction: IN)
                     }
 
-                    extend type ${Post} @authorization(filter: [{ operations: [READ], where: { node: { creator: { single: { id: { equals: "$jwt.sub" } } } } } }])
-                    extend type ${User} @authorization(filter: [{ operations: [READ], where: { node: { id: { equals: "$jwt.sub" } } } }])
+                    extend type ${Post} @authorization(filter: [{ operations: [READ], where: { node: { creator: { single: { id: { eq: "$jwt.sub" } } } } } }])
+                    extend type ${User} @authorization(filter: [{ operations: [READ], where: { node: { id: { eq: "$jwt.sub" } } } }])
                 `;
 
                 const userId = generate({
@@ -404,8 +404,8 @@ describe("auth/where", () => {
                     creator: [${User}!]! @relationship(type: "HAS_CONTENT", direction: IN)
                 }
 
-                extend type ${Post} @authorization(filter: [{ operations: [READ], where: { node: { creator: { single: { id: { equals: "$jwt.sub" } } } } } }])
-                extend type ${User} @authorization(filter: [{ operations: [READ], where: { node: { id: { equals: "$jwt.sub" } } } }])
+                extend type ${Post} @authorization(filter: [{ operations: [READ], where: { node: { creator: { single: { id: { eq: "$jwt.sub" } } } } } }])
+                extend type ${User} @authorization(filter: [{ operations: [READ], where: { node: { id: { eq: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -475,7 +475,7 @@ describe("auth/where", () => {
                     id: ID
                 }
 
-                extend type ${User} @authorization(filter: [{ operations: [UPDATE], where: { node: { id: { equals: "$jwt.sub" } } } }])
+                extend type ${User} @authorization(filter: [{ operations: [UPDATE], where: { node: { id: { eq: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -526,7 +526,7 @@ describe("auth/where", () => {
                     id: ID
                 }
 
-                extend type ${User} @authorization(filter: [{ operations: [DELETE], where: { node: { id: { equals: "$jwt.sub" } } } }])
+                extend type ${User} @authorization(filter: [{ operations: [DELETE], where: { node: { id: { eq: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -535,7 +535,7 @@ describe("auth/where", () => {
 
             const query = `
                 mutation {
-                    ${User.operations.delete}(where: { id: { equals: "${userId}" } }){
+                    ${User.operations.delete}(where: { id: { eq: "${userId}" } }){
                         nodesDeleted
                     }
                 }
@@ -583,7 +583,7 @@ describe("auth/where", () => {
                     creator: [${User}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type ${User} @authorization(filter: [{ operations: [UPDATE, CREATE_RELATIONSHIP], where: { node: { id: { equals: "$jwt.sub" } } } }])
+                extend type ${User} @authorization(filter: [{ operations: [UPDATE, CREATE_RELATIONSHIP], where: { node: { id: { eq: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -595,7 +595,7 @@ describe("auth/where", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${User.operations.update}(update: { posts: { connect: { where: { node: { id: { equals: "${postId}" } } } } } }) {
+                    ${User.operations.update}(update: { posts: { connect: { where: { node: { id: { eq: "${postId}" } } } } } }) {
                         ${User.plural} {
                             id
                             posts {
@@ -641,7 +641,7 @@ describe("auth/where", () => {
                     creator: [${User}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type ${User} @authorization(filter: [{ operations: [UPDATE, CREATE_RELATIONSHIP], where: { node: { id: { equals: "$jwt.sub" } } } }])
+                extend type ${User} @authorization(filter: [{ operations: [UPDATE, CREATE_RELATIONSHIP], where: { node: { id: { eq: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -653,7 +653,7 @@ describe("auth/where", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${User.operations.update}(update: { posts: { connect: { where: { node: { id: { equals: "${postId}" } } } } } }) {
+                    ${User.operations.update}(update: { posts: { connect: { where: { node: { id: { eq: "${postId}" } } } } } }) {
                         ${User.plural} {
                             id
                             posts {
@@ -701,7 +701,7 @@ describe("auth/where", () => {
                     creator: [${User}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type ${User} @authorization(filter: [{ operations: [UPDATE, DELETE_RELATIONSHIP], where: { node: { id: { equals: "$jwt.sub" }} } }])
+                extend type ${User} @authorization(filter: [{ operations: [UPDATE, DELETE_RELATIONSHIP], where: { node: { id: { eq: "$jwt.sub" }} } }])
             `;
 
             const userId = generate({
@@ -716,7 +716,7 @@ describe("auth/where", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${User.operations.update}(update: { posts: { disconnect: { where: { node: { id: { equals: "${postId1}" } } } } } }) {
+                    ${User.operations.update}(update: { posts: { disconnect: { where: { node: { id: { eq: "${postId1}" } } } } } }) {
                         ${User.plural} {
                             id
                             posts {
@@ -763,7 +763,7 @@ describe("auth/where", () => {
                     creator: [${User}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type ${User} @authorization(filter: [{ operations: [UPDATE, DELETE_RELATIONSHIP], where: { node: { id: { equals: "$jwt.sub" } } } }])
+                extend type ${User} @authorization(filter: [{ operations: [UPDATE, DELETE_RELATIONSHIP], where: { node: { id: { eq: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -778,7 +778,7 @@ describe("auth/where", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${User.operations.update}(update: { posts: { disconnect: { where: { node: { id: { equals: "${postId1}" } } } }}  }) {
+                    ${User.operations.update}(update: { posts: { disconnect: { where: { node: { id: { eq: "${postId1}" } } } }}  }) {
                         ${User.plural} {
                             id
                             posts {

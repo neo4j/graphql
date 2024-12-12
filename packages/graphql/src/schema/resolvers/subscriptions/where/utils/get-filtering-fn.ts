@@ -61,15 +61,6 @@ const operatorCheckMap = {
     lte: legacyOperatorCheckMap.LTE,
     gt: legacyOperatorCheckMap.GT,
     gte: legacyOperatorCheckMap.GTE,
-    // REMOVE IT after merge new version 
-    greaterThan: legacyOperatorCheckMap.GT,
-    greaterThanEquals: legacyOperatorCheckMap.GTE,
-    lessThan: legacyOperatorCheckMap.LT,
-    lessThanEquals: legacyOperatorCheckMap.LTE,
-    startsWith: legacyOperatorCheckMap.STARTS_WITH,
-    endsWith: legacyOperatorCheckMap.ENDS_WITH,
-    contains: legacyOperatorCheckMap.CONTAINS,
-    includes: legacyOperatorCheckMap.INCLUDES,
     in: legacyOperatorCheckMap.IN,
 };
 

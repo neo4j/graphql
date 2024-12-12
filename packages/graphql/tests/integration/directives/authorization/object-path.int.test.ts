@@ -47,7 +47,7 @@ describe("auth/object-path", () => {
                 id: ID
             }
 
-            extend type ${User} @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: { equals: "$jwt.nestedSub" } } } }])
+            extend type ${User} @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: { eq: "$jwt.nestedSub" } } } }])
         `;
 
         const userId = generate({
@@ -56,7 +56,7 @@ describe("auth/object-path", () => {
 
         const query = /* GraphQL */ `
             {
-                ${User.plural}(where: { id: { equals: "${userId}" } }) {
+                ${User.plural}(where: { id: { eq: "${userId}" } }) {
                     id
                 }
             }
@@ -104,7 +104,7 @@ describe("auth/object-path", () => {
                 creator: [${User}!]! @relationship(type: "HAS_POST", direction: IN)
             }
 
-            extend type ${Post} @node @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { creator: { single: { id: { equals: "$context.userId" } } } } } }])
+            extend type ${Post} @node @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { creator: { single: { id: { eq: "$context.userId" } } } } } }])
         `;
 
         const userId = generate({
@@ -117,7 +117,7 @@ describe("auth/object-path", () => {
 
         const query = /* GraphQL */ `
             {
-                ${Post.plural}(where: {id: { equals: "${postId}" }}) {
+                ${Post.plural}(where: {id: { eq: "${postId}" }}) {
                     id
                 }
             }
@@ -167,7 +167,7 @@ describe("auth/object-path", () => {
 
         const query = /* GraphQL */ `
             {
-                ${User.plural}(where: { id: { equals: "${userId}" }}) {
+                ${User.plural}(where: { id: { eq: "${userId}" }}) {
                     id
                 }
             }
@@ -217,7 +217,7 @@ describe("auth/object-path", () => {
 
         const query = /* GraphQL */ `
             {
-                ${User.plural}(where: {id: { equals: "${userId}" }}) {
+                ${User.plural}(where: {id: { eq: "${userId}" }}) {
                     id
                 }
             }

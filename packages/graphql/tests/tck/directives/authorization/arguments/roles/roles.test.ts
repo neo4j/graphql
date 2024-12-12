@@ -329,7 +329,7 @@ describe("Cypher Auth Roles", () => {
     test("Update Node", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateUsers(where: { id: { equals: "1" } }, update: { id_SET: "id-1" }) {
+                updateUsers(where: { id: { eq: "1" } }, update: { id_SET: "id-1" }) {
                     users {
                         id
                     }
@@ -376,7 +376,7 @@ describe("Cypher Auth Roles", () => {
     test("Update Node & Field", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateUsers(where: { id: { equals: "1" } }, update: { password_SET: "password" }) {
+                updateUsers(where: { id: { eq: "1" } }, update: { password_SET: "password" }) {
                     users {
                         id
                     }
@@ -496,9 +496,7 @@ describe("Cypher Auth Roles", () => {
                 updateComments(
                     update: {
                         post: {
-                            update: {
-                                node: { creator: { connect: { where: { node: { id: { equals: "user-id" } } } } } }
-                            }
+                            update: { node: { creator: { connect: { where: { node: { id: { eq: "user-id" } } } } } } }
                         }
                     }
                 ) {
@@ -633,7 +631,7 @@ describe("Cypher Auth Roles", () => {
                     update: {
                         post: {
                             update: {
-                                node: { creator: { disconnect: { where: { node: { id: { equals: "user-id" } } } } } }
+                                node: { creator: { disconnect: { where: { node: { id: { eq: "user-id" } } } } } }
                             }
                         }
                     }
@@ -704,7 +702,7 @@ describe("Cypher Auth Roles", () => {
                                                             \\"where\\": {
                                                                 \\"node\\": {
                                                                     \\"id\\": {
-                                                                        \\"equals\\": \\"user-id\\"
+                                                                        \\"eq\\": \\"user-id\\"
                                                                     }
                                                                 }
                                                             }

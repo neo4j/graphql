@@ -1103,7 +1103,7 @@ describe("auth/is-authenticated", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${User.operations.update}(where: { id: { equals: "${userId}" } }, update: { posts: { connect: { where: { node: { id_EQ: "${postId}" } } } } }) {
+                    ${User.operations.update}(where: { id: { eq: "${userId}" } }, update: { posts: { connect: { where: { node: { id_EQ: "${postId}" } } } } }) {
                         ${User.plural} {
                             id
                         }
@@ -1168,7 +1168,7 @@ describe("auth/is-authenticated", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${User.operations.update}(where: { id: { equals: "${userId}" } }, update: { posts: { connect: { where: { node: { id: { equals: "${postId}" } } } } } }) {
+                    ${User.operations.update}(where: { id: { eq: "${userId}" } }, update: { posts: { connect: { where: { node: { id: { eq: "${postId}" } } } } } }) {
                         ${User.plural} {
                             id
                         }
@@ -1230,7 +1230,7 @@ describe("auth/is-authenticated", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${User.operations.update}(where: { id: { equals: "${userId}" } }, update: { posts: { connect: { where: { node: { id: { equals: "${postId}" } } } } } }) {
+                    ${User.operations.update}(where: { id: { eq: "${userId}" } }, update: { posts: { connect: { where: { node: { id: { eq: "${postId}" } } } } } }) {
                         ${User.plural} {
                             id
                         }
@@ -1291,7 +1291,7 @@ describe("auth/is-authenticated", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${User.operations.update}(where: { id: { equals: "${userId}" } }, update: { posts: { connect: { where: { node: { id: { equals: "${postId}" } } } } } }) {
+                    ${User.operations.update}(where: { id: { eq: "${userId}" } }, update: { posts: { connect: { where: { node: { id: { eq: "${postId}" } } } } } }) {
                         ${User.plural} {
                             id
                         }
@@ -1350,7 +1350,7 @@ describe("auth/is-authenticated", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${User.operations.update}(where: { id: { equals: "${userId}" } }, update: { posts: { connect: { where: { node: { id: { equals: "${postId}" } } } } } }) {
+                    ${User.operations.update}(where: { id: { eq: "${userId}" } }, update: { posts: { connect: { where: { node: { id: { eq: "${postId}" } } } } } }) {
                         ${User.plural} {
                             id
                         }
@@ -1416,7 +1416,7 @@ describe("auth/is-authenticated", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${User.operations.update}(where: { id: { equals: "${userId}" } }, update: { posts: { connect: { where: { node: { id: { equals: "${postId}" } } } } } }) {
+                    ${User.operations.update}(where: { id: { eq: "${userId}" } }, update: { posts: { connect: { where: { node: { id: { eq: "${postId}" } } } } } }) {
                         ${User.plural} {
                             id
                         }
@@ -1478,7 +1478,7 @@ describe("auth/is-authenticated", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${User.operations.update}(where: { id: { equals: "${userId}" } }, update: { posts: { connect: { where: { node: { id: { equals: "${postId}" } } } } } }) {
+                    ${User.operations.update}(where: { id: { eq: "${userId}" } }, update: { posts: { connect: { where: { node: { id: { eq: "${postId}" } } } } } }) {
                         ${User.plural} {
                             id
                         }
@@ -1541,7 +1541,7 @@ describe("auth/is-authenticated", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${User.operations.update}(where: { id: { equals: "${userId}" } }, update: { posts: { disconnect: { where: { node: { id: { equals: "${postId}" } } } } } }) {
+                    ${User.operations.update}(where: { id: { eq: "${userId}" } }, update: { posts: { disconnect: { where: { node: { id: { eq: "${postId}" } } } } } }) {
                         ${User.plural} {
                             id
                         }
@@ -1606,7 +1606,7 @@ describe("auth/is-authenticated", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${User.operations.update}(where: { id: {equals: "${userId}" } }, update: { posts: { disconnect: { where: { node: { id: {equals: "${postId}"} } } } } }) {
+                    ${User.operations.update}(where: { id: {eq: "${userId}" } }, update: { posts: { disconnect: { where: { node: { id: {eq: "${postId}"} } } } } }) {
                         ${User.plural} {
                             id
                         }
@@ -1668,7 +1668,7 @@ describe("auth/is-authenticated", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${User.operations.update}(where: { id: { equals: "${userId}" } }, update: { posts: { disconnect: { where: { node: { id: { equals: "${postId}" } } } } } }) {
+                    ${User.operations.update}(where: { id: { eq: "${userId}" } }, update: { posts: { disconnect: { where: { node: { id: { eq: "${postId}" } } } } } }) {
                         ${User.plural} {
                             id
                         }
@@ -1729,7 +1729,7 @@ describe("auth/is-authenticated", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${User.operations.update}(where: { id: { equals: "${userId}" } }, update: { posts: { disconnect: { where: { node: { id: { equals: "${postId}" } } } } } }) {
+                    ${User.operations.update}(where: { id: { eq: "${userId}" } }, update: { posts: { disconnect: { where: { node: { id: { eq: "${postId}" } } } } } }) {
                         ${User.plural} {
                             id
                         }
@@ -1788,7 +1788,7 @@ describe("auth/is-authenticated", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${User.operations.update}(where: { id: { equals: "${userId}" } }, update: { posts: { disconnect: { where: { node: { id: { equals: "${postId}" } } } } } }) {
+                    ${User.operations.update}(where: { id: { eq: "${userId}" } }, update: { posts: { disconnect: { where: { node: { id: { eq: "${postId}" } } } } } }) {
                         ${User.plural} {
                             id
                         }
@@ -1854,7 +1854,7 @@ describe("auth/is-authenticated", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${User.operations.update}(where: { id: { equals: "${userId}" } }, update: { posts: { disconnect: { where: { node: { id: { equals: "${postId}" } } } } } }) {
+                    ${User.operations.update}(where: { id: { eq: "${userId}" } }, update: { posts: { disconnect: { where: { node: { id: { eq: "${postId}" } } } } } }) {
                         ${User.plural} {
                             id
                         }
@@ -1916,7 +1916,7 @@ describe("auth/is-authenticated", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${User.operations.update}(where: { id: { equals: "${userId}" } }, update: { posts: { disconnect: { where: { node: { id: { equals: "${postId}" } } } } } }) {
+                    ${User.operations.update}(where: { id: { eq: "${userId}" } }, update: { posts: { disconnect: { where: { node: { id: { eq: "${postId}" } } } } } }) {
                         ${User.plural} {
                             id
                         }
@@ -2071,7 +2071,7 @@ describe("auth/is-authenticated", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${User.operations.delete}(where: {id: { equals: "${userId}" }}, delete:{ posts: { where:{ node: { id: { equals: "${postId}" }}}} }) {
+                    ${User.operations.delete}(where: {id: { eq: "${userId}" }}, delete:{ posts: { where:{ node: { id: { eq: "${postId}" }}}} }) {
                         nodesDeleted
                     }
                 }
@@ -2161,7 +2161,7 @@ describe("auth/is-authenticated", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${User.operations.delete}(where: { id: { equals: "${userId}" } }, delete: { posts: { where: { node: { id: { equals: "${postId}" } } } } }) {
+                    ${User.operations.delete}(where: { id: { eq: "${userId}" } }, delete: { posts: { where: { node: { id: { eq: "${postId}" } } } } }) {
                         nodesDeleted
                     }
                 }
@@ -2211,7 +2211,7 @@ describe("auth/is-authenticated", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${User.operations.delete}(where: {id: { equals: "${userId}" }}, delete:{ posts: { where: { node: { id: { equals: "${postId}" } } } } }) {
+                    ${User.operations.delete}(where: {id: { eq: "${userId}" }}, delete:{ posts: { where: { node: { id: { eq: "${postId}" } } } } }) {
                         nodesDeleted
                     }
                 }
@@ -3052,7 +3052,7 @@ describe("auth/is-authenticated", () => {
 
                 const query = `
                 mutation {
-                    ${User.operations.update}(where: { id: { equals: "${userId}" } }, update: { posts: { connect: { where: { node: { id: { equals: "${postId}" } } } } } }) {
+                    ${User.operations.update}(where: { id: { eq: "${userId}" } }, update: { posts: { connect: { where: { node: { id: { eq: "${postId}" } } } } } }) {
                         ${User.plural} {
                             id
                         }
@@ -3087,7 +3087,7 @@ describe("auth/is-authenticated", () => {
 
                 const query = `
                 mutation {
-                    ${User.operations.update}(where: { id: { equals: "${userId}" }}, update: { posts: { connect: { where: { node: { id: { equals: "${postId}" } } } } } }) {
+                    ${User.operations.update}(where: { id: { eq: "${userId}" }}, update: { posts: { connect: { where: { node: { id: { eq: "${postId}" } } } } } }) {
                         ${User.plural} {
                             id
                         }
@@ -3150,7 +3150,7 @@ describe("auth/is-authenticated", () => {
 
                 const query = `
                 mutation {
-                    ${User.operations.update}(where: { id: { equals: "${userId}" } }, update: { posts: { disconnect: { where: { node: { id: { equals: "${postId}" } } } } } }) {
+                    ${User.operations.update}(where: { id: { eq: "${userId}" } }, update: { posts: { disconnect: { where: { node: { id: { eq: "${postId}" } } } } } }) {
                         ${User.plural} {
                             id
                         }
@@ -3185,7 +3185,7 @@ describe("auth/is-authenticated", () => {
 
                 const query = `
                 mutation {
-                    ${User.operations.update}(where: { id: { equals: "${userId}" } }, update: { posts: { disconnect: { where: { node: { id: { equals: "${postId}" } } } } } }) {
+                    ${User.operations.update}(where: { id: { eq: "${userId}" } }, update: { posts: { disconnect: { where: { node: { id: { eq: "${postId}" } } } } } }) {
                         ${User.plural} {
                             id
                         }

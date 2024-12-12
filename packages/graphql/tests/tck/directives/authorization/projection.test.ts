@@ -34,7 +34,7 @@ describe("Cypher Auth Projection", () => {
             }
 
             extend type User {
-                id: ID @authorization(validate: [{ when: BEFORE, where: { node: { id: { equals: "$jwt.sub" } } } }])
+                id: ID @authorization(validate: [{ when: BEFORE, where: { node: { id: { eq: "$jwt.sub" } } } }])
             }
         `;
 

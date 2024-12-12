@@ -509,7 +509,7 @@ describe("auth/roles", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${typeUser.operations.update}(update: { id_SET: "${userId}", posts: { connect: { where: { node: { id: { equals: "${postId}"  } } } } }}) {
+                    ${typeUser.operations.update}(update: { id_SET: "${userId}", posts: { connect: { where: { node: { id: { eq: "${postId}"  } } } } }}) {
                         ${typeUser.plural} {
                             id
                         }
@@ -582,7 +582,7 @@ describe("auth/roles", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${typeUser.operations.update}(update: { id_SET: "${userId}", posts: { disconnect: { where: { node: { id: { equals: "${postId}" } } } } } }) {
+                    ${typeUser.operations.update}(update: { id_SET: "${userId}", posts: { disconnect: { where: { node: { id: { eq: "${postId}" } } } } } }) {
                         ${typeUser.plural} {
                             id
                         }
@@ -685,7 +685,7 @@ describe("auth/roles", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${typeUser.operations.delete}(where: {id: { equals: "${userId}"}}, delete: { posts: { where:{ node: { id: { equals: "${postId}" }}}}}) {
+                    ${typeUser.operations.delete}(where: {id: { eq: "${userId}"}}, delete: { posts: { where:{ node: { id: { eq: "${postId}" }}}}}) {
                         nodesDeleted
                     }
                 }
@@ -862,7 +862,7 @@ describe("auth/roles", () => {
                     @authorization(
                         filter: [
                             {
-                                where: { node: { id: { equals: "$jwt.id" } }, jwt: { roles: { includes: "user" } } }
+                                where: { node: { id: { eq: "$jwt.id" } }, jwt: { roles: { includes: "user" } } }
                             }, 
                             {
                                 where: { jwt: { roles: { includes: "admin" } } }
