@@ -184,19 +184,19 @@ describe("Simple", () => {
 
             input MovieUpdateInput {
               actorCount: IntScalarMutations
-              actorCount_DECREMENT: Int
-              actorCount_INCREMENT: Int
-              actorCount_SET: Int
+              actorCount_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'actorCount: { decrement: ... } }' instead.\\")
+              actorCount_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'actorCount: { increment: ... } }' instead.\\")
+              actorCount_SET: Int @deprecated(reason: \\"Please use the generic mutation 'actorCount: { set: ... } }' instead.\\")
               averageRating: FloatScalarMutations
-              averageRating_ADD: Float
-              averageRating_DIVIDE: Float
-              averageRating_MULTIPLY: Float
-              averageRating_SET: Float
-              averageRating_SUBTRACT: Float
+              averageRating_ADD: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { add: ... } }' instead.\\")
+              averageRating_DIVIDE: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { divide: ... } }' instead.\\")
+              averageRating_MULTIPLY: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { multiply: ... } }' instead.\\")
+              averageRating_SET: Float @deprecated(reason: \\"Please use the generic mutation 'averageRating: { set: ... } }' instead.\\")
+              averageRating_SUBTRACT: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { subtract: ... } }' instead.\\")
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               isActive: BooleanScalarMutations
-              isActive_SET: Boolean
+              isActive_SET: Boolean @deprecated(reason: \\"Please use the generic mutation 'isActive: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {

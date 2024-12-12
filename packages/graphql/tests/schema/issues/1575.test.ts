@@ -88,9 +88,9 @@ describe("https://github.com/neo4j/graphql/issues/1575", () => {
 
             input FooUpdateInput {
               geo_point: PointMutations
-              geo_point_SET: PointInput
+              geo_point_SET: PointInput @deprecated(reason: \\"Please use the generic mutation 'geo_point: { set: ... } }' instead.\\")
               point: PointMutations
-              point_SET: PointInput
+              point_SET: PointInput @deprecated(reason: \\"Please use the generic mutation 'point: { set: ... } }' instead.\\")
             }
 
             input FooWhere {

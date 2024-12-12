@@ -110,9 +110,9 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
 
             input ActedInUpdateInput {
               screenTime: IntScalarMutations
-              screenTime_DECREMENT: Int
-              screenTime_INCREMENT: Int
-              screenTime_SET: Int
+              screenTime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'screenTime: { decrement: ... } }' instead.\\")
+              screenTime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'screenTime: { increment: ... } }' instead.\\")
+              screenTime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'screenTime: { set: ... } }' instead.\\")
             }
 
             input ActedInWhere {
@@ -159,6 +159,25 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ActorActedInConnectionFilters {
+              \\"\\"\\"
+              Return Actors where all of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              all: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where none of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              none: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where one of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              single: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where some of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              some: ActorActedInConnectionWhere
             }
 
             input ActorActedInConnectionSort {
@@ -220,6 +239,17 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               cursor: String!
               node: Show!
               properties: ActedIn!
+            }
+
+            input ActorActedInRelationshipFilters {
+              \\"\\"\\"Return Actors where all of the related Shows match this filter\\"\\"\\"
+              all: ShowWhere
+              \\"\\"\\"Return Actors where none of the related Shows match this filter\\"\\"\\"
+              none: ShowWhere
+              \\"\\"\\"Return Actors where one of the related Shows match this filter\\"\\"\\"
+              single: ShowWhere
+              \\"\\"\\"Return Actors where some of the related Shows match this filter\\"\\"\\"
+              some: ShowWhere
             }
 
             input ActorActedInUpdateConnectionInput {
@@ -291,14 +321,16 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
             input ActorUpdateInput {
               actedIn: [ActorActedInUpdateFieldInput!]
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              actedIn: ActorActedInRelationshipFilters
               actedInAggregate: ActorActedInAggregateInput
+              actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
@@ -476,6 +508,25 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               where: ActorConnectWhere
             }
 
+            input MovieActorsConnectionFilters {
+              \\"\\"\\"
+              Return Movies where all of the related ShowActorsConnections match this filter
+              \\"\\"\\"
+              all: ShowActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related ShowActorsConnections match this filter
+              \\"\\"\\"
+              none: ShowActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where one of the related ShowActorsConnections match this filter
+              \\"\\"\\"
+              single: ShowActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related ShowActorsConnections match this filter
+              \\"\\"\\"
+              some: ShowActorsConnectionWhere
+            }
+
             input MovieActorsCreateFieldInput {
               edge: ActedInCreateInput
               node: ActorCreateInput!
@@ -506,6 +557,17 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               name_SHORTEST_LENGTH_GTE: Int
               name_SHORTEST_LENGTH_LT: Int
               name_SHORTEST_LENGTH_LTE: Int
+            }
+
+            input MovieActorsRelationshipFilters {
+              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
             }
 
             input MovieActorsUpdateConnectionInput {
@@ -557,20 +619,22 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
               release: DateTimeScalarMutations
-              release_SET: DateTime
+              release_SET: DateTime @deprecated(reason: \\"Please use the generic mutation 'release: { set: ... } }' instead.\\")
               runtime: IntScalarMutations
-              runtime_DECREMENT: Int
-              runtime_INCREMENT: Int
-              runtime_SET: Int
+              runtime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { decrement: ... } }' instead.\\")
+              runtime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { increment: ... } }' instead.\\")
+              runtime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'runtime: { set: ... } }' instead.\\")
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              actors: MovieActorsRelationshipFilters
               actorsAggregate: MovieActorsAggregateInput
+              actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related ShowActorsConnections match this filter
               \\"\\"\\"
@@ -700,6 +764,25 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               where: ActorConnectWhere
             }
 
+            input SeriesActorsConnectionFilters {
+              \\"\\"\\"
+              Return Series where all of the related ShowActorsConnections match this filter
+              \\"\\"\\"
+              all: ShowActorsConnectionWhere
+              \\"\\"\\"
+              Return Series where none of the related ShowActorsConnections match this filter
+              \\"\\"\\"
+              none: ShowActorsConnectionWhere
+              \\"\\"\\"
+              Return Series where one of the related ShowActorsConnections match this filter
+              \\"\\"\\"
+              single: ShowActorsConnectionWhere
+              \\"\\"\\"
+              Return Series where some of the related ShowActorsConnections match this filter
+              \\"\\"\\"
+              some: ShowActorsConnectionWhere
+            }
+
             input SeriesActorsCreateFieldInput {
               edge: ActedInCreateInput
               node: ActorCreateInput!
@@ -730,6 +813,17 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               name_SHORTEST_LENGTH_GTE: Int
               name_SHORTEST_LENGTH_LT: Int
               name_SHORTEST_LENGTH_LTE: Int
+            }
+
+            input SeriesActorsRelationshipFilters {
+              \\"\\"\\"Return Series where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Return Series where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Return Series where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
             }
 
             input SeriesActorsUpdateConnectionInput {
@@ -784,18 +878,20 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
             input SeriesUpdateInput {
               actors: [SeriesActorsUpdateFieldInput!]
               episodes: IntScalarMutations
-              episodes_DECREMENT: Int
-              episodes_INCREMENT: Int
-              episodes_SET: Int
+              episodes_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episodes: { decrement: ... } }' instead.\\")
+              episodes_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episodes: { increment: ... } }' instead.\\")
+              episodes_SET: Int @deprecated(reason: \\"Please use the generic mutation 'episodes: { set: ... } }' instead.\\")
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input SeriesWhere {
               AND: [SeriesWhere!]
               NOT: SeriesWhere
               OR: [SeriesWhere!]
+              actors: SeriesActorsRelationshipFilters
               actorsAggregate: SeriesActorsAggregateInput
+              actorsConnection: SeriesActorsConnectionFilters
               \\"\\"\\"
               Return Series where all of the related ShowActorsConnections match this filter
               \\"\\"\\"
@@ -865,6 +961,25 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               edges: [ShowActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ShowActorsConnectionFilters {
+              \\"\\"\\"
+              Return Shows where all of the related ShowActorsConnections match this filter
+              \\"\\"\\"
+              all: ShowActorsConnectionWhere
+              \\"\\"\\"
+              Return Shows where none of the related ShowActorsConnections match this filter
+              \\"\\"\\"
+              none: ShowActorsConnectionWhere
+              \\"\\"\\"
+              Return Shows where one of the related ShowActorsConnections match this filter
+              \\"\\"\\"
+              single: ShowActorsConnectionWhere
+              \\"\\"\\"
+              Return Shows where some of the related ShowActorsConnections match this filter
+              \\"\\"\\"
+              some: ShowActorsConnectionWhere
             }
 
             input ShowActorsConnectionSort {
@@ -968,6 +1083,17 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               properties: ShowActorsRelationshipProperties!
             }
 
+            input ShowActorsRelationshipFilters {
+              \\"\\"\\"Return Shows where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Return Shows where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Return Shows where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Return Shows where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
+            }
+
             union ShowActorsRelationshipProperties = ActedIn
 
             input ShowActorsUpdateConnectionInput {
@@ -1030,14 +1156,16 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
             input ShowUpdateInput {
               actors: [ShowActorsUpdateFieldInput!]
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input ShowWhere {
               AND: [ShowWhere!]
               NOT: ShowWhere
               OR: [ShowWhere!]
+              actors: ShowActorsRelationshipFilters
               actorsAggregate: ShowActorsAggregateInput
+              actorsConnection: ShowActorsConnectionFilters
               \\"\\"\\"
               Return Shows where all of the related ShowActorsConnections match this filter
               \\"\\"\\"

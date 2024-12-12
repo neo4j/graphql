@@ -20,528 +20,37 @@
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
-import { Neo4jGraphQL } from "../../src";
+import { Neo4jGraphQL } from "../../../src";
 
-describe("String Comparators", () => {
-    test("String comparators should be present if explicitly defined in the configuration", async () => {
+describe("Deprecated mutation operations", () => {
+    test("Remove deprecated mutation operations", async () => {
         const typeDefs = gql`
+            type Actor @node {
+                name: String
+                actedIn: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+            }
+
             type Movie @node {
-                title: String
-            }
-        `;
-        const neoSchema = new Neo4jGraphQL({
-            features: {
-                filters: {
-                    String: {
-                        LT: true,
-                        GT: true,
-                        GTE: true,
-                        LTE: true,
-                    },
-                },
-            },
-            typeDefs,
-        });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
-
-        expect(printedSchema).toMatchInlineSnapshot(`
-            "schema {
-              query: Query
-              mutation: Mutation
-            }
-
-            \\"\\"\\"
-            Information about the number of nodes and relationships created during a create mutation
-            \\"\\"\\"
-            type CreateInfo {
-              nodesCreated: Int!
-              relationshipsCreated: Int!
-            }
-
-            type CreateMoviesMutationResponse {
-              info: CreateInfo!
-              movies: [Movie!]!
-            }
-
-            \\"\\"\\"
-            Information about the number of nodes and relationships deleted during a delete mutation
-            \\"\\"\\"
-            type DeleteInfo {
-              nodesDeleted: Int!
-              relationshipsDeleted: Int!
-            }
-
-            type Movie {
-              title: String
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              title: StringAggregateSelection!
-            }
-
-            input MovieCreateInput {
-              title: String
-            }
-
-            type MovieEdge {
-              cursor: String!
-              node: Movie!
-            }
-
-            \\"\\"\\"
-            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
-            \\"\\"\\"
-            input MovieSort {
-              title: SortDirection
-            }
-
-            input MovieUpdateInput {
-              title: StringScalarMutations
-              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
-            }
-
-            input MovieWhere {
-              AND: [MovieWhere!]
-              NOT: MovieWhere
-              OR: [MovieWhere!]
-              title: StringScalarFilters
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_GT: String
-              title_GTE: String
-              title_IN: [String]
-              title_LT: String
-              title_LTE: String
-              title_STARTS_WITH: String
-            }
-
-            type MoviesConnection {
-              edges: [MovieEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type Mutation {
-              createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
-              deleteMovies(where: MovieWhere): DeleteInfo!
-              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-            }
-
-            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
-            type PageInfo {
-              endCursor: String
-              hasNextPage: Boolean!
-              hasPreviousPage: Boolean!
-              startCursor: String
-            }
-
-            type Query {
-              movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-            }
-
-            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
-            enum SortDirection {
-              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-              ASC
-              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-              DESC
-            }
-
-            type StringAggregateSelection {
-              longest: String
-              shortest: String
-            }
-
-            \\"\\"\\"String filters\\"\\"\\"
-            input StringScalarFilters {
-              contains: String
-              endsWith: String
-              eq: String
-              gt: String
-              gte: String
-              in: [String!]
-              lt: String
-              lte: String
-              matches: String
-              startsWith: String
-            }
-
-            \\"\\"\\"String mutations\\"\\"\\"
-            input StringScalarMutations {
-              set: String
-            }
-
-            \\"\\"\\"
-            Information about the number of nodes and relationships created and deleted during an update mutation
-            \\"\\"\\"
-            type UpdateInfo {
-              nodesCreated: Int!
-              nodesDeleted: Int!
-              relationshipsCreated: Int!
-              relationshipsDeleted: Int!
-            }
-
-            type UpdateMoviesMutationResponse {
-              info: UpdateInfo!
-              movies: [Movie!]!
-            }"
-        `);
-    });
-
-    test("String comparators should not be present if not explicitly defined in the configuration", async () => {
-        const typeDefs = gql`
-            type Movie @node {
-                title: String
-            }
-        `;
-        const neoSchema = new Neo4jGraphQL({
-            typeDefs,
-        });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
-
-        expect(printedSchema).toMatchInlineSnapshot(`
-            "schema {
-              query: Query
-              mutation: Mutation
-            }
-
-            \\"\\"\\"
-            Information about the number of nodes and relationships created during a create mutation
-            \\"\\"\\"
-            type CreateInfo {
-              nodesCreated: Int!
-              relationshipsCreated: Int!
-            }
-
-            type CreateMoviesMutationResponse {
-              info: CreateInfo!
-              movies: [Movie!]!
-            }
-
-            \\"\\"\\"
-            Information about the number of nodes and relationships deleted during a delete mutation
-            \\"\\"\\"
-            type DeleteInfo {
-              nodesDeleted: Int!
-              relationshipsDeleted: Int!
-            }
-
-            type Movie {
-              title: String
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              title: StringAggregateSelection!
-            }
-
-            input MovieCreateInput {
-              title: String
-            }
-
-            type MovieEdge {
-              cursor: String!
-              node: Movie!
-            }
-
-            \\"\\"\\"
-            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
-            \\"\\"\\"
-            input MovieSort {
-              title: SortDirection
-            }
-
-            input MovieUpdateInput {
-              title: StringScalarMutations
-              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
-            }
-
-            input MovieWhere {
-              AND: [MovieWhere!]
-              NOT: MovieWhere
-              OR: [MovieWhere!]
-              title: StringScalarFilters
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String]
-              title_STARTS_WITH: String
-            }
-
-            type MoviesConnection {
-              edges: [MovieEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type Mutation {
-              createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
-              deleteMovies(where: MovieWhere): DeleteInfo!
-              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-            }
-
-            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
-            type PageInfo {
-              endCursor: String
-              hasNextPage: Boolean!
-              hasPreviousPage: Boolean!
-              startCursor: String
-            }
-
-            type Query {
-              movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-            }
-
-            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
-            enum SortDirection {
-              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-              ASC
-              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-              DESC
-            }
-
-            type StringAggregateSelection {
-              longest: String
-              shortest: String
-            }
-
-            \\"\\"\\"String filters\\"\\"\\"
-            input StringScalarFilters {
-              contains: String
-              endsWith: String
-              eq: String
-              gt: String
-              gte: String
-              in: [String!]
-              lt: String
-              lte: String
-              matches: String
-              startsWith: String
-            }
-
-            \\"\\"\\"String mutations\\"\\"\\"
-            input StringScalarMutations {
-              set: String
-            }
-
-            \\"\\"\\"
-            Information about the number of nodes and relationships created and deleted during an update mutation
-            \\"\\"\\"
-            type UpdateInfo {
-              nodesCreated: Int!
-              nodesDeleted: Int!
-              relationshipsCreated: Int!
-              relationshipsDeleted: Int!
-            }
-
-            type UpdateMoviesMutationResponse {
-              info: UpdateInfo!
-              movies: [Movie!]!
-            }"
-        `);
-    });
-
-    test("If String comparators are partially defined, then only the defined ones should be present", async () => {
-        const typeDefs = gql`
-            type Movie @node {
-                title: String
-            }
-        `;
-        const neoSchema = new Neo4jGraphQL({
-            features: {
-                filters: {
-                    String: {
-                        LT: true,
-                        GT: true,
-                        LTE: false,
-                    },
-                },
-            },
-            typeDefs,
-        });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
-
-        expect(printedSchema).toMatchInlineSnapshot(`
-            "schema {
-              query: Query
-              mutation: Mutation
-            }
-
-            \\"\\"\\"
-            Information about the number of nodes and relationships created during a create mutation
-            \\"\\"\\"
-            type CreateInfo {
-              nodesCreated: Int!
-              relationshipsCreated: Int!
-            }
-
-            type CreateMoviesMutationResponse {
-              info: CreateInfo!
-              movies: [Movie!]!
-            }
-
-            \\"\\"\\"
-            Information about the number of nodes and relationships deleted during a delete mutation
-            \\"\\"\\"
-            type DeleteInfo {
-              nodesDeleted: Int!
-              relationshipsDeleted: Int!
-            }
-
-            type Movie {
-              title: String
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              title: StringAggregateSelection!
-            }
-
-            input MovieCreateInput {
-              title: String
-            }
-
-            type MovieEdge {
-              cursor: String!
-              node: Movie!
-            }
-
-            \\"\\"\\"
-            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
-            \\"\\"\\"
-            input MovieSort {
-              title: SortDirection
-            }
-
-            input MovieUpdateInput {
-              title: StringScalarMutations
-              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
-            }
-
-            input MovieWhere {
-              AND: [MovieWhere!]
-              NOT: MovieWhere
-              OR: [MovieWhere!]
-              title: StringScalarFilters
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_GT: String
-              title_IN: [String]
-              title_LT: String
-              title_STARTS_WITH: String
-            }
-
-            type MoviesConnection {
-              edges: [MovieEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type Mutation {
-              createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
-              deleteMovies(where: MovieWhere): DeleteInfo!
-              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-            }
-
-            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
-            type PageInfo {
-              endCursor: String
-              hasNextPage: Boolean!
-              hasPreviousPage: Boolean!
-              startCursor: String
-            }
-
-            type Query {
-              movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-            }
-
-            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
-            enum SortDirection {
-              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-              ASC
-              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-              DESC
-            }
-
-            type StringAggregateSelection {
-              longest: String
-              shortest: String
-            }
-
-            \\"\\"\\"String filters\\"\\"\\"
-            input StringScalarFilters {
-              contains: String
-              endsWith: String
-              eq: String
-              gt: String
-              gte: String
-              in: [String!]
-              lt: String
-              lte: String
-              matches: String
-              startsWith: String
-            }
-
-            \\"\\"\\"String mutations\\"\\"\\"
-            input StringScalarMutations {
-              set: String
-            }
-
-            \\"\\"\\"
-            Information about the number of nodes and relationships created and deleted during an update mutation
-            \\"\\"\\"
-            type UpdateInfo {
-              nodesCreated: Int!
-              nodesDeleted: Int!
-              relationshipsCreated: Int!
-              relationshipsDeleted: Int!
-            }
-
-            type UpdateMoviesMutationResponse {
-              info: UpdateInfo!
-              movies: [Movie!]!
-            }"
-        `);
-    });
-
-    test("string comparator relationship and relationship properties", async () => {
-        const typeDefs = gql`
-            type Movie @node {
-                title: String
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                id: ID!
+                ratings: [Float!]!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+                averageRating: Float!
+                date: Date
+                point: Point
             }
 
             type ActedIn @relationshipProperties {
-                screenTime: String
-            }
-
-            type Actor @node {
-                name: String
-                actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                pay: [Float!]
+                value: Int
             }
         `;
-
         const neoSchema = new Neo4jGraphQL({
+            typeDefs,
             features: {
-                filters: {
-                    String: {
-                        LT: true,
-                        GT: true,
-                        LTE: true,
-                        GTE: true,
-                    },
+                excludeDeprecatedFields: {
+                    mutationOperations: false,
                 },
             },
-            typeDefs,
         });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
@@ -553,62 +62,76 @@ describe("String Comparators", () => {
 
             \\"\\"\\"
             The edge properties for the following fields:
-            * Movie.actors
             * Actor.actedIn
+            * Movie.actors
             \\"\\"\\"
             type ActedIn {
-              screenTime: String
+              pay: [Float!]
+              value: Int
             }
 
             input ActedInAggregationWhereInput {
               AND: [ActedInAggregationWhereInput!]
               NOT: ActedInAggregationWhereInput
               OR: [ActedInAggregationWhereInput!]
-              screenTime: StringScalarAggregationFilters
-              screenTime_AVERAGE_LENGTH_EQUAL: Float
-              screenTime_AVERAGE_LENGTH_GT: Float
-              screenTime_AVERAGE_LENGTH_GTE: Float
-              screenTime_AVERAGE_LENGTH_LT: Float
-              screenTime_AVERAGE_LENGTH_LTE: Float
-              screenTime_LONGEST_LENGTH_EQUAL: Int
-              screenTime_LONGEST_LENGTH_GT: Int
-              screenTime_LONGEST_LENGTH_GTE: Int
-              screenTime_LONGEST_LENGTH_LT: Int
-              screenTime_LONGEST_LENGTH_LTE: Int
-              screenTime_SHORTEST_LENGTH_EQUAL: Int
-              screenTime_SHORTEST_LENGTH_GT: Int
-              screenTime_SHORTEST_LENGTH_GTE: Int
-              screenTime_SHORTEST_LENGTH_LT: Int
-              screenTime_SHORTEST_LENGTH_LTE: Int
+              value: IntScalarAggregationFilters
+              value_AVERAGE_EQUAL: Float
+              value_AVERAGE_GT: Float
+              value_AVERAGE_GTE: Float
+              value_AVERAGE_LT: Float
+              value_AVERAGE_LTE: Float
+              value_MAX_EQUAL: Int
+              value_MAX_GT: Int
+              value_MAX_GTE: Int
+              value_MAX_LT: Int
+              value_MAX_LTE: Int
+              value_MIN_EQUAL: Int
+              value_MIN_GT: Int
+              value_MIN_GTE: Int
+              value_MIN_LT: Int
+              value_MIN_LTE: Int
+              value_SUM_EQUAL: Int
+              value_SUM_GT: Int
+              value_SUM_GTE: Int
+              value_SUM_LT: Int
+              value_SUM_LTE: Int
             }
 
             input ActedInCreateInput {
-              screenTime: String
+              pay: [Float!]
+              value: Int
             }
 
             input ActedInSort {
-              screenTime: SortDirection
+              pay: SortDirection
+              value: SortDirection
             }
 
             input ActedInUpdateInput {
-              screenTime: StringScalarMutations
-              screenTime_SET: String @deprecated(reason: \\"Please use the generic mutation 'screenTime: { set: ... } }' instead.\\")
+              pay: ListFloatMutations
+              pay_POP: Int @deprecated(reason: \\"Please use the generic mutation 'pay: { pop: ... } }' instead.\\")
+              pay_PUSH: [Float!] @deprecated(reason: \\"Please use the generic mutation 'pay: { push: ... } }' instead.\\")
+              pay_SET: [Float!] @deprecated(reason: \\"Please use the generic mutation 'pay: { set: ... } }' instead.\\")
+              value: IntScalarMutations
+              value_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'value: { decrement: ... } }' instead.\\")
+              value_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'value: { increment: ... } }' instead.\\")
+              value_SET: Int @deprecated(reason: \\"Please use the generic mutation 'value: { set: ... } }' instead.\\")
             }
 
             input ActedInWhere {
               AND: [ActedInWhere!]
               NOT: ActedInWhere
               OR: [ActedInWhere!]
-              screenTime: StringScalarFilters
-              screenTime_CONTAINS: String
-              screenTime_ENDS_WITH: String
-              screenTime_EQ: String
-              screenTime_GT: String
-              screenTime_GTE: String
-              screenTime_IN: [String]
-              screenTime_LT: String
-              screenTime_LTE: String
-              screenTime_STARTS_WITH: String
+              pay: FloatListFilters
+              pay_EQ: [Float!]
+              pay_INCLUDES: Float
+              value: IntScalarFilters
+              value_EQ: Int
+              value_GT: Int
+              value_GTE: Int
+              value_IN: [Int]
+              value_LT: Int
+              value_LTE: Int
             }
 
             type Actor {
@@ -700,22 +223,38 @@ describe("String Comparators", () => {
               AND: [ActorActedInNodeAggregationWhereInput!]
               NOT: ActorActedInNodeAggregationWhereInput
               OR: [ActorActedInNodeAggregationWhereInput!]
-              title: StringScalarAggregationFilters
-              title_AVERAGE_LENGTH_EQUAL: Float
-              title_AVERAGE_LENGTH_GT: Float
-              title_AVERAGE_LENGTH_GTE: Float
-              title_AVERAGE_LENGTH_LT: Float
-              title_AVERAGE_LENGTH_LTE: Float
-              title_LONGEST_LENGTH_EQUAL: Int
-              title_LONGEST_LENGTH_GT: Int
-              title_LONGEST_LENGTH_GTE: Int
-              title_LONGEST_LENGTH_LT: Int
-              title_LONGEST_LENGTH_LTE: Int
-              title_SHORTEST_LENGTH_EQUAL: Int
-              title_SHORTEST_LENGTH_GT: Int
-              title_SHORTEST_LENGTH_GTE: Int
-              title_SHORTEST_LENGTH_LT: Int
-              title_SHORTEST_LENGTH_LTE: Int
+              averageRating: FloatScalarAggregationFilters
+              averageRating_AVERAGE_EQUAL: Float
+              averageRating_AVERAGE_GT: Float
+              averageRating_AVERAGE_GTE: Float
+              averageRating_AVERAGE_LT: Float
+              averageRating_AVERAGE_LTE: Float
+              averageRating_MAX_EQUAL: Float
+              averageRating_MAX_GT: Float
+              averageRating_MAX_GTE: Float
+              averageRating_MAX_LT: Float
+              averageRating_MAX_LTE: Float
+              averageRating_MIN_EQUAL: Float
+              averageRating_MIN_GT: Float
+              averageRating_MIN_GTE: Float
+              averageRating_MIN_LT: Float
+              averageRating_MIN_LTE: Float
+              averageRating_SUM_EQUAL: Float
+              averageRating_SUM_GT: Float
+              averageRating_SUM_GTE: Float
+              averageRating_SUM_LT: Float
+              averageRating_SUM_LTE: Float
+              id: IDScalarAggregationFilters
+              id_MAX_EQUAL: ID
+              id_MAX_GT: ID
+              id_MAX_GTE: ID
+              id_MAX_LT: ID
+              id_MAX_LTE: ID
+              id_MIN_EQUAL: ID
+              id_MIN_GT: ID
+              id_MIN_GTE: ID
+              id_MIN_LT: ID
+              id_MIN_LTE: ID
             }
 
             type ActorActedInRelationship {
@@ -787,11 +326,12 @@ describe("String Comparators", () => {
             }
 
             type ActorMovieActedInEdgeAggregateSelection {
-              screenTime: StringAggregateSelection!
+              value: IntAggregateSelection!
             }
 
             type ActorMovieActedInNodeAggregateSelection {
-              title: StringAggregateSelection!
+              averageRating: FloatAggregateSelection!
+              id: IDAggregateSelection!
             }
 
             \\"\\"\\"
@@ -842,11 +382,7 @@ describe("String Comparators", () => {
               name_CONTAINS: String
               name_ENDS_WITH: String
               name_EQ: String
-              name_GT: String
-              name_GTE: String
               name_IN: [String]
-              name_LT: String
-              name_LTE: String
               name_STARTS_WITH: String
             }
 
@@ -874,12 +410,51 @@ describe("String Comparators", () => {
               movies: [Movie!]!
             }
 
+            \\"\\"\\"A date, represented as a 'yyyy-mm-dd' string\\"\\"\\"
+            scalar Date
+
+            \\"\\"\\"Date filters\\"\\"\\"
+            input DateScalarFilters {
+              eq: Date
+              gt: Date
+              gte: Date
+              in: [Date!]
+              lt: Date
+              lte: Date
+            }
+
+            \\"\\"\\"Date mutations\\"\\"\\"
+            input DateScalarMutations {
+              set: Date
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships deleted during a delete mutation
             \\"\\"\\"
             type DeleteInfo {
               nodesDeleted: Int!
               relationshipsDeleted: Int!
+            }
+
+            type FloatAggregateSelection {
+              average: Float
+              max: Float
+              min: Float
+              sum: Float
+            }
+
+            \\"\\"\\"Float list filters\\"\\"\\"
+            input FloatListFilters {
+              eq: [FloatScalarFilters!]
+              includes: FloatScalarFilters
+            }
+
+            \\"\\"\\"Filters for an aggregation of a float field\\"\\"\\"
+            input FloatScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: FloatScalarFilters
+              min: FloatScalarFilters
+              sum: FloatScalarFilters
             }
 
             \\"\\"\\"Float filters\\"\\"\\"
@@ -892,6 +467,60 @@ describe("String Comparators", () => {
               lte: Float
             }
 
+            \\"\\"\\"Float mutations\\"\\"\\"
+            input FloatScalarMutations {
+              add: Float
+              divide: Float
+              multiply: Float
+              set: Float
+              subtract: Float
+            }
+
+            type IDAggregateSelection {
+              longest: ID
+              shortest: ID
+            }
+
+            \\"\\"\\"Filters for an aggregation of an ID input field\\"\\"\\"
+            input IDScalarAggregationFilters {
+              max: IDScalarFilters
+              min: IDScalarFilters
+            }
+
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              eq: ID
+              gt: ID
+              gte: ID
+              in: [ID!]
+              lt: ID
+              lte: ID
+              matches: ID
+              startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
+            type IntAggregateSelection {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
+            }
+
+            \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+            input IntScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: IntScalarFilters
+              min: IntScalarFilters
+              sum: IntScalarFilters
+            }
+
             \\"\\"\\"Int filters\\"\\"\\"
             input IntScalarFilters {
               eq: Int
@@ -902,11 +531,29 @@ describe("String Comparators", () => {
               lte: Int
             }
 
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
+            }
+
+            \\"\\"\\"Mutations for a list for Float\\"\\"\\"
+            input ListFloatMutations {
+              pop: Int
+              push: [Float!]
+              set: [Float!]
+            }
+
             type Movie {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
-              title: String
+              averageRating: Float!
+              date: Date
+              id: ID!
+              point: Point
+              ratings: [Float!]!
             }
 
             type MovieActorActorsAggregationSelection {
@@ -916,7 +563,7 @@ describe("String Comparators", () => {
             }
 
             type MovieActorActorsEdgeAggregateSelection {
-              screenTime: StringAggregateSelection!
+              value: IntAggregateSelection!
             }
 
             type MovieActorActorsNodeAggregateSelection {
@@ -1055,8 +702,9 @@ describe("String Comparators", () => {
             }
 
             type MovieAggregateSelection {
+              averageRating: FloatAggregateSelection!
               count: Int!
-              title: StringAggregateSelection!
+              id: IDAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -1069,7 +717,11 @@ describe("String Comparators", () => {
 
             input MovieCreateInput {
               actors: MovieActorsFieldInput
-              title: String
+              averageRating: Float!
+              date: Date
+              id: ID!
+              point: PointInput
+              ratings: [Float!]!
             }
 
             input MovieDeleteInput {
@@ -1089,13 +741,30 @@ describe("String Comparators", () => {
             Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
             \\"\\"\\"
             input MovieSort {
-              title: SortDirection
+              averageRating: SortDirection
+              date: SortDirection
+              id: SortDirection
+              point: SortDirection
             }
 
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
-              title: StringScalarMutations
-              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
+              averageRating: FloatScalarMutations
+              averageRating_ADD: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { add: ... } }' instead.\\")
+              averageRating_DIVIDE: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { divide: ... } }' instead.\\")
+              averageRating_MULTIPLY: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { multiply: ... } }' instead.\\")
+              averageRating_SET: Float @deprecated(reason: \\"Please use the generic mutation 'averageRating: { set: ... } }' instead.\\")
+              averageRating_SUBTRACT: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { subtract: ... } }' instead.\\")
+              date: DateScalarMutations
+              date_SET: Date @deprecated(reason: \\"Please use the generic mutation 'date: { set: ... } }' instead.\\")
+              id: IDScalarMutations
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
+              point: PointMutations
+              point_SET: PointInput @deprecated(reason: \\"Please use the generic mutation 'point: { set: ... } }' instead.\\")
+              ratings: ListFloatMutations
+              ratings_POP: Int @deprecated(reason: \\"Please use the generic mutation 'ratings: { pop: ... } }' instead.\\")
+              ratings_PUSH: [Float!] @deprecated(reason: \\"Please use the generic mutation 'ratings: { push: ... } }' instead.\\")
+              ratings_SET: [Float!] @deprecated(reason: \\"Please use the generic mutation 'ratings: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -1129,16 +798,37 @@ describe("String Comparators", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
-              title: StringScalarFilters
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_GT: String
-              title_GTE: String
-              title_IN: [String]
-              title_LT: String
-              title_LTE: String
-              title_STARTS_WITH: String
+              averageRating: FloatScalarFilters
+              averageRating_EQ: Float
+              averageRating_GT: Float
+              averageRating_GTE: Float
+              averageRating_IN: [Float!]
+              averageRating_LT: Float
+              averageRating_LTE: Float
+              date: DateScalarFilters
+              date_EQ: Date
+              date_GT: Date
+              date_GTE: Date
+              date_IN: [Date]
+              date_LT: Date
+              date_LTE: Date
+              id: IDScalarFilters
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_EQ: ID
+              id_IN: [ID!]
+              id_STARTS_WITH: ID
+              point: PointFilters
+              point_DISTANCE: PointDistance
+              point_EQ: PointInput
+              point_GT: PointDistance
+              point_GTE: PointDistance
+              point_IN: [PointInput]
+              point_LT: PointDistance
+              point_LTE: PointDistance
+              ratings: FloatListFilters
+              ratings_EQ: [Float!]
+              ratings_INCLUDES: Float
             }
 
             type MoviesConnection {
@@ -1162,6 +852,53 @@ describe("String Comparators", () => {
               hasNextPage: Boolean!
               hasPreviousPage: Boolean!
               startCursor: String
+            }
+
+            \\"\\"\\"
+            A point in a coordinate system. For more information, see https://neo4j.com/docs/graphql/4/type-definitions/types/spatial/#point
+            \\"\\"\\"
+            type Point {
+              crs: String!
+              height: Float
+              latitude: Float!
+              longitude: Float!
+              srid: Int!
+            }
+
+            \\"\\"\\"Input type for a point with a distance\\"\\"\\"
+            input PointDistance {
+              \\"\\"\\"The distance in metres to be used when comparing two points\\"\\"\\"
+              distance: Float!
+              point: PointInput!
+            }
+
+            \\"\\"\\"Distance filters\\"\\"\\"
+            input PointDistanceFilters {
+              eq: Float
+              from: PointInput!
+              gt: Float
+              gte: Float
+              lt: Float
+              lte: Float
+            }
+
+            \\"\\"\\"Point filters\\"\\"\\"
+            input PointFilters {
+              distance: PointDistanceFilters
+              eq: PointInput
+              in: [PointInput!]
+            }
+
+            \\"\\"\\"Input type for a point\\"\\"\\"
+            input PointInput {
+              height: Float
+              latitude: Float!
+              longitude: Float!
+            }
+
+            \\"\\"\\"Point mutations\\"\\"\\"
+            input PointMutations {
+              set: PointInput
             }
 
             type Query {

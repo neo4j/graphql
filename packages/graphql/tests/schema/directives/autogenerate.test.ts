@@ -109,7 +109,7 @@ describe("Autogenerate", () => {
 
             input MovieUpdateInput {
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {

@@ -146,7 +146,7 @@ describe("https://github.com/neo4j/graphql/issues/5428", () => {
 
             input TestUpdateInput {
               Name: StringScalarMutations
-              Name_SET: String
+              Name_SET: String @deprecated(reason: \\"Please use the generic mutation 'Name: { set: ... } }' instead.\\")
             }
 
             input TestWhere {

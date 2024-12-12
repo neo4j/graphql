@@ -42,7 +42,12 @@ export type FilterOperator =
 
 export type LogicalOperators = "NOT" | "AND" | "OR" | "XOR";
 
-const RELATIONSHIP_OPERATORS = ["ALL", "NONE", "SINGLE", "SOME"] as const;
+const LEGACY_RELATIONSHIP_OPERATORS = ["ALL", "NONE", "SINGLE", "SOME"] as const;
+const RELATIONSHIP_OPERATORS = ["all", "none", "single", "some"] as const;
+
+export function isLegacyRelationshipOperator(operator: string): operator is RelationshipWhereOperator {
+    return LEGACY_RELATIONSHIP_OPERATORS.includes(operator as any);
+}
 
 export function isRelationshipOperator(operator: string): operator is RelationshipWhereOperator {
     return RELATIONSHIP_OPERATORS.includes(operator as any);

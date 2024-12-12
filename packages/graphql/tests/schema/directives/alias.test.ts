@@ -83,6 +83,25 @@ describe("Alias", () => {
               totalCount: Int!
             }
 
+            input ActorActedInConnectionFilters {
+              \\"\\"\\"
+              Return Actors where all of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              all: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where none of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              none: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where one of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              single: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where some of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              some: ActorActedInConnectionWhere
+            }
+
             input ActorActedInConnectionSort {
               edge: ActorActedInPropsSort
               node: MovieSort
@@ -221,11 +240,11 @@ describe("Alias", () => {
 
             input ActorActedInPropsUpdateInput {
               character: StringScalarMutations
-              character_SET: String
+              character_SET: String @deprecated(reason: \\"Please use the generic mutation 'character: { set: ... } }' instead.\\")
               screenTime: IntScalarMutations
-              screenTime_DECREMENT: Int
-              screenTime_INCREMENT: Int
-              screenTime_SET: Int
+              screenTime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'screenTime: { decrement: ... } }' instead.\\")
+              screenTime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'screenTime: { increment: ... } }' instead.\\")
+              screenTime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'screenTime: { set: ... } }' instead.\\")
             }
 
             input ActorActedInPropsWhere {
@@ -251,6 +270,17 @@ describe("Alias", () => {
               cursor: String!
               node: Movie!
               properties: ActorActedInProps!
+            }
+
+            input ActorActedInRelationshipFilters {
+              \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
             }
 
             input ActorActedInUpdateConnectionInput {
@@ -315,16 +345,18 @@ describe("Alias", () => {
             input ActorUpdateInput {
               actedIn: [ActorActedInUpdateFieldInput!]
               city: StringScalarMutations
-              city_SET: String
+              city_SET: String @deprecated(reason: \\"Please use the generic mutation 'city: { set: ... } }' instead.\\")
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              actedIn: ActorActedInRelationshipFilters
               actedInAggregate: ActorActedInAggregateInput
+              actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
@@ -496,13 +528,13 @@ describe("Alias", () => {
 
             input MovieUpdateInput {
               rating: FloatScalarMutations
-              rating_ADD: Float
-              rating_DIVIDE: Float
-              rating_MULTIPLY: Float
-              rating_SET: Float
-              rating_SUBTRACT: Float
+              rating_ADD: Float @deprecated(reason: \\"Please use the relevant generic mutation 'rating: { add: ... } }' instead.\\")
+              rating_DIVIDE: Float @deprecated(reason: \\"Please use the relevant generic mutation 'rating: { divide: ... } }' instead.\\")
+              rating_MULTIPLY: Float @deprecated(reason: \\"Please use the relevant generic mutation 'rating: { multiply: ... } }' instead.\\")
+              rating_SET: Float @deprecated(reason: \\"Please use the generic mutation 'rating: { set: ... } }' instead.\\")
+              rating_SUBTRACT: Float @deprecated(reason: \\"Please use the relevant generic mutation 'rating: { subtract: ... } }' instead.\\")
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {

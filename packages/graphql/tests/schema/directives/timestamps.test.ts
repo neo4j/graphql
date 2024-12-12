@@ -142,9 +142,9 @@ describe("Timestamps", () => {
 
             input MovieUpdateInput {
               createdAt: DateTimeScalarMutations
-              createdAt_SET: DateTime
+              createdAt_SET: DateTime @deprecated(reason: \\"Please use the generic mutation 'createdAt: { set: ... } }' instead.\\")
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {

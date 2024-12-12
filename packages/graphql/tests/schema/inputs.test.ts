@@ -118,7 +118,7 @@ describe("Inputs", () => {
 
             input MovieUpdateInput {
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {

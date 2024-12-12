@@ -216,6 +216,25 @@ describe("Query Direction", () => {
               totalCount: Int!
             }
 
+            input UserFriendsConnectionFilters {
+              \\"\\"\\"
+              Return Users where all of the related UserFriendsConnections match this filter
+              \\"\\"\\"
+              all: UserFriendsConnectionWhere
+              \\"\\"\\"
+              Return Users where none of the related UserFriendsConnections match this filter
+              \\"\\"\\"
+              none: UserFriendsConnectionWhere
+              \\"\\"\\"
+              Return Users where one of the related UserFriendsConnections match this filter
+              \\"\\"\\"
+              single: UserFriendsConnectionWhere
+              \\"\\"\\"
+              Return Users where some of the related UserFriendsConnections match this filter
+              \\"\\"\\"
+              some: UserFriendsConnectionWhere
+            }
+
             input UserFriendsConnectionSort {
               node: UserSort
             }
@@ -273,6 +292,17 @@ describe("Query Direction", () => {
               node: User!
             }
 
+            input UserFriendsRelationshipFilters {
+              \\"\\"\\"Return Users where all of the related Users match this filter\\"\\"\\"
+              all: UserWhere
+              \\"\\"\\"Return Users where none of the related Users match this filter\\"\\"\\"
+              none: UserWhere
+              \\"\\"\\"Return Users where one of the related Users match this filter\\"\\"\\"
+              single: UserWhere
+              \\"\\"\\"Return Users where some of the related Users match this filter\\"\\"\\"
+              some: UserWhere
+            }
+
             input UserFriendsUpdateConnectionInput {
               node: UserUpdateInput
             }
@@ -296,7 +326,7 @@ describe("Query Direction", () => {
             input UserUpdateInput {
               friends: [UserFriendsUpdateFieldInput!]
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             type UserUserFriendsAggregationSelection {
@@ -312,7 +342,9 @@ describe("Query Direction", () => {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
+              friends: UserFriendsRelationshipFilters
               friendsAggregate: UserFriendsAggregateInput
+              friendsConnection: UserFriendsConnectionFilters
               \\"\\"\\"
               Return Users where all of the related UserFriendsConnections match this filter
               \\"\\"\\"
@@ -546,6 +578,25 @@ describe("Query Direction", () => {
               totalCount: Int!
             }
 
+            input UserFriendsConnectionFilters {
+              \\"\\"\\"
+              Return Users where all of the related UserFriendsConnections match this filter
+              \\"\\"\\"
+              all: UserFriendsConnectionWhere
+              \\"\\"\\"
+              Return Users where none of the related UserFriendsConnections match this filter
+              \\"\\"\\"
+              none: UserFriendsConnectionWhere
+              \\"\\"\\"
+              Return Users where one of the related UserFriendsConnections match this filter
+              \\"\\"\\"
+              single: UserFriendsConnectionWhere
+              \\"\\"\\"
+              Return Users where some of the related UserFriendsConnections match this filter
+              \\"\\"\\"
+              some: UserFriendsConnectionWhere
+            }
+
             input UserFriendsConnectionSort {
               node: UserSort
             }
@@ -603,6 +654,17 @@ describe("Query Direction", () => {
               node: User!
             }
 
+            input UserFriendsRelationshipFilters {
+              \\"\\"\\"Return Users where all of the related Users match this filter\\"\\"\\"
+              all: UserWhere
+              \\"\\"\\"Return Users where none of the related Users match this filter\\"\\"\\"
+              none: UserWhere
+              \\"\\"\\"Return Users where one of the related Users match this filter\\"\\"\\"
+              single: UserWhere
+              \\"\\"\\"Return Users where some of the related Users match this filter\\"\\"\\"
+              some: UserWhere
+            }
+
             input UserFriendsUpdateConnectionInput {
               node: UserUpdateInput
             }
@@ -626,7 +688,7 @@ describe("Query Direction", () => {
             input UserUpdateInput {
               friends: [UserFriendsUpdateFieldInput!]
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             type UserUserFriendsAggregationSelection {
@@ -642,7 +704,9 @@ describe("Query Direction", () => {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
+              friends: UserFriendsRelationshipFilters
               friendsAggregate: UserFriendsAggregateInput
+              friendsConnection: UserFriendsConnectionFilters
               \\"\\"\\"
               Return Users where all of the related UserFriendsConnections match this filter
               \\"\\"\\"

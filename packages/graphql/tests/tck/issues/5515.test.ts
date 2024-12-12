@@ -83,7 +83,13 @@ describe("https://github.com/neo4j/graphql/issues/5515", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Category)
-            WHERE (this.id = $param0 AND ($isAuthenticated = true AND size([(this)<-[:HAS_CATEGORY]-(this1:Cabinet) WHERE size([(this1)<-[:HAS_CABINET]-(this0:User) WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub) | 1]) > 0 | 1]) > 0))
+            WHERE (this.id = $param0 AND ($isAuthenticated = true AND EXISTS {
+                MATCH (this)<-[:HAS_CATEGORY]-(this0:Cabinet)
+                WHERE EXISTS {
+                    MATCH (this0)<-[:HAS_CABINET]-(this1:User)
+                    WHERE ($jwt.sub IS NOT NULL AND this1.id = $jwt.sub)
+                }
+            }))
             DETACH DELETE this"
         `);
 

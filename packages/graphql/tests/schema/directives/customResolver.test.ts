@@ -250,11 +250,11 @@ describe("@customResolver directive", () => {
 
             input UserUpdateInput {
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               password: StringScalarMutations
-              password_SET: String
+              password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
               username: StringScalarMutations
-              username_SET: String
+              username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
             }
 
             input UserWhere {

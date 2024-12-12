@@ -146,6 +146,25 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
+                }
+
                 input MovieActorsConnectionSort {
                   node: PersonSort
                 }
@@ -184,6 +203,17 @@ describe("Relationship nested operations", () => {
                   node: Person!
                 }
 
+                input MovieActorsRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
+                }
+
                 type MovieAggregateSelection {
                   count: Int!
                   id: IDAggregateSelection!
@@ -216,14 +246,16 @@ describe("Relationship nested operations", () => {
 
                 input MovieUpdateInput {
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: MovieActorsRelationshipFilters
                   actorsAggregate: MovieActorsAggregateInput
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -312,7 +344,7 @@ describe("Relationship nested operations", () => {
 
                 input PersonUpdateInput {
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonWhere {
@@ -513,6 +545,25 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
+                }
+
                 input MovieActorsConnectionSort {
                   node: PersonSort
                 }
@@ -559,6 +610,17 @@ describe("Relationship nested operations", () => {
                   node: Person!
                 }
 
+                input MovieActorsRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
+                }
+
                 input MovieActorsUpdateFieldInput {
                   create: [MovieActorsCreateFieldInput!]
                   where: MovieActorsConnectionWhere
@@ -598,14 +660,16 @@ describe("Relationship nested operations", () => {
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: MovieActorsRelationshipFilters
                   actorsAggregate: MovieActorsAggregateInput
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -694,7 +758,7 @@ describe("Relationship nested operations", () => {
 
                 input PersonUpdateInput {
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonWhere {
@@ -899,6 +963,25 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
+                }
+
                 input MovieActorsConnectionSort {
                   node: PersonSort
                 }
@@ -941,6 +1024,17 @@ describe("Relationship nested operations", () => {
                   node: Person!
                 }
 
+                input MovieActorsRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
+                }
+
                 input MovieActorsUpdateFieldInput {
                   connect: [MovieActorsConnectFieldInput!]
                   where: MovieActorsConnectionWhere
@@ -980,14 +1074,16 @@ describe("Relationship nested operations", () => {
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: MovieActorsRelationshipFilters
                   actorsAggregate: MovieActorsAggregateInput
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -1080,7 +1176,7 @@ describe("Relationship nested operations", () => {
 
                 input PersonUpdateInput {
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonWhere {
@@ -1281,6 +1377,25 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
+                }
+
                 input MovieActorsConnectionSort {
                   node: PersonSort
                 }
@@ -1317,6 +1432,17 @@ describe("Relationship nested operations", () => {
                 type MovieActorsRelationship {
                   cursor: String!
                   node: Person!
+                }
+
+                input MovieActorsRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
                 }
 
                 input MovieActorsUpdateConnectionInput {
@@ -1361,14 +1487,16 @@ describe("Relationship nested operations", () => {
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: MovieActorsRelationshipFilters
                   actorsAggregate: MovieActorsAggregateInput
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -1457,7 +1585,7 @@ describe("Relationship nested operations", () => {
 
                 input PersonUpdateInput {
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonWhere {
@@ -1658,6 +1786,25 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
+                }
+
                 input MovieActorsConnectionSort {
                   node: PersonSort
                 }
@@ -1698,6 +1845,17 @@ describe("Relationship nested operations", () => {
                 type MovieActorsRelationship {
                   cursor: String!
                   node: Person!
+                }
+
+                input MovieActorsRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
                 }
 
                 input MovieActorsUpdateFieldInput {
@@ -1742,14 +1900,16 @@ describe("Relationship nested operations", () => {
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: MovieActorsRelationshipFilters
                   actorsAggregate: MovieActorsAggregateInput
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -1838,7 +1998,7 @@ describe("Relationship nested operations", () => {
 
                 input PersonUpdateInput {
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonWhere {
@@ -2039,6 +2199,25 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
+                }
+
                 input MovieActorsConnectionSort {
                   node: PersonSort
                 }
@@ -2081,6 +2260,17 @@ describe("Relationship nested operations", () => {
                   node: Person!
                 }
 
+                input MovieActorsRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
+                }
+
                 input MovieActorsUpdateFieldInput {
                   disconnect: [MovieActorsDisconnectFieldInput!]
                   where: MovieActorsConnectionWhere
@@ -2119,14 +2309,16 @@ describe("Relationship nested operations", () => {
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: MovieActorsRelationshipFilters
                   actorsAggregate: MovieActorsAggregateInput
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -2215,7 +2407,7 @@ describe("Relationship nested operations", () => {
 
                 input PersonUpdateInput {
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonWhere {
@@ -2417,6 +2609,25 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
+                }
+
                 input MovieActorsConnectionSort {
                   node: PersonSort
                 }
@@ -2455,6 +2666,17 @@ describe("Relationship nested operations", () => {
                   node: Person!
                 }
 
+                input MovieActorsRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
+                }
+
                 type MovieAggregateSelection {
                   count: Int!
                   id: IDAggregateSelection!
@@ -2487,14 +2709,16 @@ describe("Relationship nested operations", () => {
 
                 input MovieUpdateInput {
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: MovieActorsRelationshipFilters
                   actorsAggregate: MovieActorsAggregateInput
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -2583,7 +2807,7 @@ describe("Relationship nested operations", () => {
 
                 input PersonUpdateInput {
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonWhere {
@@ -2792,6 +3016,25 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
+                }
+
                 input MovieActorsConnectionSort {
                   node: PersonSort
                 }
@@ -2841,6 +3084,17 @@ describe("Relationship nested operations", () => {
                   node: Person!
                 }
 
+                input MovieActorsRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
+                }
+
                 type MovieAggregateSelection {
                   count: Int!
                   id: IDAggregateSelection!
@@ -2874,14 +3128,16 @@ describe("Relationship nested operations", () => {
 
                 input MovieUpdateInput {
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: MovieActorsRelationshipFilters
                   actorsAggregate: MovieActorsAggregateInput
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -2973,7 +3229,7 @@ describe("Relationship nested operations", () => {
 
                 input PersonUpdateInput {
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonWhere {
@@ -3188,6 +3444,25 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
+                }
+
                 input MovieActorsConnectionSort {
                   node: PersonSort
                 }
@@ -3241,6 +3516,17 @@ describe("Relationship nested operations", () => {
                 type MovieActorsRelationship {
                   cursor: String!
                   node: Person!
+                }
+
+                input MovieActorsRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
                 }
 
                 input MovieActorsUpdateConnectionInput {
@@ -3312,6 +3598,25 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                input MovieProducersConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  all: MovieProducersConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  none: MovieProducersConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  single: MovieProducersConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  some: MovieProducersConnectionWhere
+                }
+
                 input MovieProducersConnectionSort {
                   node: PersonSort
                 }
@@ -3354,6 +3659,17 @@ describe("Relationship nested operations", () => {
                   node: Person!
                 }
 
+                input MovieProducersRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
+                }
+
                 input MovieProducersUpdateFieldInput {
                   disconnect: [MovieProducersDisconnectFieldInput!]
                   where: MovieProducersConnectionWhere
@@ -3369,7 +3685,7 @@ describe("Relationship nested operations", () => {
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                   producers: [MovieProducersUpdateFieldInput!]
                 }
 
@@ -3377,7 +3693,9 @@ describe("Relationship nested operations", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: MovieActorsRelationshipFilters
                   actorsAggregate: MovieActorsAggregateInput
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -3408,7 +3726,9 @@ describe("Relationship nested operations", () => {
                   id_EQ: ID
                   id_IN: [ID]
                   id_STARTS_WITH: ID
+                  producers: MovieProducersRelationshipFilters
                   producersAggregate: MovieProducersAggregateInput
+                  producersConnection: MovieProducersConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieProducersConnections match this filter
                   \\"\\"\\"
@@ -3495,7 +3815,7 @@ describe("Relationship nested operations", () => {
 
                 input PersonUpdateInput {
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonWhere {
@@ -3700,6 +4020,25 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
+                }
+
                 input MovieActorsConnectionSort {
                   node: PersonSort
                 }
@@ -3744,6 +4083,17 @@ describe("Relationship nested operations", () => {
                 type MovieActorsRelationship {
                   cursor: String!
                   node: Person!
+                }
+
+                input MovieActorsRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
                 }
 
                 input MovieActorsUpdateFieldInput {
@@ -3803,6 +4153,25 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                input MovieProducersConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  all: MovieProducersConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  none: MovieProducersConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  single: MovieProducersConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  some: MovieProducersConnectionWhere
+                }
+
                 input MovieProducersConnectionSort {
                   node: PersonSort
                 }
@@ -3845,6 +4214,17 @@ describe("Relationship nested operations", () => {
                   node: Person!
                 }
 
+                input MovieProducersRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
+                }
+
                 input MovieProducersUpdateFieldInput {
                   disconnect: [MovieProducersDisconnectFieldInput!]
                   where: MovieProducersConnectionWhere
@@ -3860,7 +4240,7 @@ describe("Relationship nested operations", () => {
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                   producers: [MovieProducersUpdateFieldInput!]
                 }
 
@@ -3868,7 +4248,9 @@ describe("Relationship nested operations", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: MovieActorsRelationshipFilters
                   actorsAggregate: MovieActorsAggregateInput
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -3899,7 +4281,9 @@ describe("Relationship nested operations", () => {
                   id_EQ: ID
                   id_IN: [ID]
                   id_STARTS_WITH: ID
+                  producers: MovieProducersRelationshipFilters
                   producersAggregate: MovieProducersAggregateInput
+                  producersConnection: MovieProducersConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieProducersConnections match this filter
                   \\"\\"\\"
@@ -3982,7 +4366,7 @@ describe("Relationship nested operations", () => {
 
                 input PersonUpdateInput {
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonWhere {
@@ -4167,6 +4551,25 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
+                }
+
                 input MovieActorsConnectionWhere {
                   PersonOne: MovieActorsPersonOneConnectionWhere
                   PersonTwo: MovieActorsPersonTwoConnectionWhere
@@ -4189,6 +4592,17 @@ describe("Relationship nested operations", () => {
                 type MovieActorsRelationship {
                   cursor: String!
                   node: Person!
+                }
+
+                input MovieActorsRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
                 }
 
                 type MovieAggregateSelection {
@@ -4214,13 +4628,15 @@ describe("Relationship nested operations", () => {
 
                 input MovieUpdateInput {
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: MovieActorsRelationshipFilters
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -4308,7 +4724,7 @@ describe("Relationship nested operations", () => {
 
                 input PersonOneUpdateInput {
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonOneWhere {
@@ -4356,7 +4772,7 @@ describe("Relationship nested operations", () => {
 
                 input PersonTwoUpdateInput {
                   nameTwo: StringScalarMutations
-                  nameTwo_SET: String
+                  nameTwo_SET: String @deprecated(reason: \\"Please use the generic mutation 'nameTwo: { set: ... } }' instead.\\")
                 }
 
                 input PersonTwoWhere {
@@ -4547,6 +4963,25 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
+                }
+
                 input MovieActorsConnectionWhere {
                   PersonOne: MovieActorsPersonOneConnectionWhere
                   PersonTwo: MovieActorsPersonTwoConnectionWhere
@@ -4602,6 +5037,17 @@ describe("Relationship nested operations", () => {
                   node: Person!
                 }
 
+                input MovieActorsRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
+                }
+
                 input MovieActorsUpdateInput {
                   PersonOne: [MovieActorsPersonOneUpdateFieldInput!]
                   PersonTwo: [MovieActorsPersonTwoUpdateFieldInput!]
@@ -4632,13 +5078,15 @@ describe("Relationship nested operations", () => {
                 input MovieUpdateInput {
                   actors: MovieActorsUpdateInput
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: MovieActorsRelationshipFilters
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -4726,7 +5174,7 @@ describe("Relationship nested operations", () => {
 
                 input PersonOneUpdateInput {
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonOneWhere {
@@ -4774,7 +5222,7 @@ describe("Relationship nested operations", () => {
 
                 input PersonTwoUpdateInput {
                   nameTwo: StringScalarMutations
-                  nameTwo_SET: String
+                  nameTwo_SET: String @deprecated(reason: \\"Please use the generic mutation 'nameTwo: { set: ... } }' instead.\\")
                 }
 
                 input PersonTwoWhere {
@@ -4965,6 +5413,25 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
+                }
+
                 input MovieActorsConnectionWhere {
                   PersonOne: MovieActorsPersonOneConnectionWhere
                   PersonTwo: MovieActorsPersonTwoConnectionWhere
@@ -5020,6 +5487,17 @@ describe("Relationship nested operations", () => {
                   node: Person!
                 }
 
+                input MovieActorsRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
+                }
+
                 input MovieActorsUpdateInput {
                   PersonOne: [MovieActorsPersonOneUpdateFieldInput!]
                   PersonTwo: [MovieActorsPersonTwoUpdateFieldInput!]
@@ -5050,13 +5528,15 @@ describe("Relationship nested operations", () => {
                 input MovieUpdateInput {
                   actors: MovieActorsUpdateInput
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: MovieActorsRelationshipFilters
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -5148,7 +5628,7 @@ describe("Relationship nested operations", () => {
 
                 input PersonOneUpdateInput {
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonOneWhere {
@@ -5200,7 +5680,7 @@ describe("Relationship nested operations", () => {
 
                 input PersonTwoUpdateInput {
                   nameTwo: StringScalarMutations
-                  nameTwo_SET: String
+                  nameTwo_SET: String @deprecated(reason: \\"Please use the generic mutation 'nameTwo: { set: ... } }' instead.\\")
                 }
 
                 input PersonTwoWhere {
@@ -5391,6 +5871,25 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
+                }
+
                 input MovieActorsConnectionWhere {
                   PersonOne: MovieActorsPersonOneConnectionWhere
                   PersonTwo: MovieActorsPersonTwoConnectionWhere
@@ -5433,6 +5932,17 @@ describe("Relationship nested operations", () => {
                   node: Person!
                 }
 
+                input MovieActorsRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
+                }
+
                 input MovieActorsUpdateInput {
                   PersonOne: [MovieActorsPersonOneUpdateFieldInput!]
                   PersonTwo: [MovieActorsPersonTwoUpdateFieldInput!]
@@ -5462,13 +5972,15 @@ describe("Relationship nested operations", () => {
                 input MovieUpdateInput {
                   actors: MovieActorsUpdateInput
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: MovieActorsRelationshipFilters
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -5556,7 +6068,7 @@ describe("Relationship nested operations", () => {
 
                 input PersonOneUpdateInput {
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonOneWhere {
@@ -5604,7 +6116,7 @@ describe("Relationship nested operations", () => {
 
                 input PersonTwoUpdateInput {
                   nameTwo: StringScalarMutations
-                  nameTwo_SET: String
+                  nameTwo_SET: String @deprecated(reason: \\"Please use the generic mutation 'nameTwo: { set: ... } }' instead.\\")
                 }
 
                 input PersonTwoWhere {
@@ -5795,6 +6307,25 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
+                }
+
                 input MovieActorsConnectionWhere {
                   PersonOne: MovieActorsPersonOneConnectionWhere
                   PersonTwo: MovieActorsPersonTwoConnectionWhere
@@ -5842,6 +6373,17 @@ describe("Relationship nested operations", () => {
                   node: Person!
                 }
 
+                input MovieActorsRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
+                }
+
                 input MovieActorsUpdateInput {
                   PersonOne: [MovieActorsPersonOneUpdateFieldInput!]
                   PersonTwo: [MovieActorsPersonTwoUpdateFieldInput!]
@@ -5875,13 +6417,15 @@ describe("Relationship nested operations", () => {
                 input MovieUpdateInput {
                   actors: MovieActorsUpdateInput
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: MovieActorsRelationshipFilters
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -5969,7 +6513,7 @@ describe("Relationship nested operations", () => {
 
                 input PersonOneUpdateInput {
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonOneWhere {
@@ -6017,7 +6561,7 @@ describe("Relationship nested operations", () => {
 
                 input PersonTwoUpdateInput {
                   nameTwo: StringScalarMutations
-                  nameTwo_SET: String
+                  nameTwo_SET: String @deprecated(reason: \\"Please use the generic mutation 'nameTwo: { set: ... } }' instead.\\")
                 }
 
                 input PersonTwoWhere {
@@ -6208,6 +6752,25 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
+                }
+
                 input MovieActorsConnectionWhere {
                   PersonOne: MovieActorsPersonOneConnectionWhere
                   PersonTwo: MovieActorsPersonTwoConnectionWhere
@@ -6250,6 +6813,17 @@ describe("Relationship nested operations", () => {
                   node: Person!
                 }
 
+                input MovieActorsRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
+                }
+
                 input MovieActorsUpdateInput {
                   PersonOne: [MovieActorsPersonOneUpdateFieldInput!]
                   PersonTwo: [MovieActorsPersonTwoUpdateFieldInput!]
@@ -6279,13 +6853,15 @@ describe("Relationship nested operations", () => {
                 input MovieUpdateInput {
                   actors: MovieActorsUpdateInput
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: MovieActorsRelationshipFilters
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -6373,7 +6949,7 @@ describe("Relationship nested operations", () => {
 
                 input PersonOneUpdateInput {
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonOneWhere {
@@ -6421,7 +6997,7 @@ describe("Relationship nested operations", () => {
 
                 input PersonTwoUpdateInput {
                   nameTwo: StringScalarMutations
-                  nameTwo_SET: String
+                  nameTwo_SET: String @deprecated(reason: \\"Please use the generic mutation 'nameTwo: { set: ... } }' instead.\\")
                 }
 
                 input PersonTwoWhere {
@@ -6613,6 +7189,25 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
+                }
+
                 input MovieActorsConnectionWhere {
                   PersonOne: MovieActorsPersonOneConnectionWhere
                   PersonTwo: MovieActorsPersonTwoConnectionWhere
@@ -6635,6 +7230,17 @@ describe("Relationship nested operations", () => {
                 type MovieActorsRelationship {
                   cursor: String!
                   node: Person!
+                }
+
+                input MovieActorsRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
                 }
 
                 type MovieAggregateSelection {
@@ -6660,13 +7266,15 @@ describe("Relationship nested operations", () => {
 
                 input MovieUpdateInput {
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: MovieActorsRelationshipFilters
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -6754,7 +7362,7 @@ describe("Relationship nested operations", () => {
 
                 input PersonOneUpdateInput {
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonOneWhere {
@@ -6802,7 +7410,7 @@ describe("Relationship nested operations", () => {
 
                 input PersonTwoUpdateInput {
                   nameTwo: StringScalarMutations
-                  nameTwo_SET: String
+                  nameTwo_SET: String @deprecated(reason: \\"Please use the generic mutation 'nameTwo: { set: ... } }' instead.\\")
                 }
 
                 input PersonTwoWhere {
@@ -6996,6 +7604,25 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
+                }
+
                 input MovieActorsConnectionWhere {
                   PersonOne: MovieActorsPersonOneConnectionWhere
                   PersonTwo: MovieActorsPersonTwoConnectionWhere
@@ -7018,6 +7645,17 @@ describe("Relationship nested operations", () => {
                 type MovieActorsRelationship {
                   cursor: String!
                   node: Person!
+                }
+
+                input MovieActorsRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
                 }
 
                 type MovieAggregateSelection {
@@ -7043,13 +7681,15 @@ describe("Relationship nested operations", () => {
 
                 input MovieUpdateInput {
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: MovieActorsRelationshipFilters
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -7140,7 +7780,7 @@ describe("Relationship nested operations", () => {
 
                 input PersonOneUpdateInput {
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonOneWhere {
@@ -7197,7 +7837,7 @@ describe("Relationship nested operations", () => {
 
                 input PersonTwoUpdateInput {
                   nameTwo: StringScalarMutations
-                  nameTwo_SET: String
+                  nameTwo_SET: String @deprecated(reason: \\"Please use the generic mutation 'nameTwo: { set: ... } }' instead.\\")
                 }
 
                 input PersonTwoWhere {
@@ -7397,6 +8037,25 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
+                }
+
                 input MovieActorsConnectionWhere {
                   PersonOne: MovieActorsPersonOneConnectionWhere
                   PersonTwo: MovieActorsPersonTwoConnectionWhere
@@ -7499,6 +8158,17 @@ describe("Relationship nested operations", () => {
                   node: Person!
                 }
 
+                input MovieActorsRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
+                }
+
                 input MovieActorsUpdateInput {
                   PersonOne: [MovieActorsPersonOneUpdateFieldInput!]
                   PersonTwo: [MovieActorsPersonTwoUpdateFieldInput!]
@@ -7527,6 +8197,25 @@ describe("Relationship nested operations", () => {
                   edges: [MovieProducersRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input MovieProducersConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  all: MovieProducersConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  none: MovieProducersConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  single: MovieProducersConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  some: MovieProducersConnectionWhere
                 }
 
                 input MovieProducersConnectionWhere {
@@ -7571,6 +8260,17 @@ describe("Relationship nested operations", () => {
                   node: Person!
                 }
 
+                input MovieProducersRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
+                }
+
                 input MovieProducersUpdateInput {
                   PersonOne: [MovieProducersPersonOneUpdateFieldInput!]
                   PersonTwo: [MovieProducersPersonTwoUpdateFieldInput!]
@@ -7586,7 +8286,7 @@ describe("Relationship nested operations", () => {
                 input MovieUpdateInput {
                   actors: MovieActorsUpdateInput
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                   producers: MovieProducersUpdateInput
                 }
 
@@ -7594,6 +8294,8 @@ describe("Relationship nested operations", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: MovieActorsRelationshipFilters
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -7624,6 +8326,8 @@ describe("Relationship nested operations", () => {
                   id_EQ: ID
                   id_IN: [ID]
                   id_STARTS_WITH: ID
+                  producers: MovieProducersRelationshipFilters
+                  producersConnection: MovieProducersConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieProducersConnections match this filter
                   \\"\\"\\"
@@ -7709,7 +8413,7 @@ describe("Relationship nested operations", () => {
 
                 input PersonOneUpdateInput {
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonOneWhere {
@@ -7761,7 +8465,7 @@ describe("Relationship nested operations", () => {
 
                 input PersonTwoUpdateInput {
                   nameTwo: StringScalarMutations
-                  nameTwo_SET: String
+                  nameTwo_SET: String @deprecated(reason: \\"Please use the generic mutation 'nameTwo: { set: ... } }' instead.\\")
                 }
 
                 input PersonTwoWhere {
@@ -7955,6 +8659,25 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
+                }
+
                 input MovieActorsConnectionWhere {
                   PersonOne: MovieActorsPersonOneConnectionWhere
                   PersonTwo: MovieActorsPersonTwoConnectionWhere
@@ -8010,6 +8733,17 @@ describe("Relationship nested operations", () => {
                   node: Person!
                 }
 
+                input MovieActorsRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
+                }
+
                 input MovieActorsUpdateInput {
                   PersonOne: [MovieActorsPersonOneUpdateFieldInput!]
                   PersonTwo: [MovieActorsPersonTwoUpdateFieldInput!]
@@ -8034,6 +8768,25 @@ describe("Relationship nested operations", () => {
                   edges: [MovieProducersRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input MovieProducersConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  all: MovieProducersConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  none: MovieProducersConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  single: MovieProducersConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  some: MovieProducersConnectionWhere
                 }
 
                 input MovieProducersConnectionWhere {
@@ -8078,6 +8831,17 @@ describe("Relationship nested operations", () => {
                   node: Person!
                 }
 
+                input MovieProducersRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
+                }
+
                 input MovieProducersUpdateInput {
                   PersonOne: [MovieProducersPersonOneUpdateFieldInput!]
                   PersonTwo: [MovieProducersPersonTwoUpdateFieldInput!]
@@ -8093,7 +8857,7 @@ describe("Relationship nested operations", () => {
                 input MovieUpdateInput {
                   actors: MovieActorsUpdateInput
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                   producers: MovieProducersUpdateInput
                 }
 
@@ -8101,6 +8865,8 @@ describe("Relationship nested operations", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: MovieActorsRelationshipFilters
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -8131,6 +8897,8 @@ describe("Relationship nested operations", () => {
                   id_EQ: ID
                   id_IN: [ID]
                   id_STARTS_WITH: ID
+                  producers: MovieProducersRelationshipFilters
+                  producersConnection: MovieProducersConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieProducersConnections match this filter
                   \\"\\"\\"
@@ -8212,7 +8980,7 @@ describe("Relationship nested operations", () => {
 
                 input PersonOneUpdateInput {
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonOneWhere {
@@ -8260,7 +9028,7 @@ describe("Relationship nested operations", () => {
 
                 input PersonTwoUpdateInput {
                   nameTwo: StringScalarMutations
-                  nameTwo_SET: String
+                  nameTwo_SET: String @deprecated(reason: \\"Please use the generic mutation 'nameTwo: { set: ... } }' instead.\\")
                 }
 
                 input PersonTwoWhere {
@@ -8508,6 +9276,25 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
+                }
+
                 input MovieActorsConnectionSort {
                   node: PersonSort
                 }
@@ -8546,6 +9333,17 @@ describe("Relationship nested operations", () => {
                   node: Person!
                 }
 
+                input MovieActorsRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
+                }
+
                 type MovieAggregateSelection {
                   count: Int!
                   id: IDAggregateSelection!
@@ -8578,14 +9376,16 @@ describe("Relationship nested operations", () => {
 
                 input MovieUpdateInput {
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: MovieActorsRelationshipFilters
                   actorsAggregate: MovieActorsAggregateInput
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -8698,11 +9498,11 @@ describe("Relationship nested operations", () => {
 
                 input PersonOneUpdateInput {
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                   someExtraProp: ListIntMutations
-                  someExtraProp_POP: Int
-                  someExtraProp_PUSH: [Int!]
-                  someExtraProp_SET: [Int!]
+                  someExtraProp_POP: Int @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { pop: ... } }' instead.\\")
+                  someExtraProp_PUSH: [Int!] @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { push: ... } }' instead.\\")
+                  someExtraProp_SET: [Int!] @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { set: ... } }' instead.\\")
                 }
 
                 input PersonOneWhere {
@@ -8760,7 +9560,7 @@ describe("Relationship nested operations", () => {
 
                 input PersonTwoUpdateInput {
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonTwoWhere {
@@ -9018,6 +9818,25 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
+                }
+
                 input MovieActorsConnectionSort {
                   node: PersonSort
                 }
@@ -9064,6 +9883,17 @@ describe("Relationship nested operations", () => {
                   node: Person!
                 }
 
+                input MovieActorsRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
+                }
+
                 input MovieActorsUpdateFieldInput {
                   create: [MovieActorsCreateFieldInput!]
                   where: MovieActorsConnectionWhere
@@ -9103,14 +9933,16 @@ describe("Relationship nested operations", () => {
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: MovieActorsRelationshipFilters
                   actorsAggregate: MovieActorsAggregateInput
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -9228,11 +10060,11 @@ describe("Relationship nested operations", () => {
 
                 input PersonOneUpdateInput {
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                   someExtraProp: ListIntMutations
-                  someExtraProp_POP: Int
-                  someExtraProp_PUSH: [Int!]
-                  someExtraProp_SET: [Int!]
+                  someExtraProp_POP: Int @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { pop: ... } }' instead.\\")
+                  someExtraProp_PUSH: [Int!] @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { push: ... } }' instead.\\")
+                  someExtraProp_SET: [Int!] @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { set: ... } }' instead.\\")
                 }
 
                 input PersonOneWhere {
@@ -9290,7 +10122,7 @@ describe("Relationship nested operations", () => {
 
                 input PersonTwoUpdateInput {
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonTwoWhere {
@@ -9552,6 +10384,25 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
+                }
+
                 input MovieActorsConnectionSort {
                   node: PersonSort
                 }
@@ -9594,6 +10445,17 @@ describe("Relationship nested operations", () => {
                   node: Person!
                 }
 
+                input MovieActorsRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
+                }
+
                 input MovieActorsUpdateFieldInput {
                   connect: [MovieActorsConnectFieldInput!]
                   where: MovieActorsConnectionWhere
@@ -9633,14 +10495,16 @@ describe("Relationship nested operations", () => {
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: MovieActorsRelationshipFilters
                   actorsAggregate: MovieActorsAggregateInput
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -9757,11 +10621,11 @@ describe("Relationship nested operations", () => {
 
                 input PersonOneUpdateInput {
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                   someExtraProp: ListIntMutations
-                  someExtraProp_POP: Int
-                  someExtraProp_PUSH: [Int!]
-                  someExtraProp_SET: [Int!]
+                  someExtraProp_POP: Int @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { pop: ... } }' instead.\\")
+                  someExtraProp_PUSH: [Int!] @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { push: ... } }' instead.\\")
+                  someExtraProp_SET: [Int!] @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { set: ... } }' instead.\\")
                 }
 
                 input PersonOneWhere {
@@ -9819,7 +10683,7 @@ describe("Relationship nested operations", () => {
 
                 input PersonTwoUpdateInput {
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonTwoWhere {
@@ -10077,6 +10941,25 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
+                }
+
                 input MovieActorsConnectionSort {
                   node: PersonSort
                 }
@@ -10113,6 +10996,17 @@ describe("Relationship nested operations", () => {
                 type MovieActorsRelationship {
                   cursor: String!
                   node: Person!
+                }
+
+                input MovieActorsRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
                 }
 
                 input MovieActorsUpdateConnectionInput {
@@ -10157,14 +11051,16 @@ describe("Relationship nested operations", () => {
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: MovieActorsRelationshipFilters
                   actorsAggregate: MovieActorsAggregateInput
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -10277,11 +11173,11 @@ describe("Relationship nested operations", () => {
 
                 input PersonOneUpdateInput {
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                   someExtraProp: ListIntMutations
-                  someExtraProp_POP: Int
-                  someExtraProp_PUSH: [Int!]
-                  someExtraProp_SET: [Int!]
+                  someExtraProp_POP: Int @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { pop: ... } }' instead.\\")
+                  someExtraProp_PUSH: [Int!] @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { push: ... } }' instead.\\")
+                  someExtraProp_SET: [Int!] @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { set: ... } }' instead.\\")
                 }
 
                 input PersonOneWhere {
@@ -10339,7 +11235,7 @@ describe("Relationship nested operations", () => {
 
                 input PersonTwoUpdateInput {
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonTwoWhere {
@@ -10362,7 +11258,7 @@ describe("Relationship nested operations", () => {
 
                 input PersonUpdateInput {
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonWhere {
@@ -10602,6 +11498,25 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
+                }
+
                 input MovieActorsConnectionSort {
                   node: PersonSort
                 }
@@ -10642,6 +11557,17 @@ describe("Relationship nested operations", () => {
                 type MovieActorsRelationship {
                   cursor: String!
                   node: Person!
+                }
+
+                input MovieActorsRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
                 }
 
                 input MovieActorsUpdateFieldInput {
@@ -10686,14 +11612,16 @@ describe("Relationship nested operations", () => {
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: MovieActorsRelationshipFilters
                   actorsAggregate: MovieActorsAggregateInput
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -10806,11 +11734,11 @@ describe("Relationship nested operations", () => {
 
                 input PersonOneUpdateInput {
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                   someExtraProp: ListIntMutations
-                  someExtraProp_POP: Int
-                  someExtraProp_PUSH: [Int!]
-                  someExtraProp_SET: [Int!]
+                  someExtraProp_POP: Int @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { pop: ... } }' instead.\\")
+                  someExtraProp_PUSH: [Int!] @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { push: ... } }' instead.\\")
+                  someExtraProp_SET: [Int!] @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { set: ... } }' instead.\\")
                 }
 
                 input PersonOneWhere {
@@ -10868,7 +11796,7 @@ describe("Relationship nested operations", () => {
 
                 input PersonTwoUpdateInput {
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonTwoWhere {
@@ -11126,6 +12054,25 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
+                }
+
                 input MovieActorsConnectionSort {
                   node: PersonSort
                 }
@@ -11168,6 +12115,17 @@ describe("Relationship nested operations", () => {
                   node: Person!
                 }
 
+                input MovieActorsRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
+                }
+
                 input MovieActorsUpdateFieldInput {
                   disconnect: [MovieActorsDisconnectFieldInput!]
                   where: MovieActorsConnectionWhere
@@ -11206,14 +12164,16 @@ describe("Relationship nested operations", () => {
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: MovieActorsRelationshipFilters
                   actorsAggregate: MovieActorsAggregateInput
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -11326,11 +12286,11 @@ describe("Relationship nested operations", () => {
 
                 input PersonOneUpdateInput {
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                   someExtraProp: ListIntMutations
-                  someExtraProp_POP: Int
-                  someExtraProp_PUSH: [Int!]
-                  someExtraProp_SET: [Int!]
+                  someExtraProp_POP: Int @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { pop: ... } }' instead.\\")
+                  someExtraProp_PUSH: [Int!] @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { push: ... } }' instead.\\")
+                  someExtraProp_SET: [Int!] @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { set: ... } }' instead.\\")
                 }
 
                 input PersonOneWhere {
@@ -11388,7 +12348,7 @@ describe("Relationship nested operations", () => {
 
                 input PersonTwoUpdateInput {
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonTwoWhere {
@@ -11654,6 +12614,25 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
+                }
+
                 input MovieActorsConnectionSort {
                   node: PersonSort
                 }
@@ -11707,6 +12686,17 @@ describe("Relationship nested operations", () => {
                 type MovieActorsRelationship {
                   cursor: String!
                   node: Person!
+                }
+
+                input MovieActorsRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
                 }
 
                 input MovieActorsUpdateConnectionInput {
@@ -11778,6 +12768,25 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                input MovieProducersConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  all: MovieProducersConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  none: MovieProducersConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  single: MovieProducersConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  some: MovieProducersConnectionWhere
+                }
+
                 input MovieProducersConnectionSort {
                   node: PersonSort
                 }
@@ -11820,6 +12829,17 @@ describe("Relationship nested operations", () => {
                   node: Person!
                 }
 
+                input MovieProducersRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
+                }
+
                 input MovieProducersUpdateFieldInput {
                   disconnect: [MovieProducersDisconnectFieldInput!]
                   where: MovieProducersConnectionWhere
@@ -11835,7 +12855,7 @@ describe("Relationship nested operations", () => {
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                   producers: [MovieProducersUpdateFieldInput!]
                 }
 
@@ -11843,7 +12863,9 @@ describe("Relationship nested operations", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: MovieActorsRelationshipFilters
                   actorsAggregate: MovieActorsAggregateInput
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -11874,7 +12896,9 @@ describe("Relationship nested operations", () => {
                   id_EQ: ID
                   id_IN: [ID]
                   id_STARTS_WITH: ID
+                  producers: MovieProducersRelationshipFilters
                   producersAggregate: MovieProducersAggregateInput
+                  producersConnection: MovieProducersConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieProducersConnections match this filter
                   \\"\\"\\"
@@ -11990,11 +13014,11 @@ describe("Relationship nested operations", () => {
 
                 input PersonOneUpdateInput {
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                   someExtraProp: ListIntMutations
-                  someExtraProp_POP: Int
-                  someExtraProp_PUSH: [Int!]
-                  someExtraProp_SET: [Int!]
+                  someExtraProp_POP: Int @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { pop: ... } }' instead.\\")
+                  someExtraProp_PUSH: [Int!] @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { push: ... } }' instead.\\")
+                  someExtraProp_SET: [Int!] @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { set: ... } }' instead.\\")
                 }
 
                 input PersonOneWhere {
@@ -12052,7 +13076,7 @@ describe("Relationship nested operations", () => {
 
                 input PersonTwoUpdateInput {
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonTwoWhere {
@@ -12075,7 +13099,7 @@ describe("Relationship nested operations", () => {
 
                 input PersonUpdateInput {
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonWhere {
@@ -12320,6 +13344,25 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
+                }
+
                 input MovieActorsConnectionSort {
                   node: PersonSort
                 }
@@ -12368,6 +13411,17 @@ describe("Relationship nested operations", () => {
                 type MovieActorsRelationship {
                   cursor: String!
                   node: Person!
+                }
+
+                input MovieActorsRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
                 }
 
                 input MovieActorsUpdateFieldInput {
@@ -12432,6 +13486,25 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                input MovieProducersConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  all: MovieProducersConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  none: MovieProducersConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  single: MovieProducersConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  some: MovieProducersConnectionWhere
+                }
+
                 input MovieProducersConnectionSort {
                   node: PersonSort
                 }
@@ -12474,6 +13547,17 @@ describe("Relationship nested operations", () => {
                   node: Person!
                 }
 
+                input MovieProducersRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
+                }
+
                 input MovieProducersUpdateFieldInput {
                   disconnect: [MovieProducersDisconnectFieldInput!]
                   where: MovieProducersConnectionWhere
@@ -12489,7 +13573,7 @@ describe("Relationship nested operations", () => {
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                   producers: [MovieProducersUpdateFieldInput!]
                 }
 
@@ -12497,7 +13581,9 @@ describe("Relationship nested operations", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: MovieActorsRelationshipFilters
                   actorsAggregate: MovieActorsAggregateInput
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -12528,7 +13614,9 @@ describe("Relationship nested operations", () => {
                   id_EQ: ID
                   id_IN: [ID]
                   id_STARTS_WITH: ID
+                  producers: MovieProducersRelationshipFilters
                   producersAggregate: MovieProducersAggregateInput
+                  producersConnection: MovieProducersConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieProducersConnections match this filter
                   \\"\\"\\"
@@ -12640,11 +13728,11 @@ describe("Relationship nested operations", () => {
 
                 input PersonOneUpdateInput {
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                   someExtraProp: ListIntMutations
-                  someExtraProp_POP: Int
-                  someExtraProp_PUSH: [Int!]
-                  someExtraProp_SET: [Int!]
+                  someExtraProp_POP: Int @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { pop: ... } }' instead.\\")
+                  someExtraProp_PUSH: [Int!] @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { push: ... } }' instead.\\")
+                  someExtraProp_SET: [Int!] @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { set: ... } }' instead.\\")
                 }
 
                 input PersonOneWhere {
@@ -12702,7 +13790,7 @@ describe("Relationship nested operations", () => {
 
                 input PersonTwoUpdateInput {
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonTwoWhere {

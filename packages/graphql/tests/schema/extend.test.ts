@@ -118,9 +118,9 @@ describe("Extend", () => {
 
             input MovieUpdateInput {
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {

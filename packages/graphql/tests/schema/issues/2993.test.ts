@@ -131,7 +131,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
 
             input FOLLOWSUpdateInput {
               since: DateTimeScalarMutations
-              since_SET: DateTime
+              since_SET: DateTime @deprecated(reason: \\"Please use the generic mutation 'since: { set: ... } }' instead.\\")
             }
 
             input FOLLOWSWhere {
@@ -249,9 +249,9 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
 
             input ProfileUpdateInput {
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               userName: StringScalarMutations
-              userName_SET: String
+              userName_SET: String @deprecated(reason: \\"Please use the generic mutation 'userName: { set: ... } }' instead.\\")
             }
 
             input ProfileWhere {
@@ -394,6 +394,25 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               totalCount: Int!
             }
 
+            input UserFollowingConnectionFilters {
+              \\"\\"\\"
+              Return Users where all of the related UserFollowingConnections match this filter
+              \\"\\"\\"
+              all: UserFollowingConnectionWhere
+              \\"\\"\\"
+              Return Users where none of the related UserFollowingConnections match this filter
+              \\"\\"\\"
+              none: UserFollowingConnectionWhere
+              \\"\\"\\"
+              Return Users where one of the related UserFollowingConnections match this filter
+              \\"\\"\\"
+              single: UserFollowingConnectionWhere
+              \\"\\"\\"
+              Return Users where some of the related UserFollowingConnections match this filter
+              \\"\\"\\"
+              some: UserFollowingConnectionWhere
+            }
+
             input UserFollowingConnectionSort {
               edge: FOLLOWSSort
               node: ProfileSort
@@ -463,6 +482,17 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               properties: FOLLOWS!
             }
 
+            input UserFollowingRelationshipFilters {
+              \\"\\"\\"Return Users where all of the related Profiles match this filter\\"\\"\\"
+              all: ProfileWhere
+              \\"\\"\\"Return Users where none of the related Profiles match this filter\\"\\"\\"
+              none: ProfileWhere
+              \\"\\"\\"Return Users where one of the related Profiles match this filter\\"\\"\\"
+              single: ProfileWhere
+              \\"\\"\\"Return Users where some of the related Profiles match this filter\\"\\"\\"
+              some: ProfileWhere
+            }
+
             input UserFollowingUpdateConnectionInput {
               edge: FOLLOWSUpdateInput
               node: ProfileUpdateInput
@@ -503,14 +533,16 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             input UserUpdateInput {
               following: [UserFollowingUpdateFieldInput!]
               userName: StringScalarMutations
-              userName_SET: String
+              userName_SET: String @deprecated(reason: \\"Please use the generic mutation 'userName: { set: ... } }' instead.\\")
             }
 
             input UserWhere {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
+              following: UserFollowingRelationshipFilters
               followingAggregate: UserFollowingAggregateInput
+              followingConnection: UserFollowingConnectionFilters
               \\"\\"\\"
               Return Users where all of the related UserFollowingConnections match this filter
               \\"\\"\\"

@@ -159,6 +159,25 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               totalCount: Int!
             }
 
+            input MovieActorsConnectionFilters {
+              \\"\\"\\"
+              Return Movies where all of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              all: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              none: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where one of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              single: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              some: MovieActorsConnectionWhere
+            }
+
             input MovieActorsConnectionSort {
               node: ActorSort
             }
@@ -197,6 +216,17 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               node: Actor!
             }
 
+            input MovieActorsRelationshipFilters {
+              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
+            }
+
             type MovieAggregateSelection @shareable {
               count: Int!
               title: StringAggregateSelection!
@@ -218,7 +248,9 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              actors: MovieActorsRelationshipFilters
               actorsAggregate: MovieActorsAggregateInput
+              actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -410,7 +442,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
 
             input ActorUpdateInput {
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
@@ -536,6 +568,25 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               totalCount: Int!
             }
 
+            input MovieActorsConnectionFilters {
+              \\"\\"\\"
+              Return Movies where all of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              all: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              none: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where one of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              single: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              some: MovieActorsConnectionWhere
+            }
+
             input MovieActorsConnectionSort {
               node: ActorSort
             }
@@ -591,6 +642,17 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               node: Actor!
             }
 
+            input MovieActorsRelationshipFilters {
+              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
+            }
+
             input MovieActorsUpdateConnectionInput {
               node: ActorUpdateInput
             }
@@ -617,16 +679,18 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              actors: MovieActorsRelationshipFilters
               actorsAggregate: MovieActorsAggregateInput
+              actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"

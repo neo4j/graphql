@@ -142,13 +142,13 @@ describe("Scalar", () => {
 
             input MovieUpdateInput {
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               myCustomArrayScalar: CustomScalarListScalarMutations
-              myCustomArrayScalar_SET: [CustomScalar!]
+              myCustomArrayScalar_SET: [CustomScalar!] @deprecated(reason: \\"Please use the generic mutation 'myCustomArrayScalar: { set: ... } }' instead.\\")
               myCustomScalar: CustomScalarScalarMutations
-              myCustomScalar_SET: CustomScalar
+              myCustomScalar_SET: CustomScalar @deprecated(reason: \\"Please use the generic mutation 'myCustomScalar: { set: ... } }' instead.\\")
               myRequiredCustomArrayScalar: CustomScalarListScalarMutations
-              myRequiredCustomArrayScalar_SET: [CustomScalar!]
+              myRequiredCustomArrayScalar_SET: [CustomScalar!] @deprecated(reason: \\"Please use the generic mutation 'myRequiredCustomArrayScalar: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {

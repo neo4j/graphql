@@ -83,13 +83,13 @@ describe("200", () => {
 
             input CategoryUpdateInput {
               description: StringScalarMutations
-              description_SET: String
+              description_SET: String @deprecated(reason: \\"Please use the generic mutation 'description: { set: ... } }' instead.\\")
               exampleImageLocations: ListStringMutations
-              exampleImageLocations_POP: Int
-              exampleImageLocations_PUSH: [String!]
-              exampleImageLocations_SET: [String!]
+              exampleImageLocations_POP: Int @deprecated(reason: \\"Please use the generic mutation 'exampleImageLocations: { pop: ... } }' instead.\\")
+              exampleImageLocations_PUSH: [String!] @deprecated(reason: \\"Please use the generic mutation 'exampleImageLocations: { push: ... } }' instead.\\")
+              exampleImageLocations_SET: [String!] @deprecated(reason: \\"Please use the generic mutation 'exampleImageLocations: { set: ... } }' instead.\\")
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input CategoryWhere {

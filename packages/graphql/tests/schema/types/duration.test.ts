@@ -138,9 +138,9 @@ describe("Duration", () => {
 
             input MovieUpdateInput {
               duration: DurationScalarMutations
-              duration_SET: Duration
+              duration_SET: Duration @deprecated(reason: \\"Please use the generic mutation 'duration: { set: ... } }' instead.\\")
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {

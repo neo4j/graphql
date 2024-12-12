@@ -163,6 +163,25 @@ describe("Sort", () => {
               totalCount: Int!
             }
 
+            input Node1RelatedToConnectionFilters {
+              \\"\\"\\"
+              Return Node1s where all of the related Node1RelatedToConnections match this filter
+              \\"\\"\\"
+              all: Node1RelatedToConnectionWhere
+              \\"\\"\\"
+              Return Node1s where none of the related Node1RelatedToConnections match this filter
+              \\"\\"\\"
+              none: Node1RelatedToConnectionWhere
+              \\"\\"\\"
+              Return Node1s where one of the related Node1RelatedToConnections match this filter
+              \\"\\"\\"
+              single: Node1RelatedToConnectionWhere
+              \\"\\"\\"
+              Return Node1s where some of the related Node1RelatedToConnections match this filter
+              \\"\\"\\"
+              some: Node1RelatedToConnectionWhere
+            }
+
             input Node1RelatedToConnectionWhere {
               AND: [Node1RelatedToConnectionWhere!]
               NOT: Node1RelatedToConnectionWhere
@@ -194,6 +213,17 @@ describe("Sort", () => {
               node: Node2!
             }
 
+            input Node1RelatedToRelationshipFilters {
+              \\"\\"\\"Return Node1s where all of the related Node2s match this filter\\"\\"\\"
+              all: Node2Where
+              \\"\\"\\"Return Node1s where none of the related Node2s match this filter\\"\\"\\"
+              none: Node2Where
+              \\"\\"\\"Return Node1s where one of the related Node2s match this filter\\"\\"\\"
+              single: Node2Where
+              \\"\\"\\"Return Node1s where some of the related Node2s match this filter\\"\\"\\"
+              some: Node2Where
+            }
+
             input Node1RelatedToUpdateConnectionInput {
               node: Node2UpdateInput
             }
@@ -216,7 +246,7 @@ describe("Sort", () => {
 
             input Node1UpdateInput {
               property: StringScalarMutations
-              property_SET: String
+              property_SET: String @deprecated(reason: \\"Please use the generic mutation 'property: { set: ... } }' instead.\\")
               relatedTo: [Node1RelatedToUpdateFieldInput!]
             }
 
@@ -230,7 +260,9 @@ describe("Sort", () => {
               property_EQ: String
               property_IN: [String!]
               property_STARTS_WITH: String
+              relatedTo: Node1RelatedToRelationshipFilters
               relatedToAggregate: Node1RelatedToAggregateInput
+              relatedToConnection: Node1RelatedToConnectionFilters
               \\"\\"\\"
               Return Node1s where all of the related Node1RelatedToConnections match this filter
               \\"\\"\\"
@@ -331,6 +363,25 @@ describe("Sort", () => {
               totalCount: Int!
             }
 
+            input Node2RelatedToConnectionFilters {
+              \\"\\"\\"
+              Return Node2s where all of the related Node2RelatedToConnections match this filter
+              \\"\\"\\"
+              all: Node2RelatedToConnectionWhere
+              \\"\\"\\"
+              Return Node2s where none of the related Node2RelatedToConnections match this filter
+              \\"\\"\\"
+              none: Node2RelatedToConnectionWhere
+              \\"\\"\\"
+              Return Node2s where one of the related Node2RelatedToConnections match this filter
+              \\"\\"\\"
+              single: Node2RelatedToConnectionWhere
+              \\"\\"\\"
+              Return Node2s where some of the related Node2RelatedToConnections match this filter
+              \\"\\"\\"
+              some: Node2RelatedToConnectionWhere
+            }
+
             input Node2RelatedToConnectionSort {
               node: Node1Sort
             }
@@ -388,6 +439,17 @@ describe("Sort", () => {
               node: Node1!
             }
 
+            input Node2RelatedToRelationshipFilters {
+              \\"\\"\\"Return Node2s where all of the related Node1s match this filter\\"\\"\\"
+              all: Node1Where
+              \\"\\"\\"Return Node2s where none of the related Node1s match this filter\\"\\"\\"
+              none: Node1Where
+              \\"\\"\\"Return Node2s where one of the related Node1s match this filter\\"\\"\\"
+              single: Node1Where
+              \\"\\"\\"Return Node2s where some of the related Node1s match this filter\\"\\"\\"
+              some: Node1Where
+            }
+
             input Node2RelatedToUpdateConnectionInput {
               node: Node1UpdateInput
             }
@@ -409,7 +471,9 @@ describe("Sort", () => {
               AND: [Node2Where!]
               NOT: Node2Where
               OR: [Node2Where!]
+              relatedTo: Node2RelatedToRelationshipFilters
               relatedToAggregate: Node2RelatedToAggregateInput
+              relatedToConnection: Node2RelatedToConnectionFilters
               \\"\\"\\"
               Return Node2s where all of the related Node2RelatedToConnections match this filter
               \\"\\"\\"

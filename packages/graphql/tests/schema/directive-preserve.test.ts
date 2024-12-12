@@ -340,6 +340,25 @@ describe("Directive-preserve", () => {
               totalCount: Int!
             }
 
+            input GenreMoviesConnectionFilters {
+              \\"\\"\\"
+              Return Genres where all of the related GenreMoviesConnections match this filter
+              \\"\\"\\"
+              all: GenreMoviesConnectionWhere
+              \\"\\"\\"
+              Return Genres where none of the related GenreMoviesConnections match this filter
+              \\"\\"\\"
+              none: GenreMoviesConnectionWhere
+              \\"\\"\\"
+              Return Genres where one of the related GenreMoviesConnections match this filter
+              \\"\\"\\"
+              single: GenreMoviesConnectionWhere
+              \\"\\"\\"
+              Return Genres where some of the related GenreMoviesConnections match this filter
+              \\"\\"\\"
+              some: GenreMoviesConnectionWhere
+            }
+
             input GenreMoviesConnectionSort {
               node: MovieSort
             }
@@ -439,6 +458,17 @@ describe("Directive-preserve", () => {
               node: Movie!
             }
 
+            input GenreMoviesRelationshipFilters {
+              \\"\\"\\"Return Genres where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Return Genres where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Return Genres where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Return Genres where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
+            }
+
             input GenreMoviesUpdateConnectionInput {
               node: MovieUpdateInput
             }
@@ -462,14 +492,16 @@ describe("Directive-preserve", () => {
             input GenreUpdateInput {
               movies: [GenreMoviesUpdateFieldInput!]
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input GenreWhere {
               AND: [GenreWhere!]
               NOT: GenreWhere
               OR: [GenreWhere!]
+              movies: GenreMoviesRelationshipFilters
               moviesAggregate: GenreMoviesAggregateInput
+              moviesConnection: GenreMoviesConnectionFilters
               \\"\\"\\"
               Return Genres where all of the related GenreMoviesConnections match this filter
               \\"\\"\\"
@@ -617,6 +649,25 @@ describe("Directive-preserve", () => {
               totalCount: Int!
             }
 
+            input MovieGenresConnectionFilters {
+              \\"\\"\\"
+              Return Movies where all of the related MovieGenresConnections match this filter
+              \\"\\"\\"
+              all: MovieGenresConnectionWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"
+              Return Movies where none of the related MovieGenresConnections match this filter
+              \\"\\"\\"
+              none: MovieGenresConnectionWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"
+              Return Movies where one of the related MovieGenresConnections match this filter
+              \\"\\"\\"
+              single: MovieGenresConnectionWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"
+              Return Movies where some of the related MovieGenresConnections match this filter
+              \\"\\"\\"
+              some: MovieGenresConnectionWhere @deprecated(reason: \\"Do not use\\")
+            }
+
             input MovieGenresConnectionSort {
               node: GenreSort
             }
@@ -674,6 +725,17 @@ describe("Directive-preserve", () => {
               node: Genre!
             }
 
+            input MovieGenresRelationshipFilters {
+              \\"\\"\\"Return Movies where all of the related Genres match this filter\\"\\"\\"
+              all: GenreWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"Return Movies where none of the related Genres match this filter\\"\\"\\"
+              none: GenreWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"Return Movies where one of the related Genres match this filter\\"\\"\\"
+              single: GenreWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"Return Movies where some of the related Genres match this filter\\"\\"\\"
+              some: GenreWhere @deprecated(reason: \\"Do not use\\")
+            }
+
             input MovieGenresUpdateConnectionInput {
               node: GenreUpdateInput
             }
@@ -699,24 +761,26 @@ describe("Directive-preserve", () => {
             input MovieUpdateInput {
               genres: [MovieGenresUpdateFieldInput!] @deprecated(reason: \\"Do not use\\")
               imdbRating: FloatScalarMutations
-              imdbRating_ADD: Float
-              imdbRating_DIVIDE: Float
-              imdbRating_MULTIPLY: Float
-              imdbRating_SET: Float
-              imdbRating_SUBTRACT: Float
+              imdbRating_ADD: Float @deprecated(reason: \\"Please use the relevant generic mutation 'imdbRating: { add: ... } }' instead.\\")
+              imdbRating_DIVIDE: Float @deprecated(reason: \\"Please use the relevant generic mutation 'imdbRating: { divide: ... } }' instead.\\")
+              imdbRating_MULTIPLY: Float @deprecated(reason: \\"Please use the relevant generic mutation 'imdbRating: { multiply: ... } }' instead.\\")
+              imdbRating_SET: Float @deprecated(reason: \\"Please use the generic mutation 'imdbRating: { set: ... } }' instead.\\")
+              imdbRating_SUBTRACT: Float @deprecated(reason: \\"Please use the relevant generic mutation 'imdbRating: { subtract: ... } }' instead.\\")
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
               year: IntScalarMutations
-              year_DECREMENT: Int
-              year_INCREMENT: Int
-              year_SET: Int
+              year_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'year: { decrement: ... } }' instead.\\")
+              year_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'year: { increment: ... } }' instead.\\")
+              year_SET: Int @deprecated(reason: \\"Please use the generic mutation 'year: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              genres: MovieGenresRelationshipFilters
               genresAggregate: MovieGenresAggregateInput @deprecated(reason: \\"Do not use\\")
+              genresConnection: MovieGenresConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieGenresConnections match this filter
               \\"\\"\\"
@@ -946,7 +1010,7 @@ describe("Directive-preserve", () => {
 
             input ActedInUpdateInput {
               role: StringScalarMutations
-              role_SET: String
+              role_SET: String @deprecated(reason: \\"Please use the generic mutation 'role: { set: ... } }' instead.\\")
             }
 
             input ActedInWhere {
@@ -992,6 +1056,25 @@ describe("Directive-preserve", () => {
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ActorActedInConnectionFilters {
+              \\"\\"\\"
+              Return Actors where all of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              all: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where none of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              none: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where one of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              single: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where some of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              some: ActorActedInConnectionWhere
             }
 
             input ActorActedInConnectionSort {
@@ -1053,6 +1136,17 @@ describe("Directive-preserve", () => {
               cursor: String!
               node: Production!
               properties: ActedIn!
+            }
+
+            input ActorActedInRelationshipFilters {
+              \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+              all: ProductionWhere
+              \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+              none: ProductionWhere
+              \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+              single: ProductionWhere
+              \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+              some: ProductionWhere
             }
 
             input ActorActedInUpdateConnectionInput {
@@ -1124,14 +1218,16 @@ describe("Directive-preserve", () => {
             input ActorUpdateInput {
               actedIn: [ActorActedInUpdateFieldInput!]
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              actedIn: ActorActedInRelationshipFilters
               actedInAggregate: ActorActedInAggregateInput
+              actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
@@ -1277,6 +1373,25 @@ describe("Directive-preserve", () => {
               where: ActorConnectWhere
             }
 
+            input MovieActorsConnectionFilters {
+              \\"\\"\\"
+              Return Movies where all of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              all: ProductionActorsConnectionWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"
+              Return Movies where none of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              none: ProductionActorsConnectionWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"
+              Return Movies where one of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              single: ProductionActorsConnectionWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"
+              Return Movies where some of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              some: ProductionActorsConnectionWhere @deprecated(reason: \\"Do not use\\")
+            }
+
             input MovieActorsCreateFieldInput {
               edge: ActedInCreateInput!
               node: ActorCreateInput!
@@ -1307,6 +1422,17 @@ describe("Directive-preserve", () => {
               name_SHORTEST_LENGTH_GTE: Int
               name_SHORTEST_LENGTH_LT: Int
               name_SHORTEST_LENGTH_LTE: Int
+            }
+
+            input MovieActorsRelationshipFilters {
+              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere @deprecated(reason: \\"Do not use\\")
             }
 
             input MovieActorsUpdateConnectionInput {
@@ -1355,18 +1481,20 @@ describe("Directive-preserve", () => {
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!] @deprecated(reason: \\"Do not use\\")
               runtime: IntScalarMutations
-              runtime_DECREMENT: Int
-              runtime_INCREMENT: Int
-              runtime_SET: Int
+              runtime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { decrement: ... } }' instead.\\")
+              runtime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { increment: ... } }' instead.\\")
+              runtime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'runtime: { set: ... } }' instead.\\")
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              actors: MovieActorsRelationshipFilters
               actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Do not use\\")
+              actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
@@ -1462,6 +1590,25 @@ describe("Directive-preserve", () => {
               edges: [ProductionActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ProductionActorsConnectionFilters {
+              \\"\\"\\"
+              Return Productions where all of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              all: ProductionActorsConnectionWhere
+              \\"\\"\\"
+              Return Productions where none of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              none: ProductionActorsConnectionWhere
+              \\"\\"\\"
+              Return Productions where one of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              single: ProductionActorsConnectionWhere
+              \\"\\"\\"
+              Return Productions where some of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              some: ProductionActorsConnectionWhere
             }
 
             input ProductionActorsConnectionSort {
@@ -1565,6 +1712,17 @@ describe("Directive-preserve", () => {
               properties: ProductionActorsRelationshipProperties!
             }
 
+            input ProductionActorsRelationshipFilters {
+              \\"\\"\\"Return Productions where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Return Productions where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Return Productions where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Return Productions where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
+            }
+
             union ProductionActorsRelationshipProperties = ActedIn
 
             input ProductionActorsUpdateConnectionInput {
@@ -1627,14 +1785,16 @@ describe("Directive-preserve", () => {
             input ProductionUpdateInput {
               actors: [ProductionActorsUpdateFieldInput!]
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input ProductionWhere {
               AND: [ProductionWhere!]
               NOT: ProductionWhere
               OR: [ProductionWhere!]
+              actors: ProductionActorsRelationshipFilters
               actorsAggregate: ProductionActorsAggregateInput
+              actorsConnection: ProductionActorsConnectionFilters
               \\"\\"\\"
               Return Productions where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
@@ -1731,6 +1891,25 @@ describe("Directive-preserve", () => {
               where: ActorConnectWhere
             }
 
+            input SeriesActorsConnectionFilters {
+              \\"\\"\\"
+              Return Series where all of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              all: ProductionActorsConnectionWhere
+              \\"\\"\\"
+              Return Series where none of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              none: ProductionActorsConnectionWhere
+              \\"\\"\\"
+              Return Series where one of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              single: ProductionActorsConnectionWhere
+              \\"\\"\\"
+              Return Series where some of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              some: ProductionActorsConnectionWhere
+            }
+
             input SeriesActorsCreateFieldInput {
               edge: ActedInCreateInput!
               node: ActorCreateInput!
@@ -1761,6 +1940,17 @@ describe("Directive-preserve", () => {
               name_SHORTEST_LENGTH_GTE: Int
               name_SHORTEST_LENGTH_LT: Int
               name_SHORTEST_LENGTH_LTE: Int
+            }
+
+            input SeriesActorsRelationshipFilters {
+              \\"\\"\\"Return Series where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Return Series where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Return Series where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
             }
 
             input SeriesActorsUpdateConnectionInput {
@@ -1815,18 +2005,20 @@ describe("Directive-preserve", () => {
             input SeriesUpdateInput {
               actors: [SeriesActorsUpdateFieldInput!]
               episodes: IntScalarMutations
-              episodes_DECREMENT: Int
-              episodes_INCREMENT: Int
-              episodes_SET: Int
+              episodes_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episodes: { decrement: ... } }' instead.\\")
+              episodes_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episodes: { increment: ... } }' instead.\\")
+              episodes_SET: Int @deprecated(reason: \\"Please use the generic mutation 'episodes: { set: ... } }' instead.\\")
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input SeriesWhere {
               AND: [SeriesWhere!]
               NOT: SeriesWhere
               OR: [SeriesWhere!]
+              actors: SeriesActorsRelationshipFilters
               actorsAggregate: SeriesActorsAggregateInput
+              actorsConnection: SeriesActorsConnectionFilters
               \\"\\"\\"
               Return Series where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
@@ -2023,7 +2215,7 @@ describe("Directive-preserve", () => {
 
             input ActedInUpdateInput {
               role: StringScalarMutations
-              role_SET: String
+              role_SET: String @deprecated(reason: \\"Please use the generic mutation 'role: { set: ... } }' instead.\\")
             }
 
             input ActedInWhere {
@@ -2068,6 +2260,25 @@ describe("Directive-preserve", () => {
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ActorActedInConnectionFilters {
+              \\"\\"\\"
+              Return Actors where all of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              all: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where none of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              none: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where one of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              single: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where some of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              some: ActorActedInConnectionWhere
             }
 
             input ActorActedInConnectionSort {
@@ -2127,6 +2338,17 @@ describe("Directive-preserve", () => {
               cursor: String!
               node: Production!
               properties: ActedIn!
+            }
+
+            input ActorActedInRelationshipFilters {
+              \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+              all: ProductionWhere
+              \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+              none: ProductionWhere
+              \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+              single: ProductionWhere
+              \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+              some: ProductionWhere
             }
 
             input ActorActedInUpdateConnectionInput {
@@ -2198,14 +2420,16 @@ describe("Directive-preserve", () => {
             input ActorUpdateInput {
               actedIn: [ActorActedInUpdateFieldInput!]
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              actedIn: ActorActedInRelationshipFilters
               actedInAggregate: ActorActedInAggregateInput
+              actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
@@ -2357,6 +2581,25 @@ describe("Directive-preserve", () => {
               totalCount: Int!
             }
 
+            input MovieActorsConnectionFilters {
+              \\"\\"\\"
+              Return Movies where all of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              all: MovieActorsConnectionWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"
+              Return Movies where none of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              none: MovieActorsConnectionWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"
+              Return Movies where one of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              single: MovieActorsConnectionWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"
+              Return Movies where some of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              some: MovieActorsConnectionWhere @deprecated(reason: \\"Do not use\\")
+            }
+
             input MovieActorsConnectionSort {
               edge: ActedInSort
               node: ActorSort
@@ -2418,6 +2661,17 @@ describe("Directive-preserve", () => {
               properties: ActedIn!
             }
 
+            input MovieActorsRelationshipFilters {
+              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere @deprecated(reason: \\"Do not use\\")
+            }
+
             input MovieActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
@@ -2464,18 +2718,20 @@ describe("Directive-preserve", () => {
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!] @deprecated(reason: \\"Do not use\\")
               runtime: IntScalarMutations
-              runtime_DECREMENT: Int
-              runtime_INCREMENT: Int
-              runtime_SET: Int
+              runtime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { decrement: ... } }' instead.\\")
+              runtime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { increment: ... } }' instead.\\")
+              runtime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'runtime: { set: ... } }' instead.\\")
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              actors: MovieActorsRelationshipFilters
               actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Do not use\\")
+              actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -2579,7 +2835,7 @@ describe("Directive-preserve", () => {
 
             input ProductionUpdateInput {
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input ProductionWhere {
@@ -2664,6 +2920,25 @@ describe("Directive-preserve", () => {
               totalCount: Int!
             }
 
+            input SeriesActorsConnectionFilters {
+              \\"\\"\\"
+              Return Series where all of the related SeriesActorsConnections match this filter
+              \\"\\"\\"
+              all: SeriesActorsConnectionWhere
+              \\"\\"\\"
+              Return Series where none of the related SeriesActorsConnections match this filter
+              \\"\\"\\"
+              none: SeriesActorsConnectionWhere
+              \\"\\"\\"
+              Return Series where one of the related SeriesActorsConnections match this filter
+              \\"\\"\\"
+              single: SeriesActorsConnectionWhere
+              \\"\\"\\"
+              Return Series where some of the related SeriesActorsConnections match this filter
+              \\"\\"\\"
+              some: SeriesActorsConnectionWhere
+            }
+
             input SeriesActorsConnectionSort {
               edge: ActedInSort
               node: ActorSort
@@ -2725,6 +3000,17 @@ describe("Directive-preserve", () => {
               properties: ActedIn!
             }
 
+            input SeriesActorsRelationshipFilters {
+              \\"\\"\\"Return Series where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Return Series where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Return Series where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
+            }
+
             input SeriesActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
@@ -2777,18 +3063,20 @@ describe("Directive-preserve", () => {
             input SeriesUpdateInput {
               actors: [SeriesActorsUpdateFieldInput!]
               episodes: IntScalarMutations
-              episodes_DECREMENT: Int
-              episodes_INCREMENT: Int
-              episodes_SET: Int
+              episodes_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episodes: { decrement: ... } }' instead.\\")
+              episodes_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episodes: { increment: ... } }' instead.\\")
+              episodes_SET: Int @deprecated(reason: \\"Please use the generic mutation 'episodes: { set: ... } }' instead.\\")
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input SeriesWhere {
               AND: [SeriesWhere!]
               NOT: SeriesWhere
               OR: [SeriesWhere!]
+              actors: SeriesActorsRelationshipFilters
               actorsAggregate: SeriesActorsAggregateInput
+              actorsConnection: SeriesActorsConnectionFilters
               \\"\\"\\"
               Return Series where all of the related SeriesActorsConnections match this filter
               \\"\\"\\"
@@ -2973,7 +3261,7 @@ describe("Directive-preserve", () => {
 
             input ActedInUpdateInput {
               role: StringScalarMutations
-              role_SET: String
+              role_SET: String @deprecated(reason: \\"Please use the generic mutation 'role: { set: ... } }' instead.\\")
             }
 
             input ActedInWhere {
@@ -3018,6 +3306,25 @@ describe("Directive-preserve", () => {
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ActorActedInConnectionFilters {
+              \\"\\"\\"
+              Return Actors where all of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              all: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where none of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              none: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where one of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              single: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where some of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              some: ActorActedInConnectionWhere
             }
 
             input ActorActedInConnectionSort {
@@ -3077,6 +3384,17 @@ describe("Directive-preserve", () => {
               cursor: String!
               node: Production!
               properties: ActedIn!
+            }
+
+            input ActorActedInRelationshipFilters {
+              \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+              all: ProductionWhere
+              \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+              none: ProductionWhere
+              \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+              single: ProductionWhere
+              \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+              some: ProductionWhere
             }
 
             input ActorActedInUpdateConnectionInput {
@@ -3148,14 +3466,16 @@ describe("Directive-preserve", () => {
             input ActorUpdateInput {
               actedIn: [ActorActedInUpdateFieldInput!]
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              actedIn: ActorActedInRelationshipFilters
               actedInAggregate: ActorActedInAggregateInput
+              actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
@@ -3307,6 +3627,25 @@ describe("Directive-preserve", () => {
               totalCount: Int!
             }
 
+            input MovieActorsConnectionFilters {
+              \\"\\"\\"
+              Return Movies where all of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              all: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              none: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where one of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              single: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              some: MovieActorsConnectionWhere
+            }
+
             input MovieActorsConnectionSort {
               edge: ActedInSort
               node: ActorSort
@@ -3368,6 +3707,17 @@ describe("Directive-preserve", () => {
               properties: ActedIn!
             }
 
+            input MovieActorsRelationshipFilters {
+              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
+            }
+
             input MovieActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
@@ -3414,18 +3764,20 @@ describe("Directive-preserve", () => {
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
               runtime: IntScalarMutations
-              runtime_DECREMENT: Int
-              runtime_INCREMENT: Int
-              runtime_SET: Int
+              runtime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { decrement: ... } }' instead.\\")
+              runtime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { increment: ... } }' instead.\\")
+              runtime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'runtime: { set: ... } }' instead.\\")
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              actors: MovieActorsRelationshipFilters
               actorsAggregate: MovieActorsAggregateInput
+              actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -3529,7 +3881,7 @@ describe("Directive-preserve", () => {
 
             input ProductionUpdateInput {
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input ProductionWhere {
@@ -3614,6 +3966,25 @@ describe("Directive-preserve", () => {
               totalCount: Int!
             }
 
+            input SeriesActorsConnectionFilters {
+              \\"\\"\\"
+              Return Series where all of the related SeriesActorsConnections match this filter
+              \\"\\"\\"
+              all: SeriesActorsConnectionWhere
+              \\"\\"\\"
+              Return Series where none of the related SeriesActorsConnections match this filter
+              \\"\\"\\"
+              none: SeriesActorsConnectionWhere
+              \\"\\"\\"
+              Return Series where one of the related SeriesActorsConnections match this filter
+              \\"\\"\\"
+              single: SeriesActorsConnectionWhere
+              \\"\\"\\"
+              Return Series where some of the related SeriesActorsConnections match this filter
+              \\"\\"\\"
+              some: SeriesActorsConnectionWhere
+            }
+
             input SeriesActorsConnectionSort {
               edge: ActedInSort
               node: ActorSort
@@ -3675,6 +4046,17 @@ describe("Directive-preserve", () => {
               properties: ActedIn!
             }
 
+            input SeriesActorsRelationshipFilters {
+              \\"\\"\\"Return Series where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Return Series where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Return Series where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
+            }
+
             input SeriesActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
@@ -3727,18 +4109,20 @@ describe("Directive-preserve", () => {
             input SeriesUpdateInput {
               actors: [SeriesActorsUpdateFieldInput!]
               episodes: IntScalarMutations
-              episodes_DECREMENT: Int
-              episodes_INCREMENT: Int
-              episodes_SET: Int
+              episodes_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episodes: { decrement: ... } }' instead.\\")
+              episodes_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episodes: { increment: ... } }' instead.\\")
+              episodes_SET: Int @deprecated(reason: \\"Please use the generic mutation 'episodes: { set: ... } }' instead.\\")
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input SeriesWhere {
               AND: [SeriesWhere!]
               NOT: SeriesWhere
               OR: [SeriesWhere!]
+              actors: SeriesActorsRelationshipFilters
               actorsAggregate: SeriesActorsAggregateInput
+              actorsConnection: SeriesActorsConnectionFilters
               \\"\\"\\"
               Return Series where all of the related SeriesActorsConnections match this filter
               \\"\\"\\"
@@ -3944,6 +4328,25 @@ describe("Directive-preserve", () => {
               totalCount: Int!
             }
 
+            input BlogPostsConnectionFilters {
+              \\"\\"\\"
+              Return Blogs where all of the related BlogPostsConnections match this filter
+              \\"\\"\\"
+              all: BlogPostsConnectionWhere
+              \\"\\"\\"
+              Return Blogs where none of the related BlogPostsConnections match this filter
+              \\"\\"\\"
+              none: BlogPostsConnectionWhere
+              \\"\\"\\"
+              Return Blogs where one of the related BlogPostsConnections match this filter
+              \\"\\"\\"
+              single: BlogPostsConnectionWhere
+              \\"\\"\\"
+              Return Blogs where some of the related BlogPostsConnections match this filter
+              \\"\\"\\"
+              some: BlogPostsConnectionWhere
+            }
+
             input BlogPostsConnectionSort {
               node: PostSort
             }
@@ -3999,6 +4402,17 @@ describe("Directive-preserve", () => {
               node: Post!
             }
 
+            input BlogPostsRelationshipFilters {
+              \\"\\"\\"Return Blogs where all of the related Posts match this filter\\"\\"\\"
+              all: PostWhere
+              \\"\\"\\"Return Blogs where none of the related Posts match this filter\\"\\"\\"
+              none: PostWhere
+              \\"\\"\\"Return Blogs where one of the related Posts match this filter\\"\\"\\"
+              single: PostWhere
+              \\"\\"\\"Return Blogs where some of the related Posts match this filter\\"\\"\\"
+              some: PostWhere
+            }
+
             input BlogPostsUpdateConnectionInput {
               node: PostUpdateInput
             }
@@ -4022,14 +4436,16 @@ describe("Directive-preserve", () => {
             input BlogUpdateInput {
               posts: [BlogPostsUpdateFieldInput!]
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input BlogWhere {
               AND: [BlogWhere!]
               NOT: BlogWhere
               OR: [BlogWhere!]
+              posts: BlogPostsRelationshipFilters
               postsAggregate: BlogPostsAggregateInput
+              postsConnection: BlogPostsConnectionFilters
               \\"\\"\\"
               Return Blogs where all of the related BlogPostsConnections match this filter
               \\"\\"\\"
@@ -4336,6 +4752,25 @@ describe("Directive-preserve", () => {
               totalCount: Int!
             }
 
+            input UserContentConnectionFilters {
+              \\"\\"\\"
+              Return Users where all of the related UserContentConnections match this filter
+              \\"\\"\\"
+              all: UserContentConnectionWhere @deprecated(reason: \\"Do not use user.content\\")
+              \\"\\"\\"
+              Return Users where none of the related UserContentConnections match this filter
+              \\"\\"\\"
+              none: UserContentConnectionWhere @deprecated(reason: \\"Do not use user.content\\")
+              \\"\\"\\"
+              Return Users where one of the related UserContentConnections match this filter
+              \\"\\"\\"
+              single: UserContentConnectionWhere @deprecated(reason: \\"Do not use user.content\\")
+              \\"\\"\\"
+              Return Users where some of the related UserContentConnections match this filter
+              \\"\\"\\"
+              some: UserContentConnectionWhere @deprecated(reason: \\"Do not use user.content\\")
+            }
+
             input UserContentConnectionWhere {
               Blog: UserContentBlogConnectionWhere
               Post: UserContentPostConnectionWhere
@@ -4397,6 +4832,17 @@ describe("Directive-preserve", () => {
               node: Content!
             }
 
+            input UserContentRelationshipFilters {
+              \\"\\"\\"Return Users where all of the related Contents match this filter\\"\\"\\"
+              all: ContentWhere @deprecated(reason: \\"Do not use user.content\\")
+              \\"\\"\\"Return Users where none of the related Contents match this filter\\"\\"\\"
+              none: ContentWhere @deprecated(reason: \\"Do not use user.content\\")
+              \\"\\"\\"Return Users where one of the related Contents match this filter\\"\\"\\"
+              single: ContentWhere @deprecated(reason: \\"Do not use user.content\\")
+              \\"\\"\\"Return Users where some of the related Contents match this filter\\"\\"\\"
+              some: ContentWhere @deprecated(reason: \\"Do not use user.content\\")
+            }
+
             input UserContentUpdateInput {
               Blog: [UserContentBlogUpdateFieldInput!] @deprecated(reason: \\"Do not use user.content\\")
               Post: [UserContentPostUpdateFieldInput!] @deprecated(reason: \\"Do not use user.content\\")
@@ -4426,13 +4872,15 @@ describe("Directive-preserve", () => {
             input UserUpdateInput {
               content: UserContentUpdateInput @deprecated(reason: \\"Do not use user.content\\")
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input UserWhere {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
+              content: UserContentRelationshipFilters
+              contentConnection: UserContentConnectionFilters
               \\"\\"\\"
               Return Users where all of the related UserContentConnections match this filter
               \\"\\"\\"

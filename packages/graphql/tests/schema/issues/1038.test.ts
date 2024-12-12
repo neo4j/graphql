@@ -75,9 +75,9 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
 
             input AWSAccountUpdateInput {
               accountName: StringScalarMutations
-              accountName_SET: String
+              accountName_SET: String @deprecated(reason: \\"Please use the generic mutation 'accountName: { set: ... } }' instead.\\")
               code: StringScalarMutations
-              code_SET: String
+              code_SET: String @deprecated(reason: \\"Please use the generic mutation 'code: { set: ... } }' instead.\\")
             }
 
             input AWSAccountWhere {
@@ -153,9 +153,9 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
 
             input DNSZoneUpdateInput {
               awsId: StringScalarMutations
-              awsId_SET: String
+              awsId_SET: String @deprecated(reason: \\"Please use the generic mutation 'awsId: { set: ... } }' instead.\\")
               zoneType: StringScalarMutations
-              zoneType_SET: String
+              zoneType_SET: String @deprecated(reason: \\"Please use the generic mutation 'zoneType: { set: ... } }' instead.\\")
             }
 
             input DNSZoneWhere {

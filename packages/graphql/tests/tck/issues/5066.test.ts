@@ -132,19 +132,31 @@ describe("https://github.com/neo4j/graphql/issues/5066", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Party)
             WITH *
-            WHERE (($isAuthenticated = true AND size([(this)<-[this1:CREATED_PARTY]-(this0:User) WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub) | 1]) > 0) OR ($isAuthenticated = true AND size([(this)<-[this4:CREATED_PARTY]-(this3:AdminGroup) WHERE size([(this3)<-[:CREATED_ADMIN_GROUP]-(this2:User) WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub) | 1]) > 0 | 1]) > 0))
+            WHERE (($isAuthenticated = true AND size([(this)<-[this1:CREATED_PARTY]-(this0:User) WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub) | 1]) > 0) OR ($isAuthenticated = true AND size([(this)<-[this4:CREATED_PARTY]-(this2:AdminGroup) WHERE EXISTS {
+                MATCH (this2)<-[:CREATED_ADMIN_GROUP]-(this3:User)
+                WHERE ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)
+            } | 1]) > 0))
             CALL {
                 WITH this
                 CALL {
                     WITH *
                     MATCH (this)<-[this5:CREATED_PARTY]-(this6:User)
-                    WHERE ($isAuthenticated = true AND NOT (size([(this6)-[:HAS_BLOCKED]->(this8:UserBlockedUser) WHERE size([(this8)-[:IS_BLOCKING]->(this7:User) WHERE ($jwt.sub IS NOT NULL AND this7.id = $jwt.sub) | 1]) > 0 | 1]) > 0))
+                    WHERE ($isAuthenticated = true AND NOT (EXISTS {
+                        MATCH (this6)-[:HAS_BLOCKED]->(this7:UserBlockedUser)
+                        WHERE EXISTS {
+                            MATCH (this7)-[:IS_BLOCKING]->(this8:User)
+                            WHERE ($jwt.sub IS NOT NULL AND this8.id = $jwt.sub)
+                        }
+                    }))
                     WITH this6 { .username, __resolveType: \\"User\\", __id: id(this6) } AS this6
                     RETURN this6 AS var9
                     UNION
                     WITH *
                     MATCH (this)<-[this10:CREATED_PARTY]-(this11:AdminGroup)
-                    WHERE ($isAuthenticated = true AND size([(this11)<-[:CREATED_ADMIN_GROUP]-(this12:User) WHERE ($jwt.sub IS NOT NULL AND this12.id = $jwt.sub) | 1]) > 0)
+                    WHERE ($isAuthenticated = true AND EXISTS {
+                        MATCH (this11)<-[:CREATED_ADMIN_GROUP]-(this12:User)
+                        WHERE ($jwt.sub IS NOT NULL AND this12.id = $jwt.sub)
+                    })
                     WITH this11 { __resolveType: \\"AdminGroup\\", __id: id(this11) } AS this11
                     RETURN this11 AS var9
                 }

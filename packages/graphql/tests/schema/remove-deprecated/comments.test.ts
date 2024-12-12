@@ -256,23 +256,23 @@ describe("Comments", () => {
 
             input MovieUpdateInput {
               actorCount: IntScalarMutations
-              actorCount_DECREMENT: Int
-              actorCount_INCREMENT: Int
-              actorCount_SET: Int
+              actorCount_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'actorCount: { decrement: ... } }' instead.\\")
+              actorCount_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'actorCount: { increment: ... } }' instead.\\")
+              actorCount_SET: Int @deprecated(reason: \\"Please use the generic mutation 'actorCount: { set: ... } }' instead.\\")
               averageRating: FloatScalarMutations
-              averageRating_ADD: Float
-              averageRating_DIVIDE: Float
-              averageRating_MULTIPLY: Float
-              averageRating_SET: Float
-              averageRating_SUBTRACT: Float
+              averageRating_ADD: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { add: ... } }' instead.\\")
+              averageRating_DIVIDE: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { divide: ... } }' instead.\\")
+              averageRating_MULTIPLY: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { multiply: ... } }' instead.\\")
+              averageRating_SET: Float @deprecated(reason: \\"Please use the generic mutation 'averageRating: { set: ... } }' instead.\\")
+              averageRating_SUBTRACT: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { subtract: ... } }' instead.\\")
               customScalar: CustomScalarScalarMutations
-              customScalar_SET: CustomScalar
+              customScalar_SET: CustomScalar @deprecated(reason: \\"Please use the generic mutation 'customScalar: { set: ... } }' instead.\\")
               genre: GenreEnumScalarMutations
-              genre_SET: Genre
+              genre_SET: Genre @deprecated(reason: \\"Please use the generic mutation 'genre: { set: ... } }' instead.\\")
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               isActive: BooleanScalarMutations
-              isActive_SET: Boolean
+              isActive_SET: Boolean @deprecated(reason: \\"Please use the generic mutation 'isActive: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -415,7 +415,7 @@ describe("Comments", () => {
 
                 input ActorUpdateInput {
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input ActorWhere {
@@ -546,6 +546,25 @@ describe("Comments", () => {
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
+                }
+
                 input MovieActorsConnectionSort {
                   node: ActorSort
                 }
@@ -601,6 +620,17 @@ describe("Comments", () => {
                   node: Actor!
                 }
 
+                input MovieActorsRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+                  all: ActorWhere
+                  \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+                  none: ActorWhere
+                  \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+                  single: ActorWhere
+                  \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+                  some: ActorWhere
+                }
+
                 input MovieActorsUpdateConnectionInput {
                   node: ActorUpdateInput
                 }
@@ -643,14 +673,16 @@ describe("Comments", () => {
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: MovieActorsRelationshipFilters
                   actorsAggregate: MovieActorsAggregateInput
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -858,9 +890,9 @@ describe("Comments", () => {
 
                 input ActedInUpdateInput {
                   screenTime: IntScalarMutations
-                  screenTime_DECREMENT: Int
-                  screenTime_INCREMENT: Int
-                  screenTime_SET: Int
+                  screenTime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'screenTime: { decrement: ... } }' instead.\\")
+                  screenTime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'screenTime: { increment: ... } }' instead.\\")
+                  screenTime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'screenTime: { set: ... } }' instead.\\")
                 }
 
                 input ActedInWhere {
@@ -907,6 +939,25 @@ describe("Comments", () => {
                   edges: [ActorActedInRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input ActorActedInConnectionFilters {
+                  \\"\\"\\"
+                  Return Actors where all of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  all: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where none of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  none: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where one of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  single: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where some of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  some: ActorActedInConnectionWhere
                 }
 
                 input ActorActedInConnectionSort {
@@ -968,6 +1019,17 @@ describe("Comments", () => {
                   properties: ActedIn!
                 }
 
+                input ActorActedInRelationshipFilters {
+                  \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+                  all: ProductionWhere
+                  \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+                  none: ProductionWhere
+                  \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+                  single: ProductionWhere
+                  \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+                  some: ProductionWhere
+                }
+
                 input ActorActedInUpdateConnectionInput {
                   edge: ActedInUpdateInput
                   node: ProductionUpdateInput
@@ -1025,14 +1087,16 @@ describe("Comments", () => {
                 input ActorUpdateInput {
                   actedIn: [ActorActedInUpdateFieldInput!]
                   name: StringScalarMutations
-                  name_SET: String
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input ActorWhere {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
+                  actedIn: ActorActedInRelationshipFilters
                   actedInAggregate: ActorActedInAggregateInput
+                  actedInConnection: ActorActedInConnectionFilters
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
                   \\"\\"\\"
@@ -1175,11 +1239,11 @@ describe("Comments", () => {
 
                 input MovieUpdateInput {
                   runtime: IntScalarMutations
-                  runtime_DECREMENT: Int
-                  runtime_INCREMENT: Int
-                  runtime_SET: Int
+                  runtime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { decrement: ... } }' instead.\\")
+                  runtime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { increment: ... } }' instead.\\")
+                  runtime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'runtime: { set: ... } }' instead.\\")
                   title: StringScalarMutations
-                  title_SET: String
+                  title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
@@ -1264,7 +1328,7 @@ describe("Comments", () => {
 
                 input ProductionUpdateInput {
                   title: StringScalarMutations
-                  title_SET: String
+                  title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                 }
 
                 input ProductionWhere {
@@ -1338,11 +1402,11 @@ describe("Comments", () => {
 
                 input SeriesUpdateInput {
                   episodes: IntScalarMutations
-                  episodes_DECREMENT: Int
-                  episodes_INCREMENT: Int
-                  episodes_SET: Int
+                  episodes_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episodes: { decrement: ... } }' instead.\\")
+                  episodes_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episodes: { increment: ... } }' instead.\\")
+                  episodes_SET: Int @deprecated(reason: \\"Please use the generic mutation 'episodes: { set: ... } }' instead.\\")
                   title: StringScalarMutations
-                  title_SET: String
+                  title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                 }
 
                 input SeriesWhere {
@@ -1512,7 +1576,7 @@ describe("Comments", () => {
 
                 input GenreUpdateInput {
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input GenreWhere {
@@ -1604,6 +1668,25 @@ describe("Comments", () => {
                   edges: [MovieSearchRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input MovieSearchConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieSearchConnections match this filter
+                  \\"\\"\\"
+                  all: MovieSearchConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieSearchConnections match this filter
+                  \\"\\"\\"
+                  none: MovieSearchConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieSearchConnections match this filter
+                  \\"\\"\\"
+                  single: MovieSearchConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieSearchConnections match this filter
+                  \\"\\"\\"
+                  some: MovieSearchConnectionWhere
                 }
 
                 input MovieSearchConnectionWhere {
@@ -1716,6 +1799,17 @@ describe("Comments", () => {
                   node: Search!
                 }
 
+                input MovieSearchRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related Searches match this filter\\"\\"\\"
+                  all: SearchWhere
+                  \\"\\"\\"Return Movies where none of the related Searches match this filter\\"\\"\\"
+                  none: SearchWhere
+                  \\"\\"\\"Return Movies where one of the related Searches match this filter\\"\\"\\"
+                  single: SearchWhere
+                  \\"\\"\\"Return Movies where some of the related Searches match this filter\\"\\"\\"
+                  some: SearchWhere
+                }
+
                 input MovieSearchUpdateInput {
                   Genre: [MovieSearchGenreUpdateFieldInput!]
                   Movie: [MovieSearchMovieUpdateFieldInput!]
@@ -1730,7 +1824,7 @@ describe("Comments", () => {
 
                 input MovieUpdateInput {
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                   search: MovieSearchUpdateInput
                 }
 
@@ -1744,6 +1838,8 @@ describe("Comments", () => {
                   id_EQ: ID
                   id_IN: [ID]
                   id_STARTS_WITH: ID
+                  search: MovieSearchRelationshipFilters
+                  searchConnection: MovieSearchConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieSearchConnections match this filter
                   \\"\\"\\"

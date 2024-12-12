@@ -30,7 +30,7 @@ import { asArray } from "../../../utils/utils";
 import { isLogicalOperator } from "../../utils/logical-operators";
 import type { ConnectionFilter } from "../ast/filters/ConnectionFilter";
 import type { Filter, FilterOperator, RelationshipWhereOperator } from "../ast/filters/Filter";
-import { isRelationshipOperator } from "../ast/filters/Filter";
+import { isLegacyRelationshipOperator } from "../ast/filters/Filter";
 import { LogicalFilter } from "../ast/filters/LogicalFilter";
 import type { RelationshipFilter } from "../ast/filters/RelationshipFilter";
 import { AuthConnectionFilter } from "../ast/filters/authorization-filters/AuthConnectionFilter";
@@ -101,7 +101,7 @@ export class AuthFilterFactory extends FilterFactory {
                     filters: nestedFilters,
                 });
             }
-            const { fieldName, operator, isNot } = parseWhereField(key);
+            const { fieldName, operator } = parseWhereField(key);
             if (!fieldName) {
                 throw new Error(`Failed to find field name in filter: ${key}`);
             }
@@ -123,7 +123,6 @@ export class AuthFilterFactory extends FilterFactory {
                 operator: operator || "EQ",
                 JWTClaim: target,
                 comparisonValue: value,
-                isNot,
             });
         });
     }
@@ -132,14 +131,12 @@ export class AuthFilterFactory extends FilterFactory {
         attribute,
         comparisonValue,
         operator,
-        isNot,
         attachedTo,
         relationship,
     }: {
         attribute: AttributeAdapter;
         comparisonValue: unknown;
         operator: FilterOperator | undefined;
-        isNot: boolean;
         attachedTo?: "node" | "relationship";
         relationship?: RelationshipAdapter;
     }): Filter {
@@ -160,7 +157,7 @@ export class AuthFilterFactory extends FilterFactory {
             if (attribute.annotations.cypher?.targetEntity) {
                 const entityAdapter = getEntityAdapter(attribute.annotations.cypher.targetEntity);
 
-                if (operator && !isRelationshipOperator(operator)) {
+                if (operator && !isLegacyRelationshipOperator(operator)) {
                     throw new Error(`Invalid operator ${operator} for relationship`);
                 }
 
@@ -170,10 +167,7 @@ export class AuthFilterFactory extends FilterFactory {
                         where: comparisonValue as GraphQLWhereArg,
                         selection,
                         target: entityAdapter,
-                        filterOps: {
-                            isNot,
-                            operator,
-                        },
+                        operator,
                         attribute,
                     }),
                 });
@@ -205,7 +199,6 @@ export class AuthFilterFactory extends FilterFactory {
                 attribute,
                 relationship,
                 comparisonValue: new Cypher.Param(comparisonValue),
-                isNot,
                 operator: filterOperator,
                 attachedTo,
             });
@@ -216,7 +209,6 @@ export class AuthFilterFactory extends FilterFactory {
                 attribute,
                 relationship,
                 comparisonValue: comparisonValue,
-                isNot,
                 operator: filterOperator,
                 attachedTo,
             });
@@ -226,7 +218,6 @@ export class AuthFilterFactory extends FilterFactory {
                     attribute,
                     relationship,
                     comparisonValue: comparisonValue,
-                    isNot,
                     operator: filterOperator,
                     attachedTo,
                 });
@@ -235,7 +226,6 @@ export class AuthFilterFactory extends FilterFactory {
                 attribute,
                 relationship,
                 comparisonValue: new Cypher.Param(comparisonValue),
-                isNot,
                 operator: filterOperator,
                 attachedTo,
             });
@@ -245,7 +235,6 @@ export class AuthFilterFactory extends FilterFactory {
     protected createRelationshipFilterTreeNode(options: {
         relationship: RelationshipAdapter;
         target: ConcreteEntityAdapter | InterfaceEntityAdapter;
-        isNot: boolean;
         operator: RelationshipWhereOperator;
     }): RelationshipFilter {
         return new AuthRelationshipFilter(options);
@@ -254,8 +243,7 @@ export class AuthFilterFactory extends FilterFactory {
     protected createConnectionFilterTreeNode(options: {
         relationship: RelationshipAdapter;
         target: ConcreteEntityAdapter | InterfaceEntityAdapter;
-        isNot: boolean;
-        operator: RelationshipWhereOperator | undefined;
+        operator: RelationshipWhereOperator;
     }): ConnectionFilter {
         return new AuthConnectionFilter(options);
     }

@@ -149,6 +149,25 @@ describe("Connection with interfaces", () => {
               totalCount: Int!
             }
 
+            input CreatureMoviesConnectionFilters {
+              \\"\\"\\"
+              Return Creatures where all of the related CreatureMoviesConnections match this filter
+              \\"\\"\\"
+              all: CreatureMoviesConnectionWhere
+              \\"\\"\\"
+              Return Creatures where none of the related CreatureMoviesConnections match this filter
+              \\"\\"\\"
+              none: CreatureMoviesConnectionWhere
+              \\"\\"\\"
+              Return Creatures where one of the related CreatureMoviesConnections match this filter
+              \\"\\"\\"
+              single: CreatureMoviesConnectionWhere
+              \\"\\"\\"
+              Return Creatures where some of the related CreatureMoviesConnections match this filter
+              \\"\\"\\"
+              some: CreatureMoviesConnectionWhere
+            }
+
             input CreatureMoviesConnectionSort {
               node: ProductionSort
             }
@@ -196,6 +215,25 @@ describe("Connection with interfaces", () => {
               node: Production!
             }
 
+            input CreatureMoviesRelationshipFilters {
+              \\"\\"\\"
+              Return Creatures where all of the related Productions match this filter
+              \\"\\"\\"
+              all: ProductionWhere
+              \\"\\"\\"
+              Return Creatures where none of the related Productions match this filter
+              \\"\\"\\"
+              none: ProductionWhere
+              \\"\\"\\"
+              Return Creatures where one of the related Productions match this filter
+              \\"\\"\\"
+              single: ProductionWhere
+              \\"\\"\\"
+              Return Creatures where some of the related Productions match this filter
+              \\"\\"\\"
+              some: ProductionWhere
+            }
+
             input CreatureMoviesUpdateConnectionInput {
               node: ProductionUpdateInput
             }
@@ -218,7 +256,7 @@ describe("Connection with interfaces", () => {
 
             input CreatureUpdateInput {
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               movies: [CreatureMoviesUpdateFieldInput!]
             }
 
@@ -232,7 +270,9 @@ describe("Connection with interfaces", () => {
               id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
+              movies: CreatureMoviesRelationshipFilters
               moviesAggregate: CreatureMoviesAggregateInput
+              moviesConnection: CreatureMoviesConnectionFilters
               \\"\\"\\"
               Return Creatures where all of the related CreatureMoviesConnections match this filter
               \\"\\"\\"
@@ -387,6 +427,25 @@ describe("Connection with interfaces", () => {
               where: CreatureConnectWhere
             }
 
+            input MovieDirectorConnectionFilters {
+              \\"\\"\\"
+              Return Movies where all of the related ProductionDirectorConnections match this filter
+              \\"\\"\\"
+              all: ProductionDirectorConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related ProductionDirectorConnections match this filter
+              \\"\\"\\"
+              none: ProductionDirectorConnectionWhere
+              \\"\\"\\"
+              Return Movies where one of the related ProductionDirectorConnections match this filter
+              \\"\\"\\"
+              single: ProductionDirectorConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related ProductionDirectorConnections match this filter
+              \\"\\"\\"
+              some: ProductionDirectorConnectionWhere
+            }
+
             input MovieDirectorCreateFieldInput {
               node: CreatureCreateInput!
             }
@@ -423,6 +482,17 @@ describe("Connection with interfaces", () => {
               id_MIN_LTE: ID
             }
 
+            input MovieDirectorRelationshipFilters {
+              \\"\\"\\"Return Movies where all of the related Creatures match this filter\\"\\"\\"
+              all: CreatureWhere
+              \\"\\"\\"Return Movies where none of the related Creatures match this filter\\"\\"\\"
+              none: CreatureWhere
+              \\"\\"\\"Return Movies where one of the related Creatures match this filter\\"\\"\\"
+              single: CreatureWhere
+              \\"\\"\\"Return Movies where some of the related Creatures match this filter\\"\\"\\"
+              some: CreatureWhere
+            }
+
             input MovieDirectorUpdateConnectionInput {
               node: CreatureUpdateInput
             }
@@ -452,16 +522,18 @@ describe("Connection with interfaces", () => {
             input MovieUpdateInput {
               director: [MovieDirectorUpdateFieldInput!]
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              director: MovieDirectorRelationshipFilters
               directorAggregate: MovieDirectorAggregateInput
+              directorConnection: MovieDirectorConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
@@ -576,6 +648,25 @@ describe("Connection with interfaces", () => {
               where: ProductionConnectWhere
             }
 
+            input PersonMoviesConnectionFilters {
+              \\"\\"\\"
+              Return People where all of the related CreatureMoviesConnections match this filter
+              \\"\\"\\"
+              all: CreatureMoviesConnectionWhere
+              \\"\\"\\"
+              Return People where none of the related CreatureMoviesConnections match this filter
+              \\"\\"\\"
+              none: CreatureMoviesConnectionWhere
+              \\"\\"\\"
+              Return People where one of the related CreatureMoviesConnections match this filter
+              \\"\\"\\"
+              single: CreatureMoviesConnectionWhere
+              \\"\\"\\"
+              Return People where some of the related CreatureMoviesConnections match this filter
+              \\"\\"\\"
+              some: CreatureMoviesConnectionWhere
+            }
+
             input PersonMoviesCreateFieldInput {
               node: ProductionCreateInput!
             }
@@ -612,6 +703,17 @@ describe("Connection with interfaces", () => {
               id_MIN_LTE: ID
             }
 
+            input PersonMoviesRelationshipFilters {
+              \\"\\"\\"Return People where all of the related Productions match this filter\\"\\"\\"
+              all: ProductionWhere
+              \\"\\"\\"Return People where none of the related Productions match this filter\\"\\"\\"
+              none: ProductionWhere
+              \\"\\"\\"Return People where one of the related Productions match this filter\\"\\"\\"
+              single: ProductionWhere
+              \\"\\"\\"Return People where some of the related Productions match this filter\\"\\"\\"
+              some: ProductionWhere
+            }
+
             input PersonMoviesUpdateConnectionInput {
               node: ProductionUpdateInput
             }
@@ -643,7 +745,7 @@ describe("Connection with interfaces", () => {
 
             input PersonUpdateInput {
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               movies: [PersonMoviesUpdateFieldInput!]
             }
 
@@ -657,7 +759,9 @@ describe("Connection with interfaces", () => {
               id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
+              movies: PersonMoviesRelationshipFilters
               moviesAggregate: PersonMoviesAggregateInput
+              moviesConnection: PersonMoviesConnectionFilters
               \\"\\"\\"
               Return People where all of the related CreatureMoviesConnections match this filter
               \\"\\"\\"
@@ -736,6 +840,25 @@ describe("Connection with interfaces", () => {
               totalCount: Int!
             }
 
+            input ProductionDirectorConnectionFilters {
+              \\"\\"\\"
+              Return Productions where all of the related ProductionDirectorConnections match this filter
+              \\"\\"\\"
+              all: ProductionDirectorConnectionWhere
+              \\"\\"\\"
+              Return Productions where none of the related ProductionDirectorConnections match this filter
+              \\"\\"\\"
+              none: ProductionDirectorConnectionWhere
+              \\"\\"\\"
+              Return Productions where one of the related ProductionDirectorConnections match this filter
+              \\"\\"\\"
+              single: ProductionDirectorConnectionWhere
+              \\"\\"\\"
+              Return Productions where some of the related ProductionDirectorConnections match this filter
+              \\"\\"\\"
+              some: ProductionDirectorConnectionWhere
+            }
+
             input ProductionDirectorConnectionSort {
               node: CreatureSort
             }
@@ -783,6 +906,25 @@ describe("Connection with interfaces", () => {
               node: Creature!
             }
 
+            input ProductionDirectorRelationshipFilters {
+              \\"\\"\\"
+              Return Productions where all of the related Creatures match this filter
+              \\"\\"\\"
+              all: CreatureWhere
+              \\"\\"\\"
+              Return Productions where none of the related Creatures match this filter
+              \\"\\"\\"
+              none: CreatureWhere
+              \\"\\"\\"
+              Return Productions where one of the related Creatures match this filter
+              \\"\\"\\"
+              single: CreatureWhere
+              \\"\\"\\"
+              Return Productions where some of the related Creatures match this filter
+              \\"\\"\\"
+              some: CreatureWhere
+            }
+
             input ProductionDirectorUpdateConnectionInput {
               node: CreatureUpdateInput
             }
@@ -820,14 +962,16 @@ describe("Connection with interfaces", () => {
             input ProductionUpdateInput {
               director: [ProductionDirectorUpdateFieldInput!]
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
             }
 
             input ProductionWhere {
               AND: [ProductionWhere!]
               NOT: ProductionWhere
               OR: [ProductionWhere!]
+              director: ProductionDirectorRelationshipFilters
               directorAggregate: ProductionDirectorAggregateInput
+              directorConnection: ProductionDirectorConnectionFilters
               \\"\\"\\"
               Return Productions where all of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
@@ -953,6 +1097,25 @@ describe("Connection with interfaces", () => {
               where: CreatureConnectWhere
             }
 
+            input SeriesDirectorConnectionFilters {
+              \\"\\"\\"
+              Return Series where all of the related ProductionDirectorConnections match this filter
+              \\"\\"\\"
+              all: ProductionDirectorConnectionWhere
+              \\"\\"\\"
+              Return Series where none of the related ProductionDirectorConnections match this filter
+              \\"\\"\\"
+              none: ProductionDirectorConnectionWhere
+              \\"\\"\\"
+              Return Series where one of the related ProductionDirectorConnections match this filter
+              \\"\\"\\"
+              single: ProductionDirectorConnectionWhere
+              \\"\\"\\"
+              Return Series where some of the related ProductionDirectorConnections match this filter
+              \\"\\"\\"
+              some: ProductionDirectorConnectionWhere
+            }
+
             input SeriesDirectorCreateFieldInput {
               node: CreatureCreateInput!
             }
@@ -989,6 +1152,17 @@ describe("Connection with interfaces", () => {
               id_MIN_LTE: ID
             }
 
+            input SeriesDirectorRelationshipFilters {
+              \\"\\"\\"Return Series where all of the related Creatures match this filter\\"\\"\\"
+              all: CreatureWhere
+              \\"\\"\\"Return Series where none of the related Creatures match this filter\\"\\"\\"
+              none: CreatureWhere
+              \\"\\"\\"Return Series where one of the related Creatures match this filter\\"\\"\\"
+              single: CreatureWhere
+              \\"\\"\\"Return Series where some of the related Creatures match this filter\\"\\"\\"
+              some: CreatureWhere
+            }
+
             input SeriesDirectorUpdateConnectionInput {
               node: CreatureUpdateInput
             }
@@ -1019,20 +1193,22 @@ describe("Connection with interfaces", () => {
             input SeriesUpdateInput {
               director: [SeriesDirectorUpdateFieldInput!]
               episode: IntScalarMutations
-              episode_DECREMENT: Int
-              episode_INCREMENT: Int
-              episode_SET: Int
+              episode_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episode: { decrement: ... } }' instead.\\")
+              episode_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episode: { increment: ... } }' instead.\\")
+              episode_SET: Int @deprecated(reason: \\"Please use the generic mutation 'episode: { set: ... } }' instead.\\")
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input SeriesWhere {
               AND: [SeriesWhere!]
               NOT: SeriesWhere
               OR: [SeriesWhere!]
+              director: SeriesDirectorRelationshipFilters
               directorAggregate: SeriesDirectorAggregateInput
+              directorConnection: SeriesDirectorConnectionFilters
               \\"\\"\\"
               Return Series where all of the related ProductionDirectorConnections match this filter
               \\"\\"\\"

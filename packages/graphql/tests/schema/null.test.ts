@@ -311,51 +311,51 @@ describe("Null", () => {
 
             input MovieUpdateInput {
               actorCount: IntScalarMutations
-              actorCount_DECREMENT: Int
-              actorCount_INCREMENT: Int
-              actorCount_SET: Int
+              actorCount_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'actorCount: { decrement: ... } }' instead.\\")
+              actorCount_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'actorCount: { increment: ... } }' instead.\\")
+              actorCount_SET: Int @deprecated(reason: \\"Please use the generic mutation 'actorCount: { set: ... } }' instead.\\")
               actorCounts: ListIntMutations
-              actorCounts_POP: Int
-              actorCounts_PUSH: [Int!]
-              actorCounts_SET: [Int!]
+              actorCounts_POP: Int @deprecated(reason: \\"Please use the generic mutation 'actorCounts: { pop: ... } }' instead.\\")
+              actorCounts_PUSH: [Int!] @deprecated(reason: \\"Please use the generic mutation 'actorCounts: { push: ... } }' instead.\\")
+              actorCounts_SET: [Int!] @deprecated(reason: \\"Please use the generic mutation 'actorCounts: { set: ... } }' instead.\\")
               averageRating: FloatScalarMutations
-              averageRating_ADD: Float
-              averageRating_DIVIDE: Float
-              averageRating_MULTIPLY: Float
-              averageRating_SET: Float
-              averageRating_SUBTRACT: Float
+              averageRating_ADD: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { add: ... } }' instead.\\")
+              averageRating_DIVIDE: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { divide: ... } }' instead.\\")
+              averageRating_MULTIPLY: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { multiply: ... } }' instead.\\")
+              averageRating_SET: Float @deprecated(reason: \\"Please use the generic mutation 'averageRating: { set: ... } }' instead.\\")
+              averageRating_SUBTRACT: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { subtract: ... } }' instead.\\")
               averageRatings: ListFloatMutations
-              averageRatings_POP: Int
-              averageRatings_PUSH: [Float!]
-              averageRatings_SET: [Float!]
+              averageRatings_POP: Int @deprecated(reason: \\"Please use the generic mutation 'averageRatings: { pop: ... } }' instead.\\")
+              averageRatings_PUSH: [Float!] @deprecated(reason: \\"Please use the generic mutation 'averageRatings: { push: ... } }' instead.\\")
+              averageRatings_SET: [Float!] @deprecated(reason: \\"Please use the generic mutation 'averageRatings: { set: ... } }' instead.\\")
               createdAt: DateTimeScalarMutations
-              createdAt_SET: DateTime
+              createdAt_SET: DateTime @deprecated(reason: \\"Please use the generic mutation 'createdAt: { set: ... } }' instead.\\")
               createdAts: ListDateTimeMutations
-              createdAts_POP: Int
-              createdAts_PUSH: [DateTime!]
-              createdAts_SET: [DateTime!]
+              createdAts_POP: Int @deprecated(reason: \\"Please use the generic mutation 'createdAts: { pop: ... } }' instead.\\")
+              createdAts_PUSH: [DateTime!] @deprecated(reason: \\"Please use the generic mutation 'createdAts: { push: ... } }' instead.\\")
+              createdAts_SET: [DateTime!] @deprecated(reason: \\"Please use the generic mutation 'createdAts: { set: ... } }' instead.\\")
               filmedAt: PointMutations
-              filmedAt_SET: PointInput
+              filmedAt_SET: PointInput @deprecated(reason: \\"Please use the generic mutation 'filmedAt: { set: ... } }' instead.\\")
               filmedAts: ListPointInputMutations
-              filmedAts_POP: Int
-              filmedAts_PUSH: [PointInput!]
-              filmedAts_SET: [PointInput!]
+              filmedAts_POP: Int @deprecated(reason: \\"Please use the generic mutation 'filmedAts: { pop: ... } }' instead.\\")
+              filmedAts_PUSH: [PointInput!] @deprecated(reason: \\"Please use the generic mutation 'filmedAts: { push: ... } }' instead.\\")
+              filmedAts_SET: [PointInput!] @deprecated(reason: \\"Please use the generic mutation 'filmedAts: { set: ... } }' instead.\\")
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               ids: ListIDMutations
-              ids_POP: Int
-              ids_PUSH: [ID!]
-              ids_SET: [ID!]
+              ids_POP: Int @deprecated(reason: \\"Please use the generic mutation 'ids: { pop: ... } }' instead.\\")
+              ids_PUSH: [ID!] @deprecated(reason: \\"Please use the generic mutation 'ids: { push: ... } }' instead.\\")
+              ids_SET: [ID!] @deprecated(reason: \\"Please use the generic mutation 'ids: { set: ... } }' instead.\\")
               isActives: ListBooleanMutations
-              isActives_POP: Int
-              isActives_PUSH: [Boolean!]
-              isActives_SET: [Boolean!]
+              isActives_POP: Int @deprecated(reason: \\"Please use the generic mutation 'isActives: { pop: ... } }' instead.\\")
+              isActives_PUSH: [Boolean!] @deprecated(reason: \\"Please use the generic mutation 'isActives: { push: ... } }' instead.\\")
+              isActives_SET: [Boolean!] @deprecated(reason: \\"Please use the generic mutation 'isActives: { set: ... } }' instead.\\")
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
               names: ListStringMutations
-              names_POP: Int
-              names_PUSH: [String!]
-              names_SET: [String!]
+              names_POP: Int @deprecated(reason: \\"Please use the generic mutation 'names: { pop: ... } }' instead.\\")
+              names_PUSH: [String!] @deprecated(reason: \\"Please use the generic mutation 'names: { push: ... } }' instead.\\")
+              names_SET: [String!] @deprecated(reason: \\"Please use the generic mutation 'names: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {

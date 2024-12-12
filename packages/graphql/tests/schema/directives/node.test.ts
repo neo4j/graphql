@@ -68,7 +68,7 @@ describe("@node", () => {
 
             input ActorUpdateInput {
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
@@ -233,7 +233,7 @@ describe("@node", () => {
 
             input ActorUpdateInput {
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
@@ -386,7 +386,7 @@ describe("@node", () => {
 
             input SeriesUpdateInput {
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input SeriesWhere {
@@ -506,7 +506,7 @@ describe("@node", () => {
 
             input ActorUpdateInput {
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
@@ -623,7 +623,7 @@ describe("@node", () => {
 
             input SeriesUpdateInput {
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input SeriesWhere {

@@ -207,7 +207,7 @@ describe("@private directive", () => {
 
             input UserUpdateInput {
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
             }
 
             input UserWhere {
@@ -442,9 +442,9 @@ describe("@private directive", () => {
 
             input UserUpdateInput {
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               private: StringScalarMutations
-              private_SET: String
+              private_SET: String @deprecated(reason: \\"Please use the generic mutation 'private: { set: ... } }' instead.\\")
             }
 
             input UserWhere {

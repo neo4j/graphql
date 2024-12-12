@@ -126,9 +126,9 @@ describe("Union Interface Relationships", () => {
 
             input ActedInUpdateInput {
               screenTime: IntScalarMutations
-              screenTime_DECREMENT: Int
-              screenTime_INCREMENT: Int
-              screenTime_SET: Int
+              screenTime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'screenTime: { decrement: ... } }' instead.\\")
+              screenTime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'screenTime: { increment: ... } }' instead.\\")
+              screenTime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'screenTime: { set: ... } }' instead.\\")
             }
 
             input ActedInWhere {
@@ -226,6 +226,25 @@ describe("Union Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input ActorMoviesConnectionFilters {
+              \\"\\"\\"
+              Return Actors where all of the related ActorMoviesConnections match this filter
+              \\"\\"\\"
+              all: ActorMoviesConnectionWhere
+              \\"\\"\\"
+              Return Actors where none of the related ActorMoviesConnections match this filter
+              \\"\\"\\"
+              none: ActorMoviesConnectionWhere
+              \\"\\"\\"
+              Return Actors where one of the related ActorMoviesConnections match this filter
+              \\"\\"\\"
+              single: ActorMoviesConnectionWhere
+              \\"\\"\\"
+              Return Actors where some of the related ActorMoviesConnections match this filter
+              \\"\\"\\"
+              some: ActorMoviesConnectionWhere
+            }
+
             input ActorMoviesConnectionSort {
               edge: ActedInSort
               node: MovieSort
@@ -308,6 +327,17 @@ describe("Union Interface Relationships", () => {
               properties: ActedIn!
             }
 
+            input ActorMoviesRelationshipFilters {
+              \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
+            }
+
             input ActorMoviesUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: MovieUpdateInput
@@ -332,12 +362,12 @@ describe("Union Interface Relationships", () => {
 
             input ActorUpdateInput {
               id: IntScalarMutations
-              id_DECREMENT: Int
-              id_INCREMENT: Int
-              id_SET: Int
+              id_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'id: { decrement: ... } }' instead.\\")
+              id_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'id: { increment: ... } }' instead.\\")
+              id_SET: Int @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               movies: [ActorMoviesUpdateFieldInput!]
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
@@ -351,7 +381,9 @@ describe("Union Interface Relationships", () => {
               id_IN: [Int]
               id_LT: Int
               id_LTE: Int
+              movies: ActorMoviesRelationshipFilters
               moviesAggregate: ActorMoviesAggregateInput
+              moviesConnection: ActorMoviesConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorMoviesConnections match this filter
               \\"\\"\\"
@@ -444,9 +476,9 @@ describe("Union Interface Relationships", () => {
 
             input DirectedUpdateInput {
               year: IntScalarMutations
-              year_DECREMENT: Int
-              year_INCREMENT: Int
-              year_SET: Int
+              year_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'year: { decrement: ... } }' instead.\\")
+              year_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'year: { increment: ... } }' instead.\\")
+              year_SET: Int @deprecated(reason: \\"Please use the generic mutation 'year: { set: ... } }' instead.\\")
             }
 
             input DirectedWhere {
@@ -514,15 +546,15 @@ describe("Union Interface Relationships", () => {
 
             input InfluencerUpdateInput {
               reputation: IntScalarMutations
-              reputation_DECREMENT: Int
-              reputation_INCREMENT: Int
-              reputation_SET: Int
+              reputation_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'reputation: { decrement: ... } }' instead.\\")
+              reputation_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'reputation: { increment: ... } }' instead.\\")
+              reputation_SET: Int @deprecated(reason: \\"Please use the generic mutation 'reputation: { set: ... } }' instead.\\")
               reviewerId: IntScalarMutations
-              reviewerId_DECREMENT: Int
-              reviewerId_INCREMENT: Int
-              reviewerId_SET: Int
+              reviewerId_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'reviewerId: { decrement: ... } }' instead.\\")
+              reviewerId_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'reviewerId: { increment: ... } }' instead.\\")
+              reviewerId_SET: Int @deprecated(reason: \\"Please use the generic mutation 'reviewerId: { set: ... } }' instead.\\")
               url: StringScalarMutations
-              url_SET: String
+              url_SET: String @deprecated(reason: \\"Please use the generic mutation 'url: { set: ... } }' instead.\\")
             }
 
             input InfluencerWhere {
@@ -643,6 +675,25 @@ describe("Union Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input MovieActorsConnectionFilters {
+              \\"\\"\\"
+              Return Movies where all of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              all: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              none: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where one of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              single: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              some: MovieActorsConnectionWhere
+            }
+
             input MovieActorsConnectionSort {
               edge: ActedInSort
               node: ActorSort
@@ -723,6 +774,17 @@ describe("Union Interface Relationships", () => {
               cursor: String!
               node: Actor!
               properties: ActedIn!
+            }
+
+            input MovieActorsRelationshipFilters {
+              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
             }
 
             input MovieActorsUpdateConnectionInput {
@@ -828,6 +890,25 @@ describe("Union Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input MovieDirectorsConnectionFilters {
+              \\"\\"\\"
+              Return Movies where all of the related MovieDirectorsConnections match this filter
+              \\"\\"\\"
+              all: MovieDirectorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related MovieDirectorsConnections match this filter
+              \\"\\"\\"
+              none: MovieDirectorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where one of the related MovieDirectorsConnections match this filter
+              \\"\\"\\"
+              single: MovieDirectorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related MovieDirectorsConnections match this filter
+              \\"\\"\\"
+              some: MovieDirectorsConnectionWhere
+            }
+
             input MovieDirectorsConnectionSort {
               edge: DirectedSort
             }
@@ -906,6 +987,17 @@ describe("Union Interface Relationships", () => {
               properties: Directed!
             }
 
+            input MovieDirectorsRelationshipFilters {
+              \\"\\"\\"Return Movies where all of the related Directors match this filter\\"\\"\\"
+              all: DirectorWhere
+              \\"\\"\\"Return Movies where none of the related Directors match this filter\\"\\"\\"
+              none: DirectorWhere
+              \\"\\"\\"Return Movies where one of the related Directors match this filter\\"\\"\\"
+              single: DirectorWhere
+              \\"\\"\\"Return Movies where some of the related Directors match this filter\\"\\"\\"
+              some: DirectorWhere
+            }
+
             input MovieDirectorsUpdateInput {
               Actor: [MovieDirectorsActorUpdateFieldInput!]
               Person: [MovieDirectorsPersonUpdateFieldInput!]
@@ -960,6 +1052,25 @@ describe("Union Interface Relationships", () => {
               edges: [MovieReviewersRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input MovieReviewersConnectionFilters {
+              \\"\\"\\"
+              Return Movies where all of the related MovieReviewersConnections match this filter
+              \\"\\"\\"
+              all: MovieReviewersConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related MovieReviewersConnections match this filter
+              \\"\\"\\"
+              none: MovieReviewersConnectionWhere
+              \\"\\"\\"
+              Return Movies where one of the related MovieReviewersConnections match this filter
+              \\"\\"\\"
+              single: MovieReviewersConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related MovieReviewersConnections match this filter
+              \\"\\"\\"
+              some: MovieReviewersConnectionWhere
             }
 
             input MovieReviewersConnectionSort {
@@ -1047,6 +1158,17 @@ describe("Union Interface Relationships", () => {
               properties: Review!
             }
 
+            input MovieReviewersRelationshipFilters {
+              \\"\\"\\"Return Movies where all of the related Reviewers match this filter\\"\\"\\"
+              all: ReviewerWhere
+              \\"\\"\\"Return Movies where none of the related Reviewers match this filter\\"\\"\\"
+              none: ReviewerWhere
+              \\"\\"\\"Return Movies where one of the related Reviewers match this filter\\"\\"\\"
+              single: ReviewerWhere
+              \\"\\"\\"Return Movies where some of the related Reviewers match this filter\\"\\"\\"
+              some: ReviewerWhere
+            }
+
             input MovieReviewersUpdateConnectionInput {
               edge: ReviewUpdateInput
               node: ReviewerUpdateInput
@@ -1073,19 +1195,21 @@ describe("Union Interface Relationships", () => {
               actors: [MovieActorsUpdateFieldInput!]
               directors: MovieDirectorsUpdateInput
               imdbId: IntScalarMutations
-              imdbId_DECREMENT: Int
-              imdbId_INCREMENT: Int
-              imdbId_SET: Int
+              imdbId_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'imdbId: { decrement: ... } }' instead.\\")
+              imdbId_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'imdbId: { increment: ... } }' instead.\\")
+              imdbId_SET: Int @deprecated(reason: \\"Please use the generic mutation 'imdbId: { set: ... } }' instead.\\")
               reviewers: [MovieReviewersUpdateFieldInput!]
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              actors: MovieActorsRelationshipFilters
               actorsAggregate: MovieActorsAggregateInput
+              actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -1110,6 +1234,8 @@ describe("Union Interface Relationships", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
+              directors: MovieDirectorsRelationshipFilters
+              directorsConnection: MovieDirectorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieDirectorsConnections match this filter
               \\"\\"\\"
@@ -1141,7 +1267,9 @@ describe("Union Interface Relationships", () => {
               imdbId_IN: [Int]
               imdbId_LT: Int
               imdbId_LTE: Int
+              reviewers: MovieReviewersRelationshipFilters
               reviewersAggregate: MovieReviewersAggregateInput
+              reviewersConnection: MovieReviewersConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieReviewersConnections match this filter
               \\"\\"\\"
@@ -1297,6 +1425,25 @@ describe("Union Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input PersonMoviesConnectionFilters {
+              \\"\\"\\"
+              Return People where all of the related PersonMoviesConnections match this filter
+              \\"\\"\\"
+              all: PersonMoviesConnectionWhere
+              \\"\\"\\"
+              Return People where none of the related PersonMoviesConnections match this filter
+              \\"\\"\\"
+              none: PersonMoviesConnectionWhere
+              \\"\\"\\"
+              Return People where one of the related PersonMoviesConnections match this filter
+              \\"\\"\\"
+              single: PersonMoviesConnectionWhere
+              \\"\\"\\"
+              Return People where some of the related PersonMoviesConnections match this filter
+              \\"\\"\\"
+              some: PersonMoviesConnectionWhere
+            }
+
             input PersonMoviesConnectionSort {
               edge: ReviewSort
               node: MovieSort
@@ -1379,6 +1526,17 @@ describe("Union Interface Relationships", () => {
               properties: Review!
             }
 
+            input PersonMoviesRelationshipFilters {
+              \\"\\"\\"Return People where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Return People where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Return People where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Return People where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
+            }
+
             input PersonMoviesUpdateConnectionInput {
               edge: ReviewUpdateInput
               node: MovieUpdateInput
@@ -1405,20 +1563,20 @@ describe("Union Interface Relationships", () => {
 
             input PersonUpdateInput {
               id: IntScalarMutations
-              id_DECREMENT: Int
-              id_INCREMENT: Int
-              id_SET: Int
+              id_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'id: { decrement: ... } }' instead.\\")
+              id_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'id: { increment: ... } }' instead.\\")
+              id_SET: Int @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               movies: [PersonMoviesUpdateFieldInput!]
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
               reputation: IntScalarMutations
-              reputation_DECREMENT: Int
-              reputation_INCREMENT: Int
-              reputation_SET: Int
+              reputation_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'reputation: { decrement: ... } }' instead.\\")
+              reputation_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'reputation: { increment: ... } }' instead.\\")
+              reputation_SET: Int @deprecated(reason: \\"Please use the generic mutation 'reputation: { set: ... } }' instead.\\")
               reviewerId: IntScalarMutations
-              reviewerId_DECREMENT: Int
-              reviewerId_INCREMENT: Int
-              reviewerId_SET: Int
+              reviewerId_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'reviewerId: { decrement: ... } }' instead.\\")
+              reviewerId_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'reviewerId: { increment: ... } }' instead.\\")
+              reviewerId_SET: Int @deprecated(reason: \\"Please use the generic mutation 'reviewerId: { set: ... } }' instead.\\")
             }
 
             input PersonWhere {
@@ -1432,7 +1590,9 @@ describe("Union Interface Relationships", () => {
               id_IN: [Int]
               id_LT: Int
               id_LTE: Int
+              movies: PersonMoviesRelationshipFilters
               moviesAggregate: PersonMoviesAggregateInput
+              moviesConnection: PersonMoviesConnectionFilters
               \\"\\"\\"
               Return People where all of the related PersonMoviesConnections match this filter
               \\"\\"\\"
@@ -1544,9 +1704,9 @@ describe("Union Interface Relationships", () => {
 
             input ReviewUpdateInput {
               score: IntScalarMutations
-              score_DECREMENT: Int
-              score_INCREMENT: Int
-              score_SET: Int
+              score_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'score: { decrement: ... } }' instead.\\")
+              score_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'score: { increment: ... } }' instead.\\")
+              score_SET: Int @deprecated(reason: \\"Please use the generic mutation 'score: { set: ... } }' instead.\\")
             }
 
             input ReviewWhere {
@@ -1602,13 +1762,13 @@ describe("Union Interface Relationships", () => {
 
             input ReviewerUpdateInput {
               reputation: IntScalarMutations
-              reputation_DECREMENT: Int
-              reputation_INCREMENT: Int
-              reputation_SET: Int
+              reputation_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'reputation: { decrement: ... } }' instead.\\")
+              reputation_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'reputation: { increment: ... } }' instead.\\")
+              reputation_SET: Int @deprecated(reason: \\"Please use the generic mutation 'reputation: { set: ... } }' instead.\\")
               reviewerId: IntScalarMutations
-              reviewerId_DECREMENT: Int
-              reviewerId_INCREMENT: Int
-              reviewerId_SET: Int
+              reviewerId_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'reviewerId: { decrement: ... } }' instead.\\")
+              reviewerId_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'reviewerId: { increment: ... } }' instead.\\")
+              reviewerId_SET: Int @deprecated(reason: \\"Please use the generic mutation 'reviewerId: { set: ... } }' instead.\\")
             }
 
             input ReviewerWhere {

@@ -244,9 +244,9 @@ describe("@populatedBy tests", () => {
 
                 input MovieUpdateInput {
                   callback1: StringScalarMutations
-                  callback1_SET: String
+                  callback1_SET: String @deprecated(reason: \\"Please use the generic mutation 'callback1: { set: ... } }' instead.\\")
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
@@ -495,11 +495,11 @@ describe("@populatedBy tests", () => {
 
                 input MovieUpdateInput {
                   callback1: IntScalarMutations
-                  callback1_DECREMENT: Int
-                  callback1_INCREMENT: Int
-                  callback1_SET: Int
+                  callback1_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'callback1: { decrement: ... } }' instead.\\")
+                  callback1_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'callback1: { increment: ... } }' instead.\\")
+                  callback1_SET: Int @deprecated(reason: \\"Please use the generic mutation 'callback1: { set: ... } }' instead.\\")
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
@@ -832,7 +832,7 @@ describe("@populatedBy tests", () => {
 
                 input GenreUpdateInput {
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input GenreWhere {
@@ -961,6 +961,25 @@ describe("@populatedBy tests", () => {
                   totalCount: Int!
                 }
 
+                input MovieGenresConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieGenresConnections match this filter
+                  \\"\\"\\"
+                  all: MovieGenresConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieGenresConnections match this filter
+                  \\"\\"\\"
+                  none: MovieGenresConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieGenresConnections match this filter
+                  \\"\\"\\"
+                  single: MovieGenresConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieGenresConnections match this filter
+                  \\"\\"\\"
+                  some: MovieGenresConnectionWhere
+                }
+
                 input MovieGenresConnectionSort {
                   edge: RelPropertiesSort
                   node: GenreSort
@@ -1015,6 +1034,17 @@ describe("@populatedBy tests", () => {
                   properties: RelProperties!
                 }
 
+                input MovieGenresRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related Genres match this filter\\"\\"\\"
+                  all: GenreWhere
+                  \\"\\"\\"Return Movies where none of the related Genres match this filter\\"\\"\\"
+                  none: GenreWhere
+                  \\"\\"\\"Return Movies where one of the related Genres match this filter\\"\\"\\"
+                  single: GenreWhere
+                  \\"\\"\\"Return Movies where some of the related Genres match this filter\\"\\"\\"
+                  some: GenreWhere
+                }
+
                 input MovieGenresUpdateConnectionInput {
                   edge: RelPropertiesUpdateInput
                   node: GenreUpdateInput
@@ -1039,14 +1069,16 @@ describe("@populatedBy tests", () => {
                 input MovieUpdateInput {
                   genres: [MovieGenresUpdateFieldInput!]
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  genres: MovieGenresRelationshipFilters
                   genresAggregate: MovieGenresAggregateInput
+                  genresConnection: MovieGenresConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieGenresConnections match this filter
                   \\"\\"\\"
@@ -1201,9 +1233,9 @@ describe("@populatedBy tests", () => {
 
                 input RelPropertiesUpdateInput {
                   callback1: StringScalarMutations
-                  callback1_SET: String
+                  callback1_SET: String @deprecated(reason: \\"Please use the generic mutation 'callback1: { set: ... } }' instead.\\")
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input RelPropertiesWhere {
@@ -1408,7 +1440,7 @@ describe("@populatedBy tests", () => {
 
                 input GenreUpdateInput {
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input GenreWhere {
@@ -1559,6 +1591,25 @@ describe("@populatedBy tests", () => {
                   totalCount: Int!
                 }
 
+                input MovieGenresConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieGenresConnections match this filter
+                  \\"\\"\\"
+                  all: MovieGenresConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieGenresConnections match this filter
+                  \\"\\"\\"
+                  none: MovieGenresConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieGenresConnections match this filter
+                  \\"\\"\\"
+                  single: MovieGenresConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieGenresConnections match this filter
+                  \\"\\"\\"
+                  some: MovieGenresConnectionWhere
+                }
+
                 input MovieGenresConnectionSort {
                   edge: RelPropertiesSort
                   node: GenreSort
@@ -1613,6 +1664,17 @@ describe("@populatedBy tests", () => {
                   properties: RelProperties!
                 }
 
+                input MovieGenresRelationshipFilters {
+                  \\"\\"\\"Return Movies where all of the related Genres match this filter\\"\\"\\"
+                  all: GenreWhere
+                  \\"\\"\\"Return Movies where none of the related Genres match this filter\\"\\"\\"
+                  none: GenreWhere
+                  \\"\\"\\"Return Movies where one of the related Genres match this filter\\"\\"\\"
+                  single: GenreWhere
+                  \\"\\"\\"Return Movies where some of the related Genres match this filter\\"\\"\\"
+                  some: GenreWhere
+                }
+
                 input MovieGenresUpdateConnectionInput {
                   edge: RelPropertiesUpdateInput
                   node: GenreUpdateInput
@@ -1637,14 +1699,16 @@ describe("@populatedBy tests", () => {
                 input MovieUpdateInput {
                   genres: [MovieGenresUpdateFieldInput!]
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  genres: MovieGenresRelationshipFilters
                   genresAggregate: MovieGenresAggregateInput
+                  genresConnection: MovieGenresConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieGenresConnections match this filter
                   \\"\\"\\"
@@ -1814,11 +1878,11 @@ describe("@populatedBy tests", () => {
 
                 input RelPropertiesUpdateInput {
                   callback1: IntScalarMutations
-                  callback1_DECREMENT: Int
-                  callback1_INCREMENT: Int
-                  callback1_SET: Int
+                  callback1_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'callback1: { decrement: ... } }' instead.\\")
+                  callback1_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'callback1: { increment: ... } }' instead.\\")
+                  callback1_SET: Int @deprecated(reason: \\"Please use the generic mutation 'callback1: { set: ... } }' instead.\\")
                   id: IDScalarMutations
-                  id_SET: ID
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input RelPropertiesWhere {

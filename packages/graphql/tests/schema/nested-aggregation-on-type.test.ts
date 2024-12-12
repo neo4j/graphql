@@ -75,9 +75,9 @@ describe("nested aggregation on interface", () => {
 
             input ActedInUpdateInput {
               screenTime: IntScalarMutations
-              screenTime_DECREMENT: Int
-              screenTime_INCREMENT: Int
-              screenTime_SET: Int
+              screenTime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'screenTime: { decrement: ... } }' instead.\\")
+              screenTime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'screenTime: { increment: ... } }' instead.\\")
+              screenTime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'screenTime: { set: ... } }' instead.\\")
             }
 
             input ActedInWhere {
@@ -123,6 +123,25 @@ describe("nested aggregation on interface", () => {
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ActorActedInConnectionFilters {
+              \\"\\"\\"
+              Return Actors where all of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              all: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where none of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              none: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where one of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              single: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where some of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              some: ActorActedInConnectionWhere
             }
 
             input ActorActedInConnectionSort {
@@ -226,6 +245,17 @@ describe("nested aggregation on interface", () => {
               properties: ActedIn!
             }
 
+            input ActorActedInRelationshipFilters {
+              \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
+            }
+
             input ActorActedInUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: MovieUpdateInput
@@ -285,14 +315,16 @@ describe("nested aggregation on interface", () => {
             input ActorUpdateInput {
               actedIn: [ActorActedInUpdateFieldInput!]
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              actedIn: ActorActedInRelationshipFilters
               actedInAggregate: ActorActedInAggregateInput
+              actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
@@ -462,17 +494,17 @@ describe("nested aggregation on interface", () => {
 
             input MovieUpdateInput {
               cost: FloatScalarMutations
-              cost_ADD: Float
-              cost_DIVIDE: Float
-              cost_MULTIPLY: Float
-              cost_SET: Float
-              cost_SUBTRACT: Float
+              cost_ADD: Float @deprecated(reason: \\"Please use the relevant generic mutation 'cost: { add: ... } }' instead.\\")
+              cost_DIVIDE: Float @deprecated(reason: \\"Please use the relevant generic mutation 'cost: { divide: ... } }' instead.\\")
+              cost_MULTIPLY: Float @deprecated(reason: \\"Please use the relevant generic mutation 'cost: { multiply: ... } }' instead.\\")
+              cost_SET: Float @deprecated(reason: \\"Please use the generic mutation 'cost: { set: ... } }' instead.\\")
+              cost_SUBTRACT: Float @deprecated(reason: \\"Please use the relevant generic mutation 'cost: { subtract: ... } }' instead.\\")
               runtime: IntScalarMutations
-              runtime_DECREMENT: Int
-              runtime_INCREMENT: Int
-              runtime_SET: Int
+              runtime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { decrement: ... } }' instead.\\")
+              runtime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { increment: ... } }' instead.\\")
+              runtime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'runtime: { set: ... } }' instead.\\")
               title: StringScalarMutations
-              title_SET: String
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {

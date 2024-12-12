@@ -297,6 +297,25 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               totalCount: Int!
             }
 
+            input ResourceContainedByConnectionFilters {
+              \\"\\"\\"
+              Return Resources where all of the related ResourceContainedByConnections match this filter
+              \\"\\"\\"
+              all: ResourceContainedByConnectionWhere
+              \\"\\"\\"
+              Return Resources where none of the related ResourceContainedByConnections match this filter
+              \\"\\"\\"
+              none: ResourceContainedByConnectionWhere
+              \\"\\"\\"
+              Return Resources where one of the related ResourceContainedByConnections match this filter
+              \\"\\"\\"
+              single: ResourceContainedByConnectionWhere
+              \\"\\"\\"
+              Return Resources where some of the related ResourceContainedByConnections match this filter
+              \\"\\"\\"
+              some: ResourceContainedByConnectionWhere
+            }
+
             input ResourceContainedByConnectionSort {
               node: ResourceSort
             }
@@ -385,6 +404,17 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             type ResourceContainedByRelationship {
               cursor: String!
               node: Resource!
+            }
+
+            input ResourceContainedByRelationshipFilters {
+              \\"\\"\\"Return Resources where all of the related Resources match this filter\\"\\"\\"
+              all: ResourceWhere
+              \\"\\"\\"Return Resources where none of the related Resources match this filter\\"\\"\\"
+              none: ResourceWhere
+              \\"\\"\\"Return Resources where one of the related Resources match this filter\\"\\"\\"
+              single: ResourceWhere
+              \\"\\"\\"Return Resources where some of the related Resources match this filter\\"\\"\\"
+              some: ResourceWhere
             }
 
             input ResourceContainedByUpdateConnectionInput {
@@ -535,28 +565,30 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             input ResourceUpdateInput {
               containedBy: [ResourceContainedByUpdateFieldInput!]
               createdAt: DateTimeScalarMutations
-              createdAt_SET: DateTime
+              createdAt_SET: DateTime @deprecated(reason: \\"Please use the generic mutation 'createdAt: { set: ... } }' instead.\\")
               externalIds: ListIDMutations
-              externalIds_POP: Int
-              externalIds_PUSH: [ID!]
-              externalIds_SET: [ID!]
+              externalIds_POP: Int @deprecated(reason: \\"Please use the generic mutation 'externalIds: { pop: ... } }' instead.\\")
+              externalIds_PUSH: [ID!] @deprecated(reason: \\"Please use the generic mutation 'externalIds: { push: ... } }' instead.\\")
+              externalIds_SET: [ID!] @deprecated(reason: \\"Please use the generic mutation 'externalIds: { set: ... } }' instead.\\")
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               name: StringScalarMutations
-              name_SET: String
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
               properties: PropertyListEnumScalarMutations
-              properties_SET: [Property!]
+              properties_SET: [Property!] @deprecated(reason: \\"Please use the generic mutation 'properties: { set: ... } }' instead.\\")
               tags: TagListEnumScalarMutations
-              tags_SET: [Tag!]
+              tags_SET: [Tag!] @deprecated(reason: \\"Please use the generic mutation 'tags: { set: ... } }' instead.\\")
               type: ResourceTypeEnumScalarMutations
-              type_SET: ResourceType
+              type_SET: ResourceType @deprecated(reason: \\"Please use the generic mutation 'type: { set: ... } }' instead.\\")
             }
 
             input ResourceWhere {
               AND: [ResourceWhere!]
               NOT: ResourceWhere
               OR: [ResourceWhere!]
+              containedBy: ResourceContainedByRelationshipFilters
               containedByAggregate: ResourceContainedByAggregateInput
+              containedByConnection: ResourceContainedByConnectionFilters
               \\"\\"\\"
               Return Resources where all of the related ResourceContainedByConnections match this filter
               \\"\\"\\"

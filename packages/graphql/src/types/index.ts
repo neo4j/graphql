@@ -446,7 +446,10 @@ export type Neo4jFeaturesSettings = {
      *
      * NOTE: this will not remove user defined deprecated fields
      **/
-    excludeDeprecatedFields?: Record<string, never>;
+
+    excludeDeprecatedFields?: {
+        mutationOperations?: boolean;
+    };
     vector?: Neo4jVectorSettings;
 };
 

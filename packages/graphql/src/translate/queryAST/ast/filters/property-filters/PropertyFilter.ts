@@ -34,7 +34,6 @@ export class PropertyFilter extends Filter {
     protected relationship: RelationshipAdapter | undefined;
     protected comparisonValue: unknown;
     protected operator: FilterOperator;
-    protected isNot: boolean; // _NOT is deprecated
     protected attachedTo: "node" | "relationship";
 
     constructor({
@@ -42,14 +41,12 @@ export class PropertyFilter extends Filter {
         relationship,
         comparisonValue,
         operator,
-        isNot,
         attachedTo,
     }: {
         attribute: AttributeAdapter;
         relationship?: RelationshipAdapter;
         comparisonValue: unknown;
         operator: FilterOperator;
-        isNot: boolean;
         attachedTo?: "node" | "relationship";
     }) {
         super();
@@ -57,7 +54,6 @@ export class PropertyFilter extends Filter {
         this.relationship = relationship;
         this.comparisonValue = comparisonValue;
         this.operator = operator;
-        this.isNot = isNot;
         this.attachedTo = attachedTo ?? "node";
     }
 
@@ -66,19 +62,17 @@ export class PropertyFilter extends Filter {
     }
 
     public print(): string {
-        return `${super.print()} [${this.attribute.name}] <${this.isNot ? "NOT " : ""}${this.operator}>`;
+        return `${super.print()} [${this.attribute.name}] <${this.operator}>`;
     }
 
     public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate {
         const prop = this.getPropertyRefOrAliasesCase(queryASTContext);
 
         if (this.comparisonValue === null) {
-            return this.getNullPredicate(prop);
+            return Cypher.isNull(prop);
         }
 
-        const baseOperation = this.getOperation(prop);
-
-        return this.wrapInNotIfNeeded(baseOperation);
+        return this.getOperation(prop);
     }
 
     private getPropertyRefOrAliasesCase(queryASTContext: QueryASTContext): Cypher.Property | Cypher.Case {
@@ -152,18 +146,5 @@ export class PropertyFilter extends Filter {
         const coalesceProperty = coalesceValueIfNeeded(this.attribute, property);
 
         return createComparisonOperation({ operator, property: coalesceProperty, param });
-    }
-
-    private getNullPredicate(propertyRef: Cypher.Property | Cypher.Case): Cypher.Predicate {
-        if (this.isNot) {
-            return Cypher.isNotNull(propertyRef);
-        } else {
-            return Cypher.isNull(propertyRef);
-        }
-    }
-
-    private wrapInNotIfNeeded(predicate: Cypher.Predicate): Cypher.Predicate {
-        if (this.isNot) return Cypher.not(predicate);
-        else return predicate;
     }
 }

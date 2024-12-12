@@ -75,7 +75,10 @@ describe("https://github.com/neo4j/graphql/issues/4095", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:MEMBER_OF]-(this1:Person)
-                WHERE ($isAuthenticated = true AND size([(this1)<-[:CREATOR_OF]-(this2:User) WHERE ($jwt.uid IS NOT NULL AND this2.id = $jwt.uid) | 1]) > 0)
+                WHERE ($isAuthenticated = true AND EXISTS {
+                    MATCH (this1)<-[:CREATOR_OF]-(this2:User)
+                    WHERE ($jwt.uid IS NOT NULL AND this2.id = $jwt.uid)
+                })
                 RETURN count(this1) AS var3
             }
             RETURN this { .id, membersAggregate: { count: var3 } } AS this"

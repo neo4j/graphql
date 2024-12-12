@@ -283,6 +283,25 @@ describe("162", () => {
               totalCount: Int!
             }
 
+            input TigerJawLevel2Part1ConnectionFilters {
+              \\"\\"\\"
+              Return TigerJawLevel2s where all of the related TigerJawLevel2Part1Connections match this filter
+              \\"\\"\\"
+              all: TigerJawLevel2Part1ConnectionWhere
+              \\"\\"\\"
+              Return TigerJawLevel2s where none of the related TigerJawLevel2Part1Connections match this filter
+              \\"\\"\\"
+              none: TigerJawLevel2Part1ConnectionWhere
+              \\"\\"\\"
+              Return TigerJawLevel2s where one of the related TigerJawLevel2Part1Connections match this filter
+              \\"\\"\\"
+              single: TigerJawLevel2Part1ConnectionWhere
+              \\"\\"\\"
+              Return TigerJawLevel2s where some of the related TigerJawLevel2Part1Connections match this filter
+              \\"\\"\\"
+              some: TigerJawLevel2Part1ConnectionWhere
+            }
+
             input TigerJawLevel2Part1ConnectionSort {
               node: TigerJawLevel2Part1Sort
             }
@@ -353,6 +372,25 @@ describe("162", () => {
               node: TigerJawLevel2Part1!
             }
 
+            input TigerJawLevel2Part1RelationshipFilters {
+              \\"\\"\\"
+              Return TigerJawLevel2s where all of the related TigerJawLevel2Part1s match this filter
+              \\"\\"\\"
+              all: TigerJawLevel2Part1Where
+              \\"\\"\\"
+              Return TigerJawLevel2s where none of the related TigerJawLevel2Part1s match this filter
+              \\"\\"\\"
+              none: TigerJawLevel2Part1Where
+              \\"\\"\\"
+              Return TigerJawLevel2s where one of the related TigerJawLevel2Part1s match this filter
+              \\"\\"\\"
+              single: TigerJawLevel2Part1Where
+              \\"\\"\\"
+              Return TigerJawLevel2s where some of the related TigerJawLevel2Part1s match this filter
+              \\"\\"\\"
+              some: TigerJawLevel2Part1Where
+            }
+
             \\"\\"\\"
             Fields to sort TigerJawLevel2Part1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one TigerJawLevel2Part1Sort object.
             \\"\\"\\"
@@ -381,6 +419,25 @@ describe("162", () => {
               edges: [TigerJawLevel2Part1TigerRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input TigerJawLevel2Part1TigerConnectionFilters {
+              \\"\\"\\"
+              Return TigerJawLevel2Part1s where all of the related TigerJawLevel2Part1TigerConnections match this filter
+              \\"\\"\\"
+              all: TigerJawLevel2Part1TigerConnectionWhere
+              \\"\\"\\"
+              Return TigerJawLevel2Part1s where none of the related TigerJawLevel2Part1TigerConnections match this filter
+              \\"\\"\\"
+              none: TigerJawLevel2Part1TigerConnectionWhere
+              \\"\\"\\"
+              Return TigerJawLevel2Part1s where one of the related TigerJawLevel2Part1TigerConnections match this filter
+              \\"\\"\\"
+              single: TigerJawLevel2Part1TigerConnectionWhere
+              \\"\\"\\"
+              Return TigerJawLevel2Part1s where some of the related TigerJawLevel2Part1TigerConnections match this filter
+              \\"\\"\\"
+              some: TigerJawLevel2Part1TigerConnectionWhere
             }
 
             input TigerJawLevel2Part1TigerConnectionSort {
@@ -443,6 +500,25 @@ describe("162", () => {
               node: Tiger!
             }
 
+            input TigerJawLevel2Part1TigerRelationshipFilters {
+              \\"\\"\\"
+              Return TigerJawLevel2Part1s where all of the related Tigers match this filter
+              \\"\\"\\"
+              all: TigerWhere
+              \\"\\"\\"
+              Return TigerJawLevel2Part1s where none of the related Tigers match this filter
+              \\"\\"\\"
+              none: TigerWhere
+              \\"\\"\\"
+              Return TigerJawLevel2Part1s where one of the related Tigers match this filter
+              \\"\\"\\"
+              single: TigerWhere
+              \\"\\"\\"
+              Return TigerJawLevel2Part1s where some of the related Tigers match this filter
+              \\"\\"\\"
+              some: TigerWhere
+            }
+
             type TigerJawLevel2Part1TigerTigerAggregationSelection {
               count: Int!
               node: TigerJawLevel2Part1TigerTigerNodeAggregateSelection
@@ -480,7 +556,7 @@ describe("162", () => {
 
             input TigerJawLevel2Part1UpdateInput {
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               tiger: [TigerJawLevel2Part1TigerUpdateFieldInput!]
             }
 
@@ -494,7 +570,9 @@ describe("162", () => {
               id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
+              tiger: TigerJawLevel2Part1TigerRelationshipFilters
               tigerAggregate: TigerJawLevel2Part1TigerAggregateInput
+              tigerConnection: TigerJawLevel2Part1TigerConnectionFilters
               \\"\\"\\"
               Return TigerJawLevel2Part1s where all of the related TigerJawLevel2Part1TigerConnections match this filter
               \\"\\"\\"
@@ -553,7 +631,7 @@ describe("162", () => {
 
             input TigerJawLevel2UpdateInput {
               id: IDScalarMutations
-              id_SET: ID
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               part1: [TigerJawLevel2Part1UpdateFieldInput!]
             }
 
@@ -567,7 +645,9 @@ describe("162", () => {
               id_EQ: ID
               id_IN: [ID]
               id_STARTS_WITH: ID
+              part1: TigerJawLevel2Part1RelationshipFilters
               part1Aggregate: TigerJawLevel2Part1AggregateInput
+              part1Connection: TigerJawLevel2Part1ConnectionFilters
               \\"\\"\\"
               Return TigerJawLevel2s where all of the related TigerJawLevel2Part1Connections match this filter
               \\"\\"\\"
@@ -617,9 +697,9 @@ describe("162", () => {
 
             input TigerUpdateInput {
               x: IntScalarMutations
-              x_DECREMENT: Int
-              x_INCREMENT: Int
-              x_SET: Int
+              x_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'x: { decrement: ... } }' instead.\\")
+              x_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'x: { increment: ... } }' instead.\\")
+              x_SET: Int @deprecated(reason: \\"Please use the generic mutation 'x: { set: ... } }' instead.\\")
             }
 
             input TigerWhere {

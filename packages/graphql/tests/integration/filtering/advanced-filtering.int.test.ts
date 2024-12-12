@@ -33,10 +33,10 @@ describe("Advanced Filtering", () => {
             const randomType = testHelper.createUniqueType("Movie");
 
             const typeDefs = /* GraphQL */ `
-                        type ${randomType.name} @node {
-                            property: ${type}
-                        }
-                    `;
+                type ${randomType.name} @node {
+                    property: ${type}
+                }
+            `;
 
             await testHelper.initNeo4jGraphQL({ typeDefs });
 
@@ -1056,7 +1056,7 @@ describe("Advanced Filtering", () => {
 
                 const query = /* GraphQL */ `
                     {
-                        ${randomType1.plural}(where: { ${randomType2.plural}_SOME: { id: { eq: "${relationId}" } } }) {
+                        ${randomType1.plural}(where: { ${randomType2.plural}: { some: {id: { eq: "${relationId}" }} } }) {
                             id
                             ${randomType2.plural} {
                                 id
@@ -1110,7 +1110,7 @@ describe("Advanced Filtering", () => {
 
                 const query = /* GraphQL */ `
                     {
-                        ${Movie.plural}(where: { genresConnection_SOME: { node: { id: { eq: "${genreId}" } } } }) {
+                        ${Movie.plural}(where: { genresConnection: { some: {  node: { id: { eq: "${genreId}" } } } } }) {
                             id
                             genres {
                                 id
@@ -1175,7 +1175,7 @@ describe("Advanced Filtering", () => {
 
                 const query = /* GraphQL */ `
                     {
-                        ${Movie.plural}(where: { genresConnection_SOME: { edge: { id: { eq: "${actedInId}" } } } }) {
+                        ${Movie.plural}(where: { genresConnection: { some: { edge: { id: { eq: "${actedInId}" } } } } }) {
                             id
                             genres {
                                 id
@@ -1239,7 +1239,7 @@ describe("Advanced Filtering", () => {
 
                 const query = /* GraphQL */ `
                         {
-                            ${Movie.plural}(where: { genresConnection_SOME: { node: { id: { eq: "${genreId}" }} edge: { id: { eq: "${actedInId}" } } } }) {
+                            ${Movie.plural}(where: { genresConnection: { some: { node: { id: { eq: "${genreId}" }} edge: { id: { eq: "${actedInId}" } } } } }) {
                                 id
                                 genres {
                                     id
@@ -1309,7 +1309,7 @@ describe("Advanced Filtering", () => {
 
                 const query = /* GraphQL */ `
                         {
-                            ${randomType1.plural}(where: { NOT: { ${randomType2.plural}_SOME: { id: { eq: "${relationId2}" }} } }) {
+                            ${randomType1.plural}(where: { NOT: { ${randomType2.plural}: { some: { id: { eq: "${relationId2}" }}} } }) {
                                 id
                                 ${randomType2.plural} {
                                     id
@@ -1377,7 +1377,7 @@ describe("Advanced Filtering", () => {
 
                 const query = /* GraphQL */ `
                         {
-                            ${randomType1.plural}(where: { ${randomType2.plural}Connection_NONE: { edge: { id: { eq: "${actedInId}"} } } }) {
+                            ${randomType1.plural}(where: { ${randomType2.plural}Connection: { none: {edge: { id: { eq: "${actedInId}"} } } } }) {
                                 id
                                 ${randomType2.plural} {
                                     id
@@ -1453,10 +1453,10 @@ describe("Advanced Filtering", () => {
             });
 
             describe("on relationship", () => {
-                function generateQuery(predicate: "ALL" | "NONE" | "SINGLE" | "SOME") {
+                function generateQuery(predicate: "all" | "none" | "single" | "some") {
                     return /* GraphQL */ `
                     query($movieIds: [ID!]!) {
-                        ${Movie.plural}(where: { AND: [{ id: { in: $movieIds }}, { actors_${predicate}: { NOT: { flag: { eq: false }} } }] }) {
+                        ${Movie.plural}(where: { AND: [{ id: { in: $movieIds }}, { actors: { ${predicate}: { NOT: { flag: { eq: false }} } } }] }) {
                             id
                             actors(where: { NOT: { flag: {eq: false} } }) {
                                 id
@@ -1467,8 +1467,8 @@ describe("Advanced Filtering", () => {
                 `;
                 }
 
-                test("ALL", async () => {
-                    const gqlResult = await testHelper.executeGraphQL(generateQuery("ALL"), {
+                test("all", async () => {
+                    const gqlResult = await testHelper.executeGraphQL(generateQuery("all"), {
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1483,8 +1483,8 @@ describe("Advanced Filtering", () => {
                     });
                 });
 
-                test("NONE", async () => {
-                    const gqlResult = await testHelper.executeGraphQL(generateQuery("NONE"), {
+                test("none", async () => {
+                    const gqlResult = await testHelper.executeGraphQL(generateQuery("none"), {
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1499,8 +1499,8 @@ describe("Advanced Filtering", () => {
                     });
                 });
 
-                test("SINGLE", async () => {
-                    const gqlResult = await testHelper.executeGraphQL(generateQuery("SINGLE"), {
+                test("single", async () => {
+                    const gqlResult = await testHelper.executeGraphQL(generateQuery("single"), {
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1515,8 +1515,8 @@ describe("Advanced Filtering", () => {
                     });
                 });
 
-                test("SOME", async () => {
-                    const gqlResult = await testHelper.executeGraphQL(generateQuery("SOME"), {
+                test("some", async () => {
+                    const gqlResult = await testHelper.executeGraphQL(generateQuery("some"), {
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1541,9 +1541,9 @@ describe("Advanced Filtering", () => {
             });
 
             describe("on relationship using NOT operator", () => {
-                const generateQuery = (predicate: "ALL" | "NONE" | "SINGLE" | "SOME") => /* GraphQL */ `
+                const generateQuery = (predicate: "all" | "none" | "single" | "some") => /* GraphQL */ `
                     query($movieIds: [ID!]!) {
-                        ${Movie.plural}(where: { AND: [{ id: { in: $movieIds }}, { actors_${predicate}: { NOT: { flag: {eq: false }} } }] }) {
+                        ${Movie.plural}(where: { AND: [{ id: { in: $movieIds }}, { actors: { ${predicate}: { NOT: { flag: {eq: false }}} } }] }) {
                             id
                             actors(where: { NOT: { flag: { eq: false }} }) {
                                 id
@@ -1553,8 +1553,8 @@ describe("Advanced Filtering", () => {
                     }
                 `;
 
-                test("ALL", async () => {
-                    const gqlResult = await testHelper.executeGraphQL(generateQuery("ALL"), {
+                test("all", async () => {
+                    const gqlResult = await testHelper.executeGraphQL(generateQuery("all"), {
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1569,8 +1569,8 @@ describe("Advanced Filtering", () => {
                     });
                 });
 
-                test("NONE", async () => {
-                    const gqlResult = await testHelper.executeGraphQL(generateQuery("NONE"), {
+                test("none", async () => {
+                    const gqlResult = await testHelper.executeGraphQL(generateQuery("none"), {
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1585,8 +1585,8 @@ describe("Advanced Filtering", () => {
                     });
                 });
 
-                test("SINGLE", async () => {
-                    const gqlResult = await testHelper.executeGraphQL(generateQuery("SINGLE"), {
+                test("single", async () => {
+                    const gqlResult = await testHelper.executeGraphQL(generateQuery("single"), {
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1601,8 +1601,8 @@ describe("Advanced Filtering", () => {
                     });
                 });
 
-                test("SOME", async () => {
-                    const gqlResult = await testHelper.executeGraphQL(generateQuery("SOME"), {
+                test("some", async () => {
+                    const gqlResult = await testHelper.executeGraphQL(generateQuery("some"), {
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1627,9 +1627,9 @@ describe("Advanced Filtering", () => {
             });
 
             describe("on connection", () => {
-                const generateQuery = (predicate: "ALL" | "NONE" | "SINGLE" | "SOME") => /* GraphQL */ `
+                const generateQuery = (predicate: "all" | "none" | "single" | "some") => /* GraphQL */ `
                     query($movieIds: [ID!]!) {
-                        ${Movie.plural}(where: { AND: [{ id: {in: $movieIds} }, { actorsConnection_${predicate}: { node: { NOT: { flag: { eq: false} } } }}] }) {
+                        ${Movie.plural}(where: { AND: [{ id: {in: $movieIds} }, { actorsConnection: { ${predicate}: { node: { NOT: { flag: { eq: false} } } }}}] }) {
                             id
                             actors(where: { NOT: { flag:{ eq: false }} }) {
                                 id
@@ -1639,8 +1639,8 @@ describe("Advanced Filtering", () => {
                     }
                 `;
 
-                test("ALL", async () => {
-                    const gqlResult = await testHelper.executeGraphQL(generateQuery("ALL"), {
+                test("all", async () => {
+                    const gqlResult = await testHelper.executeGraphQL(generateQuery("all"), {
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1655,8 +1655,8 @@ describe("Advanced Filtering", () => {
                     });
                 });
 
-                test("NONE", async () => {
-                    const gqlResult = await testHelper.executeGraphQL(generateQuery("NONE"), {
+                test("none", async () => {
+                    const gqlResult = await testHelper.executeGraphQL(generateQuery("none"), {
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1671,8 +1671,8 @@ describe("Advanced Filtering", () => {
                     });
                 });
 
-                test("SINGLE", async () => {
-                    const gqlResult = await testHelper.executeGraphQL(generateQuery("SINGLE"), {
+                test("single", async () => {
+                    const gqlResult = await testHelper.executeGraphQL(generateQuery("single"), {
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1687,8 +1687,8 @@ describe("Advanced Filtering", () => {
                     });
                 });
 
-                test("SOME", async () => {
-                    const gqlResult = await testHelper.executeGraphQL(generateQuery("SOME"), {
+                test("some", async () => {
+                    const gqlResult = await testHelper.executeGraphQL(generateQuery("some"), {
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1713,9 +1713,9 @@ describe("Advanced Filtering", () => {
             });
 
             describe("on connection using NOT operator", () => {
-                const generateQuery = (predicate: "ALL" | "NONE" | "SINGLE" | "SOME") => /* GraphQL */ `
+                const generateQuery = (predicate: "all" | "none" | "single" | "some") => /* GraphQL */ `
                     query($movieIds: [ID!]!) {
-                        ${Movie.plural}(where: { AND: [{ id:{ in: $movieIds }}, { actorsConnection_${predicate}: { node: { NOT: { flag: {eq: false} } } } }] }) {
+                        ${Movie.plural}(where: { AND: [{ id:{ in: $movieIds }}, { actorsConnection: { ${predicate}: { node: { NOT: { flag: {eq: false} } } } } }] }) {
                             id
                             actors(where: { NOT: { flag: { eq: false } }}) {
                                 id
@@ -1725,8 +1725,8 @@ describe("Advanced Filtering", () => {
                     }
                 `;
 
-                test("ALL", async () => {
-                    const gqlResult = await testHelper.executeGraphQL(generateQuery("ALL"), {
+                test("all", async () => {
+                    const gqlResult = await testHelper.executeGraphQL(generateQuery("all"), {
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1741,8 +1741,8 @@ describe("Advanced Filtering", () => {
                     });
                 });
 
-                test("NONE", async () => {
-                    const gqlResult = await testHelper.executeGraphQL(generateQuery("NONE"), {
+                test("none", async () => {
+                    const gqlResult = await testHelper.executeGraphQL(generateQuery("none"), {
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1757,8 +1757,8 @@ describe("Advanced Filtering", () => {
                     });
                 });
 
-                test("SINGLE", async () => {
-                    const gqlResult = await testHelper.executeGraphQL(generateQuery("SINGLE"), {
+                test("single", async () => {
+                    const gqlResult = await testHelper.executeGraphQL(generateQuery("single"), {
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1773,8 +1773,8 @@ describe("Advanced Filtering", () => {
                     });
                 });
 
-                test("SOME", async () => {
-                    const gqlResult = await testHelper.executeGraphQL(generateQuery("SOME"), {
+                test("some", async () => {
+                    const gqlResult = await testHelper.executeGraphQL(generateQuery("some"), {
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1796,66 +1796,6 @@ describe("Advanced Filtering", () => {
                         actors: expect.toIncludeSameMembers([actors[0], actors[2]]),
                     });
                 });
-            });
-        });
-
-        test("should test for not null", async () => {
-            const randomType1 = testHelper.createUniqueType("Movie");
-            const randomType2 = testHelper.createUniqueType("Genre");
-
-            const typeDefs = /* GraphQL */ `
-                type ${randomType1.name} @node {
-                    id: ID
-                    ${randomType2.plural}: [${randomType2.name}!]! @relationship(type: "IN_GENRE", direction: OUT)
-                }
-
-                type ${randomType2.name} @node {
-                    id: ID
-                }
-            `;
-
-            await testHelper.initNeo4jGraphQL({ typeDefs });
-
-            const rootId = generate({
-                charset: "alphabetic",
-            });
-
-            const relationId = generate({
-                charset: "alphabetic",
-            });
-
-            const randomId = generate({
-                charset: "alphabetic",
-            });
-
-            await testHelper.executeCypher(
-                `
-                    CREATE (root:${randomType1.name} {id: $rootId})
-                    CREATE (:${randomType1.name} {id: $randomId})
-                    CREATE (relation:${randomType2.name} {id: $relationId})
-                    CREATE (:${randomType2.name} {id: $randomId})
-                    MERGE (root)-[:IN_GENRE]->(relation)
-                `,
-                { rootId, relationId, randomId }
-            );
-
-            const nullQuery = /* GraphQL */ `
-                {
-                    ${randomType1.plural}(where: { ${randomType2.plural}_SOME: null }) {
-                        id
-                    }
-                }
-            `;
-
-            // Test null checking (nodes without any related nodes on the specified field)
-
-            const nullResult = await testHelper.executeGraphQL(nullQuery);
-
-            expect(nullResult.errors).toBeUndefined();
-
-            expect((nullResult.data as any)[randomType1.plural]).toHaveLength(1);
-            expect((nullResult.data as any)[randomType1.plural][0]).toMatchObject({
-                id: randomId,
             });
         });
     });
