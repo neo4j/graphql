@@ -62,6 +62,10 @@ const operatorCheckMap = {
     gt: legacyOperatorCheckMap.GT,
     gte: legacyOperatorCheckMap.GTE,
     in: legacyOperatorCheckMap.IN,
+    startsWith: legacyOperatorCheckMap.STARTS_WITH,
+    endsWith: legacyOperatorCheckMap.ENDS_WITH,
+    contains: legacyOperatorCheckMap.CONTAINS,
+    includes: legacyOperatorCheckMap.INCLUDES,
 };
 
 export function getFilteringFn<T>(
@@ -74,5 +78,9 @@ export function getFilteringFn<T>(
 
     const operators = { ...operatorCheckMap, ...overrides };
 
-    return operators[operator];
+    const comparatorFunction = operators[operator];
+    if (!comparatorFunction) {
+        throw new Error(`Operator ${operator} not supported`);
+    }
+    return comparatorFunction;
 }
