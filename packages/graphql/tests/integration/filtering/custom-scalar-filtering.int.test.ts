@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { TestHelper } from "../utils/tests-helper";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("Custom Scalar Filtering", () => {
     const testHelper = new TestHelper();
@@ -65,6 +65,7 @@ describe("Custom Scalar Filtering", () => {
             expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
             expect((gqlResult.data as any)[randomType.plural][0].property).toEqual(value);
         });
+
         test("Filter NOT CustomScalar - expect array of return values", async () => {
             const randomType = testHelper.createUniqueType("Movie");
 
