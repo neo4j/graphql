@@ -38,6 +38,7 @@ import { DEPRECATE_AGGREGATION_FILTERS } from "../constants";
 import { numericalResolver } from "../resolvers/field/numerical";
 import { graphqlDirectivesToCompose } from "../to-compose";
 import { getAggregationFilterFromAttributeType } from "./get-aggregation-filter-from-attribute-type";
+import { shouldAddDeprecatedFields } from "./utils";
 
 export function withAggregateSelectionType({
     entityAdapter,
@@ -195,7 +196,7 @@ function makeAggregationFields(
 ): InputTypeComposerFieldConfigMapDefinition {
     const fields: InputTypeComposerFieldConfigMapDefinition = {};
     for (const attribute of attributes) {
-        if (features?.excludeDeprecatedFields?.aggregationFilters !== true) {
+        if (shouldAddDeprecatedFields(features, "aggregationFilters")) {
             addDeprecatedAggregationFieldsByType(
                 attribute,
                 userDefinedDirectivesOnTargetFields?.get(attribute.name),
