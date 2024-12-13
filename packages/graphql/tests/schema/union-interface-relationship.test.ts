@@ -93,6 +93,7 @@ describe("Union Interface Relationships", () => {
               AND: [ActedInAggregationWhereInput!]
               NOT: ActedInAggregationWhereInput
               OR: [ActedInAggregationWhereInput!]
+              screenTime: IntScalarAggregationFilters
               screenTime_AVERAGE_EQUAL: Float
               screenTime_AVERAGE_GT: Float
               screenTime_AVERAGE_GTE: Float
@@ -203,6 +204,7 @@ describe("Union Interface Relationships", () => {
               AND: [ActorMoviesAggregateInput!]
               NOT: ActorMoviesAggregateInput
               OR: [ActorMoviesAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -280,6 +282,7 @@ describe("Union Interface Relationships", () => {
               AND: [ActorMoviesNodeAggregationWhereInput!]
               NOT: ActorMoviesNodeAggregationWhereInput
               OR: [ActorMoviesNodeAggregationWhereInput!]
+              imdbId: IntScalarAggregationFilters
               imdbId_AVERAGE_EQUAL: Float
               imdbId_AVERAGE_GT: Float
               imdbId_AVERAGE_GTE: Float
@@ -300,6 +303,7 @@ describe("Union Interface Relationships", () => {
               imdbId_SUM_GTE: Int
               imdbId_SUM_LT: Int
               imdbId_SUM_LTE: Int
+              title: StringScalarAggregationFilters
               title_AVERAGE_LENGTH_EQUAL: Float
               title_AVERAGE_LENGTH_GT: Float
               title_AVERAGE_LENGTH_GTE: Float
@@ -497,6 +501,16 @@ describe("Union Interface Relationships", () => {
               Person: PersonWhere
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
             type Influencer implements Reviewer {
               reputation: Int!
               reviewerId: Int
@@ -582,6 +596,14 @@ describe("Union Interface Relationships", () => {
               sum: Int
             }
 
+            \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+            input IntScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: IntScalarFilters
+              min: IntScalarFilters
+              sum: IntScalarFilters
+            }
+
             \\"\\"\\"Int filters\\"\\"\\"
             input IntScalarFilters {
               eq: Int
@@ -631,6 +653,7 @@ describe("Union Interface Relationships", () => {
               AND: [MovieActorsAggregateInput!]
               NOT: MovieActorsAggregateInput
               OR: [MovieActorsAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -708,6 +731,7 @@ describe("Union Interface Relationships", () => {
               AND: [MovieActorsNodeAggregationWhereInput!]
               NOT: MovieActorsNodeAggregationWhereInput
               OR: [MovieActorsNodeAggregationWhereInput!]
+              id: IntScalarAggregationFilters
               id_AVERAGE_EQUAL: Float
               id_AVERAGE_GT: Float
               id_AVERAGE_GTE: Float
@@ -728,6 +752,7 @@ describe("Union Interface Relationships", () => {
               id_SUM_GTE: Int
               id_SUM_LT: Int
               id_SUM_LTE: Int
+              name: StringScalarAggregationFilters
               name_AVERAGE_LENGTH_EQUAL: Float
               name_AVERAGE_LENGTH_GT: Float
               name_AVERAGE_LENGTH_GTE: Float
@@ -1008,6 +1033,7 @@ describe("Union Interface Relationships", () => {
               AND: [MovieReviewersAggregateInput!]
               NOT: MovieReviewersAggregateInput
               OR: [MovieReviewersAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -1082,6 +1108,7 @@ describe("Union Interface Relationships", () => {
               AND: [MovieReviewersNodeAggregationWhereInput!]
               NOT: MovieReviewersNodeAggregationWhereInput
               OR: [MovieReviewersNodeAggregationWhereInput!]
+              reputation: IntScalarAggregationFilters
               reputation_AVERAGE_EQUAL: Float
               reputation_AVERAGE_GT: Float
               reputation_AVERAGE_GTE: Float
@@ -1102,6 +1129,7 @@ describe("Union Interface Relationships", () => {
               reputation_SUM_GTE: Int
               reputation_SUM_LT: Int
               reputation_SUM_LTE: Int
+              reviewerId: IntScalarAggregationFilters
               reviewerId_AVERAGE_EQUAL: Float
               reviewerId_AVERAGE_GT: Float
               reviewerId_AVERAGE_GTE: Float
@@ -1375,6 +1403,7 @@ describe("Union Interface Relationships", () => {
               AND: [PersonMoviesAggregateInput!]
               NOT: PersonMoviesAggregateInput
               OR: [PersonMoviesAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -1452,6 +1481,7 @@ describe("Union Interface Relationships", () => {
               AND: [PersonMoviesNodeAggregationWhereInput!]
               NOT: PersonMoviesNodeAggregationWhereInput
               OR: [PersonMoviesNodeAggregationWhereInput!]
+              imdbId: IntScalarAggregationFilters
               imdbId_AVERAGE_EQUAL: Float
               imdbId_AVERAGE_GT: Float
               imdbId_AVERAGE_GTE: Float
@@ -1472,6 +1502,7 @@ describe("Union Interface Relationships", () => {
               imdbId_SUM_GTE: Int
               imdbId_SUM_LT: Int
               imdbId_SUM_LTE: Int
+              title: StringScalarAggregationFilters
               title_AVERAGE_LENGTH_EQUAL: Float
               title_AVERAGE_LENGTH_GT: Float
               title_AVERAGE_LENGTH_GTE: Float
@@ -1640,6 +1671,7 @@ describe("Union Interface Relationships", () => {
               AND: [ReviewAggregationWhereInput!]
               NOT: ReviewAggregationWhereInput
               OR: [ReviewAggregationWhereInput!]
+              score: IntScalarAggregationFilters
               score_AVERAGE_EQUAL: Float
               score_AVERAGE_GT: Float
               score_AVERAGE_GTE: Float
@@ -1777,6 +1809,13 @@ describe("Union Interface Relationships", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
             }
 
             \\"\\"\\"String filters\\"\\"\\"

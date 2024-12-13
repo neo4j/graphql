@@ -62,6 +62,7 @@ describe("Alias", () => {
               AND: [ActorActedInAggregateInput!]
               NOT: ActorActedInAggregateInput
               OR: [ActorActedInAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -136,6 +137,7 @@ describe("Alias", () => {
               AND: [ActorActedInNodeAggregationWhereInput!]
               NOT: ActorActedInNodeAggregationWhereInput
               OR: [ActorActedInNodeAggregationWhereInput!]
+              rating: FloatScalarAggregationFilters
               rating_AVERAGE_EQUAL: Float
               rating_AVERAGE_GT: Float
               rating_AVERAGE_GTE: Float
@@ -156,6 +158,7 @@ describe("Alias", () => {
               rating_SUM_GTE: Float
               rating_SUM_LT: Float
               rating_SUM_LTE: Float
+              title: StringScalarAggregationFilters
               title_AVERAGE_LENGTH_EQUAL: Float
               title_AVERAGE_LENGTH_GT: Float
               title_AVERAGE_LENGTH_GTE: Float
@@ -186,6 +189,7 @@ describe("Alias", () => {
               AND: [ActorActedInPropsAggregationWhereInput!]
               NOT: ActorActedInPropsAggregationWhereInput
               OR: [ActorActedInPropsAggregationWhereInput!]
+              character: StringScalarAggregationFilters
               character_AVERAGE_LENGTH_EQUAL: Float
               character_AVERAGE_LENGTH_GT: Float
               character_AVERAGE_LENGTH_GTE: Float
@@ -201,6 +205,7 @@ describe("Alias", () => {
               character_SHORTEST_LENGTH_GTE: Int
               character_SHORTEST_LENGTH_LT: Int
               character_SHORTEST_LENGTH_LTE: Int
+              screenTime: IntScalarAggregationFilters
               screenTime_AVERAGE_EQUAL: Float
               screenTime_AVERAGE_GT: Float
               screenTime_AVERAGE_GTE: Float
@@ -429,6 +434,14 @@ describe("Alias", () => {
               sum: Float
             }
 
+            \\"\\"\\"Filters for an aggregation of a float field\\"\\"\\"
+            input FloatScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: FloatScalarFilters
+              min: FloatScalarFilters
+              sum: FloatScalarFilters
+            }
+
             \\"\\"\\"Float filters\\"\\"\\"
             input FloatScalarFilters {
               eq: Float
@@ -453,6 +466,14 @@ describe("Alias", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+            input IntScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: IntScalarFilters
+              min: IntScalarFilters
+              sum: IntScalarFilters
             }
 
             \\"\\"\\"Int filters\\"\\"\\"
@@ -578,6 +599,13 @@ describe("Alias", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
             }
 
             \\"\\"\\"String filters\\"\\"\\"

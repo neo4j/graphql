@@ -74,6 +74,7 @@ describe("Deprecated mutation operations", () => {
               AND: [ActedInAggregationWhereInput!]
               NOT: ActedInAggregationWhereInput
               OR: [ActedInAggregationWhereInput!]
+              value: IntScalarAggregationFilters
               value_AVERAGE_EQUAL: Float
               value_AVERAGE_GT: Float
               value_AVERAGE_GTE: Float
@@ -144,6 +145,7 @@ describe("Deprecated mutation operations", () => {
               AND: [ActorActedInAggregateInput!]
               NOT: ActorActedInAggregateInput
               OR: [ActorActedInAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -221,6 +223,7 @@ describe("Deprecated mutation operations", () => {
               AND: [ActorActedInNodeAggregationWhereInput!]
               NOT: ActorActedInNodeAggregationWhereInput
               OR: [ActorActedInNodeAggregationWhereInput!]
+              averageRating: FloatScalarAggregationFilters
               averageRating_AVERAGE_EQUAL: Float
               averageRating_AVERAGE_GT: Float
               averageRating_AVERAGE_GTE: Float
@@ -241,6 +244,7 @@ describe("Deprecated mutation operations", () => {
               averageRating_SUM_GTE: Float
               averageRating_SUM_LT: Float
               averageRating_SUM_LTE: Float
+              id: IDScalarAggregationFilters
               id_MAX_EQUAL: ID
               id_MAX_GT: ID
               id_MAX_GTE: ID
@@ -445,6 +449,14 @@ describe("Deprecated mutation operations", () => {
               includes: FloatScalarFilters
             }
 
+            \\"\\"\\"Filters for an aggregation of a float field\\"\\"\\"
+            input FloatScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: FloatScalarFilters
+              min: FloatScalarFilters
+              sum: FloatScalarFilters
+            }
+
             \\"\\"\\"Float filters\\"\\"\\"
             input FloatScalarFilters {
               eq: Float
@@ -467,6 +479,12 @@ describe("Deprecated mutation operations", () => {
             type IDAggregateSelection {
               longest: ID
               shortest: ID
+            }
+
+            \\"\\"\\"Filters for an aggregation of an ID input field\\"\\"\\"
+            input IDScalarAggregationFilters {
+              max: IDScalarFilters
+              min: IDScalarFilters
             }
 
             \\"\\"\\"ID filters\\"\\"\\"
@@ -493,6 +511,14 @@ describe("Deprecated mutation operations", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+            input IntScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: IntScalarFilters
+              min: IntScalarFilters
+              sum: IntScalarFilters
             }
 
             \\"\\"\\"Int filters\\"\\"\\"
@@ -548,6 +574,7 @@ describe("Deprecated mutation operations", () => {
               AND: [MovieActorsAggregateInput!]
               NOT: MovieActorsAggregateInput
               OR: [MovieActorsAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -625,6 +652,7 @@ describe("Deprecated mutation operations", () => {
               AND: [MovieActorsNodeAggregationWhereInput!]
               NOT: MovieActorsNodeAggregationWhereInput
               OR: [MovieActorsNodeAggregationWhereInput!]
+              name: StringScalarAggregationFilters
               name_AVERAGE_LENGTH_EQUAL: Float
               name_AVERAGE_LENGTH_GT: Float
               name_AVERAGE_LENGTH_GTE: Float
@@ -893,6 +921,13 @@ describe("Deprecated mutation operations", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
             }
 
             \\"\\"\\"String filters\\"\\"\\"

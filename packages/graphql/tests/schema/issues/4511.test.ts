@@ -129,6 +129,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               AND: [CreatureMoviesAggregateInput!]
               NOT: CreatureMoviesAggregateInput
               OR: [CreatureMoviesAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -196,6 +197,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               AND: [CreatureMoviesNodeAggregationWhereInput!]
               NOT: CreatureMoviesNodeAggregationWhereInput
               OR: [CreatureMoviesNodeAggregationWhereInput!]
+              id: IDScalarAggregationFilters
               id_MAX_EQUAL: ID
               id_MAX_GT: ID
               id_MAX_GTE: ID
@@ -318,6 +320,12 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               shortest: ID
             }
 
+            \\"\\"\\"Filters for an aggregation of an ID input field\\"\\"\\"
+            input IDScalarAggregationFilters {
+              max: IDScalarFilters
+              min: IDScalarFilters
+            }
+
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -393,6 +401,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               AND: [MovieDirectorAggregateInput!]
               NOT: MovieDirectorAggregateInput
               OR: [MovieDirectorAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -602,6 +611,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               AND: [PersonMoviesAggregateInput!]
               NOT: PersonMoviesAggregateInput
               OR: [PersonMoviesAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -657,6 +667,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               AND: [PersonMoviesNodeAggregationWhereInput!]
               NOT: PersonMoviesNodeAggregationWhereInput
               OR: [PersonMoviesNodeAggregationWhereInput!]
+              id: IDScalarAggregationFilters
               id_MAX_EQUAL: ID
               id_MAX_GT: ID
               id_MAX_GTE: ID
@@ -776,6 +787,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               AND: [ProductionDirectorAggregateInput!]
               NOT: ProductionDirectorAggregateInput
               OR: [ProductionDirectorAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -1023,6 +1035,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               AND: [SeriesDirectorAggregateInput!]
               NOT: SeriesDirectorAggregateInput
               OR: [SeriesDirectorAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int

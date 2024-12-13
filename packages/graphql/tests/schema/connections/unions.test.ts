@@ -345,6 +345,7 @@ describe("Unions", () => {
               AND: [BookAuthorAggregateInput!]
               NOT: BookAuthorAggregateInput
               OR: [BookAuthorAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -436,6 +437,7 @@ describe("Unions", () => {
               AND: [BookAuthorNodeAggregationWhereInput!]
               NOT: BookAuthorNodeAggregationWhereInput
               OR: [BookAuthorNodeAggregationWhereInput!]
+              name: StringScalarAggregationFilters
               name_AVERAGE_LENGTH_EQUAL: Float
               name_AVERAGE_LENGTH_GT: Float
               name_AVERAGE_LENGTH_GTE: Float
@@ -599,11 +601,29 @@ describe("Unions", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+            input IntScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: IntScalarFilters
+              min: IntScalarFilters
+              sum: IntScalarFilters
             }
 
             \\"\\"\\"Int filters\\"\\"\\"
@@ -639,6 +659,7 @@ describe("Unions", () => {
               AND: [JournalAuthorAggregateInput!]
               NOT: JournalAuthorAggregateInput
               OR: [JournalAuthorAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -730,6 +751,7 @@ describe("Unions", () => {
               AND: [JournalAuthorNodeAggregationWhereInput!]
               NOT: JournalAuthorNodeAggregationWhereInput
               OR: [JournalAuthorNodeAggregationWhereInput!]
+              name: StringScalarAggregationFilters
               name_AVERAGE_LENGTH_EQUAL: Float
               name_AVERAGE_LENGTH_GT: Float
               name_AVERAGE_LENGTH_GTE: Float
@@ -915,6 +937,13 @@ describe("Unions", () => {
               shortest: String
             }
 
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
+            }
+
             \\"\\"\\"String filters\\"\\"\\"
             input StringScalarFilters {
               contains: String
@@ -973,6 +1002,7 @@ describe("Unions", () => {
               AND: [WroteAggregationWhereInput!]
               NOT: WroteAggregationWhereInput
               OR: [WroteAggregationWhereInput!]
+              words: IntScalarAggregationFilters
               words_AVERAGE_EQUAL: Float
               words_AVERAGE_GT: Float
               words_AVERAGE_GTE: Float

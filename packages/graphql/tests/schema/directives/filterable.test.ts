@@ -964,6 +964,7 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesAggregateInput!]
                       NOT: ActorMoviesAggregateInput
                       OR: [ActorMoviesAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -1186,6 +1187,26 @@ describe("@filterable directive", () => {
                       UPDATE
                     }
 
+                    \\"\\"\\"Float filters\\"\\"\\"
+                    input FloatScalarFilters {
+                      eq: Float
+                      gt: Float
+                      gte: Float
+                      in: [Float!]
+                      lt: Float
+                      lte: Float
+                    }
+
+                    \\"\\"\\"Int filters\\"\\"\\"
+                    input IntScalarFilters {
+                      eq: Int
+                      gt: Int
+                      gte: Int
+                      in: [Int!]
+                      lt: Int
+                      lte: Int
+                    }
+
                     type Movie {
                       actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
                       actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
@@ -1207,6 +1228,7 @@ describe("@filterable directive", () => {
                       AND: [MovieActorsAggregateInput!]
                       NOT: MovieActorsAggregateInput
                       OR: [MovieActorsAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -1279,6 +1301,7 @@ describe("@filterable directive", () => {
                       AND: [MovieActorsNodeAggregationWhereInput!]
                       NOT: MovieActorsNodeAggregationWhereInput
                       OR: [MovieActorsNodeAggregationWhereInput!]
+                      password: StringScalarAggregationFilters
                       password_AVERAGE_LENGTH_EQUAL: Float
                       password_AVERAGE_LENGTH_GT: Float
                       password_AVERAGE_LENGTH_GTE: Float
@@ -1294,6 +1317,7 @@ describe("@filterable directive", () => {
                       password_SHORTEST_LENGTH_GTE: Int
                       password_SHORTEST_LENGTH_LT: Int
                       password_SHORTEST_LENGTH_LTE: Int
+                      username: StringScalarAggregationFilters
                       username_AVERAGE_LENGTH_EQUAL: Float
                       username_AVERAGE_LENGTH_GT: Float
                       username_AVERAGE_LENGTH_GTE: Float
@@ -1501,6 +1525,13 @@ describe("@filterable directive", () => {
                     type StringAggregateSelection {
                       longest: String
                       shortest: String
+                    }
+
+                    \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                    input StringScalarAggregationFilters {
+                      averageLength: FloatScalarFilters
+                      longestLength: IntScalarFilters
+                      shortestLength: IntScalarFilters
                     }
 
                     \\"\\"\\"String filters\\"\\"\\"
@@ -1652,6 +1683,7 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesAggregateInput!]
                       NOT: ActorMoviesAggregateInput
                       OR: [ActorMoviesAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -1724,6 +1756,7 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesNodeAggregationWhereInput!]
                       NOT: ActorMoviesNodeAggregationWhereInput
                       OR: [ActorMoviesNodeAggregationWhereInput!]
+                      title: StringScalarAggregationFilters
                       title_AVERAGE_LENGTH_EQUAL: Float
                       title_AVERAGE_LENGTH_GT: Float
                       title_AVERAGE_LENGTH_GTE: Float
@@ -1896,6 +1929,26 @@ describe("@filterable directive", () => {
                       UPDATE
                     }
 
+                    \\"\\"\\"Float filters\\"\\"\\"
+                    input FloatScalarFilters {
+                      eq: Float
+                      gt: Float
+                      gte: Float
+                      in: [Float!]
+                      lt: Float
+                      lte: Float
+                    }
+
+                    \\"\\"\\"Int filters\\"\\"\\"
+                    input IntScalarFilters {
+                      eq: Int
+                      gt: Int
+                      gte: Int
+                      in: [Int!]
+                      lt: Int
+                      lte: Int
+                    }
+
                     type Movie {
                       actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
                       actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
@@ -1917,6 +1970,7 @@ describe("@filterable directive", () => {
                       AND: [MovieActorsAggregateInput!]
                       NOT: MovieActorsAggregateInput
                       OR: [MovieActorsAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -1989,6 +2043,7 @@ describe("@filterable directive", () => {
                       AND: [MovieActorsNodeAggregationWhereInput!]
                       NOT: MovieActorsNodeAggregationWhereInput
                       OR: [MovieActorsNodeAggregationWhereInput!]
+                      password: StringScalarAggregationFilters
                       password_AVERAGE_LENGTH_EQUAL: Float
                       password_AVERAGE_LENGTH_GT: Float
                       password_AVERAGE_LENGTH_GTE: Float
@@ -2004,6 +2059,7 @@ describe("@filterable directive", () => {
                       password_SHORTEST_LENGTH_GTE: Int
                       password_SHORTEST_LENGTH_LT: Int
                       password_SHORTEST_LENGTH_LTE: Int
+                      username: StringScalarAggregationFilters
                       username_AVERAGE_LENGTH_EQUAL: Float
                       username_AVERAGE_LENGTH_GT: Float
                       username_AVERAGE_LENGTH_GTE: Float
@@ -2213,6 +2269,13 @@ describe("@filterable directive", () => {
                       shortest: String
                     }
 
+                    \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                    input StringScalarAggregationFilters {
+                      averageLength: FloatScalarFilters
+                      longestLength: IntScalarFilters
+                      shortestLength: IntScalarFilters
+                    }
+
                     \\"\\"\\"String filters\\"\\"\\"
                     input StringScalarFilters {
                       contains: String
@@ -2362,6 +2425,7 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesAggregateInput!]
                       NOT: ActorMoviesAggregateInput
                       OR: [ActorMoviesAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -2434,6 +2498,7 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesNodeAggregationWhereInput!]
                       NOT: ActorMoviesNodeAggregationWhereInput
                       OR: [ActorMoviesNodeAggregationWhereInput!]
+                      title: StringScalarAggregationFilters
                       title_AVERAGE_LENGTH_EQUAL: Float
                       title_AVERAGE_LENGTH_GT: Float
                       title_AVERAGE_LENGTH_GTE: Float
@@ -2606,6 +2671,26 @@ describe("@filterable directive", () => {
                       UPDATE
                     }
 
+                    \\"\\"\\"Float filters\\"\\"\\"
+                    input FloatScalarFilters {
+                      eq: Float
+                      gt: Float
+                      gte: Float
+                      in: [Float!]
+                      lt: Float
+                      lte: Float
+                    }
+
+                    \\"\\"\\"Int filters\\"\\"\\"
+                    input IntScalarFilters {
+                      eq: Int
+                      gt: Int
+                      gte: Int
+                      in: [Int!]
+                      lt: Int
+                      lte: Int
+                    }
+
                     type Movie {
                       actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
                       actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
@@ -2627,6 +2712,7 @@ describe("@filterable directive", () => {
                       AND: [MovieActorsAggregateInput!]
                       NOT: MovieActorsAggregateInput
                       OR: [MovieActorsAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -2699,6 +2785,7 @@ describe("@filterable directive", () => {
                       AND: [MovieActorsNodeAggregationWhereInput!]
                       NOT: MovieActorsNodeAggregationWhereInput
                       OR: [MovieActorsNodeAggregationWhereInput!]
+                      password: StringScalarAggregationFilters
                       password_AVERAGE_LENGTH_EQUAL: Float
                       password_AVERAGE_LENGTH_GT: Float
                       password_AVERAGE_LENGTH_GTE: Float
@@ -2714,6 +2801,7 @@ describe("@filterable directive", () => {
                       password_SHORTEST_LENGTH_GTE: Int
                       password_SHORTEST_LENGTH_LT: Int
                       password_SHORTEST_LENGTH_LTE: Int
+                      username: StringScalarAggregationFilters
                       username_AVERAGE_LENGTH_EQUAL: Float
                       username_AVERAGE_LENGTH_GT: Float
                       username_AVERAGE_LENGTH_GTE: Float
@@ -2903,6 +2991,13 @@ describe("@filterable directive", () => {
                     type StringAggregateSelection {
                       longest: String
                       shortest: String
+                    }
+
+                    \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                    input StringScalarAggregationFilters {
+                      averageLength: FloatScalarFilters
+                      longestLength: IntScalarFilters
+                      shortestLength: IntScalarFilters
                     }
 
                     \\"\\"\\"String filters\\"\\"\\"
@@ -3057,6 +3152,7 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesAggregateInput!]
                       NOT: ActorMoviesAggregateInput
                       OR: [ActorMoviesAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -3129,6 +3225,7 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesNodeAggregationWhereInput!]
                       NOT: ActorMoviesNodeAggregationWhereInput
                       OR: [ActorMoviesNodeAggregationWhereInput!]
+                      title: StringScalarAggregationFilters
                       title_AVERAGE_LENGTH_EQUAL: Float
                       title_AVERAGE_LENGTH_GT: Float
                       title_AVERAGE_LENGTH_GTE: Float
@@ -3299,6 +3396,26 @@ describe("@filterable directive", () => {
                       DELETE
                       DELETE_RELATIONSHIP
                       UPDATE
+                    }
+
+                    \\"\\"\\"Float filters\\"\\"\\"
+                    input FloatScalarFilters {
+                      eq: Float
+                      gt: Float
+                      gte: Float
+                      in: [Float!]
+                      lt: Float
+                      lte: Float
+                    }
+
+                    \\"\\"\\"Int filters\\"\\"\\"
+                    input IntScalarFilters {
+                      eq: Int
+                      gt: Int
+                      gte: Int
+                      in: [Int!]
+                      lt: Int
+                      lte: Int
                     }
 
                     type Movie {
@@ -3569,6 +3686,13 @@ describe("@filterable directive", () => {
                       shortest: String
                     }
 
+                    \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                    input StringScalarAggregationFilters {
+                      averageLength: FloatScalarFilters
+                      longestLength: IntScalarFilters
+                      shortestLength: IntScalarFilters
+                    }
+
                     \\"\\"\\"String filters\\"\\"\\"
                     input StringScalarFilters {
                       contains: String
@@ -3720,6 +3844,7 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesAggregateInput!]
                       NOT: ActorMoviesAggregateInput
                       OR: [ActorMoviesAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -3792,6 +3917,7 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesNodeAggregationWhereInput!]
                       NOT: ActorMoviesNodeAggregationWhereInput
                       OR: [ActorMoviesNodeAggregationWhereInput!]
+                      title: StringScalarAggregationFilters
                       title_AVERAGE_LENGTH_EQUAL: Float
                       title_AVERAGE_LENGTH_GT: Float
                       title_AVERAGE_LENGTH_GTE: Float
@@ -3964,6 +4090,26 @@ describe("@filterable directive", () => {
                       UPDATE
                     }
 
+                    \\"\\"\\"Float filters\\"\\"\\"
+                    input FloatScalarFilters {
+                      eq: Float
+                      gt: Float
+                      gte: Float
+                      in: [Float!]
+                      lt: Float
+                      lte: Float
+                    }
+
+                    \\"\\"\\"Int filters\\"\\"\\"
+                    input IntScalarFilters {
+                      eq: Int
+                      gt: Int
+                      gte: Int
+                      in: [Int!]
+                      lt: Int
+                      lte: Int
+                    }
+
                     type Movie {
                       actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
                       actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
@@ -3985,6 +4131,7 @@ describe("@filterable directive", () => {
                       AND: [MovieActorsAggregateInput!]
                       NOT: MovieActorsAggregateInput
                       OR: [MovieActorsAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -4057,6 +4204,7 @@ describe("@filterable directive", () => {
                       AND: [MovieActorsNodeAggregationWhereInput!]
                       NOT: MovieActorsNodeAggregationWhereInput
                       OR: [MovieActorsNodeAggregationWhereInput!]
+                      password: StringScalarAggregationFilters
                       password_AVERAGE_LENGTH_EQUAL: Float
                       password_AVERAGE_LENGTH_GT: Float
                       password_AVERAGE_LENGTH_GTE: Float
@@ -4072,6 +4220,7 @@ describe("@filterable directive", () => {
                       password_SHORTEST_LENGTH_GTE: Int
                       password_SHORTEST_LENGTH_LT: Int
                       password_SHORTEST_LENGTH_LTE: Int
+                      username: StringScalarAggregationFilters
                       username_AVERAGE_LENGTH_EQUAL: Float
                       username_AVERAGE_LENGTH_GT: Float
                       username_AVERAGE_LENGTH_GTE: Float
@@ -4279,6 +4428,13 @@ describe("@filterable directive", () => {
                     type StringAggregateSelection {
                       longest: String
                       shortest: String
+                    }
+
+                    \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                    input StringScalarAggregationFilters {
+                      averageLength: FloatScalarFilters
+                      longestLength: IntScalarFilters
+                      shortestLength: IntScalarFilters
                     }
 
                     \\"\\"\\"String filters\\"\\"\\"
@@ -4432,6 +4588,7 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesAggregateInput!]
                       NOT: ActorMoviesAggregateInput
                       OR: [ActorMoviesAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -4504,6 +4661,7 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesNodeAggregationWhereInput!]
                       NOT: ActorMoviesNodeAggregationWhereInput
                       OR: [ActorMoviesNodeAggregationWhereInput!]
+                      title: StringScalarAggregationFilters
                       title_AVERAGE_LENGTH_EQUAL: Float
                       title_AVERAGE_LENGTH_GT: Float
                       title_AVERAGE_LENGTH_GTE: Float
@@ -4676,6 +4834,26 @@ describe("@filterable directive", () => {
                       UPDATE
                     }
 
+                    \\"\\"\\"Float filters\\"\\"\\"
+                    input FloatScalarFilters {
+                      eq: Float
+                      gt: Float
+                      gte: Float
+                      in: [Float!]
+                      lt: Float
+                      lte: Float
+                    }
+
+                    \\"\\"\\"Int filters\\"\\"\\"
+                    input IntScalarFilters {
+                      eq: Int
+                      gt: Int
+                      gte: Int
+                      in: [Int!]
+                      lt: Int
+                      lte: Int
+                    }
+
                     type Movie {
                       actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
                       actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
@@ -4697,6 +4875,7 @@ describe("@filterable directive", () => {
                       AND: [MovieActorsAggregateInput!]
                       NOT: MovieActorsAggregateInput
                       OR: [MovieActorsAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -4750,6 +4929,7 @@ describe("@filterable directive", () => {
                       AND: [MovieActorsNodeAggregationWhereInput!]
                       NOT: MovieActorsNodeAggregationWhereInput
                       OR: [MovieActorsNodeAggregationWhereInput!]
+                      password: StringScalarAggregationFilters
                       password_AVERAGE_LENGTH_EQUAL: Float
                       password_AVERAGE_LENGTH_GT: Float
                       password_AVERAGE_LENGTH_GTE: Float
@@ -4765,6 +4945,7 @@ describe("@filterable directive", () => {
                       password_SHORTEST_LENGTH_GTE: Int
                       password_SHORTEST_LENGTH_LT: Int
                       password_SHORTEST_LENGTH_LTE: Int
+                      username: StringScalarAggregationFilters
                       username_AVERAGE_LENGTH_EQUAL: Float
                       username_AVERAGE_LENGTH_GT: Float
                       username_AVERAGE_LENGTH_GTE: Float
@@ -4937,6 +5118,13 @@ describe("@filterable directive", () => {
                       shortest: String
                     }
 
+                    \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                    input StringScalarAggregationFilters {
+                      averageLength: FloatScalarFilters
+                      longestLength: IntScalarFilters
+                      shortestLength: IntScalarFilters
+                    }
+
                     \\"\\"\\"String filters\\"\\"\\"
                     input StringScalarFilters {
                       contains: String
@@ -5088,6 +5276,7 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesAggregateInput!]
                       NOT: ActorMoviesAggregateInput
                       OR: [ActorMoviesAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -5160,6 +5349,7 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesNodeAggregationWhereInput!]
                       NOT: ActorMoviesNodeAggregationWhereInput
                       OR: [ActorMoviesNodeAggregationWhereInput!]
+                      title: StringScalarAggregationFilters
                       title_AVERAGE_LENGTH_EQUAL: Float
                       title_AVERAGE_LENGTH_GT: Float
                       title_AVERAGE_LENGTH_GTE: Float
@@ -5330,6 +5520,26 @@ describe("@filterable directive", () => {
                       DELETE
                       DELETE_RELATIONSHIP
                       UPDATE
+                    }
+
+                    \\"\\"\\"Float filters\\"\\"\\"
+                    input FloatScalarFilters {
+                      eq: Float
+                      gt: Float
+                      gte: Float
+                      in: [Float!]
+                      lt: Float
+                      lte: Float
+                    }
+
+                    \\"\\"\\"Int filters\\"\\"\\"
+                    input IntScalarFilters {
+                      eq: Int
+                      gt: Int
+                      gte: Int
+                      in: [Int!]
+                      lt: Int
+                      lte: Int
                     }
 
                     type Movie {
@@ -5600,6 +5810,13 @@ describe("@filterable directive", () => {
                       shortest: String
                     }
 
+                    \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                    input StringScalarAggregationFilters {
+                      averageLength: FloatScalarFilters
+                      longestLength: IntScalarFilters
+                      shortestLength: IntScalarFilters
+                    }
+
                     \\"\\"\\"String filters\\"\\"\\"
                     input StringScalarFilters {
                       contains: String
@@ -5744,6 +5961,7 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesAggregateInput!]
                       NOT: ActorMoviesAggregateInput
                       OR: [ActorMoviesAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -5816,6 +6034,7 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesNodeAggregationWhereInput!]
                       NOT: ActorMoviesNodeAggregationWhereInput
                       OR: [ActorMoviesNodeAggregationWhereInput!]
+                      title: StringScalarAggregationFilters
                       title_AVERAGE_LENGTH_EQUAL: Float
                       title_AVERAGE_LENGTH_GT: Float
                       title_AVERAGE_LENGTH_GTE: Float
@@ -5986,6 +6205,26 @@ describe("@filterable directive", () => {
                       DELETE
                       DELETE_RELATIONSHIP
                       UPDATE
+                    }
+
+                    \\"\\"\\"Float filters\\"\\"\\"
+                    input FloatScalarFilters {
+                      eq: Float
+                      gt: Float
+                      gte: Float
+                      in: [Float!]
+                      lt: Float
+                      lte: Float
+                    }
+
+                    \\"\\"\\"Int filters\\"\\"\\"
+                    input IntScalarFilters {
+                      eq: Int
+                      gt: Int
+                      gte: Int
+                      in: [Int!]
+                      lt: Int
+                      lte: Int
                     }
 
                     type Movie {
@@ -6312,6 +6551,13 @@ describe("@filterable directive", () => {
                       shortest: String
                     }
 
+                    \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                    input StringScalarAggregationFilters {
+                      averageLength: FloatScalarFilters
+                      longestLength: IntScalarFilters
+                      shortestLength: IntScalarFilters
+                    }
+
                     \\"\\"\\"String filters\\"\\"\\"
                     input StringScalarFilters {
                       contains: String
@@ -6456,6 +6702,7 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesAggregateInput!]
                       NOT: ActorMoviesAggregateInput
                       OR: [ActorMoviesAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -6528,6 +6775,7 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesNodeAggregationWhereInput!]
                       NOT: ActorMoviesNodeAggregationWhereInput
                       OR: [ActorMoviesNodeAggregationWhereInput!]
+                      title: StringScalarAggregationFilters
                       title_AVERAGE_LENGTH_EQUAL: Float
                       title_AVERAGE_LENGTH_GT: Float
                       title_AVERAGE_LENGTH_GTE: Float
@@ -6700,6 +6948,26 @@ describe("@filterable directive", () => {
                       UPDATE
                     }
 
+                    \\"\\"\\"Float filters\\"\\"\\"
+                    input FloatScalarFilters {
+                      eq: Float
+                      gt: Float
+                      gte: Float
+                      in: [Float!]
+                      lt: Float
+                      lte: Float
+                    }
+
+                    \\"\\"\\"Int filters\\"\\"\\"
+                    input IntScalarFilters {
+                      eq: Int
+                      gt: Int
+                      gte: Int
+                      in: [Int!]
+                      lt: Int
+                      lte: Int
+                    }
+
                     type Movie {
                       actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
                       actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection
@@ -6711,6 +6979,7 @@ describe("@filterable directive", () => {
                       AND: [MovieActorsAggregateInput!]
                       NOT: MovieActorsAggregateInput
                       OR: [MovieActorsAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -6780,6 +7049,7 @@ describe("@filterable directive", () => {
                       AND: [MovieActorsNodeAggregationWhereInput!]
                       NOT: MovieActorsNodeAggregationWhereInput
                       OR: [MovieActorsNodeAggregationWhereInput!]
+                      username: StringScalarAggregationFilters
                       username_AVERAGE_LENGTH_EQUAL: Float
                       username_AVERAGE_LENGTH_GT: Float
                       username_AVERAGE_LENGTH_GTE: Float
@@ -7058,6 +7328,13 @@ describe("@filterable directive", () => {
                       shortest: String
                     }
 
+                    \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                    input StringScalarAggregationFilters {
+                      averageLength: FloatScalarFilters
+                      longestLength: IntScalarFilters
+                      shortestLength: IntScalarFilters
+                    }
+
                     \\"\\"\\"String filters\\"\\"\\"
                     input StringScalarFilters {
                       contains: String
@@ -7202,6 +7479,7 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesAggregateInput!]
                       NOT: ActorMoviesAggregateInput
                       OR: [ActorMoviesAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -7274,6 +7552,7 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesNodeAggregationWhereInput!]
                       NOT: ActorMoviesNodeAggregationWhereInput
                       OR: [ActorMoviesNodeAggregationWhereInput!]
+                      title: StringScalarAggregationFilters
                       title_AVERAGE_LENGTH_EQUAL: Float
                       title_AVERAGE_LENGTH_GT: Float
                       title_AVERAGE_LENGTH_GTE: Float
@@ -7444,6 +7723,26 @@ describe("@filterable directive", () => {
                       DELETE
                       DELETE_RELATIONSHIP
                       UPDATE
+                    }
+
+                    \\"\\"\\"Float filters\\"\\"\\"
+                    input FloatScalarFilters {
+                      eq: Float
+                      gt: Float
+                      gte: Float
+                      in: [Float!]
+                      lt: Float
+                      lte: Float
+                    }
+
+                    \\"\\"\\"Int filters\\"\\"\\"
+                    input IntScalarFilters {
+                      eq: Int
+                      gt: Int
+                      gte: Int
+                      in: [Int!]
+                      lt: Int
+                      lte: Int
                     }
 
                     type Movie {
@@ -7768,6 +8067,13 @@ describe("@filterable directive", () => {
                     type StringAggregateSelection {
                       longest: String
                       shortest: String
+                    }
+
+                    \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                    input StringScalarAggregationFilters {
+                      averageLength: FloatScalarFilters
+                      longestLength: IntScalarFilters
+                      shortestLength: IntScalarFilters
                     }
 
                     \\"\\"\\"String filters\\"\\"\\"
@@ -7930,6 +8236,7 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesAggregateInput!]
                       NOT: ActorMoviesAggregateInput
                       OR: [ActorMoviesAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -8002,6 +8309,7 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesNodeAggregationWhereInput!]
                       NOT: ActorMoviesNodeAggregationWhereInput
                       OR: [ActorMoviesNodeAggregationWhereInput!]
+                      title: StringScalarAggregationFilters
                       title_AVERAGE_LENGTH_EQUAL: Float
                       title_AVERAGE_LENGTH_GT: Float
                       title_AVERAGE_LENGTH_GTE: Float
@@ -8211,6 +8519,7 @@ describe("@filterable directive", () => {
                       AND: [AppearanceMoviesAggregateInput!]
                       NOT: AppearanceMoviesAggregateInput
                       OR: [AppearanceMoviesAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -8283,6 +8592,7 @@ describe("@filterable directive", () => {
                       AND: [AppearanceMoviesNodeAggregationWhereInput!]
                       NOT: AppearanceMoviesNodeAggregationWhereInput
                       OR: [AppearanceMoviesNodeAggregationWhereInput!]
+                      title: StringScalarAggregationFilters
                       title_AVERAGE_LENGTH_EQUAL: Float
                       title_AVERAGE_LENGTH_GT: Float
                       title_AVERAGE_LENGTH_GTE: Float
@@ -8458,6 +8768,26 @@ describe("@filterable directive", () => {
                       DELETE
                       DELETE_RELATIONSHIP
                       UPDATE
+                    }
+
+                    \\"\\"\\"Float filters\\"\\"\\"
+                    input FloatScalarFilters {
+                      eq: Float
+                      gt: Float
+                      gte: Float
+                      in: [Float!]
+                      lt: Float
+                      lte: Float
+                    }
+
+                    \\"\\"\\"Int filters\\"\\"\\"
+                    input IntScalarFilters {
+                      eq: Int
+                      gt: Int
+                      gte: Int
+                      in: [Int!]
+                      lt: Int
+                      lte: Int
                     }
 
                     type Movie {
@@ -8799,6 +9129,13 @@ describe("@filterable directive", () => {
                     type StringAggregateSelection {
                       longest: String
                       shortest: String
+                    }
+
+                    \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                    input StringScalarAggregationFilters {
+                      averageLength: FloatScalarFilters
+                      longestLength: IntScalarFilters
+                      shortestLength: IntScalarFilters
                     }
 
                     \\"\\"\\"String filters\\"\\"\\"
@@ -8969,6 +9306,7 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesAggregateInput!]
                       NOT: ActorMoviesAggregateInput
                       OR: [ActorMoviesAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -9041,6 +9379,7 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesNodeAggregationWhereInput!]
                       NOT: ActorMoviesNodeAggregationWhereInput
                       OR: [ActorMoviesNodeAggregationWhereInput!]
+                      title: StringScalarAggregationFilters
                       title_AVERAGE_LENGTH_EQUAL: Float
                       title_AVERAGE_LENGTH_GT: Float
                       title_AVERAGE_LENGTH_GTE: Float
@@ -9250,6 +9589,7 @@ describe("@filterable directive", () => {
                       AND: [AppearanceMoviesAggregateInput!]
                       NOT: AppearanceMoviesAggregateInput
                       OR: [AppearanceMoviesAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -9322,6 +9662,7 @@ describe("@filterable directive", () => {
                       AND: [AppearanceMoviesNodeAggregationWhereInput!]
                       NOT: AppearanceMoviesNodeAggregationWhereInput
                       OR: [AppearanceMoviesNodeAggregationWhereInput!]
+                      title: StringScalarAggregationFilters
                       title_AVERAGE_LENGTH_EQUAL: Float
                       title_AVERAGE_LENGTH_GT: Float
                       title_AVERAGE_LENGTH_GTE: Float
@@ -9497,6 +9838,26 @@ describe("@filterable directive", () => {
                       DELETE
                       DELETE_RELATIONSHIP
                       UPDATE
+                    }
+
+                    \\"\\"\\"Float filters\\"\\"\\"
+                    input FloatScalarFilters {
+                      eq: Float
+                      gt: Float
+                      gte: Float
+                      in: [Float!]
+                      lt: Float
+                      lte: Float
+                    }
+
+                    \\"\\"\\"Int filters\\"\\"\\"
+                    input IntScalarFilters {
+                      eq: Int
+                      gt: Int
+                      gte: Int
+                      in: [Int!]
+                      lt: Int
+                      lte: Int
                     }
 
                     type Movie {
@@ -9838,6 +10199,13 @@ describe("@filterable directive", () => {
                     type StringAggregateSelection {
                       longest: String
                       shortest: String
+                    }
+
+                    \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                    input StringScalarAggregationFilters {
+                      averageLength: FloatScalarFilters
+                      longestLength: IntScalarFilters
+                      shortestLength: IntScalarFilters
                     }
 
                     \\"\\"\\"String filters\\"\\"\\"
@@ -10008,6 +10376,7 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesAggregateInput!]
                       NOT: ActorMoviesAggregateInput
                       OR: [ActorMoviesAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -10080,6 +10449,7 @@ describe("@filterable directive", () => {
                       AND: [ActorMoviesNodeAggregationWhereInput!]
                       NOT: ActorMoviesNodeAggregationWhereInput
                       OR: [ActorMoviesNodeAggregationWhereInput!]
+                      title: StringScalarAggregationFilters
                       title_AVERAGE_LENGTH_EQUAL: Float
                       title_AVERAGE_LENGTH_GT: Float
                       title_AVERAGE_LENGTH_GTE: Float
@@ -10289,6 +10659,7 @@ describe("@filterable directive", () => {
                       AND: [AppearanceMoviesAggregateInput!]
                       NOT: AppearanceMoviesAggregateInput
                       OR: [AppearanceMoviesAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -10361,6 +10732,7 @@ describe("@filterable directive", () => {
                       AND: [AppearanceMoviesNodeAggregationWhereInput!]
                       NOT: AppearanceMoviesNodeAggregationWhereInput
                       OR: [AppearanceMoviesNodeAggregationWhereInput!]
+                      title: StringScalarAggregationFilters
                       title_AVERAGE_LENGTH_EQUAL: Float
                       title_AVERAGE_LENGTH_GT: Float
                       title_AVERAGE_LENGTH_GTE: Float
@@ -10536,6 +10908,26 @@ describe("@filterable directive", () => {
                       DELETE
                       DELETE_RELATIONSHIP
                       UPDATE
+                    }
+
+                    \\"\\"\\"Float filters\\"\\"\\"
+                    input FloatScalarFilters {
+                      eq: Float
+                      gt: Float
+                      gte: Float
+                      in: [Float!]
+                      lt: Float
+                      lte: Float
+                    }
+
+                    \\"\\"\\"Int filters\\"\\"\\"
+                    input IntScalarFilters {
+                      eq: Int
+                      gt: Int
+                      gte: Int
+                      in: [Int!]
+                      lt: Int
+                      lte: Int
                     }
 
                     type Movie {
@@ -10877,6 +11269,13 @@ describe("@filterable directive", () => {
                     type StringAggregateSelection {
                       longest: String
                       shortest: String
+                    }
+
+                    \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                    input StringScalarAggregationFilters {
+                      averageLength: FloatScalarFilters
+                      longestLength: IntScalarFilters
+                      shortestLength: IntScalarFilters
                     }
 
                     \\"\\"\\"String filters\\"\\"\\"

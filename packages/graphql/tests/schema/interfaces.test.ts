@@ -80,6 +80,12 @@ describe("Interfaces", () => {
               shortest: ID
             }
 
+            \\"\\"\\"Filters for an aggregation of an ID input field\\"\\"\\"
+            input IDScalarAggregationFilters {
+              max: IDScalarFilters
+              min: IDScalarFilters
+            }
+
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -97,6 +103,16 @@ describe("Interfaces", () => {
             \\"\\"\\"ID mutations\\"\\"\\"
             input IDScalarMutations {
               set: ID
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
             }
 
             type Movie implements MovieNode {
@@ -152,6 +168,7 @@ describe("Interfaces", () => {
               AND: [MovieMoviesAggregateInput!]
               NOT: MovieMoviesAggregateInput
               OR: [MovieMoviesAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -197,6 +214,7 @@ describe("Interfaces", () => {
               AND: [MovieMoviesNodeAggregationWhereInput!]
               NOT: MovieMoviesNodeAggregationWhereInput
               OR: [MovieMoviesNodeAggregationWhereInput!]
+              id: IDScalarAggregationFilters
               id_MAX_EQUAL: ID
               id_MAX_GT: ID
               id_MAX_GTE: ID
@@ -258,6 +276,7 @@ describe("Interfaces", () => {
               AND: [MovieNodeMoviesAggregateInput!]
               NOT: MovieNodeMoviesAggregateInput
               OR: [MovieNodeMoviesAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -316,6 +335,7 @@ describe("Interfaces", () => {
               AND: [MovieNodeMoviesNodeAggregationWhereInput!]
               NOT: MovieNodeMoviesNodeAggregationWhereInput
               OR: [MovieNodeMoviesNodeAggregationWhereInput!]
+              id: IDScalarAggregationFilters
               id_MAX_EQUAL: ID
               id_MAX_GT: ID
               id_MAX_GTE: ID
@@ -567,6 +587,12 @@ describe("Interfaces", () => {
               shortest: ID
             }
 
+            \\"\\"\\"Filters for an aggregation of an ID input field\\"\\"\\"
+            input IDScalarAggregationFilters {
+              max: IDScalarFilters
+              min: IDScalarFilters
+            }
+
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -584,6 +610,16 @@ describe("Interfaces", () => {
             \\"\\"\\"ID mutations\\"\\"\\"
             input IDScalarMutations {
               set: ID
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
             }
 
             type Movie implements MovieNode {
@@ -639,6 +675,7 @@ describe("Interfaces", () => {
               AND: [MovieMoviesAggregateInput!]
               NOT: MovieMoviesAggregateInput
               OR: [MovieMoviesAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -684,6 +721,7 @@ describe("Interfaces", () => {
               AND: [MovieMoviesNodeAggregationWhereInput!]
               NOT: MovieMoviesNodeAggregationWhereInput
               OR: [MovieMoviesNodeAggregationWhereInput!]
+              id: IDScalarAggregationFilters
               id_MAX_EQUAL: ID
               id_MAX_GT: ID
               id_MAX_GTE: ID
@@ -745,6 +783,7 @@ describe("Interfaces", () => {
               AND: [MovieNodeMoviesAggregateInput!]
               NOT: MovieNodeMoviesAggregateInput
               OR: [MovieNodeMoviesAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -803,6 +842,7 @@ describe("Interfaces", () => {
               AND: [MovieNodeMoviesNodeAggregationWhereInput!]
               NOT: MovieNodeMoviesNodeAggregationWhereInput
               OR: [MovieNodeMoviesNodeAggregationWhereInput!]
+              id: IDScalarAggregationFilters
               id_MAX_EQUAL: ID
               id_MAX_GT: ID
               id_MAX_GTE: ID

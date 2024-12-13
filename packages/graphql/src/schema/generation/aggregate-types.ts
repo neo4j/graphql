@@ -26,6 +26,7 @@ import type {
     SchemaComposer,
 } from "graphql-compose";
 import { AGGREGATION_COMPARISON_OPERATORS, DEPRECATED } from "../../constants";
+import { IntScalarFilters } from "../../graphql/input-objects/generic-operators/IntScalarFilters";
 import type { AttributeAdapter } from "../../schema-model/attribute/model-adapters/AttributeAdapter";
 import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
@@ -35,6 +36,7 @@ import type { Neo4jFeaturesSettings } from "../../types";
 import type { AggregationTypesMapper } from "../aggregations/aggregation-types-mapper";
 import { numericalResolver } from "../resolvers/field/numerical";
 import { graphqlDirectivesToCompose } from "../to-compose";
+import { getAggregationFilterFromAttributeType } from "./get-aggregation-filter-from-attribute-type";
 
 export function withAggregateSelectionType({
     entityAdapter,
@@ -106,6 +108,7 @@ export function withAggregateInputType({
             count_LTE: GraphQLInt,
             count_GT: GraphQLInt,
             count_GTE: GraphQLInt,
+            count: IntScalarFilters,
         },
     });
 
@@ -190,6 +193,9 @@ function makeAggregationFields(
     const fields: InputTypeComposerFieldConfigMapDefinition = {};
     for (const attribute of attributes) {
         addAggregationFieldsByType(attribute, userDefinedDirectivesOnTargetFields?.get(attribute.name), fields);
+        if (attribute.isAggregationWhereField()) {
+            fields[attribute.name] = getAggregationFilterFromAttributeType(attribute);
+        }
     }
     return fields;
 }
@@ -218,6 +224,7 @@ function addAggregationFieldsByType(
                 directives: deprecatedDirectives,
             };
         }
+
         return fields;
     }
     if (attribute.typeHelper.isNumeric() || attribute.typeHelper.isDuration()) {
@@ -247,6 +254,7 @@ function addAggregationFieldsByType(
                   : GraphQLFloat;
             fields[`${attribute.name}_AVERAGE_${operator}`] = { type: averageType, directives: deprecatedDirectives };
         }
+
         return fields;
     }
     for (const operator of AGGREGATION_COMPARISON_OPERATORS) {

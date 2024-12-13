@@ -70,9 +70,25 @@ describe("Relationship nested operations", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
             type IDAggregateSelection {
               longest: ID
               shortest: ID
+            }
+
+            \\"\\"\\"Filters for an aggregation of an ID input field\\"\\"\\"
+            input IDScalarAggregationFilters {
+              max: IDScalarFilters
+              min: IDScalarFilters
             }
 
             \\"\\"\\"ID filters\\"\\"\\"
@@ -94,6 +110,16 @@ describe("Relationship nested operations", () => {
               set: ID
             }
 
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
+            }
+
             type Movie {
               actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
               actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection
@@ -105,6 +131,7 @@ describe("Relationship nested operations", () => {
               AND: [MovieActorsAggregateInput!]
               NOT: MovieActorsAggregateInput
               OR: [MovieActorsAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -153,6 +180,7 @@ describe("Relationship nested operations", () => {
               AND: [MovieActorsNodeAggregationWhereInput!]
               NOT: MovieActorsNodeAggregationWhereInput
               OR: [MovieActorsNodeAggregationWhereInput!]
+              id: IDScalarAggregationFilters
               id_MAX_EQUAL: ID
               id_MAX_GT: ID
               id_MAX_GTE: ID
@@ -163,6 +191,7 @@ describe("Relationship nested operations", () => {
               id_MIN_GTE: ID
               id_MIN_LT: ID
               id_MIN_LTE: ID
+              name: StringScalarAggregationFilters
               name_AVERAGE_LENGTH_EQUAL: Float
               name_AVERAGE_LENGTH_GT: Float
               name_AVERAGE_LENGTH_GTE: Float
@@ -371,6 +400,13 @@ describe("Relationship nested operations", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
             }
 
             \\"\\"\\"String filters\\"\\"\\"

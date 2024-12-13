@@ -105,6 +105,12 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               min: DateTime
             }
 
+            \\"\\"\\"Filters for an aggregation of an DateTime input field\\"\\"\\"
+            input DateTimeScalarAggregationFilters {
+              max: DateTimeScalarFilters
+              min: DateTimeScalarFilters
+            }
+
             \\"\\"\\"DateTime filters\\"\\"\\"
             input DateTimeScalarFilters {
               eq: DateTime
@@ -128,6 +134,16 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
             type IDAggregateSelection {
               longest: ID
               shortest: ID
@@ -137,6 +153,12 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             input IDListFilters {
               eq: [IDScalarFilters!]
               includes: IDScalarFilters
+            }
+
+            \\"\\"\\"Filters for an aggregation of an ID input field\\"\\"\\"
+            input IDScalarAggregationFilters {
+              max: IDScalarFilters
+              min: IDScalarFilters
             }
 
             \\"\\"\\"ID filters\\"\\"\\"
@@ -156,6 +178,16 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             \\"\\"\\"ID mutations\\"\\"\\"
             input IDScalarMutations {
               set: ID
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
             }
 
             \\"\\"\\"Mutations for a list for ID\\"\\"\\"
@@ -245,6 +277,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               AND: [ResourceContainedByAggregateInput!]
               NOT: ResourceContainedByAggregateInput
               OR: [ResourceContainedByAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -317,6 +350,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               AND: [ResourceContainedByNodeAggregationWhereInput!]
               NOT: ResourceContainedByNodeAggregationWhereInput
               OR: [ResourceContainedByNodeAggregationWhereInput!]
+              createdAt: DateTimeScalarAggregationFilters
               createdAt_MAX_EQUAL: DateTime
               createdAt_MAX_GT: DateTime
               createdAt_MAX_GTE: DateTime
@@ -327,6 +361,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               createdAt_MIN_GTE: DateTime
               createdAt_MIN_LT: DateTime
               createdAt_MIN_LTE: DateTime
+              id: IDScalarAggregationFilters
               id_MAX_EQUAL: ID
               id_MAX_GT: ID
               id_MAX_GTE: ID
@@ -337,6 +372,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               id_MIN_GTE: ID
               id_MIN_LT: ID
               id_MIN_LTE: ID
+              name: StringScalarAggregationFilters
               name_AVERAGE_LENGTH_EQUAL: Float
               name_AVERAGE_LENGTH_GT: Float
               name_AVERAGE_LENGTH_GTE: Float
@@ -352,6 +388,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               name_SHORTEST_LENGTH_GTE: Int
               name_SHORTEST_LENGTH_LT: Int
               name_SHORTEST_LENGTH_LTE: Int
+              updatedAt: DateTimeScalarAggregationFilters
               updatedAt_MAX_EQUAL: DateTime
               updatedAt_MAX_GT: DateTime
               updatedAt_MAX_GTE: DateTime
@@ -633,6 +670,13 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
             }
 
             \\"\\"\\"String filters\\"\\"\\"

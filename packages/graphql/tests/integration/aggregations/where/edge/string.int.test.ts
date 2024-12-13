@@ -86,7 +86,7 @@ describe("aggregations-where-edge-string", () => {
 
         const query = `
                     {
-                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { edge: { testString_SHORTEST_LENGTH_EQUAL: ${shortestTestString.length} } } }) {
+                        ${Post.plural}(where: { testString: { eq: "${testString}" }, likesAggregate: { edge: { testString: { shortestLength: { eq: ${shortestTestString.length} } } } } }) {
                             testString
                             likes {
                                 testString
@@ -145,7 +145,7 @@ describe("aggregations-where-edge-string", () => {
 
         const query = `
                     {
-                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { edge: { testString_LONGEST_LENGTH_EQUAL: ${longestTestString.length} } } }) {
+                        ${Post.plural}(where: { testString: { eq: "${testString}" }, likesAggregate: { edge: { testString: { longestLength: {eq: ${longestTestString.length} } } } }}) {
                             testString
                             likes {
                                 testString
@@ -209,7 +209,7 @@ describe("aggregations-where-edge-string", () => {
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { edge: { testString_AVERAGE_LENGTH_EQUAL: ${avg} } } }) {
+                        ${Post.plural}(where: { testString: { eq: "${testString}" }, likesAggregate: { edge: { testString: { averageLength: {eq: ${avg} } } } } }) {
                             testString
                             likes {
                                 testString
@@ -270,7 +270,7 @@ describe("aggregations-where-edge-string", () => {
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { edge: { testString_AVERAGE_LENGTH_GT: ${avgGT} } } }) {
+                        ${Post.plural}(where: { testString: { eq: "${testString}" }, likesAggregate: { edge: { testString: { averageLength: { gt: ${avgGT} } } } } }) {
                             testString
                             likes {
                                 testString
@@ -330,7 +330,7 @@ describe("aggregations-where-edge-string", () => {
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { edge: { testString_AVERAGE_LENGTH_GTE: ${avg} } } }) {
+                        ${Post.plural}(where: { testString: { eq: "${testString}" }, likesAggregate: { edge: { testString: {averageLength: { gte: ${avg} } } } } }) {
                             testString
                             likes {
                                 testString
@@ -391,7 +391,7 @@ describe("aggregations-where-edge-string", () => {
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { edge: { testString_AVERAGE_LENGTH_LT: ${avgLT} } } }) {
+                        ${Post.plural}(where: { testString: { eq: "${testString}" }, likesAggregate: { edge: { testString: { averageLength: { lt: ${avgLT} } } } } }) {
                             testString
                             likes {
                                 testString
@@ -451,7 +451,7 @@ describe("aggregations-where-edge-string", () => {
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { edge: { testString_AVERAGE_LENGTH_LTE: ${avg} } } }) {
+                        ${Post.plural}(where: { testString: { eq: "${testString}" }, likesAggregate: { edge: { testString: { averageLength: { lte: ${avg} } } } } }) {
                             testString
                             likes {
                                 testString
@@ -550,7 +550,7 @@ describe("aggregations-where-edge-string interface relationships of concrete typ
 
         const query = `
                     {
-                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { edge: { testString_SHORTEST_LENGTH_EQUAL: ${shortestTestString.length} } } }) {
+                        ${Post.plural}(where: { testString: { eq: "${testString}" }, likesAggregate: { edge: { testString_SHORTEST_LENGTH_EQUAL: ${shortestTestString.length} } } }) {
                             testString
                             likes {
                                 testString
@@ -575,44 +575,41 @@ describe("aggregations-where-edge-string interface relationships of concrete typ
         ]);
     });
 
-   
-        test(
-            "should return posts where the LONGEST edge like String is EQUAL to",
-            async () => {
-                const testString = generate({
-                    charset: "alphabetic",
-                    readable: true,
-                });
+    test("should return posts where the LONGEST edge like String is EQUAL to", async () => {
+        const testString = generate({
+            charset: "alphabetic",
+            readable: true,
+        });
 
-                const shortestTestString = generate({
-                    charset: "alphabetic",
-                    readable: true,
-                    length: 10,
-                });
+        const shortestTestString = generate({
+            charset: "alphabetic",
+            readable: true,
+            length: 10,
+        });
 
-                const testString2 = generate({
-                    charset: "alphabetic",
-                    readable: true,
-                    length: 11,
-                });
+        const testString2 = generate({
+            charset: "alphabetic",
+            readable: true,
+            length: 11,
+        });
 
-                const longestTestString = generate({
-                    charset: "alphabetic",
-                    readable: true,
-                    length: 12,
-                });
+        const longestTestString = generate({
+            charset: "alphabetic",
+            readable: true,
+            length: 12,
+        });
 
-                await testHelper.executeCypher(
-                    `
+        await testHelper.executeCypher(
+            `
                         CREATE (:${Post} {testString: "${testString}"})<-[:LIKES { testString: "${shortestTestString}" }]-(:${User} {testString: "${shortestTestString}"})
                         CREATE (:${Post} {testString: "${testString}"})<-[:LIKES { testString: "${testString2}" }]-(:${User} {testString: "${testString2}"})
                         CREATE (:${Post} {testString: "${testString}"})<-[:LIKES { testString: "${longestTestString}" }]-(:${User} {testString: "${longestTestString}"})
                     `
-                );
+        );
 
-                const query = `
+        const query = `
                     {
-                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { edge: { testString_LONGEST_LENGTH_EQUAL: ${longestTestString.length} } } }) {
+                        ${Post.plural}(where: { testString: { eq: "${testString}" }, likesAggregate: { edge: { testString_LONGEST_LENGTH_EQUAL: ${longestTestString.length} } } }) {
                             testString
                             likes {
                                 testString
@@ -621,66 +618,62 @@ describe("aggregations-where-edge-string interface relationships of concrete typ
                     }
                 `;
 
-                const gqlResult = await testHelper.executeGraphQL(query);
+        const gqlResult = await testHelper.executeGraphQL(query);
 
-                if (gqlResult.errors) {
-                    console.log(JSON.stringify(gqlResult.errors, null, 2));
-                }
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
+        }
 
-                expect(gqlResult.errors).toBeUndefined();
+        expect(gqlResult.errors).toBeUndefined();
 
-                expect((gqlResult.data as any)[Post.plural]).toEqual([
-                    {
-                        testString,
-                        likes: [{ testString: longestTestString }],
-                    },
-                ]);
-            }
-        );
-
+        expect((gqlResult.data as any)[Post.plural]).toEqual([
+            {
+                testString,
+                likes: [{ testString: longestTestString }],
+            },
+        ]);
+    });
 
     describe("AVERAGE", () => {
-        test(
-            "should return posts where the %s of edge like Strings is EQUAL to",
-            async () => {
-                const testString = generate({
-                    charset: "alphabetic",
-                    readable: true,
-                });
+        test("should return posts where the %s of edge like Strings is EQUAL to", async () => {
+            const testString = generate({
+                charset: "alphabetic",
+                readable: true,
+            });
 
-                const testString1 = generate({
-                    charset: "alphabetic",
-                    readable: true,
-                    length: 10,
-                });
+            const testString1 = generate({
+                charset: "alphabetic",
+                readable: true,
+                length: 10,
+            });
 
-                const testString2 = generate({
-                    charset: "alphabetic",
-                    readable: true,
-                    length: 11,
-                });
+            const testString2 = generate({
+                charset: "alphabetic",
+                readable: true,
+                length: 11,
+            });
 
-                const testString3 = generate({
-                    charset: "alphabetic",
-                    readable: true,
-                    length: 12,
-                });
+            const testString3 = generate({
+                charset: "alphabetic",
+                readable: true,
+                length: 12,
+            });
 
-                const avg = (10 + 11 + 12) / 3;
+            const avg = (10 + 11 + 12) / 3;
 
-                await testHelper.executeCypher(
-                    `
+            await testHelper.executeCypher(
+                `
                         CREATE (p:${Post} {testString: "${testString}"})
                         CREATE(p)<-[:LIKES { testString: "${testString1}" }]-(:${User} {testString: "${testString}"})
                         CREATE(p)<-[:LIKES { testString: "${testString2}" }]-(:${User} {testString: "${testString}"})
                         CREATE(p)<-[:LIKES { testString: "${testString3}" }]-(:${User} {testString: "${testString}"})
                         CREATE (:${Post} {testString: "${testString}"})
                     `
-                );
+            );
 
-                const query = `
+            const query = `
                     {
-                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { edge: { testString_AVERAGE_LENGTH_EQUAL: ${avg} } } }) {
+                        ${Post.plural}(where: { testString: { eq: "${testString}" }, likesAggregate: { edge: { testString: { averageLength: { eq: ${avg} } } } } }) {
                             testString
                             likes {
                                 testString
@@ -689,19 +682,18 @@ describe("aggregations-where-edge-string interface relationships of concrete typ
                     }
                 `;
 
-                const gqlResult = await testHelper.executeGraphQL(query);
+            const gqlResult = await testHelper.executeGraphQL(query);
 
-                if (gqlResult.errors) {
-                    console.log(JSON.stringify(gqlResult.errors, null, 2));
-                }
-
-                expect(gqlResult.errors).toBeUndefined();
-
-                const [post] = (gqlResult.data as any)[Post.plural] as any[];
-                expect(post.testString).toEqual(testString);
-                expect(post.likes).toHaveLength(3);
+            if (gqlResult.errors) {
+                console.log(JSON.stringify(gqlResult.errors, null, 2));
             }
-        );
+
+            expect(gqlResult.errors).toBeUndefined();
+
+            const [post] = (gqlResult.data as any)[Post.plural] as any[];
+            expect(post.testString).toEqual(testString);
+            expect(post.likes).toHaveLength(3);
+        });
 
         test("should return posts where the average of edge like Strings is GT than", async () => {
             const testString = generate({
@@ -742,7 +734,7 @@ describe("aggregations-where-edge-string interface relationships of concrete typ
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { edge: { testString_AVERAGE_LENGTH_GT: ${avgGT} } } }) {
+                        ${Post.plural}(where: { testString: { eq: "${testString}" }, likesAggregate: { edge: { testString: { averageLength: { gt: ${avgGT} } } } } }) {
                             testString
                             likes {
                                 testString
@@ -802,7 +794,7 @@ describe("aggregations-where-edge-string interface relationships of concrete typ
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { edge: { testString_AVERAGE_LENGTH_GTE: ${avg} } } }) {
+                        ${Post.plural}(where: { testString: { eq: "${testString}" }, likesAggregate: { edge: { testString: { averageLength: { gte: ${avg} } } } } }) {
                             testString
                             likes {
                                 testString
@@ -863,7 +855,7 @@ describe("aggregations-where-edge-string interface relationships of concrete typ
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { edge: { testString_AVERAGE_LENGTH_LT: ${avgLT} } } }) {
+                        ${Post.plural}(where: { testString: { eq: "${testString}" }, likesAggregate: { edge: { testString: { averageLength: { lt: ${avgLT} } } } } }) {
                             testString
                             likes {
                                 testString
@@ -923,7 +915,7 @@ describe("aggregations-where-edge-string interface relationships of concrete typ
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { edge: { testString_AVERAGE_LENGTH_LTE: ${avg} } } }) {
+                        ${Post.plural}(where: { testString: { eq: "${testString}" }, likesAggregate: { edge: { testString: { averageLength: { lte: ${avg} } } } } }) {
                             testString
                             likes {
                                 testString

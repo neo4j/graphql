@@ -95,6 +95,26 @@ describe("Apollo Federation", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
+            }
+
             type Mutation {
               createPosts(input: [PostCreateInput!]!): CreatePostsMutationResponse!
               createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse! @shareable
@@ -128,6 +148,7 @@ describe("Apollo Federation", () => {
               AND: [PostAuthorAggregateInput!]
               NOT: PostAuthorAggregateInput
               OR: [PostAuthorAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -200,6 +221,7 @@ describe("Apollo Federation", () => {
               AND: [PostAuthorNodeAggregationWhereInput!]
               NOT: PostAuthorNodeAggregationWhereInput
               OR: [PostAuthorNodeAggregationWhereInput!]
+              name: StringScalarAggregationFilters
               name_AVERAGE_LENGTH_EQUAL: Float
               name_AVERAGE_LENGTH_GT: Float
               name_AVERAGE_LENGTH_GTE: Float
@@ -362,6 +384,13 @@ describe("Apollo Federation", () => {
               shortest: String
             }
 
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
+            }
+
             \\"\\"\\"String filters\\"\\"\\"
             input StringScalarFilters {
               contains: String
@@ -452,6 +481,7 @@ describe("Apollo Federation", () => {
               AND: [UserPostsAggregateInput!]
               NOT: UserPostsAggregateInput
               OR: [UserPostsAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -524,6 +554,7 @@ describe("Apollo Federation", () => {
               AND: [UserPostsNodeAggregationWhereInput!]
               NOT: UserPostsNodeAggregationWhereInput
               OR: [UserPostsNodeAggregationWhereInput!]
+              content: StringScalarAggregationFilters
               content_AVERAGE_LENGTH_EQUAL: Float
               content_AVERAGE_LENGTH_GT: Float
               content_AVERAGE_LENGTH_GTE: Float
@@ -722,6 +753,26 @@ describe("Apollo Federation", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
+            }
+
             type Mutation {
               createPosts(input: [PostCreateInput!]!): CreatePostsMutationResponse!
               createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
@@ -755,6 +806,7 @@ describe("Apollo Federation", () => {
               AND: [PostAuthorAggregateInput!]
               NOT: PostAuthorAggregateInput
               OR: [PostAuthorAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -824,6 +876,7 @@ describe("Apollo Federation", () => {
               AND: [PostAuthorNodeAggregationWhereInput!]
               NOT: PostAuthorNodeAggregationWhereInput
               OR: [PostAuthorNodeAggregationWhereInput!]
+              name: StringScalarAggregationFilters
               name_AVERAGE_LENGTH_EQUAL: Float
               name_AVERAGE_LENGTH_GT: Float
               name_AVERAGE_LENGTH_GTE: Float
@@ -973,6 +1026,13 @@ describe("Apollo Federation", () => {
             type StringAggregateSelection @federation__shareable {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
             }
 
             \\"\\"\\"String filters\\"\\"\\"

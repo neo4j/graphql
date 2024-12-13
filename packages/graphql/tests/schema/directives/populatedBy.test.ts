@@ -791,6 +791,16 @@ describe("@populatedBy tests", () => {
                   relationshipsDeleted: Int!
                 }
 
+                \\"\\"\\"Float filters\\"\\"\\"
+                input FloatScalarFilters {
+                  eq: Float
+                  gt: Float
+                  gte: Float
+                  in: [Float!]
+                  lt: Float
+                  lte: Float
+                }
+
                 type Genre {
                   id: ID!
                 }
@@ -848,6 +858,12 @@ describe("@populatedBy tests", () => {
                   shortest: ID
                 }
 
+                \\"\\"\\"Filters for an aggregation of an ID input field\\"\\"\\"
+                input IDScalarAggregationFilters {
+                  max: IDScalarFilters
+                  min: IDScalarFilters
+                }
+
                 \\"\\"\\"ID filters\\"\\"\\"
                 input IDScalarFilters {
                   contains: ID
@@ -865,6 +881,16 @@ describe("@populatedBy tests", () => {
                 \\"\\"\\"ID mutations\\"\\"\\"
                 input IDScalarMutations {
                   set: ID
+                }
+
+                \\"\\"\\"Int filters\\"\\"\\"
+                input IntScalarFilters {
+                  eq: Int
+                  gt: Int
+                  gte: Int
+                  in: [Int!]
+                  lt: Int
+                  lte: Int
                 }
 
                 type Movie {
@@ -914,6 +940,7 @@ describe("@populatedBy tests", () => {
                   AND: [MovieGenresAggregateInput!]
                   NOT: MovieGenresAggregateInput
                   OR: [MovieGenresAggregateInput!]
+                  count: IntScalarFilters
                   count_EQ: Int
                   count_GT: Int
                   count_GTE: Int
@@ -988,6 +1015,7 @@ describe("@populatedBy tests", () => {
                   AND: [MovieGenresNodeAggregationWhereInput!]
                   NOT: MovieGenresNodeAggregationWhereInput
                   OR: [MovieGenresNodeAggregationWhereInput!]
+                  id: IDScalarAggregationFilters
                   id_MAX_EQUAL: ID
                   id_MAX_GT: ID
                   id_MAX_GTE: ID
@@ -1130,6 +1158,7 @@ describe("@populatedBy tests", () => {
                   AND: [RelPropertiesAggregationWhereInput!]
                   NOT: RelPropertiesAggregationWhereInput
                   OR: [RelPropertiesAggregationWhereInput!]
+                  callback1: StringScalarAggregationFilters
                   callback1_AVERAGE_LENGTH_EQUAL: Float
                   callback1_AVERAGE_LENGTH_GT: Float
                   callback1_AVERAGE_LENGTH_GTE: Float
@@ -1145,6 +1174,7 @@ describe("@populatedBy tests", () => {
                   callback1_SHORTEST_LENGTH_GTE: Int
                   callback1_SHORTEST_LENGTH_LT: Int
                   callback1_SHORTEST_LENGTH_LTE: Int
+                  callback2: StringScalarAggregationFilters
                   callback2_AVERAGE_LENGTH_EQUAL: Float
                   callback2_AVERAGE_LENGTH_GT: Float
                   callback2_AVERAGE_LENGTH_GTE: Float
@@ -1160,6 +1190,7 @@ describe("@populatedBy tests", () => {
                   callback2_SHORTEST_LENGTH_GTE: Int
                   callback2_SHORTEST_LENGTH_LT: Int
                   callback2_SHORTEST_LENGTH_LTE: Int
+                  callback3: StringScalarAggregationFilters
                   callback3_AVERAGE_LENGTH_EQUAL: Float
                   callback3_AVERAGE_LENGTH_GT: Float
                   callback3_AVERAGE_LENGTH_GTE: Float
@@ -1175,6 +1206,7 @@ describe("@populatedBy tests", () => {
                   callback3_SHORTEST_LENGTH_GTE: Int
                   callback3_SHORTEST_LENGTH_LT: Int
                   callback3_SHORTEST_LENGTH_LTE: Int
+                  id: IDScalarAggregationFilters
                   id_MAX_EQUAL: ID
                   id_MAX_GT: ID
                   id_MAX_GTE: ID
@@ -1247,6 +1279,13 @@ describe("@populatedBy tests", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                input StringScalarAggregationFilters {
+                  averageLength: FloatScalarFilters
+                  longestLength: IntScalarFilters
+                  shortestLength: IntScalarFilters
                 }
 
                 \\"\\"\\"String filters\\"\\"\\"
@@ -1360,6 +1399,16 @@ describe("@populatedBy tests", () => {
                   relationshipsDeleted: Int!
                 }
 
+                \\"\\"\\"Float filters\\"\\"\\"
+                input FloatScalarFilters {
+                  eq: Float
+                  gt: Float
+                  gte: Float
+                  in: [Float!]
+                  lt: Float
+                  lte: Float
+                }
+
                 type Genre {
                   id: ID!
                 }
@@ -1417,6 +1466,12 @@ describe("@populatedBy tests", () => {
                   shortest: ID
                 }
 
+                \\"\\"\\"Filters for an aggregation of an ID input field\\"\\"\\"
+                input IDScalarAggregationFilters {
+                  max: IDScalarFilters
+                  min: IDScalarFilters
+                }
+
                 \\"\\"\\"ID filters\\"\\"\\"
                 input IDScalarFilters {
                   contains: ID
@@ -1441,6 +1496,14 @@ describe("@populatedBy tests", () => {
                   max: Int
                   min: Int
                   sum: Int
+                }
+
+                \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+                input IntScalarAggregationFilters {
+                  average: FloatScalarFilters
+                  max: IntScalarFilters
+                  min: IntScalarFilters
+                  sum: IntScalarFilters
                 }
 
                 \\"\\"\\"Int filters\\"\\"\\"
@@ -1507,6 +1570,7 @@ describe("@populatedBy tests", () => {
                   AND: [MovieGenresAggregateInput!]
                   NOT: MovieGenresAggregateInput
                   OR: [MovieGenresAggregateInput!]
+                  count: IntScalarFilters
                   count_EQ: Int
                   count_GT: Int
                   count_GTE: Int
@@ -1581,6 +1645,7 @@ describe("@populatedBy tests", () => {
                   AND: [MovieGenresNodeAggregationWhereInput!]
                   NOT: MovieGenresNodeAggregationWhereInput
                   OR: [MovieGenresNodeAggregationWhereInput!]
+                  id: IDScalarAggregationFilters
                   id_MAX_EQUAL: ID
                   id_MAX_GT: ID
                   id_MAX_GTE: ID
@@ -1723,6 +1788,7 @@ describe("@populatedBy tests", () => {
                   AND: [RelPropertiesAggregationWhereInput!]
                   NOT: RelPropertiesAggregationWhereInput
                   OR: [RelPropertiesAggregationWhereInput!]
+                  callback1: IntScalarAggregationFilters
                   callback1_AVERAGE_EQUAL: Float
                   callback1_AVERAGE_GT: Float
                   callback1_AVERAGE_GTE: Float
@@ -1743,6 +1809,7 @@ describe("@populatedBy tests", () => {
                   callback1_SUM_GTE: Int
                   callback1_SUM_LT: Int
                   callback1_SUM_LTE: Int
+                  callback2: IntScalarAggregationFilters
                   callback2_AVERAGE_EQUAL: Float
                   callback2_AVERAGE_GT: Float
                   callback2_AVERAGE_GTE: Float
@@ -1763,6 +1830,7 @@ describe("@populatedBy tests", () => {
                   callback2_SUM_GTE: Int
                   callback2_SUM_LT: Int
                   callback2_SUM_LTE: Int
+                  callback3: IntScalarAggregationFilters
                   callback3_AVERAGE_EQUAL: Float
                   callback3_AVERAGE_GT: Float
                   callback3_AVERAGE_GTE: Float
@@ -1783,6 +1851,7 @@ describe("@populatedBy tests", () => {
                   callback3_SUM_GTE: Int
                   callback3_SUM_LT: Int
                   callback3_SUM_LTE: Int
+                  id: IDScalarAggregationFilters
                   id_MAX_EQUAL: ID
                   id_MAX_GT: ID
                   id_MAX_GTE: ID
