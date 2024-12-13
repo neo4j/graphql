@@ -580,21 +580,17 @@ export class FilterFactory {
     private parseGenericOperator(key: string): FilterOperator {
         // we convert them to the previous format to keep the same translation logic
         switch (key) {
-            case "equals":
             case "eq":
                 return "EQ";
             case "in":
                 return "IN";
-            case "lessThan": // TODO: remove long syntax once tests have been updated
             case "lt":
                 return "LT";
-            case "lessThanEquals":
             case "lte":
                 return "LTE";
             case "greaterThan":
             case "gt":
                 return "GT";
-            case "greaterThanEquals":
             case "gte":
                 return "GTE";
             case "contains":
@@ -616,19 +612,14 @@ export class FilterFactory {
     private parseGenericOperatorForAggregation(key: string): AggregationLogicalOperator {
         // we convert them to the previous format to keep the same translation logic
         switch (key) {
-            case "equals":
             case "eq":
                 return "EQUAL";
-            case "lessThan": // TODO: remove long syntax once tests have been updated
             case "lt":
                 return "LT";
-            case "lessThanEquals":
             case "lte":
                 return "LTE";
-            case "greaterThan":
             case "gt":
                 return "GT";
-            case "greaterThanEquals":
             case "gte":
                 return "GTE";
 
@@ -870,7 +861,7 @@ export class FilterFactory {
 
             if (!aggregationOperator) {
                 const filters = Object.entries(value).flatMap(([aggregationOperator, value]) => {
-                    const parsedAggregationOperation = this.parsedGenericAggregationOperator(aggregationOperator);
+                    const parsedAggregationOperation = this.parseGenericAggregationOperator(aggregationOperator);
 
                     // NOTE: this part is duplicate of the code used for non-generic operators
                     return Object.entries(value as Record<string, unknown>).map(([operator, value]) => {
@@ -988,7 +979,7 @@ export class FilterFactory {
         return targetPoint;
     }
 
-    private parsedGenericAggregationOperator(key: string): AggregationOperator {
+    private parseGenericAggregationOperator(key: string): AggregationOperator {
         // we convert them to the previous format to keep the same translation logic
         switch (key) {
             case "averageLength":
