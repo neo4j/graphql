@@ -218,9 +218,9 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             }
 
             \\"\\"\\"Property filters\\"\\"\\"
-            input PropertyEnumScalarFilters {
-              equals: Property
-              in: [Property!]
+            input PropertyListEnumScalarFilters {
+              eq: [Property!]
+              includes: Property
             }
 
             \\"\\"\\"Mutations for a list for Property\\"\\"\\"
@@ -510,10 +510,10 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               name_EQ: String
               name_IN: [String]
               name_STARTS_WITH: String
-              properties: PropertyEnumScalarFilters
+              properties: PropertyListEnumScalarFilters
               properties_EQ: [Property!]
               properties_INCLUDES: Property
-              tags: TagEnumScalarFilters
+              tags: TagListEnumScalarFilters
               tags_EQ: [Tag!]
               tags_INCLUDES: Tag
               type: ResourceTypeEnumScalarFilters
@@ -553,7 +553,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
 
             \\"\\"\\"ResourceType filters\\"\\"\\"
             input ResourceTypeEnumScalarFilters {
-              equals: ResourceType
+              eq: ResourceType
               in: [ResourceType!]
             }
 
@@ -635,10 +635,10 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               name_EQ: String
               name_IN: [String]
               name_STARTS_WITH: String
-              properties: PropertyEnumScalarFilters
+              properties: PropertyListEnumScalarFilters
               properties_EQ: [Property!]
               properties_INCLUDES: Property
-              tags: TagEnumScalarFilters
+              tags: TagListEnumScalarFilters
               tags_EQ: [Tag!]
               tags_INCLUDES: Tag
               type: ResourceTypeEnumScalarFilters
@@ -705,9 +705,9 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             }
 
             \\"\\"\\"Tag filters\\"\\"\\"
-            input TagEnumScalarFilters {
-              equals: Tag
-              in: [Tag!]
+            input TagListEnumScalarFilters {
+              eq: [Tag!]
+              includes: Tag
             }
 
             \\"\\"\\"Mutations for a list for Tag\\"\\"\\"

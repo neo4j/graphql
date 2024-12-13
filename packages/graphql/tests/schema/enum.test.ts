@@ -145,7 +145,7 @@ describe("Enum", () => {
 
             \\"\\"\\"Status filters\\"\\"\\"
             input StatusEnumScalarFilters {
-              equals: Status
+              eq: Status
               in: [Status!]
             }
 
