@@ -78,9 +78,9 @@ export function getFilteringFn<T>(
 
     const operators = { ...operatorCheckMap, ...overrides };
 
-    const op = operators[operator];
-    if (!op) {
+    const comparatorFunction = operators[operator];
+    if (!comparatorFunction) {
         throw new Error(`Operator ${operator} not supported`);
     }
-    return op;
+    return comparatorFunction;
 }
