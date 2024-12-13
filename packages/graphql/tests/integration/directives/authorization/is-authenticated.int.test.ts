@@ -188,7 +188,7 @@ describe("auth/is-authenticated", () => {
             const typeDefs = /* GraphQL */ `
                 type ${User} @node {
                     id: ID
-                    password: String  @authentication(operations: [READ]) 
+                    password: String @authentication(operations: [READ]) 
                 }
             `;
 

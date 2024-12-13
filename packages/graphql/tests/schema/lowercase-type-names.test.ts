@@ -82,6 +82,12 @@ describe("lower case type names", () => {
               min: DateTime
             }
 
+            \\"\\"\\"Filters for an aggregation of an DateTime input field\\"\\"\\"
+            input DateTimeScalarAggregationFilters {
+              max: DateTimeScalarFilters
+              min: DateTimeScalarFilters
+            }
+
             \\"\\"\\"DateTime filters\\"\\"\\"
             input DateTimeScalarFilters {
               eq: DateTime
@@ -105,11 +111,29 @@ describe("lower case type names", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+            input IntScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: IntScalarFilters
+              min: IntScalarFilters
+              sum: IntScalarFilters
             }
 
             \\"\\"\\"Int filters\\"\\"\\"
@@ -172,6 +196,13 @@ describe("lower case type names", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
             }
 
             \\"\\"\\"String filters\\"\\"\\"
@@ -261,6 +292,7 @@ describe("lower case type names", () => {
               AND: [actorMoviesAggregateInput!]
               NOT: actorMoviesAggregateInput
               OR: [actorMoviesAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -333,66 +365,70 @@ describe("lower case type names", () => {
               AND: [actorMoviesNodeAggregationWhereInput!]
               NOT: actorMoviesNodeAggregationWhereInput
               OR: [actorMoviesNodeAggregationWhereInput!]
-              createdAt_MAX_EQUAL: DateTime
-              createdAt_MAX_GT: DateTime
-              createdAt_MAX_GTE: DateTime
-              createdAt_MAX_LT: DateTime
-              createdAt_MAX_LTE: DateTime
-              createdAt_MIN_EQUAL: DateTime
-              createdAt_MIN_GT: DateTime
-              createdAt_MIN_GTE: DateTime
-              createdAt_MIN_LT: DateTime
-              createdAt_MIN_LTE: DateTime
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
-              testId_AVERAGE_LENGTH_EQUAL: Float
-              testId_AVERAGE_LENGTH_GT: Float
-              testId_AVERAGE_LENGTH_GTE: Float
-              testId_AVERAGE_LENGTH_LT: Float
-              testId_AVERAGE_LENGTH_LTE: Float
-              testId_LONGEST_LENGTH_EQUAL: Int
-              testId_LONGEST_LENGTH_GT: Int
-              testId_LONGEST_LENGTH_GTE: Int
-              testId_LONGEST_LENGTH_LT: Int
-              testId_LONGEST_LENGTH_LTE: Int
-              testId_SHORTEST_LENGTH_EQUAL: Int
-              testId_SHORTEST_LENGTH_GT: Int
-              testId_SHORTEST_LENGTH_GTE: Int
-              testId_SHORTEST_LENGTH_LT: Int
-              testId_SHORTEST_LENGTH_LTE: Int
-              year_AVERAGE_EQUAL: Float
-              year_AVERAGE_GT: Float
-              year_AVERAGE_GTE: Float
-              year_AVERAGE_LT: Float
-              year_AVERAGE_LTE: Float
-              year_MAX_EQUAL: Int
-              year_MAX_GT: Int
-              year_MAX_GTE: Int
-              year_MAX_LT: Int
-              year_MAX_LTE: Int
-              year_MIN_EQUAL: Int
-              year_MIN_GT: Int
-              year_MIN_GTE: Int
-              year_MIN_LT: Int
-              year_MIN_LTE: Int
-              year_SUM_EQUAL: Int
-              year_SUM_GT: Int
-              year_SUM_GTE: Int
-              year_SUM_LT: Int
-              year_SUM_LTE: Int
+              createdAt: DateTimeScalarAggregationFilters
+              createdAt_MAX_EQUAL: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'createdAt: { max: { eq: ... } } }' instead.\\")
+              createdAt_MAX_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'createdAt: { max: { gt: ... } } }' instead.\\")
+              createdAt_MAX_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'createdAt: { max: { gte: ... } } }' instead.\\")
+              createdAt_MAX_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'createdAt: { max: { lt: ... } } }' instead.\\")
+              createdAt_MAX_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'createdAt: { max: { lte: ... } } }' instead.\\")
+              createdAt_MIN_EQUAL: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'createdAt: { min: { eq: ... } } }' instead.\\")
+              createdAt_MIN_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'createdAt: { min: { gt: ... } } }' instead.\\")
+              createdAt_MIN_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'createdAt: { min: { gte: ... } } }' instead.\\")
+              createdAt_MIN_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'createdAt: { min: { lt: ... } } }' instead.\\")
+              createdAt_MIN_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'createdAt: { min: { lte: ... } } }' instead.\\")
+              name: StringScalarAggregationFilters
+              name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
+              testId: StringScalarAggregationFilters
+              testId_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'testId: { averageLength: { eq: ... } } }' instead.\\")
+              testId_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'testId: { averageLength: { gt: ... } } }' instead.\\")
+              testId_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'testId: { averageLength: { gte: ... } } }' instead.\\")
+              testId_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'testId: { averageLength: { lt: ... } } }' instead.\\")
+              testId_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'testId: { averageLength: { lte: ... } } }' instead.\\")
+              testId_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'testId: { longestLength: { eq: ... } } }' instead.\\")
+              testId_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'testId: { longestLength: { gt: ... } } }' instead.\\")
+              testId_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'testId: { longestLength: { gte: ... } } }' instead.\\")
+              testId_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'testId: { longestLength: { lt: ... } } }' instead.\\")
+              testId_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'testId: { longestLength: { lte: ... } } }' instead.\\")
+              testId_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'testId: { shortestLength: { eq: ... } } }' instead.\\")
+              testId_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'testId: { shortestLength: { gt: ... } } }' instead.\\")
+              testId_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'testId: { shortestLength: { gte: ... } } }' instead.\\")
+              testId_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'testId: { shortestLength: { lt: ... } } }' instead.\\")
+              testId_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'testId: { shortestLength: { lte: ... } } }' instead.\\")
+              year: IntScalarAggregationFilters
+              year_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'year: { average: { eq: ... } } }' instead.\\")
+              year_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'year: { average: { gt: ... } } }' instead.\\")
+              year_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'year: { average: { gte: ... } } }' instead.\\")
+              year_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'year: { average: { lt: ... } } }' instead.\\")
+              year_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'year: { average: { lte: ... } } }' instead.\\")
+              year_MAX_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { max: { eq: ... } } }' instead.\\")
+              year_MAX_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { max: { gt: ... } } }' instead.\\")
+              year_MAX_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { max: { gte: ... } } }' instead.\\")
+              year_MAX_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { max: { lt: ... } } }' instead.\\")
+              year_MAX_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { max: { lte: ... } } }' instead.\\")
+              year_MIN_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { min: { eq: ... } } }' instead.\\")
+              year_MIN_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { min: { gt: ... } } }' instead.\\")
+              year_MIN_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { min: { gte: ... } } }' instead.\\")
+              year_MIN_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { min: { lt: ... } } }' instead.\\")
+              year_MIN_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { min: { lte: ... } } }' instead.\\")
+              year_SUM_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { sum: { eq: ... } } }' instead.\\")
+              year_SUM_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { sum: { gt: ... } } }' instead.\\")
+              year_SUM_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { sum: { gte: ... } } }' instead.\\")
+              year_SUM_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { sum: { lt: ... } } }' instead.\\")
+              year_SUM_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { sum: { lte: ... } } }' instead.\\")
             }
 
             type actorMoviesRelationship {
@@ -524,6 +560,7 @@ describe("lower case type names", () => {
               AND: [movieActorsAggregateInput!]
               NOT: movieActorsAggregateInput
               OR: [movieActorsAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -596,51 +633,54 @@ describe("lower case type names", () => {
               AND: [movieActorsNodeAggregationWhereInput!]
               NOT: movieActorsNodeAggregationWhereInput
               OR: [movieActorsNodeAggregationWhereInput!]
-              createdAt_MAX_EQUAL: DateTime
-              createdAt_MAX_GT: DateTime
-              createdAt_MAX_GTE: DateTime
-              createdAt_MAX_LT: DateTime
-              createdAt_MAX_LTE: DateTime
-              createdAt_MIN_EQUAL: DateTime
-              createdAt_MIN_GT: DateTime
-              createdAt_MIN_GTE: DateTime
-              createdAt_MIN_LT: DateTime
-              createdAt_MIN_LTE: DateTime
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
-              year_AVERAGE_EQUAL: Float
-              year_AVERAGE_GT: Float
-              year_AVERAGE_GTE: Float
-              year_AVERAGE_LT: Float
-              year_AVERAGE_LTE: Float
-              year_MAX_EQUAL: Int
-              year_MAX_GT: Int
-              year_MAX_GTE: Int
-              year_MAX_LT: Int
-              year_MAX_LTE: Int
-              year_MIN_EQUAL: Int
-              year_MIN_GT: Int
-              year_MIN_GTE: Int
-              year_MIN_LT: Int
-              year_MIN_LTE: Int
-              year_SUM_EQUAL: Int
-              year_SUM_GT: Int
-              year_SUM_GTE: Int
-              year_SUM_LT: Int
-              year_SUM_LTE: Int
+              createdAt: DateTimeScalarAggregationFilters
+              createdAt_MAX_EQUAL: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'createdAt: { max: { eq: ... } } }' instead.\\")
+              createdAt_MAX_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'createdAt: { max: { gt: ... } } }' instead.\\")
+              createdAt_MAX_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'createdAt: { max: { gte: ... } } }' instead.\\")
+              createdAt_MAX_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'createdAt: { max: { lt: ... } } }' instead.\\")
+              createdAt_MAX_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'createdAt: { max: { lte: ... } } }' instead.\\")
+              createdAt_MIN_EQUAL: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'createdAt: { min: { eq: ... } } }' instead.\\")
+              createdAt_MIN_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'createdAt: { min: { gt: ... } } }' instead.\\")
+              createdAt_MIN_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'createdAt: { min: { gte: ... } } }' instead.\\")
+              createdAt_MIN_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'createdAt: { min: { lt: ... } } }' instead.\\")
+              createdAt_MIN_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'createdAt: { min: { lte: ... } } }' instead.\\")
+              name: StringScalarAggregationFilters
+              name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
+              year: IntScalarAggregationFilters
+              year_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'year: { average: { eq: ... } } }' instead.\\")
+              year_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'year: { average: { gt: ... } } }' instead.\\")
+              year_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'year: { average: { gte: ... } } }' instead.\\")
+              year_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'year: { average: { lt: ... } } }' instead.\\")
+              year_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'year: { average: { lte: ... } } }' instead.\\")
+              year_MAX_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { max: { eq: ... } } }' instead.\\")
+              year_MAX_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { max: { gt: ... } } }' instead.\\")
+              year_MAX_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { max: { gte: ... } } }' instead.\\")
+              year_MAX_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { max: { lt: ... } } }' instead.\\")
+              year_MAX_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { max: { lte: ... } } }' instead.\\")
+              year_MIN_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { min: { eq: ... } } }' instead.\\")
+              year_MIN_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { min: { gt: ... } } }' instead.\\")
+              year_MIN_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { min: { gte: ... } } }' instead.\\")
+              year_MIN_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { min: { lt: ... } } }' instead.\\")
+              year_MIN_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { min: { lte: ... } } }' instead.\\")
+              year_SUM_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { sum: { eq: ... } } }' instead.\\")
+              year_SUM_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { sum: { gt: ... } } }' instead.\\")
+              year_SUM_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { sum: { gte: ... } } }' instead.\\")
+              year_SUM_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { sum: { lt: ... } } }' instead.\\")
+              year_SUM_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { sum: { lte: ... } } }' instead.\\")
             }
 
             type movieActorsRelationship {

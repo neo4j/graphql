@@ -81,6 +81,14 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               sum: Float
             }
 
+            \\"\\"\\"Filters for an aggregation of a float field\\"\\"\\"
+            input FloatScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: FloatScalarFilters
+              min: FloatScalarFilters
+              sum: FloatScalarFilters
+            }
+
             \\"\\"\\"Float filters\\"\\"\\"
             input FloatScalarFilters {
               eq: Float
@@ -153,6 +161,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               AND: [GenreMoviesAggregateInput!]
               NOT: GenreMoviesAggregateInput
               OR: [GenreMoviesAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -225,61 +234,64 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               AND: [GenreMoviesNodeAggregationWhereInput!]
               NOT: GenreMoviesNodeAggregationWhereInput
               OR: [GenreMoviesNodeAggregationWhereInput!]
-              imdbRating_AVERAGE_EQUAL: Float
-              imdbRating_AVERAGE_GT: Float
-              imdbRating_AVERAGE_GTE: Float
-              imdbRating_AVERAGE_LT: Float
-              imdbRating_AVERAGE_LTE: Float
-              imdbRating_MAX_EQUAL: Float
-              imdbRating_MAX_GT: Float
-              imdbRating_MAX_GTE: Float
-              imdbRating_MAX_LT: Float
-              imdbRating_MAX_LTE: Float
-              imdbRating_MIN_EQUAL: Float
-              imdbRating_MIN_GT: Float
-              imdbRating_MIN_GTE: Float
-              imdbRating_MIN_LT: Float
-              imdbRating_MIN_LTE: Float
-              imdbRating_SUM_EQUAL: Float
-              imdbRating_SUM_GT: Float
-              imdbRating_SUM_GTE: Float
-              imdbRating_SUM_LT: Float
-              imdbRating_SUM_LTE: Float
-              title_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Do not use title\\")
-              title_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Do not use title\\")
-              title_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Do not use title\\")
-              title_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Do not use title\\")
-              title_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Do not use title\\")
-              title_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Do not use title\\")
-              title_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Do not use title\\")
-              title_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Do not use title\\")
-              title_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Do not use title\\")
-              title_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Do not use title\\")
-              title_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Do not use title\\")
-              title_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Do not use title\\")
-              title_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Do not use title\\")
-              title_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Do not use title\\")
-              title_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Do not use title\\")
-              year_AVERAGE_EQUAL: Float
-              year_AVERAGE_GT: Float
-              year_AVERAGE_GTE: Float
-              year_AVERAGE_LT: Float
-              year_AVERAGE_LTE: Float
-              year_MAX_EQUAL: Int
-              year_MAX_GT: Int
-              year_MAX_GTE: Int
-              year_MAX_LT: Int
-              year_MAX_LTE: Int
-              year_MIN_EQUAL: Int
-              year_MIN_GT: Int
-              year_MIN_GTE: Int
-              year_MIN_LT: Int
-              year_MIN_LTE: Int
-              year_SUM_EQUAL: Int
-              year_SUM_GT: Int
-              year_SUM_GTE: Int
-              year_SUM_LT: Int
-              year_SUM_LTE: Int
+              imdbRating: FloatScalarAggregationFilters
+              imdbRating_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'imdbRating: { average: { eq: ... } } }' instead.\\")
+              imdbRating_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'imdbRating: { average: { gt: ... } } }' instead.\\")
+              imdbRating_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'imdbRating: { average: { gte: ... } } }' instead.\\")
+              imdbRating_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'imdbRating: { average: { lt: ... } } }' instead.\\")
+              imdbRating_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'imdbRating: { average: { lte: ... } } }' instead.\\")
+              imdbRating_MAX_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'imdbRating: { max: { eq: ... } } }' instead.\\")
+              imdbRating_MAX_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'imdbRating: { max: { gt: ... } } }' instead.\\")
+              imdbRating_MAX_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'imdbRating: { max: { gte: ... } } }' instead.\\")
+              imdbRating_MAX_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'imdbRating: { max: { lt: ... } } }' instead.\\")
+              imdbRating_MAX_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'imdbRating: { max: { lte: ... } } }' instead.\\")
+              imdbRating_MIN_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'imdbRating: { min: { eq: ... } } }' instead.\\")
+              imdbRating_MIN_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'imdbRating: { min: { gt: ... } } }' instead.\\")
+              imdbRating_MIN_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'imdbRating: { min: { gte: ... } } }' instead.\\")
+              imdbRating_MIN_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'imdbRating: { min: { lt: ... } } }' instead.\\")
+              imdbRating_MIN_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'imdbRating: { min: { lte: ... } } }' instead.\\")
+              imdbRating_SUM_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'imdbRating: { sum: { eq: ... } } }' instead.\\")
+              imdbRating_SUM_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'imdbRating: { sum: { gt: ... } } }' instead.\\")
+              imdbRating_SUM_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'imdbRating: { sum: { gte: ... } } }' instead.\\")
+              imdbRating_SUM_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'imdbRating: { sum: { lt: ... } } }' instead.\\")
+              imdbRating_SUM_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'imdbRating: { sum: { lte: ... } } }' instead.\\")
+              title: StringScalarAggregationFilters
+              title_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { eq: ... } } }' instead.\\")
+              title_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { gt: ... } } }' instead.\\")
+              title_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { gte: ... } } }' instead.\\")
+              title_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { lt: ... } } }' instead.\\")
+              title_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { lte: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { eq: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { gt: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { gte: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { lt: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { lte: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { eq: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { gt: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { gte: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { lt: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { lte: ... } } }' instead.\\")
+              year: IntScalarAggregationFilters
+              year_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'year: { average: { eq: ... } } }' instead.\\")
+              year_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'year: { average: { gt: ... } } }' instead.\\")
+              year_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'year: { average: { gte: ... } } }' instead.\\")
+              year_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'year: { average: { lt: ... } } }' instead.\\")
+              year_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'year: { average: { lte: ... } } }' instead.\\")
+              year_MAX_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { max: { eq: ... } } }' instead.\\")
+              year_MAX_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { max: { gt: ... } } }' instead.\\")
+              year_MAX_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { max: { gte: ... } } }' instead.\\")
+              year_MAX_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { max: { lt: ... } } }' instead.\\")
+              year_MAX_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { max: { lte: ... } } }' instead.\\")
+              year_MIN_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { min: { eq: ... } } }' instead.\\")
+              year_MIN_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { min: { gt: ... } } }' instead.\\")
+              year_MIN_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { min: { gte: ... } } }' instead.\\")
+              year_MIN_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { min: { lt: ... } } }' instead.\\")
+              year_MIN_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { min: { lte: ... } } }' instead.\\")
+              year_SUM_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { sum: { eq: ... } } }' instead.\\")
+              year_SUM_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { sum: { gt: ... } } }' instead.\\")
+              year_SUM_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { sum: { gte: ... } } }' instead.\\")
+              year_SUM_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { sum: { lt: ... } } }' instead.\\")
+              year_SUM_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { sum: { lte: ... } } }' instead.\\")
             }
 
             type GenreMoviesRelationship {
@@ -376,6 +388,14 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               sum: Int
             }
 
+            \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+            input IntScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: IntScalarFilters
+              min: IntScalarFilters
+              sum: IntScalarFilters
+            }
+
             \\"\\"\\"Int filters\\"\\"\\"
             input IntScalarFilters {
               eq: Int
@@ -450,6 +470,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               AND: [MovieGenresAggregateInput!]
               NOT: MovieGenresAggregateInput
               OR: [MovieGenresAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -522,21 +543,22 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               AND: [MovieGenresNodeAggregationWhereInput!]
               NOT: MovieGenresNodeAggregationWhereInput
               OR: [MovieGenresNodeAggregationWhereInput!]
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
+              name: StringScalarAggregationFilters
+              name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             type MovieGenresRelationship {
@@ -689,6 +711,13 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
             }
 
             \\"\\"\\"String filters\\"\\"\\"

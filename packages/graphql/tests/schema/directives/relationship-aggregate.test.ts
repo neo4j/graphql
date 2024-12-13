@@ -317,6 +317,26 @@ describe("@relationship directive, aggregate argument", () => {
                   relationshipsDeleted: Int!
                 }
 
+                \\"\\"\\"Float filters\\"\\"\\"
+                input FloatScalarFilters {
+                  eq: Float
+                  gt: Float
+                  gte: Float
+                  in: [Float!]
+                  lt: Float
+                  lte: Float
+                }
+
+                \\"\\"\\"Int filters\\"\\"\\"
+                input IntScalarFilters {
+                  eq: Int
+                  gt: Int
+                  gte: Int
+                  in: [Int!]
+                  lt: Int
+                  lte: Int
+                }
+
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
@@ -327,6 +347,7 @@ describe("@relationship directive, aggregate argument", () => {
                   AND: [MovieActorsAggregateInput!]
                   NOT: MovieActorsAggregateInput
                   OR: [MovieActorsAggregateInput!]
+                  count: IntScalarFilters
                   count_EQ: Int
                   count_GT: Int
                   count_GTE: Int
@@ -396,36 +417,38 @@ describe("@relationship directive, aggregate argument", () => {
                   AND: [MovieActorsNodeAggregationWhereInput!]
                   NOT: MovieActorsNodeAggregationWhereInput
                   OR: [MovieActorsNodeAggregationWhereInput!]
-                  password_AVERAGE_LENGTH_EQUAL: Float
-                  password_AVERAGE_LENGTH_GT: Float
-                  password_AVERAGE_LENGTH_GTE: Float
-                  password_AVERAGE_LENGTH_LT: Float
-                  password_AVERAGE_LENGTH_LTE: Float
-                  password_LONGEST_LENGTH_EQUAL: Int
-                  password_LONGEST_LENGTH_GT: Int
-                  password_LONGEST_LENGTH_GTE: Int
-                  password_LONGEST_LENGTH_LT: Int
-                  password_LONGEST_LENGTH_LTE: Int
-                  password_SHORTEST_LENGTH_EQUAL: Int
-                  password_SHORTEST_LENGTH_GT: Int
-                  password_SHORTEST_LENGTH_GTE: Int
-                  password_SHORTEST_LENGTH_LT: Int
-                  password_SHORTEST_LENGTH_LTE: Int
-                  username_AVERAGE_LENGTH_EQUAL: Float
-                  username_AVERAGE_LENGTH_GT: Float
-                  username_AVERAGE_LENGTH_GTE: Float
-                  username_AVERAGE_LENGTH_LT: Float
-                  username_AVERAGE_LENGTH_LTE: Float
-                  username_LONGEST_LENGTH_EQUAL: Int
-                  username_LONGEST_LENGTH_GT: Int
-                  username_LONGEST_LENGTH_GTE: Int
-                  username_LONGEST_LENGTH_LT: Int
-                  username_LONGEST_LENGTH_LTE: Int
-                  username_SHORTEST_LENGTH_EQUAL: Int
-                  username_SHORTEST_LENGTH_GT: Int
-                  username_SHORTEST_LENGTH_GTE: Int
-                  username_SHORTEST_LENGTH_LT: Int
-                  username_SHORTEST_LENGTH_LTE: Int
+                  password: StringScalarAggregationFilters
+                  password_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { eq: ... } } }' instead.\\")
+                  password_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { gt: ... } } }' instead.\\")
+                  password_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { gte: ... } } }' instead.\\")
+                  password_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { lt: ... } } }' instead.\\")
+                  password_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { lte: ... } } }' instead.\\")
+                  password_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { eq: ... } } }' instead.\\")
+                  password_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { gt: ... } } }' instead.\\")
+                  password_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { gte: ... } } }' instead.\\")
+                  password_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { lt: ... } } }' instead.\\")
+                  password_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { lte: ... } } }' instead.\\")
+                  password_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { eq: ... } } }' instead.\\")
+                  password_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { gt: ... } } }' instead.\\")
+                  password_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { gte: ... } } }' instead.\\")
+                  password_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { lt: ... } } }' instead.\\")
+                  password_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { lte: ... } } }' instead.\\")
+                  username: StringScalarAggregationFilters
+                  username_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { eq: ... } } }' instead.\\")
+                  username_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { gt: ... } } }' instead.\\")
+                  username_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { gte: ... } } }' instead.\\")
+                  username_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { lt: ... } } }' instead.\\")
+                  username_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { lte: ... } } }' instead.\\")
+                  username_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { eq: ... } } }' instead.\\")
+                  username_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { gt: ... } } }' instead.\\")
+                  username_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { gte: ... } } }' instead.\\")
+                  username_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { lt: ... } } }' instead.\\")
+                  username_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { lte: ... } } }' instead.\\")
+                  username_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { eq: ... } } }' instead.\\")
+                  username_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { gt: ... } } }' instead.\\")
+                  username_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { gte: ... } } }' instead.\\")
+                  username_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { lt: ... } } }' instead.\\")
+                  username_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { lte: ... } } }' instead.\\")
                 }
 
                 type MovieActorsRelationship {
@@ -571,6 +594,13 @@ describe("@relationship directive, aggregate argument", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                input StringScalarAggregationFilters {
+                  averageLength: FloatScalarFilters
+                  longestLength: IntScalarFilters
+                  shortestLength: IntScalarFilters
                 }
 
                 \\"\\"\\"String filters\\"\\"\\"
@@ -726,6 +756,26 @@ describe("@relationship directive, aggregate argument", () => {
                   relationshipsDeleted: Int!
                 }
 
+                \\"\\"\\"Float filters\\"\\"\\"
+                input FloatScalarFilters {
+                  eq: Float
+                  gt: Float
+                  gte: Float
+                  in: [Float!]
+                  lt: Float
+                  lte: Float
+                }
+
+                \\"\\"\\"Int filters\\"\\"\\"
+                input IntScalarFilters {
+                  eq: Int
+                  gt: Int
+                  gte: Int
+                  in: [Int!]
+                  lt: Int
+                  lte: Int
+                }
+
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
                   actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
@@ -747,6 +797,7 @@ describe("@relationship directive, aggregate argument", () => {
                   AND: [MovieActorsAggregateInput!]
                   NOT: MovieActorsAggregateInput
                   OR: [MovieActorsAggregateInput!]
+                  count: IntScalarFilters
                   count_EQ: Int
                   count_GT: Int
                   count_GTE: Int
@@ -816,36 +867,38 @@ describe("@relationship directive, aggregate argument", () => {
                   AND: [MovieActorsNodeAggregationWhereInput!]
                   NOT: MovieActorsNodeAggregationWhereInput
                   OR: [MovieActorsNodeAggregationWhereInput!]
-                  password_AVERAGE_LENGTH_EQUAL: Float
-                  password_AVERAGE_LENGTH_GT: Float
-                  password_AVERAGE_LENGTH_GTE: Float
-                  password_AVERAGE_LENGTH_LT: Float
-                  password_AVERAGE_LENGTH_LTE: Float
-                  password_LONGEST_LENGTH_EQUAL: Int
-                  password_LONGEST_LENGTH_GT: Int
-                  password_LONGEST_LENGTH_GTE: Int
-                  password_LONGEST_LENGTH_LT: Int
-                  password_LONGEST_LENGTH_LTE: Int
-                  password_SHORTEST_LENGTH_EQUAL: Int
-                  password_SHORTEST_LENGTH_GT: Int
-                  password_SHORTEST_LENGTH_GTE: Int
-                  password_SHORTEST_LENGTH_LT: Int
-                  password_SHORTEST_LENGTH_LTE: Int
-                  username_AVERAGE_LENGTH_EQUAL: Float
-                  username_AVERAGE_LENGTH_GT: Float
-                  username_AVERAGE_LENGTH_GTE: Float
-                  username_AVERAGE_LENGTH_LT: Float
-                  username_AVERAGE_LENGTH_LTE: Float
-                  username_LONGEST_LENGTH_EQUAL: Int
-                  username_LONGEST_LENGTH_GT: Int
-                  username_LONGEST_LENGTH_GTE: Int
-                  username_LONGEST_LENGTH_LT: Int
-                  username_LONGEST_LENGTH_LTE: Int
-                  username_SHORTEST_LENGTH_EQUAL: Int
-                  username_SHORTEST_LENGTH_GT: Int
-                  username_SHORTEST_LENGTH_GTE: Int
-                  username_SHORTEST_LENGTH_LT: Int
-                  username_SHORTEST_LENGTH_LTE: Int
+                  password: StringScalarAggregationFilters
+                  password_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { eq: ... } } }' instead.\\")
+                  password_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { gt: ... } } }' instead.\\")
+                  password_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { gte: ... } } }' instead.\\")
+                  password_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { lt: ... } } }' instead.\\")
+                  password_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { lte: ... } } }' instead.\\")
+                  password_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { eq: ... } } }' instead.\\")
+                  password_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { gt: ... } } }' instead.\\")
+                  password_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { gte: ... } } }' instead.\\")
+                  password_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { lt: ... } } }' instead.\\")
+                  password_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { lte: ... } } }' instead.\\")
+                  password_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { eq: ... } } }' instead.\\")
+                  password_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { gt: ... } } }' instead.\\")
+                  password_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { gte: ... } } }' instead.\\")
+                  password_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { lt: ... } } }' instead.\\")
+                  password_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { lte: ... } } }' instead.\\")
+                  username: StringScalarAggregationFilters
+                  username_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { eq: ... } } }' instead.\\")
+                  username_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { gt: ... } } }' instead.\\")
+                  username_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { gte: ... } } }' instead.\\")
+                  username_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { lt: ... } } }' instead.\\")
+                  username_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { lte: ... } } }' instead.\\")
+                  username_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { eq: ... } } }' instead.\\")
+                  username_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { gt: ... } } }' instead.\\")
+                  username_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { gte: ... } } }' instead.\\")
+                  username_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { lt: ... } } }' instead.\\")
+                  username_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { lte: ... } } }' instead.\\")
+                  username_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { eq: ... } } }' instead.\\")
+                  username_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { gt: ... } } }' instead.\\")
+                  username_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { gte: ... } } }' instead.\\")
+                  username_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { lt: ... } } }' instead.\\")
+                  username_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { lte: ... } } }' instead.\\")
                 }
 
                 type MovieActorsRelationship {
@@ -991,6 +1044,13 @@ describe("@relationship directive, aggregate argument", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                input StringScalarAggregationFilters {
+                  averageLength: FloatScalarFilters
+                  longestLength: IntScalarFilters
+                  shortestLength: IntScalarFilters
                 }
 
                 \\"\\"\\"String filters\\"\\"\\"
@@ -1148,6 +1208,26 @@ describe("@relationship directive, aggregate argument", () => {
                       relationshipsDeleted: Int!
                     }
 
+                    \\"\\"\\"Float filters\\"\\"\\"
+                    input FloatScalarFilters {
+                      eq: Float
+                      gt: Float
+                      gte: Float
+                      in: [Float!]
+                      lt: Float
+                      lte: Float
+                    }
+
+                    \\"\\"\\"Int filters\\"\\"\\"
+                    input IntScalarFilters {
+                      eq: Int
+                      gt: Int
+                      gte: Int
+                      in: [Int!]
+                      lt: Int
+                      lte: Int
+                    }
+
                     type Movie {
                       actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
                       actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
@@ -1158,6 +1238,7 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [MovieActorsAggregateInput!]
                       NOT: MovieActorsAggregateInput
                       OR: [MovieActorsAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -1227,36 +1308,38 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [MovieActorsNodeAggregationWhereInput!]
                       NOT: MovieActorsNodeAggregationWhereInput
                       OR: [MovieActorsNodeAggregationWhereInput!]
-                      password_AVERAGE_LENGTH_EQUAL: Float
-                      password_AVERAGE_LENGTH_GT: Float
-                      password_AVERAGE_LENGTH_GTE: Float
-                      password_AVERAGE_LENGTH_LT: Float
-                      password_AVERAGE_LENGTH_LTE: Float
-                      password_LONGEST_LENGTH_EQUAL: Int
-                      password_LONGEST_LENGTH_GT: Int
-                      password_LONGEST_LENGTH_GTE: Int
-                      password_LONGEST_LENGTH_LT: Int
-                      password_LONGEST_LENGTH_LTE: Int
-                      password_SHORTEST_LENGTH_EQUAL: Int
-                      password_SHORTEST_LENGTH_GT: Int
-                      password_SHORTEST_LENGTH_GTE: Int
-                      password_SHORTEST_LENGTH_LT: Int
-                      password_SHORTEST_LENGTH_LTE: Int
-                      username_AVERAGE_LENGTH_EQUAL: Float
-                      username_AVERAGE_LENGTH_GT: Float
-                      username_AVERAGE_LENGTH_GTE: Float
-                      username_AVERAGE_LENGTH_LT: Float
-                      username_AVERAGE_LENGTH_LTE: Float
-                      username_LONGEST_LENGTH_EQUAL: Int
-                      username_LONGEST_LENGTH_GT: Int
-                      username_LONGEST_LENGTH_GTE: Int
-                      username_LONGEST_LENGTH_LT: Int
-                      username_LONGEST_LENGTH_LTE: Int
-                      username_SHORTEST_LENGTH_EQUAL: Int
-                      username_SHORTEST_LENGTH_GT: Int
-                      username_SHORTEST_LENGTH_GTE: Int
-                      username_SHORTEST_LENGTH_LT: Int
-                      username_SHORTEST_LENGTH_LTE: Int
+                      password: StringScalarAggregationFilters
+                      password_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { eq: ... } } }' instead.\\")
+                      password_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { gt: ... } } }' instead.\\")
+                      password_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { gte: ... } } }' instead.\\")
+                      password_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { lt: ... } } }' instead.\\")
+                      password_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { lte: ... } } }' instead.\\")
+                      password_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { eq: ... } } }' instead.\\")
+                      password_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { gt: ... } } }' instead.\\")
+                      password_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { gte: ... } } }' instead.\\")
+                      password_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { lt: ... } } }' instead.\\")
+                      password_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { lte: ... } } }' instead.\\")
+                      password_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { eq: ... } } }' instead.\\")
+                      password_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { gt: ... } } }' instead.\\")
+                      password_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { gte: ... } } }' instead.\\")
+                      password_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { lt: ... } } }' instead.\\")
+                      password_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { lte: ... } } }' instead.\\")
+                      username: StringScalarAggregationFilters
+                      username_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { eq: ... } } }' instead.\\")
+                      username_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { gt: ... } } }' instead.\\")
+                      username_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { gte: ... } } }' instead.\\")
+                      username_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { lt: ... } } }' instead.\\")
+                      username_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { lte: ... } } }' instead.\\")
+                      username_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { eq: ... } } }' instead.\\")
+                      username_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { gt: ... } } }' instead.\\")
+                      username_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { gte: ... } } }' instead.\\")
+                      username_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { lt: ... } } }' instead.\\")
+                      username_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { lte: ... } } }' instead.\\")
+                      username_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { eq: ... } } }' instead.\\")
+                      username_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { gt: ... } } }' instead.\\")
+                      username_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { gte: ... } } }' instead.\\")
+                      username_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { lt: ... } } }' instead.\\")
+                      username_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { lte: ... } } }' instead.\\")
                     }
 
                     type MovieActorsRelationship {
@@ -1475,6 +1558,13 @@ describe("@relationship directive, aggregate argument", () => {
                       shortest: String
                     }
 
+                    \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                    input StringScalarAggregationFilters {
+                      averageLength: FloatScalarFilters
+                      longestLength: IntScalarFilters
+                      shortestLength: IntScalarFilters
+                    }
+
                     \\"\\"\\"String filters\\"\\"\\"
                     input StringScalarFilters {
                       contains: String
@@ -1628,6 +1718,26 @@ describe("@relationship directive, aggregate argument", () => {
                       relationshipsDeleted: Int!
                     }
 
+                    \\"\\"\\"Float filters\\"\\"\\"
+                    input FloatScalarFilters {
+                      eq: Float
+                      gt: Float
+                      gte: Float
+                      in: [Float!]
+                      lt: Float
+                      lte: Float
+                    }
+
+                    \\"\\"\\"Int filters\\"\\"\\"
+                    input IntScalarFilters {
+                      eq: Int
+                      gt: Int
+                      gte: Int
+                      in: [Int!]
+                      lt: Int
+                      lte: Int
+                    }
+
                     type Movie {
                       actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
                       actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection
@@ -1639,6 +1749,7 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [MovieActorsAggregateInput!]
                       NOT: MovieActorsAggregateInput
                       OR: [MovieActorsAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -1708,36 +1819,38 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [MovieActorsNodeAggregationWhereInput!]
                       NOT: MovieActorsNodeAggregationWhereInput
                       OR: [MovieActorsNodeAggregationWhereInput!]
-                      password_AVERAGE_LENGTH_EQUAL: Float
-                      password_AVERAGE_LENGTH_GT: Float
-                      password_AVERAGE_LENGTH_GTE: Float
-                      password_AVERAGE_LENGTH_LT: Float
-                      password_AVERAGE_LENGTH_LTE: Float
-                      password_LONGEST_LENGTH_EQUAL: Int
-                      password_LONGEST_LENGTH_GT: Int
-                      password_LONGEST_LENGTH_GTE: Int
-                      password_LONGEST_LENGTH_LT: Int
-                      password_LONGEST_LENGTH_LTE: Int
-                      password_SHORTEST_LENGTH_EQUAL: Int
-                      password_SHORTEST_LENGTH_GT: Int
-                      password_SHORTEST_LENGTH_GTE: Int
-                      password_SHORTEST_LENGTH_LT: Int
-                      password_SHORTEST_LENGTH_LTE: Int
-                      username_AVERAGE_LENGTH_EQUAL: Float
-                      username_AVERAGE_LENGTH_GT: Float
-                      username_AVERAGE_LENGTH_GTE: Float
-                      username_AVERAGE_LENGTH_LT: Float
-                      username_AVERAGE_LENGTH_LTE: Float
-                      username_LONGEST_LENGTH_EQUAL: Int
-                      username_LONGEST_LENGTH_GT: Int
-                      username_LONGEST_LENGTH_GTE: Int
-                      username_LONGEST_LENGTH_LT: Int
-                      username_LONGEST_LENGTH_LTE: Int
-                      username_SHORTEST_LENGTH_EQUAL: Int
-                      username_SHORTEST_LENGTH_GT: Int
-                      username_SHORTEST_LENGTH_GTE: Int
-                      username_SHORTEST_LENGTH_LT: Int
-                      username_SHORTEST_LENGTH_LTE: Int
+                      password: StringScalarAggregationFilters
+                      password_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { eq: ... } } }' instead.\\")
+                      password_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { gt: ... } } }' instead.\\")
+                      password_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { gte: ... } } }' instead.\\")
+                      password_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { lt: ... } } }' instead.\\")
+                      password_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { lte: ... } } }' instead.\\")
+                      password_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { eq: ... } } }' instead.\\")
+                      password_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { gt: ... } } }' instead.\\")
+                      password_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { gte: ... } } }' instead.\\")
+                      password_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { lt: ... } } }' instead.\\")
+                      password_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { lte: ... } } }' instead.\\")
+                      password_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { eq: ... } } }' instead.\\")
+                      password_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { gt: ... } } }' instead.\\")
+                      password_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { gte: ... } } }' instead.\\")
+                      password_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { lt: ... } } }' instead.\\")
+                      password_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { lte: ... } } }' instead.\\")
+                      username: StringScalarAggregationFilters
+                      username_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { eq: ... } } }' instead.\\")
+                      username_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { gt: ... } } }' instead.\\")
+                      username_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { gte: ... } } }' instead.\\")
+                      username_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { lt: ... } } }' instead.\\")
+                      username_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { lte: ... } } }' instead.\\")
+                      username_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { eq: ... } } }' instead.\\")
+                      username_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { gt: ... } } }' instead.\\")
+                      username_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { gte: ... } } }' instead.\\")
+                      username_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { lt: ... } } }' instead.\\")
+                      username_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { lte: ... } } }' instead.\\")
+                      username_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { eq: ... } } }' instead.\\")
+                      username_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { gt: ... } } }' instead.\\")
+                      username_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { gte: ... } } }' instead.\\")
+                      username_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { lt: ... } } }' instead.\\")
+                      username_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { lte: ... } } }' instead.\\")
                     }
 
                     type MovieActorsRelationship {
@@ -1964,6 +2077,13 @@ describe("@relationship directive, aggregate argument", () => {
                     type StringAggregateSelection {
                       longest: String
                       shortest: String
+                    }
+
+                    \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                    input StringScalarAggregationFilters {
+                      averageLength: FloatScalarFilters
+                      longestLength: IntScalarFilters
+                      shortestLength: IntScalarFilters
                     }
 
                     \\"\\"\\"String filters\\"\\"\\"

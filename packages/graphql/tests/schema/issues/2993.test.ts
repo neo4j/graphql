@@ -71,6 +71,12 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               min: DateTime
             }
 
+            \\"\\"\\"Filters for an aggregation of an DateTime input field\\"\\"\\"
+            input DateTimeScalarAggregationFilters {
+              max: DateTimeScalarFilters
+              min: DateTimeScalarFilters
+            }
+
             \\"\\"\\"DateTime filters\\"\\"\\"
             input DateTimeScalarFilters {
               eq: DateTime
@@ -106,16 +112,17 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               AND: [FOLLOWSAggregationWhereInput!]
               NOT: FOLLOWSAggregationWhereInput
               OR: [FOLLOWSAggregationWhereInput!]
-              since_MAX_EQUAL: DateTime
-              since_MAX_GT: DateTime
-              since_MAX_GTE: DateTime
-              since_MAX_LT: DateTime
-              since_MAX_LTE: DateTime
-              since_MIN_EQUAL: DateTime
-              since_MIN_GT: DateTime
-              since_MIN_GTE: DateTime
-              since_MIN_LT: DateTime
-              since_MIN_LTE: DateTime
+              since: DateTimeScalarAggregationFilters
+              since_MAX_EQUAL: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'since: { max: { eq: ... } } }' instead.\\")
+              since_MAX_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'since: { max: { gt: ... } } }' instead.\\")
+              since_MAX_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'since: { max: { gte: ... } } }' instead.\\")
+              since_MAX_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'since: { max: { lt: ... } } }' instead.\\")
+              since_MAX_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'since: { max: { lte: ... } } }' instead.\\")
+              since_MIN_EQUAL: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'since: { min: { eq: ... } } }' instead.\\")
+              since_MIN_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'since: { min: { gt: ... } } }' instead.\\")
+              since_MIN_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'since: { min: { gte: ... } } }' instead.\\")
+              since_MIN_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'since: { min: { lt: ... } } }' instead.\\")
+              since_MIN_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'since: { min: { lte: ... } } }' instead.\\")
             }
 
             input FOLLOWSSort {
@@ -140,9 +147,25 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               since_LTE: DateTime
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
             type IDAggregateSelection {
               longest: ID
               shortest: ID
+            }
+
+            \\"\\"\\"Filters for an aggregation of an ID input field\\"\\"\\"
+            input IDScalarAggregationFilters {
+              max: IDScalarFilters
+              min: IDScalarFilters
             }
 
             \\"\\"\\"ID filters\\"\\"\\"
@@ -162,6 +185,16 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             \\"\\"\\"ID mutations\\"\\"\\"
             input IDScalarMutations {
               set: ID
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
             }
 
             type Mutation {
@@ -268,6 +301,13 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               shortest: String
             }
 
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
+            }
+
             \\"\\"\\"String filters\\"\\"\\"
             input StringScalarFilters {
               contains: String
@@ -334,6 +374,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               AND: [UserFollowingAggregateInput!]
               NOT: UserFollowingAggregateInput
               OR: [UserFollowingAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -406,31 +447,33 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               AND: [UserFollowingNodeAggregationWhereInput!]
               NOT: UserFollowingNodeAggregationWhereInput
               OR: [UserFollowingNodeAggregationWhereInput!]
-              id_MAX_EQUAL: ID
-              id_MAX_GT: ID
-              id_MAX_GTE: ID
-              id_MAX_LT: ID
-              id_MAX_LTE: ID
-              id_MIN_EQUAL: ID
-              id_MIN_GT: ID
-              id_MIN_GTE: ID
-              id_MIN_LT: ID
-              id_MIN_LTE: ID
-              userName_AVERAGE_LENGTH_EQUAL: Float
-              userName_AVERAGE_LENGTH_GT: Float
-              userName_AVERAGE_LENGTH_GTE: Float
-              userName_AVERAGE_LENGTH_LT: Float
-              userName_AVERAGE_LENGTH_LTE: Float
-              userName_LONGEST_LENGTH_EQUAL: Int
-              userName_LONGEST_LENGTH_GT: Int
-              userName_LONGEST_LENGTH_GTE: Int
-              userName_LONGEST_LENGTH_LT: Int
-              userName_LONGEST_LENGTH_LTE: Int
-              userName_SHORTEST_LENGTH_EQUAL: Int
-              userName_SHORTEST_LENGTH_GT: Int
-              userName_SHORTEST_LENGTH_GTE: Int
-              userName_SHORTEST_LENGTH_LT: Int
-              userName_SHORTEST_LENGTH_LTE: Int
+              id: IDScalarAggregationFilters
+              id_MAX_EQUAL: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { eq: ... } } }' instead.\\")
+              id_MAX_GT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { gt: ... } } }' instead.\\")
+              id_MAX_GTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { gte: ... } } }' instead.\\")
+              id_MAX_LT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { lt: ... } } }' instead.\\")
+              id_MAX_LTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { lte: ... } } }' instead.\\")
+              id_MIN_EQUAL: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { eq: ... } } }' instead.\\")
+              id_MIN_GT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { gt: ... } } }' instead.\\")
+              id_MIN_GTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { gte: ... } } }' instead.\\")
+              id_MIN_LT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { lt: ... } } }' instead.\\")
+              id_MIN_LTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { lte: ... } } }' instead.\\")
+              userName: StringScalarAggregationFilters
+              userName_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'userName: { averageLength: { eq: ... } } }' instead.\\")
+              userName_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'userName: { averageLength: { gt: ... } } }' instead.\\")
+              userName_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'userName: { averageLength: { gte: ... } } }' instead.\\")
+              userName_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'userName: { averageLength: { lt: ... } } }' instead.\\")
+              userName_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'userName: { averageLength: { lte: ... } } }' instead.\\")
+              userName_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'userName: { longestLength: { eq: ... } } }' instead.\\")
+              userName_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'userName: { longestLength: { gt: ... } } }' instead.\\")
+              userName_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'userName: { longestLength: { gte: ... } } }' instead.\\")
+              userName_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'userName: { longestLength: { lt: ... } } }' instead.\\")
+              userName_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'userName: { longestLength: { lte: ... } } }' instead.\\")
+              userName_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'userName: { shortestLength: { eq: ... } } }' instead.\\")
+              userName_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'userName: { shortestLength: { gt: ... } } }' instead.\\")
+              userName_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'userName: { shortestLength: { gte: ... } } }' instead.\\")
+              userName_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'userName: { shortestLength: { lt: ... } } }' instead.\\")
+              userName_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'userName: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             type UserFollowingRelationship {

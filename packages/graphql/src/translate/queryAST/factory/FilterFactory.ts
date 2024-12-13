@@ -51,7 +51,12 @@ import { isInterfaceEntity } from "../utils/is-interface-entity";
 import { isRelationshipEntity } from "../utils/is-relationship-entity";
 import { isUnionEntity } from "../utils/is-union-entity";
 import type { QueryASTFactory } from "./QueryASTFactory";
-import { parseAggregationWhereFields, parseWhereField } from "./parsers/parse-where-field";
+import {
+    parseAggregationWhereFields,
+    parseWhereField,
+    type AggregationLogicalOperator,
+    type AggregationOperator,
+} from "./parsers/parse-where-field";
 
 type AggregateWhereInput = {
     count: number;
@@ -566,21 +571,17 @@ export class FilterFactory {
     protected parseGenericOperator(key: string): FilterOperator {
         // we convert them to the previous format to keep the same translation logic
         switch (key) {
-            case "equals":
             case "eq":
                 return "EQ";
             case "in":
                 return "IN";
-            case "lessThan": // TODO: remove long syntax once tests have been updated
             case "lt":
                 return "LT";
-            case "lessThanEquals":
             case "lte":
                 return "LTE";
             case "greaterThan":
             case "gt":
                 return "GT";
-            case "greaterThanEquals":
             case "gte":
                 return "GTE";
             case "contains":
@@ -595,6 +596,24 @@ export class FilterFactory {
                 return "INCLUDES";
             case "distance_eq": // Used for distance -> eq
                 return "DISTANCE";
+            default:
+                throw new Error(`Invalid operator ${key}`);
+        }
+    }
+    private parseGenericOperatorForAggregation(key: string): AggregationLogicalOperator {
+        // we convert them to the previous format to keep the same translation logic
+        switch (key) {
+            case "eq":
+                return "EQUAL";
+            case "lt":
+                return "LT";
+            case "lte":
+                return "LTE";
+            case "gt":
+                return "GT";
+            case "gte":
+                return "GTE";
+
             default:
                 throw new Error(`Invalid operator ${key}`);
         }
@@ -762,10 +781,20 @@ export class FilterFactory {
                 }
                 const { fieldName, operator } = parseWhereField(key);
 
-                const filterOperator = operator ?? "EQ";
                 if (fieldName === "count") {
+                    if (!operator) {
+                        return Object.entries(value).map(([key, value]) => {
+                            const operator = this.parseGenericOperator(key);
+
+                            return new CountFilter({
+                                operator: operator,
+                                comparisonValue: value,
+                            });
+                        });
+                    }
+
                     const countFilter = new CountFilter({
-                        operator: filterOperator,
+                        operator: operator ?? "EQ",
                         comparisonValue: value,
                     });
                     return [countFilter];
@@ -803,7 +832,7 @@ export class FilterFactory {
         entity: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter,
         relationship?: RelationshipAdapter
     ): Array<AggregationPropertyFilter | LogicalFilter> {
-        const filters = Object.entries(where).map(([key, value]) => {
+        const filters = Object.entries(where).flatMap(([key, value]) => {
             if (isLogicalOperator(key)) {
                 const filters = asArray(value).flatMap((nestedWhere) => {
                     return this.createAggregationNodeFilters(nestedWhere, entity, relationship);
@@ -820,6 +849,36 @@ export class FilterFactory {
             if (!attr) throw new Error(`Attribute ${fieldName} not found`);
 
             const attachedTo = entity instanceof RelationshipAdapter ? "relationship" : "node";
+
+            if (!aggregationOperator) {
+                const filters = Object.entries(value).flatMap(([aggregationOperator, value]) => {
+                    const parsedAggregationOperation = this.parseGenericAggregationOperator(aggregationOperator);
+
+                    // NOTE: this part is duplicate of the code used for non-generic operators
+                    return Object.entries(value as Record<string, unknown>).map(([operator, value]) => {
+                        const parsedOperator = this.parseGenericOperatorForAggregation(operator);
+                        if (attr.typeHelper.isDuration()) {
+                            return new AggregationDurationFilter({
+                                attribute: attr,
+                                comparisonValue: value,
+                                logicalOperator: parsedOperator || "EQUAL",
+                                aggregationOperator: parsedAggregationOperation,
+                                attachedTo,
+                            });
+                        }
+
+                        return new AggregationPropertyFilter({
+                            attribute: attr,
+                            relationship,
+                            comparisonValue: value,
+                            logicalOperator: parsedOperator || "EQUAL",
+                            aggregationOperator: parsedAggregationOperation,
+                            attachedTo,
+                        });
+                    });
+                });
+                return this.wrapMultipleFiltersInLogical(filters);
+            }
 
             if (attr.typeHelper.isDuration()) {
                 return new AggregationDurationFilter({
@@ -909,5 +968,28 @@ export class FilterFactory {
             }
         }
         return targetPoint;
+    }
+
+    private parseGenericAggregationOperator(key: string): AggregationOperator {
+        // we convert them to the previous format to keep the same translation logic
+        switch (key) {
+            case "averageLength":
+            case "average":
+                return "AVERAGE";
+            case "shortestLength":
+            case "shortest":
+                return "SHORTEST";
+            case "longestLength":
+            case "longest":
+                return "LONGEST";
+            case "min":
+                return "MIN";
+            case "max":
+                return "MAX";
+            case "sum":
+                return "SUM";
+            default:
+                throw new Error(`Invalid aggregation operator ${key}`);
+        }
     }
 }

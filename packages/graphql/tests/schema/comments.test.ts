@@ -458,6 +458,16 @@ describe("Comments", () => {
                   relationshipsDeleted: Int!
                 }
 
+                \\"\\"\\"Float filters\\"\\"\\"
+                input FloatScalarFilters {
+                  eq: Float
+                  gt: Float
+                  gte: Float
+                  in: [Float!]
+                  lt: Float
+                  lte: Float
+                }
+
                 type IDAggregateSelection {
                   longest: ID
                   shortest: ID
@@ -482,6 +492,16 @@ describe("Comments", () => {
                   set: ID
                 }
 
+                \\"\\"\\"Int filters\\"\\"\\"
+                input IntScalarFilters {
+                  eq: Int
+                  gt: Int
+                  gte: Int
+                  in: [Int!]
+                  lt: Int
+                  lte: Int
+                }
+
                 type Movie {
                   \\"\\"\\"Actors in Movie\\"\\"\\"
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
@@ -503,6 +523,7 @@ describe("Comments", () => {
                   AND: [MovieActorsAggregateInput!]
                   NOT: MovieActorsAggregateInput
                   OR: [MovieActorsAggregateInput!]
+                  count: IntScalarFilters
                   count_EQ: Int
                   count_GT: Int
                   count_GTE: Int
@@ -572,21 +593,22 @@ describe("Comments", () => {
                   AND: [MovieActorsNodeAggregationWhereInput!]
                   NOT: MovieActorsNodeAggregationWhereInput
                   OR: [MovieActorsNodeAggregationWhereInput!]
-                  name_AVERAGE_LENGTH_EQUAL: Float
-                  name_AVERAGE_LENGTH_GT: Float
-                  name_AVERAGE_LENGTH_GTE: Float
-                  name_AVERAGE_LENGTH_LT: Float
-                  name_AVERAGE_LENGTH_LTE: Float
-                  name_LONGEST_LENGTH_EQUAL: Int
-                  name_LONGEST_LENGTH_GT: Int
-                  name_LONGEST_LENGTH_GTE: Int
-                  name_LONGEST_LENGTH_LT: Int
-                  name_LONGEST_LENGTH_LTE: Int
-                  name_SHORTEST_LENGTH_EQUAL: Int
-                  name_SHORTEST_LENGTH_GT: Int
-                  name_SHORTEST_LENGTH_GTE: Int
-                  name_SHORTEST_LENGTH_LT: Int
-                  name_SHORTEST_LENGTH_LTE: Int
+                  name: StringScalarAggregationFilters
+                  name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
                 }
 
                 type MovieActorsRelationship {
@@ -734,6 +756,13 @@ describe("Comments", () => {
                   shortest: String
                 }
 
+                \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                input StringScalarAggregationFilters {
+                  averageLength: FloatScalarFilters
+                  longestLength: IntScalarFilters
+                  shortestLength: IntScalarFilters
+                }
+
                 \\"\\"\\"String filters\\"\\"\\"
                 input StringScalarFilters {
                   contains: String
@@ -822,26 +851,27 @@ describe("Comments", () => {
                   AND: [ActedInAggregationWhereInput!]
                   NOT: ActedInAggregationWhereInput
                   OR: [ActedInAggregationWhereInput!]
-                  screenTime_AVERAGE_EQUAL: Float
-                  screenTime_AVERAGE_GT: Float
-                  screenTime_AVERAGE_GTE: Float
-                  screenTime_AVERAGE_LT: Float
-                  screenTime_AVERAGE_LTE: Float
-                  screenTime_MAX_EQUAL: Int
-                  screenTime_MAX_GT: Int
-                  screenTime_MAX_GTE: Int
-                  screenTime_MAX_LT: Int
-                  screenTime_MAX_LTE: Int
-                  screenTime_MIN_EQUAL: Int
-                  screenTime_MIN_GT: Int
-                  screenTime_MIN_GTE: Int
-                  screenTime_MIN_LT: Int
-                  screenTime_MIN_LTE: Int
-                  screenTime_SUM_EQUAL: Int
-                  screenTime_SUM_GT: Int
-                  screenTime_SUM_GTE: Int
-                  screenTime_SUM_LT: Int
-                  screenTime_SUM_LTE: Int
+                  screenTime: IntScalarAggregationFilters
+                  screenTime_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { average: { eq: ... } } }' instead.\\")
+                  screenTime_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { average: { gt: ... } } }' instead.\\")
+                  screenTime_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { average: { gte: ... } } }' instead.\\")
+                  screenTime_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { average: { lt: ... } } }' instead.\\")
+                  screenTime_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { average: { lte: ... } } }' instead.\\")
+                  screenTime_MAX_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { max: { eq: ... } } }' instead.\\")
+                  screenTime_MAX_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { max: { gt: ... } } }' instead.\\")
+                  screenTime_MAX_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { max: { gte: ... } } }' instead.\\")
+                  screenTime_MAX_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { max: { lt: ... } } }' instead.\\")
+                  screenTime_MAX_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { max: { lte: ... } } }' instead.\\")
+                  screenTime_MIN_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { min: { eq: ... } } }' instead.\\")
+                  screenTime_MIN_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { min: { gt: ... } } }' instead.\\")
+                  screenTime_MIN_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { min: { gte: ... } } }' instead.\\")
+                  screenTime_MIN_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { min: { lt: ... } } }' instead.\\")
+                  screenTime_MIN_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { min: { lte: ... } } }' instead.\\")
+                  screenTime_SUM_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { sum: { eq: ... } } }' instead.\\")
+                  screenTime_SUM_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { sum: { gt: ... } } }' instead.\\")
+                  screenTime_SUM_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { sum: { gte: ... } } }' instead.\\")
+                  screenTime_SUM_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { sum: { lt: ... } } }' instead.\\")
+                  screenTime_SUM_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { sum: { lte: ... } } }' instead.\\")
                 }
 
                 input ActedInCreateInput {
@@ -884,6 +914,7 @@ describe("Comments", () => {
                   AND: [ActorActedInAggregateInput!]
                   NOT: ActorActedInAggregateInput
                   OR: [ActorActedInAggregateInput!]
+                  count: IntScalarFilters
                   count_EQ: Int
                   count_GT: Int
                   count_GTE: Int
@@ -958,21 +989,22 @@ describe("Comments", () => {
                   AND: [ActorActedInNodeAggregationWhereInput!]
                   NOT: ActorActedInNodeAggregationWhereInput
                   OR: [ActorActedInNodeAggregationWhereInput!]
-                  title_AVERAGE_LENGTH_EQUAL: Float
-                  title_AVERAGE_LENGTH_GT: Float
-                  title_AVERAGE_LENGTH_GTE: Float
-                  title_AVERAGE_LENGTH_LT: Float
-                  title_AVERAGE_LENGTH_LTE: Float
-                  title_LONGEST_LENGTH_EQUAL: Int
-                  title_LONGEST_LENGTH_GT: Int
-                  title_LONGEST_LENGTH_GTE: Int
-                  title_LONGEST_LENGTH_LT: Int
-                  title_LONGEST_LENGTH_LTE: Int
-                  title_SHORTEST_LENGTH_EQUAL: Int
-                  title_SHORTEST_LENGTH_GT: Int
-                  title_SHORTEST_LENGTH_GTE: Int
-                  title_SHORTEST_LENGTH_LT: Int
-                  title_SHORTEST_LENGTH_LTE: Int
+                  title: StringScalarAggregationFilters
+                  title_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { eq: ... } } }' instead.\\")
+                  title_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { gt: ... } } }' instead.\\")
+                  title_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { gte: ... } } }' instead.\\")
+                  title_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { lt: ... } } }' instead.\\")
+                  title_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { lte: ... } } }' instead.\\")
+                  title_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { eq: ... } } }' instead.\\")
+                  title_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { gt: ... } } }' instead.\\")
+                  title_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { gte: ... } } }' instead.\\")
+                  title_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { lt: ... } } }' instead.\\")
+                  title_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { lte: ... } } }' instead.\\")
+                  title_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { eq: ... } } }' instead.\\")
+                  title_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { gt: ... } } }' instead.\\")
+                  title_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { gte: ... } } }' instead.\\")
+                  title_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { lt: ... } } }' instead.\\")
+                  title_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { lte: ... } } }' instead.\\")
                 }
 
                 type ActorActedInRelationship {
@@ -1128,11 +1160,29 @@ describe("Comments", () => {
                   relationshipsDeleted: Int!
                 }
 
+                \\"\\"\\"Float filters\\"\\"\\"
+                input FloatScalarFilters {
+                  eq: Float
+                  gt: Float
+                  gte: Float
+                  in: [Float!]
+                  lt: Float
+                  lte: Float
+                }
+
                 type IntAggregateSelection {
                   average: Float
                   max: Int
                   min: Int
                   sum: Int
+                }
+
+                \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+                input IntScalarAggregationFilters {
+                  average: FloatScalarFilters
+                  max: IntScalarFilters
+                  min: IntScalarFilters
+                  sum: IntScalarFilters
                 }
 
                 \\"\\"\\"Int filters\\"\\"\\"
@@ -1383,6 +1433,13 @@ describe("Comments", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                input StringScalarAggregationFilters {
+                  averageLength: FloatScalarFilters
+                  longestLength: IntScalarFilters
+                  shortestLength: IntScalarFilters
                 }
 
                 \\"\\"\\"String filters\\"\\"\\"

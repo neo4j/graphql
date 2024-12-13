@@ -79,9 +79,25 @@ describe("162", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
             type IDAggregateSelection {
               longest: ID
               shortest: ID
+            }
+
+            \\"\\"\\"Filters for an aggregation of an ID input field\\"\\"\\"
+            input IDScalarAggregationFilters {
+              max: IDScalarFilters
+              min: IDScalarFilters
             }
 
             \\"\\"\\"ID filters\\"\\"\\"
@@ -108,6 +124,14 @@ describe("162", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+            input IntScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: IntScalarFilters
+              min: IntScalarFilters
+              sum: IntScalarFilters
             }
 
             \\"\\"\\"Int filters\\"\\"\\"
@@ -226,6 +250,7 @@ describe("162", () => {
               AND: [TigerJawLevel2Part1AggregateInput!]
               NOT: TigerJawLevel2Part1AggregateInput
               OR: [TigerJawLevel2Part1AggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -329,16 +354,17 @@ describe("162", () => {
               AND: [TigerJawLevel2Part1NodeAggregationWhereInput!]
               NOT: TigerJawLevel2Part1NodeAggregationWhereInput
               OR: [TigerJawLevel2Part1NodeAggregationWhereInput!]
-              id_MAX_EQUAL: ID
-              id_MAX_GT: ID
-              id_MAX_GTE: ID
-              id_MAX_LT: ID
-              id_MAX_LTE: ID
-              id_MIN_EQUAL: ID
-              id_MIN_GT: ID
-              id_MIN_GTE: ID
-              id_MIN_LT: ID
-              id_MIN_LTE: ID
+              id: IDScalarAggregationFilters
+              id_MAX_EQUAL: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { eq: ... } } }' instead.\\")
+              id_MAX_GT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { gt: ... } } }' instead.\\")
+              id_MAX_GTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { gte: ... } } }' instead.\\")
+              id_MAX_LT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { lt: ... } } }' instead.\\")
+              id_MAX_LTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { lte: ... } } }' instead.\\")
+              id_MIN_EQUAL: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { eq: ... } } }' instead.\\")
+              id_MIN_GT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { gt: ... } } }' instead.\\")
+              id_MIN_GTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { gte: ... } } }' instead.\\")
+              id_MIN_LT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { lt: ... } } }' instead.\\")
+              id_MIN_LTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { lte: ... } } }' instead.\\")
             }
 
             type TigerJawLevel2Part1Relationship {
@@ -376,6 +402,7 @@ describe("162", () => {
               AND: [TigerJawLevel2Part1TigerAggregateInput!]
               NOT: TigerJawLevel2Part1TigerAggregateInput
               OR: [TigerJawLevel2Part1TigerAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -445,26 +472,27 @@ describe("162", () => {
               AND: [TigerJawLevel2Part1TigerNodeAggregationWhereInput!]
               NOT: TigerJawLevel2Part1TigerNodeAggregationWhereInput
               OR: [TigerJawLevel2Part1TigerNodeAggregationWhereInput!]
-              x_AVERAGE_EQUAL: Float
-              x_AVERAGE_GT: Float
-              x_AVERAGE_GTE: Float
-              x_AVERAGE_LT: Float
-              x_AVERAGE_LTE: Float
-              x_MAX_EQUAL: Int
-              x_MAX_GT: Int
-              x_MAX_GTE: Int
-              x_MAX_LT: Int
-              x_MAX_LTE: Int
-              x_MIN_EQUAL: Int
-              x_MIN_GT: Int
-              x_MIN_GTE: Int
-              x_MIN_LT: Int
-              x_MIN_LTE: Int
-              x_SUM_EQUAL: Int
-              x_SUM_GT: Int
-              x_SUM_GTE: Int
-              x_SUM_LT: Int
-              x_SUM_LTE: Int
+              x: IntScalarAggregationFilters
+              x_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'x: { average: { eq: ... } } }' instead.\\")
+              x_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'x: { average: { gt: ... } } }' instead.\\")
+              x_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'x: { average: { gte: ... } } }' instead.\\")
+              x_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'x: { average: { lt: ... } } }' instead.\\")
+              x_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'x: { average: { lte: ... } } }' instead.\\")
+              x_MAX_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'x: { max: { eq: ... } } }' instead.\\")
+              x_MAX_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'x: { max: { gt: ... } } }' instead.\\")
+              x_MAX_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'x: { max: { gte: ... } } }' instead.\\")
+              x_MAX_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'x: { max: { lt: ... } } }' instead.\\")
+              x_MAX_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'x: { max: { lte: ... } } }' instead.\\")
+              x_MIN_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'x: { min: { eq: ... } } }' instead.\\")
+              x_MIN_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'x: { min: { gt: ... } } }' instead.\\")
+              x_MIN_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'x: { min: { gte: ... } } }' instead.\\")
+              x_MIN_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'x: { min: { lt: ... } } }' instead.\\")
+              x_MIN_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'x: { min: { lte: ... } } }' instead.\\")
+              x_SUM_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'x: { sum: { eq: ... } } }' instead.\\")
+              x_SUM_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'x: { sum: { gt: ... } } }' instead.\\")
+              x_SUM_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'x: { sum: { gte: ... } } }' instead.\\")
+              x_SUM_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'x: { sum: { lt: ... } } }' instead.\\")
+              x_SUM_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'x: { sum: { lte: ... } } }' instead.\\")
             }
 
             type TigerJawLevel2Part1TigerRelationship {

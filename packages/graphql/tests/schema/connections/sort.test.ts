@@ -69,6 +69,26 @@ describe("Sort", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
+            }
+
             type Mutation {
               createNode1s(input: [Node1CreateInput!]!): CreateNode1sMutationResponse!
               createNode2s(input: [Node2CreateInput!]!): CreateNode2sMutationResponse!
@@ -124,6 +144,7 @@ describe("Sort", () => {
               AND: [Node1RelatedToAggregateInput!]
               NOT: Node1RelatedToAggregateInput
               OR: [Node1RelatedToAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -322,6 +343,7 @@ describe("Sort", () => {
               AND: [Node2RelatedToAggregateInput!]
               NOT: Node2RelatedToAggregateInput
               OR: [Node2RelatedToAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -394,21 +416,22 @@ describe("Sort", () => {
               AND: [Node2RelatedToNodeAggregationWhereInput!]
               NOT: Node2RelatedToNodeAggregationWhereInput
               OR: [Node2RelatedToNodeAggregationWhereInput!]
-              property_AVERAGE_LENGTH_EQUAL: Float
-              property_AVERAGE_LENGTH_GT: Float
-              property_AVERAGE_LENGTH_GTE: Float
-              property_AVERAGE_LENGTH_LT: Float
-              property_AVERAGE_LENGTH_LTE: Float
-              property_LONGEST_LENGTH_EQUAL: Int
-              property_LONGEST_LENGTH_GT: Int
-              property_LONGEST_LENGTH_GTE: Int
-              property_LONGEST_LENGTH_LT: Int
-              property_LONGEST_LENGTH_LTE: Int
-              property_SHORTEST_LENGTH_EQUAL: Int
-              property_SHORTEST_LENGTH_GT: Int
-              property_SHORTEST_LENGTH_GTE: Int
-              property_SHORTEST_LENGTH_LT: Int
-              property_SHORTEST_LENGTH_LTE: Int
+              property: StringScalarAggregationFilters
+              property_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'property: { averageLength: { eq: ... } } }' instead.\\")
+              property_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'property: { averageLength: { gt: ... } } }' instead.\\")
+              property_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'property: { averageLength: { gte: ... } } }' instead.\\")
+              property_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'property: { averageLength: { lt: ... } } }' instead.\\")
+              property_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'property: { averageLength: { lte: ... } } }' instead.\\")
+              property_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'property: { longestLength: { eq: ... } } }' instead.\\")
+              property_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'property: { longestLength: { gt: ... } } }' instead.\\")
+              property_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'property: { longestLength: { gte: ... } } }' instead.\\")
+              property_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'property: { longestLength: { lt: ... } } }' instead.\\")
+              property_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'property: { longestLength: { lte: ... } } }' instead.\\")
+              property_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'property: { shortestLength: { eq: ... } } }' instead.\\")
+              property_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'property: { shortestLength: { gt: ... } } }' instead.\\")
+              property_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'property: { shortestLength: { gte: ... } } }' instead.\\")
+              property_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'property: { shortestLength: { lt: ... } } }' instead.\\")
+              property_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'property: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             type Node2RelatedToRelationship {
@@ -511,6 +534,13 @@ describe("Sort", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
             }
 
             \\"\\"\\"String filters\\"\\"\\"

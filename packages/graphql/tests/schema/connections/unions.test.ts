@@ -345,6 +345,7 @@ describe("Unions", () => {
               AND: [BookAuthorAggregateInput!]
               NOT: BookAuthorAggregateInput
               OR: [BookAuthorAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -436,21 +437,22 @@ describe("Unions", () => {
               AND: [BookAuthorNodeAggregationWhereInput!]
               NOT: BookAuthorNodeAggregationWhereInput
               OR: [BookAuthorNodeAggregationWhereInput!]
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
+              name: StringScalarAggregationFilters
+              name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             type BookAuthorRelationship {
@@ -599,11 +601,29 @@ describe("Unions", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+            input IntScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: IntScalarFilters
+              min: IntScalarFilters
+              sum: IntScalarFilters
             }
 
             \\"\\"\\"Int filters\\"\\"\\"
@@ -639,6 +659,7 @@ describe("Unions", () => {
               AND: [JournalAuthorAggregateInput!]
               NOT: JournalAuthorAggregateInput
               OR: [JournalAuthorAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -730,21 +751,22 @@ describe("Unions", () => {
               AND: [JournalAuthorNodeAggregationWhereInput!]
               NOT: JournalAuthorNodeAggregationWhereInput
               OR: [JournalAuthorNodeAggregationWhereInput!]
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
+              name: StringScalarAggregationFilters
+              name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             type JournalAuthorRelationship {
@@ -915,6 +937,13 @@ describe("Unions", () => {
               shortest: String
             }
 
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
+            }
+
             \\"\\"\\"String filters\\"\\"\\"
             input StringScalarFilters {
               contains: String
@@ -973,26 +1002,27 @@ describe("Unions", () => {
               AND: [WroteAggregationWhereInput!]
               NOT: WroteAggregationWhereInput
               OR: [WroteAggregationWhereInput!]
-              words_AVERAGE_EQUAL: Float
-              words_AVERAGE_GT: Float
-              words_AVERAGE_GTE: Float
-              words_AVERAGE_LT: Float
-              words_AVERAGE_LTE: Float
-              words_MAX_EQUAL: Int
-              words_MAX_GT: Int
-              words_MAX_GTE: Int
-              words_MAX_LT: Int
-              words_MAX_LTE: Int
-              words_MIN_EQUAL: Int
-              words_MIN_GT: Int
-              words_MIN_GTE: Int
-              words_MIN_LT: Int
-              words_MIN_LTE: Int
-              words_SUM_EQUAL: Int
-              words_SUM_GT: Int
-              words_SUM_GTE: Int
-              words_SUM_LT: Int
-              words_SUM_LTE: Int
+              words: IntScalarAggregationFilters
+              words_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'words: { average: { eq: ... } } }' instead.\\")
+              words_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'words: { average: { gt: ... } } }' instead.\\")
+              words_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'words: { average: { gte: ... } } }' instead.\\")
+              words_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'words: { average: { lt: ... } } }' instead.\\")
+              words_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'words: { average: { lte: ... } } }' instead.\\")
+              words_MAX_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'words: { max: { eq: ... } } }' instead.\\")
+              words_MAX_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'words: { max: { gt: ... } } }' instead.\\")
+              words_MAX_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'words: { max: { gte: ... } } }' instead.\\")
+              words_MAX_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'words: { max: { lt: ... } } }' instead.\\")
+              words_MAX_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'words: { max: { lte: ... } } }' instead.\\")
+              words_MIN_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'words: { min: { eq: ... } } }' instead.\\")
+              words_MIN_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'words: { min: { gt: ... } } }' instead.\\")
+              words_MIN_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'words: { min: { gte: ... } } }' instead.\\")
+              words_MIN_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'words: { min: { lt: ... } } }' instead.\\")
+              words_MIN_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'words: { min: { lte: ... } } }' instead.\\")
+              words_SUM_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'words: { sum: { eq: ... } } }' instead.\\")
+              words_SUM_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'words: { sum: { gt: ... } } }' instead.\\")
+              words_SUM_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'words: { sum: { gte: ... } } }' instead.\\")
+              words_SUM_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'words: { sum: { lt: ... } } }' instead.\\")
+              words_SUM_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'words: { sum: { lte: ... } } }' instead.\\")
             }
 
             input WroteCreateInput {

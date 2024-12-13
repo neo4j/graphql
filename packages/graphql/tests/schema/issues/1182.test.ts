@@ -160,6 +160,12 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
               min: DateTime
             }
 
+            \\"\\"\\"Filters for an aggregation of an DateTime input field\\"\\"\\"
+            input DateTimeScalarAggregationFilters {
+              max: DateTimeScalarFilters
+              min: DateTimeScalarFilters
+            }
+
             \\"\\"\\"DateTime filters\\"\\"\\"
             input DateTimeScalarFilters {
               eq: DateTime
@@ -183,9 +189,25 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
             type IDAggregateSelection {
               longest: ID
               shortest: ID
+            }
+
+            \\"\\"\\"Filters for an aggregation of an ID input field\\"\\"\\"
+            input IDScalarAggregationFilters {
+              max: IDScalarFilters
+              min: IDScalarFilters
             }
 
             \\"\\"\\"ID filters\\"\\"\\"
@@ -200,6 +222,16 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
               lte: ID
               matches: ID
               startsWith: ID
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
             }
 
             type Movie {
@@ -225,6 +257,7 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
               AND: [MovieActorsAggregateInput!]
               NOT: MovieActorsAggregateInput
               OR: [MovieActorsAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -294,41 +327,44 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
               AND: [MovieActorsNodeAggregationWhereInput!]
               NOT: MovieActorsNodeAggregationWhereInput
               OR: [MovieActorsNodeAggregationWhereInput!]
-              dob_MAX_EQUAL: DateTime
-              dob_MAX_GT: DateTime
-              dob_MAX_GTE: DateTime
-              dob_MAX_LT: DateTime
-              dob_MAX_LTE: DateTime
-              dob_MIN_EQUAL: DateTime
-              dob_MIN_GT: DateTime
-              dob_MIN_GTE: DateTime
-              dob_MIN_LT: DateTime
-              dob_MIN_LTE: DateTime
-              id_MAX_EQUAL: ID
-              id_MAX_GT: ID
-              id_MAX_GTE: ID
-              id_MAX_LT: ID
-              id_MAX_LTE: ID
-              id_MIN_EQUAL: ID
-              id_MIN_GT: ID
-              id_MIN_GTE: ID
-              id_MIN_LT: ID
-              id_MIN_LTE: ID
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
+              dob: DateTimeScalarAggregationFilters
+              dob_MAX_EQUAL: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'dob: { max: { eq: ... } } }' instead.\\")
+              dob_MAX_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'dob: { max: { gt: ... } } }' instead.\\")
+              dob_MAX_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'dob: { max: { gte: ... } } }' instead.\\")
+              dob_MAX_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'dob: { max: { lt: ... } } }' instead.\\")
+              dob_MAX_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'dob: { max: { lte: ... } } }' instead.\\")
+              dob_MIN_EQUAL: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'dob: { min: { eq: ... } } }' instead.\\")
+              dob_MIN_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'dob: { min: { gt: ... } } }' instead.\\")
+              dob_MIN_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'dob: { min: { gte: ... } } }' instead.\\")
+              dob_MIN_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'dob: { min: { lt: ... } } }' instead.\\")
+              dob_MIN_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'dob: { min: { lte: ... } } }' instead.\\")
+              id: IDScalarAggregationFilters
+              id_MAX_EQUAL: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { eq: ... } } }' instead.\\")
+              id_MAX_GT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { gt: ... } } }' instead.\\")
+              id_MAX_GTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { gte: ... } } }' instead.\\")
+              id_MAX_LT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { lt: ... } } }' instead.\\")
+              id_MAX_LTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { lte: ... } } }' instead.\\")
+              id_MIN_EQUAL: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { eq: ... } } }' instead.\\")
+              id_MIN_GT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { gt: ... } } }' instead.\\")
+              id_MIN_GTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { gte: ... } } }' instead.\\")
+              id_MIN_LT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { lt: ... } } }' instead.\\")
+              id_MIN_LTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { lte: ... } } }' instead.\\")
+              name: StringScalarAggregationFilters
+              name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             type MovieActorsRelationship {
@@ -529,6 +565,13 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
             }
 
             \\"\\"\\"String filters\\"\\"\\"

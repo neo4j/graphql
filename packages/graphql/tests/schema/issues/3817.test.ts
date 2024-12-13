@@ -82,6 +82,16 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
             \\"\\"\\"
             The edge properties for the following fields:
             * Person.friends
@@ -94,21 +104,22 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
               AND: [FriendOfAggregationWhereInput!]
               NOT: FriendOfAggregationWhereInput
               OR: [FriendOfAggregationWhereInput!]
-              id_AVERAGE_LENGTH_EQUAL: Float
-              id_AVERAGE_LENGTH_GT: Float
-              id_AVERAGE_LENGTH_GTE: Float
-              id_AVERAGE_LENGTH_LT: Float
-              id_AVERAGE_LENGTH_LTE: Float
-              id_LONGEST_LENGTH_EQUAL: Int
-              id_LONGEST_LENGTH_GT: Int
-              id_LONGEST_LENGTH_GTE: Int
-              id_LONGEST_LENGTH_LT: Int
-              id_LONGEST_LENGTH_LTE: Int
-              id_SHORTEST_LENGTH_EQUAL: Int
-              id_SHORTEST_LENGTH_GT: Int
-              id_SHORTEST_LENGTH_GTE: Int
-              id_SHORTEST_LENGTH_LT: Int
-              id_SHORTEST_LENGTH_LTE: Int
+              id: StringScalarAggregationFilters
+              id_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'id: { averageLength: { eq: ... } } }' instead.\\")
+              id_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'id: { averageLength: { gt: ... } } }' instead.\\")
+              id_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'id: { averageLength: { gte: ... } } }' instead.\\")
+              id_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'id: { averageLength: { lt: ... } } }' instead.\\")
+              id_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'id: { averageLength: { lte: ... } } }' instead.\\")
+              id_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'id: { longestLength: { eq: ... } } }' instead.\\")
+              id_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'id: { longestLength: { gt: ... } } }' instead.\\")
+              id_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'id: { longestLength: { gte: ... } } }' instead.\\")
+              id_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'id: { longestLength: { lt: ... } } }' instead.\\")
+              id_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'id: { longestLength: { lte: ... } } }' instead.\\")
+              id_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'id: { shortestLength: { eq: ... } } }' instead.\\")
+              id_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'id: { shortestLength: { gt: ... } } }' instead.\\")
+              id_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'id: { shortestLength: { gte: ... } } }' instead.\\")
+              id_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'id: { shortestLength: { lt: ... } } }' instead.\\")
+              id_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'id: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             input FriendOfSort {
@@ -137,6 +148,12 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
               shortest: ID
             }
 
+            \\"\\"\\"Filters for an aggregation of an ID input field\\"\\"\\"
+            input IDScalarAggregationFilters {
+              max: IDScalarFilters
+              min: IDScalarFilters
+            }
+
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -149,6 +166,16 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
               lte: ID
               matches: ID
               startsWith: ID
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
             }
 
             type Mutation {
@@ -212,6 +239,7 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
               AND: [PersonFriendsAggregateInput!]
               NOT: PersonFriendsAggregateInput
               OR: [PersonFriendsAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -287,16 +315,17 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
               AND: [PersonFriendsNodeAggregationWhereInput!]
               NOT: PersonFriendsNodeAggregationWhereInput
               OR: [PersonFriendsNodeAggregationWhereInput!]
-              id_MAX_EQUAL: ID
-              id_MAX_GT: ID
-              id_MAX_GTE: ID
-              id_MAX_LT: ID
-              id_MAX_LTE: ID
-              id_MIN_EQUAL: ID
-              id_MIN_GT: ID
-              id_MIN_GTE: ID
-              id_MIN_LT: ID
-              id_MIN_LTE: ID
+              id: IDScalarAggregationFilters
+              id_MAX_EQUAL: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { eq: ... } } }' instead.\\")
+              id_MAX_GT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { gt: ... } } }' instead.\\")
+              id_MAX_GTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { gte: ... } } }' instead.\\")
+              id_MAX_LT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { lt: ... } } }' instead.\\")
+              id_MAX_LTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { lte: ... } } }' instead.\\")
+              id_MIN_EQUAL: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { eq: ... } } }' instead.\\")
+              id_MIN_GT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { gt: ... } } }' instead.\\")
+              id_MIN_GTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { gte: ... } } }' instead.\\")
+              id_MIN_LT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { lt: ... } } }' instead.\\")
+              id_MIN_LTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { lte: ... } } }' instead.\\")
             }
 
             type PersonFriendsRelationship {
@@ -411,6 +440,13 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
             }
 
             \\"\\"\\"String filters\\"\\"\\"
