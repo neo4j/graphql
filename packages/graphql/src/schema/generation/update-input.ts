@@ -40,6 +40,7 @@ import { withConnectionWhereInputType } from "./connection-where-input";
 import { withDeleteFieldInputType } from "./delete-input";
 import { withDisconnectFieldInputType } from "./disconnect-input";
 import { withCreateFieldInputType } from "./relation-input";
+import { shouldAddDeprecatedFields } from "./utils";
 
 export function withUpdateInputType({
     entityAdapter,
@@ -67,7 +68,7 @@ export function withUpdateInputType({
 
     if (entityAdapter instanceof ConcreteEntityAdapter || entityAdapter instanceof RelationshipAdapter) {
         const additionalFields: AdditionalFieldsCallback[] = [];
-        if (features?.excludeDeprecatedFields?.mutationOperations !== true) {
+        if (shouldAddDeprecatedFields(features, "mutationOperations")) {
             additionalFields.push(withMathOperators(), withArrayOperators());
         }
 
@@ -87,7 +88,7 @@ export function withUpdateInputType({
         }
 
         const additionalFields: AdditionalFieldsCallback[] = [];
-        if (features?.excludeDeprecatedFields?.mutationOperations !== true) {
+        if (shouldAddDeprecatedFields(features, "mutationOperations")) {
             additionalFields.push(withMathOperators());
         }
 

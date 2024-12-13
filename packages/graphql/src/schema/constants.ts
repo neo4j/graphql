@@ -47,3 +47,17 @@ export function DEPRECATE_MATH_MUTATIONS(name: string, operation: string) {
         },
     };
 }
+
+export function DEPRECATE_AGGREGATION_FILTERS(name: string, aggregationOperation: string, operator: string) {
+    let newOperator = operator.toLowerCase();
+    if (newOperator === "equal") {
+        newOperator = "eq";
+    }
+
+    return {
+        name: DEPRECATED,
+        args: {
+            reason: `Please use the relevant generic filter '${name}: { ${aggregationOperation}: { ${newOperator}: ... } } }' instead.`,
+        },
+    };
+}

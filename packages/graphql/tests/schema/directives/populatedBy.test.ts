@@ -1016,16 +1016,16 @@ describe("@populatedBy tests", () => {
                   NOT: MovieGenresNodeAggregationWhereInput
                   OR: [MovieGenresNodeAggregationWhereInput!]
                   id: IDScalarAggregationFilters
-                  id_MAX_EQUAL: ID
-                  id_MAX_GT: ID
-                  id_MAX_GTE: ID
-                  id_MAX_LT: ID
-                  id_MAX_LTE: ID
-                  id_MIN_EQUAL: ID
-                  id_MIN_GT: ID
-                  id_MIN_GTE: ID
-                  id_MIN_LT: ID
-                  id_MIN_LTE: ID
+                  id_MAX_EQUAL: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { eq: ... } } }' instead.\\")
+                  id_MAX_GT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { gt: ... } } }' instead.\\")
+                  id_MAX_GTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { gte: ... } } }' instead.\\")
+                  id_MAX_LT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { lt: ... } } }' instead.\\")
+                  id_MAX_LTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { lte: ... } } }' instead.\\")
+                  id_MIN_EQUAL: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { eq: ... } } }' instead.\\")
+                  id_MIN_GT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { gt: ... } } }' instead.\\")
+                  id_MIN_GTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { gte: ... } } }' instead.\\")
+                  id_MIN_LT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { lt: ... } } }' instead.\\")
+                  id_MIN_LTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { lte: ... } } }' instead.\\")
                 }
 
                 type MovieGenresRelationship {
@@ -1159,64 +1159,64 @@ describe("@populatedBy tests", () => {
                   NOT: RelPropertiesAggregationWhereInput
                   OR: [RelPropertiesAggregationWhereInput!]
                   callback1: StringScalarAggregationFilters
-                  callback1_AVERAGE_LENGTH_EQUAL: Float
-                  callback1_AVERAGE_LENGTH_GT: Float
-                  callback1_AVERAGE_LENGTH_GTE: Float
-                  callback1_AVERAGE_LENGTH_LT: Float
-                  callback1_AVERAGE_LENGTH_LTE: Float
-                  callback1_LONGEST_LENGTH_EQUAL: Int
-                  callback1_LONGEST_LENGTH_GT: Int
-                  callback1_LONGEST_LENGTH_GTE: Int
-                  callback1_LONGEST_LENGTH_LT: Int
-                  callback1_LONGEST_LENGTH_LTE: Int
-                  callback1_SHORTEST_LENGTH_EQUAL: Int
-                  callback1_SHORTEST_LENGTH_GT: Int
-                  callback1_SHORTEST_LENGTH_GTE: Int
-                  callback1_SHORTEST_LENGTH_LT: Int
-                  callback1_SHORTEST_LENGTH_LTE: Int
+                  callback1_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { averageLength: { eq: ... } } }' instead.\\")
+                  callback1_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { averageLength: { gt: ... } } }' instead.\\")
+                  callback1_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { averageLength: { gte: ... } } }' instead.\\")
+                  callback1_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { averageLength: { lt: ... } } }' instead.\\")
+                  callback1_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { averageLength: { lte: ... } } }' instead.\\")
+                  callback1_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { longestLength: { eq: ... } } }' instead.\\")
+                  callback1_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { longestLength: { gt: ... } } }' instead.\\")
+                  callback1_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { longestLength: { gte: ... } } }' instead.\\")
+                  callback1_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { longestLength: { lt: ... } } }' instead.\\")
+                  callback1_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { longestLength: { lte: ... } } }' instead.\\")
+                  callback1_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { shortestLength: { eq: ... } } }' instead.\\")
+                  callback1_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { shortestLength: { gt: ... } } }' instead.\\")
+                  callback1_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { shortestLength: { gte: ... } } }' instead.\\")
+                  callback1_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { shortestLength: { lt: ... } } }' instead.\\")
+                  callback1_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { shortestLength: { lte: ... } } }' instead.\\")
                   callback2: StringScalarAggregationFilters
-                  callback2_AVERAGE_LENGTH_EQUAL: Float
-                  callback2_AVERAGE_LENGTH_GT: Float
-                  callback2_AVERAGE_LENGTH_GTE: Float
-                  callback2_AVERAGE_LENGTH_LT: Float
-                  callback2_AVERAGE_LENGTH_LTE: Float
-                  callback2_LONGEST_LENGTH_EQUAL: Int
-                  callback2_LONGEST_LENGTH_GT: Int
-                  callback2_LONGEST_LENGTH_GTE: Int
-                  callback2_LONGEST_LENGTH_LT: Int
-                  callback2_LONGEST_LENGTH_LTE: Int
-                  callback2_SHORTEST_LENGTH_EQUAL: Int
-                  callback2_SHORTEST_LENGTH_GT: Int
-                  callback2_SHORTEST_LENGTH_GTE: Int
-                  callback2_SHORTEST_LENGTH_LT: Int
-                  callback2_SHORTEST_LENGTH_LTE: Int
+                  callback2_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { averageLength: { eq: ... } } }' instead.\\")
+                  callback2_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { averageLength: { gt: ... } } }' instead.\\")
+                  callback2_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { averageLength: { gte: ... } } }' instead.\\")
+                  callback2_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { averageLength: { lt: ... } } }' instead.\\")
+                  callback2_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { averageLength: { lte: ... } } }' instead.\\")
+                  callback2_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { longestLength: { eq: ... } } }' instead.\\")
+                  callback2_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { longestLength: { gt: ... } } }' instead.\\")
+                  callback2_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { longestLength: { gte: ... } } }' instead.\\")
+                  callback2_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { longestLength: { lt: ... } } }' instead.\\")
+                  callback2_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { longestLength: { lte: ... } } }' instead.\\")
+                  callback2_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { shortestLength: { eq: ... } } }' instead.\\")
+                  callback2_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { shortestLength: { gt: ... } } }' instead.\\")
+                  callback2_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { shortestLength: { gte: ... } } }' instead.\\")
+                  callback2_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { shortestLength: { lt: ... } } }' instead.\\")
+                  callback2_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { shortestLength: { lte: ... } } }' instead.\\")
                   callback3: StringScalarAggregationFilters
-                  callback3_AVERAGE_LENGTH_EQUAL: Float
-                  callback3_AVERAGE_LENGTH_GT: Float
-                  callback3_AVERAGE_LENGTH_GTE: Float
-                  callback3_AVERAGE_LENGTH_LT: Float
-                  callback3_AVERAGE_LENGTH_LTE: Float
-                  callback3_LONGEST_LENGTH_EQUAL: Int
-                  callback3_LONGEST_LENGTH_GT: Int
-                  callback3_LONGEST_LENGTH_GTE: Int
-                  callback3_LONGEST_LENGTH_LT: Int
-                  callback3_LONGEST_LENGTH_LTE: Int
-                  callback3_SHORTEST_LENGTH_EQUAL: Int
-                  callback3_SHORTEST_LENGTH_GT: Int
-                  callback3_SHORTEST_LENGTH_GTE: Int
-                  callback3_SHORTEST_LENGTH_LT: Int
-                  callback3_SHORTEST_LENGTH_LTE: Int
+                  callback3_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { averageLength: { eq: ... } } }' instead.\\")
+                  callback3_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { averageLength: { gt: ... } } }' instead.\\")
+                  callback3_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { averageLength: { gte: ... } } }' instead.\\")
+                  callback3_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { averageLength: { lt: ... } } }' instead.\\")
+                  callback3_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { averageLength: { lte: ... } } }' instead.\\")
+                  callback3_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { longestLength: { eq: ... } } }' instead.\\")
+                  callback3_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { longestLength: { gt: ... } } }' instead.\\")
+                  callback3_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { longestLength: { gte: ... } } }' instead.\\")
+                  callback3_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { longestLength: { lt: ... } } }' instead.\\")
+                  callback3_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { longestLength: { lte: ... } } }' instead.\\")
+                  callback3_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { shortestLength: { eq: ... } } }' instead.\\")
+                  callback3_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { shortestLength: { gt: ... } } }' instead.\\")
+                  callback3_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { shortestLength: { gte: ... } } }' instead.\\")
+                  callback3_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { shortestLength: { lt: ... } } }' instead.\\")
+                  callback3_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { shortestLength: { lte: ... } } }' instead.\\")
                   id: IDScalarAggregationFilters
-                  id_MAX_EQUAL: ID
-                  id_MAX_GT: ID
-                  id_MAX_GTE: ID
-                  id_MAX_LT: ID
-                  id_MAX_LTE: ID
-                  id_MIN_EQUAL: ID
-                  id_MIN_GT: ID
-                  id_MIN_GTE: ID
-                  id_MIN_LT: ID
-                  id_MIN_LTE: ID
+                  id_MAX_EQUAL: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { eq: ... } } }' instead.\\")
+                  id_MAX_GT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { gt: ... } } }' instead.\\")
+                  id_MAX_GTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { gte: ... } } }' instead.\\")
+                  id_MAX_LT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { lt: ... } } }' instead.\\")
+                  id_MAX_LTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { lte: ... } } }' instead.\\")
+                  id_MIN_EQUAL: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { eq: ... } } }' instead.\\")
+                  id_MIN_GT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { gt: ... } } }' instead.\\")
+                  id_MIN_GTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { gte: ... } } }' instead.\\")
+                  id_MIN_LT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { lt: ... } } }' instead.\\")
+                  id_MIN_LTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { lte: ... } } }' instead.\\")
                 }
 
                 input RelPropertiesCreateInput {
@@ -1646,16 +1646,16 @@ describe("@populatedBy tests", () => {
                   NOT: MovieGenresNodeAggregationWhereInput
                   OR: [MovieGenresNodeAggregationWhereInput!]
                   id: IDScalarAggregationFilters
-                  id_MAX_EQUAL: ID
-                  id_MAX_GT: ID
-                  id_MAX_GTE: ID
-                  id_MAX_LT: ID
-                  id_MAX_LTE: ID
-                  id_MIN_EQUAL: ID
-                  id_MIN_GT: ID
-                  id_MIN_GTE: ID
-                  id_MIN_LT: ID
-                  id_MIN_LTE: ID
+                  id_MAX_EQUAL: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { eq: ... } } }' instead.\\")
+                  id_MAX_GT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { gt: ... } } }' instead.\\")
+                  id_MAX_GTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { gte: ... } } }' instead.\\")
+                  id_MAX_LT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { lt: ... } } }' instead.\\")
+                  id_MAX_LTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { lte: ... } } }' instead.\\")
+                  id_MIN_EQUAL: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { eq: ... } } }' instead.\\")
+                  id_MIN_GT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { gt: ... } } }' instead.\\")
+                  id_MIN_GTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { gte: ... } } }' instead.\\")
+                  id_MIN_LT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { lt: ... } } }' instead.\\")
+                  id_MIN_LTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { lte: ... } } }' instead.\\")
                 }
 
                 type MovieGenresRelationship {
@@ -1789,79 +1789,79 @@ describe("@populatedBy tests", () => {
                   NOT: RelPropertiesAggregationWhereInput
                   OR: [RelPropertiesAggregationWhereInput!]
                   callback1: IntScalarAggregationFilters
-                  callback1_AVERAGE_EQUAL: Float
-                  callback1_AVERAGE_GT: Float
-                  callback1_AVERAGE_GTE: Float
-                  callback1_AVERAGE_LT: Float
-                  callback1_AVERAGE_LTE: Float
-                  callback1_MAX_EQUAL: Int
-                  callback1_MAX_GT: Int
-                  callback1_MAX_GTE: Int
-                  callback1_MAX_LT: Int
-                  callback1_MAX_LTE: Int
-                  callback1_MIN_EQUAL: Int
-                  callback1_MIN_GT: Int
-                  callback1_MIN_GTE: Int
-                  callback1_MIN_LT: Int
-                  callback1_MIN_LTE: Int
-                  callback1_SUM_EQUAL: Int
-                  callback1_SUM_GT: Int
-                  callback1_SUM_GTE: Int
-                  callback1_SUM_LT: Int
-                  callback1_SUM_LTE: Int
+                  callback1_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { average: { eq: ... } } }' instead.\\")
+                  callback1_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { average: { gt: ... } } }' instead.\\")
+                  callback1_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { average: { gte: ... } } }' instead.\\")
+                  callback1_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { average: { lt: ... } } }' instead.\\")
+                  callback1_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { average: { lte: ... } } }' instead.\\")
+                  callback1_MAX_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { max: { eq: ... } } }' instead.\\")
+                  callback1_MAX_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { max: { gt: ... } } }' instead.\\")
+                  callback1_MAX_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { max: { gte: ... } } }' instead.\\")
+                  callback1_MAX_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { max: { lt: ... } } }' instead.\\")
+                  callback1_MAX_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { max: { lte: ... } } }' instead.\\")
+                  callback1_MIN_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { min: { eq: ... } } }' instead.\\")
+                  callback1_MIN_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { min: { gt: ... } } }' instead.\\")
+                  callback1_MIN_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { min: { gte: ... } } }' instead.\\")
+                  callback1_MIN_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { min: { lt: ... } } }' instead.\\")
+                  callback1_MIN_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { min: { lte: ... } } }' instead.\\")
+                  callback1_SUM_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { sum: { eq: ... } } }' instead.\\")
+                  callback1_SUM_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { sum: { gt: ... } } }' instead.\\")
+                  callback1_SUM_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { sum: { gte: ... } } }' instead.\\")
+                  callback1_SUM_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { sum: { lt: ... } } }' instead.\\")
+                  callback1_SUM_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { sum: { lte: ... } } }' instead.\\")
                   callback2: IntScalarAggregationFilters
-                  callback2_AVERAGE_EQUAL: Float
-                  callback2_AVERAGE_GT: Float
-                  callback2_AVERAGE_GTE: Float
-                  callback2_AVERAGE_LT: Float
-                  callback2_AVERAGE_LTE: Float
-                  callback2_MAX_EQUAL: Int
-                  callback2_MAX_GT: Int
-                  callback2_MAX_GTE: Int
-                  callback2_MAX_LT: Int
-                  callback2_MAX_LTE: Int
-                  callback2_MIN_EQUAL: Int
-                  callback2_MIN_GT: Int
-                  callback2_MIN_GTE: Int
-                  callback2_MIN_LT: Int
-                  callback2_MIN_LTE: Int
-                  callback2_SUM_EQUAL: Int
-                  callback2_SUM_GT: Int
-                  callback2_SUM_GTE: Int
-                  callback2_SUM_LT: Int
-                  callback2_SUM_LTE: Int
+                  callback2_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { average: { eq: ... } } }' instead.\\")
+                  callback2_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { average: { gt: ... } } }' instead.\\")
+                  callback2_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { average: { gte: ... } } }' instead.\\")
+                  callback2_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { average: { lt: ... } } }' instead.\\")
+                  callback2_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { average: { lte: ... } } }' instead.\\")
+                  callback2_MAX_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { max: { eq: ... } } }' instead.\\")
+                  callback2_MAX_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { max: { gt: ... } } }' instead.\\")
+                  callback2_MAX_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { max: { gte: ... } } }' instead.\\")
+                  callback2_MAX_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { max: { lt: ... } } }' instead.\\")
+                  callback2_MAX_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { max: { lte: ... } } }' instead.\\")
+                  callback2_MIN_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { min: { eq: ... } } }' instead.\\")
+                  callback2_MIN_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { min: { gt: ... } } }' instead.\\")
+                  callback2_MIN_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { min: { gte: ... } } }' instead.\\")
+                  callback2_MIN_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { min: { lt: ... } } }' instead.\\")
+                  callback2_MIN_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { min: { lte: ... } } }' instead.\\")
+                  callback2_SUM_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { sum: { eq: ... } } }' instead.\\")
+                  callback2_SUM_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { sum: { gt: ... } } }' instead.\\")
+                  callback2_SUM_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { sum: { gte: ... } } }' instead.\\")
+                  callback2_SUM_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { sum: { lt: ... } } }' instead.\\")
+                  callback2_SUM_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { sum: { lte: ... } } }' instead.\\")
                   callback3: IntScalarAggregationFilters
-                  callback3_AVERAGE_EQUAL: Float
-                  callback3_AVERAGE_GT: Float
-                  callback3_AVERAGE_GTE: Float
-                  callback3_AVERAGE_LT: Float
-                  callback3_AVERAGE_LTE: Float
-                  callback3_MAX_EQUAL: Int
-                  callback3_MAX_GT: Int
-                  callback3_MAX_GTE: Int
-                  callback3_MAX_LT: Int
-                  callback3_MAX_LTE: Int
-                  callback3_MIN_EQUAL: Int
-                  callback3_MIN_GT: Int
-                  callback3_MIN_GTE: Int
-                  callback3_MIN_LT: Int
-                  callback3_MIN_LTE: Int
-                  callback3_SUM_EQUAL: Int
-                  callback3_SUM_GT: Int
-                  callback3_SUM_GTE: Int
-                  callback3_SUM_LT: Int
-                  callback3_SUM_LTE: Int
+                  callback3_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { average: { eq: ... } } }' instead.\\")
+                  callback3_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { average: { gt: ... } } }' instead.\\")
+                  callback3_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { average: { gte: ... } } }' instead.\\")
+                  callback3_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { average: { lt: ... } } }' instead.\\")
+                  callback3_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { average: { lte: ... } } }' instead.\\")
+                  callback3_MAX_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { max: { eq: ... } } }' instead.\\")
+                  callback3_MAX_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { max: { gt: ... } } }' instead.\\")
+                  callback3_MAX_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { max: { gte: ... } } }' instead.\\")
+                  callback3_MAX_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { max: { lt: ... } } }' instead.\\")
+                  callback3_MAX_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { max: { lte: ... } } }' instead.\\")
+                  callback3_MIN_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { min: { eq: ... } } }' instead.\\")
+                  callback3_MIN_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { min: { gt: ... } } }' instead.\\")
+                  callback3_MIN_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { min: { gte: ... } } }' instead.\\")
+                  callback3_MIN_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { min: { lt: ... } } }' instead.\\")
+                  callback3_MIN_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { min: { lte: ... } } }' instead.\\")
+                  callback3_SUM_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { sum: { eq: ... } } }' instead.\\")
+                  callback3_SUM_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { sum: { gt: ... } } }' instead.\\")
+                  callback3_SUM_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { sum: { gte: ... } } }' instead.\\")
+                  callback3_SUM_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { sum: { lt: ... } } }' instead.\\")
+                  callback3_SUM_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { sum: { lte: ... } } }' instead.\\")
                   id: IDScalarAggregationFilters
-                  id_MAX_EQUAL: ID
-                  id_MAX_GT: ID
-                  id_MAX_GTE: ID
-                  id_MAX_LT: ID
-                  id_MAX_LTE: ID
-                  id_MIN_EQUAL: ID
-                  id_MIN_GT: ID
-                  id_MIN_GTE: ID
-                  id_MIN_LT: ID
-                  id_MIN_LTE: ID
+                  id_MAX_EQUAL: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { eq: ... } } }' instead.\\")
+                  id_MAX_GT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { gt: ... } } }' instead.\\")
+                  id_MAX_GTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { gte: ... } } }' instead.\\")
+                  id_MAX_LT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { lt: ... } } }' instead.\\")
+                  id_MAX_LTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { lte: ... } } }' instead.\\")
+                  id_MIN_EQUAL: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { eq: ... } } }' instead.\\")
+                  id_MIN_GT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { gt: ... } } }' instead.\\")
+                  id_MIN_GTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { gte: ... } } }' instead.\\")
+                  id_MIN_LT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { lt: ... } } }' instead.\\")
+                  id_MIN_LTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { lte: ... } } }' instead.\\")
                 }
 
                 input RelPropertiesCreateInput {

@@ -33,6 +33,7 @@ import { parseValueNode } from "../schema-model/parser/parse-value-node";
 import type { InputField, Neo4jFeaturesSettings } from "../types";
 import { DEPRECATE_ARRAY_MUTATIONS, DEPRECATE_MATH_MUTATIONS, DEPRECATE_SET_MUTATION } from "./constants";
 import { getMutationInputFromAttributeType } from "./generation/get-mutation-input-from-attribute-type";
+import { shouldAddDeprecatedFields } from "./generation/utils";
 import { idResolver } from "./resolvers/field/id";
 import { numericalResolver } from "./resolvers/field/numerical";
 
@@ -161,7 +162,7 @@ export function concreteEntityToUpdateInputFields({
             directives: userDefinedDirectives,
         };
 
-        if (features?.excludeDeprecatedFields?.mutationOperations !== true) {
+        if (shouldAddDeprecatedFields(features, "mutationOperations")) {
             updateInputFields[`${field.name}_SET`] = newInputField;
         }
 
