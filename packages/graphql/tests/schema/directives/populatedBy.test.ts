@@ -1082,27 +1082,27 @@ describe("@populatedBy tests", () => {
                   \\"\\"\\"
                   Return Movies where all of the related MovieGenresConnections match this filter
                   \\"\\"\\"
-                  genresConnection_ALL: MovieGenresConnectionWhere
+                  genresConnection_ALL: MovieGenresConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'genresConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where none of the related MovieGenresConnections match this filter
                   \\"\\"\\"
-                  genresConnection_NONE: MovieGenresConnectionWhere
+                  genresConnection_NONE: MovieGenresConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'genresConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieGenresConnections match this filter
                   \\"\\"\\"
-                  genresConnection_SINGLE: MovieGenresConnectionWhere
+                  genresConnection_SINGLE: MovieGenresConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'genresConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where some of the related MovieGenresConnections match this filter
                   \\"\\"\\"
-                  genresConnection_SOME: MovieGenresConnectionWhere
+                  genresConnection_SOME: MovieGenresConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'genresConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Movies where all of the related Genres match this filter\\"\\"\\"
-                  genres_ALL: GenreWhere
+                  genres_ALL: GenreWhere @deprecated(reason: \\"Please use the relevant generic filter 'genres: { all: ... }' instead.\\")
                   \\"\\"\\"Return Movies where none of the related Genres match this filter\\"\\"\\"
-                  genres_NONE: GenreWhere
+                  genres_NONE: GenreWhere @deprecated(reason: \\"Please use the relevant generic filter 'genres: { none: ... }' instead.\\")
                   \\"\\"\\"Return Movies where one of the related Genres match this filter\\"\\"\\"
-                  genres_SINGLE: GenreWhere
+                  genres_SINGLE: GenreWhere @deprecated(reason: \\"Please use the relevant generic filter 'genres: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Movies where some of the related Genres match this filter\\"\\"\\"
-                  genres_SOME: GenreWhere
+                  genres_SOME: GenreWhere @deprecated(reason: \\"Please use the relevant generic filter 'genres: {  some: ... }' instead.\\")
                   id: IDScalarFilters
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID
@@ -1712,27 +1712,27 @@ describe("@populatedBy tests", () => {
                   \\"\\"\\"
                   Return Movies where all of the related MovieGenresConnections match this filter
                   \\"\\"\\"
-                  genresConnection_ALL: MovieGenresConnectionWhere
+                  genresConnection_ALL: MovieGenresConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'genresConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where none of the related MovieGenresConnections match this filter
                   \\"\\"\\"
-                  genresConnection_NONE: MovieGenresConnectionWhere
+                  genresConnection_NONE: MovieGenresConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'genresConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieGenresConnections match this filter
                   \\"\\"\\"
-                  genresConnection_SINGLE: MovieGenresConnectionWhere
+                  genresConnection_SINGLE: MovieGenresConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'genresConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where some of the related MovieGenresConnections match this filter
                   \\"\\"\\"
-                  genresConnection_SOME: MovieGenresConnectionWhere
+                  genresConnection_SOME: MovieGenresConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'genresConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Movies where all of the related Genres match this filter\\"\\"\\"
-                  genres_ALL: GenreWhere
+                  genres_ALL: GenreWhere @deprecated(reason: \\"Please use the relevant generic filter 'genres: { all: ... }' instead.\\")
                   \\"\\"\\"Return Movies where none of the related Genres match this filter\\"\\"\\"
-                  genres_NONE: GenreWhere
+                  genres_NONE: GenreWhere @deprecated(reason: \\"Please use the relevant generic filter 'genres: { none: ... }' instead.\\")
                   \\"\\"\\"Return Movies where one of the related Genres match this filter\\"\\"\\"
-                  genres_SINGLE: GenreWhere
+                  genres_SINGLE: GenreWhere @deprecated(reason: \\"Please use the relevant generic filter 'genres: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Movies where some of the related Genres match this filter\\"\\"\\"
-                  genres_SOME: GenreWhere
+                  genres_SOME: GenreWhere @deprecated(reason: \\"Please use the relevant generic filter 'genres: {  some: ... }' instead.\\")
                   id: IDScalarFilters
                   id_CONTAINS: ID
                   id_ENDS_WITH: ID

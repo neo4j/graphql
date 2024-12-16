@@ -576,35 +576,35 @@ describe("162", () => {
               \\"\\"\\"
               Return TigerJawLevel2Part1s where all of the related TigerJawLevel2Part1TigerConnections match this filter
               \\"\\"\\"
-              tigerConnection_ALL: TigerJawLevel2Part1TigerConnectionWhere
+              tigerConnection_ALL: TigerJawLevel2Part1TigerConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'tigerConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return TigerJawLevel2Part1s where none of the related TigerJawLevel2Part1TigerConnections match this filter
               \\"\\"\\"
-              tigerConnection_NONE: TigerJawLevel2Part1TigerConnectionWhere
+              tigerConnection_NONE: TigerJawLevel2Part1TigerConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'tigerConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return TigerJawLevel2Part1s where one of the related TigerJawLevel2Part1TigerConnections match this filter
               \\"\\"\\"
-              tigerConnection_SINGLE: TigerJawLevel2Part1TigerConnectionWhere
+              tigerConnection_SINGLE: TigerJawLevel2Part1TigerConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'tigerConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return TigerJawLevel2Part1s where some of the related TigerJawLevel2Part1TigerConnections match this filter
               \\"\\"\\"
-              tigerConnection_SOME: TigerJawLevel2Part1TigerConnectionWhere
+              tigerConnection_SOME: TigerJawLevel2Part1TigerConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'tigerConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return TigerJawLevel2Part1s where all of the related Tigers match this filter
               \\"\\"\\"
-              tiger_ALL: TigerWhere
+              tiger_ALL: TigerWhere @deprecated(reason: \\"Please use the relevant generic filter 'tiger: { all: ... }' instead.\\")
               \\"\\"\\"
               Return TigerJawLevel2Part1s where none of the related Tigers match this filter
               \\"\\"\\"
-              tiger_NONE: TigerWhere
+              tiger_NONE: TigerWhere @deprecated(reason: \\"Please use the relevant generic filter 'tiger: { none: ... }' instead.\\")
               \\"\\"\\"
               Return TigerJawLevel2Part1s where one of the related Tigers match this filter
               \\"\\"\\"
-              tiger_SINGLE: TigerWhere
+              tiger_SINGLE: TigerWhere @deprecated(reason: \\"Please use the relevant generic filter 'tiger: {  single: ... }' instead.\\")
               \\"\\"\\"
               Return TigerJawLevel2Part1s where some of the related Tigers match this filter
               \\"\\"\\"
-              tiger_SOME: TigerWhere
+              tiger_SOME: TigerWhere @deprecated(reason: \\"Please use the relevant generic filter 'tiger: {  some: ... }' instead.\\")
             }
 
             type TigerJawLevel2Part1sConnection {
@@ -651,35 +651,35 @@ describe("162", () => {
               \\"\\"\\"
               Return TigerJawLevel2s where all of the related TigerJawLevel2Part1Connections match this filter
               \\"\\"\\"
-              part1Connection_ALL: TigerJawLevel2Part1ConnectionWhere
+              part1Connection_ALL: TigerJawLevel2Part1ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'part1Connection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return TigerJawLevel2s where none of the related TigerJawLevel2Part1Connections match this filter
               \\"\\"\\"
-              part1Connection_NONE: TigerJawLevel2Part1ConnectionWhere
+              part1Connection_NONE: TigerJawLevel2Part1ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'part1Connection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return TigerJawLevel2s where one of the related TigerJawLevel2Part1Connections match this filter
               \\"\\"\\"
-              part1Connection_SINGLE: TigerJawLevel2Part1ConnectionWhere
+              part1Connection_SINGLE: TigerJawLevel2Part1ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'part1Connection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return TigerJawLevel2s where some of the related TigerJawLevel2Part1Connections match this filter
               \\"\\"\\"
-              part1Connection_SOME: TigerJawLevel2Part1ConnectionWhere
+              part1Connection_SOME: TigerJawLevel2Part1ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'part1Connection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return TigerJawLevel2s where all of the related TigerJawLevel2Part1s match this filter
               \\"\\"\\"
-              part1_ALL: TigerJawLevel2Part1Where
+              part1_ALL: TigerJawLevel2Part1Where @deprecated(reason: \\"Please use the relevant generic filter 'part1: { all: ... }' instead.\\")
               \\"\\"\\"
               Return TigerJawLevel2s where none of the related TigerJawLevel2Part1s match this filter
               \\"\\"\\"
-              part1_NONE: TigerJawLevel2Part1Where
+              part1_NONE: TigerJawLevel2Part1Where @deprecated(reason: \\"Please use the relevant generic filter 'part1: { none: ... }' instead.\\")
               \\"\\"\\"
               Return TigerJawLevel2s where one of the related TigerJawLevel2Part1s match this filter
               \\"\\"\\"
-              part1_SINGLE: TigerJawLevel2Part1Where
+              part1_SINGLE: TigerJawLevel2Part1Where @deprecated(reason: \\"Please use the relevant generic filter 'part1: {  single: ... }' instead.\\")
               \\"\\"\\"
               Return TigerJawLevel2s where some of the related TigerJawLevel2Part1s match this filter
               \\"\\"\\"
-              part1_SOME: TigerJawLevel2Part1Where
+              part1_SOME: TigerJawLevel2Part1Where @deprecated(reason: \\"Please use the relevant generic filter 'part1: {  some: ... }' instead.\\")
             }
 
             type TigerJawLevel2sConnection {

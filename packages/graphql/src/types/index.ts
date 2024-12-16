@@ -450,6 +450,8 @@ export type Neo4jFeaturesSettings = {
     excludeDeprecatedFields?: {
         mutationOperations?: boolean;
         aggregationFilters?: boolean;
+        relationshipFilters?: boolean;
+        fieldFilters?: boolean;
     };
     vector?: Neo4jVectorSettings;
 };

@@ -360,27 +360,27 @@ describe("Alias", () => {
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_ALL: ActorActedInConnectionWhere
+              actedInConnection_ALL: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where none of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_NONE: ActorActedInConnectionWhere
+              actedInConnection_NONE: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where one of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_SINGLE: ActorActedInConnectionWhere
+              actedInConnection_SINGLE: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where some of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_SOME: ActorActedInConnectionWhere
+              actedInConnection_SOME: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
-              actedIn_ALL: MovieWhere
+              actedIn_ALL: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: { all: ... }' instead.\\")
               \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
-              actedIn_NONE: MovieWhere
+              actedIn_NONE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: { none: ... }' instead.\\")
               \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
-              actedIn_SINGLE: MovieWhere
+              actedIn_SINGLE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  single: ... }' instead.\\")
               \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
-              actedIn_SOME: MovieWhere
+              actedIn_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  some: ... }' instead.\\")
               city: StringScalarFilters
               city_CONTAINS: String
               city_ENDS_WITH: String

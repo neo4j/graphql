@@ -48,7 +48,7 @@ describe("Deprecated mutation operations", () => {
             typeDefs,
             features: {
                 excludeDeprecatedFields: {
-                    mutationOperations: false,
+                    mutationOperations: true,
                 },
             },
         });
@@ -109,13 +109,7 @@ describe("Deprecated mutation operations", () => {
 
             input ActedInUpdateInput {
               pay: ListFloatMutations
-              pay_POP: Int @deprecated(reason: \\"Please use the generic mutation 'pay: { pop: ... } }' instead.\\")
-              pay_PUSH: [Float!] @deprecated(reason: \\"Please use the generic mutation 'pay: { push: ... } }' instead.\\")
-              pay_SET: [Float!] @deprecated(reason: \\"Please use the generic mutation 'pay: { set: ... } }' instead.\\")
               value: IntScalarMutations
-              value_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'value: { decrement: ... } }' instead.\\")
-              value_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'value: { increment: ... } }' instead.\\")
-              value_SET: Int @deprecated(reason: \\"Please use the generic mutation 'value: { set: ... } }' instead.\\")
             }
 
             input ActedInWhere {
@@ -344,7 +338,6 @@ describe("Deprecated mutation operations", () => {
             input ActorUpdateInput {
               actedIn: [ActorActedInUpdateFieldInput!]
               name: StringScalarMutations
-              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
@@ -357,27 +350,27 @@ describe("Deprecated mutation operations", () => {
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_ALL: ActorActedInConnectionWhere
+              actedInConnection_ALL: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where none of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_NONE: ActorActedInConnectionWhere
+              actedInConnection_NONE: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where one of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_SINGLE: ActorActedInConnectionWhere
+              actedInConnection_SINGLE: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where some of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_SOME: ActorActedInConnectionWhere
+              actedInConnection_SOME: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
-              actedIn_ALL: MovieWhere
+              actedIn_ALL: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: { all: ... }' instead.\\")
               \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
-              actedIn_NONE: MovieWhere
+              actedIn_NONE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: { none: ... }' instead.\\")
               \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
-              actedIn_SINGLE: MovieWhere
+              actedIn_SINGLE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  single: ... }' instead.\\")
               \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
-              actedIn_SOME: MovieWhere
+              actedIn_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  some: ... }' instead.\\")
               name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
@@ -750,21 +743,10 @@ describe("Deprecated mutation operations", () => {
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
               averageRating: FloatScalarMutations
-              averageRating_ADD: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { add: ... } }' instead.\\")
-              averageRating_DIVIDE: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { divide: ... } }' instead.\\")
-              averageRating_MULTIPLY: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { multiply: ... } }' instead.\\")
-              averageRating_SET: Float @deprecated(reason: \\"Please use the generic mutation 'averageRating: { set: ... } }' instead.\\")
-              averageRating_SUBTRACT: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { subtract: ... } }' instead.\\")
               date: DateScalarMutations
-              date_SET: Date @deprecated(reason: \\"Please use the generic mutation 'date: { set: ... } }' instead.\\")
               id: IDScalarMutations
-              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               point: PointMutations
-              point_SET: PointInput @deprecated(reason: \\"Please use the generic mutation 'point: { set: ... } }' instead.\\")
               ratings: ListFloatMutations
-              ratings_POP: Int @deprecated(reason: \\"Please use the generic mutation 'ratings: { pop: ... } }' instead.\\")
-              ratings_PUSH: [Float!] @deprecated(reason: \\"Please use the generic mutation 'ratings: { push: ... } }' instead.\\")
-              ratings_SET: [Float!] @deprecated(reason: \\"Please use the generic mutation 'ratings: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -777,27 +759,27 @@ describe("Deprecated mutation operations", () => {
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_ALL: MovieActorsConnectionWhere
+              actorsConnection_ALL: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where none of the related MovieActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_NONE: MovieActorsConnectionWhere
+              actorsConnection_NONE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where one of the related MovieActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SINGLE: MovieActorsConnectionWhere
+              actorsConnection_SINGLE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where some of the related MovieActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SOME: MovieActorsConnectionWhere
+              actorsConnection_SOME: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-              actors_ALL: ActorWhere
+              actors_ALL: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
               \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-              actors_NONE: ActorWhere
+              actors_NONE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
               \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-              actors_SINGLE: ActorWhere
+              actors_SINGLE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-              actors_SOME: ActorWhere
+              actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
               averageRating: FloatScalarFilters
               averageRating_EQ: Float
               averageRating_GT: Float

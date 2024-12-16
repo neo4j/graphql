@@ -370,27 +370,27 @@ describe("Unions", () => {
               \\"\\"\\"
               Return Movies where all of the related MovieSearchConnections match this filter
               \\"\\"\\"
-              searchConnection_ALL: MovieSearchConnectionWhere
+              searchConnection_ALL: MovieSearchConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'searchConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where none of the related MovieSearchConnections match this filter
               \\"\\"\\"
-              searchConnection_NONE: MovieSearchConnectionWhere
+              searchConnection_NONE: MovieSearchConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'searchConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where one of the related MovieSearchConnections match this filter
               \\"\\"\\"
-              searchConnection_SINGLE: MovieSearchConnectionWhere
+              searchConnection_SINGLE: MovieSearchConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'searchConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where some of the related MovieSearchConnections match this filter
               \\"\\"\\"
-              searchConnection_SOME: MovieSearchConnectionWhere
+              searchConnection_SOME: MovieSearchConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'searchConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Movies where all of the related Searches match this filter\\"\\"\\"
-              search_ALL: SearchWhere
+              search_ALL: SearchWhere @deprecated(reason: \\"Please use the relevant generic filter 'search: { all: ... }' instead.\\")
               \\"\\"\\"Return Movies where none of the related Searches match this filter\\"\\"\\"
-              search_NONE: SearchWhere
+              search_NONE: SearchWhere @deprecated(reason: \\"Please use the relevant generic filter 'search: { none: ... }' instead.\\")
               \\"\\"\\"Return Movies where one of the related Searches match this filter\\"\\"\\"
-              search_SINGLE: SearchWhere
+              search_SINGLE: SearchWhere @deprecated(reason: \\"Please use the relevant generic filter 'search: {  single: ... }' instead.\\")
               \\"\\"\\"Return Movies where some of the related Searches match this filter\\"\\"\\"
-              search_SOME: SearchWhere
+              search_SOME: SearchWhere @deprecated(reason: \\"Please use the relevant generic filter 'search: {  some: ... }' instead.\\")
             }
 
             type MoviesConnection {

@@ -266,27 +266,27 @@ describe("Sort", () => {
               \\"\\"\\"
               Return Node1s where all of the related Node1RelatedToConnections match this filter
               \\"\\"\\"
-              relatedToConnection_ALL: Node1RelatedToConnectionWhere
+              relatedToConnection_ALL: Node1RelatedToConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'relatedToConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Node1s where none of the related Node1RelatedToConnections match this filter
               \\"\\"\\"
-              relatedToConnection_NONE: Node1RelatedToConnectionWhere
+              relatedToConnection_NONE: Node1RelatedToConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'relatedToConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Node1s where one of the related Node1RelatedToConnections match this filter
               \\"\\"\\"
-              relatedToConnection_SINGLE: Node1RelatedToConnectionWhere
+              relatedToConnection_SINGLE: Node1RelatedToConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'relatedToConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Node1s where some of the related Node1RelatedToConnections match this filter
               \\"\\"\\"
-              relatedToConnection_SOME: Node1RelatedToConnectionWhere
+              relatedToConnection_SOME: Node1RelatedToConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'relatedToConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Node1s where all of the related Node2s match this filter\\"\\"\\"
-              relatedTo_ALL: Node2Where
+              relatedTo_ALL: Node2Where @deprecated(reason: \\"Please use the relevant generic filter 'relatedTo: { all: ... }' instead.\\")
               \\"\\"\\"Return Node1s where none of the related Node2s match this filter\\"\\"\\"
-              relatedTo_NONE: Node2Where
+              relatedTo_NONE: Node2Where @deprecated(reason: \\"Please use the relevant generic filter 'relatedTo: { none: ... }' instead.\\")
               \\"\\"\\"Return Node1s where one of the related Node2s match this filter\\"\\"\\"
-              relatedTo_SINGLE: Node2Where
+              relatedTo_SINGLE: Node2Where @deprecated(reason: \\"Please use the relevant generic filter 'relatedTo: {  single: ... }' instead.\\")
               \\"\\"\\"Return Node1s where some of the related Node2s match this filter\\"\\"\\"
-              relatedTo_SOME: Node2Where
+              relatedTo_SOME: Node2Where @deprecated(reason: \\"Please use the relevant generic filter 'relatedTo: {  some: ... }' instead.\\")
             }
 
             type Node1sConnection {
@@ -477,27 +477,27 @@ describe("Sort", () => {
               \\"\\"\\"
               Return Node2s where all of the related Node2RelatedToConnections match this filter
               \\"\\"\\"
-              relatedToConnection_ALL: Node2RelatedToConnectionWhere
+              relatedToConnection_ALL: Node2RelatedToConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'relatedToConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Node2s where none of the related Node2RelatedToConnections match this filter
               \\"\\"\\"
-              relatedToConnection_NONE: Node2RelatedToConnectionWhere
+              relatedToConnection_NONE: Node2RelatedToConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'relatedToConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Node2s where one of the related Node2RelatedToConnections match this filter
               \\"\\"\\"
-              relatedToConnection_SINGLE: Node2RelatedToConnectionWhere
+              relatedToConnection_SINGLE: Node2RelatedToConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'relatedToConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Node2s where some of the related Node2RelatedToConnections match this filter
               \\"\\"\\"
-              relatedToConnection_SOME: Node2RelatedToConnectionWhere
+              relatedToConnection_SOME: Node2RelatedToConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'relatedToConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Node2s where all of the related Node1s match this filter\\"\\"\\"
-              relatedTo_ALL: Node1Where
+              relatedTo_ALL: Node1Where @deprecated(reason: \\"Please use the relevant generic filter 'relatedTo: { all: ... }' instead.\\")
               \\"\\"\\"Return Node2s where none of the related Node1s match this filter\\"\\"\\"
-              relatedTo_NONE: Node1Where
+              relatedTo_NONE: Node1Where @deprecated(reason: \\"Please use the relevant generic filter 'relatedTo: { none: ... }' instead.\\")
               \\"\\"\\"Return Node2s where one of the related Node1s match this filter\\"\\"\\"
-              relatedTo_SINGLE: Node1Where
+              relatedTo_SINGLE: Node1Where @deprecated(reason: \\"Please use the relevant generic filter 'relatedTo: {  single: ... }' instead.\\")
               \\"\\"\\"Return Node2s where some of the related Node1s match this filter\\"\\"\\"
-              relatedTo_SOME: Node1Where
+              relatedTo_SOME: Node1Where @deprecated(reason: \\"Please use the relevant generic filter 'relatedTo: {  some: ... }' instead.\\")
             }
 
             type Node2sConnection {

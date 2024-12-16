@@ -261,35 +261,35 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               \\"\\"\\"
               Return Creatures where all of the related CreatureMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_ALL: CreatureMoviesConnectionWhere
+              moviesConnection_ALL: CreatureMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Creatures where none of the related CreatureMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_NONE: CreatureMoviesConnectionWhere
+              moviesConnection_NONE: CreatureMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Creatures where one of the related CreatureMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SINGLE: CreatureMoviesConnectionWhere
+              moviesConnection_SINGLE: CreatureMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Creatures where some of the related CreatureMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SOME: CreatureMoviesConnectionWhere
+              moviesConnection_SOME: CreatureMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Creatures where all of the related Productions match this filter
               \\"\\"\\"
-              movies_ALL: ProductionWhere
+              movies_ALL: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { all: ... }' instead.\\")
               \\"\\"\\"
               Return Creatures where none of the related Productions match this filter
               \\"\\"\\"
-              movies_NONE: ProductionWhere
+              movies_NONE: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { none: ... }' instead.\\")
               \\"\\"\\"
               Return Creatures where one of the related Productions match this filter
               \\"\\"\\"
-              movies_SINGLE: ProductionWhere
+              movies_SINGLE: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  single: ... }' instead.\\")
               \\"\\"\\"
               Return Creatures where some of the related Productions match this filter
               \\"\\"\\"
-              movies_SOME: ProductionWhere
+              movies_SOME: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  some: ... }' instead.\\")
               typename_IN: [CreatureImplementation!]
             }
 
@@ -507,27 +507,27 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               \\"\\"\\"
               Return Movies where all of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
-              directorConnection_ALL: ProductionDirectorConnectionWhere
+              directorConnection_ALL: ProductionDirectorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'directorConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where none of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
-              directorConnection_NONE: ProductionDirectorConnectionWhere
+              directorConnection_NONE: ProductionDirectorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'directorConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where one of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
-              directorConnection_SINGLE: ProductionDirectorConnectionWhere
+              directorConnection_SINGLE: ProductionDirectorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'directorConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where some of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
-              directorConnection_SOME: ProductionDirectorConnectionWhere
+              directorConnection_SOME: ProductionDirectorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'directorConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Movies where all of the related Creatures match this filter\\"\\"\\"
-              director_ALL: CreatureWhere
+              director_ALL: CreatureWhere @deprecated(reason: \\"Please use the relevant generic filter 'director: { all: ... }' instead.\\")
               \\"\\"\\"Return Movies where none of the related Creatures match this filter\\"\\"\\"
-              director_NONE: CreatureWhere
+              director_NONE: CreatureWhere @deprecated(reason: \\"Please use the relevant generic filter 'director: { none: ... }' instead.\\")
               \\"\\"\\"Return Movies where one of the related Creatures match this filter\\"\\"\\"
-              director_SINGLE: CreatureWhere
+              director_SINGLE: CreatureWhere @deprecated(reason: \\"Please use the relevant generic filter 'director: {  single: ... }' instead.\\")
               \\"\\"\\"Return Movies where some of the related Creatures match this filter\\"\\"\\"
-              director_SOME: CreatureWhere
+              director_SOME: CreatureWhere @deprecated(reason: \\"Please use the relevant generic filter 'director: {  some: ... }' instead.\\")
               id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
@@ -732,27 +732,27 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               \\"\\"\\"
               Return People where all of the related CreatureMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_ALL: CreatureMoviesConnectionWhere
+              moviesConnection_ALL: CreatureMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return People where none of the related CreatureMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_NONE: CreatureMoviesConnectionWhere
+              moviesConnection_NONE: CreatureMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return People where one of the related CreatureMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SINGLE: CreatureMoviesConnectionWhere
+              moviesConnection_SINGLE: CreatureMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return People where some of the related CreatureMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SOME: CreatureMoviesConnectionWhere
+              moviesConnection_SOME: CreatureMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return People where all of the related Productions match this filter\\"\\"\\"
-              movies_ALL: ProductionWhere
+              movies_ALL: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { all: ... }' instead.\\")
               \\"\\"\\"Return People where none of the related Productions match this filter\\"\\"\\"
-              movies_NONE: ProductionWhere
+              movies_NONE: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { none: ... }' instead.\\")
               \\"\\"\\"Return People where one of the related Productions match this filter\\"\\"\\"
-              movies_SINGLE: ProductionWhere
+              movies_SINGLE: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  single: ... }' instead.\\")
               \\"\\"\\"Return People where some of the related Productions match this filter\\"\\"\\"
-              movies_SOME: ProductionWhere
+              movies_SOME: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  some: ... }' instead.\\")
             }
 
             interface Production {
@@ -920,35 +920,35 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               \\"\\"\\"
               Return Productions where all of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
-              directorConnection_ALL: ProductionDirectorConnectionWhere
+              directorConnection_ALL: ProductionDirectorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'directorConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Productions where none of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
-              directorConnection_NONE: ProductionDirectorConnectionWhere
+              directorConnection_NONE: ProductionDirectorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'directorConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Productions where one of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
-              directorConnection_SINGLE: ProductionDirectorConnectionWhere
+              directorConnection_SINGLE: ProductionDirectorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'directorConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Productions where some of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
-              directorConnection_SOME: ProductionDirectorConnectionWhere
+              directorConnection_SOME: ProductionDirectorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'directorConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Productions where all of the related Creatures match this filter
               \\"\\"\\"
-              director_ALL: CreatureWhere
+              director_ALL: CreatureWhere @deprecated(reason: \\"Please use the relevant generic filter 'director: { all: ... }' instead.\\")
               \\"\\"\\"
               Return Productions where none of the related Creatures match this filter
               \\"\\"\\"
-              director_NONE: CreatureWhere
+              director_NONE: CreatureWhere @deprecated(reason: \\"Please use the relevant generic filter 'director: { none: ... }' instead.\\")
               \\"\\"\\"
               Return Productions where one of the related Creatures match this filter
               \\"\\"\\"
-              director_SINGLE: CreatureWhere
+              director_SINGLE: CreatureWhere @deprecated(reason: \\"Please use the relevant generic filter 'director: {  single: ... }' instead.\\")
               \\"\\"\\"
               Return Productions where some of the related Creatures match this filter
               \\"\\"\\"
-              director_SOME: CreatureWhere
+              director_SOME: CreatureWhere @deprecated(reason: \\"Please use the relevant generic filter 'director: {  some: ... }' instead.\\")
               id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
@@ -1184,27 +1184,27 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               \\"\\"\\"
               Return Series where all of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
-              directorConnection_ALL: ProductionDirectorConnectionWhere
+              directorConnection_ALL: ProductionDirectorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'directorConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where none of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
-              directorConnection_NONE: ProductionDirectorConnectionWhere
+              directorConnection_NONE: ProductionDirectorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'directorConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where one of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
-              directorConnection_SINGLE: ProductionDirectorConnectionWhere
+              directorConnection_SINGLE: ProductionDirectorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'directorConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where some of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
-              directorConnection_SOME: ProductionDirectorConnectionWhere
+              directorConnection_SOME: ProductionDirectorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'directorConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Series where all of the related Creatures match this filter\\"\\"\\"
-              director_ALL: CreatureWhere
+              director_ALL: CreatureWhere @deprecated(reason: \\"Please use the relevant generic filter 'director: { all: ... }' instead.\\")
               \\"\\"\\"Return Series where none of the related Creatures match this filter\\"\\"\\"
-              director_NONE: CreatureWhere
+              director_NONE: CreatureWhere @deprecated(reason: \\"Please use the relevant generic filter 'director: { none: ... }' instead.\\")
               \\"\\"\\"Return Series where one of the related Creatures match this filter\\"\\"\\"
-              director_SINGLE: CreatureWhere
+              director_SINGLE: CreatureWhere @deprecated(reason: \\"Please use the relevant generic filter 'director: {  single: ... }' instead.\\")
               \\"\\"\\"Return Series where some of the related Creatures match this filter\\"\\"\\"
-              director_SOME: CreatureWhere
+              director_SOME: CreatureWhere @deprecated(reason: \\"Please use the relevant generic filter 'director: {  some: ... }' instead.\\")
               episode: IntScalarFilters
               episode_EQ: Int
               episode_GT: Int

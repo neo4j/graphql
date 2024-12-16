@@ -247,27 +247,27 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               \\"\\"\\"
               Return Actor2s where all of the related Actor2MoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_ALL: Actor2MoviesConnectionWhere
+              moviesConnection_ALL: Actor2MoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actor2s where none of the related Actor2MoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_NONE: Actor2MoviesConnectionWhere
+              moviesConnection_NONE: Actor2MoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actor2s where one of the related Actor2MoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SINGLE: Actor2MoviesConnectionWhere
+              moviesConnection_SINGLE: Actor2MoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actor2s where some of the related Actor2MoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SOME: Actor2MoviesConnectionWhere
+              moviesConnection_SOME: Actor2MoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Actor2s where all of the related Movies match this filter\\"\\"\\"
-              movies_ALL: MovieWhere
+              movies_ALL: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { all: ... }' instead.\\")
               \\"\\"\\"Return Actor2s where none of the related Movies match this filter\\"\\"\\"
-              movies_NONE: MovieWhere
+              movies_NONE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { none: ... }' instead.\\")
               \\"\\"\\"Return Actor2s where one of the related Movies match this filter\\"\\"\\"
-              movies_SINGLE: MovieWhere
+              movies_SINGLE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  single: ... }' instead.\\")
               \\"\\"\\"Return Actor2s where some of the related Movies match this filter\\"\\"\\"
-              movies_SOME: MovieWhere
+              movies_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  some: ... }' instead.\\")
               name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
@@ -466,27 +466,27 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               \\"\\"\\"
               Return Actors where all of the related ActorMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_ALL: ActorMoviesConnectionWhere
+              moviesConnection_ALL: ActorMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where none of the related ActorMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_NONE: ActorMoviesConnectionWhere
+              moviesConnection_NONE: ActorMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where one of the related ActorMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SINGLE: ActorMoviesConnectionWhere
+              moviesConnection_SINGLE: ActorMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where some of the related ActorMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SOME: ActorMoviesConnectionWhere
+              moviesConnection_SOME: ActorMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
-              movies_ALL: MovieWhere
+              movies_ALL: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { all: ... }' instead.\\")
               \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
-              movies_NONE: MovieWhere
+              movies_NONE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { none: ... }' instead.\\")
               \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
-              movies_SINGLE: MovieWhere
+              movies_SINGLE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  single: ... }' instead.\\")
               \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
-              movies_SOME: MovieWhere
+              movies_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  some: ... }' instead.\\")
               name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String

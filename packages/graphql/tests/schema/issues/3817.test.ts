@@ -394,27 +394,27 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
               \\"\\"\\"
               Return People where all of the related PersonFriendsConnections match this filter
               \\"\\"\\"
-              friendsConnection_ALL: PersonFriendsConnectionWhere
+              friendsConnection_ALL: PersonFriendsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'friendsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return People where none of the related PersonFriendsConnections match this filter
               \\"\\"\\"
-              friendsConnection_NONE: PersonFriendsConnectionWhere
+              friendsConnection_NONE: PersonFriendsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'friendsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return People where one of the related PersonFriendsConnections match this filter
               \\"\\"\\"
-              friendsConnection_SINGLE: PersonFriendsConnectionWhere
+              friendsConnection_SINGLE: PersonFriendsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'friendsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return People where some of the related PersonFriendsConnections match this filter
               \\"\\"\\"
-              friendsConnection_SOME: PersonFriendsConnectionWhere
+              friendsConnection_SOME: PersonFriendsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'friendsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return People where all of the related People match this filter\\"\\"\\"
-              friends_ALL: PersonWhere
+              friends_ALL: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'friends: { all: ... }' instead.\\")
               \\"\\"\\"Return People where none of the related People match this filter\\"\\"\\"
-              friends_NONE: PersonWhere
+              friends_NONE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'friends: { none: ... }' instead.\\")
               \\"\\"\\"Return People where one of the related People match this filter\\"\\"\\"
-              friends_SINGLE: PersonWhere
+              friends_SINGLE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'friends: {  single: ... }' instead.\\")
               \\"\\"\\"Return People where some of the related People match this filter\\"\\"\\"
-              friends_SOME: PersonWhere
+              friends_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'friends: {  some: ... }' instead.\\")
               id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID

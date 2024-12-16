@@ -346,27 +346,27 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               \\"\\"\\"
               Return Genres where all of the related GenreMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_ALL: GenreMoviesConnectionWhere
+              moviesConnection_ALL: GenreMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Genres where none of the related GenreMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_NONE: GenreMoviesConnectionWhere
+              moviesConnection_NONE: GenreMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Genres where one of the related GenreMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SINGLE: GenreMoviesConnectionWhere
+              moviesConnection_SINGLE: GenreMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Genres where some of the related GenreMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SOME: GenreMoviesConnectionWhere
+              moviesConnection_SOME: GenreMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Genres where all of the related Movies match this filter\\"\\"\\"
-              movies_ALL: MovieWhere
+              movies_ALL: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { all: ... }' instead.\\")
               \\"\\"\\"Return Genres where none of the related Movies match this filter\\"\\"\\"
-              movies_NONE: MovieWhere
+              movies_NONE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { none: ... }' instead.\\")
               \\"\\"\\"Return Genres where one of the related Movies match this filter\\"\\"\\"
-              movies_SINGLE: MovieWhere
+              movies_SINGLE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  single: ... }' instead.\\")
               \\"\\"\\"Return Genres where some of the related Movies match this filter\\"\\"\\"
-              movies_SOME: MovieWhere
+              movies_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  some: ... }' instead.\\")
               name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String

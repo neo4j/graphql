@@ -24,13 +24,17 @@ import type {
     SchemaComposer,
 } from "graphql-compose";
 import pluralize from "pluralize";
+import { DEPRECATED } from "../../constants";
 import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
+import type { Neo4jFeaturesSettings } from "../../types";
+import { shouldAddDeprecatedFields } from "./utils";
 
 type FieldConfig = {
     name: string;
     typeName: string;
     description: string;
+    deprecationReason?: string;
 };
 
 export function augmentWhereInputWithRelationshipFilters({
@@ -38,11 +42,13 @@ export function augmentWhereInputWithRelationshipFilters({
     composer,
     relationshipAdapter,
     deprecatedDirectives,
+    features,
 }: {
     whereInput: InputTypeComposer;
     composer: SchemaComposer;
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     deprecatedDirectives: Directive[];
+    features?: Neo4jFeaturesSettings;
 }) {
     if (!relationshipAdapter.isFilterableByValue()) {
         return {};
@@ -79,20 +85,21 @@ export function augmentWhereInputWithRelationshipFilters({
             type: relationshipAdapter.operations.connectionFiltersTypeName,
         },
     });
+    if (shouldAddDeprecatedFields(features, "relationshipFilters")) {
+        // Add relationship legacy filter fields
+        const legacyRelationship = fieldConfigsToFieldConfigMap({
+            deprecatedDirectives,
+            fields: getRelationshipFiltersLegacy(relationshipAdapter),
+        });
+        whereInput.addFields(legacyRelationship);
 
-    // Add relationship legacy filter fields
-    const legacyRelationship = fieldConfigsToFieldConfigMap({
-        deprecatedDirectives,
-        fields: getRelationshipFiltersLegacy(relationshipAdapter),
-    });
-    whereInput.addFields(legacyRelationship);
-
-    // Add connection legacy filter fields
-    const legacyConnection = fieldConfigsToFieldConfigMap({
-        deprecatedDirectives,
-        fields: getRelationshipConnectionFiltersLegacy(relationshipAdapter),
-    });
-    whereInput.addFields(legacyConnection);
+        // Add connection legacy filter fields
+        const legacyConnection = fieldConfigsToFieldConfigMap({
+            deprecatedDirectives,
+            fields: getRelationshipConnectionFiltersLegacy(relationshipAdapter),
+        });
+        whereInput.addFields(legacyConnection);
+    }
 }
 
 function getRelationshipFilters(
@@ -178,6 +185,8 @@ function getRelationshipFiltersLegacy(
             description: `Return ${pluralize(
                 relationshipAdapter.source.name
             )} where all of the related ${pluralize(relationshipAdapter.target.name)} match this filter`,
+
+            deprecationReason: `Please use the relevant generic filter '${relationshipAdapter.name}: { all: ... }' instead.`,
         },
         {
             name: `${relationshipAdapter.name}_NONE`,
@@ -185,6 +194,8 @@ function getRelationshipFiltersLegacy(
             description: `Return ${pluralize(
                 relationshipAdapter.source.name
             )} where none of the related ${pluralize(relationshipAdapter.target.name)} match this filter`,
+
+            deprecationReason: `Please use the relevant generic filter '${relationshipAdapter.name}: { none: ... }' instead.`,
         },
         {
             name: `${relationshipAdapter.name}_SINGLE`,
@@ -192,6 +203,8 @@ function getRelationshipFiltersLegacy(
             description: `Return ${pluralize(
                 relationshipAdapter.source.name
             )} where one of the related ${pluralize(relationshipAdapter.target.name)} match this filter`,
+
+            deprecationReason: `Please use the relevant generic filter '${relationshipAdapter.name}: {  single: ... }' instead.`,
         },
         {
             name: `${relationshipAdapter.name}_SOME`,
@@ -199,6 +212,8 @@ function getRelationshipFiltersLegacy(
             description: `Return ${pluralize(
                 relationshipAdapter.source.name
             )} where some of the related ${pluralize(relationshipAdapter.target.name)} match this filter`,
+
+            deprecationReason: `Please use the relevant generic filter '${relationshipAdapter.name}: {  some: ... }' instead.`,
         },
     ];
 }
@@ -213,6 +228,7 @@ function getRelationshipConnectionFiltersLegacy(
             description: `Return ${pluralize(relationshipAdapter.source.name)} where all of the related ${pluralize(
                 relationshipAdapter.operations.connectionFieldTypename
             )} match this filter`,
+            deprecationReason: `Please use the relevant generic filter '${relationshipAdapter.operations.connectionFieldName}: { all: { node: ... } } }' instead.`,
         },
         {
             name: `${relationshipAdapter.operations.connectionFieldName}_NONE`,
@@ -220,6 +236,7 @@ function getRelationshipConnectionFiltersLegacy(
             description: `Return ${pluralize(relationshipAdapter.source.name)} where none of the related ${pluralize(
                 relationshipAdapter.operations.connectionFieldTypename
             )} match this filter`,
+            deprecationReason: `Please use the relevant generic filter '${relationshipAdapter.operations.connectionFieldName}: { none: { node: ... } } }' instead.`,
         },
         {
             name: `${relationshipAdapter.operations.connectionFieldName}_SINGLE`,
@@ -227,6 +244,7 @@ function getRelationshipConnectionFiltersLegacy(
             description: `Return ${pluralize(relationshipAdapter.source.name)} where one of the related ${pluralize(
                 relationshipAdapter.operations.connectionFieldTypename
             )} match this filter`,
+            deprecationReason: `Please use the relevant generic filter '${relationshipAdapter.operations.connectionFieldName}: { single: { node: ... } } }' instead.`,
         },
         {
             name: `${relationshipAdapter.operations.connectionFieldName}_SOME`,
@@ -234,6 +252,7 @@ function getRelationshipConnectionFiltersLegacy(
             description: `Return ${pluralize(relationshipAdapter.source.name)} where some of the related ${pluralize(
                 relationshipAdapter.operations.connectionFieldTypename
             )} match this filter`,
+            deprecationReason: `Please use the relevant generic filter '${relationshipAdapter.operations.connectionFieldName}: { some: { node: ... } } }' instead.`,
         },
     ];
 }
@@ -250,9 +269,15 @@ function fieldConfigsToFieldConfigMap({
     const fieldsConfigMap: InputTypeComposerFieldConfigMapDefinition = {};
 
     for (const field of fields) {
+        let directives;
+        if (deprecatedDirectives.length) {
+            directives = deprecatedDirectives;
+        } else if (field.deprecationReason) {
+            directives = [{ name: DEPRECATED, args: { reason: field.deprecationReason } }];
+        }
         fieldsConfigMap[field.name] = {
             type: field.typeName,
-            directives: deprecatedDirectives,
+            directives,
             description: field.description,
         };
     }

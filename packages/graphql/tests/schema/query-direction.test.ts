@@ -348,27 +348,27 @@ describe("Query Direction", () => {
               \\"\\"\\"
               Return Users where all of the related UserFriendsConnections match this filter
               \\"\\"\\"
-              friendsConnection_ALL: UserFriendsConnectionWhere
+              friendsConnection_ALL: UserFriendsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'friendsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Users where none of the related UserFriendsConnections match this filter
               \\"\\"\\"
-              friendsConnection_NONE: UserFriendsConnectionWhere
+              friendsConnection_NONE: UserFriendsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'friendsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Users where one of the related UserFriendsConnections match this filter
               \\"\\"\\"
-              friendsConnection_SINGLE: UserFriendsConnectionWhere
+              friendsConnection_SINGLE: UserFriendsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'friendsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Users where some of the related UserFriendsConnections match this filter
               \\"\\"\\"
-              friendsConnection_SOME: UserFriendsConnectionWhere
+              friendsConnection_SOME: UserFriendsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'friendsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Users where all of the related Users match this filter\\"\\"\\"
-              friends_ALL: UserWhere
+              friends_ALL: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'friends: { all: ... }' instead.\\")
               \\"\\"\\"Return Users where none of the related Users match this filter\\"\\"\\"
-              friends_NONE: UserWhere
+              friends_NONE: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'friends: { none: ... }' instead.\\")
               \\"\\"\\"Return Users where one of the related Users match this filter\\"\\"\\"
-              friends_SINGLE: UserWhere
+              friends_SINGLE: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'friends: {  single: ... }' instead.\\")
               \\"\\"\\"Return Users where some of the related Users match this filter\\"\\"\\"
-              friends_SOME: UserWhere
+              friends_SOME: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'friends: {  some: ... }' instead.\\")
               name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
@@ -710,27 +710,27 @@ describe("Query Direction", () => {
               \\"\\"\\"
               Return Users where all of the related UserFriendsConnections match this filter
               \\"\\"\\"
-              friendsConnection_ALL: UserFriendsConnectionWhere
+              friendsConnection_ALL: UserFriendsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'friendsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Users where none of the related UserFriendsConnections match this filter
               \\"\\"\\"
-              friendsConnection_NONE: UserFriendsConnectionWhere
+              friendsConnection_NONE: UserFriendsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'friendsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Users where one of the related UserFriendsConnections match this filter
               \\"\\"\\"
-              friendsConnection_SINGLE: UserFriendsConnectionWhere
+              friendsConnection_SINGLE: UserFriendsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'friendsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Users where some of the related UserFriendsConnections match this filter
               \\"\\"\\"
-              friendsConnection_SOME: UserFriendsConnectionWhere
+              friendsConnection_SOME: UserFriendsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'friendsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Users where all of the related Users match this filter\\"\\"\\"
-              friends_ALL: UserWhere
+              friends_ALL: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'friends: { all: ... }' instead.\\")
               \\"\\"\\"Return Users where none of the related Users match this filter\\"\\"\\"
-              friends_NONE: UserWhere
+              friends_NONE: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'friends: { none: ... }' instead.\\")
               \\"\\"\\"Return Users where one of the related Users match this filter\\"\\"\\"
-              friends_SINGLE: UserWhere
+              friends_SINGLE: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'friends: {  single: ... }' instead.\\")
               \\"\\"\\"Return Users where some of the related Users match this filter\\"\\"\\"
-              friends_SOME: UserWhere
+              friends_SOME: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'friends: {  some: ... }' instead.\\")
               name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String

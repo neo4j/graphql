@@ -387,27 +387,27 @@ describe("Interfaces", () => {
               \\"\\"\\"
               Return MovieNodes where all of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_ALL: MovieNodeMoviesConnectionWhere
+              moviesConnection_ALL: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return MovieNodes where none of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_NONE: MovieNodeMoviesConnectionWhere
+              moviesConnection_NONE: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return MovieNodes where one of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SINGLE: MovieNodeMoviesConnectionWhere
+              moviesConnection_SINGLE: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return MovieNodes where some of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SOME: MovieNodeMoviesConnectionWhere
+              moviesConnection_SOME: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return MovieNodes where all of the related Movies match this filter\\"\\"\\"
-              movies_ALL: MovieWhere
+              movies_ALL: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { all: ... }' instead.\\")
               \\"\\"\\"Return MovieNodes where none of the related Movies match this filter\\"\\"\\"
-              movies_NONE: MovieWhere
+              movies_NONE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { none: ... }' instead.\\")
               \\"\\"\\"Return MovieNodes where one of the related Movies match this filter\\"\\"\\"
-              movies_SINGLE: MovieWhere
+              movies_SINGLE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  single: ... }' instead.\\")
               \\"\\"\\"Return MovieNodes where some of the related Movies match this filter\\"\\"\\"
-              movies_SOME: MovieWhere
+              movies_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  some: ... }' instead.\\")
               typename_IN: [MovieNodeImplementation!]
             }
 
@@ -450,27 +450,27 @@ describe("Interfaces", () => {
               \\"\\"\\"
               Return Movies where all of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_ALL: MovieNodeMoviesConnectionWhere
+              moviesConnection_ALL: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where none of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_NONE: MovieNodeMoviesConnectionWhere
+              moviesConnection_NONE: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where one of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SINGLE: MovieNodeMoviesConnectionWhere
+              moviesConnection_SINGLE: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where some of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SOME: MovieNodeMoviesConnectionWhere
+              moviesConnection_SOME: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Movies where all of the related Movies match this filter\\"\\"\\"
-              movies_ALL: MovieWhere
+              movies_ALL: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { all: ... }' instead.\\")
               \\"\\"\\"Return Movies where none of the related Movies match this filter\\"\\"\\"
-              movies_NONE: MovieWhere
+              movies_NONE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { none: ... }' instead.\\")
               \\"\\"\\"Return Movies where one of the related Movies match this filter\\"\\"\\"
-              movies_SINGLE: MovieWhere
+              movies_SINGLE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  single: ... }' instead.\\")
               \\"\\"\\"Return Movies where some of the related Movies match this filter\\"\\"\\"
-              movies_SOME: MovieWhere
+              movies_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  some: ... }' instead.\\")
             }
 
             type MoviesConnection {
@@ -894,27 +894,27 @@ describe("Interfaces", () => {
               \\"\\"\\"
               Return MovieNodes where all of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_ALL: MovieNodeMoviesConnectionWhere
+              moviesConnection_ALL: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return MovieNodes where none of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_NONE: MovieNodeMoviesConnectionWhere
+              moviesConnection_NONE: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return MovieNodes where one of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SINGLE: MovieNodeMoviesConnectionWhere
+              moviesConnection_SINGLE: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return MovieNodes where some of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SOME: MovieNodeMoviesConnectionWhere
+              moviesConnection_SOME: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return MovieNodes where all of the related Movies match this filter\\"\\"\\"
-              movies_ALL: MovieWhere
+              movies_ALL: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { all: ... }' instead.\\")
               \\"\\"\\"Return MovieNodes where none of the related Movies match this filter\\"\\"\\"
-              movies_NONE: MovieWhere
+              movies_NONE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { none: ... }' instead.\\")
               \\"\\"\\"Return MovieNodes where one of the related Movies match this filter\\"\\"\\"
-              movies_SINGLE: MovieWhere
+              movies_SINGLE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  single: ... }' instead.\\")
               \\"\\"\\"Return MovieNodes where some of the related Movies match this filter\\"\\"\\"
-              movies_SOME: MovieWhere
+              movies_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  some: ... }' instead.\\")
               typename_IN: [MovieNodeImplementation!]
             }
 
@@ -957,27 +957,27 @@ describe("Interfaces", () => {
               \\"\\"\\"
               Return Movies where all of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_ALL: MovieNodeMoviesConnectionWhere
+              moviesConnection_ALL: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where none of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_NONE: MovieNodeMoviesConnectionWhere
+              moviesConnection_NONE: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where one of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SINGLE: MovieNodeMoviesConnectionWhere
+              moviesConnection_SINGLE: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where some of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SOME: MovieNodeMoviesConnectionWhere
+              moviesConnection_SOME: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Movies where all of the related Movies match this filter\\"\\"\\"
-              movies_ALL: MovieWhere
+              movies_ALL: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { all: ... }' instead.\\")
               \\"\\"\\"Return Movies where none of the related Movies match this filter\\"\\"\\"
-              movies_NONE: MovieWhere
+              movies_NONE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { none: ... }' instead.\\")
               \\"\\"\\"Return Movies where one of the related Movies match this filter\\"\\"\\"
-              movies_SINGLE: MovieWhere
+              movies_SINGLE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  single: ... }' instead.\\")
               \\"\\"\\"Return Movies where some of the related Movies match this filter\\"\\"\\"
-              movies_SOME: MovieWhere
+              movies_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  some: ... }' instead.\\")
             }
 
             type MoviesConnection {

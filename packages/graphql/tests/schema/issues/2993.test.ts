@@ -546,27 +546,27 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               \\"\\"\\"
               Return Users where all of the related UserFollowingConnections match this filter
               \\"\\"\\"
-              followingConnection_ALL: UserFollowingConnectionWhere
+              followingConnection_ALL: UserFollowingConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'followingConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Users where none of the related UserFollowingConnections match this filter
               \\"\\"\\"
-              followingConnection_NONE: UserFollowingConnectionWhere
+              followingConnection_NONE: UserFollowingConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'followingConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Users where one of the related UserFollowingConnections match this filter
               \\"\\"\\"
-              followingConnection_SINGLE: UserFollowingConnectionWhere
+              followingConnection_SINGLE: UserFollowingConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'followingConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Users where some of the related UserFollowingConnections match this filter
               \\"\\"\\"
-              followingConnection_SOME: UserFollowingConnectionWhere
+              followingConnection_SOME: UserFollowingConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'followingConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Users where all of the related Profiles match this filter\\"\\"\\"
-              following_ALL: ProfileWhere
+              following_ALL: ProfileWhere @deprecated(reason: \\"Please use the relevant generic filter 'following: { all: ... }' instead.\\")
               \\"\\"\\"Return Users where none of the related Profiles match this filter\\"\\"\\"
-              following_NONE: ProfileWhere
+              following_NONE: ProfileWhere @deprecated(reason: \\"Please use the relevant generic filter 'following: { none: ... }' instead.\\")
               \\"\\"\\"Return Users where one of the related Profiles match this filter\\"\\"\\"
-              following_SINGLE: ProfileWhere
+              following_SINGLE: ProfileWhere @deprecated(reason: \\"Please use the relevant generic filter 'following: {  single: ... }' instead.\\")
               \\"\\"\\"Return Users where some of the related Profiles match this filter\\"\\"\\"
-              following_SOME: ProfileWhere
+              following_SOME: ProfileWhere @deprecated(reason: \\"Please use the relevant generic filter 'following: {  some: ... }' instead.\\")
               id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID

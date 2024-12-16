@@ -387,27 +387,27 @@ describe("Union Interface Relationships", () => {
               \\"\\"\\"
               Return Actors where all of the related ActorMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_ALL: ActorMoviesConnectionWhere
+              moviesConnection_ALL: ActorMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where none of the related ActorMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_NONE: ActorMoviesConnectionWhere
+              moviesConnection_NONE: ActorMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where one of the related ActorMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SINGLE: ActorMoviesConnectionWhere
+              moviesConnection_SINGLE: ActorMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where some of the related ActorMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SOME: ActorMoviesConnectionWhere
+              moviesConnection_SOME: ActorMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
-              movies_ALL: MovieWhere
+              movies_ALL: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { all: ... }' instead.\\")
               \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
-              movies_NONE: MovieWhere
+              movies_NONE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { none: ... }' instead.\\")
               \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
-              movies_SINGLE: MovieWhere
+              movies_SINGLE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  single: ... }' instead.\\")
               \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
-              movies_SOME: MovieWhere
+              movies_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  some: ... }' instead.\\")
               name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
@@ -1213,53 +1213,53 @@ describe("Union Interface Relationships", () => {
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_ALL: MovieActorsConnectionWhere
+              actorsConnection_ALL: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where none of the related MovieActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_NONE: MovieActorsConnectionWhere
+              actorsConnection_NONE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where one of the related MovieActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SINGLE: MovieActorsConnectionWhere
+              actorsConnection_SINGLE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where some of the related MovieActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SOME: MovieActorsConnectionWhere
+              actorsConnection_SOME: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-              actors_ALL: ActorWhere
+              actors_ALL: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
               \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-              actors_NONE: ActorWhere
+              actors_NONE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
               \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-              actors_SINGLE: ActorWhere
+              actors_SINGLE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-              actors_SOME: ActorWhere
+              actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
               directors: MovieDirectorsRelationshipFilters
               directorsConnection: MovieDirectorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieDirectorsConnections match this filter
               \\"\\"\\"
-              directorsConnection_ALL: MovieDirectorsConnectionWhere
+              directorsConnection_ALL: MovieDirectorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'directorsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where none of the related MovieDirectorsConnections match this filter
               \\"\\"\\"
-              directorsConnection_NONE: MovieDirectorsConnectionWhere
+              directorsConnection_NONE: MovieDirectorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'directorsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where one of the related MovieDirectorsConnections match this filter
               \\"\\"\\"
-              directorsConnection_SINGLE: MovieDirectorsConnectionWhere
+              directorsConnection_SINGLE: MovieDirectorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'directorsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where some of the related MovieDirectorsConnections match this filter
               \\"\\"\\"
-              directorsConnection_SOME: MovieDirectorsConnectionWhere
+              directorsConnection_SOME: MovieDirectorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'directorsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Movies where all of the related Directors match this filter\\"\\"\\"
-              directors_ALL: DirectorWhere
+              directors_ALL: DirectorWhere @deprecated(reason: \\"Please use the relevant generic filter 'directors: { all: ... }' instead.\\")
               \\"\\"\\"Return Movies where none of the related Directors match this filter\\"\\"\\"
-              directors_NONE: DirectorWhere
+              directors_NONE: DirectorWhere @deprecated(reason: \\"Please use the relevant generic filter 'directors: { none: ... }' instead.\\")
               \\"\\"\\"Return Movies where one of the related Directors match this filter\\"\\"\\"
-              directors_SINGLE: DirectorWhere
+              directors_SINGLE: DirectorWhere @deprecated(reason: \\"Please use the relevant generic filter 'directors: {  single: ... }' instead.\\")
               \\"\\"\\"Return Movies where some of the related Directors match this filter\\"\\"\\"
-              directors_SOME: DirectorWhere
+              directors_SOME: DirectorWhere @deprecated(reason: \\"Please use the relevant generic filter 'directors: {  some: ... }' instead.\\")
               imdbId: IntScalarFilters
               imdbId_EQ: Int
               imdbId_GT: Int
@@ -1273,27 +1273,27 @@ describe("Union Interface Relationships", () => {
               \\"\\"\\"
               Return Movies where all of the related MovieReviewersConnections match this filter
               \\"\\"\\"
-              reviewersConnection_ALL: MovieReviewersConnectionWhere
+              reviewersConnection_ALL: MovieReviewersConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'reviewersConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where none of the related MovieReviewersConnections match this filter
               \\"\\"\\"
-              reviewersConnection_NONE: MovieReviewersConnectionWhere
+              reviewersConnection_NONE: MovieReviewersConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'reviewersConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where one of the related MovieReviewersConnections match this filter
               \\"\\"\\"
-              reviewersConnection_SINGLE: MovieReviewersConnectionWhere
+              reviewersConnection_SINGLE: MovieReviewersConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'reviewersConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where some of the related MovieReviewersConnections match this filter
               \\"\\"\\"
-              reviewersConnection_SOME: MovieReviewersConnectionWhere
+              reviewersConnection_SOME: MovieReviewersConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'reviewersConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Movies where all of the related Reviewers match this filter\\"\\"\\"
-              reviewers_ALL: ReviewerWhere
+              reviewers_ALL: ReviewerWhere @deprecated(reason: \\"Please use the relevant generic filter 'reviewers: { all: ... }' instead.\\")
               \\"\\"\\"Return Movies where none of the related Reviewers match this filter\\"\\"\\"
-              reviewers_NONE: ReviewerWhere
+              reviewers_NONE: ReviewerWhere @deprecated(reason: \\"Please use the relevant generic filter 'reviewers: { none: ... }' instead.\\")
               \\"\\"\\"Return Movies where one of the related Reviewers match this filter\\"\\"\\"
-              reviewers_SINGLE: ReviewerWhere
+              reviewers_SINGLE: ReviewerWhere @deprecated(reason: \\"Please use the relevant generic filter 'reviewers: {  single: ... }' instead.\\")
               \\"\\"\\"Return Movies where some of the related Reviewers match this filter\\"\\"\\"
-              reviewers_SOME: ReviewerWhere
+              reviewers_SOME: ReviewerWhere @deprecated(reason: \\"Please use the relevant generic filter 'reviewers: {  some: ... }' instead.\\")
               title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
@@ -1596,27 +1596,27 @@ describe("Union Interface Relationships", () => {
               \\"\\"\\"
               Return People where all of the related PersonMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_ALL: PersonMoviesConnectionWhere
+              moviesConnection_ALL: PersonMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return People where none of the related PersonMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_NONE: PersonMoviesConnectionWhere
+              moviesConnection_NONE: PersonMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return People where one of the related PersonMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SINGLE: PersonMoviesConnectionWhere
+              moviesConnection_SINGLE: PersonMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return People where some of the related PersonMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SOME: PersonMoviesConnectionWhere
+              moviesConnection_SOME: PersonMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return People where all of the related Movies match this filter\\"\\"\\"
-              movies_ALL: MovieWhere
+              movies_ALL: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { all: ... }' instead.\\")
               \\"\\"\\"Return People where none of the related Movies match this filter\\"\\"\\"
-              movies_NONE: MovieWhere
+              movies_NONE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { none: ... }' instead.\\")
               \\"\\"\\"Return People where one of the related Movies match this filter\\"\\"\\"
-              movies_SINGLE: MovieWhere
+              movies_SINGLE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  single: ... }' instead.\\")
               \\"\\"\\"Return People where some of the related Movies match this filter\\"\\"\\"
-              movies_SOME: MovieWhere
+              movies_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  some: ... }' instead.\\")
               name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String

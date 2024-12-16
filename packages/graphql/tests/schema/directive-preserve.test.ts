@@ -505,27 +505,27 @@ describe("Directive-preserve", () => {
               \\"\\"\\"
               Return Genres where all of the related GenreMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_ALL: GenreMoviesConnectionWhere
+              moviesConnection_ALL: GenreMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Genres where none of the related GenreMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_NONE: GenreMoviesConnectionWhere
+              moviesConnection_NONE: GenreMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Genres where one of the related GenreMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SINGLE: GenreMoviesConnectionWhere
+              moviesConnection_SINGLE: GenreMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Genres where some of the related GenreMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SOME: GenreMoviesConnectionWhere
+              moviesConnection_SOME: GenreMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Genres where all of the related Movies match this filter\\"\\"\\"
-              movies_ALL: MovieWhere
+              movies_ALL: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { all: ... }' instead.\\")
               \\"\\"\\"Return Genres where none of the related Movies match this filter\\"\\"\\"
-              movies_NONE: MovieWhere
+              movies_NONE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { none: ... }' instead.\\")
               \\"\\"\\"Return Genres where one of the related Movies match this filter\\"\\"\\"
-              movies_SINGLE: MovieWhere
+              movies_SINGLE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  single: ... }' instead.\\")
               \\"\\"\\"Return Genres where some of the related Movies match this filter\\"\\"\\"
-              movies_SOME: MovieWhere
+              movies_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  some: ... }' instead.\\")
               name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
@@ -1231,27 +1231,27 @@ describe("Directive-preserve", () => {
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_ALL: ActorActedInConnectionWhere
+              actedInConnection_ALL: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where none of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_NONE: ActorActedInConnectionWhere
+              actedInConnection_NONE: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where one of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_SINGLE: ActorActedInConnectionWhere
+              actedInConnection_SINGLE: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where some of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_SOME: ActorActedInConnectionWhere
+              actedInConnection_SOME: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
-              actedIn_ALL: ProductionWhere
+              actedIn_ALL: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: { all: ... }' instead.\\")
               \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
-              actedIn_NONE: ProductionWhere
+              actedIn_NONE: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: { none: ... }' instead.\\")
               \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
-              actedIn_SINGLE: ProductionWhere
+              actedIn_SINGLE: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  single: ... }' instead.\\")
               \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
-              actedIn_SOME: ProductionWhere
+              actedIn_SOME: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  some: ... }' instead.\\")
               name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
@@ -1798,27 +1798,27 @@ describe("Directive-preserve", () => {
               \\"\\"\\"
               Return Productions where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_ALL: ProductionActorsConnectionWhere
+              actorsConnection_ALL: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Productions where none of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_NONE: ProductionActorsConnectionWhere
+              actorsConnection_NONE: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Productions where one of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SINGLE: ProductionActorsConnectionWhere
+              actorsConnection_SINGLE: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Productions where some of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SOME: ProductionActorsConnectionWhere
+              actorsConnection_SOME: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Productions where all of the related Actors match this filter\\"\\"\\"
-              actors_ALL: ActorWhere
+              actors_ALL: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
               \\"\\"\\"Return Productions where none of the related Actors match this filter\\"\\"\\"
-              actors_NONE: ActorWhere
+              actors_NONE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
               \\"\\"\\"Return Productions where one of the related Actors match this filter\\"\\"\\"
-              actors_SINGLE: ActorWhere
+              actors_SINGLE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
               \\"\\"\\"Return Productions where some of the related Actors match this filter\\"\\"\\"
-              actors_SOME: ActorWhere
+              actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
               title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
@@ -2022,27 +2022,27 @@ describe("Directive-preserve", () => {
               \\"\\"\\"
               Return Series where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_ALL: ProductionActorsConnectionWhere
+              actorsConnection_ALL: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where none of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_NONE: ProductionActorsConnectionWhere
+              actorsConnection_NONE: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where one of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SINGLE: ProductionActorsConnectionWhere
+              actorsConnection_SINGLE: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where some of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SOME: ProductionActorsConnectionWhere
+              actorsConnection_SOME: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Series where all of the related Actors match this filter\\"\\"\\"
-              actors_ALL: ActorWhere
+              actors_ALL: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
               \\"\\"\\"Return Series where none of the related Actors match this filter\\"\\"\\"
-              actors_NONE: ActorWhere
+              actors_NONE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
               \\"\\"\\"Return Series where one of the related Actors match this filter\\"\\"\\"
-              actors_SINGLE: ActorWhere
+              actors_SINGLE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
               \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
-              actors_SOME: ActorWhere
+              actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
               episodes: IntScalarFilters
               episodes_EQ: Int
               episodes_GT: Int
@@ -2433,27 +2433,27 @@ describe("Directive-preserve", () => {
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_ALL: ActorActedInConnectionWhere
+              actedInConnection_ALL: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where none of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_NONE: ActorActedInConnectionWhere
+              actedInConnection_NONE: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where one of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_SINGLE: ActorActedInConnectionWhere
+              actedInConnection_SINGLE: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where some of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_SOME: ActorActedInConnectionWhere
+              actedInConnection_SOME: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
-              actedIn_ALL: ProductionWhere
+              actedIn_ALL: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: { all: ... }' instead.\\")
               \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
-              actedIn_NONE: ProductionWhere
+              actedIn_NONE: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: { none: ... }' instead.\\")
               \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
-              actedIn_SINGLE: ProductionWhere
+              actedIn_SINGLE: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  single: ... }' instead.\\")
               \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
-              actedIn_SOME: ProductionWhere
+              actedIn_SOME: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  some: ... }' instead.\\")
               name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
@@ -3080,27 +3080,27 @@ describe("Directive-preserve", () => {
               \\"\\"\\"
               Return Series where all of the related SeriesActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_ALL: SeriesActorsConnectionWhere
+              actorsConnection_ALL: SeriesActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where none of the related SeriesActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_NONE: SeriesActorsConnectionWhere
+              actorsConnection_NONE: SeriesActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where one of the related SeriesActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SINGLE: SeriesActorsConnectionWhere
+              actorsConnection_SINGLE: SeriesActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where some of the related SeriesActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SOME: SeriesActorsConnectionWhere
+              actorsConnection_SOME: SeriesActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Series where all of the related Actors match this filter\\"\\"\\"
-              actors_ALL: ActorWhere
+              actors_ALL: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
               \\"\\"\\"Return Series where none of the related Actors match this filter\\"\\"\\"
-              actors_NONE: ActorWhere
+              actors_NONE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
               \\"\\"\\"Return Series where one of the related Actors match this filter\\"\\"\\"
-              actors_SINGLE: ActorWhere
+              actors_SINGLE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
               \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
-              actors_SOME: ActorWhere
+              actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
               episodes: IntScalarFilters
               episodes_EQ: Int
               episodes_GT: Int
@@ -3479,27 +3479,27 @@ describe("Directive-preserve", () => {
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_ALL: ActorActedInConnectionWhere
+              actedInConnection_ALL: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where none of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_NONE: ActorActedInConnectionWhere
+              actedInConnection_NONE: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where one of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_SINGLE: ActorActedInConnectionWhere
+              actedInConnection_SINGLE: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where some of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_SOME: ActorActedInConnectionWhere
+              actedInConnection_SOME: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
-              actedIn_ALL: ProductionWhere
+              actedIn_ALL: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: { all: ... }' instead.\\")
               \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
-              actedIn_NONE: ProductionWhere
+              actedIn_NONE: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: { none: ... }' instead.\\")
               \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
-              actedIn_SINGLE: ProductionWhere
+              actedIn_SINGLE: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  single: ... }' instead.\\")
               \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
-              actedIn_SOME: ProductionWhere
+              actedIn_SOME: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  some: ... }' instead.\\")
               name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
@@ -3781,27 +3781,27 @@ describe("Directive-preserve", () => {
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_ALL: MovieActorsConnectionWhere
+              actorsConnection_ALL: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where none of the related MovieActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_NONE: MovieActorsConnectionWhere
+              actorsConnection_NONE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where one of the related MovieActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SINGLE: MovieActorsConnectionWhere
+              actorsConnection_SINGLE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where some of the related MovieActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SOME: MovieActorsConnectionWhere
+              actorsConnection_SOME: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-              actors_ALL: ActorWhere
+              actors_ALL: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
               \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-              actors_NONE: ActorWhere
+              actors_NONE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
               \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-              actors_SINGLE: ActorWhere
+              actors_SINGLE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-              actors_SOME: ActorWhere
+              actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
               runtime: IntScalarFilters
               runtime_EQ: Int
               runtime_GT: Int
@@ -4126,27 +4126,27 @@ describe("Directive-preserve", () => {
               \\"\\"\\"
               Return Series where all of the related SeriesActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_ALL: SeriesActorsConnectionWhere
+              actorsConnection_ALL: SeriesActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where none of the related SeriesActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_NONE: SeriesActorsConnectionWhere
+              actorsConnection_NONE: SeriesActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where one of the related SeriesActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SINGLE: SeriesActorsConnectionWhere
+              actorsConnection_SINGLE: SeriesActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where some of the related SeriesActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SOME: SeriesActorsConnectionWhere
+              actorsConnection_SOME: SeriesActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Series where all of the related Actors match this filter\\"\\"\\"
-              actors_ALL: ActorWhere
+              actors_ALL: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
               \\"\\"\\"Return Series where none of the related Actors match this filter\\"\\"\\"
-              actors_NONE: ActorWhere
+              actors_NONE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
               \\"\\"\\"Return Series where one of the related Actors match this filter\\"\\"\\"
-              actors_SINGLE: ActorWhere
+              actors_SINGLE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
               \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
-              actors_SOME: ActorWhere
+              actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
               episodes: IntScalarFilters
               episodes_EQ: Int
               episodes_GT: Int
@@ -4449,27 +4449,27 @@ describe("Directive-preserve", () => {
               \\"\\"\\"
               Return Blogs where all of the related BlogPostsConnections match this filter
               \\"\\"\\"
-              postsConnection_ALL: BlogPostsConnectionWhere
+              postsConnection_ALL: BlogPostsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'postsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Blogs where none of the related BlogPostsConnections match this filter
               \\"\\"\\"
-              postsConnection_NONE: BlogPostsConnectionWhere
+              postsConnection_NONE: BlogPostsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'postsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Blogs where one of the related BlogPostsConnections match this filter
               \\"\\"\\"
-              postsConnection_SINGLE: BlogPostsConnectionWhere
+              postsConnection_SINGLE: BlogPostsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'postsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Blogs where some of the related BlogPostsConnections match this filter
               \\"\\"\\"
-              postsConnection_SOME: BlogPostsConnectionWhere
+              postsConnection_SOME: BlogPostsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'postsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Blogs where all of the related Posts match this filter\\"\\"\\"
-              posts_ALL: PostWhere
+              posts_ALL: PostWhere @deprecated(reason: \\"Please use the relevant generic filter 'posts: { all: ... }' instead.\\")
               \\"\\"\\"Return Blogs where none of the related Posts match this filter\\"\\"\\"
-              posts_NONE: PostWhere
+              posts_NONE: PostWhere @deprecated(reason: \\"Please use the relevant generic filter 'posts: { none: ... }' instead.\\")
               \\"\\"\\"Return Blogs where one of the related Posts match this filter\\"\\"\\"
-              posts_SINGLE: PostWhere
+              posts_SINGLE: PostWhere @deprecated(reason: \\"Please use the relevant generic filter 'posts: {  single: ... }' instead.\\")
               \\"\\"\\"Return Blogs where some of the related Posts match this filter\\"\\"\\"
-              posts_SOME: PostWhere
+              posts_SOME: PostWhere @deprecated(reason: \\"Please use the relevant generic filter 'posts: {  some: ... }' instead.\\")
               title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String

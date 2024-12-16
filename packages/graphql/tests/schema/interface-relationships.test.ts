@@ -311,27 +311,27 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_ALL: ActorActedInConnectionWhere
+              actedInConnection_ALL: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where none of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_NONE: ActorActedInConnectionWhere
+              actedInConnection_NONE: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where one of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_SINGLE: ActorActedInConnectionWhere
+              actedInConnection_SINGLE: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where some of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_SOME: ActorActedInConnectionWhere
+              actedInConnection_SOME: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
-              actedIn_ALL: ProductionWhere
+              actedIn_ALL: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: { all: ... }' instead.\\")
               \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
-              actedIn_NONE: ProductionWhere
+              actedIn_NONE: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: { none: ... }' instead.\\")
               \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
-              actedIn_SINGLE: ProductionWhere
+              actedIn_SINGLE: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  single: ... }' instead.\\")
               \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
-              actedIn_SOME: ProductionWhere
+              actedIn_SOME: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  some: ... }' instead.\\")
               name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
@@ -1019,27 +1019,27 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_ALL: ActorActedInConnectionWhere
+              actedInConnection_ALL: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where none of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_NONE: ActorActedInConnectionWhere
+              actedInConnection_NONE: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where one of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_SINGLE: ActorActedInConnectionWhere
+              actedInConnection_SINGLE: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where some of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_SOME: ActorActedInConnectionWhere
+              actedInConnection_SOME: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
-              actedIn_ALL: ProductionWhere
+              actedIn_ALL: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: { all: ... }' instead.\\")
               \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
-              actedIn_NONE: ProductionWhere
+              actedIn_NONE: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: { none: ... }' instead.\\")
               \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
-              actedIn_SINGLE: ProductionWhere
+              actedIn_SINGLE: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  single: ... }' instead.\\")
               \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
-              actedIn_SOME: ProductionWhere
+              actedIn_SOME: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  some: ... }' instead.\\")
               name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
@@ -1315,27 +1315,27 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Return Episodes where all of the related EpisodeSeriesConnections match this filter
               \\"\\"\\"
-              seriesConnection_ALL: EpisodeSeriesConnectionWhere
+              seriesConnection_ALL: EpisodeSeriesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'seriesConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Episodes where none of the related EpisodeSeriesConnections match this filter
               \\"\\"\\"
-              seriesConnection_NONE: EpisodeSeriesConnectionWhere
+              seriesConnection_NONE: EpisodeSeriesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'seriesConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Episodes where one of the related EpisodeSeriesConnections match this filter
               \\"\\"\\"
-              seriesConnection_SINGLE: EpisodeSeriesConnectionWhere
+              seriesConnection_SINGLE: EpisodeSeriesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'seriesConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Episodes where some of the related EpisodeSeriesConnections match this filter
               \\"\\"\\"
-              seriesConnection_SOME: EpisodeSeriesConnectionWhere
+              seriesConnection_SOME: EpisodeSeriesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'seriesConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Episodes where all of the related Series match this filter\\"\\"\\"
-              series_ALL: SeriesWhere
+              series_ALL: SeriesWhere @deprecated(reason: \\"Please use the relevant generic filter 'series: { all: ... }' instead.\\")
               \\"\\"\\"Return Episodes where none of the related Series match this filter\\"\\"\\"
-              series_NONE: SeriesWhere
+              series_NONE: SeriesWhere @deprecated(reason: \\"Please use the relevant generic filter 'series: { none: ... }' instead.\\")
               \\"\\"\\"Return Episodes where one of the related Series match this filter\\"\\"\\"
-              series_SINGLE: SeriesWhere
+              series_SINGLE: SeriesWhere @deprecated(reason: \\"Please use the relevant generic filter 'series: {  single: ... }' instead.\\")
               \\"\\"\\"Return Episodes where some of the related Series match this filter\\"\\"\\"
-              series_SOME: SeriesWhere
+              series_SOME: SeriesWhere @deprecated(reason: \\"Please use the relevant generic filter 'series: {  some: ... }' instead.\\")
             }
 
             type EpisodesConnection {
@@ -1553,27 +1553,27 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Return Movies where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_ALL: ProductionActorsConnectionWhere
+              actorsConnection_ALL: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where none of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_NONE: ProductionActorsConnectionWhere
+              actorsConnection_NONE: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where one of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SINGLE: ProductionActorsConnectionWhere
+              actorsConnection_SINGLE: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where some of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SOME: ProductionActorsConnectionWhere
+              actorsConnection_SOME: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-              actors_ALL: ActorWhere
+              actors_ALL: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
               \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-              actors_NONE: ActorWhere
+              actors_NONE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
               \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-              actors_SINGLE: ActorWhere
+              actors_SINGLE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-              actors_SOME: ActorWhere
+              actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
               runtime: IntScalarFilters
               runtime_EQ: Int
               runtime_GT: Int
@@ -1856,27 +1856,27 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Return Productions where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_ALL: ProductionActorsConnectionWhere
+              actorsConnection_ALL: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Productions where none of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_NONE: ProductionActorsConnectionWhere
+              actorsConnection_NONE: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Productions where one of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SINGLE: ProductionActorsConnectionWhere
+              actorsConnection_SINGLE: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Productions where some of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SOME: ProductionActorsConnectionWhere
+              actorsConnection_SOME: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Productions where all of the related Actors match this filter\\"\\"\\"
-              actors_ALL: ActorWhere
+              actors_ALL: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
               \\"\\"\\"Return Productions where none of the related Actors match this filter\\"\\"\\"
-              actors_NONE: ActorWhere
+              actors_NONE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
               \\"\\"\\"Return Productions where one of the related Actors match this filter\\"\\"\\"
-              actors_SINGLE: ActorWhere
+              actors_SINGLE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
               \\"\\"\\"Return Productions where some of the related Actors match this filter\\"\\"\\"
-              actors_SOME: ActorWhere
+              actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
               title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
@@ -2241,27 +2241,27 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Return Series where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_ALL: ProductionActorsConnectionWhere
+              actorsConnection_ALL: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where none of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_NONE: ProductionActorsConnectionWhere
+              actorsConnection_NONE: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where one of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SINGLE: ProductionActorsConnectionWhere
+              actorsConnection_SINGLE: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where some of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SOME: ProductionActorsConnectionWhere
+              actorsConnection_SOME: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Series where all of the related Actors match this filter\\"\\"\\"
-              actors_ALL: ActorWhere
+              actors_ALL: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
               \\"\\"\\"Return Series where none of the related Actors match this filter\\"\\"\\"
-              actors_NONE: ActorWhere
+              actors_NONE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
               \\"\\"\\"Return Series where one of the related Actors match this filter\\"\\"\\"
-              actors_SINGLE: ActorWhere
+              actors_SINGLE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
               \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
-              actors_SOME: ActorWhere
+              actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
               episodeCount: IntScalarFilters
               episodeCount_EQ: Int
               episodeCount_GT: Int
@@ -2275,27 +2275,27 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Return Series where all of the related SeriesEpisodesConnections match this filter
               \\"\\"\\"
-              episodesConnection_ALL: SeriesEpisodesConnectionWhere
+              episodesConnection_ALL: SeriesEpisodesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'episodesConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where none of the related SeriesEpisodesConnections match this filter
               \\"\\"\\"
-              episodesConnection_NONE: SeriesEpisodesConnectionWhere
+              episodesConnection_NONE: SeriesEpisodesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'episodesConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where one of the related SeriesEpisodesConnections match this filter
               \\"\\"\\"
-              episodesConnection_SINGLE: SeriesEpisodesConnectionWhere
+              episodesConnection_SINGLE: SeriesEpisodesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'episodesConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where some of the related SeriesEpisodesConnections match this filter
               \\"\\"\\"
-              episodesConnection_SOME: SeriesEpisodesConnectionWhere
+              episodesConnection_SOME: SeriesEpisodesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'episodesConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Series where all of the related Episodes match this filter\\"\\"\\"
-              episodes_ALL: EpisodeWhere
+              episodes_ALL: EpisodeWhere @deprecated(reason: \\"Please use the relevant generic filter 'episodes: { all: ... }' instead.\\")
               \\"\\"\\"Return Series where none of the related Episodes match this filter\\"\\"\\"
-              episodes_NONE: EpisodeWhere
+              episodes_NONE: EpisodeWhere @deprecated(reason: \\"Please use the relevant generic filter 'episodes: { none: ... }' instead.\\")
               \\"\\"\\"Return Series where one of the related Episodes match this filter\\"\\"\\"
-              episodes_SINGLE: EpisodeWhere
+              episodes_SINGLE: EpisodeWhere @deprecated(reason: \\"Please use the relevant generic filter 'episodes: {  single: ... }' instead.\\")
               \\"\\"\\"Return Series where some of the related Episodes match this filter\\"\\"\\"
-              episodes_SOME: EpisodeWhere
+              episodes_SOME: EpisodeWhere @deprecated(reason: \\"Please use the relevant generic filter 'episodes: {  some: ... }' instead.\\")
               title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
@@ -2692,27 +2692,27 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_ALL: ActorActedInConnectionWhere
+              actedInConnection_ALL: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where none of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_NONE: ActorActedInConnectionWhere
+              actedInConnection_NONE: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where one of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_SINGLE: ActorActedInConnectionWhere
+              actedInConnection_SINGLE: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where some of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_SOME: ActorActedInConnectionWhere
+              actedInConnection_SOME: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
-              actedIn_ALL: ProductionWhere
+              actedIn_ALL: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: { all: ... }' instead.\\")
               \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
-              actedIn_NONE: ProductionWhere
+              actedIn_NONE: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: { none: ... }' instead.\\")
               \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
-              actedIn_SINGLE: ProductionWhere
+              actedIn_SINGLE: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  single: ... }' instead.\\")
               \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
-              actedIn_SOME: ProductionWhere
+              actedIn_SOME: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  some: ... }' instead.\\")
               name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
@@ -2988,27 +2988,27 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Return Episodes where all of the related EpisodeSeriesConnections match this filter
               \\"\\"\\"
-              seriesConnection_ALL: EpisodeSeriesConnectionWhere
+              seriesConnection_ALL: EpisodeSeriesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'seriesConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Episodes where none of the related EpisodeSeriesConnections match this filter
               \\"\\"\\"
-              seriesConnection_NONE: EpisodeSeriesConnectionWhere
+              seriesConnection_NONE: EpisodeSeriesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'seriesConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Episodes where one of the related EpisodeSeriesConnections match this filter
               \\"\\"\\"
-              seriesConnection_SINGLE: EpisodeSeriesConnectionWhere
+              seriesConnection_SINGLE: EpisodeSeriesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'seriesConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Episodes where some of the related EpisodeSeriesConnections match this filter
               \\"\\"\\"
-              seriesConnection_SOME: EpisodeSeriesConnectionWhere
+              seriesConnection_SOME: EpisodeSeriesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'seriesConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Episodes where all of the related Series match this filter\\"\\"\\"
-              series_ALL: SeriesWhere
+              series_ALL: SeriesWhere @deprecated(reason: \\"Please use the relevant generic filter 'series: { all: ... }' instead.\\")
               \\"\\"\\"Return Episodes where none of the related Series match this filter\\"\\"\\"
-              series_NONE: SeriesWhere
+              series_NONE: SeriesWhere @deprecated(reason: \\"Please use the relevant generic filter 'series: { none: ... }' instead.\\")
               \\"\\"\\"Return Episodes where one of the related Series match this filter\\"\\"\\"
-              series_SINGLE: SeriesWhere
+              series_SINGLE: SeriesWhere @deprecated(reason: \\"Please use the relevant generic filter 'series: {  single: ... }' instead.\\")
               \\"\\"\\"Return Episodes where some of the related Series match this filter\\"\\"\\"
-              series_SOME: SeriesWhere
+              series_SOME: SeriesWhere @deprecated(reason: \\"Please use the relevant generic filter 'series: {  some: ... }' instead.\\")
             }
 
             type EpisodesConnection {
@@ -3226,27 +3226,27 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Return Movies where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_ALL: ProductionActorsConnectionWhere
+              actorsConnection_ALL: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where none of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_NONE: ProductionActorsConnectionWhere
+              actorsConnection_NONE: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where one of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SINGLE: ProductionActorsConnectionWhere
+              actorsConnection_SINGLE: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where some of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SOME: ProductionActorsConnectionWhere
+              actorsConnection_SOME: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-              actors_ALL: ActorWhere
+              actors_ALL: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
               \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-              actors_NONE: ActorWhere
+              actors_NONE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
               \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-              actors_SINGLE: ActorWhere
+              actors_SINGLE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-              actors_SOME: ActorWhere
+              actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
               runtime: IntScalarFilters
               runtime_EQ: Int
               runtime_GT: Int
@@ -3549,27 +3549,27 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Return Productions where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_ALL: ProductionActorsConnectionWhere
+              actorsConnection_ALL: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Productions where none of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_NONE: ProductionActorsConnectionWhere
+              actorsConnection_NONE: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Productions where one of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SINGLE: ProductionActorsConnectionWhere
+              actorsConnection_SINGLE: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Productions where some of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SOME: ProductionActorsConnectionWhere
+              actorsConnection_SOME: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Productions where all of the related Actors match this filter\\"\\"\\"
-              actors_ALL: ActorWhere
+              actors_ALL: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
               \\"\\"\\"Return Productions where none of the related Actors match this filter\\"\\"\\"
-              actors_NONE: ActorWhere
+              actors_NONE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
               \\"\\"\\"Return Productions where one of the related Actors match this filter\\"\\"\\"
-              actors_SINGLE: ActorWhere
+              actors_SINGLE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
               \\"\\"\\"Return Productions where some of the related Actors match this filter\\"\\"\\"
-              actors_SOME: ActorWhere
+              actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
               title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
@@ -3934,27 +3934,27 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Return Series where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_ALL: ProductionActorsConnectionWhere
+              actorsConnection_ALL: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where none of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_NONE: ProductionActorsConnectionWhere
+              actorsConnection_NONE: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where one of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SINGLE: ProductionActorsConnectionWhere
+              actorsConnection_SINGLE: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where some of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SOME: ProductionActorsConnectionWhere
+              actorsConnection_SOME: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Series where all of the related Actors match this filter\\"\\"\\"
-              actors_ALL: ActorWhere
+              actors_ALL: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
               \\"\\"\\"Return Series where none of the related Actors match this filter\\"\\"\\"
-              actors_NONE: ActorWhere
+              actors_NONE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
               \\"\\"\\"Return Series where one of the related Actors match this filter\\"\\"\\"
-              actors_SINGLE: ActorWhere
+              actors_SINGLE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
               \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
-              actors_SOME: ActorWhere
+              actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
               episodeCount: IntScalarFilters
               episodeCount_EQ: Int
               episodeCount_GT: Int
@@ -3968,27 +3968,27 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Return Series where all of the related SeriesEpisodesConnections match this filter
               \\"\\"\\"
-              episodesConnection_ALL: SeriesEpisodesConnectionWhere
+              episodesConnection_ALL: SeriesEpisodesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'episodesConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where none of the related SeriesEpisodesConnections match this filter
               \\"\\"\\"
-              episodesConnection_NONE: SeriesEpisodesConnectionWhere
+              episodesConnection_NONE: SeriesEpisodesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'episodesConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where one of the related SeriesEpisodesConnections match this filter
               \\"\\"\\"
-              episodesConnection_SINGLE: SeriesEpisodesConnectionWhere
+              episodesConnection_SINGLE: SeriesEpisodesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'episodesConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where some of the related SeriesEpisodesConnections match this filter
               \\"\\"\\"
-              episodesConnection_SOME: SeriesEpisodesConnectionWhere
+              episodesConnection_SOME: SeriesEpisodesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'episodesConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Series where all of the related Episodes match this filter\\"\\"\\"
-              episodes_ALL: EpisodeWhere
+              episodes_ALL: EpisodeWhere @deprecated(reason: \\"Please use the relevant generic filter 'episodes: { all: ... }' instead.\\")
               \\"\\"\\"Return Series where none of the related Episodes match this filter\\"\\"\\"
-              episodes_NONE: EpisodeWhere
+              episodes_NONE: EpisodeWhere @deprecated(reason: \\"Please use the relevant generic filter 'episodes: { none: ... }' instead.\\")
               \\"\\"\\"Return Series where one of the related Episodes match this filter\\"\\"\\"
-              episodes_SINGLE: EpisodeWhere
+              episodes_SINGLE: EpisodeWhere @deprecated(reason: \\"Please use the relevant generic filter 'episodes: {  single: ... }' instead.\\")
               \\"\\"\\"Return Series where some of the related Episodes match this filter\\"\\"\\"
-              episodes_SOME: EpisodeWhere
+              episodes_SOME: EpisodeWhere @deprecated(reason: \\"Please use the relevant generic filter 'episodes: {  some: ... }' instead.\\")
               title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
@@ -4431,35 +4431,35 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Return Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_ALL: Interface1Interface2ConnectionWhere
+              interface2Connection_ALL: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Interface1s where none of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_NONE: Interface1Interface2ConnectionWhere
+              interface2Connection_NONE: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Interface1s where one of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere
+              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Interface1s where some of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_SOME: Interface1Interface2ConnectionWhere
+              interface2Connection_SOME: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Interface1s where all of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_ALL: Interface2Where
+              interface2_ALL: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: { all: ... }' instead.\\")
               \\"\\"\\"
               Return Interface1s where none of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_NONE: Interface2Where
+              interface2_NONE: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: { none: ... }' instead.\\")
               \\"\\"\\"
               Return Interface1s where one of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_SINGLE: Interface2Where
+              interface2_SINGLE: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: {  single: ... }' instead.\\")
               \\"\\"\\"
               Return Interface1s where some of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_SOME: Interface2Where
+              interface2_SOME: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: {  some: ... }' instead.\\")
               typename_IN: [Interface1Implementation!]
             }
 
@@ -4947,35 +4947,35 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Return Type1Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_ALL: Interface1Interface2ConnectionWhere
+              interface2Connection_ALL: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where none of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_NONE: Interface1Interface2ConnectionWhere
+              interface2Connection_NONE: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where one of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere
+              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where some of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_SOME: Interface1Interface2ConnectionWhere
+              interface2Connection_SOME: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where all of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_ALL: Interface2Where
+              interface2_ALL: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: { all: ... }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where none of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_NONE: Interface2Where
+              interface2_NONE: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: { none: ... }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where one of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_SINGLE: Interface2Where
+              interface2_SINGLE: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: {  single: ... }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where some of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_SOME: Interface2Where
+              interface2_SOME: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: {  some: ... }' instead.\\")
             }
 
             type Type1Interface1sConnection {
@@ -5061,27 +5061,27 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Return Type1s where all of the related Type1Interface1Connections match this filter
               \\"\\"\\"
-              interface1Connection_ALL: Type1Interface1ConnectionWhere
+              interface1Connection_ALL: Type1Interface1ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface1Connection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1s where none of the related Type1Interface1Connections match this filter
               \\"\\"\\"
-              interface1Connection_NONE: Type1Interface1ConnectionWhere
+              interface1Connection_NONE: Type1Interface1ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface1Connection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1s where one of the related Type1Interface1Connections match this filter
               \\"\\"\\"
-              interface1Connection_SINGLE: Type1Interface1ConnectionWhere
+              interface1Connection_SINGLE: Type1Interface1ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface1Connection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1s where some of the related Type1Interface1Connections match this filter
               \\"\\"\\"
-              interface1Connection_SOME: Type1Interface1ConnectionWhere
+              interface1Connection_SOME: Type1Interface1ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface1Connection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Type1s where all of the related Interface1s match this filter\\"\\"\\"
-              interface1_ALL: Interface1Where
+              interface1_ALL: Interface1Where @deprecated(reason: \\"Please use the relevant generic filter 'interface1: { all: ... }' instead.\\")
               \\"\\"\\"Return Type1s where none of the related Interface1s match this filter\\"\\"\\"
-              interface1_NONE: Interface1Where
+              interface1_NONE: Interface1Where @deprecated(reason: \\"Please use the relevant generic filter 'interface1: { none: ... }' instead.\\")
               \\"\\"\\"Return Type1s where one of the related Interface1s match this filter\\"\\"\\"
-              interface1_SINGLE: Interface1Where
+              interface1_SINGLE: Interface1Where @deprecated(reason: \\"Please use the relevant generic filter 'interface1: {  single: ... }' instead.\\")
               \\"\\"\\"Return Type1s where some of the related Interface1s match this filter\\"\\"\\"
-              interface1_SOME: Interface1Where
+              interface1_SOME: Interface1Where @deprecated(reason: \\"Please use the relevant generic filter 'interface1: {  some: ... }' instead.\\")
             }
 
             type Type1sConnection {
@@ -5261,35 +5261,35 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Return Type2Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_ALL: Interface1Interface2ConnectionWhere
+              interface2Connection_ALL: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where none of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_NONE: Interface1Interface2ConnectionWhere
+              interface2Connection_NONE: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where one of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere
+              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where some of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_SOME: Interface1Interface2ConnectionWhere
+              interface2Connection_SOME: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where all of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_ALL: Interface2Where
+              interface2_ALL: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: { all: ... }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where none of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_NONE: Interface2Where
+              interface2_NONE: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: { none: ... }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where one of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_SINGLE: Interface2Where
+              interface2_SINGLE: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: {  single: ... }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where some of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_SOME: Interface2Where
+              interface2_SOME: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: {  some: ... }' instead.\\")
             }
 
             type Type2Interface1sConnection {
@@ -5768,35 +5768,35 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Return Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_ALL: Interface1Interface2ConnectionWhere
+              interface2Connection_ALL: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Interface1s where none of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_NONE: Interface1Interface2ConnectionWhere
+              interface2Connection_NONE: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Interface1s where one of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere
+              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Interface1s where some of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_SOME: Interface1Interface2ConnectionWhere
+              interface2Connection_SOME: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Interface1s where all of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_ALL: Interface2Where
+              interface2_ALL: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: { all: ... }' instead.\\")
               \\"\\"\\"
               Return Interface1s where none of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_NONE: Interface2Where
+              interface2_NONE: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: { none: ... }' instead.\\")
               \\"\\"\\"
               Return Interface1s where one of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_SINGLE: Interface2Where
+              interface2_SINGLE: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: {  single: ... }' instead.\\")
               \\"\\"\\"
               Return Interface1s where some of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_SOME: Interface2Where
+              interface2_SOME: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: {  some: ... }' instead.\\")
               typename_IN: [Interface1Implementation!]
             }
 
@@ -6357,35 +6357,35 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Return Type1Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_ALL: Interface1Interface2ConnectionWhere
+              interface2Connection_ALL: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where none of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_NONE: Interface1Interface2ConnectionWhere
+              interface2Connection_NONE: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where one of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere
+              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where some of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_SOME: Interface1Interface2ConnectionWhere
+              interface2Connection_SOME: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where all of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_ALL: Interface2Where
+              interface2_ALL: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: { all: ... }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where none of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_NONE: Interface2Where
+              interface2_NONE: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: { none: ... }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where one of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_SINGLE: Interface2Where
+              interface2_SINGLE: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: {  single: ... }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where some of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_SOME: Interface2Where
+              interface2_SOME: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: {  some: ... }' instead.\\")
             }
 
             type Type1Interface1sConnection {
@@ -6471,27 +6471,27 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Return Type1s where all of the related Type1Interface1Connections match this filter
               \\"\\"\\"
-              interface1Connection_ALL: Type1Interface1ConnectionWhere
+              interface1Connection_ALL: Type1Interface1ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface1Connection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1s where none of the related Type1Interface1Connections match this filter
               \\"\\"\\"
-              interface1Connection_NONE: Type1Interface1ConnectionWhere
+              interface1Connection_NONE: Type1Interface1ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface1Connection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1s where one of the related Type1Interface1Connections match this filter
               \\"\\"\\"
-              interface1Connection_SINGLE: Type1Interface1ConnectionWhere
+              interface1Connection_SINGLE: Type1Interface1ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface1Connection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1s where some of the related Type1Interface1Connections match this filter
               \\"\\"\\"
-              interface1Connection_SOME: Type1Interface1ConnectionWhere
+              interface1Connection_SOME: Type1Interface1ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface1Connection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Type1s where all of the related Interface1s match this filter\\"\\"\\"
-              interface1_ALL: Interface1Where
+              interface1_ALL: Interface1Where @deprecated(reason: \\"Please use the relevant generic filter 'interface1: { all: ... }' instead.\\")
               \\"\\"\\"Return Type1s where none of the related Interface1s match this filter\\"\\"\\"
-              interface1_NONE: Interface1Where
+              interface1_NONE: Interface1Where @deprecated(reason: \\"Please use the relevant generic filter 'interface1: { none: ... }' instead.\\")
               \\"\\"\\"Return Type1s where one of the related Interface1s match this filter\\"\\"\\"
-              interface1_SINGLE: Interface1Where
+              interface1_SINGLE: Interface1Where @deprecated(reason: \\"Please use the relevant generic filter 'interface1: {  single: ... }' instead.\\")
               \\"\\"\\"Return Type1s where some of the related Interface1s match this filter\\"\\"\\"
-              interface1_SOME: Interface1Where
+              interface1_SOME: Interface1Where @deprecated(reason: \\"Please use the relevant generic filter 'interface1: {  some: ... }' instead.\\")
             }
 
             type Type1sConnection {
@@ -6680,35 +6680,35 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Return Type2Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_ALL: Interface1Interface2ConnectionWhere
+              interface2Connection_ALL: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where none of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_NONE: Interface1Interface2ConnectionWhere
+              interface2Connection_NONE: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where one of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere
+              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where some of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_SOME: Interface1Interface2ConnectionWhere
+              interface2Connection_SOME: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where all of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_ALL: Interface2Where
+              interface2_ALL: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: { all: ... }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where none of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_NONE: Interface2Where
+              interface2_NONE: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: { none: ... }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where one of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_SINGLE: Interface2Where
+              interface2_SINGLE: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: {  single: ... }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where some of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_SOME: Interface2Where
+              interface2_SOME: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: {  some: ... }' instead.\\")
             }
 
             type Type2Interface1sConnection {
@@ -7213,35 +7213,35 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Return Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_ALL: Interface1Interface2ConnectionWhere
+              interface2Connection_ALL: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Interface1s where none of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_NONE: Interface1Interface2ConnectionWhere
+              interface2Connection_NONE: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Interface1s where one of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere
+              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Interface1s where some of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_SOME: Interface1Interface2ConnectionWhere
+              interface2Connection_SOME: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Interface1s where all of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_ALL: Interface2Where
+              interface2_ALL: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: { all: ... }' instead.\\")
               \\"\\"\\"
               Return Interface1s where none of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_NONE: Interface2Where
+              interface2_NONE: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: { none: ... }' instead.\\")
               \\"\\"\\"
               Return Interface1s where one of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_SINGLE: Interface2Where
+              interface2_SINGLE: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: {  single: ... }' instead.\\")
               \\"\\"\\"
               Return Interface1s where some of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_SOME: Interface2Where
+              interface2_SOME: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: {  some: ... }' instead.\\")
               typename_IN: [Interface1Implementation!]
             }
 
@@ -7738,35 +7738,35 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Return Type1Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_ALL: Interface1Interface2ConnectionWhere
+              interface2Connection_ALL: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where none of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_NONE: Interface1Interface2ConnectionWhere
+              interface2Connection_NONE: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where one of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere
+              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where some of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_SOME: Interface1Interface2ConnectionWhere
+              interface2Connection_SOME: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where all of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_ALL: Interface2Where
+              interface2_ALL: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: { all: ... }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where none of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_NONE: Interface2Where
+              interface2_NONE: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: { none: ... }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where one of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_SINGLE: Interface2Where
+              interface2_SINGLE: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: {  single: ... }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where some of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_SOME: Interface2Where
+              interface2_SOME: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: {  some: ... }' instead.\\")
             }
 
             type Type1Interface1sConnection {
@@ -7915,27 +7915,27 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Return Type1s where all of the related Type1Interface1Connections match this filter
               \\"\\"\\"
-              interface1Connection_ALL: Type1Interface1ConnectionWhere
+              interface1Connection_ALL: Type1Interface1ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface1Connection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1s where none of the related Type1Interface1Connections match this filter
               \\"\\"\\"
-              interface1Connection_NONE: Type1Interface1ConnectionWhere
+              interface1Connection_NONE: Type1Interface1ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface1Connection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1s where one of the related Type1Interface1Connections match this filter
               \\"\\"\\"
-              interface1Connection_SINGLE: Type1Interface1ConnectionWhere
+              interface1Connection_SINGLE: Type1Interface1ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface1Connection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1s where some of the related Type1Interface1Connections match this filter
               \\"\\"\\"
-              interface1Connection_SOME: Type1Interface1ConnectionWhere
+              interface1Connection_SOME: Type1Interface1ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface1Connection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Type1s where all of the related Interface1s match this filter\\"\\"\\"
-              interface1_ALL: Interface1Where
+              interface1_ALL: Interface1Where @deprecated(reason: \\"Please use the relevant generic filter 'interface1: { all: ... }' instead.\\")
               \\"\\"\\"Return Type1s where none of the related Interface1s match this filter\\"\\"\\"
-              interface1_NONE: Interface1Where
+              interface1_NONE: Interface1Where @deprecated(reason: \\"Please use the relevant generic filter 'interface1: { none: ... }' instead.\\")
               \\"\\"\\"Return Type1s where one of the related Interface1s match this filter\\"\\"\\"
-              interface1_SINGLE: Interface1Where
+              interface1_SINGLE: Interface1Where @deprecated(reason: \\"Please use the relevant generic filter 'interface1: {  single: ... }' instead.\\")
               \\"\\"\\"Return Type1s where some of the related Interface1s match this filter\\"\\"\\"
-              interface1_SOME: Interface1Where
+              interface1_SOME: Interface1Where @deprecated(reason: \\"Please use the relevant generic filter 'interface1: {  some: ... }' instead.\\")
             }
 
             type Type1sConnection {
@@ -8124,35 +8124,35 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Return Type2Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_ALL: Interface1Interface2ConnectionWhere
+              interface2Connection_ALL: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where none of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_NONE: Interface1Interface2ConnectionWhere
+              interface2Connection_NONE: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where one of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere
+              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where some of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_SOME: Interface1Interface2ConnectionWhere
+              interface2Connection_SOME: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where all of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_ALL: Interface2Where
+              interface2_ALL: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: { all: ... }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where none of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_NONE: Interface2Where
+              interface2_NONE: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: { none: ... }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where one of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_SINGLE: Interface2Where
+              interface2_SINGLE: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: {  single: ... }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where some of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_SOME: Interface2Where
+              interface2_SOME: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: {  some: ... }' instead.\\")
             }
 
             type Type2Interface1sConnection {
@@ -8691,27 +8691,27 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Return Comments where all of the related ContentCreatorConnections match this filter
               \\"\\"\\"
-              creatorConnection_ALL: ContentCreatorConnectionWhere
+              creatorConnection_ALL: ContentCreatorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'creatorConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Comments where none of the related ContentCreatorConnections match this filter
               \\"\\"\\"
-              creatorConnection_NONE: ContentCreatorConnectionWhere
+              creatorConnection_NONE: ContentCreatorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'creatorConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Comments where one of the related ContentCreatorConnections match this filter
               \\"\\"\\"
-              creatorConnection_SINGLE: ContentCreatorConnectionWhere
+              creatorConnection_SINGLE: ContentCreatorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'creatorConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Comments where some of the related ContentCreatorConnections match this filter
               \\"\\"\\"
-              creatorConnection_SOME: ContentCreatorConnectionWhere
+              creatorConnection_SOME: ContentCreatorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'creatorConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Comments where all of the related Users match this filter\\"\\"\\"
-              creator_ALL: UserWhere
+              creator_ALL: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'creator: { all: ... }' instead.\\")
               \\"\\"\\"Return Comments where none of the related Users match this filter\\"\\"\\"
-              creator_NONE: UserWhere
+              creator_NONE: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'creator: { none: ... }' instead.\\")
               \\"\\"\\"Return Comments where one of the related Users match this filter\\"\\"\\"
-              creator_SINGLE: UserWhere
+              creator_SINGLE: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'creator: {  single: ... }' instead.\\")
               \\"\\"\\"Return Comments where some of the related Users match this filter\\"\\"\\"
-              creator_SOME: UserWhere
+              creator_SOME: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'creator: {  some: ... }' instead.\\")
               id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
@@ -8724,27 +8724,27 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Return Comments where all of the related CommentPostConnections match this filter
               \\"\\"\\"
-              postConnection_ALL: CommentPostConnectionWhere
+              postConnection_ALL: CommentPostConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'postConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Comments where none of the related CommentPostConnections match this filter
               \\"\\"\\"
-              postConnection_NONE: CommentPostConnectionWhere
+              postConnection_NONE: CommentPostConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'postConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Comments where one of the related CommentPostConnections match this filter
               \\"\\"\\"
-              postConnection_SINGLE: CommentPostConnectionWhere
+              postConnection_SINGLE: CommentPostConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'postConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Comments where some of the related CommentPostConnections match this filter
               \\"\\"\\"
-              postConnection_SOME: CommentPostConnectionWhere
+              postConnection_SOME: CommentPostConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'postConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Comments where all of the related Posts match this filter\\"\\"\\"
-              post_ALL: PostWhere
+              post_ALL: PostWhere @deprecated(reason: \\"Please use the relevant generic filter 'post: { all: ... }' instead.\\")
               \\"\\"\\"Return Comments where none of the related Posts match this filter\\"\\"\\"
-              post_NONE: PostWhere
+              post_NONE: PostWhere @deprecated(reason: \\"Please use the relevant generic filter 'post: { none: ... }' instead.\\")
               \\"\\"\\"Return Comments where one of the related Posts match this filter\\"\\"\\"
-              post_SINGLE: PostWhere
+              post_SINGLE: PostWhere @deprecated(reason: \\"Please use the relevant generic filter 'post: {  single: ... }' instead.\\")
               \\"\\"\\"Return Comments where some of the related Posts match this filter\\"\\"\\"
-              post_SOME: PostWhere
+              post_SOME: PostWhere @deprecated(reason: \\"Please use the relevant generic filter 'post: {  some: ... }' instead.\\")
             }
 
             type CommentsConnection {
@@ -8959,27 +8959,27 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Return Contents where all of the related ContentCreatorConnections match this filter
               \\"\\"\\"
-              creatorConnection_ALL: ContentCreatorConnectionWhere
+              creatorConnection_ALL: ContentCreatorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'creatorConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Contents where none of the related ContentCreatorConnections match this filter
               \\"\\"\\"
-              creatorConnection_NONE: ContentCreatorConnectionWhere
+              creatorConnection_NONE: ContentCreatorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'creatorConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Contents where one of the related ContentCreatorConnections match this filter
               \\"\\"\\"
-              creatorConnection_SINGLE: ContentCreatorConnectionWhere
+              creatorConnection_SINGLE: ContentCreatorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'creatorConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Contents where some of the related ContentCreatorConnections match this filter
               \\"\\"\\"
-              creatorConnection_SOME: ContentCreatorConnectionWhere
+              creatorConnection_SOME: ContentCreatorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'creatorConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Contents where all of the related Users match this filter\\"\\"\\"
-              creator_ALL: UserWhere
+              creator_ALL: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'creator: { all: ... }' instead.\\")
               \\"\\"\\"Return Contents where none of the related Users match this filter\\"\\"\\"
-              creator_NONE: UserWhere
+              creator_NONE: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'creator: { none: ... }' instead.\\")
               \\"\\"\\"Return Contents where one of the related Users match this filter\\"\\"\\"
-              creator_SINGLE: UserWhere
+              creator_SINGLE: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'creator: {  single: ... }' instead.\\")
               \\"\\"\\"Return Contents where some of the related Users match this filter\\"\\"\\"
-              creator_SOME: UserWhere
+              creator_SOME: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'creator: {  some: ... }' instead.\\")
               id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
@@ -9429,27 +9429,27 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Return Posts where all of the related PostCommentsConnections match this filter
               \\"\\"\\"
-              commentsConnection_ALL: PostCommentsConnectionWhere
+              commentsConnection_ALL: PostCommentsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'commentsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Posts where none of the related PostCommentsConnections match this filter
               \\"\\"\\"
-              commentsConnection_NONE: PostCommentsConnectionWhere
+              commentsConnection_NONE: PostCommentsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'commentsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Posts where one of the related PostCommentsConnections match this filter
               \\"\\"\\"
-              commentsConnection_SINGLE: PostCommentsConnectionWhere
+              commentsConnection_SINGLE: PostCommentsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'commentsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Posts where some of the related PostCommentsConnections match this filter
               \\"\\"\\"
-              commentsConnection_SOME: PostCommentsConnectionWhere
+              commentsConnection_SOME: PostCommentsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'commentsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Posts where all of the related Comments match this filter\\"\\"\\"
-              comments_ALL: CommentWhere
+              comments_ALL: CommentWhere @deprecated(reason: \\"Please use the relevant generic filter 'comments: { all: ... }' instead.\\")
               \\"\\"\\"Return Posts where none of the related Comments match this filter\\"\\"\\"
-              comments_NONE: CommentWhere
+              comments_NONE: CommentWhere @deprecated(reason: \\"Please use the relevant generic filter 'comments: { none: ... }' instead.\\")
               \\"\\"\\"Return Posts where one of the related Comments match this filter\\"\\"\\"
-              comments_SINGLE: CommentWhere
+              comments_SINGLE: CommentWhere @deprecated(reason: \\"Please use the relevant generic filter 'comments: {  single: ... }' instead.\\")
               \\"\\"\\"Return Posts where some of the related Comments match this filter\\"\\"\\"
-              comments_SOME: CommentWhere
+              comments_SOME: CommentWhere @deprecated(reason: \\"Please use the relevant generic filter 'comments: {  some: ... }' instead.\\")
               content: StringScalarFilters
               content_CONTAINS: String
               content_ENDS_WITH: String
@@ -9462,27 +9462,27 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Return Posts where all of the related ContentCreatorConnections match this filter
               \\"\\"\\"
-              creatorConnection_ALL: ContentCreatorConnectionWhere
+              creatorConnection_ALL: ContentCreatorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'creatorConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Posts where none of the related ContentCreatorConnections match this filter
               \\"\\"\\"
-              creatorConnection_NONE: ContentCreatorConnectionWhere
+              creatorConnection_NONE: ContentCreatorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'creatorConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Posts where one of the related ContentCreatorConnections match this filter
               \\"\\"\\"
-              creatorConnection_SINGLE: ContentCreatorConnectionWhere
+              creatorConnection_SINGLE: ContentCreatorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'creatorConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Posts where some of the related ContentCreatorConnections match this filter
               \\"\\"\\"
-              creatorConnection_SOME: ContentCreatorConnectionWhere
+              creatorConnection_SOME: ContentCreatorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'creatorConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Posts where all of the related Users match this filter\\"\\"\\"
-              creator_ALL: UserWhere
+              creator_ALL: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'creator: { all: ... }' instead.\\")
               \\"\\"\\"Return Posts where none of the related Users match this filter\\"\\"\\"
-              creator_NONE: UserWhere
+              creator_NONE: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'creator: { none: ... }' instead.\\")
               \\"\\"\\"Return Posts where one of the related Users match this filter\\"\\"\\"
-              creator_SINGLE: UserWhere
+              creator_SINGLE: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'creator: {  single: ... }' instead.\\")
               \\"\\"\\"Return Posts where some of the related Users match this filter\\"\\"\\"
-              creator_SOME: UserWhere
+              creator_SOME: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'creator: {  some: ... }' instead.\\")
               id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
@@ -9788,27 +9788,27 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Return Users where all of the related UserContentConnections match this filter
               \\"\\"\\"
-              contentConnection_ALL: UserContentConnectionWhere
+              contentConnection_ALL: UserContentConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'contentConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Users where none of the related UserContentConnections match this filter
               \\"\\"\\"
-              contentConnection_NONE: UserContentConnectionWhere
+              contentConnection_NONE: UserContentConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'contentConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Users where one of the related UserContentConnections match this filter
               \\"\\"\\"
-              contentConnection_SINGLE: UserContentConnectionWhere
+              contentConnection_SINGLE: UserContentConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'contentConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Users where some of the related UserContentConnections match this filter
               \\"\\"\\"
-              contentConnection_SOME: UserContentConnectionWhere
+              contentConnection_SOME: UserContentConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'contentConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Users where all of the related Contents match this filter\\"\\"\\"
-              content_ALL: ContentWhere
+              content_ALL: ContentWhere @deprecated(reason: \\"Please use the relevant generic filter 'content: { all: ... }' instead.\\")
               \\"\\"\\"Return Users where none of the related Contents match this filter\\"\\"\\"
-              content_NONE: ContentWhere
+              content_NONE: ContentWhere @deprecated(reason: \\"Please use the relevant generic filter 'content: { none: ... }' instead.\\")
               \\"\\"\\"Return Users where one of the related Contents match this filter\\"\\"\\"
-              content_SINGLE: ContentWhere
+              content_SINGLE: ContentWhere @deprecated(reason: \\"Please use the relevant generic filter 'content: {  single: ... }' instead.\\")
               \\"\\"\\"Return Users where some of the related Contents match this filter\\"\\"\\"
-              content_SOME: ContentWhere
+              content_SOME: ContentWhere @deprecated(reason: \\"Please use the relevant generic filter 'content: {  some: ... }' instead.\\")
               id: IDScalarFilters
               id_CONTAINS: ID
               id_ENDS_WITH: ID
@@ -10148,27 +10148,27 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_ALL: ActorActedInConnectionWhere
+              actedInConnection_ALL: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where none of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_NONE: ActorActedInConnectionWhere
+              actedInConnection_NONE: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where one of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_SINGLE: ActorActedInConnectionWhere
+              actedInConnection_SINGLE: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where some of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_SOME: ActorActedInConnectionWhere
+              actedInConnection_SOME: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Actors where all of the related Shows match this filter\\"\\"\\"
-              actedIn_ALL: ShowWhere
+              actedIn_ALL: ShowWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: { all: ... }' instead.\\")
               \\"\\"\\"Return Actors where none of the related Shows match this filter\\"\\"\\"
-              actedIn_NONE: ShowWhere
+              actedIn_NONE: ShowWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: { none: ... }' instead.\\")
               \\"\\"\\"Return Actors where one of the related Shows match this filter\\"\\"\\"
-              actedIn_SINGLE: ShowWhere
+              actedIn_SINGLE: ShowWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  single: ... }' instead.\\")
               \\"\\"\\"Return Actors where some of the related Shows match this filter\\"\\"\\"
-              actedIn_SOME: ShowWhere
+              actedIn_SOME: ShowWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  some: ... }' instead.\\")
               name: StringScalarFilters
               name_CONTAINS: String
               name_ENDS_WITH: String
@@ -10423,27 +10423,27 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Return Movies where all of the related ShowActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_ALL: ShowActorsConnectionWhere
+              actorsConnection_ALL: ShowActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where none of the related ShowActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_NONE: ShowActorsConnectionWhere
+              actorsConnection_NONE: ShowActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where one of the related ShowActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SINGLE: ShowActorsConnectionWhere
+              actorsConnection_SINGLE: ShowActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where some of the related ShowActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SOME: ShowActorsConnectionWhere
+              actorsConnection_SOME: ShowActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-              actors_ALL: ActorWhere
+              actors_ALL: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
               \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-              actors_NONE: ActorWhere
+              actors_NONE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
               \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-              actors_SINGLE: ActorWhere
+              actors_SINGLE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-              actors_SOME: ActorWhere
+              actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
               runtime: IntScalarFilters
               runtime_EQ: Int
               runtime_GT: Int
@@ -10722,27 +10722,27 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Return Series where all of the related ShowActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_ALL: ShowActorsConnectionWhere
+              actorsConnection_ALL: ShowActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where none of the related ShowActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_NONE: ShowActorsConnectionWhere
+              actorsConnection_NONE: ShowActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where one of the related ShowActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SINGLE: ShowActorsConnectionWhere
+              actorsConnection_SINGLE: ShowActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where some of the related ShowActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SOME: ShowActorsConnectionWhere
+              actorsConnection_SOME: ShowActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Series where all of the related Actors match this filter\\"\\"\\"
-              actors_ALL: ActorWhere
+              actors_ALL: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
               \\"\\"\\"Return Series where none of the related Actors match this filter\\"\\"\\"
-              actors_NONE: ActorWhere
+              actors_NONE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
               \\"\\"\\"Return Series where one of the related Actors match this filter\\"\\"\\"
-              actors_SINGLE: ActorWhere
+              actors_SINGLE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
               \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
-              actors_SOME: ActorWhere
+              actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
               episodeCount: IntScalarFilters
               episodeCount_EQ: Int
               episodeCount_GT: Int
@@ -11016,27 +11016,27 @@ describe("Interface Relationships", () => {
               \\"\\"\\"
               Return Shows where all of the related ShowActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_ALL: ShowActorsConnectionWhere
+              actorsConnection_ALL: ShowActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Shows where none of the related ShowActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_NONE: ShowActorsConnectionWhere
+              actorsConnection_NONE: ShowActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Shows where one of the related ShowActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SINGLE: ShowActorsConnectionWhere
+              actorsConnection_SINGLE: ShowActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Shows where some of the related ShowActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SOME: ShowActorsConnectionWhere
+              actorsConnection_SOME: ShowActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Shows where all of the related Actors match this filter\\"\\"\\"
-              actors_ALL: ActorWhere
+              actors_ALL: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
               \\"\\"\\"Return Shows where none of the related Actors match this filter\\"\\"\\"
-              actors_NONE: ActorWhere
+              actors_NONE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
               \\"\\"\\"Return Shows where one of the related Actors match this filter\\"\\"\\"
-              actors_SINGLE: ActorWhere
+              actors_SINGLE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
               \\"\\"\\"Return Shows where some of the related Actors match this filter\\"\\"\\"
-              actors_SOME: ActorWhere
+              actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
               title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String

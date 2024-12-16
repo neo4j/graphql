@@ -592,27 +592,27 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               \\"\\"\\"
               Return Resources where all of the related ResourceContainedByConnections match this filter
               \\"\\"\\"
-              containedByConnection_ALL: ResourceContainedByConnectionWhere
+              containedByConnection_ALL: ResourceContainedByConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'containedByConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Resources where none of the related ResourceContainedByConnections match this filter
               \\"\\"\\"
-              containedByConnection_NONE: ResourceContainedByConnectionWhere
+              containedByConnection_NONE: ResourceContainedByConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'containedByConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Resources where one of the related ResourceContainedByConnections match this filter
               \\"\\"\\"
-              containedByConnection_SINGLE: ResourceContainedByConnectionWhere
+              containedByConnection_SINGLE: ResourceContainedByConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'containedByConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Resources where some of the related ResourceContainedByConnections match this filter
               \\"\\"\\"
-              containedByConnection_SOME: ResourceContainedByConnectionWhere
+              containedByConnection_SOME: ResourceContainedByConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'containedByConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Resources where all of the related Resources match this filter\\"\\"\\"
-              containedBy_ALL: ResourceWhere
+              containedBy_ALL: ResourceWhere @deprecated(reason: \\"Please use the relevant generic filter 'containedBy: { all: ... }' instead.\\")
               \\"\\"\\"Return Resources where none of the related Resources match this filter\\"\\"\\"
-              containedBy_NONE: ResourceWhere
+              containedBy_NONE: ResourceWhere @deprecated(reason: \\"Please use the relevant generic filter 'containedBy: { none: ... }' instead.\\")
               \\"\\"\\"Return Resources where one of the related Resources match this filter\\"\\"\\"
-              containedBy_SINGLE: ResourceWhere
+              containedBy_SINGLE: ResourceWhere @deprecated(reason: \\"Please use the relevant generic filter 'containedBy: {  single: ... }' instead.\\")
               \\"\\"\\"Return Resources where some of the related Resources match this filter\\"\\"\\"
-              containedBy_SOME: ResourceWhere
+              containedBy_SOME: ResourceWhere @deprecated(reason: \\"Please use the relevant generic filter 'containedBy: {  some: ... }' instead.\\")
               createdAt: DateTimeScalarFilters
               createdAt_EQ: DateTime
               createdAt_GT: DateTime

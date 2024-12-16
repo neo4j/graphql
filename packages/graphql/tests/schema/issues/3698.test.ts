@@ -381,27 +381,27 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               \\"\\"\\"
               Return Genres where all of the related GenreProductConnections match this filter
               \\"\\"\\"
-              productConnection_ALL: GenreProductConnectionWhere
+              productConnection_ALL: GenreProductConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'productConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Genres where none of the related GenreProductConnections match this filter
               \\"\\"\\"
-              productConnection_NONE: GenreProductConnectionWhere
+              productConnection_NONE: GenreProductConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'productConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Genres where one of the related GenreProductConnections match this filter
               \\"\\"\\"
-              productConnection_SINGLE: GenreProductConnectionWhere
+              productConnection_SINGLE: GenreProductConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'productConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Genres where some of the related GenreProductConnections match this filter
               \\"\\"\\"
-              productConnection_SOME: GenreProductConnectionWhere
+              productConnection_SOME: GenreProductConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'productConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Genres where all of the related IProducts match this filter\\"\\"\\"
-              product_ALL: IProductWhere
+              product_ALL: IProductWhere @deprecated(reason: \\"Please use the relevant generic filter 'product: { all: ... }' instead.\\")
               \\"\\"\\"Return Genres where none of the related IProducts match this filter\\"\\"\\"
-              product_NONE: IProductWhere
+              product_NONE: IProductWhere @deprecated(reason: \\"Please use the relevant generic filter 'product: { none: ... }' instead.\\")
               \\"\\"\\"Return Genres where one of the related IProducts match this filter\\"\\"\\"
-              product_SINGLE: IProductWhere
+              product_SINGLE: IProductWhere @deprecated(reason: \\"Please use the relevant generic filter 'product: {  single: ... }' instead.\\")
               \\"\\"\\"Return Genres where some of the related IProducts match this filter\\"\\"\\"
-              product_SOME: IProductWhere
+              product_SOME: IProductWhere @deprecated(reason: \\"Please use the relevant generic filter 'product: {  some: ... }' instead.\\")
             }
 
             type GenresConnection {
@@ -731,27 +731,27 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               \\"\\"\\"
               Return Movies where all of the related MovieGenreConnections match this filter
               \\"\\"\\"
-              genreConnection_ALL: MovieGenreConnectionWhere
+              genreConnection_ALL: MovieGenreConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'genreConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where none of the related MovieGenreConnections match this filter
               \\"\\"\\"
-              genreConnection_NONE: MovieGenreConnectionWhere
+              genreConnection_NONE: MovieGenreConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'genreConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where one of the related MovieGenreConnections match this filter
               \\"\\"\\"
-              genreConnection_SINGLE: MovieGenreConnectionWhere
+              genreConnection_SINGLE: MovieGenreConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'genreConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where some of the related MovieGenreConnections match this filter
               \\"\\"\\"
-              genreConnection_SOME: MovieGenreConnectionWhere
+              genreConnection_SOME: MovieGenreConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'genreConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Movies where all of the related Genres match this filter\\"\\"\\"
-              genre_ALL: GenreWhere
+              genre_ALL: GenreWhere @deprecated(reason: \\"Please use the relevant generic filter 'genre: { all: ... }' instead.\\")
               \\"\\"\\"Return Movies where none of the related Genres match this filter\\"\\"\\"
-              genre_NONE: GenreWhere
+              genre_NONE: GenreWhere @deprecated(reason: \\"Please use the relevant generic filter 'genre: { none: ... }' instead.\\")
               \\"\\"\\"Return Movies where one of the related Genres match this filter\\"\\"\\"
-              genre_SINGLE: GenreWhere
+              genre_SINGLE: GenreWhere @deprecated(reason: \\"Please use the relevant generic filter 'genre: {  single: ... }' instead.\\")
               \\"\\"\\"Return Movies where some of the related Genres match this filter\\"\\"\\"
-              genre_SOME: GenreWhere
+              genre_SOME: GenreWhere @deprecated(reason: \\"Please use the relevant generic filter 'genre: {  some: ... }' instead.\\")
               id: StringScalarFilters
               id_CONTAINS: String
               id_ENDS_WITH: String

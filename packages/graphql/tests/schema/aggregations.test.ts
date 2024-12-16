@@ -1526,27 +1526,27 @@ describe("Aggregations", () => {
               \\"\\"\\"
               Return Posts where all of the related PostLikesConnections match this filter
               \\"\\"\\"
-              likesConnection_ALL: PostLikesConnectionWhere
+              likesConnection_ALL: PostLikesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'likesConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Posts where none of the related PostLikesConnections match this filter
               \\"\\"\\"
-              likesConnection_NONE: PostLikesConnectionWhere
+              likesConnection_NONE: PostLikesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'likesConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Posts where one of the related PostLikesConnections match this filter
               \\"\\"\\"
-              likesConnection_SINGLE: PostLikesConnectionWhere
+              likesConnection_SINGLE: PostLikesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'likesConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Posts where some of the related PostLikesConnections match this filter
               \\"\\"\\"
-              likesConnection_SOME: PostLikesConnectionWhere
+              likesConnection_SOME: PostLikesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'likesConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Posts where all of the related Users match this filter\\"\\"\\"
-              likes_ALL: UserWhere
+              likes_ALL: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'likes: { all: ... }' instead.\\")
               \\"\\"\\"Return Posts where none of the related Users match this filter\\"\\"\\"
-              likes_NONE: UserWhere
+              likes_NONE: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'likes: { none: ... }' instead.\\")
               \\"\\"\\"Return Posts where one of the related Users match this filter\\"\\"\\"
-              likes_SINGLE: UserWhere
+              likes_SINGLE: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'likes: {  single: ... }' instead.\\")
               \\"\\"\\"Return Posts where some of the related Users match this filter\\"\\"\\"
-              likes_SOME: UserWhere
+              likes_SOME: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'likes: {  some: ... }' instead.\\")
               title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String
@@ -2741,27 +2741,27 @@ describe("Aggregations", () => {
               \\"\\"\\"
               Return Posts where all of the related PostLikesConnections match this filter
               \\"\\"\\"
-              likesConnection_ALL: PostLikesConnectionWhere
+              likesConnection_ALL: PostLikesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'likesConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Posts where none of the related PostLikesConnections match this filter
               \\"\\"\\"
-              likesConnection_NONE: PostLikesConnectionWhere
+              likesConnection_NONE: PostLikesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'likesConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Posts where one of the related PostLikesConnections match this filter
               \\"\\"\\"
-              likesConnection_SINGLE: PostLikesConnectionWhere
+              likesConnection_SINGLE: PostLikesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'likesConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Posts where some of the related PostLikesConnections match this filter
               \\"\\"\\"
-              likesConnection_SOME: PostLikesConnectionWhere
+              likesConnection_SOME: PostLikesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'likesConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Posts where all of the related Users match this filter\\"\\"\\"
-              likes_ALL: UserWhere
+              likes_ALL: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'likes: { all: ... }' instead.\\")
               \\"\\"\\"Return Posts where none of the related Users match this filter\\"\\"\\"
-              likes_NONE: UserWhere
+              likes_NONE: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'likes: { none: ... }' instead.\\")
               \\"\\"\\"Return Posts where one of the related Users match this filter\\"\\"\\"
-              likes_SINGLE: UserWhere
+              likes_SINGLE: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'likes: {  single: ... }' instead.\\")
               \\"\\"\\"Return Posts where some of the related Users match this filter\\"\\"\\"
-              likes_SOME: UserWhere
+              likes_SOME: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'likes: {  some: ... }' instead.\\")
               title: StringScalarFilters
               title_CONTAINS: String
               title_ENDS_WITH: String

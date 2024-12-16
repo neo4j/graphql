@@ -244,27 +244,27 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               \\"\\"\\"
               Return CrewMembers where all of the related CrewMemberMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_ALL: CrewMemberMoviesConnectionWhere
+              moviesConnection_ALL: CrewMemberMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return CrewMembers where none of the related CrewMemberMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_NONE: CrewMemberMoviesConnectionWhere
+              moviesConnection_NONE: CrewMemberMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return CrewMembers where one of the related CrewMemberMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SINGLE: CrewMemberMoviesConnectionWhere
+              moviesConnection_SINGLE: CrewMemberMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return CrewMembers where some of the related CrewMemberMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SOME: CrewMemberMoviesConnectionWhere
+              moviesConnection_SOME: CrewMemberMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return CrewMembers where all of the related Movies match this filter\\"\\"\\"
-              movies_ALL: MovieWhere
+              movies_ALL: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { all: ... }' instead.\\")
               \\"\\"\\"Return CrewMembers where none of the related Movies match this filter\\"\\"\\"
-              movies_NONE: MovieWhere
+              movies_NONE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { none: ... }' instead.\\")
               \\"\\"\\"Return CrewMembers where one of the related Movies match this filter\\"\\"\\"
-              movies_SINGLE: MovieWhere
+              movies_SINGLE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  single: ... }' instead.\\")
               \\"\\"\\"Return CrewMembers where some of the related Movies match this filter\\"\\"\\"
-              movies_SOME: MovieWhere
+              movies_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  some: ... }' instead.\\")
             }
 
             type CrewMembersConnection {
