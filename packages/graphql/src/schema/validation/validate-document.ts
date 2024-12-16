@@ -46,7 +46,6 @@ import { Point } from "../../graphql/objects/Point";
 import * as scalars from "../../graphql/scalars";
 import type { Neo4jFeaturesSettings } from "../../types";
 import { isRootType } from "../../utils/is-root-type";
-import { ValidateNeo4jDirectivesArguments } from "./custom-rules/directive-argument-of-correct-type";
 import { directiveIsValid } from "./custom-rules/directives/valid-directive";
 import { ValidDirectiveAtFieldLocation } from "./custom-rules/directives/valid-directive-field-location";
 import { ErrorIfSingleRelationships } from "./custom-rules/error-single-relationships";
@@ -63,6 +62,7 @@ import {
 import { ValidFieldTypes } from "./custom-rules/valid-types/valid-field-types";
 import { ValidListInNodeType } from "./custom-rules/valid-types/valid-list-in-node-type";
 import { ValidObjectType } from "./custom-rules/valid-types/valid-object-type";
+import { ValidateNeo4jDirectiveArgumentsValue } from "./custom-rules/validate-neo4j-directive-arguments-value";
 import { WarnIfAuthorizationFeatureDisabled } from "./custom-rules/warnings/authorization-feature-disabled";
 import { WarnPrivateDeprecation } from "./custom-rules/warnings/deprecated-private";
 import { WarnIfAMaxLimitCanBeBypassedThroughInterface } from "./custom-rules/warnings/limit-max-can-be-bypassed";
@@ -223,7 +223,7 @@ function runValidationRulesOnFilteredDocument({
             ReservedTypeNames,
             ValidObjectType,
             ValidDirectiveInheritance,
-            ValidateNeo4jDirectivesArguments,
+            ValidateNeo4jDirectiveArgumentsValue,
             WarnIfAuthorizationFeatureDisabled(features?.authorization),
             ErrorIfSingleRelationships,
             WarnIfAMaxLimitCanBeBypassedThroughInterface(),

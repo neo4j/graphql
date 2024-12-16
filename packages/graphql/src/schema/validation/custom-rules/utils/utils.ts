@@ -16,10 +16,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { ArgumentNode, EnumTypeDefinitionNode, FieldDefinitionNode, TypeNode, ValueNode } from "graphql";
-import { Kind } from "graphql";
+import type {
+    ArgumentNode,
+    EnumTypeDefinitionNode,
+    FieldDefinitionNode,
+    GraphQLArgument,
+    TypeNode,
+    ValueNode,
+} from "graphql";
+import { coerceInputValue, Kind, valueFromASTUntyped } from "graphql";
 import * as neo4j from "neo4j-driver";
 import { parseValueNode } from "../../../../schema-model/parser/parse-value-node";
+import type { AssertionResponse } from "./document-validation-error";
 
 export function getInnerTypeName(typeNode: TypeNode): string {
     if (typeNode.kind === Kind.LIST_TYPE) {
@@ -85,4 +93,29 @@ export function isArrayType(traversedDef: FieldDefinitionNode) {
         traversedDef.type.kind === Kind.LIST_TYPE ||
         (traversedDef.type.kind === Kind.NON_NULL_TYPE && traversedDef.type.type.kind === Kind.LIST_TYPE)
     );
+}
+export function findArgumentDefinitionNodeByName(
+    args: readonly GraphQLArgument[],
+    name: string
+): GraphQLArgument | undefined {
+    return args.find((arg) => arg.name === name);
+}
+export function assertArgumentType(
+    argumentNode: ArgumentNode,
+    inputValueDefinition: GraphQLArgument
+): AssertionResponse {
+    const argType = inputValueDefinition.type;
+    const argValue = valueFromASTUntyped(argumentNode.value);
+
+    let isValid = true;
+    let errorMsg = "";
+    let errorPath: readonly (string | number)[] = [];
+
+    coerceInputValue(argValue, argType, (path, _invalidValue, error) => {
+        isValid = false;
+        errorMsg = error.message;
+        errorPath = path;
+    });
+
+    return { isValid, errorMsg, errorPath };
 }

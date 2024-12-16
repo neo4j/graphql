@@ -17,10 +17,9 @@
  * limitations under the License.
  */
 
-import type { ASTVisitor, FieldDefinitionNode, ObjectTypeDefinitionNode } from "graphql";
-import { GraphQLError, parse } from "graphql";
+import type { ObjectTypeDefinitionNode } from "graphql";
+import { parse } from "graphql";
 import { gql } from "graphql-tag";
-import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 import { NoErrorThrownError, getError } from "../../../tests/utils/get-error";
 import { Subgraph } from "../../classes/Subgraph";
 import { generateModel } from "../../schema-model/generate-model";
@@ -28,9 +27,9 @@ import makeAugmentedSchema from "../make-augmented-schema";
 import { validateUserDefinition } from "./schema-validation";
 
 describe("schema validation", () => {
-    describe.only("JWT", () => {
+    describe("JWT", () => {
         // TODO: authentication
-        describe.only("JWT Payload", () => {
+        describe("JWT Payload", () => {
             test("should not returns errors when is correctly used", () => {
                 const jwtType = /* GraphQL */ `
                     type MyJWT @jwt {
@@ -56,8 +55,8 @@ describe("schema validation", () => {
             });
 
             test("should not returns errors when is correctly used together with node", () => {
-                const jwtType = `
-                    type MyJWT  @jwt {
+                const jwtType = /* GraphQL */ `
+                    type MyJWT @jwt {
                         myClaim: String
                     }
                 `;
@@ -83,9 +82,9 @@ describe("schema validation", () => {
                 expect(executeValidate).not.toThrow();
             });
 
-            test.only("should return errors when jwt field is not found", () => {
-                const jwtType = `
-                    type MyJWT  @jwt {
+            test("should return errors when jwt field is not found", () => {
+                const jwtType = /* GraphQL */ `
+                    type MyJWT @jwt {
                         myClaim: String
                     }
                 `;
@@ -191,7 +190,7 @@ describe("schema validation", () => {
             });
         });
 
-        test.skip("should not returns errors when is correctly used with claims path", () => {
+        test("should not returns errors when is correctly used with claims path", () => {
             const jwtType = `
                 type MyJWT  @jwt {
                     myClaim: String 
@@ -216,7 +215,7 @@ describe("schema validation", () => {
             expect(executeValidate).not.toThrow();
         });
 
-        describe.skip("JWT wildcard", () => {
+        describe("JWT wildcard", () => {
             test("should not returns errors when is correctly used: Int on OBJECT", () => {
                 const jwtType = `
                     type jwt @jwt {
@@ -3532,63 +3531,6 @@ describe("schema validation", () => {
         });
     });
 
-    describe("validate using custom rules", () => {
-        test("should not returns errors when is correctly used", () => {
-            const userDocument = gql`
-                type User @node {
-                    id: ID!
-                    name: String!
-                }
-            `;
-
-            const schemaModel = generateModel(userDocument);
-            const { typeDefs: augmentedDocument } = makeAugmentedSchema({
-                document: userDocument,
-                schemaModel,
-            });
-
-            const executeValidate = () =>
-                validateUserDefinition({
-                    userDocument,
-                    augmentedDocument,
-                    additionalDirectives: [],
-                    additionalTypes: [],
-                    rules: [noKeanuFields],
-                });
-            expect(executeValidate).not.toThrow();
-        });
-        test("should returns errors when is not correctly used", () => {
-            const userDocument = gql`
-                type User @node {
-                    id: ID!
-                    keanu: String!
-                }
-            `;
-
-            const schemaModel = generateModel(userDocument);
-            const { typeDefs: augmentedDocument } = makeAugmentedSchema({
-                document: userDocument,
-                schemaModel,
-            });
-
-            const executeValidate = () =>
-                validateUserDefinition({
-                    userDocument,
-                    augmentedDocument,
-                    additionalDirectives: [],
-                    additionalTypes: [],
-                    rules: [noKeanuFields],
-                });
-
-            const errors = getError(executeValidate);
-            expect(errors).toHaveLength(2);
-            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-            expect(errors[0]).toHaveProperty("message", "Field cannot be named keanu");
-            expect(errors[1]).not.toBeInstanceOf(NoErrorThrownError);
-            expect(errors[1]).toHaveProperty("message", "Field cannot be named keanu");
-        });
-    });
-
     describe("input validation", () => {
         describe("on OBJECT", () => {
             describe("correct usage", () => {
@@ -3913,13 +3855,3 @@ describe("schema validation", () => {
         });
     });
 });
-
-function noKeanuFields(context: SDLValidationContext): ASTVisitor {
-    return {
-        FieldDefinition(node: FieldDefinitionNode) {
-            if (node.name.value === "keanu") {
-                context.reportError(new GraphQLError("Field cannot be named keanu"));
-            }
-        },
-    };
-}
