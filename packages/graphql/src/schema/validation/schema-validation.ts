@@ -26,7 +26,6 @@ import type {
     ObjectTypeDefinitionNode,
 } from "graphql";
 import { GraphQLSchema, specifiedDirectives, visit } from "graphql";
-import type { SDLValidationRule } from "graphql/validation/ValidationContext";
 import { specifiedSDLRules } from "graphql/validation/specifiedRules";
 import { createAuthenticationDirectiveDefinition } from "../../graphql/directives/type-dependant-directives/authentication";
 import { getStaticAuthorizationDefinitions } from "../../graphql/directives/type-dependant-directives/get-static-auth-definitions";
@@ -56,8 +55,8 @@ import {
 } from "../../graphql/input-objects/generic-operators/StringScalarFilters";
 import { TimeScalarFilters } from "../../graphql/input-objects/generic-operators/TimeScalarFilters";
 import { EnricherContext } from "./EnricherContext";
-import { DirectiveArgumentOfCorrectType } from "./custom-rules/directive-argument-of-correct-type";
 import { makeReplaceWildcardVisitor } from "./custom-rules/replace-wildcard-value";
+import { ValidateAuthorizationLikeDirectives } from "./custom-rules/validate-authorization-like-directives";
 import { authenticationDirectiveEnricher } from "./enrichers/authentication";
 import { authorizationDefinitionsEnricher, authorizationDirectiveEnricher } from "./enrichers/authorization";
 import {
@@ -108,17 +107,15 @@ export function validateUserDefinition({
     augmentedDocument,
     additionalDirectives = [],
     additionalTypes = [],
-    rules,
     jwt,
 }: {
     userDocument: DocumentNode;
     augmentedDocument: DocumentNode;
     additionalDirectives?: Array<GraphQLDirective>;
     additionalTypes?: Array<GraphQLNamedType>;
-    rules?: readonly SDLValidationRule[];
     jwt?: ObjectTypeDefinitionNode;
 }): void {
-    rules = rules ? rules : [...specifiedSDLRules, DirectiveArgumentOfCorrectType()];
+    const rules = [...specifiedSDLRules, ValidateAuthorizationLikeDirectives];
     let validationDocument = makeValidationDocument(userDocument, augmentedDocument, jwt);
     const genericFiltersName: GraphQLInputObjectType[] = [
         BooleanScalarFilters,
