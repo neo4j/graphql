@@ -62,13 +62,13 @@ export function ValidateNeo4jDirectiveArgumentsValue(context: SDLValidationConte
                 return;
             }
             const pathToHere = [...getPathToNode(path, ancestors)[0], `@${directiveName}`];
-            for (const argument of directiveNode.arguments || []) {
+            for (const argument of directiveNode.arguments ?? []) {
                 const argumentDefinition = findArgumentDefinitionNodeByName(
                     directiveDefinition.args,
                     argument.name.value
                 );
                 if (!argumentDefinition) {
-                    return;
+                    return; // If argument name is not found, delegate to KnownArgumentNamesRule
                 }
                 const { isValid, errorMsg, errorPath } = assertArgumentType(argument, argumentDefinition);
                 if (!isValid) {

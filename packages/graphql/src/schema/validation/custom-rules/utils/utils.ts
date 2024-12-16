@@ -94,12 +94,14 @@ export function isArrayType(traversedDef: FieldDefinitionNode) {
         (traversedDef.type.kind === Kind.NON_NULL_TYPE && traversedDef.type.type.kind === Kind.LIST_TYPE)
     );
 }
+
 export function findArgumentDefinitionNodeByName(
     args: readonly GraphQLArgument[],
     name: string
 ): GraphQLArgument | undefined {
     return args.find((arg) => arg.name === name);
 }
+
 export function assertArgumentType(
     argumentNode: ArgumentNode,
     inputValueDefinition: GraphQLArgument
@@ -109,7 +111,7 @@ export function assertArgumentType(
 
     let isValid = true;
     let errorMsg = "";
-    let errorPath: readonly (string | number)[] = [];
+    let errorPath: ReadonlyArray<string | number> = [];
 
     coerceInputValue(argValue, argType, (path, _invalidValue, error) => {
         isValid = false;

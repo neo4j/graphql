@@ -25,7 +25,9 @@ import { createGraphQLError } from "./utils/document-validation-error";
 import { getPathToNode } from "./utils/path-parser";
 import { assertArgumentType, findArgumentDefinitionNodeByName } from "./utils/utils";
 
-// ValidateAuthorizationLikeDirectives validates the directives subscriptionsAuthorization, authorization, authentication
+/**
+ * ValidateAuthorizationLikeDirectives validates the directives subscriptionsAuthorization, authorization, authentication
+ **/
 export function ValidateAuthorizationLikeDirectives(context: SDLValidationContext): ASTVisitor {
     const validationSchema = context.getSchema();
     if (!validationSchema) {
@@ -47,21 +49,20 @@ export function ValidateAuthorizationLikeDirectives(context: SDLValidationContex
             }
 
             const directiveDefinition = schema.getDirective(directiveNode.name.value);
-            const directiveName = authorizationLikeDirective;
 
             if (!directiveDefinition) {
                 // Do not report, delegate this report to KnownDirectivesRule
                 return;
             }
 
-            const pathToHere = [...getPathToNode(path, ancestors)[0], `@${directiveName}`];
-            for (const argument of directiveNode.arguments || []) {
+            const pathToHere = [...getPathToNode(path, ancestors)[0], `@${authorizationLikeDirective}`];
+            for (const argument of directiveNode.arguments ?? []) {
                 const argumentDefinition = findArgumentDefinitionNodeByName(
                     directiveDefinition.args,
                     argument.name.value
                 );
                 if (!argumentDefinition) {
-                    return; // If argument name is not found, delegate to Kno
+                    return; // If argument name is not found, delegate to KnownArgumentNamesRule
                 }
                 const { isValid, errorMsg, errorPath } = assertArgumentType(argument, argumentDefinition);
                 if (!isValid) {
@@ -71,7 +72,7 @@ export function ValidateAuthorizationLikeDirectives(context: SDLValidationContex
                             path: [...pathToHere, argument.name.value, ...errorPath],
                             errorMsg: `Invalid argument: ${argument.name.value}, error: ${errorMsg}`,
                             extensions: {
-                                exception: { code: VALIDATION_ERROR_CODES[directiveName.toUpperCase()] },
+                                exception: { code: VALIDATION_ERROR_CODES[authorizationLikeDirective.toUpperCase()] },
                             },
                         })
                     );
