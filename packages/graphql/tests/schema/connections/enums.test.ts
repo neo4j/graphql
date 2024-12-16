@@ -80,8 +80,8 @@ describe("Enums", () => {
               NOT: ActedInWhere
               OR: [ActedInWhere!]
               roleType: RoleTypeEnumScalarFilters
-              roleType_EQ: RoleType
-              roleType_IN: [RoleType!]
+              roleType_EQ: RoleType @deprecated(reason: \\"Please use the relevant generic filter roleType: { eq: ... }\\")
+              roleType_IN: [RoleType!] @deprecated(reason: \\"Please use the relevant generic filter roleType: { in: ... }\\")
             }
 
             type Actor {
@@ -306,11 +306,11 @@ describe("Enums", () => {
               \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
               movies_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  some: ... }' instead.\\")
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
             }
 
             type ActorsConnection {
@@ -587,11 +587,11 @@ describe("Enums", () => {
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
               title: StringScalarFilters
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
             }
 
             type MoviesConnection {

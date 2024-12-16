@@ -184,11 +184,11 @@ describe("@private directive", () => {
               NOT: UserInterfaceWhere
               OR: [UserInterfaceWhere!]
               id: IDScalarFilters
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
               typename_IN: [UserInterfaceImplementation!]
             }
 
@@ -215,11 +215,11 @@ describe("@private directive", () => {
               NOT: UserWhere
               OR: [UserWhere!]
               id: IDScalarFilters
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
             }
 
             type UsersConnection {
@@ -418,11 +418,11 @@ describe("@private directive", () => {
               NOT: UserInterfaceWhere
               OR: [UserInterfaceWhere!]
               id: IDScalarFilters
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
               typename_IN: [UserInterfaceImplementation!]
             }
 
@@ -452,17 +452,17 @@ describe("@private directive", () => {
               NOT: UserWhere
               OR: [UserWhere!]
               id: IDScalarFilters
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
               private: StringScalarFilters
-              private_CONTAINS: String
-              private_ENDS_WITH: String
-              private_EQ: String
-              private_IN: [String]
-              private_STARTS_WITH: String
+              private_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter private: { contains: ... }\\")
+              private_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter private: { ends_with: ... }\\")
+              private_EQ: String @deprecated(reason: \\"Please use the relevant generic filter private: { eq: ... }\\")
+              private_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter private: { in: ... }\\")
+              private_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter private: { starts_with: ... }\\")
             }
 
             type UsersConnection {

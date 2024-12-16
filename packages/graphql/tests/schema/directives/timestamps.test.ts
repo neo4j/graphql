@@ -152,25 +152,25 @@ describe("Timestamps", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               createdAt: DateTimeScalarFilters
-              createdAt_EQ: DateTime
-              createdAt_GT: DateTime
-              createdAt_GTE: DateTime
-              createdAt_IN: [DateTime!]
-              createdAt_LT: DateTime
-              createdAt_LTE: DateTime
+              createdAt_EQ: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { eq: ... }\\")
+              createdAt_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { gt: ... }\\")
+              createdAt_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { gte: ... }\\")
+              createdAt_IN: [DateTime!] @deprecated(reason: \\"Please use the relevant generic filter createdAt: { in: ... }\\")
+              createdAt_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { lt: ... }\\")
+              createdAt_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { lte: ... }\\")
               id: IDScalarFilters
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
               updatedAt: DateTimeScalarFilters
-              updatedAt_EQ: DateTime
-              updatedAt_GT: DateTime
-              updatedAt_GTE: DateTime
-              updatedAt_IN: [DateTime!]
-              updatedAt_LT: DateTime
-              updatedAt_LTE: DateTime
+              updatedAt_EQ: DateTime @deprecated(reason: \\"Please use the relevant generic filter updatedAt: { eq: ... }\\")
+              updatedAt_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter updatedAt: { gt: ... }\\")
+              updatedAt_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter updatedAt: { gte: ... }\\")
+              updatedAt_IN: [DateTime!] @deprecated(reason: \\"Please use the relevant generic filter updatedAt: { in: ... }\\")
+              updatedAt_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter updatedAt: { lt: ... }\\")
+              updatedAt_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter updatedAt: { lte: ... }\\")
             }
 
             type MoviesConnection {

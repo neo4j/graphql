@@ -225,11 +225,11 @@ describe("Pluralize consistency", () => {
               NOT: super_friendWhere
               OR: [super_friendWhere!]
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
             }
 
             type super_user {
@@ -440,11 +440,11 @@ describe("Pluralize consistency", () => {
               \\"\\"\\"
               my_friend_SOME: super_friendWhere @deprecated(reason: \\"Please use the relevant generic filter 'my_friend: {  some: ... }' instead.\\")
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
             }
 
             type super_usersuper_friendMy_friendAggregationSelection {

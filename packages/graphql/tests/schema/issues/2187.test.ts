@@ -368,11 +368,11 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               \\"\\"\\"Return Genres where some of the related Movies match this filter\\"\\"\\"
               movies_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  some: ... }' instead.\\")
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
             }
 
             type GenresConnection {
@@ -647,12 +647,12 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               \\"\\"\\"Return Movies where some of the related Genres match this filter\\"\\"\\"
               genres_SOME: GenreWhere @deprecated(reason: \\"Do not use genre\\")
               imdbRating: FloatScalarFilters
-              imdbRating_EQ: Float
-              imdbRating_GT: Float
-              imdbRating_GTE: Float
-              imdbRating_IN: [Float]
-              imdbRating_LT: Float
-              imdbRating_LTE: Float
+              imdbRating_EQ: Float @deprecated(reason: \\"Please use the relevant generic filter imdbRating: { eq: ... }\\")
+              imdbRating_GT: Float @deprecated(reason: \\"Please use the relevant generic filter imdbRating: { gt: ... }\\")
+              imdbRating_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter imdbRating: { gte: ... }\\")
+              imdbRating_IN: [Float] @deprecated(reason: \\"Please use the relevant generic filter imdbRating: { in: ... }\\")
+              imdbRating_LT: Float @deprecated(reason: \\"Please use the relevant generic filter imdbRating: { lt: ... }\\")
+              imdbRating_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter imdbRating: { lte: ... }\\")
               title: StringScalarFilters @deprecated(reason: \\"Do not use title\\")
               title_CONTAINS: String @deprecated(reason: \\"Do not use title\\")
               title_ENDS_WITH: String @deprecated(reason: \\"Do not use title\\")
@@ -660,12 +660,12 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               title_IN: [String] @deprecated(reason: \\"Do not use title\\")
               title_STARTS_WITH: String @deprecated(reason: \\"Do not use title\\")
               year: IntScalarFilters
-              year_EQ: Int
-              year_GT: Int
-              year_GTE: Int
-              year_IN: [Int]
-              year_LT: Int
-              year_LTE: Int
+              year_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter year: { eq: ... }\\")
+              year_GT: Int @deprecated(reason: \\"Please use the relevant generic filter year: { gt: ... }\\")
+              year_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter year: { gte: ... }\\")
+              year_IN: [Int] @deprecated(reason: \\"Please use the relevant generic filter year: { in: ... }\\")
+              year_LT: Int @deprecated(reason: \\"Please use the relevant generic filter year: { lt: ... }\\")
+              year_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter year: { lte: ... }\\")
             }
 
             type MoviesConnection {

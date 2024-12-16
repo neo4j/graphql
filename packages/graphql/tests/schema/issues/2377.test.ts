@@ -499,26 +499,26 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               NOT: ResourceEntityWhere
               OR: [ResourceEntityWhere!]
               id: IDScalarFilters
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID!]
-              id_STARTS_WITH: ID
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
               properties: PropertyListEnumScalarFilters
-              properties_EQ: [Property!]
-              properties_INCLUDES: Property
+              properties_EQ: [Property!] @deprecated(reason: \\"Please use the relevant generic filter properties: { eq: ... }\\")
+              properties_INCLUDES: Property @deprecated(reason: \\"Please use the relevant generic filter properties: { includes: ... }\\")
               tags: TagListEnumScalarFilters
-              tags_EQ: [Tag!]
-              tags_INCLUDES: Tag
+              tags_EQ: [Tag!] @deprecated(reason: \\"Please use the relevant generic filter tags: { eq: ... }\\")
+              tags_INCLUDES: Tag @deprecated(reason: \\"Please use the relevant generic filter tags: { includes: ... }\\")
               type: ResourceTypeEnumScalarFilters
-              type_EQ: ResourceType
-              type_IN: [ResourceType!]
+              type_EQ: ResourceType @deprecated(reason: \\"Please use the relevant generic filter type: { eq: ... }\\")
+              type_IN: [ResourceType!] @deprecated(reason: \\"Please use the relevant generic filter type: { in: ... }\\")
               typename_IN: [ResourceEntityImplementation!]
             }
 
@@ -614,43 +614,43 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               \\"\\"\\"Return Resources where some of the related Resources match this filter\\"\\"\\"
               containedBy_SOME: ResourceWhere @deprecated(reason: \\"Please use the relevant generic filter 'containedBy: {  some: ... }' instead.\\")
               createdAt: DateTimeScalarFilters
-              createdAt_EQ: DateTime
-              createdAt_GT: DateTime
-              createdAt_GTE: DateTime
-              createdAt_IN: [DateTime!]
-              createdAt_LT: DateTime
-              createdAt_LTE: DateTime
+              createdAt_EQ: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { eq: ... }\\")
+              createdAt_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { gt: ... }\\")
+              createdAt_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { gte: ... }\\")
+              createdAt_IN: [DateTime!] @deprecated(reason: \\"Please use the relevant generic filter createdAt: { in: ... }\\")
+              createdAt_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { lt: ... }\\")
+              createdAt_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { lte: ... }\\")
               externalIds: IDListFilters
-              externalIds_EQ: [ID!]
-              externalIds_INCLUDES: ID
+              externalIds_EQ: [ID!] @deprecated(reason: \\"Please use the relevant generic filter externalIds: { eq: ... }\\")
+              externalIds_INCLUDES: ID @deprecated(reason: \\"Please use the relevant generic filter externalIds: { includes: ... }\\")
               id: IDScalarFilters
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID!]
-              id_STARTS_WITH: ID
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
               properties: PropertyListEnumScalarFilters
-              properties_EQ: [Property!]
-              properties_INCLUDES: Property
+              properties_EQ: [Property!] @deprecated(reason: \\"Please use the relevant generic filter properties: { eq: ... }\\")
+              properties_INCLUDES: Property @deprecated(reason: \\"Please use the relevant generic filter properties: { includes: ... }\\")
               tags: TagListEnumScalarFilters
-              tags_EQ: [Tag!]
-              tags_INCLUDES: Tag
+              tags_EQ: [Tag!] @deprecated(reason: \\"Please use the relevant generic filter tags: { eq: ... }\\")
+              tags_INCLUDES: Tag @deprecated(reason: \\"Please use the relevant generic filter tags: { includes: ... }\\")
               type: ResourceTypeEnumScalarFilters
-              type_EQ: ResourceType
-              type_IN: [ResourceType!]
+              type_EQ: ResourceType @deprecated(reason: \\"Please use the relevant generic filter type: { eq: ... }\\")
+              type_IN: [ResourceType!] @deprecated(reason: \\"Please use the relevant generic filter type: { in: ... }\\")
               updatedAt: DateTimeScalarFilters
-              updatedAt_EQ: DateTime
-              updatedAt_GT: DateTime
-              updatedAt_GTE: DateTime
-              updatedAt_IN: [DateTime!]
-              updatedAt_LT: DateTime
-              updatedAt_LTE: DateTime
+              updatedAt_EQ: DateTime @deprecated(reason: \\"Please use the relevant generic filter updatedAt: { eq: ... }\\")
+              updatedAt_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter updatedAt: { gt: ... }\\")
+              updatedAt_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter updatedAt: { gte: ... }\\")
+              updatedAt_IN: [DateTime!] @deprecated(reason: \\"Please use the relevant generic filter updatedAt: { in: ... }\\")
+              updatedAt_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter updatedAt: { lt: ... }\\")
+              updatedAt_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter updatedAt: { lte: ... }\\")
             }
 
             type ResourcesConnection {

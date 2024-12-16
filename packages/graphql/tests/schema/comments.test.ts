@@ -278,33 +278,33 @@ describe("Comments", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               actorCount: IntScalarFilters
-              actorCount_EQ: Int
-              actorCount_GT: Int
-              actorCount_GTE: Int
-              actorCount_IN: [Int]
-              actorCount_LT: Int
-              actorCount_LTE: Int
+              actorCount_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { eq: ... }\\")
+              actorCount_GT: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { gt: ... }\\")
+              actorCount_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { gte: ... }\\")
+              actorCount_IN: [Int] @deprecated(reason: \\"Please use the relevant generic filter actorCount: { in: ... }\\")
+              actorCount_LT: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { lt: ... }\\")
+              actorCount_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { lte: ... }\\")
               averageRating: FloatScalarFilters
-              averageRating_EQ: Float
-              averageRating_GT: Float
-              averageRating_GTE: Float
-              averageRating_IN: [Float]
-              averageRating_LT: Float
-              averageRating_LTE: Float
+              averageRating_EQ: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { eq: ... }\\")
+              averageRating_GT: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { gt: ... }\\")
+              averageRating_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { gte: ... }\\")
+              averageRating_IN: [Float] @deprecated(reason: \\"Please use the relevant generic filter averageRating: { in: ... }\\")
+              averageRating_LT: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { lt: ... }\\")
+              averageRating_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { lte: ... }\\")
               customScalar: CustomScalarScalarFilters
-              customScalar_EQ: CustomScalar
-              customScalar_IN: [CustomScalar]
+              customScalar_EQ: CustomScalar @deprecated(reason: \\"Please use the relevant generic filter customScalar: { eq: ... }\\")
+              customScalar_IN: [CustomScalar] @deprecated(reason: \\"Please use the relevant generic filter customScalar: { in: ... }\\")
               genre: GenreEnumScalarFilters
-              genre_EQ: Genre
-              genre_IN: [Genre]
+              genre_EQ: Genre @deprecated(reason: \\"Please use the relevant generic filter genre: { eq: ... }\\")
+              genre_IN: [Genre] @deprecated(reason: \\"Please use the relevant generic filter genre: { in: ... }\\")
               id: IDScalarFilters
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
               isActive: BooleanScalarFilters
-              isActive_EQ: Boolean
+              isActive_EQ: Boolean @deprecated(reason: \\"Please use the relevant generic filter isActive: { eq: ... }\\")
             }
 
             type MoviesConnection {
@@ -419,11 +419,11 @@ describe("Comments", () => {
                   NOT: ActorWhere
                   OR: [ActorWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                 }
 
                 type ActorsConnection {
@@ -704,11 +704,11 @@ describe("Comments", () => {
                   \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
                   actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
                   id: IDScalarFilters
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -894,12 +894,12 @@ describe("Comments", () => {
                   NOT: ActedInWhere
                   OR: [ActedInWhere!]
                   screenTime: IntScalarFilters
-                  screenTime_EQ: Int
-                  screenTime_GT: Int
-                  screenTime_GTE: Int
-                  screenTime_IN: [Int!]
-                  screenTime_LT: Int
-                  screenTime_LTE: Int
+                  screenTime_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { eq: ... }\\")
+                  screenTime_GT: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { gt: ... }\\")
+                  screenTime_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { gte: ... }\\")
+                  screenTime_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter screenTime: { in: ... }\\")
+                  screenTime_LT: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { lt: ... }\\")
+                  screenTime_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { lte: ... }\\")
                 }
 
                 type Actor {
@@ -1116,11 +1116,11 @@ describe("Comments", () => {
                   \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
                   actedIn_SOME: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  some: ... }' instead.\\")
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String!]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                 }
 
                 type ActorsConnection {
@@ -1245,18 +1245,18 @@ describe("Comments", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   runtime: IntScalarFilters
-                  runtime_EQ: Int
-                  runtime_GT: Int
-                  runtime_GTE: Int
-                  runtime_IN: [Int!]
-                  runtime_LT: Int
-                  runtime_LTE: Int
+                  runtime_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { eq: ... }\\")
+                  runtime_GT: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { gt: ... }\\")
+                  runtime_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { gte: ... }\\")
+                  runtime_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter runtime: { in: ... }\\")
+                  runtime_LT: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lt: ... }\\")
+                  runtime_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lte: ... }\\")
                   title: StringScalarFilters
-                  title_CONTAINS: String
-                  title_ENDS_WITH: String
-                  title_EQ: String
-                  title_IN: [String!]
-                  title_STARTS_WITH: String
+                  title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+                  title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+                  title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+                  title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+                  title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -1330,11 +1330,11 @@ describe("Comments", () => {
                   NOT: ProductionWhere
                   OR: [ProductionWhere!]
                   title: StringScalarFilters
-                  title_CONTAINS: String
-                  title_ENDS_WITH: String
-                  title_EQ: String
-                  title_IN: [String!]
-                  title_STARTS_WITH: String
+                  title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+                  title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+                  title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+                  title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+                  title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
                   typename_IN: [ProductionImplementation!]
                 }
 
@@ -1408,18 +1408,18 @@ describe("Comments", () => {
                   NOT: SeriesWhere
                   OR: [SeriesWhere!]
                   episodes: IntScalarFilters
-                  episodes_EQ: Int
-                  episodes_GT: Int
-                  episodes_GTE: Int
-                  episodes_IN: [Int!]
-                  episodes_LT: Int
-                  episodes_LTE: Int
+                  episodes_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter episodes: { eq: ... }\\")
+                  episodes_GT: Int @deprecated(reason: \\"Please use the relevant generic filter episodes: { gt: ... }\\")
+                  episodes_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter episodes: { gte: ... }\\")
+                  episodes_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter episodes: { in: ... }\\")
+                  episodes_LT: Int @deprecated(reason: \\"Please use the relevant generic filter episodes: { lt: ... }\\")
+                  episodes_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter episodes: { lte: ... }\\")
                   title: StringScalarFilters
-                  title_CONTAINS: String
-                  title_ENDS_WITH: String
-                  title_EQ: String
-                  title_IN: [String!]
-                  title_STARTS_WITH: String
+                  title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+                  title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+                  title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+                  title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+                  title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
                 }
 
                 \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -1576,11 +1576,11 @@ describe("Comments", () => {
                   NOT: GenreWhere
                   OR: [GenreWhere!]
                   id: IDScalarFilters
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
                 }
 
                 type GenresConnection {
@@ -1825,11 +1825,11 @@ describe("Comments", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   id: IDScalarFilters
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
                   search: MovieSearchRelationshipFilters
                   searchConnection: MovieSearchConnectionFilters
                   \\"\\"\\"

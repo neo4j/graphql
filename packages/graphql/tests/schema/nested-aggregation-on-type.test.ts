@@ -85,12 +85,12 @@ describe("nested aggregation on interface", () => {
               NOT: ActedInWhere
               OR: [ActedInWhere!]
               screenTime: IntScalarFilters
-              screenTime_EQ: Int
-              screenTime_GT: Int
-              screenTime_GTE: Int
-              screenTime_IN: [Int!]
-              screenTime_LT: Int
-              screenTime_LTE: Int
+              screenTime_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { eq: ... }\\")
+              screenTime_GT: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { gt: ... }\\")
+              screenTime_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { gte: ... }\\")
+              screenTime_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter screenTime: { in: ... }\\")
+              screenTime_LT: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { lt: ... }\\")
+              screenTime_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { lte: ... }\\")
             }
 
             type Actor {
@@ -350,11 +350,11 @@ describe("nested aggregation on interface", () => {
               \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
               actedIn_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  some: ... }' instead.\\")
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
             }
 
             type ActorsConnection {
@@ -512,25 +512,25 @@ describe("nested aggregation on interface", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               cost: FloatScalarFilters
-              cost_EQ: Float
-              cost_GT: Float
-              cost_GTE: Float
-              cost_IN: [Float!]
-              cost_LT: Float
-              cost_LTE: Float
+              cost_EQ: Float @deprecated(reason: \\"Please use the relevant generic filter cost: { eq: ... }\\")
+              cost_GT: Float @deprecated(reason: \\"Please use the relevant generic filter cost: { gt: ... }\\")
+              cost_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter cost: { gte: ... }\\")
+              cost_IN: [Float!] @deprecated(reason: \\"Please use the relevant generic filter cost: { in: ... }\\")
+              cost_LT: Float @deprecated(reason: \\"Please use the relevant generic filter cost: { lt: ... }\\")
+              cost_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter cost: { lte: ... }\\")
               runtime: IntScalarFilters
-              runtime_EQ: Int
-              runtime_GT: Int
-              runtime_GTE: Int
-              runtime_IN: [Int!]
-              runtime_LT: Int
-              runtime_LTE: Int
+              runtime_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { eq: ... }\\")
+              runtime_GT: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { gt: ... }\\")
+              runtime_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { gte: ... }\\")
+              runtime_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter runtime: { in: ... }\\")
+              runtime_LT: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lt: ... }\\")
+              runtime_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lte: ... }\\")
               title: StringScalarFilters
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
             }
 
             type MoviesConnection {

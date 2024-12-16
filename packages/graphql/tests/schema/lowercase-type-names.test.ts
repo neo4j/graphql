@@ -486,12 +486,12 @@ describe("lower case type names", () => {
               NOT: actorWhere
               OR: [actorWhere!]
               createdAt: DateTimeScalarFilters
-              createdAt_EQ: DateTime
-              createdAt_GT: DateTime
-              createdAt_GTE: DateTime
-              createdAt_IN: [DateTime]
-              createdAt_LT: DateTime
-              createdAt_LTE: DateTime
+              createdAt_EQ: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { eq: ... }\\")
+              createdAt_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { gt: ... }\\")
+              createdAt_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { gte: ... }\\")
+              createdAt_IN: [DateTime] @deprecated(reason: \\"Please use the relevant generic filter createdAt: { in: ... }\\")
+              createdAt_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { lt: ... }\\")
+              createdAt_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { lte: ... }\\")
               movies: actorMoviesRelationshipFilters
               moviesAggregate: actorMoviesAggregateInput
               moviesConnection: actorMoviesConnectionFilters
@@ -520,18 +520,18 @@ describe("lower case type names", () => {
               \\"\\"\\"Return actors where some of the related movies match this filter\\"\\"\\"
               movies_SOME: movieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  some: ... }' instead.\\")
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
               year: IntScalarFilters
-              year_EQ: Int
-              year_GT: Int
-              year_GTE: Int
-              year_IN: [Int]
-              year_LT: Int
-              year_LTE: Int
+              year_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter year: { eq: ... }\\")
+              year_GT: Int @deprecated(reason: \\"Please use the relevant generic filter year: { gt: ... }\\")
+              year_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter year: { gte: ... }\\")
+              year_IN: [Int] @deprecated(reason: \\"Please use the relevant generic filter year: { in: ... }\\")
+              year_LT: Int @deprecated(reason: \\"Please use the relevant generic filter year: { lt: ... }\\")
+              year_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter year: { lte: ... }\\")
             }
 
             type actormovieMoviesAggregationSelection {
@@ -805,31 +805,31 @@ describe("lower case type names", () => {
               \\"\\"\\"Return movies where some of the related actors match this filter\\"\\"\\"
               actors_SOME: actorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
               createdAt: DateTimeScalarFilters
-              createdAt_EQ: DateTime
-              createdAt_GT: DateTime
-              createdAt_GTE: DateTime
-              createdAt_IN: [DateTime]
-              createdAt_LT: DateTime
-              createdAt_LTE: DateTime
+              createdAt_EQ: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { eq: ... }\\")
+              createdAt_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { gt: ... }\\")
+              createdAt_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { gte: ... }\\")
+              createdAt_IN: [DateTime] @deprecated(reason: \\"Please use the relevant generic filter createdAt: { in: ... }\\")
+              createdAt_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { lt: ... }\\")
+              createdAt_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { lte: ... }\\")
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
               testId: StringScalarFilters
-              testId_CONTAINS: String
-              testId_ENDS_WITH: String
-              testId_EQ: String
-              testId_IN: [String]
-              testId_STARTS_WITH: String
+              testId_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter testId: { contains: ... }\\")
+              testId_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter testId: { ends_with: ... }\\")
+              testId_EQ: String @deprecated(reason: \\"Please use the relevant generic filter testId: { eq: ... }\\")
+              testId_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter testId: { in: ... }\\")
+              testId_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter testId: { starts_with: ... }\\")
               year: IntScalarFilters
-              year_EQ: Int
-              year_GT: Int
-              year_GTE: Int
-              year_IN: [Int]
-              year_LT: Int
-              year_LTE: Int
+              year_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter year: { eq: ... }\\")
+              year_GT: Int @deprecated(reason: \\"Please use the relevant generic filter year: { gt: ... }\\")
+              year_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter year: { gte: ... }\\")
+              year_IN: [Int] @deprecated(reason: \\"Please use the relevant generic filter year: { in: ... }\\")
+              year_LT: Int @deprecated(reason: \\"Please use the relevant generic filter year: { lt: ... }\\")
+              year_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter year: { lte: ... }\\")
             }
 
             type movieactorActorsAggregationSelection {

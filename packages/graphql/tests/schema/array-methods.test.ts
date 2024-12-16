@@ -79,8 +79,8 @@ describe("Arrays Methods", () => {
               NOT: ActedInWhere
               OR: [ActedInWhere!]
               pay: FloatListFilters
-              pay_EQ: [Float!]
-              pay_INCLUDES: Float
+              pay_EQ: [Float!] @deprecated(reason: \\"Please use the relevant generic filter pay: { eq: ... }\\")
+              pay_INCLUDES: Float @deprecated(reason: \\"Please use the relevant generic filter pay: { includes: ... }\\")
             }
 
             type Actor {
@@ -322,11 +322,11 @@ describe("Arrays Methods", () => {
               \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
               actedIn_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  some: ... }' instead.\\")
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
             }
 
             type ActorsConnection {
@@ -686,21 +686,21 @@ describe("Arrays Methods", () => {
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
               averageRating: FloatScalarFilters
-              averageRating_EQ: Float
-              averageRating_GT: Float
-              averageRating_GTE: Float
-              averageRating_IN: [Float!]
-              averageRating_LT: Float
-              averageRating_LTE: Float
+              averageRating_EQ: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { eq: ... }\\")
+              averageRating_GT: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { gt: ... }\\")
+              averageRating_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { gte: ... }\\")
+              averageRating_IN: [Float!] @deprecated(reason: \\"Please use the relevant generic filter averageRating: { in: ... }\\")
+              averageRating_LT: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { lt: ... }\\")
+              averageRating_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { lte: ... }\\")
               id: IDScalarFilters
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID!]
-              id_STARTS_WITH: ID
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
               ratings: FloatListFilters
-              ratings_EQ: [Float!]
-              ratings_INCLUDES: Float
+              ratings_EQ: [Float!] @deprecated(reason: \\"Please use the relevant generic filter ratings: { eq: ... }\\")
+              ratings_INCLUDES: Float @deprecated(reason: \\"Please use the relevant generic filter ratings: { includes: ... }\\")
             }
 
             type MoviesConnection {

@@ -286,11 +286,11 @@ describe("Unions", () => {
               NOT: AuthorWhere
               OR: [AuthorWhere!]
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
               publications: AuthorPublicationsRelationshipFilters
               publicationsConnection: AuthorPublicationsConnectionFilters
               \\"\\"\\"
@@ -557,11 +557,11 @@ describe("Unions", () => {
               \\"\\"\\"Return Books where some of the related Authors match this filter\\"\\"\\"
               author_SOME: AuthorWhere @deprecated(reason: \\"Please use the relevant generic filter 'author: {  some: ... }' instead.\\")
               title: StringScalarFilters
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
             }
 
             type BooksConnection {
@@ -871,11 +871,11 @@ describe("Unions", () => {
               \\"\\"\\"Return Journals where some of the related Authors match this filter\\"\\"\\"
               author_SOME: AuthorWhere @deprecated(reason: \\"Please use the relevant generic filter 'author: {  some: ... }' instead.\\")
               subject: StringScalarFilters
-              subject_CONTAINS: String
-              subject_ENDS_WITH: String
-              subject_EQ: String
-              subject_IN: [String!]
-              subject_STARTS_WITH: String
+              subject_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter subject: { contains: ... }\\")
+              subject_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter subject: { ends_with: ... }\\")
+              subject_EQ: String @deprecated(reason: \\"Please use the relevant generic filter subject: { eq: ... }\\")
+              subject_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter subject: { in: ... }\\")
+              subject_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter subject: { starts_with: ... }\\")
             }
 
             type JournalsConnection {
@@ -1045,12 +1045,12 @@ describe("Unions", () => {
               NOT: WroteWhere
               OR: [WroteWhere!]
               words: IntScalarFilters
-              words_EQ: Int
-              words_GT: Int
-              words_GTE: Int
-              words_IN: [Int!]
-              words_LT: Int
-              words_LTE: Int
+              words_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter words: { eq: ... }\\")
+              words_GT: Int @deprecated(reason: \\"Please use the relevant generic filter words: { gt: ... }\\")
+              words_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter words: { gte: ... }\\")
+              words_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter words: { in: ... }\\")
+              words_LT: Int @deprecated(reason: \\"Please use the relevant generic filter words: { lt: ... }\\")
+              words_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter words: { lte: ... }\\")
             }"
         `);
     });

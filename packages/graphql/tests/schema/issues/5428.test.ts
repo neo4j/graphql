@@ -153,11 +153,11 @@ describe("https://github.com/neo4j/graphql/issues/5428", () => {
               AND: [TestWhere!]
               NOT: TestWhere
               Name: StringScalarFilters
-              Name_CONTAINS: String
-              Name_ENDS_WITH: String
-              Name_EQ: String
-              Name_IN: [String]
-              Name_STARTS_WITH: String
+              Name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter Name: { contains: ... }\\")
+              Name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter Name: { ends_with: ... }\\")
+              Name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter Name: { eq: ... }\\")
+              Name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter Name: { in: ... }\\")
+              Name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter Name: { starts_with: ... }\\")
               OR: [TestWhere!]
             }
 

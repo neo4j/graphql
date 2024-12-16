@@ -345,17 +345,17 @@ describe("@default directive", () => {
               NOT: UserInterfaceWhere
               OR: [UserInterfaceWhere!]
               fromInterface: StringScalarFilters
-              fromInterface_CONTAINS: String
-              fromInterface_ENDS_WITH: String
-              fromInterface_EQ: String
-              fromInterface_IN: [String!]
-              fromInterface_STARTS_WITH: String
+              fromInterface_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter fromInterface: { contains: ... }\\")
+              fromInterface_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter fromInterface: { ends_with: ... }\\")
+              fromInterface_EQ: String @deprecated(reason: \\"Please use the relevant generic filter fromInterface: { eq: ... }\\")
+              fromInterface_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter fromInterface: { in: ... }\\")
+              fromInterface_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter fromInterface: { starts_with: ... }\\")
               toBeOverridden: StringScalarFilters
-              toBeOverridden_CONTAINS: String
-              toBeOverridden_ENDS_WITH: String
-              toBeOverridden_EQ: String
-              toBeOverridden_IN: [String!]
-              toBeOverridden_STARTS_WITH: String
+              toBeOverridden_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter toBeOverridden: { contains: ... }\\")
+              toBeOverridden_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter toBeOverridden: { ends_with: ... }\\")
+              toBeOverridden_EQ: String @deprecated(reason: \\"Please use the relevant generic filter toBeOverridden: { eq: ... }\\")
+              toBeOverridden_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter toBeOverridden: { in: ... }\\")
+              toBeOverridden_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter toBeOverridden: { starts_with: ... }\\")
               typename_IN: [UserInterfaceImplementation!]
             }
 
@@ -412,55 +412,55 @@ describe("@default directive", () => {
               NOT: UserWhere
               OR: [UserWhere!]
               fromInterface: StringScalarFilters
-              fromInterface_CONTAINS: String
-              fromInterface_ENDS_WITH: String
-              fromInterface_EQ: String
-              fromInterface_IN: [String!]
-              fromInterface_STARTS_WITH: String
+              fromInterface_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter fromInterface: { contains: ... }\\")
+              fromInterface_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter fromInterface: { ends_with: ... }\\")
+              fromInterface_EQ: String @deprecated(reason: \\"Please use the relevant generic filter fromInterface: { eq: ... }\\")
+              fromInterface_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter fromInterface: { in: ... }\\")
+              fromInterface_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter fromInterface: { starts_with: ... }\\")
               id: IDScalarFilters
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID!]
-              id_STARTS_WITH: ID
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
               location: LocationEnumScalarFilters
-              location_EQ: Location
-              location_IN: [Location!]
+              location_EQ: Location @deprecated(reason: \\"Please use the relevant generic filter location: { eq: ... }\\")
+              location_IN: [Location!] @deprecated(reason: \\"Please use the relevant generic filter location: { in: ... }\\")
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
               numberOfFriends: IntScalarFilters
-              numberOfFriends_EQ: Int
-              numberOfFriends_GT: Int
-              numberOfFriends_GTE: Int
-              numberOfFriends_IN: [Int!]
-              numberOfFriends_LT: Int
-              numberOfFriends_LTE: Int
+              numberOfFriends_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter numberOfFriends: { eq: ... }\\")
+              numberOfFriends_GT: Int @deprecated(reason: \\"Please use the relevant generic filter numberOfFriends: { gt: ... }\\")
+              numberOfFriends_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter numberOfFriends: { gte: ... }\\")
+              numberOfFriends_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter numberOfFriends: { in: ... }\\")
+              numberOfFriends_LT: Int @deprecated(reason: \\"Please use the relevant generic filter numberOfFriends: { lt: ... }\\")
+              numberOfFriends_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter numberOfFriends: { lte: ... }\\")
               rating: FloatScalarFilters
-              rating_EQ: Float
-              rating_GT: Float
-              rating_GTE: Float
-              rating_IN: [Float!]
-              rating_LT: Float
-              rating_LTE: Float
+              rating_EQ: Float @deprecated(reason: \\"Please use the relevant generic filter rating: { eq: ... }\\")
+              rating_GT: Float @deprecated(reason: \\"Please use the relevant generic filter rating: { gt: ... }\\")
+              rating_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter rating: { gte: ... }\\")
+              rating_IN: [Float!] @deprecated(reason: \\"Please use the relevant generic filter rating: { in: ... }\\")
+              rating_LT: Float @deprecated(reason: \\"Please use the relevant generic filter rating: { lt: ... }\\")
+              rating_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter rating: { lte: ... }\\")
               toBeOverridden: StringScalarFilters
-              toBeOverridden_CONTAINS: String
-              toBeOverridden_ENDS_WITH: String
-              toBeOverridden_EQ: String
-              toBeOverridden_IN: [String!]
-              toBeOverridden_STARTS_WITH: String
+              toBeOverridden_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter toBeOverridden: { contains: ... }\\")
+              toBeOverridden_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter toBeOverridden: { ends_with: ... }\\")
+              toBeOverridden_EQ: String @deprecated(reason: \\"Please use the relevant generic filter toBeOverridden: { eq: ... }\\")
+              toBeOverridden_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter toBeOverridden: { in: ... }\\")
+              toBeOverridden_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter toBeOverridden: { starts_with: ... }\\")
               verified: BooleanScalarFilters
               verifiedDate: DateTimeScalarFilters
-              verifiedDate_EQ: DateTime
-              verifiedDate_GT: DateTime
-              verifiedDate_GTE: DateTime
-              verifiedDate_IN: [DateTime!]
-              verifiedDate_LT: DateTime
-              verifiedDate_LTE: DateTime
-              verified_EQ: Boolean
+              verifiedDate_EQ: DateTime @deprecated(reason: \\"Please use the relevant generic filter verifiedDate: { eq: ... }\\")
+              verifiedDate_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter verifiedDate: { gt: ... }\\")
+              verifiedDate_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter verifiedDate: { gte: ... }\\")
+              verifiedDate_IN: [DateTime!] @deprecated(reason: \\"Please use the relevant generic filter verifiedDate: { in: ... }\\")
+              verifiedDate_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter verifiedDate: { lt: ... }\\")
+              verifiedDate_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter verifiedDate: { lte: ... }\\")
+              verified_EQ: Boolean @deprecated(reason: \\"Please use the relevant generic filter verified: { eq: ... }\\")
             }
 
             type UsersConnection {

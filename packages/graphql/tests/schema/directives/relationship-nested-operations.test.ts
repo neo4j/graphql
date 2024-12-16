@@ -281,11 +281,11 @@ describe("Relationship nested operations", () => {
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
                   id: IDScalarFilters
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -352,11 +352,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonWhere
                   OR: [PersonWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                 }
 
                 type Query {
@@ -695,11 +695,11 @@ describe("Relationship nested operations", () => {
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
                   id: IDScalarFilters
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -766,11 +766,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonWhere
                   OR: [PersonWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                 }
 
                 type Query {
@@ -1109,11 +1109,11 @@ describe("Relationship nested operations", () => {
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
                   id: IDScalarFilters
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -1184,11 +1184,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonWhere
                   OR: [PersonWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                 }
 
                 type Query {
@@ -1522,11 +1522,11 @@ describe("Relationship nested operations", () => {
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
                   id: IDScalarFilters
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -1593,11 +1593,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonWhere
                   OR: [PersonWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                 }
 
                 type Query {
@@ -1935,11 +1935,11 @@ describe("Relationship nested operations", () => {
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
                   id: IDScalarFilters
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -2006,11 +2006,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonWhere
                   OR: [PersonWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                 }
 
                 type Query {
@@ -2344,11 +2344,11 @@ describe("Relationship nested operations", () => {
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
                   id: IDScalarFilters
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -2415,11 +2415,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonWhere
                   OR: [PersonWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                 }
 
                 type Query {
@@ -2744,11 +2744,11 @@ describe("Relationship nested operations", () => {
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
                   id: IDScalarFilters
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -2815,11 +2815,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonWhere
                   OR: [PersonWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                 }
 
                 type Query {
@@ -3163,11 +3163,11 @@ describe("Relationship nested operations", () => {
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
                   id: IDScalarFilters
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -3237,17 +3237,17 @@ describe("Relationship nested operations", () => {
                   NOT: PersonWhere
                   OR: [PersonWhere!]
                   id: IDScalarFilters
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID!]
-                  id_STARTS_WITH: ID
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                 }
 
                 type Query {
@@ -3721,11 +3721,11 @@ describe("Relationship nested operations", () => {
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
                   id: IDScalarFilters
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
                   producers: MovieProducersRelationshipFilters
                   producersAggregate: MovieProducersAggregateInput
                   producersConnection: MovieProducersConnectionFilters
@@ -3823,11 +3823,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonWhere
                   OR: [PersonWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                 }
 
                 type Query {
@@ -4276,11 +4276,11 @@ describe("Relationship nested operations", () => {
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
                   id: IDScalarFilters
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
                   producers: MovieProducersRelationshipFilters
                   producersAggregate: MovieProducersAggregateInput
                   producersConnection: MovieProducersConnectionFilters
@@ -4374,11 +4374,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonWhere
                   OR: [PersonWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                 }
 
                 type Query {
@@ -4662,11 +4662,11 @@ describe("Relationship nested operations", () => {
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
                   id: IDScalarFilters
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -4732,11 +4732,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                 }
 
                 type PersonOnesConnection {
@@ -4780,11 +4780,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
                   nameTwo: StringScalarFilters
-                  nameTwo_CONTAINS: String
-                  nameTwo_ENDS_WITH: String
-                  nameTwo_EQ: String
-                  nameTwo_IN: [String]
-                  nameTwo_STARTS_WITH: String
+                  nameTwo_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { contains: ... }\\")
+                  nameTwo_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { ends_with: ... }\\")
+                  nameTwo_EQ: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { eq: ... }\\")
+                  nameTwo_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { in: ... }\\")
+                  nameTwo_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { starts_with: ... }\\")
                 }
 
                 type PersonTwosConnection {
@@ -5112,11 +5112,11 @@ describe("Relationship nested operations", () => {
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
                   id: IDScalarFilters
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -5182,11 +5182,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                 }
 
                 type PersonOnesConnection {
@@ -5230,11 +5230,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
                   nameTwo: StringScalarFilters
-                  nameTwo_CONTAINS: String
-                  nameTwo_ENDS_WITH: String
-                  nameTwo_EQ: String
-                  nameTwo_IN: [String]
-                  nameTwo_STARTS_WITH: String
+                  nameTwo_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { contains: ... }\\")
+                  nameTwo_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { ends_with: ... }\\")
+                  nameTwo_EQ: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { eq: ... }\\")
+                  nameTwo_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { in: ... }\\")
+                  nameTwo_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { starts_with: ... }\\")
                 }
 
                 type PersonTwosConnection {
@@ -5562,11 +5562,11 @@ describe("Relationship nested operations", () => {
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
                   id: IDScalarFilters
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -5636,11 +5636,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                 }
 
                 type PersonOnesConnection {
@@ -5688,11 +5688,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
                   nameTwo: StringScalarFilters
-                  nameTwo_CONTAINS: String
-                  nameTwo_ENDS_WITH: String
-                  nameTwo_EQ: String
-                  nameTwo_IN: [String]
-                  nameTwo_STARTS_WITH: String
+                  nameTwo_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { contains: ... }\\")
+                  nameTwo_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { ends_with: ... }\\")
+                  nameTwo_EQ: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { eq: ... }\\")
+                  nameTwo_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { in: ... }\\")
+                  nameTwo_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { starts_with: ... }\\")
                 }
 
                 type PersonTwosConnection {
@@ -6006,11 +6006,11 @@ describe("Relationship nested operations", () => {
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
                   id: IDScalarFilters
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -6076,11 +6076,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                 }
 
                 type PersonOnesConnection {
@@ -6124,11 +6124,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
                   nameTwo: StringScalarFilters
-                  nameTwo_CONTAINS: String
-                  nameTwo_ENDS_WITH: String
-                  nameTwo_EQ: String
-                  nameTwo_IN: [String]
-                  nameTwo_STARTS_WITH: String
+                  nameTwo_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { contains: ... }\\")
+                  nameTwo_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { ends_with: ... }\\")
+                  nameTwo_EQ: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { eq: ... }\\")
+                  nameTwo_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { in: ... }\\")
+                  nameTwo_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { starts_with: ... }\\")
                 }
 
                 type PersonTwosConnection {
@@ -6451,11 +6451,11 @@ describe("Relationship nested operations", () => {
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
                   id: IDScalarFilters
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -6521,11 +6521,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                 }
 
                 type PersonOnesConnection {
@@ -6569,11 +6569,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
                   nameTwo: StringScalarFilters
-                  nameTwo_CONTAINS: String
-                  nameTwo_ENDS_WITH: String
-                  nameTwo_EQ: String
-                  nameTwo_IN: [String]
-                  nameTwo_STARTS_WITH: String
+                  nameTwo_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { contains: ... }\\")
+                  nameTwo_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { ends_with: ... }\\")
+                  nameTwo_EQ: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { eq: ... }\\")
+                  nameTwo_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { in: ... }\\")
+                  nameTwo_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { starts_with: ... }\\")
                 }
 
                 type PersonTwosConnection {
@@ -6887,11 +6887,11 @@ describe("Relationship nested operations", () => {
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
                   id: IDScalarFilters
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -6957,11 +6957,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                 }
 
                 type PersonOnesConnection {
@@ -7005,11 +7005,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
                   nameTwo: StringScalarFilters
-                  nameTwo_CONTAINS: String
-                  nameTwo_ENDS_WITH: String
-                  nameTwo_EQ: String
-                  nameTwo_IN: [String]
-                  nameTwo_STARTS_WITH: String
+                  nameTwo_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { contains: ... }\\")
+                  nameTwo_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { ends_with: ... }\\")
+                  nameTwo_EQ: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { eq: ... }\\")
+                  nameTwo_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { in: ... }\\")
+                  nameTwo_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { starts_with: ... }\\")
                 }
 
                 type PersonTwosConnection {
@@ -7300,11 +7300,11 @@ describe("Relationship nested operations", () => {
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
                   id: IDScalarFilters
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -7370,11 +7370,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                 }
 
                 type PersonOnesConnection {
@@ -7418,11 +7418,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
                   nameTwo: StringScalarFilters
-                  nameTwo_CONTAINS: String
-                  nameTwo_ENDS_WITH: String
-                  nameTwo_EQ: String
-                  nameTwo_IN: [String]
-                  nameTwo_STARTS_WITH: String
+                  nameTwo_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { contains: ... }\\")
+                  nameTwo_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { ends_with: ... }\\")
+                  nameTwo_EQ: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { eq: ... }\\")
+                  nameTwo_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { in: ... }\\")
+                  nameTwo_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { starts_with: ... }\\")
                 }
 
                 type PersonTwosConnection {
@@ -7715,11 +7715,11 @@ describe("Relationship nested operations", () => {
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
                   id: IDScalarFilters
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -7788,17 +7788,17 @@ describe("Relationship nested operations", () => {
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
                   id: IDScalarFilters
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID!]
-                  id_STARTS_WITH: ID
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                 }
 
                 type PersonOnesConnection {
@@ -7845,17 +7845,17 @@ describe("Relationship nested operations", () => {
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
                   id: IDScalarFilters
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID!]
-                  id_STARTS_WITH: ID
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
                   nameTwo: StringScalarFilters
-                  nameTwo_CONTAINS: String
-                  nameTwo_ENDS_WITH: String
-                  nameTwo_EQ: String
-                  nameTwo_IN: [String]
-                  nameTwo_STARTS_WITH: String
+                  nameTwo_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { contains: ... }\\")
+                  nameTwo_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { ends_with: ... }\\")
+                  nameTwo_EQ: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { eq: ... }\\")
+                  nameTwo_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { in: ... }\\")
+                  nameTwo_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { starts_with: ... }\\")
                 }
 
                 type PersonTwosConnection {
@@ -8321,11 +8321,11 @@ describe("Relationship nested operations", () => {
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
                   id: IDScalarFilters
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
                   producers: MovieProducersRelationshipFilters
                   producersConnection: MovieProducersConnectionFilters
                   \\"\\"\\"
@@ -8421,11 +8421,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                 }
 
                 type PersonOnesConnection {
@@ -8473,11 +8473,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
                   nameTwo: StringScalarFilters
-                  nameTwo_CONTAINS: String
-                  nameTwo_ENDS_WITH: String
-                  nameTwo_EQ: String
-                  nameTwo_IN: [String]
-                  nameTwo_STARTS_WITH: String
+                  nameTwo_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { contains: ... }\\")
+                  nameTwo_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { ends_with: ... }\\")
+                  nameTwo_EQ: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { eq: ... }\\")
+                  nameTwo_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { in: ... }\\")
+                  nameTwo_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { starts_with: ... }\\")
                 }
 
                 type PersonTwosConnection {
@@ -8892,11 +8892,11 @@ describe("Relationship nested operations", () => {
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
                   id: IDScalarFilters
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
                   producers: MovieProducersRelationshipFilters
                   producersConnection: MovieProducersConnectionFilters
                   \\"\\"\\"
@@ -8988,11 +8988,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                 }
 
                 type PersonOnesConnection {
@@ -9036,11 +9036,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
                   nameTwo: StringScalarFilters
-                  nameTwo_CONTAINS: String
-                  nameTwo_ENDS_WITH: String
-                  nameTwo_EQ: String
-                  nameTwo_IN: [String]
-                  nameTwo_STARTS_WITH: String
+                  nameTwo_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { contains: ... }\\")
+                  nameTwo_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { ends_with: ... }\\")
+                  nameTwo_EQ: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { eq: ... }\\")
+                  nameTwo_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { in: ... }\\")
+                  nameTwo_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { starts_with: ... }\\")
                 }
 
                 type PersonTwosConnection {
@@ -9411,11 +9411,11 @@ describe("Relationship nested operations", () => {
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
                   id: IDScalarFilters
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -9510,14 +9510,14 @@ describe("Relationship nested operations", () => {
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                   someExtraProp: IntListFilters
-                  someExtraProp_EQ: [Int!]
-                  someExtraProp_INCLUDES: Int
+                  someExtraProp_EQ: [Int!] @deprecated(reason: \\"Please use the relevant generic filter someExtraProp: { eq: ... }\\")
+                  someExtraProp_INCLUDES: Int @deprecated(reason: \\"Please use the relevant generic filter someExtraProp: { includes: ... }\\")
                 }
 
                 type PersonOnesConnection {
@@ -9568,11 +9568,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                 }
 
                 type PersonTwosConnection {
@@ -9586,11 +9586,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonWhere
                   OR: [PersonWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                   typename_IN: [PersonImplementation!]
                 }
 
@@ -9968,11 +9968,11 @@ describe("Relationship nested operations", () => {
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
                   id: IDScalarFilters
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -10072,14 +10072,14 @@ describe("Relationship nested operations", () => {
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                   someExtraProp: IntListFilters
-                  someExtraProp_EQ: [Int!]
-                  someExtraProp_INCLUDES: Int
+                  someExtraProp_EQ: [Int!] @deprecated(reason: \\"Please use the relevant generic filter someExtraProp: { eq: ... }\\")
+                  someExtraProp_INCLUDES: Int @deprecated(reason: \\"Please use the relevant generic filter someExtraProp: { includes: ... }\\")
                 }
 
                 type PersonOnesConnection {
@@ -10130,11 +10130,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                 }
 
                 type PersonTwosConnection {
@@ -10148,11 +10148,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonWhere
                   OR: [PersonWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                   typename_IN: [PersonImplementation!]
                 }
 
@@ -10530,11 +10530,11 @@ describe("Relationship nested operations", () => {
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
                   id: IDScalarFilters
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -10633,14 +10633,14 @@ describe("Relationship nested operations", () => {
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                   someExtraProp: IntListFilters
-                  someExtraProp_EQ: [Int!]
-                  someExtraProp_INCLUDES: Int
+                  someExtraProp_EQ: [Int!] @deprecated(reason: \\"Please use the relevant generic filter someExtraProp: { eq: ... }\\")
+                  someExtraProp_INCLUDES: Int @deprecated(reason: \\"Please use the relevant generic filter someExtraProp: { includes: ... }\\")
                 }
 
                 type PersonOnesConnection {
@@ -10691,11 +10691,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                 }
 
                 type PersonTwosConnection {
@@ -10709,11 +10709,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonWhere
                   OR: [PersonWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                   typename_IN: [PersonImplementation!]
                 }
 
@@ -11086,11 +11086,11 @@ describe("Relationship nested operations", () => {
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
                   id: IDScalarFilters
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -11185,14 +11185,14 @@ describe("Relationship nested operations", () => {
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                   someExtraProp: IntListFilters
-                  someExtraProp_EQ: [Int!]
-                  someExtraProp_INCLUDES: Int
+                  someExtraProp_EQ: [Int!] @deprecated(reason: \\"Please use the relevant generic filter someExtraProp: { eq: ... }\\")
+                  someExtraProp_INCLUDES: Int @deprecated(reason: \\"Please use the relevant generic filter someExtraProp: { includes: ... }\\")
                 }
 
                 type PersonOnesConnection {
@@ -11243,11 +11243,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                 }
 
                 type PersonTwosConnection {
@@ -11266,11 +11266,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonWhere
                   OR: [PersonWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                   typename_IN: [PersonImplementation!]
                 }
 
@@ -11647,11 +11647,11 @@ describe("Relationship nested operations", () => {
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
                   id: IDScalarFilters
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -11746,14 +11746,14 @@ describe("Relationship nested operations", () => {
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                   someExtraProp: IntListFilters
-                  someExtraProp_EQ: [Int!]
-                  someExtraProp_INCLUDES: Int
+                  someExtraProp_EQ: [Int!] @deprecated(reason: \\"Please use the relevant generic filter someExtraProp: { eq: ... }\\")
+                  someExtraProp_INCLUDES: Int @deprecated(reason: \\"Please use the relevant generic filter someExtraProp: { includes: ... }\\")
                 }
 
                 type PersonOnesConnection {
@@ -11804,11 +11804,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                 }
 
                 type PersonTwosConnection {
@@ -11822,11 +11822,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonWhere
                   OR: [PersonWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                   typename_IN: [PersonImplementation!]
                 }
 
@@ -12199,11 +12199,11 @@ describe("Relationship nested operations", () => {
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
                   id: IDScalarFilters
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -12298,14 +12298,14 @@ describe("Relationship nested operations", () => {
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                   someExtraProp: IntListFilters
-                  someExtraProp_EQ: [Int!]
-                  someExtraProp_INCLUDES: Int
+                  someExtraProp_EQ: [Int!] @deprecated(reason: \\"Please use the relevant generic filter someExtraProp: { eq: ... }\\")
+                  someExtraProp_INCLUDES: Int @deprecated(reason: \\"Please use the relevant generic filter someExtraProp: { includes: ... }\\")
                 }
 
                 type PersonOnesConnection {
@@ -12356,11 +12356,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                 }
 
                 type PersonTwosConnection {
@@ -12374,11 +12374,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonWhere
                   OR: [PersonWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                   typename_IN: [PersonImplementation!]
                 }
 
@@ -12891,11 +12891,11 @@ describe("Relationship nested operations", () => {
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
                   id: IDScalarFilters
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
                   producers: MovieProducersRelationshipFilters
                   producersAggregate: MovieProducersAggregateInput
                   producersConnection: MovieProducersConnectionFilters
@@ -13026,14 +13026,14 @@ describe("Relationship nested operations", () => {
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                   someExtraProp: IntListFilters
-                  someExtraProp_EQ: [Int!]
-                  someExtraProp_INCLUDES: Int
+                  someExtraProp_EQ: [Int!] @deprecated(reason: \\"Please use the relevant generic filter someExtraProp: { eq: ... }\\")
+                  someExtraProp_INCLUDES: Int @deprecated(reason: \\"Please use the relevant generic filter someExtraProp: { includes: ... }\\")
                 }
 
                 type PersonOnesConnection {
@@ -13084,11 +13084,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                 }
 
                 type PersonTwosConnection {
@@ -13107,11 +13107,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonWhere
                   OR: [PersonWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                   typename_IN: [PersonImplementation!]
                 }
 
@@ -13609,11 +13609,11 @@ describe("Relationship nested operations", () => {
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
                   actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
                   id: IDScalarFilters
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
                   producers: MovieProducersRelationshipFilters
                   producersAggregate: MovieProducersAggregateInput
                   producersConnection: MovieProducersConnectionFilters
@@ -13740,14 +13740,14 @@ describe("Relationship nested operations", () => {
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                   someExtraProp: IntListFilters
-                  someExtraProp_EQ: [Int!]
-                  someExtraProp_INCLUDES: Int
+                  someExtraProp_EQ: [Int!] @deprecated(reason: \\"Please use the relevant generic filter someExtraProp: { eq: ... }\\")
+                  someExtraProp_INCLUDES: Int @deprecated(reason: \\"Please use the relevant generic filter someExtraProp: { includes: ... }\\")
                 }
 
                 type PersonOnesConnection {
@@ -13798,11 +13798,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                 }
 
                 type PersonTwosConnection {
@@ -13816,11 +13816,11 @@ describe("Relationship nested operations", () => {
                   NOT: PersonWhere
                   OR: [PersonWhere!]
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                   typename_IN: [PersonImplementation!]
                 }
 

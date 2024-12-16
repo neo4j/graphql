@@ -265,11 +265,11 @@ describe("Connection with interfaces", () => {
               NOT: CreatureWhere
               OR: [CreatureWhere!]
               id: IDScalarFilters
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
               movies: CreatureMoviesRelationshipFilters
               moviesAggregate: CreatureMoviesAggregateInput
               moviesConnection: CreatureMoviesConnectionFilters
@@ -559,17 +559,17 @@ describe("Connection with interfaces", () => {
               \\"\\"\\"Return Movies where some of the related Creatures match this filter\\"\\"\\"
               director_SOME: CreatureWhere @deprecated(reason: \\"Please use the relevant generic filter 'director: {  some: ... }' instead.\\")
               id: IDScalarFilters
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
               title: StringScalarFilters
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
             }
 
             type MoviesConnection {
@@ -754,11 +754,11 @@ describe("Connection with interfaces", () => {
               NOT: PersonWhere
               OR: [PersonWhere!]
               id: IDScalarFilters
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
               movies: PersonMoviesRelationshipFilters
               moviesAggregate: PersonMoviesAggregateInput
               moviesConnection: PersonMoviesConnectionFilters
@@ -1005,11 +1005,11 @@ describe("Connection with interfaces", () => {
               \\"\\"\\"
               director_SOME: CreatureWhere @deprecated(reason: \\"Please use the relevant generic filter 'director: {  some: ... }' instead.\\")
               id: IDScalarFilters
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
               typename_IN: [ProductionImplementation!]
             }
 
@@ -1234,24 +1234,24 @@ describe("Connection with interfaces", () => {
               \\"\\"\\"Return Series where some of the related Creatures match this filter\\"\\"\\"
               director_SOME: CreatureWhere @deprecated(reason: \\"Please use the relevant generic filter 'director: {  some: ... }' instead.\\")
               episode: IntScalarFilters
-              episode_EQ: Int
-              episode_GT: Int
-              episode_GTE: Int
-              episode_IN: [Int!]
-              episode_LT: Int
-              episode_LTE: Int
+              episode_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter episode: { eq: ... }\\")
+              episode_GT: Int @deprecated(reason: \\"Please use the relevant generic filter episode: { gt: ... }\\")
+              episode_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter episode: { gte: ... }\\")
+              episode_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter episode: { in: ... }\\")
+              episode_LT: Int @deprecated(reason: \\"Please use the relevant generic filter episode: { lt: ... }\\")
+              episode_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter episode: { lte: ... }\\")
               id: IDScalarFilters
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
               title: StringScalarFilters
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"

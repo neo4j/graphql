@@ -97,26 +97,26 @@ describe("200", () => {
               NOT: CategoryWhere
               OR: [CategoryWhere!]
               categoryId: IDScalarFilters
-              categoryId_CONTAINS: ID
-              categoryId_ENDS_WITH: ID
-              categoryId_EQ: ID
-              categoryId_IN: [ID!]
-              categoryId_STARTS_WITH: ID
+              categoryId_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter categoryId: { contains: ... }\\")
+              categoryId_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter categoryId: { ends_with: ... }\\")
+              categoryId_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter categoryId: { eq: ... }\\")
+              categoryId_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter categoryId: { in: ... }\\")
+              categoryId_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter categoryId: { starts_with: ... }\\")
               description: StringScalarFilters
-              description_CONTAINS: String
-              description_ENDS_WITH: String
-              description_EQ: String
-              description_IN: [String!]
-              description_STARTS_WITH: String
+              description_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter description: { contains: ... }\\")
+              description_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { ends_with: ... }\\")
+              description_EQ: String @deprecated(reason: \\"Please use the relevant generic filter description: { eq: ... }\\")
+              description_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter description: { in: ... }\\")
+              description_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { starts_with: ... }\\")
               exampleImageLocations: StringListFilters
-              exampleImageLocations_EQ: [String!]
-              exampleImageLocations_INCLUDES: String
+              exampleImageLocations_EQ: [String!] @deprecated(reason: \\"Please use the relevant generic filter exampleImageLocations: { eq: ... }\\")
+              exampleImageLocations_INCLUDES: String @deprecated(reason: \\"Please use the relevant generic filter exampleImageLocations: { includes: ... }\\")
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
             }
 
             type CreateCategoriesMutationResponse {

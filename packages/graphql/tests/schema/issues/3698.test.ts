@@ -345,11 +345,11 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               NOT: GenreSubscriptionWhere
               OR: [GenreSubscriptionWhere!]
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
             }
 
             input GenreUpdateInput {
@@ -370,11 +370,11 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               NOT: GenreWhere
               OR: [GenreWhere!]
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
               product: GenreProductRelationshipFilters
               productAggregate: GenreProductAggregateInput
               productConnection: GenreProductConnectionFilters
@@ -464,23 +464,23 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               NOT: IProductWhere
               OR: [IProductWhere!]
               id: StringScalarFilters
-              id_CONTAINS: String
-              id_ENDS_WITH: String
-              id_EQ: String
-              id_IN: [String!]
-              id_STARTS_WITH: String
+              id_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_EQ: String @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
               info: StringScalarFilters
-              info_CONTAINS: String
-              info_ENDS_WITH: String
-              info_EQ: String
-              info_IN: [String!]
-              info_STARTS_WITH: String
+              info_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter info: { contains: ... }\\")
+              info_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter info: { ends_with: ... }\\")
+              info_EQ: String @deprecated(reason: \\"Please use the relevant generic filter info: { eq: ... }\\")
+              info_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter info: { in: ... }\\")
+              info_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter info: { starts_with: ... }\\")
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
               typename_IN: [IProductImplementation!]
             }
 
@@ -693,17 +693,17 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               NOT: MovieSubscriptionWhere
               OR: [MovieSubscriptionWhere!]
               id: StringScalarFilters
-              id_CONTAINS: String
-              id_ENDS_WITH: String
-              id_EQ: String
-              id_IN: [String!]
-              id_STARTS_WITH: String
+              id_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_EQ: String @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
             }
 
             input MovieUpdateInput {
@@ -753,17 +753,17 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               \\"\\"\\"Return Movies where some of the related Genres match this filter\\"\\"\\"
               genre_SOME: GenreWhere @deprecated(reason: \\"Please use the relevant generic filter 'genre: {  some: ... }' instead.\\")
               id: StringScalarFilters
-              id_CONTAINS: String
-              id_ENDS_WITH: String
-              id_EQ: String
-              id_IN: [String!]
-              id_STARTS_WITH: String
+              id_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_EQ: String @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
             }
 
             type MoviesConnection {

@@ -100,17 +100,17 @@ describe("@selectable", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               description: StringScalarFilters
-              description_CONTAINS: String
-              description_ENDS_WITH: String
-              description_EQ: String
-              description_IN: [String]
-              description_STARTS_WITH: String
+              description_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter description: { contains: ... }\\")
+              description_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { ends_with: ... }\\")
+              description_EQ: String @deprecated(reason: \\"Please use the relevant generic filter description: { eq: ... }\\")
+              description_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter description: { in: ... }\\")
+              description_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { starts_with: ... }\\")
               title: StringScalarFilters
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
             }
 
             type MoviesConnection {
@@ -264,17 +264,17 @@ describe("@selectable", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               description: StringScalarFilters
-              description_CONTAINS: String
-              description_ENDS_WITH: String
-              description_EQ: String
-              description_IN: [String]
-              description_STARTS_WITH: String
+              description_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter description: { contains: ... }\\")
+              description_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { ends_with: ... }\\")
+              description_EQ: String @deprecated(reason: \\"Please use the relevant generic filter description: { eq: ... }\\")
+              description_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter description: { in: ... }\\")
+              description_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { starts_with: ... }\\")
               title: StringScalarFilters
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
             }
 
             type MoviesConnection {
@@ -427,17 +427,17 @@ describe("@selectable", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               description: StringScalarFilters
-              description_CONTAINS: String
-              description_ENDS_WITH: String
-              description_EQ: String
-              description_IN: [String]
-              description_STARTS_WITH: String
+              description_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter description: { contains: ... }\\")
+              description_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { ends_with: ... }\\")
+              description_EQ: String @deprecated(reason: \\"Please use the relevant generic filter description: { eq: ... }\\")
+              description_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter description: { in: ... }\\")
+              description_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { starts_with: ... }\\")
               title: StringScalarFilters
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
             }
 
             type MoviesConnection {
@@ -609,17 +609,17 @@ describe("@selectable", () => {
               NOT: MovieSubscriptionWhere
               OR: [MovieSubscriptionWhere!]
               description: StringScalarFilters
-              description_CONTAINS: String
-              description_ENDS_WITH: String
-              description_EQ: String
-              description_IN: [String]
-              description_STARTS_WITH: String
+              description_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter description: { contains: ... }\\")
+              description_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { ends_with: ... }\\")
+              description_EQ: String @deprecated(reason: \\"Please use the relevant generic filter description: { eq: ... }\\")
+              description_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter description: { in: ... }\\")
+              description_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { starts_with: ... }\\")
               title: StringScalarFilters
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
             }
 
             input MovieUpdateInput {
@@ -641,17 +641,17 @@ describe("@selectable", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               description: StringScalarFilters
-              description_CONTAINS: String
-              description_ENDS_WITH: String
-              description_EQ: String
-              description_IN: [String]
-              description_STARTS_WITH: String
+              description_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter description: { contains: ... }\\")
+              description_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { ends_with: ... }\\")
+              description_EQ: String @deprecated(reason: \\"Please use the relevant generic filter description: { eq: ... }\\")
+              description_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter description: { in: ... }\\")
+              description_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { starts_with: ... }\\")
               title: StringScalarFilters
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
             }
 
             type MoviesConnection {
@@ -959,11 +959,11 @@ describe("@selectable", () => {
                   \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
                   actedIn_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  some: ... }' instead.\\")
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String!]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                 }
 
                 type ActorsConnection {
@@ -1063,17 +1063,17 @@ describe("@selectable", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   description: StringScalarFilters
-                  description_CONTAINS: String
-                  description_ENDS_WITH: String
-                  description_EQ: String
-                  description_IN: [String]
-                  description_STARTS_WITH: String
+                  description_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter description: { contains: ... }\\")
+                  description_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { ends_with: ... }\\")
+                  description_EQ: String @deprecated(reason: \\"Please use the relevant generic filter description: { eq: ... }\\")
+                  description_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter description: { in: ... }\\")
+                  description_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { starts_with: ... }\\")
                   title: StringScalarFilters
-                  title_CONTAINS: String
-                  title_ENDS_WITH: String
-                  title_EQ: String
-                  title_IN: [String!]
-                  title_STARTS_WITH: String
+                  title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+                  title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+                  title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+                  title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+                  title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -1408,11 +1408,11 @@ describe("@selectable", () => {
                   \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
                   actedIn_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  some: ... }' instead.\\")
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String!]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                 }
 
                 type ActorsConnection {
@@ -1512,17 +1512,17 @@ describe("@selectable", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   description: StringScalarFilters
-                  description_CONTAINS: String
-                  description_ENDS_WITH: String
-                  description_EQ: String
-                  description_IN: [String]
-                  description_STARTS_WITH: String
+                  description_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter description: { contains: ... }\\")
+                  description_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { ends_with: ... }\\")
+                  description_EQ: String @deprecated(reason: \\"Please use the relevant generic filter description: { eq: ... }\\")
+                  description_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter description: { in: ... }\\")
+                  description_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { starts_with: ... }\\")
                   title: StringScalarFilters
-                  title_CONTAINS: String
-                  title_ENDS_WITH: String
-                  title_EQ: String
-                  title_IN: [String!]
-                  title_STARTS_WITH: String
+                  title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+                  title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+                  title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+                  title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+                  title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -1848,11 +1848,11 @@ describe("@selectable", () => {
                   \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
                   actedIn_SOME: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  some: ... }' instead.\\")
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String!]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                 }
 
                 type ActorsConnection {
@@ -1937,17 +1937,17 @@ describe("@selectable", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   description: StringScalarFilters
-                  description_CONTAINS: String
-                  description_ENDS_WITH: String
-                  description_EQ: String
-                  description_IN: [String]
-                  description_STARTS_WITH: String
+                  description_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter description: { contains: ... }\\")
+                  description_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { ends_with: ... }\\")
+                  description_EQ: String @deprecated(reason: \\"Please use the relevant generic filter description: { eq: ... }\\")
+                  description_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter description: { in: ... }\\")
+                  description_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { starts_with: ... }\\")
                   title: StringScalarFilters
-                  title_CONTAINS: String
-                  title_ENDS_WITH: String
-                  title_EQ: String
-                  title_IN: [String!]
-                  title_STARTS_WITH: String
+                  title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+                  title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+                  title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+                  title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+                  title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -2047,17 +2047,17 @@ describe("@selectable", () => {
                   NOT: SeriesWhere
                   OR: [SeriesWhere!]
                   description: StringScalarFilters
-                  description_CONTAINS: String
-                  description_ENDS_WITH: String
-                  description_EQ: String
-                  description_IN: [String]
-                  description_STARTS_WITH: String
+                  description_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter description: { contains: ... }\\")
+                  description_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { ends_with: ... }\\")
+                  description_EQ: String @deprecated(reason: \\"Please use the relevant generic filter description: { eq: ... }\\")
+                  description_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter description: { in: ... }\\")
+                  description_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { starts_with: ... }\\")
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String!]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                 }
 
                 \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -2359,11 +2359,11 @@ describe("@selectable", () => {
                   \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
                   actedIn_SOME: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  some: ... }' instead.\\")
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String!]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                 }
 
                 type ActorsConnection {
@@ -2448,17 +2448,17 @@ describe("@selectable", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   description: StringScalarFilters
-                  description_CONTAINS: String
-                  description_ENDS_WITH: String
-                  description_EQ: String
-                  description_IN: [String]
-                  description_STARTS_WITH: String
+                  description_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter description: { contains: ... }\\")
+                  description_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { ends_with: ... }\\")
+                  description_EQ: String @deprecated(reason: \\"Please use the relevant generic filter description: { eq: ... }\\")
+                  description_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter description: { in: ... }\\")
+                  description_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { starts_with: ... }\\")
                   title: StringScalarFilters
-                  title_CONTAINS: String
-                  title_ENDS_WITH: String
-                  title_EQ: String
-                  title_IN: [String!]
-                  title_STARTS_WITH: String
+                  title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+                  title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+                  title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+                  title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+                  title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -2558,17 +2558,17 @@ describe("@selectable", () => {
                   NOT: SeriesWhere
                   OR: [SeriesWhere!]
                   description: StringScalarFilters
-                  description_CONTAINS: String
-                  description_ENDS_WITH: String
-                  description_EQ: String
-                  description_IN: [String]
-                  description_STARTS_WITH: String
+                  description_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter description: { contains: ... }\\")
+                  description_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { ends_with: ... }\\")
+                  description_EQ: String @deprecated(reason: \\"Please use the relevant generic filter description: { eq: ... }\\")
+                  description_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter description: { in: ... }\\")
+                  description_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { starts_with: ... }\\")
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String!]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                 }
 
                 \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -2865,11 +2865,11 @@ describe("@selectable", () => {
                   \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
                   actedIn_SOME: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  some: ... }' instead.\\")
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String!]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                 }
 
                 type ActorsConnection {
@@ -2970,17 +2970,17 @@ describe("@selectable", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   description: StringScalarFilters
-                  description_CONTAINS: String
-                  description_ENDS_WITH: String
-                  description_EQ: String
-                  description_IN: [String]
-                  description_STARTS_WITH: String
+                  description_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter description: { contains: ... }\\")
+                  description_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { ends_with: ... }\\")
+                  description_EQ: String @deprecated(reason: \\"Please use the relevant generic filter description: { eq: ... }\\")
+                  description_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter description: { in: ... }\\")
+                  description_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { starts_with: ... }\\")
                   title: StringScalarFilters
-                  title_CONTAINS: String
-                  title_ENDS_WITH: String
-                  title_EQ: String
-                  title_IN: [String!]
-                  title_STARTS_WITH: String
+                  title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+                  title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+                  title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+                  title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+                  title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -3059,17 +3059,17 @@ describe("@selectable", () => {
                   NOT: ProductionWhere
                   OR: [ProductionWhere!]
                   description: StringScalarFilters
-                  description_CONTAINS: String
-                  description_ENDS_WITH: String
-                  description_EQ: String
-                  description_IN: [String]
-                  description_STARTS_WITH: String
+                  description_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter description: { contains: ... }\\")
+                  description_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { ends_with: ... }\\")
+                  description_EQ: String @deprecated(reason: \\"Please use the relevant generic filter description: { eq: ... }\\")
+                  description_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter description: { in: ... }\\")
+                  description_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { starts_with: ... }\\")
                   title: StringScalarFilters
-                  title_CONTAINS: String
-                  title_ENDS_WITH: String
-                  title_EQ: String
-                  title_IN: [String!]
-                  title_STARTS_WITH: String
+                  title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+                  title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+                  title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+                  title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+                  title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
                   typename_IN: [ProductionImplementation!]
                 }
 
@@ -3141,17 +3141,17 @@ describe("@selectable", () => {
                   NOT: SeriesWhere
                   OR: [SeriesWhere!]
                   description: StringScalarFilters
-                  description_CONTAINS: String
-                  description_ENDS_WITH: String
-                  description_EQ: String
-                  description_IN: [String]
-                  description_STARTS_WITH: String
+                  description_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter description: { contains: ... }\\")
+                  description_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { ends_with: ... }\\")
+                  description_EQ: String @deprecated(reason: \\"Please use the relevant generic filter description: { eq: ... }\\")
+                  description_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter description: { in: ... }\\")
+                  description_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { starts_with: ... }\\")
                   title: StringScalarFilters
-                  title_CONTAINS: String
-                  title_ENDS_WITH: String
-                  title_EQ: String
-                  title_IN: [String!]
-                  title_STARTS_WITH: String
+                  title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+                  title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+                  title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+                  title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+                  title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
                 }
 
                 \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -3469,11 +3469,11 @@ describe("@selectable", () => {
                   \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
                   actedIn_SOME: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  some: ... }' instead.\\")
                   name: StringScalarFilters
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String!]
-                  name_STARTS_WITH: String
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
                 }
 
                 type ActorsConnection {
@@ -3574,17 +3574,17 @@ describe("@selectable", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   description: StringScalarFilters
-                  description_CONTAINS: String
-                  description_ENDS_WITH: String
-                  description_EQ: String
-                  description_IN: [String]
-                  description_STARTS_WITH: String
+                  description_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter description: { contains: ... }\\")
+                  description_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { ends_with: ... }\\")
+                  description_EQ: String @deprecated(reason: \\"Please use the relevant generic filter description: { eq: ... }\\")
+                  description_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter description: { in: ... }\\")
+                  description_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { starts_with: ... }\\")
                   title: StringScalarFilters
-                  title_CONTAINS: String
-                  title_ENDS_WITH: String
-                  title_EQ: String
-                  title_IN: [String!]
-                  title_STARTS_WITH: String
+                  title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+                  title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+                  title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+                  title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+                  title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -3663,17 +3663,17 @@ describe("@selectable", () => {
                   NOT: ProductionWhere
                   OR: [ProductionWhere!]
                   description: StringScalarFilters
-                  description_CONTAINS: String
-                  description_ENDS_WITH: String
-                  description_EQ: String
-                  description_IN: [String]
-                  description_STARTS_WITH: String
+                  description_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter description: { contains: ... }\\")
+                  description_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { ends_with: ... }\\")
+                  description_EQ: String @deprecated(reason: \\"Please use the relevant generic filter description: { eq: ... }\\")
+                  description_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter description: { in: ... }\\")
+                  description_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { starts_with: ... }\\")
                   title: StringScalarFilters
-                  title_CONTAINS: String
-                  title_ENDS_WITH: String
-                  title_EQ: String
-                  title_IN: [String!]
-                  title_STARTS_WITH: String
+                  title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+                  title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+                  title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+                  title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+                  title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
                   typename_IN: [ProductionImplementation!]
                 }
 
@@ -3745,17 +3745,17 @@ describe("@selectable", () => {
                   NOT: SeriesWhere
                   OR: [SeriesWhere!]
                   description: StringScalarFilters
-                  description_CONTAINS: String
-                  description_ENDS_WITH: String
-                  description_EQ: String
-                  description_IN: [String]
-                  description_STARTS_WITH: String
+                  description_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter description: { contains: ... }\\")
+                  description_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { ends_with: ... }\\")
+                  description_EQ: String @deprecated(reason: \\"Please use the relevant generic filter description: { eq: ... }\\")
+                  description_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter description: { in: ... }\\")
+                  description_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { starts_with: ... }\\")
                   title: StringScalarFilters
-                  title_CONTAINS: String
-                  title_ENDS_WITH: String
-                  title_EQ: String
-                  title_IN: [String!]
-                  title_STARTS_WITH: String
+                  title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+                  title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+                  title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+                  title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+                  title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
                 }
 
                 \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"

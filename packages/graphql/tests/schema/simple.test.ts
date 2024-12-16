@@ -204,27 +204,27 @@ describe("Simple", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               actorCount: IntScalarFilters
-              actorCount_EQ: Int
-              actorCount_GT: Int
-              actorCount_GTE: Int
-              actorCount_IN: [Int]
-              actorCount_LT: Int
-              actorCount_LTE: Int
+              actorCount_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { eq: ... }\\")
+              actorCount_GT: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { gt: ... }\\")
+              actorCount_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { gte: ... }\\")
+              actorCount_IN: [Int] @deprecated(reason: \\"Please use the relevant generic filter actorCount: { in: ... }\\")
+              actorCount_LT: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { lt: ... }\\")
+              actorCount_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { lte: ... }\\")
               averageRating: FloatScalarFilters
-              averageRating_EQ: Float
-              averageRating_GT: Float
-              averageRating_GTE: Float
-              averageRating_IN: [Float]
-              averageRating_LT: Float
-              averageRating_LTE: Float
+              averageRating_EQ: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { eq: ... }\\")
+              averageRating_GT: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { gt: ... }\\")
+              averageRating_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { gte: ... }\\")
+              averageRating_IN: [Float] @deprecated(reason: \\"Please use the relevant generic filter averageRating: { in: ... }\\")
+              averageRating_LT: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { lt: ... }\\")
+              averageRating_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { lte: ... }\\")
               id: IDScalarFilters
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
               isActive: BooleanScalarFilters
-              isActive_EQ: Boolean
+              isActive_EQ: Boolean @deprecated(reason: \\"Please use the relevant generic filter isActive: { eq: ... }\\")
             }
 
             type MoviesConnection {

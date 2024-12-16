@@ -316,8 +316,8 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               NOT: CrewPositionWhere
               OR: [CrewPositionWhere!]
               position: CrewPositionTypeEnumScalarFilters
-              position_EQ: CrewPositionType
-              position_IN: [CrewPositionType]
+              position_EQ: CrewPositionType @deprecated(reason: \\"Please use the relevant generic filter position: { eq: ... }\\")
+              position_IN: [CrewPositionType] @deprecated(reason: \\"Please use the relevant generic filter position: { in: ... }\\")
             }
 
             \\"\\"\\"
@@ -387,11 +387,11 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
             }
 
             type MoviesConnection {

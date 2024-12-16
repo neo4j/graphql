@@ -24,7 +24,7 @@ import { Neo4jGraphQL } from "../../../src";
 
 describe("Deprecated Aggregations disabled", () => {
     test("Top Level Aggregations", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Movie @node {
                 id: ID
                 isbn: String!
@@ -372,79 +372,79 @@ describe("Deprecated Aggregations disabled", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               createdAt: DateTimeScalarFilters
-              createdAt_EQ: DateTime
-              createdAt_GT: DateTime
-              createdAt_GTE: DateTime
-              createdAt_IN: [DateTime]
-              createdAt_LT: DateTime
-              createdAt_LTE: DateTime
+              createdAt_EQ: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { eq: ... }\\")
+              createdAt_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { gt: ... }\\")
+              createdAt_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { gte: ... }\\")
+              createdAt_IN: [DateTime] @deprecated(reason: \\"Please use the relevant generic filter createdAt: { in: ... }\\")
+              createdAt_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { lt: ... }\\")
+              createdAt_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { lte: ... }\\")
               id: IDScalarFilters
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
               imdbRating: FloatScalarFilters
-              imdbRating_EQ: Float
-              imdbRating_GT: Float
-              imdbRating_GTE: Float
-              imdbRating_IN: [Float]
-              imdbRating_LT: Float
-              imdbRating_LTE: Float
+              imdbRating_EQ: Float @deprecated(reason: \\"Please use the relevant generic filter imdbRating: { eq: ... }\\")
+              imdbRating_GT: Float @deprecated(reason: \\"Please use the relevant generic filter imdbRating: { gt: ... }\\")
+              imdbRating_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter imdbRating: { gte: ... }\\")
+              imdbRating_IN: [Float] @deprecated(reason: \\"Please use the relevant generic filter imdbRating: { in: ... }\\")
+              imdbRating_LT: Float @deprecated(reason: \\"Please use the relevant generic filter imdbRating: { lt: ... }\\")
+              imdbRating_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter imdbRating: { lte: ... }\\")
               isbn: StringScalarFilters
-              isbn_CONTAINS: String
-              isbn_ENDS_WITH: String
-              isbn_EQ: String
-              isbn_IN: [String!]
-              isbn_STARTS_WITH: String
+              isbn_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter isbn: { contains: ... }\\")
+              isbn_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter isbn: { ends_with: ... }\\")
+              isbn_EQ: String @deprecated(reason: \\"Please use the relevant generic filter isbn: { eq: ... }\\")
+              isbn_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter isbn: { in: ... }\\")
+              isbn_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter isbn: { starts_with: ... }\\")
               screenTime: DurationScalarFilters
-              screenTime_EQ: Duration
-              screenTime_GT: Duration
-              screenTime_GTE: Duration
-              screenTime_IN: [Duration]
-              screenTime_LT: Duration
-              screenTime_LTE: Duration
+              screenTime_EQ: Duration @deprecated(reason: \\"Please use the relevant generic filter screenTime: { eq: ... }\\")
+              screenTime_GT: Duration @deprecated(reason: \\"Please use the relevant generic filter screenTime: { gt: ... }\\")
+              screenTime_GTE: Duration @deprecated(reason: \\"Please use the relevant generic filter screenTime: { gte: ... }\\")
+              screenTime_IN: [Duration] @deprecated(reason: \\"Please use the relevant generic filter screenTime: { in: ... }\\")
+              screenTime_LT: Duration @deprecated(reason: \\"Please use the relevant generic filter screenTime: { lt: ... }\\")
+              screenTime_LTE: Duration @deprecated(reason: \\"Please use the relevant generic filter screenTime: { lte: ... }\\")
               someBigInt: BigIntScalarFilters
-              someBigInt_EQ: BigInt
-              someBigInt_GT: BigInt
-              someBigInt_GTE: BigInt
-              someBigInt_IN: [BigInt]
-              someBigInt_LT: BigInt
-              someBigInt_LTE: BigInt
+              someBigInt_EQ: BigInt @deprecated(reason: \\"Please use the relevant generic filter someBigInt: { eq: ... }\\")
+              someBigInt_GT: BigInt @deprecated(reason: \\"Please use the relevant generic filter someBigInt: { gt: ... }\\")
+              someBigInt_GTE: BigInt @deprecated(reason: \\"Please use the relevant generic filter someBigInt: { gte: ... }\\")
+              someBigInt_IN: [BigInt] @deprecated(reason: \\"Please use the relevant generic filter someBigInt: { in: ... }\\")
+              someBigInt_LT: BigInt @deprecated(reason: \\"Please use the relevant generic filter someBigInt: { lt: ... }\\")
+              someBigInt_LTE: BigInt @deprecated(reason: \\"Please use the relevant generic filter someBigInt: { lte: ... }\\")
               someInt: IntScalarFilters
-              someInt_EQ: Int
-              someInt_GT: Int
-              someInt_GTE: Int
-              someInt_IN: [Int]
-              someInt_LT: Int
-              someInt_LTE: Int
+              someInt_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter someInt: { eq: ... }\\")
+              someInt_GT: Int @deprecated(reason: \\"Please use the relevant generic filter someInt: { gt: ... }\\")
+              someInt_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter someInt: { gte: ... }\\")
+              someInt_IN: [Int] @deprecated(reason: \\"Please use the relevant generic filter someInt: { in: ... }\\")
+              someInt_LT: Int @deprecated(reason: \\"Please use the relevant generic filter someInt: { lt: ... }\\")
+              someInt_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter someInt: { lte: ... }\\")
               someLocalDateTime: LocalDateTimeScalarFilters
-              someLocalDateTime_EQ: LocalDateTime
-              someLocalDateTime_GT: LocalDateTime
-              someLocalDateTime_GTE: LocalDateTime
-              someLocalDateTime_IN: [LocalDateTime]
-              someLocalDateTime_LT: LocalDateTime
-              someLocalDateTime_LTE: LocalDateTime
+              someLocalDateTime_EQ: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter someLocalDateTime: { eq: ... }\\")
+              someLocalDateTime_GT: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter someLocalDateTime: { gt: ... }\\")
+              someLocalDateTime_GTE: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter someLocalDateTime: { gte: ... }\\")
+              someLocalDateTime_IN: [LocalDateTime] @deprecated(reason: \\"Please use the relevant generic filter someLocalDateTime: { in: ... }\\")
+              someLocalDateTime_LT: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter someLocalDateTime: { lt: ... }\\")
+              someLocalDateTime_LTE: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter someLocalDateTime: { lte: ... }\\")
               someLocalTime: LocalTimeScalarFilters
-              someLocalTime_EQ: LocalTime
-              someLocalTime_GT: LocalTime
-              someLocalTime_GTE: LocalTime
-              someLocalTime_IN: [LocalTime]
-              someLocalTime_LT: LocalTime
-              someLocalTime_LTE: LocalTime
+              someLocalTime_EQ: LocalTime @deprecated(reason: \\"Please use the relevant generic filter someLocalTime: { eq: ... }\\")
+              someLocalTime_GT: LocalTime @deprecated(reason: \\"Please use the relevant generic filter someLocalTime: { gt: ... }\\")
+              someLocalTime_GTE: LocalTime @deprecated(reason: \\"Please use the relevant generic filter someLocalTime: { gte: ... }\\")
+              someLocalTime_IN: [LocalTime] @deprecated(reason: \\"Please use the relevant generic filter someLocalTime: { in: ... }\\")
+              someLocalTime_LT: LocalTime @deprecated(reason: \\"Please use the relevant generic filter someLocalTime: { lt: ... }\\")
+              someLocalTime_LTE: LocalTime @deprecated(reason: \\"Please use the relevant generic filter someLocalTime: { lte: ... }\\")
               someTime: TimeScalarFilters
-              someTime_EQ: Time
-              someTime_GT: Time
-              someTime_GTE: Time
-              someTime_IN: [Time]
-              someTime_LT: Time
-              someTime_LTE: Time
+              someTime_EQ: Time @deprecated(reason: \\"Please use the relevant generic filter someTime: { eq: ... }\\")
+              someTime_GT: Time @deprecated(reason: \\"Please use the relevant generic filter someTime: { gt: ... }\\")
+              someTime_GTE: Time @deprecated(reason: \\"Please use the relevant generic filter someTime: { gte: ... }\\")
+              someTime_IN: [Time] @deprecated(reason: \\"Please use the relevant generic filter someTime: { in: ... }\\")
+              someTime_LT: Time @deprecated(reason: \\"Please use the relevant generic filter someTime: { lt: ... }\\")
+              someTime_LTE: Time @deprecated(reason: \\"Please use the relevant generic filter someTime: { lte: ... }\\")
               title: StringScalarFilters
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String]
-              title_STARTS_WITH: String
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
             }
 
             type MoviesConnection {
@@ -903,73 +903,73 @@ describe("Deprecated Aggregations disabled", () => {
               NOT: LikesWhere
               OR: [LikesWhere!]
               someBigInt: BigIntScalarFilters
-              someBigInt_EQ: BigInt
-              someBigInt_GT: BigInt
-              someBigInt_GTE: BigInt
-              someBigInt_IN: [BigInt]
-              someBigInt_LT: BigInt
-              someBigInt_LTE: BigInt
+              someBigInt_EQ: BigInt @deprecated(reason: \\"Please use the relevant generic filter someBigInt: { eq: ... }\\")
+              someBigInt_GT: BigInt @deprecated(reason: \\"Please use the relevant generic filter someBigInt: { gt: ... }\\")
+              someBigInt_GTE: BigInt @deprecated(reason: \\"Please use the relevant generic filter someBigInt: { gte: ... }\\")
+              someBigInt_IN: [BigInt] @deprecated(reason: \\"Please use the relevant generic filter someBigInt: { in: ... }\\")
+              someBigInt_LT: BigInt @deprecated(reason: \\"Please use the relevant generic filter someBigInt: { lt: ... }\\")
+              someBigInt_LTE: BigInt @deprecated(reason: \\"Please use the relevant generic filter someBigInt: { lte: ... }\\")
               someDateTime: DateTimeScalarFilters
-              someDateTime_EQ: DateTime
-              someDateTime_GT: DateTime
-              someDateTime_GTE: DateTime
-              someDateTime_IN: [DateTime]
-              someDateTime_LT: DateTime
-              someDateTime_LTE: DateTime
+              someDateTime_EQ: DateTime @deprecated(reason: \\"Please use the relevant generic filter someDateTime: { eq: ... }\\")
+              someDateTime_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter someDateTime: { gt: ... }\\")
+              someDateTime_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter someDateTime: { gte: ... }\\")
+              someDateTime_IN: [DateTime] @deprecated(reason: \\"Please use the relevant generic filter someDateTime: { in: ... }\\")
+              someDateTime_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter someDateTime: { lt: ... }\\")
+              someDateTime_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter someDateTime: { lte: ... }\\")
               someDuration: DurationScalarFilters
-              someDuration_EQ: Duration
-              someDuration_GT: Duration
-              someDuration_GTE: Duration
-              someDuration_IN: [Duration]
-              someDuration_LT: Duration
-              someDuration_LTE: Duration
+              someDuration_EQ: Duration @deprecated(reason: \\"Please use the relevant generic filter someDuration: { eq: ... }\\")
+              someDuration_GT: Duration @deprecated(reason: \\"Please use the relevant generic filter someDuration: { gt: ... }\\")
+              someDuration_GTE: Duration @deprecated(reason: \\"Please use the relevant generic filter someDuration: { gte: ... }\\")
+              someDuration_IN: [Duration] @deprecated(reason: \\"Please use the relevant generic filter someDuration: { in: ... }\\")
+              someDuration_LT: Duration @deprecated(reason: \\"Please use the relevant generic filter someDuration: { lt: ... }\\")
+              someDuration_LTE: Duration @deprecated(reason: \\"Please use the relevant generic filter someDuration: { lte: ... }\\")
               someFloat: FloatScalarFilters
-              someFloat_EQ: Float
-              someFloat_GT: Float
-              someFloat_GTE: Float
-              someFloat_IN: [Float]
-              someFloat_LT: Float
-              someFloat_LTE: Float
+              someFloat_EQ: Float @deprecated(reason: \\"Please use the relevant generic filter someFloat: { eq: ... }\\")
+              someFloat_GT: Float @deprecated(reason: \\"Please use the relevant generic filter someFloat: { gt: ... }\\")
+              someFloat_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter someFloat: { gte: ... }\\")
+              someFloat_IN: [Float] @deprecated(reason: \\"Please use the relevant generic filter someFloat: { in: ... }\\")
+              someFloat_LT: Float @deprecated(reason: \\"Please use the relevant generic filter someFloat: { lt: ... }\\")
+              someFloat_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter someFloat: { lte: ... }\\")
               someId: IDScalarFilters
-              someId_CONTAINS: ID
-              someId_ENDS_WITH: ID
-              someId_EQ: ID
-              someId_IN: [ID]
-              someId_STARTS_WITH: ID
+              someId_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { contains: ... }\\")
+              someId_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { ends_with: ... }\\")
+              someId_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { eq: ... }\\")
+              someId_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter someId: { in: ... }\\")
+              someId_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { starts_with: ... }\\")
               someInt: IntScalarFilters
-              someInt_EQ: Int
-              someInt_GT: Int
-              someInt_GTE: Int
-              someInt_IN: [Int]
-              someInt_LT: Int
-              someInt_LTE: Int
+              someInt_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter someInt: { eq: ... }\\")
+              someInt_GT: Int @deprecated(reason: \\"Please use the relevant generic filter someInt: { gt: ... }\\")
+              someInt_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter someInt: { gte: ... }\\")
+              someInt_IN: [Int] @deprecated(reason: \\"Please use the relevant generic filter someInt: { in: ... }\\")
+              someInt_LT: Int @deprecated(reason: \\"Please use the relevant generic filter someInt: { lt: ... }\\")
+              someInt_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter someInt: { lte: ... }\\")
               someLocalDateTime: LocalDateTimeScalarFilters
-              someLocalDateTime_EQ: LocalDateTime
-              someLocalDateTime_GT: LocalDateTime
-              someLocalDateTime_GTE: LocalDateTime
-              someLocalDateTime_IN: [LocalDateTime]
-              someLocalDateTime_LT: LocalDateTime
-              someLocalDateTime_LTE: LocalDateTime
+              someLocalDateTime_EQ: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter someLocalDateTime: { eq: ... }\\")
+              someLocalDateTime_GT: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter someLocalDateTime: { gt: ... }\\")
+              someLocalDateTime_GTE: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter someLocalDateTime: { gte: ... }\\")
+              someLocalDateTime_IN: [LocalDateTime] @deprecated(reason: \\"Please use the relevant generic filter someLocalDateTime: { in: ... }\\")
+              someLocalDateTime_LT: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter someLocalDateTime: { lt: ... }\\")
+              someLocalDateTime_LTE: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter someLocalDateTime: { lte: ... }\\")
               someLocalTime: LocalTimeScalarFilters
-              someLocalTime_EQ: LocalTime
-              someLocalTime_GT: LocalTime
-              someLocalTime_GTE: LocalTime
-              someLocalTime_IN: [LocalTime]
-              someLocalTime_LT: LocalTime
-              someLocalTime_LTE: LocalTime
+              someLocalTime_EQ: LocalTime @deprecated(reason: \\"Please use the relevant generic filter someLocalTime: { eq: ... }\\")
+              someLocalTime_GT: LocalTime @deprecated(reason: \\"Please use the relevant generic filter someLocalTime: { gt: ... }\\")
+              someLocalTime_GTE: LocalTime @deprecated(reason: \\"Please use the relevant generic filter someLocalTime: { gte: ... }\\")
+              someLocalTime_IN: [LocalTime] @deprecated(reason: \\"Please use the relevant generic filter someLocalTime: { in: ... }\\")
+              someLocalTime_LT: LocalTime @deprecated(reason: \\"Please use the relevant generic filter someLocalTime: { lt: ... }\\")
+              someLocalTime_LTE: LocalTime @deprecated(reason: \\"Please use the relevant generic filter someLocalTime: { lte: ... }\\")
               someString: StringScalarFilters
-              someString_CONTAINS: String
-              someString_ENDS_WITH: String
-              someString_EQ: String
-              someString_IN: [String]
-              someString_STARTS_WITH: String
+              someString_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter someString: { contains: ... }\\")
+              someString_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter someString: { ends_with: ... }\\")
+              someString_EQ: String @deprecated(reason: \\"Please use the relevant generic filter someString: { eq: ... }\\")
+              someString_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter someString: { in: ... }\\")
+              someString_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter someString: { starts_with: ... }\\")
               someTime: TimeScalarFilters
-              someTime_EQ: Time
-              someTime_GT: Time
-              someTime_GTE: Time
-              someTime_IN: [Time]
-              someTime_LT: Time
-              someTime_LTE: Time
+              someTime_EQ: Time @deprecated(reason: \\"Please use the relevant generic filter someTime: { eq: ... }\\")
+              someTime_GT: Time @deprecated(reason: \\"Please use the relevant generic filter someTime: { gt: ... }\\")
+              someTime_GTE: Time @deprecated(reason: \\"Please use the relevant generic filter someTime: { gte: ... }\\")
+              someTime_IN: [Time] @deprecated(reason: \\"Please use the relevant generic filter someTime: { in: ... }\\")
+              someTime_LT: Time @deprecated(reason: \\"Please use the relevant generic filter someTime: { lt: ... }\\")
+              someTime_LTE: Time @deprecated(reason: \\"Please use the relevant generic filter someTime: { lte: ... }\\")
             }
 
             \\"\\"\\"A local datetime, represented as 'YYYY-MM-DDTHH:MM:SS'\\"\\"\\"
@@ -1274,11 +1274,11 @@ describe("Deprecated Aggregations disabled", () => {
               \\"\\"\\"Return Posts where some of the related Users match this filter\\"\\"\\"
               likes_SOME: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'likes: {  some: ... }' instead.\\")
               title: StringScalarFilters
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String]
-              title_STARTS_WITH: String
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
             }
 
             type PostsConnection {
@@ -1485,73 +1485,73 @@ describe("Deprecated Aggregations disabled", () => {
               NOT: UserWhere
               OR: [UserWhere!]
               someBigInt: BigIntScalarFilters
-              someBigInt_EQ: BigInt
-              someBigInt_GT: BigInt
-              someBigInt_GTE: BigInt
-              someBigInt_IN: [BigInt]
-              someBigInt_LT: BigInt
-              someBigInt_LTE: BigInt
+              someBigInt_EQ: BigInt @deprecated(reason: \\"Please use the relevant generic filter someBigInt: { eq: ... }\\")
+              someBigInt_GT: BigInt @deprecated(reason: \\"Please use the relevant generic filter someBigInt: { gt: ... }\\")
+              someBigInt_GTE: BigInt @deprecated(reason: \\"Please use the relevant generic filter someBigInt: { gte: ... }\\")
+              someBigInt_IN: [BigInt] @deprecated(reason: \\"Please use the relevant generic filter someBigInt: { in: ... }\\")
+              someBigInt_LT: BigInt @deprecated(reason: \\"Please use the relevant generic filter someBigInt: { lt: ... }\\")
+              someBigInt_LTE: BigInt @deprecated(reason: \\"Please use the relevant generic filter someBigInt: { lte: ... }\\")
               someDateTime: DateTimeScalarFilters
-              someDateTime_EQ: DateTime
-              someDateTime_GT: DateTime
-              someDateTime_GTE: DateTime
-              someDateTime_IN: [DateTime]
-              someDateTime_LT: DateTime
-              someDateTime_LTE: DateTime
+              someDateTime_EQ: DateTime @deprecated(reason: \\"Please use the relevant generic filter someDateTime: { eq: ... }\\")
+              someDateTime_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter someDateTime: { gt: ... }\\")
+              someDateTime_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter someDateTime: { gte: ... }\\")
+              someDateTime_IN: [DateTime] @deprecated(reason: \\"Please use the relevant generic filter someDateTime: { in: ... }\\")
+              someDateTime_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter someDateTime: { lt: ... }\\")
+              someDateTime_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter someDateTime: { lte: ... }\\")
               someDuration: DurationScalarFilters
-              someDuration_EQ: Duration
-              someDuration_GT: Duration
-              someDuration_GTE: Duration
-              someDuration_IN: [Duration]
-              someDuration_LT: Duration
-              someDuration_LTE: Duration
+              someDuration_EQ: Duration @deprecated(reason: \\"Please use the relevant generic filter someDuration: { eq: ... }\\")
+              someDuration_GT: Duration @deprecated(reason: \\"Please use the relevant generic filter someDuration: { gt: ... }\\")
+              someDuration_GTE: Duration @deprecated(reason: \\"Please use the relevant generic filter someDuration: { gte: ... }\\")
+              someDuration_IN: [Duration] @deprecated(reason: \\"Please use the relevant generic filter someDuration: { in: ... }\\")
+              someDuration_LT: Duration @deprecated(reason: \\"Please use the relevant generic filter someDuration: { lt: ... }\\")
+              someDuration_LTE: Duration @deprecated(reason: \\"Please use the relevant generic filter someDuration: { lte: ... }\\")
               someFloat: FloatScalarFilters
-              someFloat_EQ: Float
-              someFloat_GT: Float
-              someFloat_GTE: Float
-              someFloat_IN: [Float]
-              someFloat_LT: Float
-              someFloat_LTE: Float
+              someFloat_EQ: Float @deprecated(reason: \\"Please use the relevant generic filter someFloat: { eq: ... }\\")
+              someFloat_GT: Float @deprecated(reason: \\"Please use the relevant generic filter someFloat: { gt: ... }\\")
+              someFloat_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter someFloat: { gte: ... }\\")
+              someFloat_IN: [Float] @deprecated(reason: \\"Please use the relevant generic filter someFloat: { in: ... }\\")
+              someFloat_LT: Float @deprecated(reason: \\"Please use the relevant generic filter someFloat: { lt: ... }\\")
+              someFloat_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter someFloat: { lte: ... }\\")
               someId: IDScalarFilters
-              someId_CONTAINS: ID
-              someId_ENDS_WITH: ID
-              someId_EQ: ID
-              someId_IN: [ID]
-              someId_STARTS_WITH: ID
+              someId_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { contains: ... }\\")
+              someId_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { ends_with: ... }\\")
+              someId_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { eq: ... }\\")
+              someId_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter someId: { in: ... }\\")
+              someId_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { starts_with: ... }\\")
               someInt: IntScalarFilters
-              someInt_EQ: Int
-              someInt_GT: Int
-              someInt_GTE: Int
-              someInt_IN: [Int]
-              someInt_LT: Int
-              someInt_LTE: Int
+              someInt_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter someInt: { eq: ... }\\")
+              someInt_GT: Int @deprecated(reason: \\"Please use the relevant generic filter someInt: { gt: ... }\\")
+              someInt_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter someInt: { gte: ... }\\")
+              someInt_IN: [Int] @deprecated(reason: \\"Please use the relevant generic filter someInt: { in: ... }\\")
+              someInt_LT: Int @deprecated(reason: \\"Please use the relevant generic filter someInt: { lt: ... }\\")
+              someInt_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter someInt: { lte: ... }\\")
               someLocalDateTime: LocalDateTimeScalarFilters
-              someLocalDateTime_EQ: LocalDateTime
-              someLocalDateTime_GT: LocalDateTime
-              someLocalDateTime_GTE: LocalDateTime
-              someLocalDateTime_IN: [LocalDateTime]
-              someLocalDateTime_LT: LocalDateTime
-              someLocalDateTime_LTE: LocalDateTime
+              someLocalDateTime_EQ: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter someLocalDateTime: { eq: ... }\\")
+              someLocalDateTime_GT: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter someLocalDateTime: { gt: ... }\\")
+              someLocalDateTime_GTE: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter someLocalDateTime: { gte: ... }\\")
+              someLocalDateTime_IN: [LocalDateTime] @deprecated(reason: \\"Please use the relevant generic filter someLocalDateTime: { in: ... }\\")
+              someLocalDateTime_LT: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter someLocalDateTime: { lt: ... }\\")
+              someLocalDateTime_LTE: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter someLocalDateTime: { lte: ... }\\")
               someLocalTime: LocalTimeScalarFilters
-              someLocalTime_EQ: LocalTime
-              someLocalTime_GT: LocalTime
-              someLocalTime_GTE: LocalTime
-              someLocalTime_IN: [LocalTime]
-              someLocalTime_LT: LocalTime
-              someLocalTime_LTE: LocalTime
+              someLocalTime_EQ: LocalTime @deprecated(reason: \\"Please use the relevant generic filter someLocalTime: { eq: ... }\\")
+              someLocalTime_GT: LocalTime @deprecated(reason: \\"Please use the relevant generic filter someLocalTime: { gt: ... }\\")
+              someLocalTime_GTE: LocalTime @deprecated(reason: \\"Please use the relevant generic filter someLocalTime: { gte: ... }\\")
+              someLocalTime_IN: [LocalTime] @deprecated(reason: \\"Please use the relevant generic filter someLocalTime: { in: ... }\\")
+              someLocalTime_LT: LocalTime @deprecated(reason: \\"Please use the relevant generic filter someLocalTime: { lt: ... }\\")
+              someLocalTime_LTE: LocalTime @deprecated(reason: \\"Please use the relevant generic filter someLocalTime: { lte: ... }\\")
               someString: StringScalarFilters
-              someString_CONTAINS: String
-              someString_ENDS_WITH: String
-              someString_EQ: String
-              someString_IN: [String]
-              someString_STARTS_WITH: String
+              someString_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter someString: { contains: ... }\\")
+              someString_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter someString: { ends_with: ... }\\")
+              someString_EQ: String @deprecated(reason: \\"Please use the relevant generic filter someString: { eq: ... }\\")
+              someString_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter someString: { in: ... }\\")
+              someString_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter someString: { starts_with: ... }\\")
               someTime: TimeScalarFilters
-              someTime_EQ: Time
-              someTime_GT: Time
-              someTime_GTE: Time
-              someTime_IN: [Time]
-              someTime_LT: Time
-              someTime_LTE: Time
+              someTime_EQ: Time @deprecated(reason: \\"Please use the relevant generic filter someTime: { eq: ... }\\")
+              someTime_GT: Time @deprecated(reason: \\"Please use the relevant generic filter someTime: { gt: ... }\\")
+              someTime_GTE: Time @deprecated(reason: \\"Please use the relevant generic filter someTime: { gte: ... }\\")
+              someTime_IN: [Time] @deprecated(reason: \\"Please use the relevant generic filter someTime: { in: ... }\\")
+              someTime_LT: Time @deprecated(reason: \\"Please use the relevant generic filter someTime: { lt: ... }\\")
+              someTime_LTE: Time @deprecated(reason: \\"Please use the relevant generic filter someTime: { lte: ... }\\")
             }
 
             type UsersConnection {
@@ -1952,35 +1952,35 @@ describe("Deprecated Aggregations disabled", () => {
               NOT: LikesWhere
               OR: [LikesWhere!]
               someBigInt: BigIntListFilters
-              someBigInt_EQ: [BigInt!]
-              someBigInt_INCLUDES: BigInt
+              someBigInt_EQ: [BigInt!] @deprecated(reason: \\"Please use the relevant generic filter someBigInt: { eq: ... }\\")
+              someBigInt_INCLUDES: BigInt @deprecated(reason: \\"Please use the relevant generic filter someBigInt: { includes: ... }\\")
               someDateTime: DateTimeListFilters
-              someDateTime_EQ: [DateTime!]
-              someDateTime_INCLUDES: DateTime
+              someDateTime_EQ: [DateTime!] @deprecated(reason: \\"Please use the relevant generic filter someDateTime: { eq: ... }\\")
+              someDateTime_INCLUDES: DateTime @deprecated(reason: \\"Please use the relevant generic filter someDateTime: { includes: ... }\\")
               someDuration: DurationListFilters
-              someDuration_EQ: [Duration!]
-              someDuration_INCLUDES: Duration
+              someDuration_EQ: [Duration!] @deprecated(reason: \\"Please use the relevant generic filter someDuration: { eq: ... }\\")
+              someDuration_INCLUDES: Duration @deprecated(reason: \\"Please use the relevant generic filter someDuration: { includes: ... }\\")
               someFloat: FloatListFilters
-              someFloat_EQ: [Float!]
-              someFloat_INCLUDES: Float
+              someFloat_EQ: [Float!] @deprecated(reason: \\"Please use the relevant generic filter someFloat: { eq: ... }\\")
+              someFloat_INCLUDES: Float @deprecated(reason: \\"Please use the relevant generic filter someFloat: { includes: ... }\\")
               someId: IDListFilters
-              someId_EQ: [ID!]
-              someId_INCLUDES: ID
+              someId_EQ: [ID!] @deprecated(reason: \\"Please use the relevant generic filter someId: { eq: ... }\\")
+              someId_INCLUDES: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { includes: ... }\\")
               someInt: IntListFilters
-              someInt_EQ: [Int!]
-              someInt_INCLUDES: Int
+              someInt_EQ: [Int!] @deprecated(reason: \\"Please use the relevant generic filter someInt: { eq: ... }\\")
+              someInt_INCLUDES: Int @deprecated(reason: \\"Please use the relevant generic filter someInt: { includes: ... }\\")
               someLocalDateTime: LocalDateTimeListFilters
-              someLocalDateTime_EQ: [LocalDateTime!]
-              someLocalDateTime_INCLUDES: LocalDateTime
+              someLocalDateTime_EQ: [LocalDateTime!] @deprecated(reason: \\"Please use the relevant generic filter someLocalDateTime: { eq: ... }\\")
+              someLocalDateTime_INCLUDES: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter someLocalDateTime: { includes: ... }\\")
               someLocalTime: LocalTimeListFilters
-              someLocalTime_EQ: [LocalTime!]
-              someLocalTime_INCLUDES: LocalTime
+              someLocalTime_EQ: [LocalTime!] @deprecated(reason: \\"Please use the relevant generic filter someLocalTime: { eq: ... }\\")
+              someLocalTime_INCLUDES: LocalTime @deprecated(reason: \\"Please use the relevant generic filter someLocalTime: { includes: ... }\\")
               someString: StringListFilters
-              someString_EQ: [String!]
-              someString_INCLUDES: String
+              someString_EQ: [String!] @deprecated(reason: \\"Please use the relevant generic filter someString: { eq: ... }\\")
+              someString_INCLUDES: String @deprecated(reason: \\"Please use the relevant generic filter someString: { includes: ... }\\")
               someTime: TimeListFilters
-              someTime_EQ: [Time!]
-              someTime_INCLUDES: Time
+              someTime_EQ: [Time!] @deprecated(reason: \\"Please use the relevant generic filter someTime: { eq: ... }\\")
+              someTime_INCLUDES: Time @deprecated(reason: \\"Please use the relevant generic filter someTime: { includes: ... }\\")
             }
 
             \\"\\"\\"Mutations for a list for BigInt\\"\\"\\"
@@ -2352,11 +2352,11 @@ describe("Deprecated Aggregations disabled", () => {
               \\"\\"\\"Return Posts where some of the related Users match this filter\\"\\"\\"
               likes_SOME: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'likes: {  some: ... }' instead.\\")
               title: StringScalarFilters
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String]
-              title_STARTS_WITH: String
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
             }
 
             type PostsConnection {
@@ -2575,73 +2575,73 @@ describe("Deprecated Aggregations disabled", () => {
               NOT: UserWhere
               OR: [UserWhere!]
               someBigInt: BigIntScalarFilters
-              someBigInt_EQ: BigInt
-              someBigInt_GT: BigInt
-              someBigInt_GTE: BigInt
-              someBigInt_IN: [BigInt]
-              someBigInt_LT: BigInt
-              someBigInt_LTE: BigInt
+              someBigInt_EQ: BigInt @deprecated(reason: \\"Please use the relevant generic filter someBigInt: { eq: ... }\\")
+              someBigInt_GT: BigInt @deprecated(reason: \\"Please use the relevant generic filter someBigInt: { gt: ... }\\")
+              someBigInt_GTE: BigInt @deprecated(reason: \\"Please use the relevant generic filter someBigInt: { gte: ... }\\")
+              someBigInt_IN: [BigInt] @deprecated(reason: \\"Please use the relevant generic filter someBigInt: { in: ... }\\")
+              someBigInt_LT: BigInt @deprecated(reason: \\"Please use the relevant generic filter someBigInt: { lt: ... }\\")
+              someBigInt_LTE: BigInt @deprecated(reason: \\"Please use the relevant generic filter someBigInt: { lte: ... }\\")
               someDateTime: DateTimeScalarFilters
-              someDateTime_EQ: DateTime
-              someDateTime_GT: DateTime
-              someDateTime_GTE: DateTime
-              someDateTime_IN: [DateTime]
-              someDateTime_LT: DateTime
-              someDateTime_LTE: DateTime
+              someDateTime_EQ: DateTime @deprecated(reason: \\"Please use the relevant generic filter someDateTime: { eq: ... }\\")
+              someDateTime_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter someDateTime: { gt: ... }\\")
+              someDateTime_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter someDateTime: { gte: ... }\\")
+              someDateTime_IN: [DateTime] @deprecated(reason: \\"Please use the relevant generic filter someDateTime: { in: ... }\\")
+              someDateTime_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter someDateTime: { lt: ... }\\")
+              someDateTime_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter someDateTime: { lte: ... }\\")
               someDuration: DurationScalarFilters
-              someDuration_EQ: Duration
-              someDuration_GT: Duration
-              someDuration_GTE: Duration
-              someDuration_IN: [Duration]
-              someDuration_LT: Duration
-              someDuration_LTE: Duration
+              someDuration_EQ: Duration @deprecated(reason: \\"Please use the relevant generic filter someDuration: { eq: ... }\\")
+              someDuration_GT: Duration @deprecated(reason: \\"Please use the relevant generic filter someDuration: { gt: ... }\\")
+              someDuration_GTE: Duration @deprecated(reason: \\"Please use the relevant generic filter someDuration: { gte: ... }\\")
+              someDuration_IN: [Duration] @deprecated(reason: \\"Please use the relevant generic filter someDuration: { in: ... }\\")
+              someDuration_LT: Duration @deprecated(reason: \\"Please use the relevant generic filter someDuration: { lt: ... }\\")
+              someDuration_LTE: Duration @deprecated(reason: \\"Please use the relevant generic filter someDuration: { lte: ... }\\")
               someFloat: FloatScalarFilters
-              someFloat_EQ: Float
-              someFloat_GT: Float
-              someFloat_GTE: Float
-              someFloat_IN: [Float]
-              someFloat_LT: Float
-              someFloat_LTE: Float
+              someFloat_EQ: Float @deprecated(reason: \\"Please use the relevant generic filter someFloat: { eq: ... }\\")
+              someFloat_GT: Float @deprecated(reason: \\"Please use the relevant generic filter someFloat: { gt: ... }\\")
+              someFloat_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter someFloat: { gte: ... }\\")
+              someFloat_IN: [Float] @deprecated(reason: \\"Please use the relevant generic filter someFloat: { in: ... }\\")
+              someFloat_LT: Float @deprecated(reason: \\"Please use the relevant generic filter someFloat: { lt: ... }\\")
+              someFloat_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter someFloat: { lte: ... }\\")
               someId: IDScalarFilters
-              someId_CONTAINS: ID
-              someId_ENDS_WITH: ID
-              someId_EQ: ID
-              someId_IN: [ID]
-              someId_STARTS_WITH: ID
+              someId_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { contains: ... }\\")
+              someId_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { ends_with: ... }\\")
+              someId_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { eq: ... }\\")
+              someId_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter someId: { in: ... }\\")
+              someId_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { starts_with: ... }\\")
               someInt: IntScalarFilters
-              someInt_EQ: Int
-              someInt_GT: Int
-              someInt_GTE: Int
-              someInt_IN: [Int]
-              someInt_LT: Int
-              someInt_LTE: Int
+              someInt_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter someInt: { eq: ... }\\")
+              someInt_GT: Int @deprecated(reason: \\"Please use the relevant generic filter someInt: { gt: ... }\\")
+              someInt_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter someInt: { gte: ... }\\")
+              someInt_IN: [Int] @deprecated(reason: \\"Please use the relevant generic filter someInt: { in: ... }\\")
+              someInt_LT: Int @deprecated(reason: \\"Please use the relevant generic filter someInt: { lt: ... }\\")
+              someInt_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter someInt: { lte: ... }\\")
               someLocalDateTime: LocalDateTimeScalarFilters
-              someLocalDateTime_EQ: LocalDateTime
-              someLocalDateTime_GT: LocalDateTime
-              someLocalDateTime_GTE: LocalDateTime
-              someLocalDateTime_IN: [LocalDateTime]
-              someLocalDateTime_LT: LocalDateTime
-              someLocalDateTime_LTE: LocalDateTime
+              someLocalDateTime_EQ: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter someLocalDateTime: { eq: ... }\\")
+              someLocalDateTime_GT: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter someLocalDateTime: { gt: ... }\\")
+              someLocalDateTime_GTE: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter someLocalDateTime: { gte: ... }\\")
+              someLocalDateTime_IN: [LocalDateTime] @deprecated(reason: \\"Please use the relevant generic filter someLocalDateTime: { in: ... }\\")
+              someLocalDateTime_LT: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter someLocalDateTime: { lt: ... }\\")
+              someLocalDateTime_LTE: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter someLocalDateTime: { lte: ... }\\")
               someLocalTime: LocalTimeScalarFilters
-              someLocalTime_EQ: LocalTime
-              someLocalTime_GT: LocalTime
-              someLocalTime_GTE: LocalTime
-              someLocalTime_IN: [LocalTime]
-              someLocalTime_LT: LocalTime
-              someLocalTime_LTE: LocalTime
+              someLocalTime_EQ: LocalTime @deprecated(reason: \\"Please use the relevant generic filter someLocalTime: { eq: ... }\\")
+              someLocalTime_GT: LocalTime @deprecated(reason: \\"Please use the relevant generic filter someLocalTime: { gt: ... }\\")
+              someLocalTime_GTE: LocalTime @deprecated(reason: \\"Please use the relevant generic filter someLocalTime: { gte: ... }\\")
+              someLocalTime_IN: [LocalTime] @deprecated(reason: \\"Please use the relevant generic filter someLocalTime: { in: ... }\\")
+              someLocalTime_LT: LocalTime @deprecated(reason: \\"Please use the relevant generic filter someLocalTime: { lt: ... }\\")
+              someLocalTime_LTE: LocalTime @deprecated(reason: \\"Please use the relevant generic filter someLocalTime: { lte: ... }\\")
               someString: StringScalarFilters
-              someString_CONTAINS: String
-              someString_ENDS_WITH: String
-              someString_EQ: String
-              someString_IN: [String]
-              someString_STARTS_WITH: String
+              someString_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter someString: { contains: ... }\\")
+              someString_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter someString: { ends_with: ... }\\")
+              someString_EQ: String @deprecated(reason: \\"Please use the relevant generic filter someString: { eq: ... }\\")
+              someString_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter someString: { in: ... }\\")
+              someString_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter someString: { starts_with: ... }\\")
               someTime: TimeScalarFilters
-              someTime_EQ: Time
-              someTime_GT: Time
-              someTime_GTE: Time
-              someTime_IN: [Time]
-              someTime_LT: Time
-              someTime_LTE: Time
+              someTime_EQ: Time @deprecated(reason: \\"Please use the relevant generic filter someTime: { eq: ... }\\")
+              someTime_GT: Time @deprecated(reason: \\"Please use the relevant generic filter someTime: { gt: ... }\\")
+              someTime_GTE: Time @deprecated(reason: \\"Please use the relevant generic filter someTime: { gte: ... }\\")
+              someTime_IN: [Time] @deprecated(reason: \\"Please use the relevant generic filter someTime: { in: ... }\\")
+              someTime_LT: Time @deprecated(reason: \\"Please use the relevant generic filter someTime: { lt: ... }\\")
+              someTime_LTE: Time @deprecated(reason: \\"Please use the relevant generic filter someTime: { lte: ... }\\")
             }
 
             type UsersConnection {

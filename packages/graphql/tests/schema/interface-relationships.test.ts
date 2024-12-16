@@ -112,12 +112,12 @@ describe("Interface Relationships", () => {
               NOT: ActedInWhere
               OR: [ActedInWhere!]
               screenTime: IntScalarFilters
-              screenTime_EQ: Int
-              screenTime_GT: Int
-              screenTime_GTE: Int
-              screenTime_IN: [Int!]
-              screenTime_LT: Int
-              screenTime_LTE: Int
+              screenTime_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { eq: ... }\\")
+              screenTime_GT: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { gt: ... }\\")
+              screenTime_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { gte: ... }\\")
+              screenTime_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter screenTime: { in: ... }\\")
+              screenTime_LT: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { lt: ... }\\")
+              screenTime_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { lte: ... }\\")
             }
 
             type Actor {
@@ -333,11 +333,11 @@ describe("Interface Relationships", () => {
               \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
               actedIn_SOME: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  some: ... }' instead.\\")
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
             }
 
             type ActorsConnection {
@@ -462,18 +462,18 @@ describe("Interface Relationships", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               runtime: IntScalarFilters
-              runtime_EQ: Int
-              runtime_GT: Int
-              runtime_GTE: Int
-              runtime_IN: [Int!]
-              runtime_LT: Int
-              runtime_LTE: Int
+              runtime_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { eq: ... }\\")
+              runtime_GT: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { gt: ... }\\")
+              runtime_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { gte: ... }\\")
+              runtime_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter runtime: { in: ... }\\")
+              runtime_LT: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lt: ... }\\")
+              runtime_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lte: ... }\\")
               title: StringScalarFilters
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
             }
 
             type MoviesConnection {
@@ -547,11 +547,11 @@ describe("Interface Relationships", () => {
               NOT: ProductionWhere
               OR: [ProductionWhere!]
               title: StringScalarFilters
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
               typename_IN: [ProductionImplementation!]
             }
 
@@ -625,18 +625,18 @@ describe("Interface Relationships", () => {
               NOT: SeriesWhere
               OR: [SeriesWhere!]
               episodes: IntScalarFilters
-              episodes_EQ: Int
-              episodes_GT: Int
-              episodes_GTE: Int
-              episodes_IN: [Int!]
-              episodes_LT: Int
-              episodes_LTE: Int
+              episodes_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter episodes: { eq: ... }\\")
+              episodes_GT: Int @deprecated(reason: \\"Please use the relevant generic filter episodes: { gt: ... }\\")
+              episodes_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter episodes: { gte: ... }\\")
+              episodes_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter episodes: { in: ... }\\")
+              episodes_LT: Int @deprecated(reason: \\"Please use the relevant generic filter episodes: { lt: ... }\\")
+              episodes_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter episodes: { lte: ... }\\")
               title: StringScalarFilters
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -805,12 +805,12 @@ describe("Interface Relationships", () => {
               NOT: ActedInWhere
               OR: [ActedInWhere!]
               screenTime: IntScalarFilters
-              screenTime_EQ: Int
-              screenTime_GT: Int
-              screenTime_GTE: Int
-              screenTime_IN: [Int!]
-              screenTime_LT: Int
-              screenTime_LTE: Int
+              screenTime_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { eq: ... }\\")
+              screenTime_GT: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { gt: ... }\\")
+              screenTime_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { gte: ... }\\")
+              screenTime_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter screenTime: { in: ... }\\")
+              screenTime_LT: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { lt: ... }\\")
+              screenTime_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { lte: ... }\\")
             }
 
             type Actor {
@@ -1041,11 +1041,11 @@ describe("Interface Relationships", () => {
               \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
               actedIn_SOME: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  some: ... }' instead.\\")
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
             }
 
             type ActorsConnection {
@@ -1303,12 +1303,12 @@ describe("Interface Relationships", () => {
               NOT: EpisodeWhere
               OR: [EpisodeWhere!]
               runtime: IntScalarFilters
-              runtime_EQ: Int
-              runtime_GT: Int
-              runtime_GTE: Int
-              runtime_IN: [Int!]
-              runtime_LT: Int
-              runtime_LTE: Int
+              runtime_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { eq: ... }\\")
+              runtime_GT: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { gt: ... }\\")
+              runtime_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { gte: ... }\\")
+              runtime_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter runtime: { in: ... }\\")
+              runtime_LT: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lt: ... }\\")
+              runtime_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lte: ... }\\")
               series: EpisodeSeriesRelationshipFilters
               seriesAggregate: EpisodeSeriesAggregateInput
               seriesConnection: EpisodeSeriesConnectionFilters
@@ -1575,18 +1575,18 @@ describe("Interface Relationships", () => {
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
               runtime: IntScalarFilters
-              runtime_EQ: Int
-              runtime_GT: Int
-              runtime_GTE: Int
-              runtime_IN: [Int!]
-              runtime_LT: Int
-              runtime_LTE: Int
+              runtime_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { eq: ... }\\")
+              runtime_GT: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { gt: ... }\\")
+              runtime_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { gte: ... }\\")
+              runtime_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter runtime: { in: ... }\\")
+              runtime_LT: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lt: ... }\\")
+              runtime_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lte: ... }\\")
               title: StringScalarFilters
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
             }
 
             type MoviesConnection {
@@ -1878,11 +1878,11 @@ describe("Interface Relationships", () => {
               \\"\\"\\"Return Productions where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
               title: StringScalarFilters
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
               typename_IN: [ProductionImplementation!]
             }
 
@@ -2263,12 +2263,12 @@ describe("Interface Relationships", () => {
               \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
               episodeCount: IntScalarFilters
-              episodeCount_EQ: Int
-              episodeCount_GT: Int
-              episodeCount_GTE: Int
-              episodeCount_IN: [Int!]
-              episodeCount_LT: Int
-              episodeCount_LTE: Int
+              episodeCount_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { eq: ... }\\")
+              episodeCount_GT: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { gt: ... }\\")
+              episodeCount_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { gte: ... }\\")
+              episodeCount_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { in: ... }\\")
+              episodeCount_LT: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { lt: ... }\\")
+              episodeCount_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { lte: ... }\\")
               episodes: SeriesEpisodesRelationshipFilters
               episodesAggregate: SeriesEpisodesAggregateInput
               episodesConnection: SeriesEpisodesConnectionFilters
@@ -2297,11 +2297,11 @@ describe("Interface Relationships", () => {
               \\"\\"\\"Return Series where some of the related Episodes match this filter\\"\\"\\"
               episodes_SOME: EpisodeWhere @deprecated(reason: \\"Please use the relevant generic filter 'episodes: {  some: ... }' instead.\\")
               title: StringScalarFilters
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -2478,12 +2478,12 @@ describe("Interface Relationships", () => {
               NOT: ActedInWhere
               OR: [ActedInWhere!]
               screenTime: IntScalarFilters
-              screenTime_EQ: Int
-              screenTime_GT: Int
-              screenTime_GTE: Int
-              screenTime_IN: [Int!]
-              screenTime_LT: Int
-              screenTime_LTE: Int
+              screenTime_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { eq: ... }\\")
+              screenTime_GT: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { gt: ... }\\")
+              screenTime_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { gte: ... }\\")
+              screenTime_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter screenTime: { in: ... }\\")
+              screenTime_LT: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { lt: ... }\\")
+              screenTime_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { lte: ... }\\")
             }
 
             type Actor {
@@ -2714,11 +2714,11 @@ describe("Interface Relationships", () => {
               \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
               actedIn_SOME: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  some: ... }' instead.\\")
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
             }
 
             type ActorsConnection {
@@ -2976,12 +2976,12 @@ describe("Interface Relationships", () => {
               NOT: EpisodeWhere
               OR: [EpisodeWhere!]
               runtime: IntScalarFilters
-              runtime_EQ: Int
-              runtime_GT: Int
-              runtime_GTE: Int
-              runtime_IN: [Int!]
-              runtime_LT: Int
-              runtime_LTE: Int
+              runtime_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { eq: ... }\\")
+              runtime_GT: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { gt: ... }\\")
+              runtime_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { gte: ... }\\")
+              runtime_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter runtime: { in: ... }\\")
+              runtime_LT: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lt: ... }\\")
+              runtime_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lte: ... }\\")
               series: EpisodeSeriesRelationshipFilters
               seriesAggregate: EpisodeSeriesAggregateInput
               seriesConnection: EpisodeSeriesConnectionFilters
@@ -3248,18 +3248,18 @@ describe("Interface Relationships", () => {
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
               runtime: IntScalarFilters
-              runtime_EQ: Int
-              runtime_GT: Int
-              runtime_GTE: Int
-              runtime_IN: [Int!]
-              runtime_LT: Int
-              runtime_LTE: Int
+              runtime_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { eq: ... }\\")
+              runtime_GT: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { gt: ... }\\")
+              runtime_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { gte: ... }\\")
+              runtime_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter runtime: { in: ... }\\")
+              runtime_LT: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lt: ... }\\")
+              runtime_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lte: ... }\\")
               title: StringScalarFilters
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
             }
 
             type MoviesConnection {
@@ -3571,11 +3571,11 @@ describe("Interface Relationships", () => {
               \\"\\"\\"Return Productions where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
               title: StringScalarFilters
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
               typename_IN: [ProductionImplementation!]
             }
 
@@ -3956,12 +3956,12 @@ describe("Interface Relationships", () => {
               \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
               episodeCount: IntScalarFilters
-              episodeCount_EQ: Int
-              episodeCount_GT: Int
-              episodeCount_GTE: Int
-              episodeCount_IN: [Int!]
-              episodeCount_LT: Int
-              episodeCount_LTE: Int
+              episodeCount_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { eq: ... }\\")
+              episodeCount_GT: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { gt: ... }\\")
+              episodeCount_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { gte: ... }\\")
+              episodeCount_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { in: ... }\\")
+              episodeCount_LT: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { lt: ... }\\")
+              episodeCount_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { lte: ... }\\")
               episodes: SeriesEpisodesRelationshipFilters
               episodesAggregate: SeriesEpisodesAggregateInput
               episodesConnection: SeriesEpisodesConnectionFilters
@@ -3990,11 +3990,11 @@ describe("Interface Relationships", () => {
               \\"\\"\\"Return Series where some of the related Episodes match this filter\\"\\"\\"
               episodes_SOME: EpisodeWhere @deprecated(reason: \\"Please use the relevant generic filter 'episodes: {  some: ... }' instead.\\")
               title: StringScalarFilters
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -4060,12 +4060,12 @@ describe("Interface Relationships", () => {
               NOT: StarredInWhere
               OR: [StarredInWhere!]
               seasons: IntScalarFilters
-              seasons_EQ: Int
-              seasons_GT: Int
-              seasons_GTE: Int
-              seasons_IN: [Int!]
-              seasons_LT: Int
-              seasons_LTE: Int
+              seasons_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter seasons: { eq: ... }\\")
+              seasons_GT: Int @deprecated(reason: \\"Please use the relevant generic filter seasons: { gt: ... }\\")
+              seasons_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter seasons: { gte: ... }\\")
+              seasons_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter seasons: { in: ... }\\")
+              seasons_LT: Int @deprecated(reason: \\"Please use the relevant generic filter seasons: { lt: ... }\\")
+              seasons_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter seasons: { lte: ... }\\")
             }
 
             type StringAggregateSelection {
@@ -4420,11 +4420,11 @@ describe("Interface Relationships", () => {
               NOT: Interface1Where
               OR: [Interface1Where!]
               field1: StringScalarFilters
-              field1_CONTAINS: String
-              field1_ENDS_WITH: String
-              field1_EQ: String
-              field1_IN: [String!]
-              field1_STARTS_WITH: String
+              field1_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field1: { contains: ... }\\")
+              field1_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { ends_with: ... }\\")
+              field1_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field1: { eq: ... }\\")
+              field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
+              field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { starts_with: ... }\\")
               interface2: Interface1Interface2RelationshipFilters
               interface2Aggregate: Interface1Interface2AggregateInput
               interface2Connection: Interface1Interface2ConnectionFilters
@@ -4514,11 +4514,11 @@ describe("Interface Relationships", () => {
               NOT: Interface2Where
               OR: [Interface2Where!]
               field2: StringScalarFilters
-              field2_CONTAINS: String
-              field2_ENDS_WITH: String
-              field2_EQ: String
-              field2_IN: [String]
-              field2_STARTS_WITH: String
+              field2_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field2: { contains: ... }\\")
+              field2_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field2: { ends_with: ... }\\")
+              field2_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field2: { eq: ... }\\")
+              field2_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter field2: { in: ... }\\")
+              field2_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field2: { starts_with: ... }\\")
               typename_IN: [Interface2Implementation!]
             }
 
@@ -4936,11 +4936,11 @@ describe("Interface Relationships", () => {
               NOT: Type1Interface1Where
               OR: [Type1Interface1Where!]
               field1: StringScalarFilters
-              field1_CONTAINS: String
-              field1_ENDS_WITH: String
-              field1_EQ: String
-              field1_IN: [String!]
-              field1_STARTS_WITH: String
+              field1_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field1: { contains: ... }\\")
+              field1_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { ends_with: ... }\\")
+              field1_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field1: { eq: ... }\\")
+              field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
+              field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { starts_with: ... }\\")
               interface2: Type1Interface1Interface2RelationshipFilters
               interface2Aggregate: Type1Interface1Interface2AggregateInput
               interface2Connection: Type1Interface1Interface2ConnectionFilters
@@ -5019,11 +5019,11 @@ describe("Interface Relationships", () => {
               NOT: Type1Interface2Where
               OR: [Type1Interface2Where!]
               field2: StringScalarFilters
-              field2_CONTAINS: String
-              field2_ENDS_WITH: String
-              field2_EQ: String
-              field2_IN: [String!]
-              field2_STARTS_WITH: String
+              field2_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field2: { contains: ... }\\")
+              field2_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field2: { ends_with: ... }\\")
+              field2_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field2: { eq: ... }\\")
+              field2_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field2: { in: ... }\\")
+              field2_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field2: { starts_with: ... }\\")
             }
 
             type Type1Interface2sConnection {
@@ -5050,11 +5050,11 @@ describe("Interface Relationships", () => {
               NOT: Type1Where
               OR: [Type1Where!]
               field1: StringScalarFilters
-              field1_CONTAINS: String
-              field1_ENDS_WITH: String
-              field1_EQ: String
-              field1_IN: [String!]
-              field1_STARTS_WITH: String
+              field1_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field1: { contains: ... }\\")
+              field1_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { ends_with: ... }\\")
+              field1_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field1: { eq: ... }\\")
+              field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
+              field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { starts_with: ... }\\")
               interface1: Type1Interface1RelationshipFilters
               interface1Aggregate: Type1Interface1AggregateInput
               interface1Connection: Type1Interface1ConnectionFilters
@@ -5250,11 +5250,11 @@ describe("Interface Relationships", () => {
               NOT: Type2Interface1Where
               OR: [Type2Interface1Where!]
               field1: StringScalarFilters
-              field1_CONTAINS: String
-              field1_ENDS_WITH: String
-              field1_EQ: String
-              field1_IN: [String!]
-              field1_STARTS_WITH: String
+              field1_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field1: { contains: ... }\\")
+              field1_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { ends_with: ... }\\")
+              field1_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field1: { eq: ... }\\")
+              field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
+              field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { starts_with: ... }\\")
               interface2: Type2Interface1Interface2RelationshipFilters
               interface2Aggregate: Type2Interface1Interface2AggregateInput
               interface2Connection: Type2Interface1Interface2ConnectionFilters
@@ -5333,11 +5333,11 @@ describe("Interface Relationships", () => {
               NOT: Type2Interface2Where
               OR: [Type2Interface2Where!]
               field2: StringScalarFilters
-              field2_CONTAINS: String
-              field2_ENDS_WITH: String
-              field2_EQ: String
-              field2_IN: [String!]
-              field2_STARTS_WITH: String
+              field2_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field2: { contains: ... }\\")
+              field2_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field2: { ends_with: ... }\\")
+              field2_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field2: { eq: ... }\\")
+              field2_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field2: { in: ... }\\")
+              field2_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field2: { starts_with: ... }\\")
             }
 
             type Type2Interface2sConnection {
@@ -5757,11 +5757,11 @@ describe("Interface Relationships", () => {
               NOT: Interface1Where
               OR: [Interface1Where!]
               field1: StringScalarFilters
-              field1_CONTAINS: String
-              field1_ENDS_WITH: String
-              field1_EQ: String
-              field1_IN: [String!]
-              field1_STARTS_WITH: String
+              field1_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field1: { contains: ... }\\")
+              field1_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { ends_with: ... }\\")
+              field1_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field1: { eq: ... }\\")
+              field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
+              field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { starts_with: ... }\\")
               interface2: Interface1Interface2RelationshipFilters
               interface2Aggregate: Interface1Interface2AggregateInput
               interface2Connection: Interface1Interface2ConnectionFilters
@@ -5851,11 +5851,11 @@ describe("Interface Relationships", () => {
               NOT: Interface2Where
               OR: [Interface2Where!]
               field2: StringScalarFilters
-              field2_CONTAINS: String
-              field2_ENDS_WITH: String
-              field2_EQ: String
-              field2_IN: [String]
-              field2_STARTS_WITH: String
+              field2_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field2: { contains: ... }\\")
+              field2_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field2: { ends_with: ... }\\")
+              field2_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field2: { eq: ... }\\")
+              field2_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter field2: { in: ... }\\")
+              field2_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field2: { starts_with: ... }\\")
               typename_IN: [Interface2Implementation!]
             }
 
@@ -5947,12 +5947,12 @@ describe("Interface Relationships", () => {
               NOT: PropsWhere
               OR: [PropsWhere!]
               propsField: IntScalarFilters
-              propsField_EQ: Int
-              propsField_GT: Int
-              propsField_GTE: Int
-              propsField_IN: [Int!]
-              propsField_LT: Int
-              propsField_LTE: Int
+              propsField_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter propsField: { eq: ... }\\")
+              propsField_GT: Int @deprecated(reason: \\"Please use the relevant generic filter propsField: { gt: ... }\\")
+              propsField_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter propsField: { gte: ... }\\")
+              propsField_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter propsField: { in: ... }\\")
+              propsField_LT: Int @deprecated(reason: \\"Please use the relevant generic filter propsField: { lt: ... }\\")
+              propsField_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter propsField: { lte: ... }\\")
             }
 
             type Query {
@@ -6346,11 +6346,11 @@ describe("Interface Relationships", () => {
               NOT: Type1Interface1Where
               OR: [Type1Interface1Where!]
               field1: StringScalarFilters
-              field1_CONTAINS: String
-              field1_ENDS_WITH: String
-              field1_EQ: String
-              field1_IN: [String!]
-              field1_STARTS_WITH: String
+              field1_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field1: { contains: ... }\\")
+              field1_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { ends_with: ... }\\")
+              field1_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field1: { eq: ... }\\")
+              field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
+              field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { starts_with: ... }\\")
               interface2: Type1Interface1Interface2RelationshipFilters
               interface2Aggregate: Type1Interface1Interface2AggregateInput
               interface2Connection: Type1Interface1Interface2ConnectionFilters
@@ -6429,11 +6429,11 @@ describe("Interface Relationships", () => {
               NOT: Type1Interface2Where
               OR: [Type1Interface2Where!]
               field2: StringScalarFilters
-              field2_CONTAINS: String
-              field2_ENDS_WITH: String
-              field2_EQ: String
-              field2_IN: [String!]
-              field2_STARTS_WITH: String
+              field2_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field2: { contains: ... }\\")
+              field2_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field2: { ends_with: ... }\\")
+              field2_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field2: { eq: ... }\\")
+              field2_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field2: { in: ... }\\")
+              field2_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field2: { starts_with: ... }\\")
             }
 
             type Type1Interface2sConnection {
@@ -6460,11 +6460,11 @@ describe("Interface Relationships", () => {
               NOT: Type1Where
               OR: [Type1Where!]
               field1: StringScalarFilters
-              field1_CONTAINS: String
-              field1_ENDS_WITH: String
-              field1_EQ: String
-              field1_IN: [String!]
-              field1_STARTS_WITH: String
+              field1_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field1: { contains: ... }\\")
+              field1_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { ends_with: ... }\\")
+              field1_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field1: { eq: ... }\\")
+              field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
+              field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { starts_with: ... }\\")
               interface1: Type1Interface1RelationshipFilters
               interface1Aggregate: Type1Interface1AggregateInput
               interface1Connection: Type1Interface1ConnectionFilters
@@ -6669,11 +6669,11 @@ describe("Interface Relationships", () => {
               NOT: Type2Interface1Where
               OR: [Type2Interface1Where!]
               field1: StringScalarFilters
-              field1_CONTAINS: String
-              field1_ENDS_WITH: String
-              field1_EQ: String
-              field1_IN: [String!]
-              field1_STARTS_WITH: String
+              field1_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field1: { contains: ... }\\")
+              field1_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { ends_with: ... }\\")
+              field1_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field1: { eq: ... }\\")
+              field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
+              field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { starts_with: ... }\\")
               interface2: Type2Interface1Interface2RelationshipFilters
               interface2Aggregate: Type2Interface1Interface2AggregateInput
               interface2Connection: Type2Interface1Interface2ConnectionFilters
@@ -6752,11 +6752,11 @@ describe("Interface Relationships", () => {
               NOT: Type2Interface2Where
               OR: [Type2Interface2Where!]
               field2: StringScalarFilters
-              field2_CONTAINS: String
-              field2_ENDS_WITH: String
-              field2_EQ: String
-              field2_IN: [String!]
-              field2_STARTS_WITH: String
+              field2_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field2: { contains: ... }\\")
+              field2_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field2: { ends_with: ... }\\")
+              field2_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field2: { eq: ... }\\")
+              field2_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field2: { in: ... }\\")
+              field2_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field2: { starts_with: ... }\\")
             }
 
             type Type2Interface2sConnection {
@@ -7202,11 +7202,11 @@ describe("Interface Relationships", () => {
               NOT: Interface1Where
               OR: [Interface1Where!]
               field1: StringScalarFilters
-              field1_CONTAINS: String
-              field1_ENDS_WITH: String
-              field1_EQ: String
-              field1_IN: [String!]
-              field1_STARTS_WITH: String
+              field1_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field1: { contains: ... }\\")
+              field1_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { ends_with: ... }\\")
+              field1_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field1: { eq: ... }\\")
+              field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
+              field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { starts_with: ... }\\")
               interface2: Interface1Interface2RelationshipFilters
               interface2Aggregate: Interface1Interface2AggregateInput
               interface2Connection: Interface1Interface2ConnectionFilters
@@ -7296,11 +7296,11 @@ describe("Interface Relationships", () => {
               NOT: Interface2Where
               OR: [Interface2Where!]
               field2: StringScalarFilters
-              field2_CONTAINS: String
-              field2_ENDS_WITH: String
-              field2_EQ: String
-              field2_IN: [String]
-              field2_STARTS_WITH: String
+              field2_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field2: { contains: ... }\\")
+              field2_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field2: { ends_with: ... }\\")
+              field2_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field2: { eq: ... }\\")
+              field2_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter field2: { in: ... }\\")
+              field2_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field2: { starts_with: ... }\\")
               typename_IN: [Interface2Implementation!]
             }
 
@@ -7727,11 +7727,11 @@ describe("Interface Relationships", () => {
               NOT: Type1Interface1Where
               OR: [Type1Interface1Where!]
               field1: StringScalarFilters
-              field1_CONTAINS: String
-              field1_ENDS_WITH: String
-              field1_EQ: String
-              field1_IN: [String!]
-              field1_STARTS_WITH: String
+              field1_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field1: { contains: ... }\\")
+              field1_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { ends_with: ... }\\")
+              field1_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field1: { eq: ... }\\")
+              field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
+              field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { starts_with: ... }\\")
               interface2: Type1Interface1Interface2RelationshipFilters
               interface2Aggregate: Type1Interface1Interface2AggregateInput
               interface2Connection: Type1Interface1Interface2ConnectionFilters
@@ -7810,11 +7810,11 @@ describe("Interface Relationships", () => {
               NOT: Type1Interface2Where
               OR: [Type1Interface2Where!]
               field2: StringScalarFilters
-              field2_CONTAINS: String
-              field2_ENDS_WITH: String
-              field2_EQ: String
-              field2_IN: [String!]
-              field2_STARTS_WITH: String
+              field2_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field2: { contains: ... }\\")
+              field2_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field2: { ends_with: ... }\\")
+              field2_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field2: { eq: ... }\\")
+              field2_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field2: { in: ... }\\")
+              field2_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field2: { starts_with: ... }\\")
             }
 
             type Type1Interface2sConnection {
@@ -7878,12 +7878,12 @@ describe("Interface Relationships", () => {
               NOT: Type1PropsWhere
               OR: [Type1PropsWhere!]
               type1Field: IntScalarFilters
-              type1Field_EQ: Int
-              type1Field_GT: Int
-              type1Field_GTE: Int
-              type1Field_IN: [Int!]
-              type1Field_LT: Int
-              type1Field_LTE: Int
+              type1Field_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter type1Field: { eq: ... }\\")
+              type1Field_GT: Int @deprecated(reason: \\"Please use the relevant generic filter type1Field: { gt: ... }\\")
+              type1Field_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter type1Field: { gte: ... }\\")
+              type1Field_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter type1Field: { in: ... }\\")
+              type1Field_LT: Int @deprecated(reason: \\"Please use the relevant generic filter type1Field: { lt: ... }\\")
+              type1Field_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter type1Field: { lte: ... }\\")
             }
 
             \\"\\"\\"
@@ -7904,11 +7904,11 @@ describe("Interface Relationships", () => {
               NOT: Type1Where
               OR: [Type1Where!]
               field1: StringScalarFilters
-              field1_CONTAINS: String
-              field1_ENDS_WITH: String
-              field1_EQ: String
-              field1_IN: [String!]
-              field1_STARTS_WITH: String
+              field1_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field1: { contains: ... }\\")
+              field1_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { ends_with: ... }\\")
+              field1_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field1: { eq: ... }\\")
+              field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
+              field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { starts_with: ... }\\")
               interface1: Type1Interface1RelationshipFilters
               interface1Aggregate: Type1Interface1AggregateInput
               interface1Connection: Type1Interface1ConnectionFilters
@@ -8113,11 +8113,11 @@ describe("Interface Relationships", () => {
               NOT: Type2Interface1Where
               OR: [Type2Interface1Where!]
               field1: StringScalarFilters
-              field1_CONTAINS: String
-              field1_ENDS_WITH: String
-              field1_EQ: String
-              field1_IN: [String!]
-              field1_STARTS_WITH: String
+              field1_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field1: { contains: ... }\\")
+              field1_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { ends_with: ... }\\")
+              field1_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field1: { eq: ... }\\")
+              field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
+              field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { starts_with: ... }\\")
               interface2: Type2Interface1Interface2RelationshipFilters
               interface2Aggregate: Type2Interface1Interface2AggregateInput
               interface2Connection: Type2Interface1Interface2ConnectionFilters
@@ -8196,11 +8196,11 @@ describe("Interface Relationships", () => {
               NOT: Type2Interface2Where
               OR: [Type2Interface2Where!]
               field2: StringScalarFilters
-              field2_CONTAINS: String
-              field2_ENDS_WITH: String
-              field2_EQ: String
-              field2_IN: [String!]
-              field2_STARTS_WITH: String
+              field2_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field2: { contains: ... }\\")
+              field2_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field2: { ends_with: ... }\\")
+              field2_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field2: { eq: ... }\\")
+              field2_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field2: { in: ... }\\")
+              field2_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field2: { starts_with: ... }\\")
             }
 
             type Type2Interface2sConnection {
@@ -8264,12 +8264,12 @@ describe("Interface Relationships", () => {
               NOT: Type2PropsWhere
               OR: [Type2PropsWhere!]
               type2Field: IntScalarFilters
-              type2Field_EQ: Int
-              type2Field_GT: Int
-              type2Field_GTE: Int
-              type2Field_IN: [Int!]
-              type2Field_LT: Int
-              type2Field_LTE: Int
+              type2Field_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter type2Field: { eq: ... }\\")
+              type2Field_GT: Int @deprecated(reason: \\"Please use the relevant generic filter type2Field: { gt: ... }\\")
+              type2Field_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter type2Field: { gte: ... }\\")
+              type2Field_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter type2Field: { in: ... }\\")
+              type2Field_LT: Int @deprecated(reason: \\"Please use the relevant generic filter type2Field: { lt: ... }\\")
+              type2Field_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter type2Field: { lte: ... }\\")
             }
 
             \\"\\"\\"
@@ -8680,11 +8680,11 @@ describe("Interface Relationships", () => {
               NOT: CommentWhere
               OR: [CommentWhere!]
               content: StringScalarFilters
-              content_CONTAINS: String
-              content_ENDS_WITH: String
-              content_EQ: String
-              content_IN: [String]
-              content_STARTS_WITH: String
+              content_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter content: { contains: ... }\\")
+              content_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter content: { ends_with: ... }\\")
+              content_EQ: String @deprecated(reason: \\"Please use the relevant generic filter content: { eq: ... }\\")
+              content_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter content: { in: ... }\\")
+              content_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter content: { starts_with: ... }\\")
               creator: CommentCreatorRelationshipFilters
               creatorAggregate: CommentCreatorAggregateInput
               creatorConnection: CommentCreatorConnectionFilters
@@ -8713,11 +8713,11 @@ describe("Interface Relationships", () => {
               \\"\\"\\"Return Comments where some of the related Users match this filter\\"\\"\\"
               creator_SOME: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'creator: {  some: ... }' instead.\\")
               id: IDScalarFilters
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
               post: CommentPostRelationshipFilters
               postAggregate: CommentPostAggregateInput
               postConnection: CommentPostConnectionFilters
@@ -8948,11 +8948,11 @@ describe("Interface Relationships", () => {
               NOT: ContentWhere
               OR: [ContentWhere!]
               content: StringScalarFilters
-              content_CONTAINS: String
-              content_ENDS_WITH: String
-              content_EQ: String
-              content_IN: [String]
-              content_STARTS_WITH: String
+              content_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter content: { contains: ... }\\")
+              content_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter content: { ends_with: ... }\\")
+              content_EQ: String @deprecated(reason: \\"Please use the relevant generic filter content: { eq: ... }\\")
+              content_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter content: { in: ... }\\")
+              content_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter content: { starts_with: ... }\\")
               creator: ContentCreatorRelationshipFilters
               creatorAggregate: ContentCreatorAggregateInput
               creatorConnection: ContentCreatorConnectionFilters
@@ -8981,11 +8981,11 @@ describe("Interface Relationships", () => {
               \\"\\"\\"Return Contents where some of the related Users match this filter\\"\\"\\"
               creator_SOME: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'creator: {  some: ... }' instead.\\")
               id: IDScalarFilters
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
               typename_IN: [ContentImplementation!]
             }
 
@@ -9451,11 +9451,11 @@ describe("Interface Relationships", () => {
               \\"\\"\\"Return Posts where some of the related Comments match this filter\\"\\"\\"
               comments_SOME: CommentWhere @deprecated(reason: \\"Please use the relevant generic filter 'comments: {  some: ... }' instead.\\")
               content: StringScalarFilters
-              content_CONTAINS: String
-              content_ENDS_WITH: String
-              content_EQ: String
-              content_IN: [String]
-              content_STARTS_WITH: String
+              content_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter content: { contains: ... }\\")
+              content_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter content: { ends_with: ... }\\")
+              content_EQ: String @deprecated(reason: \\"Please use the relevant generic filter content: { eq: ... }\\")
+              content_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter content: { in: ... }\\")
+              content_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter content: { starts_with: ... }\\")
               creator: PostCreatorRelationshipFilters
               creatorAggregate: PostCreatorAggregateInput
               creatorConnection: PostCreatorConnectionFilters
@@ -9484,11 +9484,11 @@ describe("Interface Relationships", () => {
               \\"\\"\\"Return Posts where some of the related Users match this filter\\"\\"\\"
               creator_SOME: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'creator: {  some: ... }' instead.\\")
               id: IDScalarFilters
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
             }
 
             type PostsConnection {
@@ -9810,17 +9810,17 @@ describe("Interface Relationships", () => {
               \\"\\"\\"Return Users where some of the related Contents match this filter\\"\\"\\"
               content_SOME: ContentWhere @deprecated(reason: \\"Please use the relevant generic filter 'content: {  some: ... }' instead.\\")
               id: IDScalarFilters
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
             }
 
             type UsersConnection {
@@ -9934,12 +9934,12 @@ describe("Interface Relationships", () => {
               NOT: ActedInWhere
               OR: [ActedInWhere!]
               screenTime: IntScalarFilters
-              screenTime_EQ: Int
-              screenTime_GT: Int
-              screenTime_GTE: Int
-              screenTime_IN: [Int!]
-              screenTime_LT: Int
-              screenTime_LTE: Int
+              screenTime_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { eq: ... }\\")
+              screenTime_GT: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { gt: ... }\\")
+              screenTime_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { gte: ... }\\")
+              screenTime_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter screenTime: { in: ... }\\")
+              screenTime_LT: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { lt: ... }\\")
+              screenTime_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { lte: ... }\\")
             }
 
             type Actor {
@@ -10170,11 +10170,11 @@ describe("Interface Relationships", () => {
               \\"\\"\\"Return Actors where some of the related Shows match this filter\\"\\"\\"
               actedIn_SOME: ShowWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  some: ... }' instead.\\")
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
             }
 
             type ActorsConnection {
@@ -10445,18 +10445,18 @@ describe("Interface Relationships", () => {
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
               runtime: IntScalarFilters
-              runtime_EQ: Int
-              runtime_GT: Int
-              runtime_GTE: Int
-              runtime_IN: [Int!]
-              runtime_LT: Int
-              runtime_LTE: Int
+              runtime_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { eq: ... }\\")
+              runtime_GT: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { gt: ... }\\")
+              runtime_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { gte: ... }\\")
+              runtime_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter runtime: { in: ... }\\")
+              runtime_LT: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lt: ... }\\")
+              runtime_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lte: ... }\\")
               title: StringScalarFilters
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
             }
 
             type MoviesConnection {
@@ -10517,11 +10517,11 @@ describe("Interface Relationships", () => {
               NOT: ProductionWhere
               OR: [ProductionWhere!]
               title: StringScalarFilters
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
               typename_IN: [ProductionImplementation!]
             }
 
@@ -10744,18 +10744,18 @@ describe("Interface Relationships", () => {
               \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
               episodeCount: IntScalarFilters
-              episodeCount_EQ: Int
-              episodeCount_GT: Int
-              episodeCount_GTE: Int
-              episodeCount_IN: [Int!]
-              episodeCount_LT: Int
-              episodeCount_LTE: Int
+              episodeCount_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { eq: ... }\\")
+              episodeCount_GT: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { gt: ... }\\")
+              episodeCount_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { gte: ... }\\")
+              episodeCount_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { in: ... }\\")
+              episodeCount_LT: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { lt: ... }\\")
+              episodeCount_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { lte: ... }\\")
               title: StringScalarFilters
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
             }
 
             interface Show {
@@ -11038,11 +11038,11 @@ describe("Interface Relationships", () => {
               \\"\\"\\"Return Shows where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
               title: StringScalarFilters
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
               typename_IN: [ShowImplementation!]
             }
 
@@ -11115,12 +11115,12 @@ describe("Interface Relationships", () => {
               NOT: StarredInWhere
               OR: [StarredInWhere!]
               episodeNr: IntScalarFilters
-              episodeNr_EQ: Int
-              episodeNr_GT: Int
-              episodeNr_GTE: Int
-              episodeNr_IN: [Int!]
-              episodeNr_LT: Int
-              episodeNr_LTE: Int
+              episodeNr_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter episodeNr: { eq: ... }\\")
+              episodeNr_GT: Int @deprecated(reason: \\"Please use the relevant generic filter episodeNr: { gt: ... }\\")
+              episodeNr_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter episodeNr: { gte: ... }\\")
+              episodeNr_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter episodeNr: { in: ... }\\")
+              episodeNr_LT: Int @deprecated(reason: \\"Please use the relevant generic filter episodeNr: { lt: ... }\\")
+              episodeNr_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter episodeNr: { lte: ... }\\")
             }
 
             type StringAggregateSelection {

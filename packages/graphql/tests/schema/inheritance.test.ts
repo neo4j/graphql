@@ -249,11 +249,11 @@ describe("inheritance", () => {
               \\"\\"\\"Return Actors where some of the related People match this filter\\"\\"\\"
               friends_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'friends: {  some: ... }' instead.\\")
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
             }
 
             type ActorsConnection {
@@ -348,12 +348,12 @@ describe("inheritance", () => {
               NOT: FriendsWithWhere
               OR: [FriendsWithWhere!]
               since: IntScalarFilters
-              since_EQ: Int
-              since_GT: Int
-              since_GTE: Int
-              since_IN: [Int]
-              since_LT: Int
-              since_LTE: Int
+              since_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter since: { eq: ... }\\")
+              since_GT: Int @deprecated(reason: \\"Please use the relevant generic filter since: { gt: ... }\\")
+              since_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter since: { gte: ... }\\")
+              since_IN: [Int] @deprecated(reason: \\"Please use the relevant generic filter since: { in: ... }\\")
+              since_LT: Int @deprecated(reason: \\"Please use the relevant generic filter since: { lt: ... }\\")
+              since_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter since: { lte: ... }\\")
             }
 
             type IntAggregateSelection {
@@ -661,11 +661,11 @@ describe("inheritance", () => {
               \\"\\"\\"Return People where some of the related People match this filter\\"\\"\\"
               friends_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'friends: {  some: ... }' instead.\\")
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
               typename_IN: [PersonImplementation!]
             }
 

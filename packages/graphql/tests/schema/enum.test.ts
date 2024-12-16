@@ -99,8 +99,8 @@ describe("Enum", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               status: StatusEnumScalarFilters
-              status_EQ: Status
-              status_IN: [Status]
+              status_EQ: Status @deprecated(reason: \\"Please use the relevant generic filter status: { eq: ... }\\")
+              status_IN: [Status] @deprecated(reason: \\"Please use the relevant generic filter status: { in: ... }\\")
             }
 
             type MoviesConnection {

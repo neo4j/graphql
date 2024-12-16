@@ -142,18 +142,18 @@ describe("Date", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               date: DateScalarFilters
-              date_EQ: Date
-              date_GT: Date
-              date_GTE: Date
-              date_IN: [Date]
-              date_LT: Date
-              date_LTE: Date
+              date_EQ: Date @deprecated(reason: \\"Please use the relevant generic filter date: { eq: ... }\\")
+              date_GT: Date @deprecated(reason: \\"Please use the relevant generic filter date: { gt: ... }\\")
+              date_GTE: Date @deprecated(reason: \\"Please use the relevant generic filter date: { gte: ... }\\")
+              date_IN: [Date] @deprecated(reason: \\"Please use the relevant generic filter date: { in: ... }\\")
+              date_LT: Date @deprecated(reason: \\"Please use the relevant generic filter date: { lt: ... }\\")
+              date_LTE: Date @deprecated(reason: \\"Please use the relevant generic filter date: { lte: ... }\\")
               id: IDScalarFilters
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
             }
 
             type MoviesConnection {

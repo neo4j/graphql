@@ -21,8 +21,8 @@ import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
-describe("Exclude suffix based filtering", () => {
-    test("should exclude suffix based filtering", async () => {
+describe("Exclude attribute suffix based filtering", () => {
+    test("should exclude attribute suffix based filtering", async () => {
         const typeDefs = /* GraphQL */ `
             type typeA @node {
                 name: String
@@ -76,7 +76,7 @@ describe("Exclude suffix based filtering", () => {
             typeDefs,
             features: {
                 excludeDeprecatedFields: {
-                    relationshipFilters: true,
+                    attributeFilters: true,
                 },
             },
         });
@@ -106,12 +106,6 @@ describe("Exclude suffix based filtering", () => {
               x: Float!
               y: Float!
               z: Float
-            }
-
-            \\"\\"\\"Input type for a cartesian point with a distance\\"\\"\\"
-            input CartesianPointDistance {
-              distance: Float!
-              point: CartesianPointInput!
             }
 
             \\"\\"\\"Cartesian Point filters\\"\\"\\"
@@ -424,13 +418,6 @@ describe("Exclude suffix based filtering", () => {
               srid: Int!
             }
 
-            \\"\\"\\"Input type for a point with a distance\\"\\"\\"
-            input PointDistance {
-              \\"\\"\\"The distance in metres to be used when comparing two points\\"\\"\\"
-              distance: Float!
-              point: PointInput!
-            }
-
             \\"\\"\\"Distance filters\\"\\"\\"
             input PointDistanceFilters {
               eq: Float
@@ -638,73 +625,15 @@ describe("Exclude suffix based filtering", () => {
               NOT: interfaceCWhere
               OR: [interfaceCWhere!]
               averageRating: FloatScalarFilters
-              averageRating_EQ: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { eq: ... }\\")
-              averageRating_GT: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { gt: ... }\\")
-              averageRating_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { gte: ... }\\")
-              averageRating_IN: [Float!] @deprecated(reason: \\"Please use the relevant generic filter averageRating: { in: ... }\\")
-              averageRating_LT: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { lt: ... }\\")
-              averageRating_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { lte: ... }\\")
               cartesianPoint: CartesianPointFilters
-              cartesianPoint_DISTANCE: CartesianPointDistance @deprecated(reason: \\"Please use the relevant generic filter cartesianPoint: { distance: ... }\\")
-              cartesianPoint_EQ: CartesianPointInput @deprecated(reason: \\"Please use the relevant generic filter cartesianPoint: { eq: ... }\\")
-              cartesianPoint_GT: CartesianPointDistance @deprecated(reason: \\"Please use the relevant generic filter cartesianPoint: { gt: ... }\\")
-              cartesianPoint_GTE: CartesianPointDistance @deprecated(reason: \\"Please use the relevant generic filter cartesianPoint: { gte: ... }\\")
-              cartesianPoint_IN: [CartesianPointInput] @deprecated(reason: \\"Please use the relevant generic filter cartesianPoint: { in: ... }\\")
-              cartesianPoint_LT: CartesianPointDistance @deprecated(reason: \\"Please use the relevant generic filter cartesianPoint: { lt: ... }\\")
-              cartesianPoint_LTE: CartesianPointDistance @deprecated(reason: \\"Please use the relevant generic filter cartesianPoint: { lte: ... }\\")
               createdAt: DateTimeScalarFilters
-              createdAt_EQ: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { eq: ... }\\")
-              createdAt_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { gt: ... }\\")
-              createdAt_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { gte: ... }\\")
-              createdAt_IN: [DateTime] @deprecated(reason: \\"Please use the relevant generic filter createdAt: { in: ... }\\")
-              createdAt_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { lt: ... }\\")
-              createdAt_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { lte: ... }\\")
               date: DateScalarFilters
-              date_EQ: Date @deprecated(reason: \\"Please use the relevant generic filter date: { eq: ... }\\")
-              date_GT: Date @deprecated(reason: \\"Please use the relevant generic filter date: { gt: ... }\\")
-              date_GTE: Date @deprecated(reason: \\"Please use the relevant generic filter date: { gte: ... }\\")
-              date_IN: [Date] @deprecated(reason: \\"Please use the relevant generic filter date: { in: ... }\\")
-              date_LT: Date @deprecated(reason: \\"Please use the relevant generic filter date: { lt: ... }\\")
-              date_LTE: Date @deprecated(reason: \\"Please use the relevant generic filter date: { lte: ... }\\")
               duration: DurationScalarFilters
-              duration_EQ: Duration @deprecated(reason: \\"Please use the relevant generic filter duration: { eq: ... }\\")
-              duration_GT: Duration @deprecated(reason: \\"Please use the relevant generic filter duration: { gt: ... }\\")
-              duration_GTE: Duration @deprecated(reason: \\"Please use the relevant generic filter duration: { gte: ... }\\")
-              duration_IN: [Duration] @deprecated(reason: \\"Please use the relevant generic filter duration: { in: ... }\\")
-              duration_LT: Duration @deprecated(reason: \\"Please use the relevant generic filter duration: { lt: ... }\\")
-              duration_LTE: Duration @deprecated(reason: \\"Please use the relevant generic filter duration: { lte: ... }\\")
               list: StringListFilters
-              list_EQ: [String!] @deprecated(reason: \\"Please use the relevant generic filter list: { eq: ... }\\")
-              list_INCLUDES: String @deprecated(reason: \\"Please use the relevant generic filter list: { includes: ... }\\")
               localDateTime: LocalDateTimeScalarFilters
-              localDateTime_EQ: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter localDateTime: { eq: ... }\\")
-              localDateTime_GT: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter localDateTime: { gt: ... }\\")
-              localDateTime_GTE: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter localDateTime: { gte: ... }\\")
-              localDateTime_IN: [LocalDateTime] @deprecated(reason: \\"Please use the relevant generic filter localDateTime: { in: ... }\\")
-              localDateTime_LT: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter localDateTime: { lt: ... }\\")
-              localDateTime_LTE: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter localDateTime: { lte: ... }\\")
               localTime: LocalTimeScalarFilters
-              localTime_EQ: LocalTime @deprecated(reason: \\"Please use the relevant generic filter localTime: { eq: ... }\\")
-              localTime_GT: LocalTime @deprecated(reason: \\"Please use the relevant generic filter localTime: { gt: ... }\\")
-              localTime_GTE: LocalTime @deprecated(reason: \\"Please use the relevant generic filter localTime: { gte: ... }\\")
-              localTime_IN: [LocalTime] @deprecated(reason: \\"Please use the relevant generic filter localTime: { in: ... }\\")
-              localTime_LT: LocalTime @deprecated(reason: \\"Please use the relevant generic filter localTime: { lt: ... }\\")
-              localTime_LTE: LocalTime @deprecated(reason: \\"Please use the relevant generic filter localTime: { lte: ... }\\")
               point: PointFilters
-              point_DISTANCE: PointDistance @deprecated(reason: \\"Please use the relevant generic filter point: { distance: ... }\\")
-              point_EQ: PointInput @deprecated(reason: \\"Please use the relevant generic filter point: { eq: ... }\\")
-              point_GT: PointDistance @deprecated(reason: \\"Please use the relevant generic filter point: { gt: ... }\\")
-              point_GTE: PointDistance @deprecated(reason: \\"Please use the relevant generic filter point: { gte: ... }\\")
-              point_IN: [PointInput] @deprecated(reason: \\"Please use the relevant generic filter point: { in: ... }\\")
-              point_LT: PointDistance @deprecated(reason: \\"Please use the relevant generic filter point: { lt: ... }\\")
-              point_LTE: PointDistance @deprecated(reason: \\"Please use the relevant generic filter point: { lte: ... }\\")
               time: TimeScalarFilters
-              time_EQ: Time @deprecated(reason: \\"Please use the relevant generic filter time: { eq: ... }\\")
-              time_GT: Time @deprecated(reason: \\"Please use the relevant generic filter time: { gt: ... }\\")
-              time_GTE: Time @deprecated(reason: \\"Please use the relevant generic filter time: { gte: ... }\\")
-              time_IN: [Time] @deprecated(reason: \\"Please use the relevant generic filter time: { in: ... }\\")
-              time_LT: Time @deprecated(reason: \\"Please use the relevant generic filter time: { lt: ... }\\")
-              time_LTE: Time @deprecated(reason: \\"Please use the relevant generic filter time: { lte: ... }\\")
               typename_IN: [interfaceCImplementation!]
             }
 
@@ -873,73 +802,15 @@ describe("Exclude suffix based filtering", () => {
               NOT: relTypeWhere
               OR: [relTypeWhere!]
               averageRating: FloatScalarFilters
-              averageRating_EQ: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { eq: ... }\\")
-              averageRating_GT: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { gt: ... }\\")
-              averageRating_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { gte: ... }\\")
-              averageRating_IN: [Float!] @deprecated(reason: \\"Please use the relevant generic filter averageRating: { in: ... }\\")
-              averageRating_LT: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { lt: ... }\\")
-              averageRating_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { lte: ... }\\")
               cartesianPoint: CartesianPointFilters
-              cartesianPoint_DISTANCE: CartesianPointDistance @deprecated(reason: \\"Please use the relevant generic filter cartesianPoint: { distance: ... }\\")
-              cartesianPoint_EQ: CartesianPointInput @deprecated(reason: \\"Please use the relevant generic filter cartesianPoint: { eq: ... }\\")
-              cartesianPoint_GT: CartesianPointDistance @deprecated(reason: \\"Please use the relevant generic filter cartesianPoint: { gt: ... }\\")
-              cartesianPoint_GTE: CartesianPointDistance @deprecated(reason: \\"Please use the relevant generic filter cartesianPoint: { gte: ... }\\")
-              cartesianPoint_IN: [CartesianPointInput] @deprecated(reason: \\"Please use the relevant generic filter cartesianPoint: { in: ... }\\")
-              cartesianPoint_LT: CartesianPointDistance @deprecated(reason: \\"Please use the relevant generic filter cartesianPoint: { lt: ... }\\")
-              cartesianPoint_LTE: CartesianPointDistance @deprecated(reason: \\"Please use the relevant generic filter cartesianPoint: { lte: ... }\\")
               createdAt: DateTimeScalarFilters
-              createdAt_EQ: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { eq: ... }\\")
-              createdAt_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { gt: ... }\\")
-              createdAt_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { gte: ... }\\")
-              createdAt_IN: [DateTime] @deprecated(reason: \\"Please use the relevant generic filter createdAt: { in: ... }\\")
-              createdAt_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { lt: ... }\\")
-              createdAt_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { lte: ... }\\")
               date: DateScalarFilters
-              date_EQ: Date @deprecated(reason: \\"Please use the relevant generic filter date: { eq: ... }\\")
-              date_GT: Date @deprecated(reason: \\"Please use the relevant generic filter date: { gt: ... }\\")
-              date_GTE: Date @deprecated(reason: \\"Please use the relevant generic filter date: { gte: ... }\\")
-              date_IN: [Date] @deprecated(reason: \\"Please use the relevant generic filter date: { in: ... }\\")
-              date_LT: Date @deprecated(reason: \\"Please use the relevant generic filter date: { lt: ... }\\")
-              date_LTE: Date @deprecated(reason: \\"Please use the relevant generic filter date: { lte: ... }\\")
               duration: DurationScalarFilters
-              duration_EQ: Duration @deprecated(reason: \\"Please use the relevant generic filter duration: { eq: ... }\\")
-              duration_GT: Duration @deprecated(reason: \\"Please use the relevant generic filter duration: { gt: ... }\\")
-              duration_GTE: Duration @deprecated(reason: \\"Please use the relevant generic filter duration: { gte: ... }\\")
-              duration_IN: [Duration] @deprecated(reason: \\"Please use the relevant generic filter duration: { in: ... }\\")
-              duration_LT: Duration @deprecated(reason: \\"Please use the relevant generic filter duration: { lt: ... }\\")
-              duration_LTE: Duration @deprecated(reason: \\"Please use the relevant generic filter duration: { lte: ... }\\")
               localDateTime: LocalDateTimeScalarFilters
-              localDateTime_EQ: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter localDateTime: { eq: ... }\\")
-              localDateTime_GT: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter localDateTime: { gt: ... }\\")
-              localDateTime_GTE: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter localDateTime: { gte: ... }\\")
-              localDateTime_IN: [LocalDateTime] @deprecated(reason: \\"Please use the relevant generic filter localDateTime: { in: ... }\\")
-              localDateTime_LT: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter localDateTime: { lt: ... }\\")
-              localDateTime_LTE: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter localDateTime: { lte: ... }\\")
               localTime: LocalTimeScalarFilters
-              localTime_EQ: LocalTime @deprecated(reason: \\"Please use the relevant generic filter localTime: { eq: ... }\\")
-              localTime_GT: LocalTime @deprecated(reason: \\"Please use the relevant generic filter localTime: { gt: ... }\\")
-              localTime_GTE: LocalTime @deprecated(reason: \\"Please use the relevant generic filter localTime: { gte: ... }\\")
-              localTime_IN: [LocalTime] @deprecated(reason: \\"Please use the relevant generic filter localTime: { in: ... }\\")
-              localTime_LT: LocalTime @deprecated(reason: \\"Please use the relevant generic filter localTime: { lt: ... }\\")
-              localTime_LTE: LocalTime @deprecated(reason: \\"Please use the relevant generic filter localTime: { lte: ... }\\")
               pay: FloatListFilters
-              pay_EQ: [Float!] @deprecated(reason: \\"Please use the relevant generic filter pay: { eq: ... }\\")
-              pay_INCLUDES: Float @deprecated(reason: \\"Please use the relevant generic filter pay: { includes: ... }\\")
               point: PointFilters
-              point_DISTANCE: PointDistance @deprecated(reason: \\"Please use the relevant generic filter point: { distance: ... }\\")
-              point_EQ: PointInput @deprecated(reason: \\"Please use the relevant generic filter point: { eq: ... }\\")
-              point_GT: PointDistance @deprecated(reason: \\"Please use the relevant generic filter point: { gt: ... }\\")
-              point_GTE: PointDistance @deprecated(reason: \\"Please use the relevant generic filter point: { gte: ... }\\")
-              point_IN: [PointInput] @deprecated(reason: \\"Please use the relevant generic filter point: { in: ... }\\")
-              point_LT: PointDistance @deprecated(reason: \\"Please use the relevant generic filter point: { lt: ... }\\")
-              point_LTE: PointDistance @deprecated(reason: \\"Please use the relevant generic filter point: { lte: ... }\\")
               time: TimeScalarFilters
-              time_EQ: Time @deprecated(reason: \\"Please use the relevant generic filter time: { eq: ... }\\")
-              time_GT: Time @deprecated(reason: \\"Please use the relevant generic filter time: { gt: ... }\\")
-              time_GTE: Time @deprecated(reason: \\"Please use the relevant generic filter time: { gte: ... }\\")
-              time_IN: [Time] @deprecated(reason: \\"Please use the relevant generic filter time: { in: ... }\\")
-              time_LT: Time @deprecated(reason: \\"Please use the relevant generic filter time: { lt: ... }\\")
-              time_LTE: Time @deprecated(reason: \\"Please use the relevant generic filter time: { lte: ... }\\")
             }
 
             type typeA {
@@ -1207,12 +1078,31 @@ describe("Exclude suffix based filtering", () => {
               actedIn: typeAActedInRelationshipFilters
               actedInAggregate: typeAActedInAggregateInput
               actedInConnection: typeAActedInConnectionFilters
+              \\"\\"\\"
+              Return typeAS where all of the related typeAActedInConnections match this filter
+              \\"\\"\\"
+              actedInConnection_ALL: typeAActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { all: { node: ... } } }' instead.\\")
+              \\"\\"\\"
+              Return typeAS where none of the related typeAActedInConnections match this filter
+              \\"\\"\\"
+              actedInConnection_NONE: typeAActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { none: { node: ... } } }' instead.\\")
+              \\"\\"\\"
+              Return typeAS where one of the related typeAActedInConnections match this filter
+              \\"\\"\\"
+              actedInConnection_SINGLE: typeAActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { single: { node: ... } } }' instead.\\")
+              \\"\\"\\"
+              Return typeAS where some of the related typeAActedInConnections match this filter
+              \\"\\"\\"
+              actedInConnection_SOME: typeAActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { some: { node: ... } } }' instead.\\")
+              \\"\\"\\"Return typeAS where all of the related typeBS match this filter\\"\\"\\"
+              actedIn_ALL: typeBWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: { all: ... }' instead.\\")
+              \\"\\"\\"Return typeAS where none of the related typeBS match this filter\\"\\"\\"
+              actedIn_NONE: typeBWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: { none: ... }' instead.\\")
+              \\"\\"\\"Return typeAS where one of the related typeBS match this filter\\"\\"\\"
+              actedIn_SINGLE: typeBWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  single: ... }' instead.\\")
+              \\"\\"\\"Return typeAS where some of the related typeBS match this filter\\"\\"\\"
+              actedIn_SOME: typeBWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  some: ... }' instead.\\")
               name: StringScalarFilters
-              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
-              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
-              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
-              name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
-              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
             }
 
             type typeAtypeBActedInAggregationSelection {
@@ -1494,85 +1384,44 @@ describe("Exclude suffix based filtering", () => {
               NOT: typeBWhere
               OR: [typeBWhere!]
               averageRating: FloatScalarFilters
-              averageRating_EQ: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { eq: ... }\\")
-              averageRating_GT: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { gt: ... }\\")
-              averageRating_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { gte: ... }\\")
-              averageRating_IN: [Float!] @deprecated(reason: \\"Please use the relevant generic filter averageRating: { in: ... }\\")
-              averageRating_LT: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { lt: ... }\\")
-              averageRating_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { lte: ... }\\")
               cartesianPoint: CartesianPointFilters
-              cartesianPoint_DISTANCE: CartesianPointDistance @deprecated(reason: \\"Please use the relevant generic filter cartesianPoint: { distance: ... }\\")
-              cartesianPoint_EQ: CartesianPointInput @deprecated(reason: \\"Please use the relevant generic filter cartesianPoint: { eq: ... }\\")
-              cartesianPoint_GT: CartesianPointDistance @deprecated(reason: \\"Please use the relevant generic filter cartesianPoint: { gt: ... }\\")
-              cartesianPoint_GTE: CartesianPointDistance @deprecated(reason: \\"Please use the relevant generic filter cartesianPoint: { gte: ... }\\")
-              cartesianPoint_IN: [CartesianPointInput] @deprecated(reason: \\"Please use the relevant generic filter cartesianPoint: { in: ... }\\")
-              cartesianPoint_LT: CartesianPointDistance @deprecated(reason: \\"Please use the relevant generic filter cartesianPoint: { lt: ... }\\")
-              cartesianPoint_LTE: CartesianPointDistance @deprecated(reason: \\"Please use the relevant generic filter cartesianPoint: { lte: ... }\\")
               createdAt: DateTimeScalarFilters
-              createdAt_EQ: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { eq: ... }\\")
-              createdAt_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { gt: ... }\\")
-              createdAt_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { gte: ... }\\")
-              createdAt_IN: [DateTime] @deprecated(reason: \\"Please use the relevant generic filter createdAt: { in: ... }\\")
-              createdAt_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { lt: ... }\\")
-              createdAt_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { lte: ... }\\")
               date: DateScalarFilters
-              date_EQ: Date @deprecated(reason: \\"Please use the relevant generic filter date: { eq: ... }\\")
-              date_GT: Date @deprecated(reason: \\"Please use the relevant generic filter date: { gt: ... }\\")
-              date_GTE: Date @deprecated(reason: \\"Please use the relevant generic filter date: { gte: ... }\\")
-              date_IN: [Date] @deprecated(reason: \\"Please use the relevant generic filter date: { in: ... }\\")
-              date_LT: Date @deprecated(reason: \\"Please use the relevant generic filter date: { lt: ... }\\")
-              date_LTE: Date @deprecated(reason: \\"Please use the relevant generic filter date: { lte: ... }\\")
               duration: DurationScalarFilters
-              duration_EQ: Duration @deprecated(reason: \\"Please use the relevant generic filter duration: { eq: ... }\\")
-              duration_GT: Duration @deprecated(reason: \\"Please use the relevant generic filter duration: { gt: ... }\\")
-              duration_GTE: Duration @deprecated(reason: \\"Please use the relevant generic filter duration: { gte: ... }\\")
-              duration_IN: [Duration] @deprecated(reason: \\"Please use the relevant generic filter duration: { in: ... }\\")
-              duration_LT: Duration @deprecated(reason: \\"Please use the relevant generic filter duration: { lt: ... }\\")
-              duration_LTE: Duration @deprecated(reason: \\"Please use the relevant generic filter duration: { lte: ... }\\")
               id: IDScalarFilters
-              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
-              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
-              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
-              id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
-              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
               list: StringListFilters
-              list_EQ: [String!] @deprecated(reason: \\"Please use the relevant generic filter list: { eq: ... }\\")
-              list_INCLUDES: String @deprecated(reason: \\"Please use the relevant generic filter list: { includes: ... }\\")
               localDateTime: LocalDateTimeScalarFilters
-              localDateTime_EQ: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter localDateTime: { eq: ... }\\")
-              localDateTime_GT: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter localDateTime: { gt: ... }\\")
-              localDateTime_GTE: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter localDateTime: { gte: ... }\\")
-              localDateTime_IN: [LocalDateTime] @deprecated(reason: \\"Please use the relevant generic filter localDateTime: { in: ... }\\")
-              localDateTime_LT: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter localDateTime: { lt: ... }\\")
-              localDateTime_LTE: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter localDateTime: { lte: ... }\\")
               localTime: LocalTimeScalarFilters
-              localTime_EQ: LocalTime @deprecated(reason: \\"Please use the relevant generic filter localTime: { eq: ... }\\")
-              localTime_GT: LocalTime @deprecated(reason: \\"Please use the relevant generic filter localTime: { gt: ... }\\")
-              localTime_GTE: LocalTime @deprecated(reason: \\"Please use the relevant generic filter localTime: { gte: ... }\\")
-              localTime_IN: [LocalTime] @deprecated(reason: \\"Please use the relevant generic filter localTime: { in: ... }\\")
-              localTime_LT: LocalTime @deprecated(reason: \\"Please use the relevant generic filter localTime: { lt: ... }\\")
-              localTime_LTE: LocalTime @deprecated(reason: \\"Please use the relevant generic filter localTime: { lte: ... }\\")
               point: PointFilters
-              point_DISTANCE: PointDistance @deprecated(reason: \\"Please use the relevant generic filter point: { distance: ... }\\")
-              point_EQ: PointInput @deprecated(reason: \\"Please use the relevant generic filter point: { eq: ... }\\")
-              point_GT: PointDistance @deprecated(reason: \\"Please use the relevant generic filter point: { gt: ... }\\")
-              point_GTE: PointDistance @deprecated(reason: \\"Please use the relevant generic filter point: { gte: ... }\\")
-              point_IN: [PointInput] @deprecated(reason: \\"Please use the relevant generic filter point: { in: ... }\\")
-              point_LT: PointDistance @deprecated(reason: \\"Please use the relevant generic filter point: { lt: ... }\\")
-              point_LTE: PointDistance @deprecated(reason: \\"Please use the relevant generic filter point: { lte: ... }\\")
               ratings: FloatListFilters
-              ratings_EQ: [Float!] @deprecated(reason: \\"Please use the relevant generic filter ratings: { eq: ... }\\")
-              ratings_INCLUDES: Float @deprecated(reason: \\"Please use the relevant generic filter ratings: { includes: ... }\\")
               rels: typeBRelsRelationshipFilters
               relsAggregate: typeBRelsAggregateInput
               relsConnection: typeBRelsConnectionFilters
+              \\"\\"\\"
+              Return typeBS where all of the related typeBRelsConnections match this filter
+              \\"\\"\\"
+              relsConnection_ALL: typeBRelsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'relsConnection: { all: { node: ... } } }' instead.\\")
+              \\"\\"\\"
+              Return typeBS where none of the related typeBRelsConnections match this filter
+              \\"\\"\\"
+              relsConnection_NONE: typeBRelsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'relsConnection: { none: { node: ... } } }' instead.\\")
+              \\"\\"\\"
+              Return typeBS where one of the related typeBRelsConnections match this filter
+              \\"\\"\\"
+              relsConnection_SINGLE: typeBRelsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'relsConnection: { single: { node: ... } } }' instead.\\")
+              \\"\\"\\"
+              Return typeBS where some of the related typeBRelsConnections match this filter
+              \\"\\"\\"
+              relsConnection_SOME: typeBRelsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'relsConnection: { some: { node: ... } } }' instead.\\")
+              \\"\\"\\"Return typeBS where all of the related typeAS match this filter\\"\\"\\"
+              rels_ALL: typeAWhere @deprecated(reason: \\"Please use the relevant generic filter 'rels: { all: ... }' instead.\\")
+              \\"\\"\\"Return typeBS where none of the related typeAS match this filter\\"\\"\\"
+              rels_NONE: typeAWhere @deprecated(reason: \\"Please use the relevant generic filter 'rels: { none: ... }' instead.\\")
+              \\"\\"\\"Return typeBS where one of the related typeAS match this filter\\"\\"\\"
+              rels_SINGLE: typeAWhere @deprecated(reason: \\"Please use the relevant generic filter 'rels: {  single: ... }' instead.\\")
+              \\"\\"\\"Return typeBS where some of the related typeAS match this filter\\"\\"\\"
+              rels_SOME: typeAWhere @deprecated(reason: \\"Please use the relevant generic filter 'rels: {  some: ... }' instead.\\")
               time: TimeScalarFilters
-              time_EQ: Time @deprecated(reason: \\"Please use the relevant generic filter time: { eq: ... }\\")
-              time_GT: Time @deprecated(reason: \\"Please use the relevant generic filter time: { gt: ... }\\")
-              time_GTE: Time @deprecated(reason: \\"Please use the relevant generic filter time: { gte: ... }\\")
-              time_IN: [Time] @deprecated(reason: \\"Please use the relevant generic filter time: { in: ... }\\")
-              time_LT: Time @deprecated(reason: \\"Please use the relevant generic filter time: { lt: ... }\\")
-              time_LTE: Time @deprecated(reason: \\"Please use the relevant generic filter time: { lte: ... }\\")
             }
 
             type typeBtypeARelsAggregationSelection {

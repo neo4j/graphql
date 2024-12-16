@@ -167,11 +167,11 @@ describe("Cypher", () => {
               NOT: ActorWhere
               OR: [ActorWhere!]
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
             }
 
             type ActorsConnection {
@@ -522,145 +522,145 @@ describe("Cypher", () => {
               OR: [MovieWhere!]
               actor: ActorWhere
               custom_big_int: BigIntScalarFilters
-              custom_big_int_EQ: BigInt
-              custom_big_int_GT: BigInt
-              custom_big_int_GTE: BigInt
-              custom_big_int_IN: [BigInt]
-              custom_big_int_LT: BigInt
-              custom_big_int_LTE: BigInt
+              custom_big_int_EQ: BigInt @deprecated(reason: \\"Please use the relevant generic filter custom_big_int: { eq: ... }\\")
+              custom_big_int_GT: BigInt @deprecated(reason: \\"Please use the relevant generic filter custom_big_int: { gt: ... }\\")
+              custom_big_int_GTE: BigInt @deprecated(reason: \\"Please use the relevant generic filter custom_big_int: { gte: ... }\\")
+              custom_big_int_IN: [BigInt] @deprecated(reason: \\"Please use the relevant generic filter custom_big_int: { in: ... }\\")
+              custom_big_int_LT: BigInt @deprecated(reason: \\"Please use the relevant generic filter custom_big_int: { lt: ... }\\")
+              custom_big_int_LTE: BigInt @deprecated(reason: \\"Please use the relevant generic filter custom_big_int: { lte: ... }\\")
               custom_boolean: BooleanScalarFilters
-              custom_boolean_EQ: Boolean
+              custom_boolean_EQ: Boolean @deprecated(reason: \\"Please use the relevant generic filter custom_boolean: { eq: ... }\\")
               custom_cartesian_point: CartesianPointFilters
-              custom_cartesian_point_DISTANCE: CartesianPointDistance
-              custom_cartesian_point_EQ: CartesianPointInput
-              custom_cartesian_point_GT: CartesianPointDistance
-              custom_cartesian_point_GTE: CartesianPointDistance
-              custom_cartesian_point_IN: [CartesianPointInput]
-              custom_cartesian_point_LT: CartesianPointDistance
-              custom_cartesian_point_LTE: CartesianPointDistance
+              custom_cartesian_point_DISTANCE: CartesianPointDistance @deprecated(reason: \\"Please use the relevant generic filter custom_cartesian_point: { distance: ... }\\")
+              custom_cartesian_point_EQ: CartesianPointInput @deprecated(reason: \\"Please use the relevant generic filter custom_cartesian_point: { eq: ... }\\")
+              custom_cartesian_point_GT: CartesianPointDistance @deprecated(reason: \\"Please use the relevant generic filter custom_cartesian_point: { gt: ... }\\")
+              custom_cartesian_point_GTE: CartesianPointDistance @deprecated(reason: \\"Please use the relevant generic filter custom_cartesian_point: { gte: ... }\\")
+              custom_cartesian_point_IN: [CartesianPointInput] @deprecated(reason: \\"Please use the relevant generic filter custom_cartesian_point: { in: ... }\\")
+              custom_cartesian_point_LT: CartesianPointDistance @deprecated(reason: \\"Please use the relevant generic filter custom_cartesian_point: { lt: ... }\\")
+              custom_cartesian_point_LTE: CartesianPointDistance @deprecated(reason: \\"Please use the relevant generic filter custom_cartesian_point: { lte: ... }\\")
               custom_date: DateScalarFilters
-              custom_date_EQ: Date
-              custom_date_GT: Date
-              custom_date_GTE: Date
-              custom_date_IN: [Date]
-              custom_date_LT: Date
-              custom_date_LTE: Date
+              custom_date_EQ: Date @deprecated(reason: \\"Please use the relevant generic filter custom_date: { eq: ... }\\")
+              custom_date_GT: Date @deprecated(reason: \\"Please use the relevant generic filter custom_date: { gt: ... }\\")
+              custom_date_GTE: Date @deprecated(reason: \\"Please use the relevant generic filter custom_date: { gte: ... }\\")
+              custom_date_IN: [Date] @deprecated(reason: \\"Please use the relevant generic filter custom_date: { in: ... }\\")
+              custom_date_LT: Date @deprecated(reason: \\"Please use the relevant generic filter custom_date: { lt: ... }\\")
+              custom_date_LTE: Date @deprecated(reason: \\"Please use the relevant generic filter custom_date: { lte: ... }\\")
               custom_datetime: DateTimeScalarFilters
-              custom_datetime_EQ: DateTime
-              custom_datetime_GT: DateTime
-              custom_datetime_GTE: DateTime
-              custom_datetime_IN: [DateTime]
-              custom_datetime_LT: DateTime
-              custom_datetime_LTE: DateTime
+              custom_datetime_EQ: DateTime @deprecated(reason: \\"Please use the relevant generic filter custom_datetime: { eq: ... }\\")
+              custom_datetime_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter custom_datetime: { gt: ... }\\")
+              custom_datetime_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter custom_datetime: { gte: ... }\\")
+              custom_datetime_IN: [DateTime] @deprecated(reason: \\"Please use the relevant generic filter custom_datetime: { in: ... }\\")
+              custom_datetime_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter custom_datetime: { lt: ... }\\")
+              custom_datetime_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter custom_datetime: { lte: ... }\\")
               custom_duration: DurationScalarFilters
-              custom_duration_EQ: Duration
-              custom_duration_GT: Duration
-              custom_duration_GTE: Duration
-              custom_duration_IN: [Duration]
-              custom_duration_LT: Duration
-              custom_duration_LTE: Duration
+              custom_duration_EQ: Duration @deprecated(reason: \\"Please use the relevant generic filter custom_duration: { eq: ... }\\")
+              custom_duration_GT: Duration @deprecated(reason: \\"Please use the relevant generic filter custom_duration: { gt: ... }\\")
+              custom_duration_GTE: Duration @deprecated(reason: \\"Please use the relevant generic filter custom_duration: { gte: ... }\\")
+              custom_duration_IN: [Duration] @deprecated(reason: \\"Please use the relevant generic filter custom_duration: { in: ... }\\")
+              custom_duration_LT: Duration @deprecated(reason: \\"Please use the relevant generic filter custom_duration: { lt: ... }\\")
+              custom_duration_LTE: Duration @deprecated(reason: \\"Please use the relevant generic filter custom_duration: { lte: ... }\\")
               custom_float: FloatScalarFilters
-              custom_float_EQ: Float
-              custom_float_GT: Float
-              custom_float_GTE: Float
-              custom_float_IN: [Float]
-              custom_float_LT: Float
-              custom_float_LTE: Float
+              custom_float_EQ: Float @deprecated(reason: \\"Please use the relevant generic filter custom_float: { eq: ... }\\")
+              custom_float_GT: Float @deprecated(reason: \\"Please use the relevant generic filter custom_float: { gt: ... }\\")
+              custom_float_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter custom_float: { gte: ... }\\")
+              custom_float_IN: [Float] @deprecated(reason: \\"Please use the relevant generic filter custom_float: { in: ... }\\")
+              custom_float_LT: Float @deprecated(reason: \\"Please use the relevant generic filter custom_float: { lt: ... }\\")
+              custom_float_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter custom_float: { lte: ... }\\")
               custom_id: IDScalarFilters
-              custom_id_CONTAINS: ID
-              custom_id_ENDS_WITH: ID
-              custom_id_EQ: ID
-              custom_id_IN: [ID]
-              custom_id_STARTS_WITH: ID
+              custom_id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter custom_id: { contains: ... }\\")
+              custom_id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter custom_id: { ends_with: ... }\\")
+              custom_id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter custom_id: { eq: ... }\\")
+              custom_id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter custom_id: { in: ... }\\")
+              custom_id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter custom_id: { starts_with: ... }\\")
               custom_int: IntScalarFilters
-              custom_int_EQ: Int
-              custom_int_GT: Int
-              custom_int_GTE: Int
-              custom_int_IN: [Int]
-              custom_int_LT: Int
-              custom_int_LTE: Int
+              custom_int_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter custom_int: { eq: ... }\\")
+              custom_int_GT: Int @deprecated(reason: \\"Please use the relevant generic filter custom_int: { gt: ... }\\")
+              custom_int_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter custom_int: { gte: ... }\\")
+              custom_int_IN: [Int] @deprecated(reason: \\"Please use the relevant generic filter custom_int: { in: ... }\\")
+              custom_int_LT: Int @deprecated(reason: \\"Please use the relevant generic filter custom_int: { lt: ... }\\")
+              custom_int_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter custom_int: { lte: ... }\\")
               custom_localdatetime: LocalDateTimeScalarFilters
-              custom_localdatetime_EQ: LocalDateTime
-              custom_localdatetime_GT: LocalDateTime
-              custom_localdatetime_GTE: LocalDateTime
-              custom_localdatetime_IN: [LocalDateTime]
-              custom_localdatetime_LT: LocalDateTime
-              custom_localdatetime_LTE: LocalDateTime
+              custom_localdatetime_EQ: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter custom_localdatetime: { eq: ... }\\")
+              custom_localdatetime_GT: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter custom_localdatetime: { gt: ... }\\")
+              custom_localdatetime_GTE: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter custom_localdatetime: { gte: ... }\\")
+              custom_localdatetime_IN: [LocalDateTime] @deprecated(reason: \\"Please use the relevant generic filter custom_localdatetime: { in: ... }\\")
+              custom_localdatetime_LT: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter custom_localdatetime: { lt: ... }\\")
+              custom_localdatetime_LTE: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter custom_localdatetime: { lte: ... }\\")
               custom_localtime: LocalTimeScalarFilters
-              custom_localtime_EQ: LocalTime
-              custom_localtime_GT: LocalTime
-              custom_localtime_GTE: LocalTime
-              custom_localtime_IN: [LocalTime]
-              custom_localtime_LT: LocalTime
-              custom_localtime_LTE: LocalTime
+              custom_localtime_EQ: LocalTime @deprecated(reason: \\"Please use the relevant generic filter custom_localtime: { eq: ... }\\")
+              custom_localtime_GT: LocalTime @deprecated(reason: \\"Please use the relevant generic filter custom_localtime: { gt: ... }\\")
+              custom_localtime_GTE: LocalTime @deprecated(reason: \\"Please use the relevant generic filter custom_localtime: { gte: ... }\\")
+              custom_localtime_IN: [LocalTime] @deprecated(reason: \\"Please use the relevant generic filter custom_localtime: { in: ... }\\")
+              custom_localtime_LT: LocalTime @deprecated(reason: \\"Please use the relevant generic filter custom_localtime: { lt: ... }\\")
+              custom_localtime_LTE: LocalTime @deprecated(reason: \\"Please use the relevant generic filter custom_localtime: { lte: ... }\\")
               custom_point: PointFilters
-              custom_point_DISTANCE: PointDistance
-              custom_point_EQ: PointInput
-              custom_point_GT: PointDistance
-              custom_point_GTE: PointDistance
-              custom_point_IN: [PointInput]
-              custom_point_LT: PointDistance
-              custom_point_LTE: PointDistance
+              custom_point_DISTANCE: PointDistance @deprecated(reason: \\"Please use the relevant generic filter custom_point: { distance: ... }\\")
+              custom_point_EQ: PointInput @deprecated(reason: \\"Please use the relevant generic filter custom_point: { eq: ... }\\")
+              custom_point_GT: PointDistance @deprecated(reason: \\"Please use the relevant generic filter custom_point: { gt: ... }\\")
+              custom_point_GTE: PointDistance @deprecated(reason: \\"Please use the relevant generic filter custom_point: { gte: ... }\\")
+              custom_point_IN: [PointInput] @deprecated(reason: \\"Please use the relevant generic filter custom_point: { in: ... }\\")
+              custom_point_LT: PointDistance @deprecated(reason: \\"Please use the relevant generic filter custom_point: { lt: ... }\\")
+              custom_point_LTE: PointDistance @deprecated(reason: \\"Please use the relevant generic filter custom_point: { lte: ... }\\")
               custom_string: StringScalarFilters
-              custom_string_CONTAINS: String
-              custom_string_ENDS_WITH: String
-              custom_string_EQ: String
-              custom_string_IN: [String]
-              custom_string_STARTS_WITH: String
+              custom_string_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter custom_string: { contains: ... }\\")
+              custom_string_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter custom_string: { ends_with: ... }\\")
+              custom_string_EQ: String @deprecated(reason: \\"Please use the relevant generic filter custom_string: { eq: ... }\\")
+              custom_string_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter custom_string: { in: ... }\\")
+              custom_string_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter custom_string: { starts_with: ... }\\")
               custom_time: TimeScalarFilters
-              custom_time_EQ: Time
-              custom_time_GT: Time
-              custom_time_GTE: Time
-              custom_time_IN: [Time]
-              custom_time_LT: Time
-              custom_time_LTE: Time
+              custom_time_EQ: Time @deprecated(reason: \\"Please use the relevant generic filter custom_time: { eq: ... }\\")
+              custom_time_GT: Time @deprecated(reason: \\"Please use the relevant generic filter custom_time: { gt: ... }\\")
+              custom_time_GTE: Time @deprecated(reason: \\"Please use the relevant generic filter custom_time: { gte: ... }\\")
+              custom_time_IN: [Time] @deprecated(reason: \\"Please use the relevant generic filter custom_time: { in: ... }\\")
+              custom_time_LT: Time @deprecated(reason: \\"Please use the relevant generic filter custom_time: { lt: ... }\\")
+              custom_time_LTE: Time @deprecated(reason: \\"Please use the relevant generic filter custom_time: { lte: ... }\\")
               id: IDScalarFilters
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
               list_custom_of_ids: IDListFilters
-              list_custom_of_ids_EQ: [ID]
-              list_custom_of_ids_INCLUDES: ID
+              list_custom_of_ids_EQ: [ID] @deprecated(reason: \\"Please use the relevant generic filter list_custom_of_ids: { eq: ... }\\")
+              list_custom_of_ids_INCLUDES: ID @deprecated(reason: \\"Please use the relevant generic filter list_custom_of_ids: { includes: ... }\\")
               list_of_custom_big_ints: BigIntListFilters
-              list_of_custom_big_ints_EQ: [BigInt]
-              list_of_custom_big_ints_INCLUDES: BigInt
+              list_of_custom_big_ints_EQ: [BigInt] @deprecated(reason: \\"Please use the relevant generic filter list_of_custom_big_ints: { eq: ... }\\")
+              list_of_custom_big_ints_INCLUDES: BigInt @deprecated(reason: \\"Please use the relevant generic filter list_of_custom_big_ints: { includes: ... }\\")
               list_of_custom_booleans: BooleanListFilters
-              list_of_custom_booleans_EQ: [Boolean]
+              list_of_custom_booleans_EQ: [Boolean] @deprecated(reason: \\"Please use the relevant generic filter list_of_custom_booleans: { eq: ... }\\")
               list_of_custom_cartesian_points: CartesianPointListFilters
-              list_of_custom_cartesian_points_EQ: [CartesianPointInput]
-              list_of_custom_cartesian_points_INCLUDES: CartesianPointInput
+              list_of_custom_cartesian_points_EQ: [CartesianPointInput] @deprecated(reason: \\"Please use the relevant generic filter list_of_custom_cartesian_points: { eq: ... }\\")
+              list_of_custom_cartesian_points_INCLUDES: CartesianPointInput @deprecated(reason: \\"Please use the relevant generic filter list_of_custom_cartesian_points: { includes: ... }\\")
               list_of_custom_dates: DateListFilters
-              list_of_custom_dates_EQ: [Date]
-              list_of_custom_dates_INCLUDES: Date
+              list_of_custom_dates_EQ: [Date] @deprecated(reason: \\"Please use the relevant generic filter list_of_custom_dates: { eq: ... }\\")
+              list_of_custom_dates_INCLUDES: Date @deprecated(reason: \\"Please use the relevant generic filter list_of_custom_dates: { includes: ... }\\")
               list_of_custom_datetimes: DateTimeListFilters
-              list_of_custom_datetimes_EQ: [DateTime]
-              list_of_custom_datetimes_INCLUDES: DateTime
+              list_of_custom_datetimes_EQ: [DateTime] @deprecated(reason: \\"Please use the relevant generic filter list_of_custom_datetimes: { eq: ... }\\")
+              list_of_custom_datetimes_INCLUDES: DateTime @deprecated(reason: \\"Please use the relevant generic filter list_of_custom_datetimes: { includes: ... }\\")
               list_of_custom_durations: DurationListFilters
-              list_of_custom_durations_EQ: [Duration]
-              list_of_custom_durations_INCLUDES: Duration
+              list_of_custom_durations_EQ: [Duration] @deprecated(reason: \\"Please use the relevant generic filter list_of_custom_durations: { eq: ... }\\")
+              list_of_custom_durations_INCLUDES: Duration @deprecated(reason: \\"Please use the relevant generic filter list_of_custom_durations: { includes: ... }\\")
               list_of_custom_floats: FloatListFilters
-              list_of_custom_floats_EQ: [Float]
-              list_of_custom_floats_INCLUDES: Float
+              list_of_custom_floats_EQ: [Float] @deprecated(reason: \\"Please use the relevant generic filter list_of_custom_floats: { eq: ... }\\")
+              list_of_custom_floats_INCLUDES: Float @deprecated(reason: \\"Please use the relevant generic filter list_of_custom_floats: { includes: ... }\\")
               list_of_custom_ints: IntListFilters
-              list_of_custom_ints_EQ: [Int]
-              list_of_custom_ints_INCLUDES: Int
+              list_of_custom_ints_EQ: [Int] @deprecated(reason: \\"Please use the relevant generic filter list_of_custom_ints: { eq: ... }\\")
+              list_of_custom_ints_INCLUDES: Int @deprecated(reason: \\"Please use the relevant generic filter list_of_custom_ints: { includes: ... }\\")
               list_of_custom_localdatetimes: LocalDateTimeListFilters
-              list_of_custom_localdatetimes_EQ: [LocalDateTime]
-              list_of_custom_localdatetimes_INCLUDES: LocalDateTime
+              list_of_custom_localdatetimes_EQ: [LocalDateTime] @deprecated(reason: \\"Please use the relevant generic filter list_of_custom_localdatetimes: { eq: ... }\\")
+              list_of_custom_localdatetimes_INCLUDES: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter list_of_custom_localdatetimes: { includes: ... }\\")
               list_of_custom_localtimes: LocalTimeListFilters
-              list_of_custom_localtimes_EQ: [LocalTime]
-              list_of_custom_localtimes_INCLUDES: LocalTime
+              list_of_custom_localtimes_EQ: [LocalTime] @deprecated(reason: \\"Please use the relevant generic filter list_of_custom_localtimes: { eq: ... }\\")
+              list_of_custom_localtimes_INCLUDES: LocalTime @deprecated(reason: \\"Please use the relevant generic filter list_of_custom_localtimes: { includes: ... }\\")
               list_of_custom_points: PointListFilters
-              list_of_custom_points_EQ: [PointInput]
-              list_of_custom_points_INCLUDES: PointInput
+              list_of_custom_points_EQ: [PointInput] @deprecated(reason: \\"Please use the relevant generic filter list_of_custom_points: { eq: ... }\\")
+              list_of_custom_points_INCLUDES: PointInput @deprecated(reason: \\"Please use the relevant generic filter list_of_custom_points: { includes: ... }\\")
               list_of_custom_strings: StringListFilters
-              list_of_custom_strings_EQ: [String]
-              list_of_custom_strings_INCLUDES: String
+              list_of_custom_strings_EQ: [String] @deprecated(reason: \\"Please use the relevant generic filter list_of_custom_strings: { eq: ... }\\")
+              list_of_custom_strings_INCLUDES: String @deprecated(reason: \\"Please use the relevant generic filter list_of_custom_strings: { includes: ... }\\")
               list_of_custom_times: TimeListFilters
-              list_of_custom_times_EQ: [Time]
-              list_of_custom_times_INCLUDES: Time
+              list_of_custom_times_EQ: [Time] @deprecated(reason: \\"Please use the relevant generic filter list_of_custom_times: { eq: ... }\\")
+              list_of_custom_times_INCLUDES: Time @deprecated(reason: \\"Please use the relevant generic filter list_of_custom_times: { includes: ... }\\")
             }
 
             type MoviesConnection {
@@ -891,8 +891,8 @@ describe("Cypher", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               custom_cypher_string_list: StringListFilters
-              custom_cypher_string_list_EQ: [String]
-              custom_cypher_string_list_INCLUDES: String
+              custom_cypher_string_list_EQ: [String] @deprecated(reason: \\"Please use the relevant generic filter custom_cypher_string_list: { eq: ... }\\")
+              custom_cypher_string_list_INCLUDES: String @deprecated(reason: \\"Please use the relevant generic filter custom_cypher_string_list: { includes: ... }\\")
             }
 
             type MoviesConnection {
@@ -1153,11 +1153,11 @@ describe("Cypher", () => {
               posts_SINGLE: PostWhere
               posts_SOME: PostWhere
               title: StringScalarFilters
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String]
-              title_STARTS_WITH: String
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
             }
 
             type BlogsConnection {
@@ -1251,11 +1251,11 @@ describe("Cypher", () => {
               NOT: PostWhere
               OR: [PostWhere!]
               content: StringScalarFilters
-              content_CONTAINS: String
-              content_ENDS_WITH: String
-              content_EQ: String
-              content_IN: [String]
-              content_STARTS_WITH: String
+              content_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter content: { contains: ... }\\")
+              content_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter content: { ends_with: ... }\\")
+              content_EQ: String @deprecated(reason: \\"Please use the relevant generic filter content: { eq: ... }\\")
+              content_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter content: { in: ... }\\")
+              content_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter content: { starts_with: ... }\\")
             }
 
             type PostsConnection {
@@ -1427,11 +1427,11 @@ describe("Cypher", () => {
               movies_SINGLE: MovieWhere
               movies_SOME: MovieWhere
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
             }
 
             type ActorsConnection {
@@ -1719,11 +1719,11 @@ describe("Cypher", () => {
               movies_SINGLE: MovieWhere
               movies_SOME: MovieWhere
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
             }
 
             type ActorsConnection {
@@ -1956,18 +1956,18 @@ describe("Cypher", () => {
               NOT: ActorWhere
               OR: [ActorWhere!]
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
               totalScreenTime: IntScalarFilters
-              totalScreenTime_EQ: Int
-              totalScreenTime_GT: Int
-              totalScreenTime_GTE: Int
-              totalScreenTime_IN: [Int!]
-              totalScreenTime_LT: Int
-              totalScreenTime_LTE: Int
+              totalScreenTime_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter totalScreenTime: { eq: ... }\\")
+              totalScreenTime_GT: Int @deprecated(reason: \\"Please use the relevant generic filter totalScreenTime: { gt: ... }\\")
+              totalScreenTime_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter totalScreenTime: { gte: ... }\\")
+              totalScreenTime_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter totalScreenTime: { in: ... }\\")
+              totalScreenTime_LT: Int @deprecated(reason: \\"Please use the relevant generic filter totalScreenTime: { lt: ... }\\")
+              totalScreenTime_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter totalScreenTime: { lte: ... }\\")
             }
 
             type ActorsConnection {
@@ -2072,11 +2072,11 @@ describe("Cypher", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               id: IDScalarFilters
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
             }
 
             type MoviesConnection {
@@ -2260,11 +2260,11 @@ describe("Cypher", () => {
               NOT: MovieSubscriptionWhere
               OR: [MovieSubscriptionWhere!]
               title: StringScalarFilters
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String]
-              title_STARTS_WITH: String
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
             }
 
             input MovieUpdateInput {
@@ -2284,17 +2284,17 @@ describe("Cypher", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               custom_title: StringScalarFilters
-              custom_title_CONTAINS: String
-              custom_title_ENDS_WITH: String
-              custom_title_EQ: String
-              custom_title_IN: [String]
-              custom_title_STARTS_WITH: String
+              custom_title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter custom_title: { contains: ... }\\")
+              custom_title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter custom_title: { ends_with: ... }\\")
+              custom_title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter custom_title: { eq: ... }\\")
+              custom_title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter custom_title: { in: ... }\\")
+              custom_title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter custom_title: { starts_with: ... }\\")
               title: StringScalarFilters
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String]
-              title_STARTS_WITH: String
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
             }
 
             type MoviesConnection {

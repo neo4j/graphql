@@ -18,13 +18,12 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Deprecated mutation operations", () => {
     test("Remove deprecated mutation operations", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Actor @node {
                 name: String
                 actedIn: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
@@ -117,15 +116,15 @@ describe("Deprecated mutation operations", () => {
               NOT: ActedInWhere
               OR: [ActedInWhere!]
               pay: FloatListFilters
-              pay_EQ: [Float!]
-              pay_INCLUDES: Float
+              pay_EQ: [Float!] @deprecated(reason: \\"Please use the relevant generic filter pay: { eq: ... }\\")
+              pay_INCLUDES: Float @deprecated(reason: \\"Please use the relevant generic filter pay: { includes: ... }\\")
               value: IntScalarFilters
-              value_EQ: Int
-              value_GT: Int
-              value_GTE: Int
-              value_IN: [Int]
-              value_LT: Int
-              value_LTE: Int
+              value_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter value: { eq: ... }\\")
+              value_GT: Int @deprecated(reason: \\"Please use the relevant generic filter value: { gt: ... }\\")
+              value_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter value: { gte: ... }\\")
+              value_IN: [Int] @deprecated(reason: \\"Please use the relevant generic filter value: { in: ... }\\")
+              value_LT: Int @deprecated(reason: \\"Please use the relevant generic filter value: { lt: ... }\\")
+              value_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter value: { lte: ... }\\")
             }
 
             type Actor {
@@ -372,11 +371,11 @@ describe("Deprecated mutation operations", () => {
               \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
               actedIn_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  some: ... }' instead.\\")
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
             }
 
             type ActorsConnection {
@@ -781,36 +780,36 @@ describe("Deprecated mutation operations", () => {
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
               averageRating: FloatScalarFilters
-              averageRating_EQ: Float
-              averageRating_GT: Float
-              averageRating_GTE: Float
-              averageRating_IN: [Float!]
-              averageRating_LT: Float
-              averageRating_LTE: Float
+              averageRating_EQ: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { eq: ... }\\")
+              averageRating_GT: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { gt: ... }\\")
+              averageRating_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { gte: ... }\\")
+              averageRating_IN: [Float!] @deprecated(reason: \\"Please use the relevant generic filter averageRating: { in: ... }\\")
+              averageRating_LT: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { lt: ... }\\")
+              averageRating_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { lte: ... }\\")
               date: DateScalarFilters
-              date_EQ: Date
-              date_GT: Date
-              date_GTE: Date
-              date_IN: [Date]
-              date_LT: Date
-              date_LTE: Date
+              date_EQ: Date @deprecated(reason: \\"Please use the relevant generic filter date: { eq: ... }\\")
+              date_GT: Date @deprecated(reason: \\"Please use the relevant generic filter date: { gt: ... }\\")
+              date_GTE: Date @deprecated(reason: \\"Please use the relevant generic filter date: { gte: ... }\\")
+              date_IN: [Date] @deprecated(reason: \\"Please use the relevant generic filter date: { in: ... }\\")
+              date_LT: Date @deprecated(reason: \\"Please use the relevant generic filter date: { lt: ... }\\")
+              date_LTE: Date @deprecated(reason: \\"Please use the relevant generic filter date: { lte: ... }\\")
               id: IDScalarFilters
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID!]
-              id_STARTS_WITH: ID
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
               point: PointFilters
-              point_DISTANCE: PointDistance
-              point_EQ: PointInput
-              point_GT: PointDistance
-              point_GTE: PointDistance
-              point_IN: [PointInput]
-              point_LT: PointDistance
-              point_LTE: PointDistance
+              point_DISTANCE: PointDistance @deprecated(reason: \\"Please use the relevant generic filter point: { distance: ... }\\")
+              point_EQ: PointInput @deprecated(reason: \\"Please use the relevant generic filter point: { eq: ... }\\")
+              point_GT: PointDistance @deprecated(reason: \\"Please use the relevant generic filter point: { gt: ... }\\")
+              point_GTE: PointDistance @deprecated(reason: \\"Please use the relevant generic filter point: { gte: ... }\\")
+              point_IN: [PointInput] @deprecated(reason: \\"Please use the relevant generic filter point: { in: ... }\\")
+              point_LT: PointDistance @deprecated(reason: \\"Please use the relevant generic filter point: { lt: ... }\\")
+              point_LTE: PointDistance @deprecated(reason: \\"Please use the relevant generic filter point: { lte: ... }\\")
               ratings: FloatListFilters
-              ratings_EQ: [Float!]
-              ratings_INCLUDES: Float
+              ratings_EQ: [Float!] @deprecated(reason: \\"Please use the relevant generic filter ratings: { eq: ... }\\")
+              ratings_INCLUDES: Float @deprecated(reason: \\"Please use the relevant generic filter ratings: { includes: ... }\\")
             }
 
             type MoviesConnection {

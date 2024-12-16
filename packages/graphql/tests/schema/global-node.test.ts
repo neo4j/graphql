@@ -127,17 +127,17 @@ describe("Node Interface Types", () => {
               OR: [MovieWhere!]
               id: ID
               imdb: IDScalarFilters
-              imdb_CONTAINS: ID
-              imdb_ENDS_WITH: ID
-              imdb_EQ: ID
-              imdb_IN: [ID!]
-              imdb_STARTS_WITH: ID
+              imdb_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter imdb: { contains: ... }\\")
+              imdb_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter imdb: { ends_with: ... }\\")
+              imdb_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter imdb: { eq: ... }\\")
+              imdb_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter imdb: { in: ... }\\")
+              imdb_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter imdb: { starts_with: ... }\\")
               title: StringScalarFilters
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
             }
 
             type MoviesConnection {

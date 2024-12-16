@@ -85,17 +85,17 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
               NOT: AWSAccountWhere
               OR: [AWSAccountWhere!]
               accountName: StringScalarFilters
-              accountName_CONTAINS: String
-              accountName_ENDS_WITH: String
-              accountName_EQ: String
-              accountName_IN: [String]
-              accountName_STARTS_WITH: String
+              accountName_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter accountName: { contains: ... }\\")
+              accountName_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter accountName: { ends_with: ... }\\")
+              accountName_EQ: String @deprecated(reason: \\"Please use the relevant generic filter accountName: { eq: ... }\\")
+              accountName_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter accountName: { in: ... }\\")
+              accountName_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter accountName: { starts_with: ... }\\")
               code: StringScalarFilters
-              code_CONTAINS: String
-              code_ENDS_WITH: String
-              code_EQ: String
-              code_IN: [String]
-              code_STARTS_WITH: String
+              code_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter code: { contains: ... }\\")
+              code_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter code: { ends_with: ... }\\")
+              code_EQ: String @deprecated(reason: \\"Please use the relevant generic filter code: { eq: ... }\\")
+              code_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter code: { in: ... }\\")
+              code_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter code: { starts_with: ... }\\")
             }
 
             type AwsAccountsConnection {
@@ -163,17 +163,17 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
               NOT: DNSZoneWhere
               OR: [DNSZoneWhere!]
               awsId: StringScalarFilters
-              awsId_CONTAINS: String
-              awsId_ENDS_WITH: String
-              awsId_EQ: String
-              awsId_IN: [String]
-              awsId_STARTS_WITH: String
+              awsId_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter awsId: { contains: ... }\\")
+              awsId_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter awsId: { ends_with: ... }\\")
+              awsId_EQ: String @deprecated(reason: \\"Please use the relevant generic filter awsId: { eq: ... }\\")
+              awsId_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter awsId: { in: ... }\\")
+              awsId_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter awsId: { starts_with: ... }\\")
               zoneType: StringScalarFilters
-              zoneType_CONTAINS: String
-              zoneType_ENDS_WITH: String
-              zoneType_EQ: String
-              zoneType_IN: [String]
-              zoneType_STARTS_WITH: String
+              zoneType_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter zoneType: { contains: ... }\\")
+              zoneType_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter zoneType: { ends_with: ... }\\")
+              zoneType_EQ: String @deprecated(reason: \\"Please use the relevant generic filter zoneType: { eq: ... }\\")
+              zoneType_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter zoneType: { in: ... }\\")
+              zoneType_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter zoneType: { starts_with: ... }\\")
             }
 
             \\"\\"\\"

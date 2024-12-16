@@ -116,21 +116,21 @@ describe("Relationship-properties", () => {
               NOT: ActedInWhere
               OR: [ActedInWhere!]
               leadRole: BooleanScalarFilters
-              leadRole_EQ: Boolean
+              leadRole_EQ: Boolean @deprecated(reason: \\"Please use the relevant generic filter leadRole: { eq: ... }\\")
               screenTime: IntScalarFilters
-              screenTime_EQ: Int
-              screenTime_GT: Int
-              screenTime_GTE: Int
-              screenTime_IN: [Int!]
-              screenTime_LT: Int
-              screenTime_LTE: Int
+              screenTime_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { eq: ... }\\")
+              screenTime_GT: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { gt: ... }\\")
+              screenTime_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { gte: ... }\\")
+              screenTime_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter screenTime: { in: ... }\\")
+              screenTime_LT: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { lt: ... }\\")
+              screenTime_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { lte: ... }\\")
               startDate: DateScalarFilters
-              startDate_EQ: Date
-              startDate_GT: Date
-              startDate_GTE: Date
-              startDate_IN: [Date!]
-              startDate_LT: Date
-              startDate_LTE: Date
+              startDate_EQ: Date @deprecated(reason: \\"Please use the relevant generic filter startDate: { eq: ... }\\")
+              startDate_GT: Date @deprecated(reason: \\"Please use the relevant generic filter startDate: { gt: ... }\\")
+              startDate_GTE: Date @deprecated(reason: \\"Please use the relevant generic filter startDate: { gte: ... }\\")
+              startDate_IN: [Date!] @deprecated(reason: \\"Please use the relevant generic filter startDate: { in: ... }\\")
+              startDate_LT: Date @deprecated(reason: \\"Please use the relevant generic filter startDate: { lt: ... }\\")
+              startDate_LTE: Date @deprecated(reason: \\"Please use the relevant generic filter startDate: { lte: ... }\\")
             }
 
             type Actor {
@@ -361,11 +361,11 @@ describe("Relationship-properties", () => {
               \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
               movies_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  some: ... }' instead.\\")
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
             }
 
             type ActorsConnection {
@@ -698,11 +698,11 @@ describe("Relationship-properties", () => {
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
               title: StringScalarFilters
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
             }
 
             type MoviesConnection {
@@ -907,25 +907,25 @@ describe("Relationship-properties", () => {
               NOT: ActedInWhere
               OR: [ActedInWhere!]
               id: IDScalarFilters
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID!]
-              id_STARTS_WITH: ID
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
               screenTime: IntScalarFilters
-              screenTime_EQ: Int
-              screenTime_GT: Int
-              screenTime_GTE: Int
-              screenTime_IN: [Int!]
-              screenTime_LT: Int
-              screenTime_LTE: Int
+              screenTime_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { eq: ... }\\")
+              screenTime_GT: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { gt: ... }\\")
+              screenTime_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { gte: ... }\\")
+              screenTime_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter screenTime: { in: ... }\\")
+              screenTime_LT: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { lt: ... }\\")
+              screenTime_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { lte: ... }\\")
               timestamp: DateTimeScalarFilters
-              timestamp_EQ: DateTime
-              timestamp_GT: DateTime
-              timestamp_GTE: DateTime
-              timestamp_IN: [DateTime!]
-              timestamp_LT: DateTime
-              timestamp_LTE: DateTime
+              timestamp_EQ: DateTime @deprecated(reason: \\"Please use the relevant generic filter timestamp: { eq: ... }\\")
+              timestamp_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter timestamp: { gt: ... }\\")
+              timestamp_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter timestamp: { gte: ... }\\")
+              timestamp_IN: [DateTime!] @deprecated(reason: \\"Please use the relevant generic filter timestamp: { in: ... }\\")
+              timestamp_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter timestamp: { lt: ... }\\")
+              timestamp_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter timestamp: { lte: ... }\\")
             }
 
             type Actor {
@@ -1158,11 +1158,11 @@ describe("Relationship-properties", () => {
               \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
               movies_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  some: ... }' instead.\\")
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
             }
 
             type ActorsConnection {
@@ -1518,11 +1518,11 @@ describe("Relationship-properties", () => {
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
               title: StringScalarFilters
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
             }
 
             type MoviesConnection {
@@ -1692,18 +1692,18 @@ describe("Relationship-properties", () => {
               NOT: ActedInWhere
               OR: [ActedInWhere!]
               id: IDScalarFilters
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID!]
-              id_STARTS_WITH: ID
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
               timestamp: DateTimeScalarFilters
-              timestamp_EQ: DateTime
-              timestamp_GT: DateTime
-              timestamp_GTE: DateTime
-              timestamp_IN: [DateTime!]
-              timestamp_LT: DateTime
-              timestamp_LTE: DateTime
+              timestamp_EQ: DateTime @deprecated(reason: \\"Please use the relevant generic filter timestamp: { eq: ... }\\")
+              timestamp_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter timestamp: { gt: ... }\\")
+              timestamp_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter timestamp: { gte: ... }\\")
+              timestamp_IN: [DateTime!] @deprecated(reason: \\"Please use the relevant generic filter timestamp: { in: ... }\\")
+              timestamp_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter timestamp: { lt: ... }\\")
+              timestamp_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter timestamp: { lte: ... }\\")
             }
 
             type Actor {
@@ -1932,11 +1932,11 @@ describe("Relationship-properties", () => {
               \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
               movies_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  some: ... }' instead.\\")
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
             }
 
             type ActorsConnection {
@@ -2266,11 +2266,11 @@ describe("Relationship-properties", () => {
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
               title: StringScalarFilters
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
             }
 
             type MoviesConnection {
