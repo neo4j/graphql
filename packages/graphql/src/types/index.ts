@@ -451,7 +451,7 @@ export type Neo4jFeaturesSettings = {
         mutationOperations?: boolean;
         aggregationFilters?: boolean;
         relationshipFilters?: boolean;
-        fieldFilters?: boolean;
+        attributeFilters?: boolean;
     };
     vector?: Neo4jVectorSettings;
 };

@@ -163,10 +163,10 @@ describe("Scalar", () => {
               OR: [MovieWhere!]
               id: IDScalarFilters
               id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
-              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
               id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
               id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
-              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               myCustomArrayScalar: CustomScalarListScalarFilters
               myCustomArrayScalar_EQ: [CustomScalar!] @deprecated(reason: \\"Please use the relevant generic filter myCustomArrayScalar: { eq: ... }\\")
               myCustomArrayScalar_INCLUDES: CustomScalar @deprecated(reason: \\"Please use the relevant generic filter myCustomArrayScalar: { includes: ... }\\")

@@ -219,10 +219,10 @@ describe("Simple", () => {
               averageRating_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { lte: ... }\\")
               id: IDScalarFilters
               id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
-              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
               id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
               id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
-              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               isActive: BooleanScalarFilters
               isActive_EQ: Boolean @deprecated(reason: \\"Please use the relevant generic filter isActive: { eq: ... }\\")
             }

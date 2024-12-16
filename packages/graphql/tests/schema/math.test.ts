@@ -151,10 +151,10 @@ describe("Algebraic", () => {
               OR: [MovieWhere!]
               id: IDScalarFilters
               id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
-              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
               id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
               id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
-              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               viewers: IntScalarFilters
               viewers_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter viewers: { eq: ... }\\")
               viewers_GT: Int @deprecated(reason: \\"Please use the relevant generic filter viewers: { gt: ... }\\")
@@ -348,10 +348,10 @@ describe("Algebraic", () => {
               OR: [MovieWhere!]
               id: IDScalarFilters
               id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
-              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
               id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
               id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
-              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               viewers: BigIntScalarFilters
               viewers_EQ: BigInt @deprecated(reason: \\"Please use the relevant generic filter viewers: { eq: ... }\\")
               viewers_GT: BigInt @deprecated(reason: \\"Please use the relevant generic filter viewers: { gt: ... }\\")
@@ -545,10 +545,10 @@ describe("Algebraic", () => {
               OR: [MovieWhere!]
               id: IDScalarFilters
               id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
-              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
               id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
               id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
-              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               viewers: FloatScalarFilters
               viewers_EQ: Float @deprecated(reason: \\"Please use the relevant generic filter viewers: { eq: ... }\\")
               viewers_GT: Float @deprecated(reason: \\"Please use the relevant generic filter viewers: { gt: ... }\\")
@@ -890,10 +890,10 @@ describe("Algebraic", () => {
               directs_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'directs: {  some: ... }' instead.\\")
               lastName: StringScalarFilters
               lastName_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter lastName: { contains: ... }\\")
-              lastName_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter lastName: { ends_with: ... }\\")
+              lastName_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter lastName: { endsWith: ... }\\")
               lastName_EQ: String @deprecated(reason: \\"Please use the relevant generic filter lastName: { eq: ... }\\")
               lastName_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter lastName: { in: ... }\\")
-              lastName_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter lastName: { starts_with: ... }\\")
+              lastName_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter lastName: { startsWith: ... }\\")
             }
 
             type DirectorsConnection {
@@ -1199,10 +1199,10 @@ describe("Algebraic", () => {
               directedBy_SOME: DirectorWhere @deprecated(reason: \\"Please use the relevant generic filter 'directedBy: {  some: ... }' instead.\\")
               id: IDScalarFilters
               id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
-              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
               id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
               id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
-              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               viewers: IntScalarFilters
               viewers_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter viewers: { eq: ... }\\")
               viewers_GT: Int @deprecated(reason: \\"Please use the relevant generic filter viewers: { gt: ... }\\")
@@ -1484,10 +1484,10 @@ describe("Algebraic", () => {
               OR: [MovieWhere!]
               id: IDScalarFilters
               id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
-              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
               id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
               id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
-              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               viewers: IntScalarFilters
               viewers_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter viewers: { eq: ... }\\")
               viewers_GT: Int @deprecated(reason: \\"Please use the relevant generic filter viewers: { gt: ... }\\")
@@ -1743,10 +1743,10 @@ describe("Algebraic", () => {
               OR: [PersonWhere!]
               name: StringScalarFilters
               name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
-              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
               name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
               name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
-              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
               worksInProduction: PersonWorksInProductionRelationshipFilters
               worksInProductionAggregate: PersonWorksInProductionAggregateInput
               worksInProductionConnection: PersonWorksInProductionConnectionFilters
@@ -2443,10 +2443,10 @@ describe("Algebraic", () => {
               actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
               title: StringScalarFilters
               title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
               title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
               title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             type MoviesConnection {
@@ -2707,10 +2707,10 @@ describe("Algebraic", () => {
               actedInMovies_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInMovies: {  some: ... }' instead.\\")
               name: StringScalarFilters
               name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
-              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
               name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
               name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
-              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
             }
 
             type Query {

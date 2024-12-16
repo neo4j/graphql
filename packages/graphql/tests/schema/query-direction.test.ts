@@ -371,10 +371,10 @@ describe("Query Direction", () => {
               friends_SOME: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'friends: {  some: ... }' instead.\\")
               name: StringScalarFilters
               name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
-              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
               name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
               name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
-              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
             }
 
             type UsersConnection {
@@ -733,10 +733,10 @@ describe("Query Direction", () => {
               friends_SOME: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'friends: {  some: ... }' instead.\\")
               name: StringScalarFilters
               name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
-              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
               name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
               name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
-              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
             }
 
             type UsersConnection {

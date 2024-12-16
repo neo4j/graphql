@@ -100,10 +100,10 @@ describe("https://github.com/neo4j/graphql/issues/5631", () => {
               OR: [ActorWhere!]
               custom_string_with_zero_param: StringScalarFilters
               custom_string_with_zero_param_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter custom_string_with_zero_param: { contains: ... }\\")
-              custom_string_with_zero_param_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter custom_string_with_zero_param: { ends_with: ... }\\")
+              custom_string_with_zero_param_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter custom_string_with_zero_param: { endsWith: ... }\\")
               custom_string_with_zero_param_EQ: String @deprecated(reason: \\"Please use the relevant generic filter custom_string_with_zero_param: { eq: ... }\\")
               custom_string_with_zero_param_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter custom_string_with_zero_param: { in: ... }\\")
-              custom_string_with_zero_param_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter custom_string_with_zero_param: { starts_with: ... }\\")
+              custom_string_with_zero_param_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter custom_string_with_zero_param: { startsWith: ... }\\")
             }
 
             type ActorsConnection {

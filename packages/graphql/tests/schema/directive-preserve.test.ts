@@ -127,10 +127,10 @@ describe("Directive-preserve", () => {
               OR: [MovieWhere!]
               id: IDScalarFilters
               id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
-              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
               id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
               id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
-              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
             }
 
             type MoviesConnection {
@@ -528,10 +528,10 @@ describe("Directive-preserve", () => {
               movies_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  some: ... }' instead.\\")
               name: StringScalarFilters
               name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
-              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
               name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
               name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
-              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
             }
 
             type GenresConnection {
@@ -814,10 +814,10 @@ describe("Directive-preserve", () => {
               imdbRating_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter imdbRating: { lte: ... }\\")
               title: StringScalarFilters
               title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
               title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
               title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
               year: IntScalarFilters
               year_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter year: { eq: ... }\\")
               year_GT: Int @deprecated(reason: \\"Please use the relevant generic filter year: { gt: ... }\\")
@@ -1019,10 +1019,10 @@ describe("Directive-preserve", () => {
               OR: [ActedInWhere!]
               role: StringScalarFilters
               role_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter role: { contains: ... }\\")
-              role_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter role: { ends_with: ... }\\")
+              role_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter role: { endsWith: ... }\\")
               role_EQ: String @deprecated(reason: \\"Please use the relevant generic filter role: { eq: ... }\\")
               role_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter role: { in: ... }\\")
-              role_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter role: { starts_with: ... }\\")
+              role_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter role: { startsWith: ... }\\")
             }
 
             type Actor {
@@ -1254,10 +1254,10 @@ describe("Directive-preserve", () => {
               actedIn_SOME: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  some: ... }' instead.\\")
               name: StringScalarFilters
               name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
-              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
               name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
               name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
-              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
             }
 
             type ActorsConnection {
@@ -1528,10 +1528,10 @@ describe("Directive-preserve", () => {
               runtime_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lte: ... }\\")
               title: StringScalarFilters
               title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
               title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
               title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             type MoviesConnection {
@@ -1821,10 +1821,10 @@ describe("Directive-preserve", () => {
               actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
               title: StringScalarFilters
               title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
               title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
               title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
               typename_IN: [ProductionImplementation!]
             }
 
@@ -2052,10 +2052,10 @@ describe("Directive-preserve", () => {
               episodes_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter episodes: { lte: ... }\\")
               title: StringScalarFilters
               title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
               title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
               title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -2224,10 +2224,10 @@ describe("Directive-preserve", () => {
               OR: [ActedInWhere!]
               role: StringScalarFilters
               role_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter role: { contains: ... }\\")
-              role_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter role: { ends_with: ... }\\")
+              role_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter role: { endsWith: ... }\\")
               role_EQ: String @deprecated(reason: \\"Please use the relevant generic filter role: { eq: ... }\\")
               role_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter role: { in: ... }\\")
-              role_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter role: { starts_with: ... }\\")
+              role_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter role: { startsWith: ... }\\")
             }
 
             type Actor {
@@ -2456,10 +2456,10 @@ describe("Directive-preserve", () => {
               actedIn_SOME: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  some: ... }' instead.\\")
               name: StringScalarFilters
               name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
-              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
               name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
               name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
-              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
             }
 
             type ActorsConnection {
@@ -2765,10 +2765,10 @@ describe("Directive-preserve", () => {
               runtime_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lte: ... }\\")
               title: StringScalarFilters
               title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
               title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
               title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             type MoviesConnection {
@@ -2844,10 +2844,10 @@ describe("Directive-preserve", () => {
               OR: [ProductionWhere!]
               title: StringScalarFilters
               title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
               title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
               title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
               typename_IN: [ProductionImplementation!]
             }
 
@@ -3110,10 +3110,10 @@ describe("Directive-preserve", () => {
               episodes_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter episodes: { lte: ... }\\")
               title: StringScalarFilters
               title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
               title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
               title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -3270,10 +3270,10 @@ describe("Directive-preserve", () => {
               OR: [ActedInWhere!]
               role: StringScalarFilters
               role_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter role: { contains: ... }\\")
-              role_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter role: { ends_with: ... }\\")
+              role_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter role: { endsWith: ... }\\")
               role_EQ: String @deprecated(reason: \\"Please use the relevant generic filter role: { eq: ... }\\")
               role_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter role: { in: ... }\\")
-              role_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter role: { starts_with: ... }\\")
+              role_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter role: { startsWith: ... }\\")
             }
 
             type Actor {
@@ -3502,10 +3502,10 @@ describe("Directive-preserve", () => {
               actedIn_SOME: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  some: ... }' instead.\\")
               name: StringScalarFilters
               name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
-              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
               name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
               name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
-              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
             }
 
             type ActorsConnection {
@@ -3811,10 +3811,10 @@ describe("Directive-preserve", () => {
               runtime_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lte: ... }\\")
               title: StringScalarFilters
               title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
               title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
               title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             type MoviesConnection {
@@ -3890,10 +3890,10 @@ describe("Directive-preserve", () => {
               OR: [ProductionWhere!]
               title: StringScalarFilters
               title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
               title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
               title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
               typename_IN: [ProductionImplementation!]
             }
 
@@ -4156,10 +4156,10 @@ describe("Directive-preserve", () => {
               episodes_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter episodes: { lte: ... }\\")
               title: StringScalarFilters
               title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
               title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
               title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -4472,10 +4472,10 @@ describe("Directive-preserve", () => {
               posts_SOME: PostWhere @deprecated(reason: \\"Please use the relevant generic filter 'posts: {  some: ... }' instead.\\")
               title: StringScalarFilters
               title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
               title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
               title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             type BlogsConnection {
@@ -4907,10 +4907,10 @@ describe("Directive-preserve", () => {
               content_SOME: ContentWhere @deprecated(reason: \\"Do not use user.content\\")
               name: StringScalarFilters
               name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
-              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
               name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
               name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
-              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
             }
 
             type UsersConnection {

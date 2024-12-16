@@ -521,10 +521,10 @@ describe("lower case type names", () => {
               movies_SOME: movieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  some: ... }' instead.\\")
               name: StringScalarFilters
               name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
-              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
               name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
               name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
-              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
               year: IntScalarFilters
               year_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter year: { eq: ... }\\")
               year_GT: Int @deprecated(reason: \\"Please use the relevant generic filter year: { gt: ... }\\")
@@ -813,16 +813,16 @@ describe("lower case type names", () => {
               createdAt_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { lte: ... }\\")
               name: StringScalarFilters
               name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
-              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
               name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
               name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
-              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
               testId: StringScalarFilters
               testId_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter testId: { contains: ... }\\")
-              testId_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter testId: { ends_with: ... }\\")
+              testId_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter testId: { endsWith: ... }\\")
               testId_EQ: String @deprecated(reason: \\"Please use the relevant generic filter testId: { eq: ... }\\")
               testId_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter testId: { in: ... }\\")
-              testId_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter testId: { starts_with: ... }\\")
+              testId_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter testId: { startsWith: ... }\\")
               year: IntScalarFilters
               year_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter year: { eq: ... }\\")
               year_GT: Int @deprecated(reason: \\"Please use the relevant generic filter year: { gt: ... }\\")

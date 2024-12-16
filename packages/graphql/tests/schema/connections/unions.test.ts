@@ -287,10 +287,10 @@ describe("Unions", () => {
               OR: [AuthorWhere!]
               name: StringScalarFilters
               name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
-              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
               name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
               name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
-              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
               publications: AuthorPublicationsRelationshipFilters
               publicationsConnection: AuthorPublicationsConnectionFilters
               \\"\\"\\"
@@ -558,10 +558,10 @@ describe("Unions", () => {
               author_SOME: AuthorWhere @deprecated(reason: \\"Please use the relevant generic filter 'author: {  some: ... }' instead.\\")
               title: StringScalarFilters
               title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
               title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
               title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             type BooksConnection {
@@ -872,10 +872,10 @@ describe("Unions", () => {
               author_SOME: AuthorWhere @deprecated(reason: \\"Please use the relevant generic filter 'author: {  some: ... }' instead.\\")
               subject: StringScalarFilters
               subject_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter subject: { contains: ... }\\")
-              subject_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter subject: { ends_with: ... }\\")
+              subject_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter subject: { endsWith: ... }\\")
               subject_EQ: String @deprecated(reason: \\"Please use the relevant generic filter subject: { eq: ... }\\")
               subject_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter subject: { in: ... }\\")
-              subject_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter subject: { starts_with: ... }\\")
+              subject_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter subject: { startsWith: ... }\\")
             }
 
             type JournalsConnection {

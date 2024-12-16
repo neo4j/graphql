@@ -105,16 +105,16 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               OR: [ActorWhere!]
               password: StringScalarFilters
               password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
-              password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { ends_with: ... }\\")
+              password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
               password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
               password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
-              password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { starts_with: ... }\\")
+              password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
               username: StringScalarFilters
               username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
-              username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { ends_with: ... }\\")
+              username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
               username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
               username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
-              username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { starts_with: ... }\\")
+              username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
             }
 
             type ActorsConnection {
@@ -180,10 +180,10 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               OR: [MovieWhere!]
               title: StringScalarFilters
               title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
               title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
               title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             type MoviesConnection {
@@ -361,16 +361,16 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               OR: [ActorWhere!]
               password: StringScalarFilters
               password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
-              password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { ends_with: ... }\\")
+              password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
               password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
               password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
-              password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { starts_with: ... }\\")
+              password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
               username: StringScalarFilters
               username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
-              username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { ends_with: ... }\\")
+              username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
               username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
               username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
-              username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { starts_with: ... }\\")
+              username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
             }
 
             type ActorsConnection {
@@ -406,10 +406,10 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               OR: [MovieWhere!]
               title: StringScalarFilters
               title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
               title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
               title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             type MoviesConnection {
@@ -572,16 +572,16 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               OR: [ActorSubscriptionWhere!]
               password: StringScalarFilters
               password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
-              password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { ends_with: ... }\\")
+              password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
               password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
               password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
-              password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { starts_with: ... }\\")
+              password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
               username: StringScalarFilters
               username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
-              username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { ends_with: ... }\\")
+              username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
               username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
               username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
-              username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { starts_with: ... }\\")
+              username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
             }
 
             input ActorUpdateInput {
@@ -604,16 +604,16 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               OR: [ActorWhere!]
               password: StringScalarFilters
               password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
-              password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { ends_with: ... }\\")
+              password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
               password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
               password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
-              password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { starts_with: ... }\\")
+              password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
               username: StringScalarFilters
               username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
-              username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { ends_with: ... }\\")
+              username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
               username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
               username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
-              username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { starts_with: ... }\\")
+              username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
             }
 
             type ActorsConnection {
@@ -691,10 +691,10 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               OR: [MovieSubscriptionWhere!]
               title: StringScalarFilters
               title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
               title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
               title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             input MovieUpdateInput {
@@ -715,10 +715,10 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               OR: [MovieWhere!]
               title: StringScalarFilters
               title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
               title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
               title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             type MoviesConnection {

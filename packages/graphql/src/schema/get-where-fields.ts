@@ -24,6 +24,7 @@ import type { AttributeAdapter } from "../schema-model/attribute/model-adapters/
 import { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { Neo4jFeaturesSettings } from "../types";
 import { getInputFilterFromAttributeType } from "./generation/get-input-filter-from-attribute-type";
+import { shouldAddDeprecatedFields } from "./generation/utils";
 import { graphqlDirectivesToCompose } from "./to-compose";
 
 function addCypherListFieldFilters({
@@ -136,10 +137,12 @@ export function getWhereFieldsForAttributes({
             type: getInputFilterFromAttributeType(field),
             directives: deprecatedDirectives,
         };
-
+        if (!shouldAddDeprecatedFields(features, "attributeFilters")) {
+            continue;
+        }
         result[`${field.name}_EQ`] = {
             type: field.getInputTypeNames().where.pretty,
-            directives: deprecatedDirectives,
+            directives: getAttributeDeprecationDirective(deprecatedDirectives, field, "EQ"),
         };
 
         // If the field is a boolean, skip it
@@ -153,7 +156,7 @@ export function getWhereFieldsForAttributes({
         if (field.typeHelper.isList()) {
             result[`${field.name}_INCLUDES`] = {
                 type: field.getInputTypeNames().where.type,
-                directives: deprecatedDirectives,
+                directives: getAttributeDeprecationDirective(deprecatedDirectives, field, "INCLUDES"),
             };
 
             continue;
@@ -162,15 +165,15 @@ export function getWhereFieldsForAttributes({
         // If the field is not an array, add the in and not in fields
         result[`${field.name}_IN`] = {
             type: field.getFilterableInputTypeName(),
-            directives: deprecatedDirectives,
+            directives: getAttributeDeprecationDirective(deprecatedDirectives, field, "IN"),
         };
 
         // If the field is a number or temporal, add the comparison operators
         if (field.isNumericalOrTemporal()) {
-            ["_LT", "_LTE", "_GT", "_GTE"].forEach((comparator) => {
-                result[`${field.name}${comparator}`] = {
+            ["LT", "LTE", "GT", "GTE"].forEach((comparator) => {
+                result[`${field.name}_${comparator}`] = {
                     type: field.getInputTypeNames().where.type,
-                    directives: deprecatedDirectives,
+                    directives: getAttributeDeprecationDirective(deprecatedDirectives, field, comparator),
                 };
             });
             continue;
@@ -178,10 +181,10 @@ export function getWhereFieldsForAttributes({
 
         // If the field is spatial, add the point comparison operators
         if (field.typeHelper.isSpatial()) {
-            ["_DISTANCE", "_LT", "_LTE", "_GT", "_GTE"].forEach((comparator) => {
-                result[`${field.name}${comparator}`] = {
+            ["DISTANCE", "LT", "LTE", "GT", "GTE"].forEach((comparator) => {
+                result[`${field.name}_${comparator}`] = {
                     type: `${field.getTypeName()}Distance`,
-                    directives: deprecatedDirectives,
+                    directives: getAttributeDeprecationDirective(deprecatedDirectives, field, comparator),
                 };
             });
             continue;
@@ -190,19 +193,19 @@ export function getWhereFieldsForAttributes({
         // If the field is a string, add the string comparison operators
         if (field.typeHelper.isString() || field.typeHelper.isID()) {
             const stringWhereOperators: Array<{ comparator: string; typeName: string }> = [
-                { comparator: "_CONTAINS", typeName: field.getInputTypeNames().where.type },
-                { comparator: "_STARTS_WITH", typeName: field.getInputTypeNames().where.type },
-                { comparator: "_ENDS_WITH", typeName: field.getInputTypeNames().where.type },
+                { comparator: "CONTAINS", typeName: field.getInputTypeNames().where.type },
+                { comparator: "STARTS_WITH", typeName: field.getInputTypeNames().where.type },
+                { comparator: "ENDS_WITH", typeName: field.getInputTypeNames().where.type },
             ];
 
             Object.entries(features?.filters?.[field.getInputTypeNames().where.type] || {}).forEach(
                 ([filter, enabled]) => {
                     if (enabled) {
                         if (filter === "MATCHES") {
-                            stringWhereOperators.push({ comparator: `_${filter}`, typeName: "String" });
+                            stringWhereOperators.push({ comparator: filter, typeName: "String" });
                         } else {
                             stringWhereOperators.push({
-                                comparator: `_${filter}`,
+                                comparator: filter,
                                 typeName: field.getInputTypeNames().where.type,
                             });
                         }
@@ -210,10 +213,67 @@ export function getWhereFieldsForAttributes({
                 }
             );
             stringWhereOperators.forEach(({ comparator, typeName }) => {
-                result[`${field.name}${comparator}`] = { type: typeName, directives: deprecatedDirectives };
+                result[`${field.name}_${comparator}`] = {
+                    type: typeName,
+                    directives: getAttributeDeprecationDirective(deprecatedDirectives, field, comparator),
+                };
             });
         }
     }
 
     return result;
+}
+
+function getAttributeDeprecationDirective(
+    deprecatedDirectives: Directive[],
+    field: AttributeAdapter,
+    comparator: string
+): Directive[] {
+    if (deprecatedDirectives.length) {
+        return deprecatedDirectives;
+    }
+    switch (comparator) {
+        case "DISTANCE":
+        case "LT":
+        case "LTE":
+        case "GT":
+        case "GTE":
+        case "CONTAINS":
+        case "MATCHES":
+        case "IN":
+        case "INCLUDES":
+        case "EQ": {
+            return [
+                {
+                    name: DEPRECATED,
+                    args: {
+                        reason: `Please use the relevant generic filter ${field.name}: { ${comparator.toLowerCase()}: ... }`,
+                    },
+                },
+            ];
+        }
+        case "STARTS_WITH": {
+            return [
+                {
+                    name: DEPRECATED,
+                    args: {
+                        reason: `Please use the relevant generic filter ${field.name}: { startsWith: ... }`,
+                    },
+                },
+            ];
+        }
+        case "ENDS_WITH": {
+            return [
+                {
+                    name: DEPRECATED,
+                    args: {
+                        reason: `Please use the relevant generic filter ${field.name}: { endsWith: ... }`,
+                    },
+                },
+            ];
+        }
+        default: {
+            throw new Error(`Unknown comparator: ${comparator}`);
+        }
+    }
 }

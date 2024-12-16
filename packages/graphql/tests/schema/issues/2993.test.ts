@@ -260,17 +260,17 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               OR: [ProfileWhere!]
               id: IDScalarFilters
               id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
-              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
               id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
               id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
-              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               typename_IN: [ProfileImplementation!]
               userName: StringScalarFilters
               userName_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter userName: { contains: ... }\\")
-              userName_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter userName: { ends_with: ... }\\")
+              userName_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter userName: { endsWith: ... }\\")
               userName_EQ: String @deprecated(reason: \\"Please use the relevant generic filter userName: { eq: ... }\\")
               userName_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter userName: { in: ... }\\")
-              userName_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter userName: { starts_with: ... }\\")
+              userName_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter userName: { startsWith: ... }\\")
             }
 
             type ProfilesConnection {
@@ -569,16 +569,16 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               following_SOME: ProfileWhere @deprecated(reason: \\"Please use the relevant generic filter 'following: {  some: ... }' instead.\\")
               id: IDScalarFilters
               id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
-              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
               id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
               id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
-              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               userName: StringScalarFilters
               userName_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter userName: { contains: ... }\\")
-              userName_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter userName: { ends_with: ... }\\")
+              userName_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter userName: { endsWith: ... }\\")
               userName_EQ: String @deprecated(reason: \\"Please use the relevant generic filter userName: { eq: ... }\\")
               userName_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter userName: { in: ... }\\")
-              userName_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter userName: { starts_with: ... }\\")
+              userName_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter userName: { startsWith: ... }\\")
             }
 
             type UsersConnection {

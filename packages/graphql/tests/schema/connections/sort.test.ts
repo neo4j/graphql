@@ -256,10 +256,10 @@ describe("Sort", () => {
               OR: [Node1Where!]
               property: StringScalarFilters
               property_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter property: { contains: ... }\\")
-              property_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter property: { ends_with: ... }\\")
+              property_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter property: { endsWith: ... }\\")
               property_EQ: String @deprecated(reason: \\"Please use the relevant generic filter property: { eq: ... }\\")
               property_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter property: { in: ... }\\")
-              property_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter property: { starts_with: ... }\\")
+              property_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter property: { startsWith: ... }\\")
               relatedTo: Node1RelatedToRelationshipFilters
               relatedToAggregate: Node1RelatedToAggregateInput
               relatedToConnection: Node1RelatedToConnectionFilters

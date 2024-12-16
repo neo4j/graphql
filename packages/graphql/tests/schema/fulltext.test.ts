@@ -134,16 +134,16 @@ describe("@fulltext schema", () => {
               OR: [MovieWhere!]
               description: StringScalarFilters
               description_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter description: { contains: ... }\\")
-              description_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { ends_with: ... }\\")
+              description_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { endsWith: ... }\\")
               description_EQ: String @deprecated(reason: \\"Please use the relevant generic filter description: { eq: ... }\\")
               description_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter description: { in: ... }\\")
-              description_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { starts_with: ... }\\")
+              description_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { startsWith: ... }\\")
               title: StringScalarFilters
               title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
               title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
               title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             type MoviesConnection {

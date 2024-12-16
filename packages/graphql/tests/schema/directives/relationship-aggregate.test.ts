@@ -273,16 +273,16 @@ describe("@relationship directive, aggregate argument", () => {
                   OR: [ActorWhere!]
                   password: StringScalarFilters
                   password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
-                  password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { ends_with: ... }\\")
+                  password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
                   password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
                   password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
-                  password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { starts_with: ... }\\")
+                  password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
                   username: StringScalarFilters
                   username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
-                  username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { ends_with: ... }\\")
+                  username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
                   username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
                   username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
-                  username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { starts_with: ... }\\")
+                  username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
                 }
 
                 type ActorsConnection {
@@ -545,10 +545,10 @@ describe("@relationship directive, aggregate argument", () => {
                   actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
                   title: StringScalarFilters
                   title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-                  title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+                  title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
                   title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
                   title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-                  title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
+                  title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -712,16 +712,16 @@ describe("@relationship directive, aggregate argument", () => {
                   OR: [ActorWhere!]
                   password: StringScalarFilters
                   password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
-                  password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { ends_with: ... }\\")
+                  password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
                   password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
                   password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
-                  password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { starts_with: ... }\\")
+                  password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
                   username: StringScalarFilters
                   username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
-                  username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { ends_with: ... }\\")
+                  username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
                   username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
                   username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
-                  username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { starts_with: ... }\\")
+                  username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
                 }
 
                 type ActorsConnection {
@@ -995,10 +995,10 @@ describe("@relationship directive, aggregate argument", () => {
                   actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
                   title: StringScalarFilters
                   title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-                  title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+                  title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
                   title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
                   title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-                  title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
+                  title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -1164,16 +1164,16 @@ describe("@relationship directive, aggregate argument", () => {
                       OR: [ActorWhere!]
                       password: StringScalarFilters
                       password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
-                      password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { ends_with: ... }\\")
+                      password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
                       password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
                       password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
-                      password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { starts_with: ... }\\")
+                      password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
                       username: StringScalarFilters
                       username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
-                      username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { ends_with: ... }\\")
+                      username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
                       username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
                       username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
-                      username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { starts_with: ... }\\")
+                      username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
                     }
 
                     type ActorsConnection {
@@ -1436,10 +1436,10 @@ describe("@relationship directive, aggregate argument", () => {
                       actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
                       title: StringScalarFilters
                       title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-                      title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+                      title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
                       title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
                       title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-                      title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
+                      title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
                     }
 
                     type MoviesConnection {
@@ -1520,17 +1520,17 @@ describe("@relationship directive, aggregate argument", () => {
                       OR: [PersonWhere!]
                       password: StringScalarFilters
                       password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
-                      password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { ends_with: ... }\\")
+                      password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
                       password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
                       password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
-                      password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { starts_with: ... }\\")
+                      password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
                       typename_IN: [PersonImplementation!]
                       username: StringScalarFilters
                       username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
-                      username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { ends_with: ... }\\")
+                      username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
                       username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
                       username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
-                      username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { starts_with: ... }\\")
+                      username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
                     }
 
                     type Query {
@@ -1674,16 +1674,16 @@ describe("@relationship directive, aggregate argument", () => {
                       OR: [ActorWhere!]
                       password: StringScalarFilters
                       password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
-                      password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { ends_with: ... }\\")
+                      password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
                       password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
                       password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
-                      password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { starts_with: ... }\\")
+                      password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
                       username: StringScalarFilters
                       username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
-                      username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { ends_with: ... }\\")
+                      username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
                       username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
                       username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
-                      username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { starts_with: ... }\\")
+                      username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
                     }
 
                     type ActorsConnection {
@@ -1957,10 +1957,10 @@ describe("@relationship directive, aggregate argument", () => {
                       actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
                       title: StringScalarFilters
                       title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-                      title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+                      title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
                       title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
                       title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-                      title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
+                      title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
                     }
 
                     type MoviesConnection {
@@ -2041,17 +2041,17 @@ describe("@relationship directive, aggregate argument", () => {
                       OR: [PersonWhere!]
                       password: StringScalarFilters
                       password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
-                      password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { ends_with: ... }\\")
+                      password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
                       password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
                       password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
-                      password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { starts_with: ... }\\")
+                      password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
                       typename_IN: [PersonImplementation!]
                       username: StringScalarFilters
                       username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
-                      username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { ends_with: ... }\\")
+                      username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
                       username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
                       username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
-                      username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { starts_with: ... }\\")
+                      username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
                     }
 
                     type Query {
@@ -2203,16 +2203,16 @@ describe("@relationship directive, aggregate argument", () => {
                       OR: [ActorWhere!]
                       password: StringScalarFilters
                       password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
-                      password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { ends_with: ... }\\")
+                      password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
                       password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
                       password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
-                      password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { starts_with: ... }\\")
+                      password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
                       username: StringScalarFilters
                       username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
-                      username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { ends_with: ... }\\")
+                      username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
                       username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
                       username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
-                      username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { starts_with: ... }\\")
+                      username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
                     }
 
                     type ActorsConnection {
@@ -2472,10 +2472,10 @@ describe("@relationship directive, aggregate argument", () => {
                       actors_SOME: CastMemberWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
                       title: StringScalarFilters
                       title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-                      title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+                      title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
                       title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
                       title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-                      title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
+                      title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
                     }
 
                     type MoviesConnection {
@@ -2550,10 +2550,10 @@ describe("@relationship directive, aggregate argument", () => {
                       OR: [PersonWhere!]
                       name: StringScalarFilters
                       name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
-                      name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                      name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
                       name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
                       name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
-                      name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
+                      name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                     }
 
                     type Query {
@@ -2701,16 +2701,16 @@ describe("@relationship directive, aggregate argument", () => {
                       OR: [ActorWhere!]
                       password: StringScalarFilters
                       password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
-                      password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { ends_with: ... }\\")
+                      password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
                       password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
                       password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
-                      password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { starts_with: ... }\\")
+                      password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
                       username: StringScalarFilters
                       username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
-                      username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { ends_with: ... }\\")
+                      username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
                       username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
                       username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
-                      username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { starts_with: ... }\\")
+                      username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
                     }
 
                     type ActorsConnection {
@@ -2970,10 +2970,10 @@ describe("@relationship directive, aggregate argument", () => {
                       actors_SOME: CastMemberWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
                       title: StringScalarFilters
                       title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-                      title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+                      title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
                       title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
                       title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-                      title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
+                      title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
                     }
 
                     type MoviesConnection {
@@ -3048,10 +3048,10 @@ describe("@relationship directive, aggregate argument", () => {
                       OR: [PersonWhere!]
                       name: StringScalarFilters
                       name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
-                      name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+                      name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
                       name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
                       name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
-                      name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
+                      name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                     }
 
                     type Query {

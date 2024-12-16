@@ -349,10 +349,10 @@ describe("Apollo Federation", () => {
               author_SOME: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'author: {  some: ... }' instead.\\")
               content: StringScalarFilters
               content_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter content: { contains: ... }\\")
-              content_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter content: { ends_with: ... }\\")
+              content_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter content: { endsWith: ... }\\")
               content_EQ: String @deprecated(reason: \\"Please use the relevant generic filter content: { eq: ... }\\")
               content_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter content: { in: ... }\\")
-              content_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter content: { starts_with: ... }\\")
+              content_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter content: { startsWith: ... }\\")
             }
 
             type PostsConnection {
@@ -620,10 +620,10 @@ describe("Apollo Federation", () => {
               OR: [UserWhere!]
               name: StringScalarFilters
               name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
-              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
               name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
               name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
-              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
               posts: UserPostsRelationshipFilters
               postsAggregate: UserPostsAggregateInput
               postsConnection: UserPostsConnectionFilters
@@ -992,10 +992,10 @@ describe("Apollo Federation", () => {
               author_SOME: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'author: {  some: ... }' instead.\\")
               content: StringScalarFilters
               content_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter content: { contains: ... }\\")
-              content_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter content: { ends_with: ... }\\")
+              content_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter content: { endsWith: ... }\\")
               content_EQ: String @deprecated(reason: \\"Please use the relevant generic filter content: { eq: ... }\\")
               content_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter content: { in: ... }\\")
-              content_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter content: { starts_with: ... }\\")
+              content_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter content: { startsWith: ... }\\")
             }
 
             type PostsConnection {
@@ -1114,10 +1114,10 @@ describe("Apollo Federation", () => {
               OR: [UserWhere!]
               name: StringScalarFilters
               name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
-              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
               name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
               name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
-              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
             }
 
             type UsersConnection {

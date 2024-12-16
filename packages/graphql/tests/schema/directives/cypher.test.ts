@@ -168,10 +168,10 @@ describe("Cypher", () => {
               OR: [ActorWhere!]
               name: StringScalarFilters
               name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
-              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
               name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
               name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
-              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
             }
 
             type ActorsConnection {
@@ -568,10 +568,10 @@ describe("Cypher", () => {
               custom_float_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter custom_float: { lte: ... }\\")
               custom_id: IDScalarFilters
               custom_id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter custom_id: { contains: ... }\\")
-              custom_id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter custom_id: { ends_with: ... }\\")
+              custom_id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter custom_id: { endsWith: ... }\\")
               custom_id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter custom_id: { eq: ... }\\")
               custom_id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter custom_id: { in: ... }\\")
-              custom_id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter custom_id: { starts_with: ... }\\")
+              custom_id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter custom_id: { startsWith: ... }\\")
               custom_int: IntScalarFilters
               custom_int_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter custom_int: { eq: ... }\\")
               custom_int_GT: Int @deprecated(reason: \\"Please use the relevant generic filter custom_int: { gt: ... }\\")
@@ -603,10 +603,10 @@ describe("Cypher", () => {
               custom_point_LTE: PointDistance @deprecated(reason: \\"Please use the relevant generic filter custom_point: { lte: ... }\\")
               custom_string: StringScalarFilters
               custom_string_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter custom_string: { contains: ... }\\")
-              custom_string_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter custom_string: { ends_with: ... }\\")
+              custom_string_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter custom_string: { endsWith: ... }\\")
               custom_string_EQ: String @deprecated(reason: \\"Please use the relevant generic filter custom_string: { eq: ... }\\")
               custom_string_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter custom_string: { in: ... }\\")
-              custom_string_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter custom_string: { starts_with: ... }\\")
+              custom_string_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter custom_string: { startsWith: ... }\\")
               custom_time: TimeScalarFilters
               custom_time_EQ: Time @deprecated(reason: \\"Please use the relevant generic filter custom_time: { eq: ... }\\")
               custom_time_GT: Time @deprecated(reason: \\"Please use the relevant generic filter custom_time: { gt: ... }\\")
@@ -616,10 +616,10 @@ describe("Cypher", () => {
               custom_time_LTE: Time @deprecated(reason: \\"Please use the relevant generic filter custom_time: { lte: ... }\\")
               id: IDScalarFilters
               id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
-              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
               id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
               id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
-              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               list_custom_of_ids: IDListFilters
               list_custom_of_ids_EQ: [ID] @deprecated(reason: \\"Please use the relevant generic filter list_custom_of_ids: { eq: ... }\\")
               list_custom_of_ids_INCLUDES: ID @deprecated(reason: \\"Please use the relevant generic filter list_custom_of_ids: { includes: ... }\\")
@@ -1154,10 +1154,10 @@ describe("Cypher", () => {
               posts_SOME: PostWhere
               title: StringScalarFilters
               title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
               title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
               title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             type BlogsConnection {
@@ -1252,10 +1252,10 @@ describe("Cypher", () => {
               OR: [PostWhere!]
               content: StringScalarFilters
               content_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter content: { contains: ... }\\")
-              content_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter content: { ends_with: ... }\\")
+              content_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter content: { endsWith: ... }\\")
               content_EQ: String @deprecated(reason: \\"Please use the relevant generic filter content: { eq: ... }\\")
               content_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter content: { in: ... }\\")
-              content_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter content: { starts_with: ... }\\")
+              content_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter content: { startsWith: ... }\\")
             }
 
             type PostsConnection {
@@ -1428,10 +1428,10 @@ describe("Cypher", () => {
               movies_SOME: MovieWhere
               name: StringScalarFilters
               name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
-              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
               name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
               name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
-              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
             }
 
             type ActorsConnection {
@@ -1720,10 +1720,10 @@ describe("Cypher", () => {
               movies_SOME: MovieWhere
               name: StringScalarFilters
               name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
-              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
               name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
               name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
-              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
             }
 
             type ActorsConnection {
@@ -1957,10 +1957,10 @@ describe("Cypher", () => {
               OR: [ActorWhere!]
               name: StringScalarFilters
               name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
-              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { ends_with: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
               name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
               name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
-              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { starts_with: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
               totalScreenTime: IntScalarFilters
               totalScreenTime_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter totalScreenTime: { eq: ... }\\")
               totalScreenTime_GT: Int @deprecated(reason: \\"Please use the relevant generic filter totalScreenTime: { gt: ... }\\")
@@ -2073,10 +2073,10 @@ describe("Cypher", () => {
               OR: [MovieWhere!]
               id: IDScalarFilters
               id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
-              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
               id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
               id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
-              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
             }
 
             type MoviesConnection {
@@ -2261,10 +2261,10 @@ describe("Cypher", () => {
               OR: [MovieSubscriptionWhere!]
               title: StringScalarFilters
               title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
               title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
               title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             input MovieUpdateInput {
@@ -2285,16 +2285,16 @@ describe("Cypher", () => {
               OR: [MovieWhere!]
               custom_title: StringScalarFilters
               custom_title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter custom_title: { contains: ... }\\")
-              custom_title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter custom_title: { ends_with: ... }\\")
+              custom_title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter custom_title: { endsWith: ... }\\")
               custom_title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter custom_title: { eq: ... }\\")
               custom_title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter custom_title: { in: ... }\\")
-              custom_title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter custom_title: { starts_with: ... }\\")
+              custom_title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter custom_title: { startsWith: ... }\\")
               title: StringScalarFilters
               title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
               title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
               title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             type MoviesConnection {

@@ -380,10 +380,10 @@ describe("Deprecated Aggregations disabled", () => {
               createdAt_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { lte: ... }\\")
               id: IDScalarFilters
               id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
-              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { ends_with: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
               id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
               id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
-              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { starts_with: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               imdbRating: FloatScalarFilters
               imdbRating_EQ: Float @deprecated(reason: \\"Please use the relevant generic filter imdbRating: { eq: ... }\\")
               imdbRating_GT: Float @deprecated(reason: \\"Please use the relevant generic filter imdbRating: { gt: ... }\\")
@@ -393,10 +393,10 @@ describe("Deprecated Aggregations disabled", () => {
               imdbRating_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter imdbRating: { lte: ... }\\")
               isbn: StringScalarFilters
               isbn_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter isbn: { contains: ... }\\")
-              isbn_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter isbn: { ends_with: ... }\\")
+              isbn_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter isbn: { endsWith: ... }\\")
               isbn_EQ: String @deprecated(reason: \\"Please use the relevant generic filter isbn: { eq: ... }\\")
               isbn_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter isbn: { in: ... }\\")
-              isbn_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter isbn: { starts_with: ... }\\")
+              isbn_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter isbn: { startsWith: ... }\\")
               screenTime: DurationScalarFilters
               screenTime_EQ: Duration @deprecated(reason: \\"Please use the relevant generic filter screenTime: { eq: ... }\\")
               screenTime_GT: Duration @deprecated(reason: \\"Please use the relevant generic filter screenTime: { gt: ... }\\")
@@ -441,10 +441,10 @@ describe("Deprecated Aggregations disabled", () => {
               someTime_LTE: Time @deprecated(reason: \\"Please use the relevant generic filter someTime: { lte: ... }\\")
               title: StringScalarFilters
               title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
               title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
               title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             type MoviesConnection {
@@ -932,10 +932,10 @@ describe("Deprecated Aggregations disabled", () => {
               someFloat_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter someFloat: { lte: ... }\\")
               someId: IDScalarFilters
               someId_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { contains: ... }\\")
-              someId_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { ends_with: ... }\\")
+              someId_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { endsWith: ... }\\")
               someId_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { eq: ... }\\")
               someId_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter someId: { in: ... }\\")
-              someId_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { starts_with: ... }\\")
+              someId_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { startsWith: ... }\\")
               someInt: IntScalarFilters
               someInt_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter someInt: { eq: ... }\\")
               someInt_GT: Int @deprecated(reason: \\"Please use the relevant generic filter someInt: { gt: ... }\\")
@@ -959,10 +959,10 @@ describe("Deprecated Aggregations disabled", () => {
               someLocalTime_LTE: LocalTime @deprecated(reason: \\"Please use the relevant generic filter someLocalTime: { lte: ... }\\")
               someString: StringScalarFilters
               someString_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter someString: { contains: ... }\\")
-              someString_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter someString: { ends_with: ... }\\")
+              someString_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter someString: { endsWith: ... }\\")
               someString_EQ: String @deprecated(reason: \\"Please use the relevant generic filter someString: { eq: ... }\\")
               someString_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter someString: { in: ... }\\")
-              someString_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter someString: { starts_with: ... }\\")
+              someString_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter someString: { startsWith: ... }\\")
               someTime: TimeScalarFilters
               someTime_EQ: Time @deprecated(reason: \\"Please use the relevant generic filter someTime: { eq: ... }\\")
               someTime_GT: Time @deprecated(reason: \\"Please use the relevant generic filter someTime: { gt: ... }\\")
@@ -1275,10 +1275,10 @@ describe("Deprecated Aggregations disabled", () => {
               likes_SOME: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'likes: {  some: ... }' instead.\\")
               title: StringScalarFilters
               title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
               title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
               title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             type PostsConnection {
@@ -1514,10 +1514,10 @@ describe("Deprecated Aggregations disabled", () => {
               someFloat_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter someFloat: { lte: ... }\\")
               someId: IDScalarFilters
               someId_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { contains: ... }\\")
-              someId_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { ends_with: ... }\\")
+              someId_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { endsWith: ... }\\")
               someId_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { eq: ... }\\")
               someId_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter someId: { in: ... }\\")
-              someId_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { starts_with: ... }\\")
+              someId_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { startsWith: ... }\\")
               someInt: IntScalarFilters
               someInt_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter someInt: { eq: ... }\\")
               someInt_GT: Int @deprecated(reason: \\"Please use the relevant generic filter someInt: { gt: ... }\\")
@@ -1541,10 +1541,10 @@ describe("Deprecated Aggregations disabled", () => {
               someLocalTime_LTE: LocalTime @deprecated(reason: \\"Please use the relevant generic filter someLocalTime: { lte: ... }\\")
               someString: StringScalarFilters
               someString_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter someString: { contains: ... }\\")
-              someString_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter someString: { ends_with: ... }\\")
+              someString_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter someString: { endsWith: ... }\\")
               someString_EQ: String @deprecated(reason: \\"Please use the relevant generic filter someString: { eq: ... }\\")
               someString_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter someString: { in: ... }\\")
-              someString_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter someString: { starts_with: ... }\\")
+              someString_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter someString: { startsWith: ... }\\")
               someTime: TimeScalarFilters
               someTime_EQ: Time @deprecated(reason: \\"Please use the relevant generic filter someTime: { eq: ... }\\")
               someTime_GT: Time @deprecated(reason: \\"Please use the relevant generic filter someTime: { gt: ... }\\")
@@ -2353,10 +2353,10 @@ describe("Deprecated Aggregations disabled", () => {
               likes_SOME: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'likes: {  some: ... }' instead.\\")
               title: StringScalarFilters
               title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { ends_with: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
               title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
               title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { starts_with: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             type PostsConnection {
@@ -2604,10 +2604,10 @@ describe("Deprecated Aggregations disabled", () => {
               someFloat_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter someFloat: { lte: ... }\\")
               someId: IDScalarFilters
               someId_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { contains: ... }\\")
-              someId_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { ends_with: ... }\\")
+              someId_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { endsWith: ... }\\")
               someId_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { eq: ... }\\")
               someId_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter someId: { in: ... }\\")
-              someId_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { starts_with: ... }\\")
+              someId_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { startsWith: ... }\\")
               someInt: IntScalarFilters
               someInt_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter someInt: { eq: ... }\\")
               someInt_GT: Int @deprecated(reason: \\"Please use the relevant generic filter someInt: { gt: ... }\\")
@@ -2631,10 +2631,10 @@ describe("Deprecated Aggregations disabled", () => {
               someLocalTime_LTE: LocalTime @deprecated(reason: \\"Please use the relevant generic filter someLocalTime: { lte: ... }\\")
               someString: StringScalarFilters
               someString_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter someString: { contains: ... }\\")
-              someString_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter someString: { ends_with: ... }\\")
+              someString_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter someString: { endsWith: ... }\\")
               someString_EQ: String @deprecated(reason: \\"Please use the relevant generic filter someString: { eq: ... }\\")
               someString_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter someString: { in: ... }\\")
-              someString_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter someString: { starts_with: ... }\\")
+              someString_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter someString: { startsWith: ... }\\")
               someTime: TimeScalarFilters
               someTime_EQ: Time @deprecated(reason: \\"Please use the relevant generic filter someTime: { eq: ... }\\")
               someTime_GT: Time @deprecated(reason: \\"Please use the relevant generic filter someTime: { gt: ... }\\")
